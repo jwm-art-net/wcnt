@@ -1,0 +1,302 @@
+wcnt-1.127/jwmsynth
+
+// examples/sinewave.wc
+
+samplerate  44100
+bpm         90
+signature   4/4
+
+time_map
+time1  
+    meter_map
+    meter_map
+    bpm_map
+    bpm_map
+time1
+
+riff 
+riff1
+    quarter_value 16 
+    note name g0    pos 0   len 4.5 vel 1.0
+    note name d0    pos 6   len 3.5 vel 1.0
+    note name e1    pos 12  len 3.5 vel 1.0
+    note name f0    pos 16  len 3.5 vel 0.8
+    note name g0    pos 22  len 4.5 vel 0.8
+    note name g0    pos 28  len 3.5 vel 0.8
+    note name d1    pos 32  len 4.5 vel 1.0
+    note name f0    pos 40  len 2.5 vel 0.5
+    note name d1    pos 48  len 3.5 vel 1.0
+    note name f0    pos 56  len 2.5 vel 1.0
+riff1
+
+sequencer
+seq1
+        track 
+		riff_node
+			riff	riff1	bar	0	transpose	0
+			start_len	0	end_len		0
+		riff_node
+			riff	riff1	bar	1	transpose	0
+			start_len	0	end_len		0
+		riff_node
+			riff	riff1	bar	2	transpose	0
+			start_len	0	end_len		0
+		riff_node
+			riff	riff1	bar	3	transpose	0
+			start_len	0	end_len		0
+		riff_node
+			riff	riff1	bar	4	transpose	0
+			start_len	0	end_len		0
+		riff_node
+			riff	riff1	bar	5	transpose	0
+			start_len	0	end_len		0
+		riff_node
+			riff	riff1	bar	6	transpose	0
+			start_len	0	end_len		0
+		riff_node
+			riff	riff1	bar	7	transpose	0
+			start_len	0	end_len		0
+		riff_node
+			riff	riff1	bar	8	transpose	0
+			start_len	0	end_len		0
+		riff_node
+			riff	riff1	bar	9	transpose	0
+			start_len	0	end_len		0
+		riff_node
+			riff	riff1	bar	10	transpose	0
+			start_len	0	end_len		0
+		riff_node
+			riff	riff1	bar	11	transpose	0
+			start_len	0	end_len		0
+		riff_node
+			riff	riff1	bar	12	transpose	0
+			start_len	0	end_len		0
+		riff_node
+			riff	riff1	bar	13	transpose	0
+			start_len	0	end_len		0
+		riff_node
+			riff	riff1	bar	14	transpose	0
+			start_len	0	end_len		0
+		riff_node
+			riff	riff1	bar	15	transpose	0
+			start_len	0	end_len		0
+    track
+    in_bar time1 out_bar
+    in_bar_trig time1 out_bar_trig
+    in_pos_step_size time1 out_pos_step_size
+    in_beats_per_bar time1 out_beats_per_bar
+    in_beat_value time1 out_beat_value
+    velocity_response_time  5.0
+    hold_notename off // pointless I think.
+seq1
+
+// duration of sound
+
+timer t1
+    timings
+        time seconds 0.0
+        time seconds 27.5
+    timings
+t1
+
+timer t2
+    timings
+        time seconds 26.65
+    timings
+t2
+
+clock fmclock
+    in_freq_mod1   fmsinewaveb out_output
+    freq           4.0
+    freq_mod1_size 1.0
+fmclock
+
+clock fmclockb
+    in_freq_mod1   off
+    freq           8.0
+    freq_mod1_size 1.0
+fmclockb
+
+sine_wave fmsinewave
+    in_phase_trig  fmclock out_phase_trig
+    in_deg_size    fmclock out_deg_size
+    recycle_mode         off
+    on_trig_reset_phase  off
+    phase_cycles         1.0
+fmsinewave
+
+sine_wave fmsinewaveb
+    in_phase_trig  fmclockb out_phase_trig
+    in_deg_size    fmclockb out_deg_size
+    recycle_mode         off
+    on_trig_reset_phase  off
+    phase_cycles         1.0
+fmsinewaveb
+
+clock fmclock2
+    in_freq_mod1   fmsinewave out_output
+    freq           220
+    freq_mod1_size 2.0
+fmclock2
+
+clock fmclock3
+    in_freq_mod1   fmsinewave out_output
+    freq           440
+    freq_mod1_size 2.0
+fmclock3
+
+clock fmclock4
+    in_freq_mod1   fmsinewaveb out_output
+    freq           1660 //880
+    freq_mod1_size 4.0
+fmclock4
+
+sine_wave fmsinewave2
+    in_phase_trig  fmclock2 out_phase_trig
+    in_deg_size    fmclock3 out_deg_size
+    recycle_mode         off
+    on_trig_reset_phase  on
+    phase_cycles         1.0 //1.750 //1.25
+fmsinewave2
+
+lp_filter
+fmlpf
+        in_signal fmsinewave2 out_output
+        in_cutoff_degsize fmclock4 out_deg_size
+        in_feedback     fmecho out_output
+        in_feedback_mod off
+        feedback         0.5
+        feedback_modsize 0.0
+        wet/dry          1.0
+fmlpf
+
+echo
+fmecho
+        in_signal       fmlpf out_wet_output
+        in_gain_mod     off
+        in_feedback     fmecho out_wet_output
+        in_feedback_mod off
+        delay_time      1.0
+        gain            1.0
+        gain_modsize    0.0
+        feedback        0.4
+        feedback_modsize 0.0
+        wet/dry         1.0
+fmecho
+
+// clock will run at frequency of audible sine wave
+
+osc_clock osc1
+    in_note_on_trig seq1 out_note_on_trig
+    in_note_slide_trig seq1 out_note_slide_trig
+    in_frequency seq1 out_frequency
+    in_freq_mod1 fmlpf out_output
+    in_freq_mod2 off
+    octave_offset 0
+    tuning_semitones 0.0
+    portamento_time 0.0
+    freq_mod1_size 1.125
+    freq_mod2_size 1.0
+osc1
+
+// the sine waveform, driven by clock1
+
+sine_wave sinewave
+    in_phase_trig  osc1 out_phase_trig
+    in_deg_size    osc1 out_deg_size
+    recycle_mode         off
+    on_trig_reset_phase  off
+    phase_cycles         1.0
+sinewave
+
+// amplify and shape waveform to a 16 bit signal
+
+constant one value 1.0 one
+
+adsr
+adsr1
+    envelope
+        section name attack
+            ut 5.0  ul 0.1
+            lt 6.0  ll 0.1
+        section name attack
+            ut 6.0  ul 0.4
+            lt 7.0  ll 0.4
+        section name attack
+            ut 7.0  ul 1.0
+            lt 8.0  ll 1.0
+        section name decay
+            ut 125.0 ul 0.63
+            lt 55.0  ll 0.63
+        section name release
+            ut 225.0 ul 0.0
+            lt 140.0  ll 0.0
+    envelope
+        in_note_on_trig  seq1 out_note_on_trig
+        in_note_off_trig seq1 out_note_off_trig
+        in_velocity      one out_output
+        up_thresh      1.0
+        lo_thresh      0.0
+        start_level    0.0
+        sustain_state  on
+        zero_retrigger off
+adsr1
+
+adsr
+adsr2
+    envelope
+        section name attack
+            ut 5.0  ul 0.1
+            lt 6.0  ll 0.0
+        section name attack
+            ut 6.0  ul 0.4
+            lt 7.0  ll 0.0
+        section name attack
+            ut 7.0  ul 1.0
+            lt 8.0  ll 0.0
+        section name decay
+            ut 125.0 ul 0.63
+            lt 75.0  ll 0.0
+        section name release
+            ut 795.0 ul 0.0
+            lt 50.0  ll 0.0
+    envelope
+        in_note_on_trig  t1 out_trig
+        in_note_off_trig t2 out_trig
+        in_velocity      one out_output
+        up_thresh      1.0
+        lo_thresh      0.0
+        start_level    0.0
+        sustain_state  on
+        zero_retrigger off
+adsr2
+
+mono_amp amp1
+    in_signal   sinewave out_output
+    in_amp_eg   adsr1 out_output
+    in_amp_mod  off
+    amplitude     32767
+    amp_mod_size  0.0
+    clip_level    32767
+amp1
+
+// write amplified signal to wav file
+
+wavfile_out wav1
+    in_left     amp1  out_mono
+    in_right    amp1  out_mono
+    in_bar      t1 out_count
+    in_bar_trig t1 out_trig
+    filename    freekmod02.wav
+    start_bar   0
+    end_bar     1
+wav1
+
+// when to stop
+
+wcnt_exit wcnt_exit_module
+    in_bar   t1 out_count
+    exit_bar 1
+wcnt_exit_module
+
+wcnt-1.127/jwmsynth

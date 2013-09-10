@@ -23,43 +23,44 @@
 // if you're a coder of audio stuff you'll know for sure....or you should.
 // not that I've known for long what rms means.
 
-class rms : public synthmod 
+class rms : public synthmod
 {
- public:
-	rms(string uname);
-	~rms();
-	void set_input_signal(const double* in){ in_signal = in;}
-	const double* get_input_signal(){ return in_signal;}
-	const double* get_output_rms(){ return &out_rms;}
-	void set_rms_time(double dt){ rms_time = dt;}
-	double get_rms_time(){ return rms_time;}
-	// virtual funcs
-	void run();
-	void init();
-	bool validate();
-	#ifndef BARE_MODULES
-	void const* get_out(outputnames::OUT_TYPE);
-	void const* set_in(inputnames::IN_TYPE, void const*);
-	bool set_param(paramnames::PAR_TYPE, void const*);
-	#endif	
- private:
-	// inputs
-	const double* in_signal;
-	// outputs
-	double out_rms;
-	// params
- 	double rms_time;
- 	// working
- 	double output;
-	double* rmsarr;//array
-	short arraymax;
-	short arrpos;
-	double sqrsum;
-	static int rms_count;
-	#ifndef BARE_MODULES
-	void create_params();
-	static bool done_params;
- 	#endif
+public:
+    rms(char const*);
+    ~rms();
+    void set_input_signal(const double* in){ in_signal = in;}
+    const double* get_input_signal(){ return in_signal;}
+    const double* get_output_rms(){ return &out_rms;}
+    void set_rms_time(double dt){ rms_time = dt;}
+    double get_rms_time(){ return rms_time;}
+    // virtual funcs
+    void run();
+    void init();
+    stockerrs::ERR_TYPE validate();
+#ifndef BARE_MODULES
+    void const* get_out(outputnames::OUT_TYPE);
+    void const* set_in(inputnames::IN_TYPE, void const*);
+    bool set_param(paramnames::PAR_TYPE, void const*);
+    void const* get_param(paramnames::PAR_TYPE);
+#endif	
+private:
+    // inputs
+    const double* in_signal;
+    // outputs
+    double out_rms;
+    // params
+    double rms_time;
+    // working
+    double output;
+    double* rmsarr;//array
+    short arraymax;
+    short arrpos;
+    double sqrsum;
+    static int rms_count;
+#ifndef BARE_MODULES
+    void create_params();
+    static bool done_params;
+#endif
 };
 
 #endif

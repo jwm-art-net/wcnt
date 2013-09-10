@@ -1,0 +1,215 @@
+wcnt-1.127/jwmsynth
+
+samplerate  44100
+bpm         100
+signature   4/4
+
+constant one    value 1.0   one
+
+time_map
+time1  
+    meter_map
+    meter_map
+    bpm_map
+    bpm_map
+time1
+
+riff 
+riff1
+    quarter_value   1
+    note
+        name c0 
+        pos  0.0
+        len  30.0
+        vel  1.0
+riff1
+
+sequencer
+seq1
+    track 
+        riff_node
+            riff      riff1
+            bar       0
+            transpose 0
+            start_len 0
+            end_len   0
+        track
+    in_bar           time1 out_bar
+    in_bar_trig      time1 out_bar_trig
+    in_pos_step_size time1 out_pos_step_size
+    in_beats_per_bar time1 out_beats_per_bar
+    in_beat_value    time1 out_beat_value
+    velocity_response_time 5.0
+    hold_notename          off
+seq1
+
+clock
+vbclock1
+    in_freq_mod1   off
+    freq           0.125
+    freq_mod1_size 1.0
+vbclock1
+
+clock
+vbclock2
+    in_freq_mod1   off
+    freq           400.0
+    freq_mod1_size 1.0
+vbclock2
+
+
+square_wave
+2tonea
+    in_phase_trig  osc2 out_phase_trig
+    in_deg_size    osc2 out_deg_size
+    in_pwm         wavemod out_output
+    pulse_width   0.5
+    pwm_size      0.75
+    recycle_mode  off
+2tonea
+
+invert
+wavemodi
+    in_signal wavemod out_output
+wavemodi
+
+square_wave
+2toneb
+    in_phase_trig  osc2 out_phase_trig
+    in_deg_size    osc2 out_deg_size
+    in_pwm         wavemodi out_output
+    pulse_width   0.5
+    pwm_size      0.99
+    recycle_mode  off
+2toneb
+
+sine_wave
+wavemod
+    in_phase_trig  vbclock1 out_phase_trig
+    in_deg_size    vbclock1 out_deg_size
+    recycle_mode         off
+    on_trig_reset_phase  off
+    phase_cycles         1.0
+wavemod
+
+osc_clock
+osc1
+    in_note_on_trig    seq1 out_note_on_trig
+    in_note_slide_trig seq1 out_note_slide_trig
+    in_frequency       seq1 out_frequency
+    in_freq_mod1       2tonea out_output
+    in_freq_mod2       2toneb out_output
+    octave_offset    -1
+    tuning_semitones 0.0
+    portamento_time  0.0
+    freq_mod1_size   4.0
+    freq_mod2_size   2.0
+osc1
+
+osc_clock
+osc2
+    in_note_on_trig    seq1 out_note_on_trig
+    in_note_slide_trig seq1 out_note_slide_trig
+    in_frequency       seq1 out_frequency
+    in_freq_mod1       2tonea out_output
+    in_freq_mod2       2toneb out_output
+    octave_offset    4
+    tuning_semitones 0.0
+    portamento_time  0.0
+    freq_mod1_size   4.0
+    freq_mod2_size   2.0
+osc2
+
+osc_clock
+osc3
+    in_note_on_trig    seq1   out_note_on_trig
+    in_note_slide_trig seq1   out_note_slide_trig
+    in_frequency       seq1   out_frequency
+    in_freq_mod1       2tonea  out_output
+    in_freq_mod2       off
+    octave_offset    0
+    tuning_semitones 0.0
+    portamento_time  20.0
+    freq_mod1_size   4.0
+    freq_mod2_size   2
+osc3
+
+user_wave
+uwave1
+    waveform
+//        vertex
+//            ud  0.0 ul 0.0
+//            ld  0.0 ll 0.0
+        vertex
+            ud  20.0 ul -1.0
+            ld  160.0 ll -1.0
+        vertex
+            ud  180.0 ul 0.0
+            ld  180.0 ll 0.0
+        vertex
+            ud  200.0 ul 1.0
+            ld  340.0 ll 1.0
+//        vertex
+//            ud  360.0 ul 0.0
+//            ld  360.0 ll 0.0
+    waveform
+    in_phase_trig  osc1 out_phase_trig
+    in_deg_size    osc1 out_deg_size
+    in_level_mod   wavemod out_output
+    in_time_mod    wavemod out_output
+    recycle_mode    off
+    zero_retrigger  off
+uwave1
+
+adsr
+adsr1
+    envelope
+        section name attack	
+            ut 55.0      ul 0.65	
+            lt 55.0      ll 0.35
+        section name decay
+            ut 145.0    ul 0.86	
+            lt 145.0    ll 0.85
+        section name release
+            ut 200.0    ul 0.0	
+            lt 205.0    ll 0.0
+    envelope
+    in_note_on_trig  seq1 out_note_on_trig
+    in_note_off_trig seq1 out_note_off_trig
+    in_velocity      seq1 out_velocity
+    up_thresh      1.0
+    lo_thresh      0.45
+    start_level    0.0
+    sustain_state  on
+    zero_retrigger off
+adsr1
+
+
+mono_amp
+amp1
+    in_signal   uwave1 out_output
+    in_amp_eg   adsr1  out_output
+    in_amp_mod  off
+    amplitude     20000
+    amp_mod_size  0.0
+    clip_level    32767
+amp1
+
+wavfile_out
+wav1
+    in_left     amp1  out_mono
+    in_right    amp1  out_mono
+    in_bar      time1 out_bar
+    in_bar_trig time1 out_bar_trig
+    filename    test04.wav
+    start_bar   0
+    end_bar     8
+wav1
+
+wcnt_exit
+wcnt_exit_module
+    in_bar   time1 out_bar
+    exit_bar 8
+wcnt_exit_module
+
+wcnt-1.127/jwmsynth

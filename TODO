@@ -1,9 +1,31 @@
+TODO:
 
-18 get lots of money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money, money,
+    * Add generic way of handling special parameters which user specifies
+      in form of a text string, and handled by the synthmodule as enums.
+      for example sampler loop modes are fwd, rev, bi, logic_trigger 
+      functions are and, or, xor. A generic method would mean that the
+      coding of any new parameter types expressed like those above would
+      be done in the synth module which needs them, instead of having to 
+      accommadate it in several other already existing classes 
+      (iocat, synthfilereader, etc).
 
+    * timer which outputs a trigger at specified moments, along with a
+      count of how many times it has triggered.  Points specified as 
+      duration in time, specifically ms.  could be used by wcnt_exit
+      and wavfileout modules instead of timemap.
 
-other than that, some tidying up ;) and code improvements, more composition
-stuff, 
+    * LFO which oscilates in sync with timemap output, for example,
+      oscilates once every 3 quarter notes, and keeping in time while
+      bpm or time signature changes. see controller notes below.
 
-for further in the future, use ladspa and libsndfile stuff for better filters 
-etc, and better sound quality ie 32 bit wavs/etc, etc
+    * controller module.  outputs a signal which can be ramped from a
+      point in one bar, to another point in the same, or different bar.
+      needs to be aware of bpm, time signature etc, in order to accomplish
+      correct rampage.  I'm not sure if I correctly figured out that it is
+      impossible in wcnt's current state.
+
+    * still not made those module variating auto generation features
+    * still not made those sample data and sample mapping features
+    * still not using LADSPA
+    * still not using secret rabbit code, libsndfile.
+    * still not making lots of money, money, money, money, money, money..

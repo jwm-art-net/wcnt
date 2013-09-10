@@ -28,42 +28,43 @@
 // of dc, but some waveforms get inverted etc, but it does not
 // seem to add artifacts that i have noticed....
 
-class dc_filter : public synthmod 
+class dc_filter : public synthmod
 {
- public:
-	dc_filter(string uname);
-	~dc_filter();
-	void set_input_signal(const double* in){ in_signal = in;}
-	const double* get_input_signal(){ return in_signal;}
-	void set_dc_time(double dct){ dc_time = dct;}
-	double get_dc_time(){ return dc_time;}
-	const double* get_output(){ return &output;}
-	// virtual funcs
-	void run();
-	void init();
-	bool validate();
-	#ifndef BARE_MODULES
-	void const* get_out(outputnames::OUT_TYPE);
-	void const* set_in(inputnames::IN_TYPE, void const*);
-	bool set_param(paramnames::PAR_TYPE, void const*);
-	#endif	
- private:
-	// inputs
-	const double* in_signal;
- 	// output
-	double output;
- 	// params
-	double dc_time;
- 	// working
-	double* filter;//array
-	short filterarraymax;
-	short fpos;
-	double filtertotal;
-	static int dc_filter_count;
-	#ifndef BARE_MODULES
-	void create_params();
-	static bool done_params;
- 	#endif
+public:
+    dc_filter(char const*);
+    ~dc_filter();
+    void set_input_signal(const double* in){ in_signal = in;}
+    const double* get_input_signal(){ return in_signal;}
+    void set_dc_time(double dct){ dc_time = dct;}
+    double get_dc_time(){ return dc_time;}
+    const double* get_output(){ return &output;}
+    // virtual funcs
+    void run();
+    void init();
+    stockerrs::ERR_TYPE validate();
+#ifndef BARE_MODULES
+    void const* get_out(outputnames::OUT_TYPE);
+    void const* set_in(inputnames::IN_TYPE, void const*);
+    bool set_param(paramnames::PAR_TYPE, void const*);
+    void const* get_param(paramnames::PAR_TYPE);
+#endif	
+private:
+    // inputs
+    const double* in_signal;
+    // output
+    double output;
+    // params
+    double dc_time;
+    // working
+    double* filter;//array
+    short filterarraymax;
+    short fpos;
+    double filtertotal;
+    static int dc_filter_count;
+#ifndef BARE_MODULES
+    void create_params();
+    static bool done_params;
+#endif
 };
 
 #endif

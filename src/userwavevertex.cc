@@ -1,123 +1,117 @@
 #ifndef USERWAVEVERTEX_H
 #include "../include/userwavevertex.h"
 
-wave_vertex::wave_vertex() : 
-	dobj(dobjnames::SIN_VERTEX), output(0, 0), lower(0, 0), upper(0, 0)
+wave_vertex::wave_vertex() :
+ dobj(dobjnames::SIN_VERTEX), out_deg(0), out_pos(0),
+ up_deg(0), up_pos(0), lo_deg(0), lo_pos(0)
 {
-	#ifndef BARE_MODULES
-	create_dparams();
-	#endif
+#ifndef BARE_MODULES
+    create_dparams();
+#endif
 }
 
-wave_vertex::wave_vertex(double udp, double ul, double ldp, double ll) : 
-	dobj(dobjnames::SIN_VERTEX), output(0, 0), lower(ldp, ll), upper(udp, ul)
+wave_vertex::wave_vertex(
+    double udeg, double upos, double ldeg, double lpos) :
+ dobj(dobjnames::SIN_VERTEX), out_deg(0), out_pos(0),
+ up_deg(udeg), up_pos(upos), lo_deg(ldeg), lo_pos(lpos)
 {
-	#ifndef BARE_MODULES
-	create_dparams();
-	#endif
+#ifndef BARE_MODULES
+    create_dparams();
+#endif
 }
-	
-void wave_vertex::modulate(double v_mod, double h_mod)
+
+void wave_vertex::modulate(double vmod, double hmod)
 {
-	double up_pos = upper.get_position();
-	double lo_pos = lower.get_position();
-	double up_lvl = upper.get_level();
-	double lo_lvl = lower.get_level();
-	output.set_position(lo_pos + (up_pos - lo_pos) * ((h_mod < 0) ? -h_mod : h_mod));
-	output.set_level(lo_lvl + (up_lvl - lo_lvl) * ((v_mod < 0) ? -v_mod : v_mod));
+    out_deg = lo_deg + (up_deg - lo_deg) * (( hmod < 0) ? -hmod : hmod);
+    out_pos = lo_pos + (up_pos - lo_pos) * (( vmod < 0) ? -vmod : vmod);
 }
 
 #ifndef BARE_MODULES
 
-bool wave_vertex::set_dparam(dparnames::DPAR_TYPE pt, void* data)
+bool wave_vertex::set_dparam(dparamnames::DPAR_TYPE pt, void* data)
 {
-	bool retv = false;
-	switch(pt)
-	{
-		case dparnames::DPAR_UPDEG:
-			set_upper_position(*(double*)data);
-			retv = true;
-			break;
-		case dparnames::DPAR_UPLEVEL:
-			set_upper_level(*(double*)data); 
-			retv = true;
-			break;
-		case dparnames::DPAR_LODEG:
-			set_lower_position(*(double*)data);
-			retv = true;
-			break;
-		case dparnames::DPAR_LOLEVEL:
-			set_lower_level(*(double*)data); 
-			retv = true;
-			break;
-		default: 
-			retv = false;
-			break;
-	}
-	return retv;
+    bool retv = false;
+    switch(pt)
+    {
+    case dparamnames::DPAR_UPDEG:
+        set_updeg(*(double*)data);
+        retv = true;
+        break;
+    case dparamnames::DPAR_UPLEVEL:
+        set_uppos(*(double*)data);
+        retv = true;
+        break;
+    case dparamnames::DPAR_LODEG:
+        set_lodeg(*(double*)data);
+        retv = true;
+        break;
+    case dparamnames::DPAR_LOLEVEL:
+        set_lopos(*(double*)data);
+        retv = true;
+        break;
+    default:
+        retv = false;
+        break;
+    }
+    return retv;
 }
 
-void* wave_vertex::get_dparam(dparnames::DPAR_TYPE pt)
+void* wave_vertex::get_dparam(dparamnames::DPAR_TYPE pt)
 {
-	void* retv = 0;
-	switch(pt)
-	{
-		case dparnames::DPAR_UPDEG:
-			retv = new double(get_upper_position());
-			break;
-		case dparnames::DPAR_UPLEVEL:
-			retv = new double(get_upper_level());
-			break;
-		case dparnames::DPAR_LODEG:
-			retv = new double(get_lower_position());
-			break;
-		case dparnames::DPAR_LOLEVEL:
-			retv = new double(get_lower_level());
-			break;
-		default: 
-			retv = 0;
-			break;
-	}
-	return retv;
+    void* retv = 0;
+    switch(pt)
+    {
+    case dparamnames::DPAR_UPDEG:
+        retv = &up_deg;
+        break;
+    case dparamnames::DPAR_UPLEVEL:
+        retv = &up_pos;
+        break;
+    case dparamnames::DPAR_LODEG:
+        retv = &lo_deg;
+        break;
+    case dparamnames::DPAR_LOLEVEL:
+        retv = &lo_pos;
+        break;
+    default:
+        retv = 0;
+        break;
+    }
+    return retv;
 }
 
-bool wave_vertex::validate()
+stockerrs::ERR_TYPE wave_vertex::validate()
 {
-	if (upper.get_level() < -1.0 || upper.get_level() > 1.0) {
-		*err_msg = "\n" + get_dparnames()->get_name(dparnames::DPAR_UPLEVEL);
-		*err_msg += " out of range (-1.0 to +1.0)";
-		invalidate();
-	}
-	if (lower.get_level() < -1.0 || lower.get_level() > 1.0) {
-		*err_msg = "\n" + get_dparnames()->get_name(dparnames::DPAR_LOLEVEL);
-		*err_msg += " out of range (-1.0 to +1.0)";
-		invalidate();
-	}
-	if (upper.get_position() < 0 || upper.get_position() > 360) {
-		*err_msg += "\n" + get_dparnames()->get_name(dparnames::DPAR_UPDEG);
-		*err_msg += " out of range (0.0 to +360.0)";
-		invalidate();
-	}		
-	if (lower.get_position() < 0 || lower.get_position() > 360) {
-		*err_msg += "\n" + get_dparnames()->get_name(dparnames::DPAR_LODEG);
-		*err_msg += " out of range (0.0 to +360.0)";
-		invalidate();
-	}		
-	return is_valid();
+    dobjparamlist* dpl = get_dparlist();
+    if (!dpl->validate(
+        this, dparamnames::DPAR_UPDEG, stockerrs::ERR_RANGE_DEGS))
+    {
+        *err_msg = get_dparnames()->get_name(dparamnames::DPAR_UPDEG);
+        invalidate();
+        return stockerrs::ERR_RANGE_DEGS;
+    }
+    if (!dpl->validate(
+        this, dparamnames::DPAR_LODEG, stockerrs::ERR_RANGE_DEGS))
+    {
+        *err_msg = get_dparnames()->get_name(dparamnames::DPAR_LODEG);
+        invalidate();
+        return stockerrs::ERR_RANGE_DEGS;
+    }
+    return stockerrs::ERR_NO_ERROR;
 }
 
 void wave_vertex::create_dparams()
 {
-	if (done_dparams == true) return;
-	get_dobjparamlist()->
-		add_dobjparam(dobjnames::SIN_VERTEX, dparnames::DPAR_UPDEG);
-	get_dobjparamlist()->
-		add_dobjparam(dobjnames::SIN_VERTEX, dparnames::DPAR_UPLEVEL);
-	get_dobjparamlist()->
-		add_dobjparam(dobjnames::SIN_VERTEX, dparnames::DPAR_LODEG);
-	get_dobjparamlist()->
-		add_dobjparam(dobjnames::SIN_VERTEX, dparnames::DPAR_LOLEVEL);
-	done_dparams = true;
+    if (done_dparams == true) return;
+    get_dparlist()->add_dobjparam(
+     dobjnames::SIN_VERTEX, dparamnames::DPAR_UPDEG);
+    get_dparlist()->add_dobjparam(
+     dobjnames::SIN_VERTEX, dparamnames::DPAR_UPLEVEL);
+    get_dparlist()->add_dobjparam(
+     dobjnames::SIN_VERTEX, dparamnames::DPAR_LODEG);
+    get_dparlist()->add_dobjparam(
+     dobjnames::SIN_VERTEX, dparamnames::DPAR_LOLEVEL);
+    done_dparams = true;
 }
 
 bool wave_vertex::done_dparams = false;

@@ -2,189 +2,215 @@
 #include "../include/wavfilein.h"
 
 wavfilein::wavfilein() :
-	dobj(dobjnames::SDEF_WAVFILEIN), fname(0), rootnote(0), filein(0), 
-	header(0), status(WAV_STATUS_INIT)
+ dobj(dobjnames::SDEF_WAVFILEIN), fname(0), rootnote(0), filein(0),
+ header(0), status(WAV_STATUS_INIT)
 {
-	header = new wavheader;
-	#ifndef BARE_MODULES
-	create_dparams();
-	#endif
+    header = new wavheader;
+#ifndef BARE_MODULES
+    create_dparams();
+#endif
 }
 
-wavfilein::~wavfilein() 
+wavfilein::~wavfilein()
 {
-	delete header;
-	if (fname)
-		delete fname;
-	if (status == WAV_STATUS_OPEN) 
-		fclose(filein);
-	if (rootnote)
-		delete [] rootnote;
+    delete header;
+    if (fname)
+        delete [] fname;
+    if (status == WAV_STATUS_OPEN)
+        fclose(filein);
+    if (rootnote)
+        delete [] rootnote;
 }
 
-WAV_CHANNELS wavfilein::get_channel_status() 
+WAV_CHANNELS wavfilein::get_channel_status()
 {
-	if (status == WAV_STATUS_OPEN)
-		if (header->GetChannels() == 1) 
-			return WAV_CH_MONO;
-		else 
-			return WAV_CH_STEREO;
-	else
-		return WAV_CH_UNKNOWN;
+    if (status == WAV_STATUS_OPEN)
+        if (header->GetChannels() == 1)
+            return WAV_CH_MONO;
+        else
+            return WAV_CH_STEREO;
+    else
+        return WAV_CH_UNKNOWN;
 }
 
 WAV_BITRATE wavfilein::get_bitrate()
 {
-	if (header->GetResolution() == 8)
-		return WAV_BIT_8;
-	else if (header->GetResolution() == 16)
-		return WAV_BIT_16;
-	else 
-		return WAV_BIT_OTHER;
+    if (header->GetResolution() == 8)
+        return WAV_BIT_8;
+    else if (header->GetResolution() == 16)
+        return WAV_BIT_16;
+    else
+        return WAV_BIT_OTHER;
 }
 
-WAV_STATUS wavfilein::open_wav(const char * filename)
+
+void wavfilein::set_wav_filename(const char* filename)
 {
-	if (status == WAV_STATUS_MEMERR) 
-		return status;
-	if (status == WAV_STATUS_OPEN)
-		fclose(filein);
-	if (fname) 
-		delete fname;
-	fname = new char[strlen(filename)+1];
-	strncpy(fname, filename, strlen(filename));
-	fname[strlen(filename)] = '\0';
-	if ((filein = fopen(filename, "rb")) == NULL)
-	{
-		return status = WAV_STATUS_NOT_FOUND;
-	}
-	fseek(filein, 0, SEEK_SET);
-	fread(header, sizeof(wavheader), 1, filein);
-	char* chp = 0;
-	chp = header->get_riff_name();
-	string riffname = "RIFF";
-	if (riffname != chp) {
-		fclose(filein);
-		delete chp;
-		return status = WAV_STATUS_WAVERR;
-	}
-	delete chp;
-	chp = header->get_type_name();
-	string wavtypename = "WAVE";
-	if (wavtypename != chp) {
-		fclose(filein);
-		delete chp;
-		return status = WAV_STATUS_WAVERR;
-	}
-	delete chp;
-	chp = header->get_format_name();
-	string formatname = "fmt ";
-	if (formatname != chp){
-		fclose(filein);
-		delete chp;
-		return status = WAV_STATUS_WAVERR;
-	}
-	delete chp;
-	return status = WAV_STATUS_OPEN;
+    if (fname)
+        delete [] fname;
+    const char* path = synthmod::get_path();
+    if (*filename == '/' || path == NULL) {
+        fname = new char[strlen(filename)+1];
+        strcpy(fname, filename);
+    }
+    else {
+        char* ptr;
+        fname = new char[strlen(filename) + strlen(path) + 1];
+        strcpy(fname, path);
+        ptr = fname + strlen(path);
+        strcpy(ptr, filename);
+    }
+}
+
+
+WAV_STATUS wavfilein::open_wav()
+{
+    if (status == WAV_STATUS_MEMERR)
+        return status;
+    if (status == WAV_STATUS_OPEN)
+        fclose(filein);
+    if ((filein = fopen(fname, "rb")) == NULL)
+        return status = WAV_STATUS_NOT_FOUND;
+    fseek(filein, 0, SEEK_SET);
+    fread(header, sizeof(wavheader), 1, filein);
+    if (!header->valid_format_name()) {
+        fclose(filein);
+        return status = WAV_STATUS_WAVERR;
+    }
+    if (!header->valid_type_name()) {
+        fclose(filein);
+        return status = WAV_STATUS_WAVERR;
+    }
+    if (!header->valid_format_name()){
+        fclose(filein);
+        return status = WAV_STATUS_WAVERR;
+    }
+    return status = WAV_STATUS_OPEN;
 }
 
 void wavfilein::set_root_note(char* rn)
 {
-	if (rootnote) delete rootnote;
-	rootnote = new char[NOTE_NAME_SIZE];
-	strncpy(rootnote, rn, NOTE_NAME_SIZE - 1);
-	rootnote[NOTE_NAME_SIZE - 1] = '\0';
+    if (rootnote) delete [] rootnote;
+    rootnote = new char[NOTE_ARRAY_SIZE];
+    strncpy(rootnote, rn, NOTE_NAME_LEN);
+    rootnote[NOTE_NAME_LEN] = '\0';
 }
 
 double wavfilein::get_root_deg_size()
 {
-	return note_to_step(rootnote, 0);
+    return note_to_step(rootnote, 0);
 }
 
-void wavfilein::read_wav_at(void * buf, unsigned long smp) 
+void wavfilein::read_wav_at(void * buf, unsigned long smp)
 {
-	if (status == WAV_STATUS_OPEN)
-	{
-		fseek(filein, sizeof(wavheader) + smp * header->GetBlockAlign(), SEEK_SET);
-		if (header->GetChannels() == 1)
-			fread((short*)buf, sizeof(short), WAV_BUFFER_SIZE, filein);
-		else 
-			fread((stereodata*) buf, sizeof(stereodata), WAV_BUFFER_SIZE, filein);
-	}
+    if (status == WAV_STATUS_OPEN)
+    {
+        fseek(filein, sizeof(wavheader) + smp * header->GetBlockAlign(), 
+         SEEK_SET);
+        if (header->GetChannels() == 1)
+            fread((short*)buf, sizeof(short), WAV_BUFFER_SIZE, filein);
+        else
+            fread((stereodata*) buf, sizeof(stereodata), WAV_BUFFER_SIZE,
+             filein);
+    }
 }
 
-void wavfilein::read_wav_chunk(void * buf, unsigned long smp, int bsize) 
+void wavfilein::read_wav_chunk(void * buf, unsigned long smp, int bsize)
 {
-	if (status == WAV_STATUS_OPEN)
-	{
-		fseek(filein, sizeof(wavheader) + smp * header->GetBlockAlign(), SEEK_SET);
-		if (header->GetChannels() == 1)
-			fread((short*)buf, sizeof(short), bsize, filein);
-		else 
-			fread((stereodata*)buf, sizeof(stereodata), bsize, filein);
-		}
+    if (status == WAV_STATUS_OPEN)
+    {
+        fseek(filein, sizeof(wavheader) + smp * header->GetBlockAlign(),
+         SEEK_SET);
+        if (header->GetChannels() == 1)
+            fread((short*)buf, sizeof(short), bsize, filein);
+        else
+            fread((stereodata*)buf, sizeof(stereodata), bsize, filein);
+    }
 }
 
 #ifndef BARE_MODULES
 
-bool wavfilein::set_dparam(dparnames::DPAR_TYPE dt, void* data)
+bool wavfilein::set_dparam(dparamnames::DPAR_TYPE dt, void* data)
 {
-	bool retv = false;
-	switch(dt)
-	{
-		case dparnames::DPAR_FILENAME:
-			open_wav((char*)data); // pass pointer
-			retv = true;
-			break;
-		case dparnames::DPAR_ROOTNOTE:
-			set_root_note((char*)data);
-			retv = true;
-			break;
-		default: 
-			retv = false;
-			break;
-	}
-	return retv;
+    bool retv = false;
+    switch(dt)
+    {
+    case dparamnames::DPAR_FILENAME:
+        set_wav_filename((char*)data);
+        retv = true;
+        break;
+    case dparamnames::DPAR_ROOTNOTE:
+        set_root_note((char*)data);
+        retv = true;
+        break;
+    default:
+        retv = false;
+        break;
+    }
+    return retv;
 }
 
-void* wavfilein::get_dparam(dparnames::DPAR_TYPE dt)
+void* wavfilein::get_dparam(dparamnames::DPAR_TYPE dt)
 {
-	void* retv = 0;
-	switch(dt)
-	{
-		case dparnames::DPAR_FILENAME:
-			retv = new char[strlen(fname) + 1];
-		    strncpy((char*)retv, fname, strlen(fname));
-    		((char*)retv)[strlen(fname) + 1] = '\0';
-			break;
-		default:
-			retv = 0;
-	}
-	return retv;
+    void* retv = 0;
+    switch(dt)
+    {
+    case dparamnames::DPAR_FILENAME:
+        retv = fname;
+        break;
+    case dparamnames::DPAR_ROOTNOTE:
+        retv = rootnote;
+        break;
+    default:
+        retv = 0;
+    }
+    return retv;
 }
 
-bool wavfilein::validate()
+stockerrs::ERR_TYPE wavfilein::validate()
 {
-	if (status != WAV_STATUS_OPEN) {
-		*err_msg = "\ncould not open ";
-		*err_msg += fname;
-		*err_msg += " for reading";
-		invalidate();
-	}
-	if (!check_notename(rootnote)) {
-		*err_msg += "\ninvalid note name set for " +
-			dobj::get_dparnames()->get_name(dparnames::DPAR_ROOTNOTE);
-		invalidate();
-	}
-	return is_valid();
+    open_wav();
+    if (status == WAV_STATUS_NOT_FOUND) {
+        *err_msg = get_dparnames()->get_name(dparamnames::DPAR_FILENAME);
+        *err_msg += ", ";
+        *err_msg += fname;
+        *err_msg += " was not found.";
+        invalidate();
+        return stockerrs::ERR_ERROR;
+    }
+    if (status == WAV_STATUS_WAVERR) {
+        *err_msg = get_dparnames()->get_name(dparamnames::DPAR_FILENAME);
+        *err_msg += ", ";
+        *err_msg += fname;
+        *err_msg += " is not a wav file.";
+        invalidate();
+        return stockerrs::ERR_ERROR;
+    }
+    if (status != WAV_STATUS_OPEN) {
+        *err_msg = get_dparnames()->get_name(dparamnames::DPAR_FILENAME);
+        *err_msg = ", an unspecified error occurred trying to open ";
+        *err_msg += fname;
+        invalidate();
+        return stockerrs::ERR_ERROR;
+    }
+    if (!check_notename(rootnote)) {
+        *err_msg = get_dparnames()->get_name(dparamnames::DPAR_ROOTNOTE);
+        *err_msg += ", ";
+        *err_msg += rootnote;
+        invalidate();
+        return stockerrs::ERR_NOTENAME;
+    }
+    return stockerrs::ERR_NO_ERROR;
 }
 
 void wavfilein::create_dparams()
 {
-	if (done_dparams == true)	return;
-	get_dobjparamlist()->add_dobjparam(dobjnames::SDEF_WAVFILEIN, dparnames::DPAR_FILENAME);
-	get_dobjparamlist()->add_dobjparam(dobjnames::SDEF_WAVFILEIN, dparnames::DPAR_ROOTNOTE);
-	done_dparams = true;
+    if (done_dparams == true)	return;
+    get_dparlist()->add_dobjparam(
+     dobjnames::SDEF_WAVFILEIN, dparamnames::DPAR_FILENAME);
+    get_dparlist()->add_dobjparam(
+     dobjnames::SDEF_WAVFILEIN, dparamnames::DPAR_ROOTNOTE);
+    done_dparams = true;
 }
 
 bool wavfilein::done_dparams = false;

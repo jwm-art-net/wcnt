@@ -1,0 +1,137 @@
+wcnt-1.127/jwmsynth
+
+// examples/sinewave3.wc
+
+// a sinewave with LFO frequency modulation implimented
+// and shaped volume
+
+samplerate  44100
+bpm         120
+signature   4/4
+
+// duration of sound
+
+timer t1
+    timings
+        time seconds 0.0
+        time seconds 1.0
+    timings
+t1
+
+// lfo_clock to provide base of LFO
+
+lfo_clock lfoc1
+    in_phase_trig  t1 out_trig
+    in_freq_mod1   off
+    in_freq_mod2   off
+    freq            7.5
+    freq_mod1_size  1.0
+    freq_mod2_size  1.0
+lfoc1
+
+// the base waveform for the LFO
+
+sine_wave lfosw1
+    in_phase_trig  lfoc1 out_phase_trig
+    in_deg_size    lfoc1 out_deg_size
+    recycle_mode         off
+    on_trig_reset_phase  off
+    phase_cycles         1.0
+lfosw1
+
+// lfo_controller to apply a decay and ramp time
+// to the LFO waveform
+
+lfo_controller
+lfoctrl
+    in_trig      t1 out_trig
+    in_waveform  lfosw1 out_output
+    in_amp_mod   off
+    delay_time     50.0
+    ramp_time      50.0
+    start_level    0.0
+    end_level      1.0
+    response_time  0.0
+    amp_mod_size   0.0
+lfoctrl
+
+// clock will run at frequency of sine wave
+
+clock clock1
+    in_freq_mod1   lfoctrl out_output
+    freq           220
+    freq_mod1_size 1.5
+clock1
+
+// the sine waveform, driven by clock1
+
+sine_wave sinewave
+    in_phase_trig  clock1 out_phase_trig
+    in_deg_size    clock1 out_deg_size
+    recycle_mode         off
+    on_trig_reset_phase  off
+    phase_cycles         1.0
+sinewave
+
+// amplify and shape waveform to a 16 bit signal
+
+constant one value 1.0 one
+
+adsr
+adsr1
+    envelope
+        section name attack
+            ut 5.0  ul 0.1
+            lt 6.0  ll 0.0
+        section name attack
+            ut 6.0  ul 0.4
+            lt 7.0  ll 0.0
+        section name attack
+            ut 7.0  ul 1.0
+            lt 8.0  ll 0.0
+        section name decay
+            ut 125.0 ul 0.63
+            lt 75.0  ll 0.0
+        section name release
+            ut 795.0 ul 0.0
+            lt 50.0  ll 0.0
+    envelope
+        in_note_on_trig  t1  out_trig
+        in_note_off_trig off
+        in_velocity      one out_output
+        up_thresh      1.0
+        lo_thresh      0.0
+        start_level    0.0
+        sustain_state  off
+        zero_retrigger off
+adsr1
+
+mono_amp amp1
+    in_signal   sinewave out_output
+    in_amp_eg   adsr1 out_output
+    in_amp_mod  off
+    amplitude     32767
+    amp_mod_size  0.0
+    clip_level    32767
+amp1
+
+// write amplified signal to wav file
+
+wavfile_out wav1
+    in_left     amp1  out_mono
+    in_right    amp1  out_mono
+    in_bar      t1 out_count
+    in_bar_trig t1 out_trig
+    filename    sinewave3.wav
+    start_bar   0
+    end_bar     1
+wav1
+
+// when to stop
+
+wcnt_exit wcnt_exit_module
+    in_bar   t1 out_count
+    exit_bar 1
+wcnt_exit_module
+
+wcnt-1.127/jwmsynth

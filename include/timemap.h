@@ -134,108 +134,136 @@
 	not yet created the said method.
 	
 	___...---***still thinking this through***---...___	
+    
+    note: 
+        no validate(), nothing to validate.  
+        dobj handles validation of the bpm and meter changes.
 */
 
 class timemap : public synthmod
 {
- public:
-	enum { QUARTER_VALUE = 6720 };
-	timemap(string uname);
- 	~timemap();
-// list insertion and navigation methods
-	bpmchange* add_bpm_change(short atbar, double bpm);
-	bpmchange* add_bpm_change(bpmchange *);
-	bpmchange* goto_first_bpm(){ return currentbpm = 
-		(bpmchange*)(bpm_item = bpm_map->goto_first())->get_data();}
-	bpmchange* goto_last_bpm(){ return currentbpm = 
-		(bpmchange*)(bpm_item = bpm_map->goto_last())->get_data();}
-	bpmchange* goto_prev_bpm(){	return currentbpm = 
-		(bpmchange*)(bpm_item = bpm_map->goto_prev())->get_data();}
-	bpmchange* goto_next_bpm(){	return currentbpm = 
-		(bpmchange*)(bpm_item = bpm_map->goto_next())->get_data();}
-	bpmchange* get_next_bpm(){ 
-		return (bpmchange*)(bpm_item->get_next())->get_data();}
-	bpmchange* get_prev_bpm(){ 
-		return (bpmchange*)(bpm_item->get_prev())->get_data();}
-	meterchange* add_meter_change(short atbar, char btpb, char btval);
-	meterchange* add_meter_change(meterchange*);
-	meterchange* goto_first_meter(){ return currentmeter =
-		(meterchange*)(meter_item = meter_map->goto_first())->get_data();}
-	meterchange* goto_last_meter(){ return currentmeter =
-		(meterchange*)(meter_item = meter_map->goto_last())->get_data();}
-	meterchange* goto_prev_meter(){ return currentmeter =
-		(meterchange*)(meter_item = meter_map->goto_prev())->get_data();}
-	meterchange* goto_next_meter(){ return currentmeter =
-		(meterchange*)(meter_item = meter_map->goto_next())->get_data();}
-	// general purpose method used for checking by other modules,
-//	bool check_position(short bar, double pos, short quarter_val);
-// outputs access:
-	short const* get_out_bar(){return &out_bar;}
-	unsigned long const* get_out_pos_in_bar(){return &out_pos_in_bar;}
-	double const* get_out_pos_step_size(){return &out_pos_step_size;}
-	double const* get_out_bpm(){return &out_bpm;}
-	unsigned long const* get_out_sample_total(){return &out_sample_total;}
-	unsigned long const* get_out_sample_in_bar(){return &out_sample_in_bar;}
-	STATUS const* get_out_bar_trig(){return &out_bar_trig;}
-	short const* get_out_beats_per_bar(){ return &out_beats_per_bar;}
-	short const* get_out_beat_value(){ return &out_beat_value;}
-	STATUS const* get_out_bpm_change_trig(){ return &out_bpm_change_trig;}
-	STATUS const* get_out_meter_change_trig(){ return &out_meter_change_trig;}
-	STATUS const* get_out_bpm_change_state(){ return &out_bpm_change_state;}
-// virtual methods
-	void run();
-	void init(); // init will grab global bpm to start with
-	#ifndef BARE_MODULES
-	void const* get_out(outputnames::OUT_TYPE);
-	dobj* add_dobj(dobj*);
-	#endif
- private:
-// outputs
-	short out_bar;
- 	STATUS out_bar_trig;
- 	unsigned long out_pos_in_bar;
- 	double out_pos_step_size;
- 	double out_bpm;
- 	unsigned long out_sample_total;
-	unsigned long out_sample_in_bar;
- 	short out_beats_per_bar;
-	short out_beat_value;
-	STATUS out_bpm_change_trig;
-	STATUS out_meter_change_trig;
- 	STATUS out_bpm_change_state;
-// list variables
- 	ll_item* bpm_item;
-	ll_item* meter_item;
- //	bpmchange* bpm_change;
- 	linkedlist* bpm_map;
- 	linkedlist* meter_map;
-// working variables
- 	bpmchange* currentbpm;
-	bpmchange* targetbpm;
-	meterchange* currentmeter;
- 	unsigned long bpmsampletot;
-	unsigned long bpmchangesamp;
-	double bpmchange_pos;
- 	double bpmrampsize;
- 	double bpmchange_ratio;
- 	double targbpm;
-	double pos_in_bar;
- 	unsigned long bpmchange_notelen;
- 	short bpmchangebar;
-	unsigned long barlength;
-	short beatlength;
-	short meterchangebar;
-// working methods
-	unsigned long notelen_to_samples(short);
-	unsigned long ms_to_samples(double);
-	double notelen_to_frequency(short);
-	double notelen_to_ms(short);
-// synthmod stuff for keeping things cushdy.
- 	static short timemap_count;
-	#ifndef BARE_MODULES
-	static bool done_moddobj;
-	void create_moddobj();
-	#endif
+public:
+    enum { QUARTER_VALUE = 6720 };
+    timemap(char const*);
+    ~timemap();
+    // list insertion and navigation methods
+    bpmchange* add_bpm_change(short atbar, double bpm);
+    bpmchange* add_bpm_change(bpmchange *);
+    bpmchange* goto_first_bpm() {
+        return currentbpm = (bpmchange*)
+         (bpm_item = bpm_map->goto_first())->get_data();
+    }
+    bpmchange* goto_last_bpm() {
+        return currentbpm = (bpmchange*)
+         (bpm_item = bpm_map->goto_last())->get_data();
+    }
+    bpmchange* goto_prev_bpm() {
+        return currentbpm = (bpmchange*)
+         (bpm_item = bpm_map->goto_prev())->get_data();
+    }
+    bpmchange* goto_next_bpm() {
+        return currentbpm = (bpmchange*)
+         (bpm_item = bpm_map->goto_next())->get_data();
+    }
+    bpmchange* get_next_bpm(){
+        return (bpmchange*)(bpm_item->get_next())->get_data();
+    }
+    bpmchange* get_prev_bpm(){
+        return (bpmchange*)(bpm_item->get_prev())->get_data();
+    }
+    meterchange* add_meter_change(short atbar, char btpb, char btval);
+    meterchange* add_meter_change(meterchange*);
+    meterchange* goto_first_meter() {
+        return currentmeter = (meterchange*)
+         (meter_item = meter_map->goto_first())->get_data();
+    }
+    meterchange* goto_last_meter() {
+        return currentmeter = (meterchange*)
+         (meter_item = meter_map->goto_last())->get_data();
+    }
+    meterchange* goto_prev_meter() {
+        return currentmeter = (meterchange*)
+         (meter_item = meter_map->goto_prev())->get_data();
+    }
+    meterchange* goto_next_meter() {
+        return currentmeter = (meterchange*)
+         (meter_item = meter_map->goto_next())->get_data();
+    }
+    // general purpose method used for checking by other modules,
+    //	bool check_position(short bar, double pos, short quarter_val);
+    // outputs access:
+    short const* get_out_bar(){return &out_bar;}
+    unsigned long const* get_out_pos_in_bar(){return &out_pos_in_bar;}
+    double const* get_out_pos_step_size(){return &out_pos_step_size;}
+    double const* get_out_bpm(){return &out_bpm;}
+    unsigned long const* get_out_sample_total(){return &out_sample_total;}
+    unsigned long const* get_out_sample_in_bar() {
+        return &out_sample_in_bar;
+    }
+    STATUS const* get_out_bar_trig(){return &out_bar_trig;}
+    short const* get_out_beats_per_bar(){ return &out_beats_per_bar;}
+    short const* get_out_beat_value(){ return &out_beat_value;}
+    STATUS const* get_out_bpm_change_trig(){ return &out_bpm_change_trig;}
+    STATUS const* get_out_meter_change_trig() {
+        return &out_meter_change_trig;
+    }
+    STATUS const* get_out_bpm_change_state() {
+        return &out_bpm_change_state;
+    }
+    // virtual methods
+    void run();
+    void init(); // init will grab global bpm to start with
+#ifndef BARE_MODULES
+    void const* get_out(outputnames::OUT_TYPE);
+    dobj* add_dobj(dobj*);
+#endif
+private:
+    // outputs
+    short out_bar;
+    STATUS out_bar_trig;
+    unsigned long out_pos_in_bar;
+    double out_pos_step_size;
+    double out_bpm;
+    unsigned long out_sample_total;
+    unsigned long out_sample_in_bar;
+    short out_beats_per_bar;
+    short out_beat_value;
+    STATUS out_bpm_change_trig;
+    STATUS out_meter_change_trig;
+    STATUS out_bpm_change_state;
+    // list variables
+    ll_item* bpm_item;
+    ll_item* meter_item;
+    //	bpmchange* bpm_change;
+    linkedlist* bpm_map;
+    linkedlist* meter_map;
+    // working variables
+    bpmchange* currentbpm;
+    bpmchange* targetbpm;
+    meterchange* currentmeter;
+    unsigned long bpmsampletot;
+    unsigned long bpmchangesamp;
+    double bpmchange_pos;
+    double bpmrampsize;
+    double bpmchange_ratio;
+    double targbpm;
+    double pos_in_bar;
+    unsigned long bpmchange_notelen;
+    short bpmchangebar;
+    unsigned long barlength;
+    short beatlength;
+    short meterchangebar;
+    // working methods
+    unsigned long notelen_to_samples(short);
+    unsigned long ms_to_samples(double);
+    double notelen_to_frequency(short);
+    double notelen_to_ms(short);
+    // synthmod stuff for keeping things cushdy.
+    static short timemap_count;
+#ifndef BARE_MODULES
+    static bool done_moddobj;
+    void create_moddobj();
+#endif
 };
 
 #endif

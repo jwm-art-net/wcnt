@@ -1,0 +1,3 @@
+#!/bin/bash
+dobjs=`grep 'dobj(dobjnames::' ../src/*.cc -l | tr '\n' ' '`
+nedit $dobjs

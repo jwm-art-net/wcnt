@@ -10,6 +10,7 @@
 #include "sampledata.h"
 #include "dobjmod.h"
 #include "dynvertex.h"
+#include "timing.h"
 
 #endif
 

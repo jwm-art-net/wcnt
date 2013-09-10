@@ -1,0 +1,147 @@
+wcnt-1.127/jwmsynth
+
+samplerate  44100
+bpm         100
+signature   4/4
+
+constant one    value 1.0   one
+
+// timer t1
+//  used to trigger note_on for adsr
+//  used to trigger writing of wav
+//  used to trigger end of wav writing
+//  used to trigger wcnt exit
+
+timer
+t1
+    timings
+        time seconds 0.0
+        time seconds 5.0
+    timings
+t1
+
+// timer t2
+// used to trigger note_off for adsr
+timer
+t2
+    timings
+        time seconds 4.75
+    timings
+t2
+
+clock
+vbclock1
+    in_freq_mod1   off
+    freq           1
+    freq_mod1_size 1.0
+vbclock1
+
+square_wave
+2tone
+    in_phase_trig  vbclock1 out_phase_trig
+    in_deg_size    vbclock1 out_deg_size
+    in_pwm         off
+    pulse_width   0.5
+    pwm_size      0.0
+    recycle_mode  off
+2tone
+
+sine_wave
+wavemod
+    in_phase_trig  vbclock1 out_phase_trig
+    in_deg_size    vbclock1 out_deg_size
+    recycle_mode         off
+    on_trig_reset_phase  off
+    phase_cycles         1.0
+wavemod
+
+constant freq value 220.0 freq
+
+osc_clock
+osc1
+    in_note_on_trig    t1 out_trig
+    in_note_slide_trig off
+    in_frequency       freq out_output
+    in_freq_mod1       2tone out_output
+    in_freq_mod2       off
+    octave_offset    -2
+    tuning_semitones 0.0
+    portamento_time  0.0
+// with two freq modulation inputs the same, having
+// modulation sizes of 0.5 and 2.0 will cancel modulation out.
+    freq_mod1_size   1.125
+    freq_mod2_size   1.0
+osc1
+
+user_wave
+uwave1
+    waveform
+        vertex
+            ud  20.0 ul -1.0
+            ld  160.0 ll -1.0
+        vertex
+            ud  180.0 ul 0.0
+            ld  180.0 ll 0.0
+        vertex
+            ud  200.0 ul 1.0
+            ld  340.0 ll 1.0
+    waveform
+    in_phase_trig  osc1 out_phase_trig
+    in_deg_size    osc1 out_deg_size
+    in_level_mod   wavemod out_output
+    in_time_mod    wavemod out_output
+    recycle_mode    off
+    zero_retrigger  off
+uwave1
+
+adsr
+adsr1
+    envelope
+        section name attack	
+            ut 55.0      ul 0.65	
+            lt 55.0      ll 0.35
+        section name decay
+            ut 145.0    ul 0.86	
+            lt 145.0    ll 0.85
+        section name release
+            ut 200.0    ul 0.0	
+            lt 205.0    ll 0.0
+    envelope
+    in_note_on_trig  t1 out_trig
+    in_note_off_trig t2 out_trig
+    in_velocity      off
+    up_thresh      1.0
+    lo_thresh      0.45
+    start_level    0.0
+    sustain_state  on
+    zero_retrigger off
+adsr1
+
+mono_amp
+amp1
+    in_signal   uwave1 out_output
+    in_amp_eg   adsr1  out_output
+    in_amp_mod  off
+    amplitude     20000
+    amp_mod_size  0.0
+    clip_level    32767
+amp1
+
+wavfile_out
+wav1
+    in_left     amp1  out_mono
+    in_right    amp1  out_mono
+    in_bar      t1 out_count
+    in_bar_trig t1 out_trig
+    filename    test00.wav
+    start_bar   0
+    end_bar     1
+wav1
+
+wcnt_exit
+wcnt_exit_module
+    in_bar   t1 out_count
+    exit_bar 1
+wcnt_exit_module
+
+wcnt-1.127/jwmsynth

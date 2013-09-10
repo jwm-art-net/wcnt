@@ -3,14 +3,14 @@
 
 #ifndef BARE_MODULES
 
-synthmodlist::synthmodlist() :  
-	smodlist(0), smod_item(0), smod(0), 
-	search_modtype(synthmodnames::MOD_FIRST), search_result(0)
+synthmodlist::synthmodlist() :
+ smodlist(0), smod_item(0), smod(0),
+ search_modtype(synthmodnames::MOD_FIRST), search_result(0)
 {
-    smodlist = 
-		new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
-	// nonezero module is not user accessable.
-	// it's outputs are used when ever a module's input is set to off.
+    smodlist =
+        new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
+    // nonezero module is not user accessable.
+    // it's outputs are used when ever a module's input is set to off.
     smod = new nonezero("off");
     smodlist->add_at_head(smod);
 }
@@ -28,21 +28,21 @@ synthmodlist::~synthmodlist()
 synthmod *
 synthmodlist::add_module(synthmod * sm)
 {
-	ll_item* llitem = smodlist->add_at_tail(sm);
-	if (!llitem)
-		return 0;
-	synthmod* mod = (synthmod*)llitem->get_data();
-	return mod;
+    ll_item* llitem = smodlist->add_at_tail(sm);
+    if (!llitem)
+        return 0;
+    synthmod* mod = (synthmod*)llitem->get_data();
+    return mod;
 }
 
-synthmod *
-synthmodlist::create_module(synthmodnames::SYNTH_MOD_TYPE smt, string uname)
+synthmod * synthmodlist::create_module(
+ synthmodnames::SYNTH_MOD_TYPE smt, char const* uname)
 {
     synthmod *sm;
     switch (smt) {
-	case synthmodnames::MOD_WCNT:
-		sm = new wcnt_module(uname);
-		break;
+    case synthmodnames::MOD_WCNT:
+        sm = new wcnt_module(uname);
+        break;
     case synthmodnames::MOD_ADSR:
         sm = new adsr(uname);
         break;
@@ -112,66 +112,81 @@ synthmodlist::create_module(synthmodnames::SYNTH_MOD_TYPE smt, string uname)
     case synthmodnames::MOD_STEREOMIXER:
         sm = new stereomixer(uname);
         break;
-	case synthmodnames::MOD_RANDTRIGGER:
-		sm = new randomtrigger(uname);
-		break;
-	case synthmodnames::MOD_LOGICTRIGGER:
-		sm = new logictrigger(uname);
-		break;
-	case synthmodnames::MOD_SWITCHER:
-		sm = new switcher(uname);
-		break;
-	case synthmodnames::MOD_WCNTSIGNAL:
-		sm = new wcnt_signal(uname);
-		break;
-	case synthmodnames::MOD_HPFILTER:
-		sm = new hpfilter(uname);
-		break;
-	case synthmodnames::MOD_COMBINER:
-		sm = new combiner(uname);
-		break;
-	case synthmodnames::MOD_TIMEMAP:
-		sm = new timemap(uname);
-		break;
-	case synthmodnames::MOD_SERIALWAVFILEOUT:
-		sm = new serialwavfileout(uname);
-		break;
-	case synthmodnames::MOD_CONTRASTER:
-		sm = new contraster(uname);
-		break;
-	case synthmodnames::MOD_DELAY:
-		sm = new delay(uname);
-		break;
-	case synthmodnames::MOD_ECHO:
-		sm = new echo(uname);
-		break;
-	case synthmodnames::MOD_MONOAMP:
-		sm = new mono_amp(uname);
-		break;
-	case synthmodnames::MOD_MULTIPLIER:
-		sm = new multiplier(uname);
-		break;
-	case synthmodnames::MOD_RANGELIMIT:
-		sm = new range_limit(uname);
-		break;
-	case synthmodnames::MOD_PAN:
-		sm = new pan(uname);
-		break;
-	case synthmodnames::MOD_RMS:
-		sm = new rms(uname);
-		break;
-	case synthmodnames::MOD_DCFILTER:
-		sm = new dc_filter(uname);
-		break;
-	case synthmodnames::MOD_DYNAMIC:
-		sm = new dynamic(uname);
-		break;
-	case synthmodnames::MOD_SPREADER:
-		sm = new spreader(uname);
-		break;
-	case synthmodnames::MOD_NOTETRAN:
-		sm = new notetran(uname);
-		break;
+    case synthmodnames::MOD_RANDTRIGGER:
+        sm = new randomtrigger(uname);
+        break;
+    case synthmodnames::MOD_LOGICTRIGGER:
+        sm = new logictrigger(uname);
+        break;
+    case synthmodnames::MOD_SWITCHER:
+        sm = new switcher(uname);
+        break;
+    case synthmodnames::MOD_WCNTSIGNAL:
+        sm = new wcnt_signal(uname);
+        break;
+    case synthmodnames::MOD_HPFILTER:
+        sm = new hpfilter(uname);
+        break;
+    case synthmodnames::MOD_COMBINER:
+        sm = new combiner(uname);
+        break;
+    case synthmodnames::MOD_TIMEMAP:
+        sm = new timemap(uname);
+        break;
+    case synthmodnames::MOD_SERIALWAVFILEOUT:
+        sm = new serialwavfileout(uname);
+        break;
+    case synthmodnames::MOD_CONTRASTER:
+        sm = new contraster(uname);
+        break;
+    case synthmodnames::MOD_DELAY:
+        sm = new delay(uname);
+        break;
+    case synthmodnames::MOD_ECHO:
+        sm = new echo(uname);
+        break;
+    case synthmodnames::MOD_MONOAMP:
+        sm = new mono_amp(uname);
+        break;
+    case synthmodnames::MOD_MULTIPLIER:
+        sm = new multiplier(uname);
+        break;
+    case synthmodnames::MOD_RANGELIMIT:
+        sm = new range_limit(uname);
+        break;
+    case synthmodnames::MOD_PAN:
+        sm = new pan(uname);
+        break;
+    case synthmodnames::MOD_RMS:
+        sm = new rms(uname);
+        break;
+    case synthmodnames::MOD_DCFILTER:
+        sm = new dc_filter(uname);
+        break;
+    case synthmodnames::MOD_DYNAMIC:
+        sm = new dynamic(uname);
+        break;
+    case synthmodnames::MOD_SPREADER:
+        sm = new spreader(uname);
+        break;
+    case synthmodnames::MOD_NOTETRAN:
+        sm = new notetran(uname);
+        break;
+    case synthmodnames::MOD_WAITTRIG:
+        sm = new waittrig(uname);
+        break;
+    case synthmodnames::MOD_PATTERNTRIG:
+        sm = new patterntrig(uname);
+        break;
+    case synthmodnames::MOD_STATEGATETRIG:
+        sm = new stategatetrig(uname);
+        break;
+    case synthmodnames::MOD_INVERT:
+        sm = new invert(uname);
+        break;
+    case synthmodnames::MOD_TIMER:
+        sm = new timer(uname);
+        break;
     default:
         sm = 0;
     }
@@ -191,43 +206,44 @@ synthmodlist::delete_module(synthmod * const sm)
     return false;
 }
 
-synthmod* synthmodlist::get_synthmod_by_name(string const* smname)
+synthmod* synthmodlist::get_synthmod_by_name(char const* smname)
 {
-	goto_first();
-	while(smod)	{
-		if (*smod->get_username() == *smname)
-			return smod;
-		goto_next();
-	}
-	return 0;
+    goto_first();
+    while(smod)	{
+        if (strcmp(smod->get_username(), smname) == 0)
+            return smod;
+        goto_next();
+    }
+    return 0;
 }
 
-synthmod* synthmodlist::get_first_of_type(synthmodnames::SYNTH_MOD_TYPE smt)
+synthmod* synthmodlist::get_first_of_type(
+ synthmodnames::SYNTH_MOD_TYPE smt)
 {
-	search_modtype = smt;
-	search_result = 0;
-	if (smt <= synthmodnames::MOD_FIRST || smt >= synthmodnames::MOD_LAST)
-		return 0;
-	goto_first();
-	while (smod != 0) {
-		if (smod->get_module_type() == smt) 
-			return ((synthmod*)(search_result = smod_item)->get_data());
-		goto_next();	
-	}
-	return 0;
+    search_modtype = smt;
+    search_result = 0;
+    if (smt <= synthmodnames::MOD_FIRST || smt >= synthmodnames::MOD_LAST)
+        return 0;
+    goto_first();
+    while (smod != 0) {
+        if (smod->get_module_type() == smt)
+            return ((synthmod*)(search_result = smod_item)->get_data());
+        goto_next();
+    }
+    return 0;
 }
 
 synthmod* synthmodlist::get_next_of_type()
 {
-	if (search_result == 0) return 0;
-	smod = (synthmod*)(search_result->get_data());
-	while(smod != 0) {
-		if (smod->get_module_type() == search_modtype)
-			return ((synthmod*)(search_result = smod_item)->get_data());
-		goto_next();	
-	}
-	search_result = 0;
-	return 0;
+    if (search_result == 0) return 0;
+    smod = (synthmod*)(search_result->get_data());
+    while(smod != 0) {
+        if (smod->get_module_type() == search_modtype)
+            return ((synthmod*)(search_result = smod_item)->get_data());
+        goto_next();
+    }
+    search_result = 0;
+    return 0;
 }
 
 #endif

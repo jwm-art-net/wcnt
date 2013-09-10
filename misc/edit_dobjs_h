@@ -1,0 +1,3 @@
+#!/bin/bash
+dobjs=`grep ': public dobj' ../include/*.h -l | tr '\n' ' '`
+nedit $dobjs

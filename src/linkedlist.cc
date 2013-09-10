@@ -1,20 +1,26 @@
 #ifndef LINKEDLIST_H
 #include "../include/linkedlist.h"
 
-ll_item::ll_item(void *d) : data(d), prev(0), next(0) {}
+ll_item::ll_item(void *d) :
+ data(d), prev(0), next(0)
+{
+}
 
-ll_item::~ll_item() {}
+ll_item::~ll_item() 
+{
+}
 
-linkedlist::linkedlist()
-:  head(0), tail(0), current(0), find_result(0), 
-   multiref(MULTIREF_OFF), nulldata(NO_NULLDATA)
+linkedlist::linkedlist() :  
+ head(0), tail(0), current(0), find_result(0),
+ multiref(MULTIREF_OFF), nulldata(NO_NULLDATA)
 {
     head = new ll_item(0);
     tail = new ll_item(0);
 }
 
-linkedlist::linkedlist(MULTIREF mf, NULLDATA nd)
-:  head(0), tail(0), current(0), find_result(0), multiref(mf), nulldata(nd)
+linkedlist::linkedlist(MULTIREF mf, NULLDATA nd) :
+ head(0), tail(0), current(0), find_result(0), 
+ multiref(mf), nulldata(nd)
 {
     head = new ll_item(0);
     tail = new ll_item(0);
@@ -33,8 +39,7 @@ linkedlist::~linkedlist()
     delete tail;
 }
 
-ll_item *
-linkedlist::add_at_head(void *data)
+ll_item * linkedlist::add_at_head(void *data)
 {
     if (!this)
         return 0;
@@ -63,8 +68,7 @@ linkedlist::add_at_head(void *data)
     return current = newitem;
 }
 
-ll_item *
-linkedlist::add_at_tail(void *data)
+ll_item * linkedlist::add_at_tail(void *data)
 {
     if (!this)
         return 0;
@@ -93,8 +97,7 @@ linkedlist::add_at_tail(void *data)
     return current = newitem;
 }
 
-ll_item *
-linkedlist::insert_after(ll_item * llitem, void *data)
+ll_item * linkedlist::insert_after(ll_item * llitem, void *data)
 {
     if (!this)
         return 0;
@@ -103,14 +106,15 @@ linkedlist::insert_after(ll_item * llitem, void *data)
     if (!data && nulldata == NO_NULLDATA)
         return 0;
     if (!head->get_next())
-        return 0;               // empty list - llitem is not part of this list so cannot add after it
+    // empty list - llitem is not part of this list so cannot add after it
+        return 0;  
     if (multiref == MULTIREF_OFF) {
         if (find_data(data))
             return 0;
     }
     ll_item *i;
     for (i = head->get_next(); i != 0; i = i->get_next()) {
-	    ll_item *newitem;
+        ll_item *newitem;
         if (i == llitem) {
             if (i == tail->get_prev()) {
                 newitem = new ll_item(data);
@@ -132,8 +136,7 @@ linkedlist::insert_after(ll_item * llitem, void *data)
     return 0;
 }
 
-ll_item *
-linkedlist::unlink_item(ll_item * llitem)
+ll_item * linkedlist::unlink_item(ll_item * llitem)
 {
     if (!this)
         return 0;
@@ -170,8 +173,7 @@ linkedlist::unlink_item(ll_item * llitem)
     return 0;
 }
 
-ll_item *
-linkedlist::goto_item(ll_item * llitem)
+ll_item * linkedlist::goto_item(ll_item * llitem)
 {
     if (!this)
         return 0;
@@ -184,8 +186,7 @@ linkedlist::goto_item(ll_item * llitem)
     return current = 0;
 }
 
-ll_item *
-linkedlist::find_data(void *dt)
+ll_item * linkedlist::find_data(void *dt)
 {
     if (!this)
         return 0;
@@ -200,8 +201,7 @@ linkedlist::find_data(void *dt)
     return find_result = 0;
 }
 
-ll_item *
-linkedlist::find_next()
+ll_item * linkedlist::find_next()
 {
     if (!this)
         return 0;

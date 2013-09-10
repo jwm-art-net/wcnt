@@ -1,0 +1,497 @@
+wcnt-1.127/jwmsynth
+//------------------------------------------------------------------------
+//
+//  drums01.wc:  
+//      re-arranges a 2 second sample of a 1 bar drumloop, in which
+//      the drums are positioned on sixteenths.
+//
+//------------------------------------------------------------------------
+
+samplerate  44100
+bpm         100
+signature   4/4
+
+//------------------------------------------------------------------------
+timer
+t1
+    timings
+        time seconds 0.0
+        time seconds 20.0 // little surprise
+    timings
+t1
+
+timer
+t2
+    timings
+        time seconds 32.0
+    timings
+t2
+
+timer
+t3
+    timings
+        time seconds 35.0
+    timings
+t3
+
+//---------------------------------------------------------
+// the sample:
+//
+// drumloop01.wav is 2.00002 seconds 88201 samples.
+// 5512.5625 samples per 16th note
+// 82688.438 position of last drum noise
+
+wavfilein
+drumloop
+    filename    samples/drumloop01.wav
+    root_note   c0
+drumloop
+
+sampler
+sampler1
+        in_play_trig        drum_trig   out_phase_trig
+        in_stop_trig        off
+        in_start_pos_mod    drumpos1    out_output
+        in_deg_size         osc1        out_deg_size
+        wavfile     drumloop
+        play_dir                fwd
+        play_mode               wrap
+        jump_mode               play
+        start_pos_min           0
+        start_pos_max           88201
+        loop_mode               bi
+        loop_start_pos          4800
+        loop_end_pos            5000
+        loop_is_offset          on
+        bi-directional_offset   0
+        anti_clip_samples       150
+        anti_clip_each_end      on
+        zero_search_range       25
+        degsize_amount          1.0
+sampler1
+
+constant one value 1.0 one
+
+time_map
+time1  
+    meter_map
+    meter_map
+    bpm_map
+    bpm_map
+time1
+
+// the drums are not triggered by the sequencer...
+
+riff 
+riff1
+    quarter_value 1
+    note name c0 pos 0 len 64 vel 1.0
+riff1
+
+sequencer
+seq1
+    track
+        riff_node
+            riff riff1 bar 0
+            transpose 0 start_len 0 end_len 0
+        track
+        in_bar              time1   out_bar
+        in_bar_trig         time1   out_bar_trig
+        in_pos_step_size    time1   out_pos_step_size
+        in_beats_per_bar    time1   out_beats_per_bar
+        in_beat_value       time1   out_beat_value
+        velocity_response_time  5
+        hold_notename           off
+seq1
+
+// the single note is to trigger this adsr, which sets the overall
+// volume level of everything.
+
+adsr
+adsr1
+        envelope
+        section name attack
+            ut  150.0    ul  1.0
+            lt  150.0    ll  1.0
+        section name decay
+            ut  200.0    ul  0.9
+            lt  200.0    ll  0.9
+        section name release
+            ut  15450.0    ul  0.0
+            lt  15450.0    ll  0.0
+        envelope
+        in_note_on_trig     t1  out_trig
+        in_note_off_trig    t2  out_trig
+        in_velocity         seq1    out_velocity
+        up_thresh       0.9
+        lo_thresh       0.5
+        start_level     0.0
+        sustain_state   on
+        zero_retrigger  off
+adsr1
+
+// this adsr is used to set the 'tempo' of the re-arranged drum loop.
+//  1.0 tempo is super fuck-off fast
+//  0.0 tempo is normal speed
+// -1.0 tempo is seriously fucking slow.
+
+adsr
+adsr2
+        envelope
+        section name attack
+            ut  125.0    ul  1.0
+            lt  125.0    ll  1.0
+        section name decay
+            ut  150.0    ul  0.5
+            lt  150.0    ll  0.5
+        section name decay
+            ut  200.0    ul  0.25
+            lt  200.0    ll  0.25
+        section name decay
+            ut  300.0    ul  0.125
+            lt  300.0    ll  0.125
+        section name decay
+            ut  800.0    ul  0.0
+            lt  800.0    ll  0.0
+        section name release
+            ut  8000.0    ul  -0.0125
+            lt  8000.0    ll  -0.0125
+        envelope
+        in_note_on_trig     t1  out_trig
+        in_note_off_trig    t2  out_trig
+        in_velocity         seq1    out_velocity
+        up_thresh       0.9
+        lo_thresh       0.5
+        start_level     1.0
+        sustain_state   on
+        zero_retrigger  off
+adsr2
+
+adsr
+adsr2b
+        envelope
+        section name attack
+            ut  125.0    ul  0.5
+            lt  125.0    ll  0.5
+        section name decay
+            ut  125.0    ul  0.25
+            lt  125.0    ll  0.25
+        section name decay
+            ut  125.0    ul  0.05
+            lt  125.0    ll  0.05
+        section name decay
+            ut  125.0    ul  0.0
+            lt  125.0    ll  0.0
+        section name release
+            ut  1000.0    ul  -0.1
+            lt  1000.0    ll  -0.1
+        section name release
+            ut  1000.0    ul  -0.2
+            lt  1000.0    ll  -0.2
+        section name release
+            ut  1000.0    ul  -0.4
+            lt  1000.0    ll  -0.4
+        section name release
+            ut  1000.0    ul  -0.8
+            lt  1000.0    ll  -0.8
+        envelope
+        in_note_on_trig     t1  out_trig
+        in_note_off_trig    t2  out_trig
+        in_velocity         seq1    out_velocity
+        up_thresh       0.9
+        lo_thresh       0.5
+        start_level     1.0
+        sustain_state   on
+        zero_retrigger  off
+adsr2b
+
+
+// set 'tempo' using lfo_clock:
+
+lfo_clock
+drum_trig
+        in_phase_trig   seq1    out_note_on_trig
+        in_freq_mod1    adsr2   out_output
+        in_freq_mod2    wobble2 out_output
+        freq            9.0
+        freq_mod1_size  32.0
+        freq_mod2_size  0.25
+drum_trig
+
+constant quart value 0.25 quart
+
+sine_wave
+wobble2
+    in_phase_trig           drum_trig   out_phase_trig
+    in_deg_size             drum_trig   out_deg_size
+    recycle_mode            off
+    on_trig_reset_phase     off
+    phase_cycles            1.0
+wobble2
+
+// use square_wave to generate a note_off...
+
+square_wave
+drum_off
+        in_phase_trig   drum_trig   out_phase_trig
+        in_deg_size     drum_trig   out_deg_size
+        in_pwm          wobble      out_output
+        pulse_width     0.95
+        pwm_size        0.25
+        recycle_mode    off
+drum_off
+
+lfo_clock
+wobbler
+    in_phase_trig   seq1    out_note_on_trig
+    in_freq_mod1    adsr2   out_output
+    in_freq_mod2    wobble  out_output
+    freq            1
+    freq_mod1_size  32.0
+    freq_mod2_size  0.125
+wobbler
+
+
+sine_wave
+wobble
+    in_phase_trig           wobbler   out_phase_trig
+    in_deg_size             wobbler   out_deg_size
+    recycle_mode            off
+    on_trig_reset_phase     off
+    phase_cycles            1.0
+wobble
+
+// don't always jump to next drum for new position
+
+rnd_trigger
+drum_next
+        in_trig         drum_trig   out_phase_trig
+        probability     0.975
+        not_probability 0.25
+drum_next
+
+// positions in drumloop to trigger from, converted to range 0. ~ 1.0 :
+
+constant p0  value 0.0    p0
+constant p1  value 0.0625 p1
+constant p2  value 0.125  p2
+constant p3  value 0.1875 p3
+constant p4  value 0.25   p4
+constant p5  value 0.3125 p5
+constant p6  value 0.375  p6
+constant p7  value 0.4375 p7
+constant p8  value 0.5    p8
+constant p9  value 0.5625 p9
+constant p10 value 0.625  p10
+constant p11 value 0.6875 p11
+constant p12 value 0.75   p12
+constant p13 value 0.8125 p13
+constant p14 value 0.875  p14
+constant p15 value 0.9375 p15
+
+wcnt_signal wsp0  in_signal p0  out_output level 1.0 wsp0
+wcnt_signal wsp1  in_signal p1  out_output level 1.0 wsp1
+wcnt_signal wsp2  in_signal p2  out_output level 1.0 wsp2
+wcnt_signal wsp3  in_signal p3  out_output level 1.0 wsp3
+wcnt_signal wsp4  in_signal p4  out_output level 1.0 wsp4
+wcnt_signal wsp5  in_signal p5  out_output level 1.0 wsp5
+wcnt_signal wsp6  in_signal p6  out_output level 1.0 wsp6
+wcnt_signal wsp7  in_signal p7  out_output level 1.0 wsp7
+wcnt_signal wsp8  in_signal p8  out_output level 1.0 wsp8
+wcnt_signal wsp9  in_signal p9  out_output level 1.0 wsp9
+wcnt_signal wsp10 in_signal p10 out_output level 1.0 wsp10
+wcnt_signal wsp11 in_signal p11 out_output level 1.0 wsp11
+wcnt_signal wsp12 in_signal p12 out_output level 1.0 wsp12
+wcnt_signal wsp13 in_signal p13 out_output level 1.0 wsp13
+wcnt_signal wsp14 in_signal p14 out_output level 1.0 wsp14
+wcnt_signal wsp15 in_signal p15 out_output level 1.0 wsp15
+
+switcher
+drumpos1
+    signals
+        synthmod name wsp0
+        synthmod name wsp1
+        synthmod name wsp2
+        synthmod name wsp3
+        synthmod name wsp4
+        synthmod name wsp5
+        synthmod name wsp6
+        synthmod name wsp7
+        synthmod name wsp8
+        synthmod name wsp9
+        synthmod name wsp10
+        synthmod name wsp11
+        synthmod name wsp12
+        synthmod name wsp13
+        synthmod name wsp14
+        synthmod name wsp15
+    signals
+    in_trig     drum_next   out_trig
+    xfade_time  0.0
+drumpos1
+
+// set frequency for sample to playback at:
+
+osc_clock
+osc1
+        in_note_on_trig     seq1    out_note_on_trig
+        in_note_slide_trig  seq1    out_note_slide_trig
+        in_frequency        seq1    out_frequency
+        in_freq_mod1        wobble  out_output
+        in_freq_mod2        adsr2b  out_output
+        octave_offset       0
+        tuning_semitones    4
+        portamento_time     50.0
+        freq_mod1_size      1.025
+        freq_mod2_size      8
+osc1
+
+logic_trigger
+drum_kill
+        in_trig1    drum_off    out_pulse_off_trig
+        in_trig2    sampler1    out_loop_trig
+        function    or
+drum_kill
+
+// envelope for individual drums
+
+adsr
+adsr3
+        envelope
+        section name attack
+            ut  2.5    ul  1.0
+            lt  2.5    ll  1.0
+        section name decay
+            ut  25    ul  0.9
+            lt  25    ll  0.9
+        section name release
+            ut  25    ul  0.0
+            lt  25    ll  0.0
+        envelope
+        in_note_on_trig     drum_trig   out_phase_trig
+        in_note_off_trig    drum_kill   out_trig
+        in_velocity         off
+        up_thresh       1.0
+        lo_thresh       0.0
+        start_level     0.0
+        sustain_state   on
+        zero_retrigger  off
+adsr3
+
+// apply drum enevelope
+
+multiplier
+dl
+    in_signal   sampler1    out_l
+    in_modifier adsr3       out_output
+dl
+
+multiplier
+dr
+    in_signal   sampler1    out_r
+    in_modifier adsr3       out_output
+dr
+
+
+dynamic
+dynl
+    amp_map
+        dvertex
+            sigin_level 0.0
+                so_ul 0.0
+                so_ll 0.0
+        dvertex
+             sigin_level 0.25
+                so_ul 0.5
+                so_ll 0.5
+        dvertex
+             sigin_level 0.5
+                so_ul 0.80
+                so_ll 0.80
+        dvertex
+             sigin_level 0.75
+                so_ul 0.95
+                so_ll 0.95
+        dvertex
+             sigin_level 1.0
+                so_ul 1.0
+                so_ll 1.0
+    amp_map
+    in_signal       dl      out_output
+    in_modulation   adsr2   out_output
+    up_thresh       1.0
+    lo_thresh       0.0
+    posneg_mirror   on
+    use_ratios      off
+dynl
+
+
+dynamic
+dynr
+    amp_map
+        dvertex
+            sigin_level 0.0
+                so_ul 0.0
+                so_ll 0.0
+        dvertex
+             sigin_level 0.25
+                so_ul 0.5
+                so_ll 0.5
+        dvertex
+             sigin_level 0.5
+                so_ul 0.80
+                so_ll 0.80
+        dvertex
+             sigin_level 0.75
+                so_ul 0.95
+                so_ll 0.95
+        dvertex
+             sigin_level 1.0
+                so_ul 1.0
+                so_ll 1.0
+    amp_map
+    in_signal       dr      out_output
+    in_modulation   adsr2   out_output
+    up_thresh       1.0
+    lo_thresh       0.0
+    posneg_mirror   on
+    use_ratios      off
+dynr
+
+// amplify
+
+stereo_amp
+amp1
+    in_l        dynl    out_output
+    in_r        dynr    out_output
+    in_amp_eg   adsr1   out_output
+    in_amp_mod      off
+    left_amplitude  32000
+    right_amplitude 32000
+    amp_mod_size    0.0 
+    clip_level      32767
+amp1
+
+wavfile_out
+wav1
+    in_left     amp1    out_left
+    in_right    amp1    out_right
+    in_bar      time1   out_bar
+    in_bar_trig time1   out_bar_trig
+    filename    drums01.wav
+    start_bar   0
+    end_bar     16
+wav1
+
+// setup how long to process:
+
+wcnt_exit
+wcnt_exit_module
+    in_bar  time1   out_bar
+    exit_bar    16
+wcnt_exit_module
+
+//------------------------------------------------------------------------
+// End Of File _jwm 2005.
+//------------------------------------------------------------------------
+wcnt-1.127/jwmsynth

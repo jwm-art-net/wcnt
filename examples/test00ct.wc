@@ -1,0 +1,218 @@
+wcnt-1.127/jwmsynth
+
+samplerate  44100
+bpm         100
+signature   4/4
+
+constant one    value 1.0   one
+
+// timer t1
+//  used to trigger note_on for adsr
+//  used to trigger writing of wav
+//  used to trigger end of wav writing
+//  used to trigger wcnt exit
+
+timer
+t1
+    timings
+        time seconds 0.0
+        time seconds 15.0
+    timings
+t1
+
+// timer t2
+// used to trigger note_off for adsr
+timer
+t2
+    timings
+        time seconds 14.75
+    timings
+t2
+
+clock
+vbclock1
+    in_freq_mod1   off
+    freq           8
+    freq_mod1_size 1.0
+vbclock1
+
+clock
+vbclock2
+    in_freq_mod1   off
+    freq           0.125
+    freq_mod1_size 1.0
+vbclock2
+
+square_wave
+2tone
+    in_phase_trig  vbclock1 out_phase_trig
+    in_deg_size    vbclock1 out_deg_size
+    in_pwm         off
+    pulse_width   0.5
+    pwm_size      0.0
+    recycle_mode  off
+2tone
+
+sine_wave
+wavemod
+    in_phase_trig  vbclock2 out_phase_trig
+    in_deg_size    vbclock2 out_deg_size
+    recycle_mode         off
+    on_trig_reset_phase  off
+    phase_cycles         1.0
+wavemod
+
+clock
+osc1
+    in_freq_mod1    2tone out_output
+    freq            110.0
+    freq_mod1_size  1.5
+osc1
+
+user_wave
+uwave1
+    waveform
+        vertex
+            ud  20.0 ul -1.0
+            ld  160.0 ll -1.0
+        vertex
+            ud  180.0 ul 0.0
+            ld  180.0 ll 0.0
+        vertex
+            ud  200.0 ul 1.0
+            ld  340.0 ll 1.0
+    waveform
+    in_phase_trig  osc1 out_phase_trig
+    in_deg_size    osc1 out_deg_size
+    in_level_mod   wavemod out_output
+    in_time_mod    wavemod out_output
+    recycle_mode    off
+    zero_retrigger  off
+uwave1
+
+dynamic
+uwd1
+    amp_map
+        dvertex
+            sigin_level 0.0
+                so_ul   4.0
+                so_ll   4.0
+        dvertex
+            sigin_level 0.125
+                so_ul   3.0
+                so_ll   3.0
+        dvertex
+            sigin_level 0.25
+                so_ul   2.0
+                so_ll   2.0
+        dvertex
+            sigin_level 0.375
+                so_ul   1.75
+                so_ll   1.75
+        dvertex
+            sigin_level 0.5
+                so_ul   1.5
+                so_ll   1.5
+        dvertex
+            sigin_level 0.625
+                so_ul   1.375
+                so_ll   1.375
+        dvertex
+            sigin_level 0.75
+                so_ul   1.25
+                so_ll   1.25
+        dvertex
+            sigin_level 0.875
+                so_ul   1.125
+                so_ll   1.125
+        dvertex
+            sigin_level 1.0
+                so_ul   1.0
+                so_ll   1.0
+    amp_map
+
+    in_signal       uwave1 out_output
+    in_modulation   off
+
+    up_thresh       1.0
+    lo_thresh       0.0
+    posneg_mirror   on
+    use_ratios      on
+uwd1
+
+constant freq value 220.0 freq
+
+clock
+lpfc1
+    in_freq_mod1    wavemod out_output
+    freq            2000.0
+    freq_mod1_size  2.0
+lpfc1
+
+lp_filter
+lpf1
+// inputs for lp_filter
+    in_signal          uwd1 out_output
+    in_cutoff_degsize  lpfc1 out_deg_size
+    in_feedback        lpf1 out_wet_output
+    in_feedback_mod    off
+// parameters for lp_filter
+    feedback          0.4
+    feedback_modsize  0.0
+    wet/dry           1.0
+// outputs for lp_filter
+// out_output
+// out_wet_output
+lpf1
+
+adsr
+adsr1
+    envelope
+        section name attack	
+            ut 55.0      ul 0.65	
+            lt 55.0      ll 0.35
+        section name decay
+            ut 145.0    ul 0.86	
+            lt 145.0    ll 0.85
+        section name release
+            ut 200.0    ul 0.0	
+            lt 205.0    ll 0.0
+    envelope
+    in_note_on_trig  t1 out_trig
+    in_note_off_trig t2 out_trig
+    in_velocity      off
+    up_thresh      1.0
+    lo_thresh      0.45
+    start_level    0.0
+    sustain_state  on
+    zero_retrigger off
+adsr1
+
+mono_amp
+amp1
+    in_signal   lpf1 out_output
+    in_amp_eg   adsr1  out_output
+    in_amp_mod  off
+    amplitude     20000
+    amp_mod_size  0.0
+    clip_level    32767
+amp1
+
+wavfile_out
+wav1
+    in_left     amp1  out_mono
+    in_right    amp1  out_mono
+    in_bar      t1 out_count
+    in_bar_trig t1 out_trig
+    filename    test00ct.wav
+    start_bar   0
+    end_bar     1
+wav1
+
+wcnt_exit
+wcnt_exit_module
+    in_bar   t1 out_count
+    exit_bar 1
+wcnt_exit_module
+
+wcnt-1.127/jwmsynth

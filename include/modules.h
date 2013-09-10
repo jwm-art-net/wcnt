@@ -1,6 +1,7 @@
 #ifndef MODULES_H
 #define MODULES_H
 
+// version 1.0
 #include "adsr.h"
 #include "clockclock.h"
 #include "constmod.h"
@@ -30,7 +31,7 @@
 #include "highpassfilter.h"
 #include "combiner.h"
 #include "nonezero.h"
-// version 1.1000 modules
+// version 1.1000
 #include "timemap.h"
 #include "serialwavfileout.h"
 #include "contraster.h"
@@ -43,8 +44,14 @@
 #include "pan.h"
 #include "rms.h"
 #include "dc_filter.h"
+// version 1.1z
 #include "dynamic.h"
 #include "spreader.h"
 #include "notetran.h"
-
+// version 1.127
+#include "waittrig.h"
+#include "patterntrig.h"
+#include "stategatetrig.h"
+#include "invert.h"
+#include "timer.h"
 #endif
