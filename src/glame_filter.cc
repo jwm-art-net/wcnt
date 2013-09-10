@@ -13,14 +13,12 @@ glame_filter::glame_filter(char const* uname) :
  type(LOPASS), cutoff_freq(440.0), freq_mod1size(1.0), stages(1),
  l_descriptor(0), l_inst_handle(0),
  l_cutoff_freq(440.0), l_stages(1),
- l_input(0), l_output(0),
- type_names(0)
+ l_input(0), l_output(0)
 {
     jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
     jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
     jwm.get_inputlist()->add_input(this, inputnames::IN_FREQ_MOD1);
     create_params();
-    type_names = new char*[2];
     type_names[0] = "lowpass_iir";
     type_names[1] = "highpass_iir";
     min_cutoff = 0.0001 * jwm.samplerate();
@@ -32,7 +30,6 @@ glame_filter::~glame_filter()
     if (l_descriptor) l_descriptor->cleanup(l_inst_handle);
     if (l_input) delete [] l_input;
     if (l_output) delete [] l_output;
-    if (type_names) delete [] type_names;
 }
 
 void const* glame_filter::get_out(outputnames::OUT_TYPE ot) const

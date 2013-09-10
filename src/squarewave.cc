@@ -5,7 +5,7 @@
 #include "../include/modinputlist.h"
 #include "../include/modparamlist.h"
 
-#include <stdlib.h>
+#include <cstdlib>
 
 square_wave::square_wave(char const* uname) :
  synthmod(synthmodnames::SQUAREWAVE, uname, SM_HAS_OUT_OUTPUT),

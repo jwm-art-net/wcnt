@@ -5,6 +5,7 @@
 #include <algorithm>
 
 #include <iostream>
+#include <cstring>
 
 std::string*
 collumnize(const char** textarr,    unsigned int arrsize,

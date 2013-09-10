@@ -172,7 +172,7 @@ void const* sequencer::get_param(paramnames::PAR_TYPE pt) const
     {
         case paramnames::VELOCITY_RESPONSE: return &vel_response;
         case paramnames::START_BAR:         return &start_bar;
-        default: return false;
+        default: return 0;
     }
 }
 

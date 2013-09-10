@@ -6,8 +6,8 @@
 // rehashed code from the ladspa sdk load.c
 
 #include <dlfcn.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
 #include "../include/jwm_globals.h"
 #include "../include/jwm_init.h"

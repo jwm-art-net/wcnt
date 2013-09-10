@@ -6,7 +6,7 @@
 #include "../include/synthmod.h"
 #include "../include/dobj.h"
 
-#include <stdlib.h>
+#include <cstdlib>
 
 #include <iostream>
 

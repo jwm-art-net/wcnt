@@ -1,9 +1,8 @@
 #ifndef STOCKERRS_H
 #include "../include/stockerrs.h"
 
-stockerrs::stockerrs() : errmsg(0)
+stockerrs::stockerrs()
 {
-    errmsg = new char*[ERR_LAST];
     errmsg[ERR_FIRST] = "*** PROGRAM ERROR - PROGRAMMER'S FAULT ***";
     errmsg[ERR_NO_ERROR] = "ok";
 
@@ -40,7 +39,6 @@ stockerrs::stockerrs() : errmsg(0)
     errmsg[ERR_INVALID_OBJECT] = "invalid object type";
     errmsg[ERR_ERROR] = " ";
 
-    prefixmsg = new char*[6];
     prefixmsg[0] = " ";
     prefixmsg[1] = " out of range ";
     prefixmsg[2] = " should be inside range ";
@@ -51,8 +49,6 @@ stockerrs::stockerrs() : errmsg(0)
 
 stockerrs::~stockerrs()
 {
-    delete [] errmsg;
-    delete [] prefixmsg;
 }
 
 char const* stockerrs::get_err(stockerrs::ERR_TYPE et)

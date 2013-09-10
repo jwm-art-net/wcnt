@@ -5,6 +5,8 @@
 #include "../include/modinputlist.h"
 #include "../include/modparamlist.h"
 
+#include <cstdlib>
+
 randomtrigger::randomtrigger(char const* uname) :
 
  synthmod(

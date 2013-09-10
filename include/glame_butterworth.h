@@ -63,7 +63,7 @@ class glame_butterworth : public synthmod
     LADSPA_Data  l_cut_off;
     LADSPA_Data  l_resonance;
 
-    char** type_names;
+    const char* type_names[2];
 
     // working
     float min_cut_off;

@@ -22,7 +22,8 @@
 
 #include "../include/textstuff.h"
 
-#include <string.h>
+#include <cstring>
+#include <cstdlib>
 #include <sstream>
 
 namespace dbjdefs

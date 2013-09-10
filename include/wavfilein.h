@@ -28,7 +28,7 @@ public:
     ~wavfilein();
     void set_wav_filename(const char* filename);
     WAV_STATUS open_wav();
-    void set_root_note(char * rn);
+    void set_root_note(const char * rn);
     WAV_STATUS get_status(){ return status; }
     WAV_CHANNELS get_channel_status();
     WAV_BITRATE get_bitrate();

@@ -82,8 +82,8 @@ public:
     char const* get_prefix_err(ERR_TYPE);
     static bool check_type(ERR_TYPE);
 private:
-    char** errmsg;
-    char** prefixmsg;
+    const char* errmsg[ERR_LAST];
+    const char* prefixmsg[6];/* secret number do not alter */
 };
 
 #endif

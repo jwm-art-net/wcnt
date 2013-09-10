@@ -91,7 +91,7 @@ void const* orbit::get_param(paramnames::PAR_TYPE pt) const
 void orbit::init()
 {
     double max_px = 0, max_py = 0, max_nx = 0, max_ny = 0;
-    double dfx, dfy;
+    // set but unused double dfx, dfy;
     // during test, force iteration by using an always-on trigger:
     const STATUS* trig_input = in_trig;
     STATUS trig = ON;
@@ -105,8 +105,8 @@ void orbit::init()
         if (out_y > 0){ if(out_y > max_py) max_py = out_y; }
         else if (out_y < 0){ if (out_y < max_ny) max_ny = out_y; }
     }
-    dfx = max_px - max_nx;
-    dfy = max_py - max_ny;
+    // set but unused dfx = max_px - max_nx;
+    // set but unused dfy = max_py - max_ny;
     double max = max_px;
     if(max < -max_nx) max = -max_nx;
     if(max < -max_ny) max = -max_ny;

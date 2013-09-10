@@ -93,7 +93,7 @@ WAV_STATUS wavfilein::open_wav()
     return status = WAV_STATUS_OPEN;
 }
 
-void wavfilein::set_root_note(char* rn)
+void wavfilein::set_root_note(const char* rn)
 {
     if (rootnote) delete [] rootnote;
     rootnote = new char[jwm_init::note_array_size];

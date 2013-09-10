@@ -13,8 +13,7 @@ glame_butterworth::glame_butterworth(char const* uname) :
  output(0),
  type(LOPASS),
  l_descriptor(0), l_inst_handle(0),
- l_input(0), l_output(0),
- type_names(0)
+ l_input(0), l_output(0)
 {
     jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
     jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
@@ -22,7 +21,6 @@ glame_butterworth::glame_butterworth(char const* uname) :
                                         inputnames::IN_CUTOFF_PHASE_STEP);
     jwm.get_inputlist()->add_input(this, inputnames::IN_RES_MOD);
     create_params();
-    type_names = new char*[2];
     type_names[0] = "buttlow_iir";
     type_names[1] = "butthigh_iir";
     min_cut_off = 0.0001 * jwm.samplerate();
@@ -34,7 +32,6 @@ glame_butterworth::~glame_butterworth()
     if (l_descriptor) l_descriptor->cleanup(l_inst_handle);
     if (l_input) delete [] l_input;
     if (l_output) delete [] l_output;
-    if (type_names) delete [] type_names;
 }
 
 void const* glame_butterworth::get_out(outputnames::OUT_TYPE ot) const

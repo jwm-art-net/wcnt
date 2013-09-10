@@ -59,7 +59,7 @@ class glame_filter : public synthmod
     LADSPA_Data* l_input;
     LADSPA_Data* l_output;
 
-    char** type_names;
+    const char* type_names[2];
 
     // working
     float min_cutoff;

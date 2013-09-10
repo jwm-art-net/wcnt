@@ -1,0 +1,5 @@
+wcnt - Wav Composer Not Toilet
+
+wcnt is a command line not-real-time modular audio synthesis, sequencer, and sampler, written in C++ for Linux i386 based systems. wcnt reads plain text files written in wcnt's 'near english 
+synth definition pseudo language' and may then produce audio as stereo WAV files.
+

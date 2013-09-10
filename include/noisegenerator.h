@@ -1,6 +1,9 @@
 #ifndef NOISEGENERATOR_H
 #define NOISEGENERATOR_H
 
+
+#include <cstdlib>
+
 #include "synthmod.h"
 
 class noise_generator : public synthmod

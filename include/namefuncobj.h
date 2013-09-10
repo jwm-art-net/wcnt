@@ -1,7 +1,7 @@
 #ifndef NAMEFUNCOBJ_H
 #define NAMEFUNCOBJ_H
 
-#include <string>
+#include <cstring>
 
 /*
 // function object for use with linkedlist template search functions

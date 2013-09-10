@@ -3,10 +3,10 @@
 #include "../include/jwm_globals.h"
 #include "../include/jwm_init.h"
 
-#include <math.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include <cmath>
+#include <cstring>
+#include <cstdlib>
+#include <cstdio>
 
 double note_to_step(const char *note_name)
 {
@@ -93,8 +93,8 @@ const char* transpose_notename(const char* note_name, char semitones)
     char oct = extract_octave(note_name) + sub_oct + note_no / 12;
     if (oct < -9) oct = -9;
     else if (oct > 9) oct = 9;
-    char scalepos = (note_no % 12) * 2 + 1;
-    char* scale = " c c#d d#e f f#g g#a a#b";
+    int scalepos = (note_no % 12) * 2 + 1;
+    const char* scale = " c c#d d#e f f#g g#a a#b";
     char* newname = new char[3];
     newname[0] = scale[scalepos];
     if (scale[scalepos + 1] == '#') {
@@ -134,7 +134,7 @@ bool check_notename(const char *n)
 
 char note_to_noteno(const char* note_name)
 {// does not check notename because it's done before this is called
-    char* scale = " c c#d d#e f f#g g#a a#b";
+    const char* scale = " c c#d d#e f f#g g#a a#b";
     char name[3];
     name[0] = note_name[0];
     if (note_name[1] == '#') {
