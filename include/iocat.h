@@ -51,6 +51,7 @@ class iocat
     iocat();
     ~iocat(){};
     const char* const get_name(IOCAT) const;
+
  private:
     struct iocat_data
     {

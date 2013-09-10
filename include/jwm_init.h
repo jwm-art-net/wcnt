@@ -17,6 +17,9 @@ const unsigned short max_anti_clip_size         = wav_buffer_size / 2;
 const unsigned short max_anti_clip_samples      = max_anti_clip_size;
 const unsigned short sr_div_bi                  = 8;
 
+const char* const ladspa_path_if_env_not_set =
+    "/usr/local/lib/ladspa/:/usr/lib/ladspa/";
+
 const unsigned short group_control_stopping_samples = 1;
 
 } /* namespace jwm_init */

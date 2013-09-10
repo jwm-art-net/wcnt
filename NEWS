@@ -1,23 +1,19 @@
-wcnt-1.26.3
+wcnt-1.26.4
 
 http://wcnt.sourceforge.net
 
-mainly a bug fix release:
+some minor adjustments to features and a bug fixed:
 
+    * param_editor
+      aswell as editing parameters to completely new values
+      (as it always has done) it can now add, subtract, divide
+      or multiply existing values (for numeric parameters only).
 
-    * removed bpm and time signature information from the 'header'
-      part of a .wc file. this effects the time_map module.
+    * LADSPA_PATH environment variable
+      only needs to be set if LADSPA plugins are not installed
+      in the path "/usr/local/lib/ladspa/:/usr/lib/ladspa/".
 
-    * fader module's output out_trig has become out_bar_trig to
-      reflect it's input names and function.
+    * fixed logic of numeric parameters range checking code.
 
-    * removed display clutter from --data-object-help command 
-      line option.
-
-    * removed references to the non-existant cosine_wave module
-      which had been causing problems for --input-help cmdline
-      option.
-
-    * can now read a .wc file which only contains a single
-      wcnt_exit module without crashing. oi! oi!
-
+regards,
+james jwm-art net

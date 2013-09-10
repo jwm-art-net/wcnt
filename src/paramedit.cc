@@ -73,6 +73,12 @@ bool paramedit::do_param_edits()
     strm >> parname;
     do {
         strm >> valstr;
+        bool isop = setpar::is_operator(valstr.c_str());
+        if (isop) {
+            std::string n;
+            strm >> n;
+            valstr += " " + n;
+        }
         if (sm) {
             if (!mod_param_edit(sm, parname.c_str(), valstr.c_str())) {
                 return false;
@@ -90,7 +96,7 @@ bool paramedit::do_param_edits()
     return true;
 }
 
-bool paramedit::mod_param_edit(synthmod* module, const char* parname, 
+bool paramedit::mod_param_edit(synthmod* module, const char* parname,
                                const char* valstr)
 {
     synthmodnames::SYNTH_MOD_TYPE smt = module->get_module_type();
@@ -127,7 +133,7 @@ bool paramedit::mod_param_edit(synthmod* module, const char* parname,
         delete parlist;
         return false;
     }
-    if (!setpar::set_mod_param(module, parname, pt, valstr, 0)) {
+    if (!setpar::set_param(module, parname, pt, valstr, 0)) {
         *err_msg = "\n";
         *err_msg += setpar::err_msg;
         invalidate();
@@ -175,7 +181,7 @@ bool paramedit::dobj_param_edit(dobj* dobject, const char* parname,
         delete parlist;
         return false;
     }
-    if (!setpar::set_dobj_param(dobject, parname, pt, valstr, 0)) {
+    if (!setpar::set_param(dobject, parname, pt, valstr, 0)) {
         *err_msg = "\n";
         *err_msg += setpar::err_msg;
         invalidate();

@@ -1,0 +1,31 @@
+wcnt-1.26/jwmsynth
+
+samplerate 44100
+
+// the most basic usage of synth_file_reader...
+
+synth_file_reader
+sf
+    filename    test.wc
+    mod_action  exclude
+    dobj_action exclude
+    modules
+    modules
+    data_objects
+    data_objects
+sf
+
+// ... reads entire file.
+
+
+// now a few edits
+
+param_editor
+pe
+    editlist
+        edit clock1
+            freq + 100
+    editlist
+pe
+
+wcnt-1.26/jwmsynth

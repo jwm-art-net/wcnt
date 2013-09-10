@@ -1,6 +1,5 @@
 #ifndef STOCKERRS_H
 #include "../include/stockerrs.h"
-#include <iostream>
 
 stockerrs::stockerrs() : errmsg(0)
 {

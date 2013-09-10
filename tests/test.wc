@@ -1,8 +1,6 @@
 wcnt-1.26/jwmsynth
 
 samplerate 44100
-bpm 120
-signature 4/4
 
 timer
 t
@@ -11,8 +9,6 @@ t
         time seconds 1
     timings
 t
-
-constant_note n name c1 n
 
 clock
 clock1
@@ -23,7 +19,7 @@ clock1
 
 wave
 s
-    in_phase_step   n out_phase_step
+    in_phase_step   clock1 out_phase_step
     type            sine
 s
 
@@ -34,7 +30,7 @@ faded
     start_bar      0
     end_bar        1
     fade_in_time   10
-    fade_out_time  300
+    fade_out_time  30
 faded
 
 multiplier
@@ -47,9 +43,9 @@ wavfile_out
 w
     in_left     m out_output
     in_right    m out_output
-    in_bar      t out_count
-    in_bar_trig t out_trig
-    snapshot_mode on
+    in_bar      faded out_bar
+    in_bar_trig faded out_bar_trig
+    snapshot_mode off
     data_format float32
     filename    test.wav
     start_bar   0
@@ -58,7 +54,7 @@ w
 
 wcnt_exit
 x
-    in_bar      t out_count
+    in_bar      faded out_bar
     exit_bar    1
 x
 

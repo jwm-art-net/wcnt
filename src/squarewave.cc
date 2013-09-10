@@ -97,12 +97,12 @@ void const* square_wave::get_param(paramnames::PAR_TYPE pt) const
 stockerrs::ERR_TYPE square_wave::validate()
 {
     if (!jwm.get_paramlist()->validate(this, paramnames::RATE,
-            stockerrs::ERR_RANGE_0_1_IN))
+            stockerrs::ERR_RANGE_0_1))
     {
         *err_msg =
          jwm.get_paramnames()->get_name(paramnames::RATE);
         invalidate();
-        return stockerrs::ERR_RANGE_0_1_IN;
+        return stockerrs::ERR_RANGE_0_1;
     }
     if (!jwm.get_paramlist()->validate(this, paramnames::PULSE_WIDTH,
             stockerrs::ERR_RANGE_0_1_IN))

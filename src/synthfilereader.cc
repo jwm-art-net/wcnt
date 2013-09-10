@@ -800,7 +800,7 @@ read_dobj_params(dobj* dbj, const char* endterm)
         if (inc_current) {
             char const* par = parname.c_str();
             char const* val = datastr->c_str();
-            if (!setpar::set_dobj_param(dbj, par, pt, val, &conv)) {
+            if (!setpar::set_param(dbj, par, pt, val, &conv)) {
                 *wc_err_msg = setpar::err_msg;
                 delete datastr;
                 delete parlist;
@@ -1008,7 +1008,7 @@ bool synthfilereader::read_params(synthmod* sm)
         if (inc_current) {
             char const* par = paramname.c_str();
             char const* val = datastr.c_str();
-            if (!setpar::set_mod_param(sm, par, pt, val, &conv)) {
+            if (!setpar::set_param(sm, par, pt, val, &conv)) {
                 *wc_err_msg = setpar::err_msg;
                 delete parlist;
                 return false;

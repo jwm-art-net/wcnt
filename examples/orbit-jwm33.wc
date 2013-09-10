@@ -1,0 +1,122 @@
+wcnt-1.26/jwmsynth
+
+// **-----------............._________>>>
+// examples/orbit-jwm33.wc
+// modification of orbit.wc
+
+// **-----------............._________>>>
+// note: this file uses the minimum necessary modifications to make
+//       the intended sound from orbit.wc.
+//       if you or anyone else have already edited orbit.wc to be
+//       different, the chances are slim that this will work as
+//       intended - as it does not edit those parameters which
+//       _were_ unchanged.
+
+samplerate 44100
+
+// **-----------............._________>>>
+// duration of sound
+
+timer t1
+    timings
+        time seconds 0.0
+        time seconds 30 // 300.0
+    timings
+t1
+
+// **-----------............._________>>>
+// file reading requires a two-stage process with orbit.wc
+// this is because we want to edit parameters of modules before
+// those modules are grouped.
+
+
+// **-----------............._________>>>
+// so read only the modules to begin with
+
+synth_file_reader
+orbit-mods
+    filename orbit.wc
+    mod_action  exclude
+    dobj_action include
+    modules
+        mod name t1
+    modules
+    data_objects // don't read any data objects just yet...
+    data_objects
+orbit-mods
+
+// **-----------............._________>>>
+// then edit the parameters of the modules...
+
+param_editor
+pe
+    editlist
+
+        edit orb_clock1
+            freq 2.57
+            freq_mod1_size 1.75
+            freq_mod2_size 1.75
+
+        edit orb_clock2
+            freq 135
+
+        edit nl freq 301
+        edit nr freq 300
+
+        edit clock_l
+            octave_offset 0
+            freq_mod1_size 1.25
+
+        edit clock_r
+            octave_offset 0
+            freq_mod1_size 1.25
+
+        edit orbit1
+            orbit_type threeply
+            a 0.20055
+            c 0.0042
+            test_iterations 100000
+
+        edit orbit2
+            a 0.20055
+            b -1.005
+            c 0.0042
+
+        edit wav1
+            data_format float32
+            filename orbit-jwm33.wav
+
+    editlist
+pe
+
+// **-----------............._________>>>
+// and an input edit...
+
+input_editor
+ie
+    editlist
+        connect clock_l in_freq_mod2 orbit2 out_y
+    editlist
+ie
+
+// **-----------............._________>>>
+// now read the data objects
+// the data objects include the group and copier
+// which'll group and copy the group several times
+// before making further edits (which might make some of those
+// made in this file a bit redundant, but nevermind...)
+
+synth_file_reader
+orbit-dobjs
+    filename orbit.wc
+    mod_action  include // only include modules specified below
+    dobj_action exclude // create any data object NOT specified below
+    modules // none specified
+    modules // don't read any modules this time...
+    data_objects // none specified 
+    data_objects // just read all the data objects...
+orbit-dobjs
+
+
+wcnt-1.26/jwmsynth
+

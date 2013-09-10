@@ -10,6 +10,7 @@
 #include <stdlib.h>
 
 #include "../include/jwm_globals.h"
+#include "../include/jwm_init.h"
 
 //-------------------------------------------------------------
 
@@ -137,8 +138,9 @@ ladspa_loader::get_plugin(const char* fname, const char* label)
         err_msg = "Could not open LADSPA plugin ";
         err_msg += fname; err_msg += " ";
         err_msg += label;
-        err_msg += " - probably could not find library."
-                   " Is the LADSPA_PATH environment variable set???";
+        err_msg += "\nIf your LADSPA plugins are installed in an usual"
+            "location, please ensure the LADSPA_PATH environment"
+            "  variable is set.";
         return 0;
     }
     lib = 0;
@@ -160,7 +162,6 @@ void* ladspa_loader::dlopen_plugin(const char* fname, int flag)
     char* buf;
     const char * start;
     const char * end;
-    const char * ladspa_path;
     int end_in_so;
     int need_slash;
     int fnlen = strlen(fname);
@@ -171,29 +172,28 @@ void* ladspa_loader::dlopen_plugin(const char* fname, int flag)
         return result;
     }
     else {
-        if((ladspa_path = getenv("LADSPA_PATH"))){
-            start = ladspa_path;
-            while (*start != '\0') {
-                end = start;
-                while (*end != ':' && *end != '\0') end++;
-                buf = new char[fnlen + 2 + (end - start)];
-                if (end > start)
-                    strncpy(buf, start, end - start);
-                need_slash = 0;
-                if (end > start)
-                    if (*(end - 1) != '/') {
-                        need_slash = 1;
-                        buf[end - start] = '/';
-                    }
-                strcpy(buf + need_slash + (end - start), fname);
-                result = dlopen(buf, flag);
-                delete [] buf;
-                if(result != 0)
-                    return result;
-                start = end;
-                if (*start == ':')
-                    start++;
-            }
+        if(!(start = getenv("LADSPA_PATH")))
+            start = jwm_init::ladspa_path_if_env_not_set;
+        while (*start != '\0') {
+            end = start;
+            while (*end != ':' && *end != '\0') end++;
+            buf = new char[fnlen + 2 + (end - start)];
+            if (end > start)
+                strncpy(buf, start, end - start);
+            need_slash = 0;
+            if (end > start)
+                if (*(end - 1) != '/') {
+                    need_slash = 1;
+                    buf[end - start] = '/';
+                }
+            strcpy(buf + need_slash + (end - start), fname);
+            result = dlopen(buf, flag);
+            delete [] buf;
+            if(result != 0)
+                return result;
+            start = end;
+            if (*start == ':')
+                start++;
         }
     }
     end_in_so = 0;

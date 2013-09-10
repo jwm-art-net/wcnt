@@ -2,25 +2,38 @@
 
 wcnt is now dependant on libsndfile - please make sure you have the
 current stable version installed (development packages if not compiling
-libsndfile from source). ( http://www.mega-nerd.com/libsndfile/ )
+libsndfile from source).
 
 wcnt now has several modules which interface with selected LADSPA
 plugins. the modules will compile and be available even if the plugins
 are not, but if used when the plugins are unavailable then wcnt will
 complain and refuse to proceed any further.
 
-Please obtain the SWH plugins ( http://www.plugin.org.uk ) and the
-CAPS plugins ( http://quitte.de/dsp/caps.html )   :-)
+wcnt will look for LADSPA plugins in /usr/local/lib/ladspa/ and
+/usr/lib/ladspa/. If LADSPA plugins are installed elsewhere on your
+system, please ensure the LADSPA_PATH enviroment variable is set.
+Usage of the LADSPA_PATH environment variable will override the
+default location wcnt searches for plugins.
 
-(only a small percentage of these plugins are used by wcnt).
+(only a very small percentage of these plugins can be used by wcnt).
+
+--------------------------------------------------
+libsndfile:   http://www.mega-nerd.com/libsndfile/
+SWH plugins:  http://www.plugin.org.uk
+CAPS plugins: http://quitte.de/dsp/caps.html
+--------------------------------------------------
 
 
 ************************************************************************
 By default, wcnt is compiled with compiler optimizations and without
 debuggin information.  Look in the top of the Makefile if you dislike this,
 it will tell you what you must do to change it - it's very simple.
+************************************************************************
 
-To compile wcnt simply type:
+
+***** COMPILATION *****
+
+There is no configure script. To compile wcnt simply type:
 
 make
 
@@ -33,10 +46,9 @@ make examples
 in the main wcnt directory.  The wav's generated are located in the
 examples directory along with the .wc files that generated them.
 
-You cannot type make install to install wcnt anymore.  Instead, become
-super user and type:
+You cannot type make install to install wcnt anymore. You could try
 
-install wcnt /usr/local/bin
+su -c "install wcnt /usr/local/bin"
 
 in the main wcnt directory.  Change the path if you do not want to install
 there.  To uninstall, become super user, and type:
@@ -60,4 +72,4 @@ minutes to generate 19 minutes worth of audio.
 
 [eof]
 
---jwm2007
+--jwm2008

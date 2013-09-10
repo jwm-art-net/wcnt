@@ -10,7 +10,7 @@
 namespace iocatconv
 {
 
-void* cstr_to_iocat(iocat::IOCAT ioc, char const* cstrval, 
+void* cstr_to_iocat(iocat::IOCAT ioc, char const* cstrval,
                     std::ostringstream* result)
 {
     if (!cstrval) {
