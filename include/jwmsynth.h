@@ -69,6 +69,7 @@ class jwmsynth
 	bool riff_help();
 	bool input_help();
 	bool input_help_with_wcfile();
+	bool sample_info();
 };
 
 #endif

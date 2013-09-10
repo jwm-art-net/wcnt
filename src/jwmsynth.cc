@@ -221,7 +221,7 @@ bool jwmsynth::execute_synth()
 	int samplespersmall = samplesperbig / divisions;
 	int counter = 0;
 	int divcounter = 0;
-	cout << "\n\nProcessing:\n";
+	cout << "\n\nProcessing " << options[option_filename_no] << "\tone '" << bigcount << "' per second done\n";
 	while (sample <= end_sample)
 	{
 		sm = synthmodslist->goto_first();
@@ -251,24 +251,29 @@ bool jwmsynth::execute_synth()
 bool
 jwmsynth::scan_cl_options()
 {
-	string commandoptions = "\nwcnt filename.wc";
-	commandoptions += "\nwcnt filename.wc -v";
-	commandoptions += "\nwcnt --riff-help";
-	commandoptions += "\nwcnt --module-help";
-	commandoptions += "\nwcnt --module-help modulename";
-	commandoptions += "\nwcnt --input-help inputname"; 
-	commandoptions += "\nwcnt filename.wc --input-help inputname";
-	string inhelp = "--input-help";
+	string wcnt = "\nwcnt ";
+	string filename = " filename.wc ";
+	string riffhelp = "--riff-help";
+	string inputhelp = "--input-help";
+	string modhelp = "--module-help";
+	string sampleinfo = "--sample-info";
+	string commandoptions = wcnt + filename;
+	commandoptions += wcnt + " -v" + filename;
+	commandoptions += wcnt + riffhelp;
+	commandoptions += wcnt + modhelp;
+	commandoptions += wcnt + modhelp + " modulename";
+	commandoptions += wcnt + inputhelp + " inputname"; 
+	commandoptions += wcnt + filename + inputhelp + " inputname";
+	commandoptions += wcnt + sampleinfo + " samplename.wav";
     if (options_count == 1) {
         err_msg = commandoptions;
         return false;
     } 
 	else if (options_count == 2) {
-		string opt1 = options[1];
-		if (opt1 == "--module-help") {
+		if (modhelp == options[1]) {
 			module_help();
 			return false;
-		} else if (opt1 == "--riff-help") {
+		} else if (riffhelp == options[1]) {
 			riff_help();
 			return false;
 		}
@@ -276,13 +281,15 @@ jwmsynth::scan_cl_options()
 		return true; // should be a filename then
     }
 	else if (options_count == 3) {
-		string modhelp = "--module-help";
-		if (inhelp == options[1]) {
+		if (inputhelp == options[1]) {
 			input_help();
 			return false;
 		} else if (modhelp == options[1]) {
 			module_help();
-			return false; 
+			return false;
+		} else if (sampleinfo == options[1]) {
+			sample_info();
+			return false;
 		} else if (options[1][0] == '-' && options[1][1] == 'v') {
             synthfile->set_verbose();
             option_filename_no = 2;
@@ -294,7 +301,7 @@ jwmsynth::scan_cl_options()
         } 
 	}
 	else if (options_count == 4) {
-		if (inhelp == options[2]) {
+		if (inputhelp == options[2]) {
 			option_filename_no = 1;
 			input_help();
 			return false;
@@ -523,4 +530,70 @@ bool jwmsynth::input_help()
 	return false;
 }
 
+bool jwmsynth::sample_info()
+{
+	wavfilein wavfile;
+	string wavname = options[2];
+	wavfile.open_wav(options[2]);
+	switch(wavfile.get_status())
+	{
+		case WAV_STATUS_MEMERR:
+			err_msg = "\nnot enough memory to open wav: " + wavname;
+			break;
+		case WAV_STATUS_OPENERR:
+			err_msg = "\nerror occurred opening wav: " + wavname;
+			break;
+		case WAV_STATUS_WAVERR:
+			err_msg = "\nwav: " + wavname + " is not a wav file";
+			break;
+		case WAV_STATUS_MODE_ERR:
+			err_msg = "\nmode error with wav: " + wavname;
+			break;
+		case WAV_STATUS_NOT_FOUND:
+			err_msg = "\nwav: " + wavname + " was not found";
+			break;
+		case WAV_STATUS_INIT:
+			err_msg = "\nproblem initialising wav: " + wavname;
+			break;
+		case WAV_STATUS_OK:
+			err_msg = "\nwav: " + wavname + " is only OK, not opened.";
+			break;
+		case WAV_STATUS_OPEN:
+			err_msg = "\nheader info for wav: " + wavname + ":";
+			break;
+	}
+	if (wavfile.get_status() != WAV_STATUS_OPEN) 
+		return false;
+	switch(wavfile.get_channel_status())
+	{
+		case WAV_CH_MONO:
+			err_msg += "\n\tMono";
+			break;
+		case WAV_CH_STEREO:
+			err_msg += "\n\tStereo";
+			break;
+		default:
+			err_msg += "\n\tUnsupported number of channels\n";
+	}
+	switch(wavfile.get_bitrate())
+	{
+		case WAV_BIT_16:
+			err_msg += "\t16 bit";
+			break;
+		case WAV_BIT_8:
+			err_msg += "\t8 bit";
+			// no break intended
+		default:
+			err_msg += "\nbitrate not supported.  While wcnt will let you use this sample, it will not sound as intended.";
+			break;
+	}
+	if (wavfile.get_bitrate()!= WAV_BIT_16)
+		return false;
+	ostringstream conv;
+	conv << "\t" << wavfile.get_sample_rate() << " hz";
+	conv << "\n\tlength: " << wavfile.get_length() << " samples (";
+	conv << (double)wavfile.get_length() / audio_samplerate << " seconds)\n";
+	err_msg += conv.str();
+	return false;
+}
 #endif

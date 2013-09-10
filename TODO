@@ -6,3 +6,10 @@ effects    - delay, chorus, echo, reverb, better filters, etc
 
 And let's not forget a shiny spanky gui for one day in the distant future
 when everyone else has written programs miles better than this.
+
+There may be some kind of twisted attempt a polyphony.  voice_router module takes sequencer outputs, note on, off, frequency, velocity etc, each note on from sequencer steps the voice router to the next voice.  Any modules which would take the sequencer outputs would instead take the outputs from a particular voice.  But then the user must define the same set of modules for each voice.  Unless I come up with some way of defining which modules are 'voice' modules, and then the synth creates the set of voices - duplicate sets of modules.  But then there would be no way of making different voices slightly or greatly different -- which I would want to do.  Then there's the problem of mixing it all.
+
+
+
+
+

@@ -32,6 +32,30 @@ wavheader::wavheader(short channels, unsigned long samplerate, short resolution)
 	//itsSampleLength
 }
 
+char* wavheader::get_format_name()
+{
+	char* fn = new char[5];
+	strncpy(fn, itsData1, 4);
+	fn[4] = 0;
+	return fn;
+}
+
+char* wavheader::get_type_name()
+{
+	char* tn = new char[5];
+	strncpy(tn, itsText2, 4);
+	tn[4] = 0;
+	return tn;
+}
+
+char* wavheader::get_riff_name()
+{
+	char* rn = new char[5];
+	strncpy(rn, itsText1, 4);
+	rn[4] = 0;
+	return rn;
+}
+
 WAV_WRITEHEAD wavheader::SetReady(unsigned long &length)
 {
 	itsSampleLength = length * itsBlockAlign;

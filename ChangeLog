@@ -1,9 +1,35 @@
-Monday March 24 2003 (several hours later....)
 --------------------------------------------------------------
+Tuesday March 25 2003
+
+wcnt-1.0001c
+
+CORRECTIONS:
+	* err no I have n't completely fixed the unexpected end of file
+		errors some playback programs emmit.  Shorter files seem ok.
+
+CHANGES:
+	* in verbose mode, no more mystery as to what the parameter
+		has been set to.
+		
+ADDITIONS:
+
+	* new command line option --sample-info samplename.wav
+		surprisingly, displays .wav header information:
+		samplelenght, channels, bitrate. command line options
+		are parsed in jwmsynth::scan_cl_options.  Useful to
+		know how many samples when setting certain sampler 
+		parameters
+
+	* wav header checking is now in place, no longer can you read
+		as a sample, any old file you throw at it. Boooo! Down with fascists!
+
+--------------------------------------------------------------
+Monday March 24 2003 (several hours later....)
+
 Ok.Ok. I've done it again!  I've released the supposedly
 fixed version wcnt-1.0001 without testing it fully. DOH!!
 
-wcnt-1.0001 
+wcnt-1.0001b
 
 FIXES:
 

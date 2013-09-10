@@ -3,6 +3,8 @@
 
 #include <stdio.h>/*FILE*/
 #include <string.h> /*strncpy*/
+#include <string> /* string blah == "dit dit dit"  (char*)*/
+
 #include "../include/wavfileheader.h"
 
 class wavfilein 
@@ -13,6 +15,7 @@ class wavfilein
 	WAV_STATUS open_wav(const char* filename);
 	WAV_STATUS get_status(){ return status; }
 	WAV_CHANNELS get_channel_status();
+	WAV_BITRATE get_bitrate();
 	unsigned long get_length(){ return header->GetSampleLength();}
 	unsigned long get_sample_rate(){ return header->GetSampleRate();}
 	void read_wav_at(void* buf, unsigned long smp);

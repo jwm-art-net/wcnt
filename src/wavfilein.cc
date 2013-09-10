@@ -29,6 +29,16 @@ WAV_CHANNELS wavfilein::get_channel_status()
 		return WAV_CH_UNKNOWN;
 }
 
+WAV_BITRATE wavfilein::get_bitrate()
+{
+	if (header->GetResolution() == 8)
+		return WAV_BIT_8;
+	else if (header->GetResolution() == 16)
+		return WAV_BIT_16;
+	else 
+		return WAV_BIT_OTHER;
+}
+
 WAV_STATUS wavfilein::open_wav(const char * filename)
 {
 	if (status == WAV_STATUS_MEMERR) 
@@ -47,7 +57,31 @@ WAV_STATUS wavfilein::open_wav(const char * filename)
 	}
 	fseek(filein, 0, SEEK_SET);
 	fread(header, sizeof(wavheader), 1, filein);
-	/* I won't bother doing any header checks - sample & bit rates are ignored!*/
+	char* chp = 0;
+	chp = header->get_riff_name();
+	string riffname = "RIFF";
+	if (riffname != chp) {
+		fclose(filein);
+		delete chp;
+		return status = WAV_STATUS_WAVERR;
+	}
+	delete chp;
+	chp = header->get_type_name();
+	string wavtypename = "WAVE";
+	if (wavtypename != chp) {
+		fclose(filein);
+		delete chp;
+		return status = WAV_STATUS_WAVERR;
+	}
+	delete chp;
+	chp = header->get_format_name();
+	string formatname = "fmt ";
+	if (formatname != chp){
+		fclose(filein);
+		delete chp;
+		return status = WAV_STATUS_WAVERR;
+	}
+	delete chp;
 	return status = WAV_STATUS_OPEN;
 }
 

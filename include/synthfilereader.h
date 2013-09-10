@@ -63,7 +63,7 @@ class synthfilereader
 	string* buff;
 	string* synthheader;
 	string* err_msg;
-	ostringstream *conv;
+	ostringstream* conv;
 	GEN_STATUS genstatus;
 	bool verbose;
 	note_data* const read_notedata();
@@ -77,7 +77,6 @@ class synthfilereader
 	bool read_mixer_channels(stereomixer*);
 	bool read_userwave_envelope(user_wave*);
 	bool read_signals(synthmod*);
-	bool read_switcher_signals(switcher*);
 	wave_vertex* read_wave_vertex();
 	adsr_coord* read_adsr_coord(adsr_coord::SECT);
 };

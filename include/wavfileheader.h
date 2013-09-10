@@ -3,6 +3,8 @@
 
 #define WAV_BUFFER_SIZE 2048
 
+#include <string.h> // strncpy();
+
 enum WAV_WRITEHEAD
 {
 	WAV_WH_OK = 0,
@@ -38,8 +40,9 @@ enum WAV_CHANNELS
 
 enum WAV_BITRATE
 {	
+	WAV_BIT_OTHER = 0,
 	WAV_BIT_8 = 8,		
-	WAV_BIT_16 = 16	
+	WAV_BIT_16 = 16
 };
 
 struct stereodata
@@ -64,11 +67,15 @@ class wavheader
 	short GetChannels() { return itsChannels; }
 	short GetResolution() { return itsResolution; }
 	char GetBlockAlign() { return itsBlockAlign; }
+	unsigned short get_format_tag(){ return format_tag;}
+	char* get_format_name();
+	char* get_type_name();
+	char* get_riff_name();
  private:
-	unsigned char itsText1[4]; //riff
+	char itsText1[4]; //riff
 	unsigned long itsLength;	  //36 (noof bytes before itsText3[4] aparently)
-	unsigned char itsText2[4]; //type name
-	unsigned char itsData1[4]; // format name
+	char itsText2[4]; //type name
+	char itsData1[4]; // format name
 	unsigned long its_length;	  // sixteen what?
 	unsigned short format_tag; //1 is pcm
 	short itsChannels;

@@ -9,7 +9,7 @@ synthfilereader::synthfilereader()
     buff = new string;
     synthheader = new string;
     err_msg = new string;
-    conv = new ostringstream;
+	// don't create conv here.
 }
 
 synthfilereader::~synthfilereader()
@@ -20,7 +20,6 @@ synthfilereader::~synthfilereader()
     delete buff;
     delete synthheader;
     delete err_msg;
-    delete conv;
 }
 
 synthfilereader::FILE_STATUS synthfilereader::open_file(char *synthfilename)
@@ -42,6 +41,8 @@ bool
 synthfilereader::read_header(unsigned long *samplerate, short *bpm,
                              short *beatspermeasure, short *beatvalue, short* exitbar)
 {
+	if (conv) delete conv;
+	conv = new ostringstream;
     if (filestatus != FILE_OPEN) {
         genstatus = HALTED;
         *err_msg =
@@ -318,7 +319,7 @@ synthfilereader::read_synthmodule(string const *com)
 		return 0;
 	}
 	if (verbose)
-		cout << "\nCreating synth module: " << *sm->get_username();
+		cout << "\n\nCreating synth module: " << *sm->get_username();
 	bool dataread = false;
 	switch(smt)
 	{// modules with data to be read, besides inputs and params
@@ -498,6 +499,12 @@ bool synthfilereader::read_params(synthmod* sm)
 			return false;
 		} else {
 			paramnames::PAR_TYPE paramtype = parnames->get_type(&paramname);
+			// delete conv (ostringstream) and re-create to erase string inside
+			// i don't know how else to do this yet.
+			// doing it here, because read_param_value puts the 
+			// parameter value in conv so it can be displayed.
+			if (conv) delete conv;
+			conv = new ostringstream;
 			void* data = read_param_value(paramtype);
 			if (!data) {
 				*err_msg += " in module: " + *sm->get_username();
@@ -514,8 +521,8 @@ bool synthfilereader::read_params(synthmod* sm)
 			}
 			destroy_tmp_param_data(paramtype, data);
 			if (verbose) {
-				cout << "\nset module: " << *sm->get_username() << " parameter: ";
-				cout << paramname << " to mysterious value";
+				cout << "\nparameter: ";
+				cout << paramname << "\t" << conv->str();
 			}
 		}
 		param = parlist->goto_next();
@@ -530,7 +537,8 @@ void* synthfilereader::read_param_value(paramnames::PAR_TYPE pt)
 	string svalue;
 	char* cstr = 0;
 	void* data = 0;
-	conv->flush();
+//	if (conv) delete conv; would do this except it's done before this func is called
+//	conv = new ostringstream; // as there is no other way to return the value string
 	switch(synthmod::get_paramnames()->getcategory(pt))
 	{
 		case CAT_DOUBLE:
@@ -540,6 +548,7 @@ void* synthfilereader::read_param_value(paramnames::PAR_TYPE pt)
 				delete (double*)data;
 				data = 0;
 			}
+			*conv << *(double*)data;
 			break;
 		case CAT_SHORT:
 			data = new short;
@@ -548,6 +557,7 @@ void* synthfilereader::read_param_value(paramnames::PAR_TYPE pt)
 				delete (short*)data;
 				data = 0;
 			}
+			*conv << *(short*)data;
 			break;
 		case CAT_ULONG:
 			data = new unsigned long;
@@ -556,6 +566,7 @@ void* synthfilereader::read_param_value(paramnames::PAR_TYPE pt)
 				delete (unsigned long*)data;
 				data = 0;
 			}
+			*conv << *(unsigned long*)data;
 			break;
 		case CAT_TRIG:  // fall through to cat_state: different categories in IOCAT
 		case CAT_STATE: // but use same data type (enum STATUS) in usage.
@@ -570,6 +581,7 @@ void* synthfilereader::read_param_value(paramnames::PAR_TYPE pt)
 				delete (STATUS*)data;
 				data = 0;
 			}
+			*conv << svalue;
 			break;
 		case CAT_FILENAME:
 			if (!(*synthfile >> svalue)) {
@@ -583,6 +595,7 @@ void* synthfilereader::read_param_value(paramnames::PAR_TYPE pt)
 				cstr[svalue.length()] = 0;
 				data = cstr;
 			}
+			*conv << svalue;
 			break;
 		case CAT_NOTENAME:
 			if (!(*synthfile >> svalue)) {
@@ -596,6 +609,7 @@ void* synthfilereader::read_param_value(paramnames::PAR_TYPE pt)
 				cstr[svalue.length()] = 0;
 				data = cstr;
 			}
+			*conv << svalue;
 			break;
 		case CAT_MOD_FUNC:	// enum modifier::MOD_FUNC
 			data = new modifier::MOD_FUNC;
@@ -615,6 +629,7 @@ void* synthfilereader::read_param_value(paramnames::PAR_TYPE pt)
 				delete (modifier::MOD_FUNC*)data;
 				data = 0;
 			}
+			*conv << svalue; // ignored if error situ
 			break;
 		case CAT_CLIP_MODE:	// enum stereo_amp::CLIP_MODE
 			data = new stereo_amp::CLIP_MODE;
@@ -630,6 +645,7 @@ void* synthfilereader::read_param_value(paramnames::PAR_TYPE pt)
 				delete (stereo_amp::CLIP_MODE*)data;
 				data = 0;
 			}
+			*conv << svalue;
 			break;
 		case CAT_LOOP_MODE:	// enum sampler::LOOP_MODE
 			data = new sampler::LOOP_MODE;
@@ -645,6 +661,7 @@ void* synthfilereader::read_param_value(paramnames::PAR_TYPE pt)
 				delete (sampler::LOOP_MODE*)data;
 				data = 0;
 			}
+			*conv << svalue;
 			break;
 		case CAT_WAVFILEIN:
 			if (!(*synthfile >> svalue)) {
@@ -660,6 +677,7 @@ void* synthfilereader::read_param_value(paramnames::PAR_TYPE pt)
 					data = 0;
 				}
 			}
+			*conv << svalue;
 			break;
 		case CAT_LOGIC:
 			data = new logictrigger::LOGIC_FUNC;
@@ -674,6 +692,7 @@ void* synthfilereader::read_param_value(paramnames::PAR_TYPE pt)
 				delete (logictrigger::LOGIC_FUNC*)data;
 				data = 0;
 			}
+			*conv << svalue;
 			break;
 		default:
 			*err_msg = 
@@ -787,6 +806,8 @@ bool synthfilereader::read_adsr_envelope(adsr* env)
 
 bool synthfilereader::read_sequencer_riffs(sequencer* seq)
 {
+	if (conv) delete conv;
+	conv = new ostringstream;
 	if (seq->get_module_type() != synthmodnames::MOD_SEQUENCER) {
 		*err_msg = 
 			"programmer error: requested to read riffs into non sequencer module: " 
@@ -942,54 +963,6 @@ bool synthfilereader::read_signals(synthmod* mod)
     }
 	return true;
 }
-
-
-bool synthfilereader::read_switcher_signals(switcher* swtch)
-{
-	if (swtch->get_module_type() != synthmodnames::MOD_SWITCHER) {
-		*err_msg = 
-			"programmer error: requested to read wcntsignal into invalid module type: "
-			+ *swtch->get_username() + " of type: " + 
-			synthmod::get_modnames()->get_name(swtch->get_module_type());
-		return false;
-	}
-	string const* signals = read_command();
-	if (*signals != "signals") {
-		*err_msg = 
-			"\nin module: " + *swtch->get_username() + " expected: signals got:"
-			+ *signals + " instead.";
-		return false;
-	}
-    string const *rcom = read_command();
-	wcnt_signal* wcntsig = 0;
-	synthmodlist* modlist = synthmod::get_modlist();
-	synthmodnames* modnames = synthmod::get_modnames();
-    while (*rcom != "signals") 
-	{
-		wcntsig = (wcnt_signal*)modlist->get_synthmod_by_name(rcom);
-		if (!wcntsig) {
-			*err_msg = "\nNo swtcher wcnt_signal previously defined as: " + *rcom;
-			return false;
-		}
-		if (wcntsig->get_module_type() != synthmodnames::MOD_WCNTSIGNAL) {
-			*err_msg = 
-				"\nrequested swtcher wcnt_signal for swtcher, got: " +
-				modnames->get_name(wcntsig->get_module_type()) + " named: " 
-				+ *wcntsig->get_username();
-			return false;
-		}
-		if (!swtch->add_signal(wcntsig)) {
-			*err_msg = 
-				"\nCould not add wcnt_signal: " + *wcntsig->get_username() + " to swtcher";
-			return false;
-		}
-        if (verbose)
-			cout << "\nAdded wcnt_signal: " << *wcntsig->get_username();
-		rcom = read_command();
-    }
-	return true;
-}
-
 
 bool synthfilereader::read_userwave_envelope(user_wave* uwv)
 {
@@ -1156,6 +1129,8 @@ riffdata *const synthfilereader::read_riffdata(string const *com)
 note_data *const synthfilereader::read_notedata()
 {
     string name;
+	if (conv) delete conv;
+	conv = new ostringstream;
     *synthfile >> name;
     if (checknotename(name.c_str()) != 0) {
         *err_msg = "\nInvalid note name:" + name;
@@ -1200,11 +1175,9 @@ note_data *const synthfilereader::read_notedata()
     note_data *newnote = new note_data(name.c_str(), nlen, npos, vel);
     if (!newnote) {
         *err_msg = "\nNot enough memory for note:" + name;
-        *conv << npos;
-        *err_msg += conv->str();
-        *conv << nlen;
-        *err_msg += conv->str();
-        *conv << vel;
+        *conv << "\t" << npos;
+        *conv << "\t" << nlen;
+        *conv << "\t" << vel;
         *err_msg += conv->str();
         return 0;
     }
@@ -1255,6 +1228,7 @@ wavfilein *const synthfilereader::read_wavfilein(string const *com)
 		wavfile = 0;
 	}
 	return wavfile;
+	
 }
 
 bool synthfilereader::skip_remarks()

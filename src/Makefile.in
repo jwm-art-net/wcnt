@@ -299,6 +299,14 @@ clockclock.o: clockclock.cc ../include/clockclock.h \
 	../include/modoutputslist.h ../include/modoutput.h \
 	../include/modinputslist.h ../include/modinput.h \
 	../include/modparamlist.h ../include/modparam.h
+combiner.o: combiner.cc ../include/combiner.h ../include/wcntsignal.h \
+	../include/synthmodule.h ../include/linkedlist.h \
+	../include/synthmodnames.h ../include/inputnames.h \
+	../include/iocat.h ../include/outputnames.h \
+	../include/paramnames.h ../include/modoutputslist.h \
+	../include/modoutput.h ../include/modinputslist.h \
+	../include/modinput.h ../include/modparamlist.h \
+	../include/modparam.h ../include/conversions.h
 connector.o: connector.cc ../include/connector.h \
 	../include/synthmodulelist.h ../include/synthmodule.h \
 	../include/linkedlist.h ../include/synthmodnames.h \
