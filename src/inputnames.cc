@@ -40,7 +40,7 @@ inputnames::inputnames()
 	inname[IN_V_MOD] = "in_level_mod";					incat[IN_V_MOD] = CAT_DOUBLE;
 	inname[IN_H_MOD] = "in_time_mod";					incat[IN_H_MOD] = CAT_DOUBLE;
 	inname[IN_TRIG1] = "in_trig1";						incat[IN_TRIG1] = CAT_TRIG;
-	inname[IN_TRIG2] = "in_trig1";						incat[IN_TRIG2] = CAT_TRIG;
+	inname[IN_TRIG2] = "in_trig2";						incat[IN_TRIG2] = CAT_TRIG;
 }
 
 inputnames::~inputnames()

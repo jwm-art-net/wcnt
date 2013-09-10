@@ -674,7 +674,7 @@ void* synthfilereader::read_param_value(paramnames::PAR_TYPE pt)
 				delete (logictrigger::LOGIC_FUNC*)data;
 				data = 0;
 			}
-			
+			break;
 		default:
 			*err_msg = 
 				"\nunable to read value for parameter: " 

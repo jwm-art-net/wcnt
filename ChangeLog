@@ -1,3 +1,25 @@
+Monday March 24 2003 (several hours later....)
+--------------------------------------------------------------
+Ok.Ok. I've done it again!  I've released the supposedly
+fixed version wcnt-1.0001 without testing it fully. DOH!!
+
+wcnt-1.0001 
+
+FIXES:
+
+	* logic_trigger module:
+		now you can specify in_trig2 without it telling
+		you it expected in_trig1 (changed second "in_trig1"
+		to "in_trig2" inputnames.cc line 43)
+		
+		no longer reports something about combiner function
+		being an invalid parameter type (added missing break 
+		statement after line 676 in synthfilereader.cc)
+
+No, I'm not a proffesional.  Yes, this is the first time I've
+released software to the outside world.
+	
+--------------------------------------------------------------
 Monday March 24 2003
 
 wcnt-1.0001
