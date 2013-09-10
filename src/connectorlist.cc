@@ -1,5 +1,6 @@
 #ifndef CONNECTORLIST_H
 #include "../include/connectorlist.h"
+#include <iostream>
 
 #ifndef BARE_MODULES
 

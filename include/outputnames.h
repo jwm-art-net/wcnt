@@ -6,6 +6,8 @@
 #include <string>
 #include "iocat.h"
 
+using namespace std;
+
 class outputnames {
  public:
 	enum OUT_TYPE

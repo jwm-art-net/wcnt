@@ -1,6 +1,8 @@
 #ifndef WAVFILEIN_H
 #include "../include/wavfilein.h"
 
+using namespace std;
+
 wavfilein::wavfilein()
 :fname(NULL), sname(NULL), filein(NULL), header(NULL), status(WAV_STATUS_INIT)
 {

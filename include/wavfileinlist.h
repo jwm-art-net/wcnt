@@ -23,6 +23,8 @@
 #include "linkedlist.h"
 #include "wavfilein.h"
 
+using namespace std;
+
 class wavfilein_list
 {
  public:

@@ -1,5 +1,6 @@
 #ifndef SERIALWAVFILEOUT_H
 #include "../include/serialwavfileout.h"
+#include <iostream>
 
 serialwavfileout::serialwavfileout(string uname) :
 	synthmod(synthmodnames::MOD_SERIALWAVFILEOUT, serialwavfileout_count, uname), 

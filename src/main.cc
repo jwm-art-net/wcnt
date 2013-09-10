@@ -58,6 +58,8 @@
 #include "../include/jwmsynth.h"
 #endif
 
+#include <iostream>
+
 void title();
 void exitramblings();
 void memerr(const char* msg);

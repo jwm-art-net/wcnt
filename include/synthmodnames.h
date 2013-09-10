@@ -3,6 +3,8 @@
 
 #include <string>
 
+using namespace std;
+
 class synthmodnames 
 {
  public:
@@ -55,7 +57,7 @@ class synthmodnames
 	};
 	synthmodnames();
 	~synthmodnames();
-	string & get_name(SYNTH_MOD_TYPE id);
+	string &get_name(SYNTH_MOD_TYPE id);
 	SYNTH_MOD_TYPE get_type(string const*);
 	
  private:

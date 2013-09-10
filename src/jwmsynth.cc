@@ -1,5 +1,6 @@
 #ifndef JWMSYNTH_H
 #include "../include/jwmsynth.h"
+#include <iostream>
 
 #ifndef BARE_MODULES
 jwmsynth::jwmsynth(int const argc, char **const argv) : 

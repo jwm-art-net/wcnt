@@ -6,6 +6,7 @@
 #include <string>
 #include "iocat.h"
 
+using namespace std;
 
 class paramnames
 {

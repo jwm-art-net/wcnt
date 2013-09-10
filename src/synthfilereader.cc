@@ -1,5 +1,6 @@
 #ifndef SYNTHFILEREADER_H
 #include "../include/synthfilereader.h"
+#include <iostream>
 
 #ifndef BARE_MODULES
 

@@ -1,5 +1,6 @@
 #ifndef SAMPLER_H
 #include "../include/sampler.h"
+#include <iostream>
 
 sampler::sampler(string uname) : 
 	synthmod(synthmodnames::MOD_SAMPLER, sampler_count, uname),
