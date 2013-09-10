@@ -1,0 +1,421 @@
+wcnt/jwmsynth  // <-- that header must be on first line (and last line too)
+//------------------------------------------------------------------
+// demo1v3.wc //
+//------------------
+//
+// using modules: riff, sequencer, osc + sinewave, adsr, amp, wavfileout
+// this--> // signifies to wcnt to ignore the rest of the line:
+//
+// comments can be placed anywhere except inbetween a 'command' and it's value. ie 
+//
+//		riff // **cannot have comment here** riff1
+// or
+//		in_frequency //**or here**	seq1 //**or here** out_frequency 
+// but
+// 		riff riff1 // **this is ok**
+//------------------------------------
+// use whitespace as you wish.
+// ie:
+//	in_frequency
+//		seq1 out_frequency
+//-------------------------------------------------------------------
+//
+// wcnt 'expects' more header info next, in the following order
+
+samplerate 	44100
+bpm		120
+signature 	4/4
+
+// exit_bar tells the synth when to finish, regardless of anything else
+// otherwise it would go on for ever or until it crashed.
+// bar 0 is the first bar. stop when exit_bar is reached.
+exit_bar 5
+// end of header
+
+// all the modules and riff's and wavfilein's can be defined in any order
+// but the parts of each module are expected to be defined in specific order ;)
+
+// note length and position translation:
+// note_length : <-- whole half quarter eigth sixteenth thirtysecond -->
+// length value: <-- 256   128  64      32    16        8 -->
+riff 
+riff1
+// 		name position length velocity
+	note c-2		0 		100		1.0
+	note f-2		96		100		0.6
+	note b-2		192		45		0.75 // this tells osc_clock to slide to the new frequency
+riff1
+
+riff 
+riff2
+	note c-2		0 		90		1.0
+	note f-2		96		90		0.6
+	note b-2		192		45		0.75 // this tells osc_clock to slide to the new frequency
+riff2
+
+sequencer 
+seq1
+	track 
+	//riff name    bar
+		riff1 		0
+		riff2		1
+		riff1 		2
+		riff2		3
+	track
+	velocity_response_time	20	// in some conditions can help prevent nasting popping sounds from
+					// sudden changes of velocity ie when velocity is used by amplifier
+seq1 
+
+
+adsr  
+adsr1
+// adsr is really two adsr's 
+// high velocity (1.0) outputs upper adsr
+// low velocity (0.0) outputs lower adsr
+// any other velocity outputs in-between.
+// sustain section is held until note_off
+// and it's level is the same as decay level
+// it is automatically generated so you don't have to.
+//
+//			up time(ms)	up level	low time(ms)low level
+	envelope
+		attack	15.0		1.0			25.0		0.95
+		attack	15.0		0.9			25.0		0.80
+		decay	50.0		0.9			75.0		0.75
+		decay	75.0		0.4			100.0		0.35
+		release	55.0		0.15			35.0		0.15
+		release	125.0		0.0			115.0		0.0
+	envelope
+	in_note_on_trig		seq1		out_note_on_trig
+	in_note_off_trig	seq1 		out_note_off_trig
+	in_velocity 		seq1 		out_velocity //negative inverted.
+	sustain_state 		on
+	zero_retrigger		off
+adsr1
+
+osc_clock
+osc0
+	in_note_on_trig		seq1	out_note_on_trig
+	in_note_slide_trig	seq1	out_note_slide_trig
+	in_frequency		seq1	out_frequency
+	in_freq_mod1		off
+	in_freq_mod2		off
+	octave_offset	4
+	tuning_semitones 0.0
+	portamento_time	50.0
+	freq_mod1_size	8 	// 1 no change  > 1 amount to increase or decrease frequency by
+	freq_mod2_size	1 	// ie 16 will make maximum of frequency * 16 or minimum of frequency / 16
+			 	// (trusting in_freq_mod1 range is within -1.0 to + 1.0)
+osc0
+
+osc_clock
+osc3
+	in_note_on_trig		seq1	out_note_on_trig
+	in_note_slide_trig	seq1	out_note_slide_trig
+	in_frequency		seq1	out_frequency
+	in_freq_mod1		lfo1wave	out_output
+	in_freq_mod2		off
+	octave_offset	-1
+	tuning_semitones 0.0
+	portamento_time	50.0
+	freq_mod1_size	16	// 1 no change  > 1 amount to increase or decrease frequency by
+	freq_mod2_size	1	// ie 16 will make maximum of frequency * 16 or minimum of frequency / 16
+			 	// (trusting in_freq_mod1 range is within -1.0 to + 1.0)
+osc3
+
+osc_clock
+osc4
+	in_note_on_trig		seq1	out_note_on_trig
+	in_note_slide_trig	seq1	out_note_slide_trig
+	in_frequency		seq1	out_frequency
+	in_freq_mod1		swave3	out_output
+	in_freq_mod2		off
+	octave_offset	1
+	tuning_semitones 0.0
+	portamento_time	50.0
+	freq_mod1_size	8 	// 1 no change  > 1 amount to increase or decrease frequency by
+	freq_mod2_size	1 	// ie 16 will make maximum of frequency * 16 or minimum of frequency / 16
+			 	// (trusting in_freq_mod1 range is within -1.0 to + 1.0)
+osc4
+
+osc_clock
+osc5
+	in_note_on_trig		seq1	out_note_on_trig
+	in_note_slide_trig	seq1	out_note_slide_trig
+	in_frequency		seq1	out_frequency
+	in_freq_mod1		swave3	out_output
+	in_freq_mod2		off
+	octave_offset	0
+	tuning_semitones 3.0
+	portamento_time	50.0
+	freq_mod1_size	8 	// 1 no change  > 1 amount to increase or decrease frequency by
+	freq_mod2_size	1 	// ie 16 will make maximum of frequency * 16 or minimum of frequency / 16
+			 	// (trusting in_freq_mod1 range is within -1.0 to + 1.0)
+osc5
+
+sine_wave
+swave0
+	in_phase_trig	osc0	out_phase_trig	// when to begin journey through (360 degrees)
+	in_deg_size	osc0	out_deg_size 	// <--deg_size is 360 / (samplerate / frequency)
+						// or amount to step through on each sample.
+						// whether to stop after one cycle or 
+	recycle_mode		off 		// <-- continue till retrigger.
+						// whether to _jump_ to zero degrees on 
+	on_trig_reset_phase	off 		// <-- trigger - better left off in most cases
+	phase_cycles 1.0			// amount of a cycle (360 degrees) to do
+swave0
+
+sine_wave
+swave3
+	in_phase_trig	osc3	out_phase_trig	// when to begin journey through (360 degrees)
+	in_deg_size	osc3	out_deg_size 	// <--deg_size is 360 / (samplerate / frequency)
+						// or amount to step through on each sample.
+						// whether to stop after one cycle or 
+	recycle_mode		on 		// <-- continue till retrigger.
+						// whether to _jump_ to zero degrees on 
+	on_trig_reset_phase	on 		// <-- trigger - better left off in most cases
+	phase_cycles 1.0			// amount of a cycle (360 degrees) to do
+swave3
+
+user_wave
+uwave3
+	envelope
+//		vertex updegree uplevel lodegree lolevel
+		vertex	1	1.0	31	1.0
+		vertex	32	0.5	60	0.8
+		vertex	180	0.0	70	0.25
+		vertex	200	-0.8	300	-0.3
+		vertex	320	-0.9	320	-0.6
+		vertex	359	-1.0	359	-1.0
+	envelope
+	in_phase_trig	osc3	out_phase_trig
+	in_deg_size	osc3	out_deg_size
+	in_level_mod	lfo1wave	out_output
+	in_time_mod	adsr1	out_output
+	recycle_mode	off
+	zero_retrigger	off
+uwave3
+
+user_wave
+uwave4
+	envelope
+//		vertex updegree uplevel lodegree lolevel
+		vertex	15	1.0	31	1.0
+		vertex	32	0.5	60	0.8
+		vertex	180	0.0	70	0.25
+		vertex	200	-0.8	300	-0.3
+		vertex	320	-0.9	320	-0.6
+		vertex	335	-1.0	335	-1.0
+	envelope
+	in_phase_trig	osc4	out_phase_trig
+	in_deg_size	osc4	out_deg_size
+	in_level_mod	lfo1wave	out_output
+	in_time_mod	adsr1	out_output
+	recycle_mode	off
+	zero_retrigger	off
+uwave4
+
+sine_wave
+swave4
+	in_phase_trig	osc0	out_phase_trig	// when to begin journey through (360 degrees)
+	in_deg_size	osc4	out_deg_size 	// <--deg_size is 360 / (samplerate / frequency)
+						// or amount to step through on each sample.
+						// whether to stop after one cycle or 
+	recycle_mode		on 		// <-- continue till retrigger.
+						// whether to _jump_ to zero degrees on 
+	on_trig_reset_phase	on 		// <-- trigger - better left off in most cases
+	phase_cycles 1.0			// amount of a cycle (360 degrees) to do
+swave4
+
+user_wave
+uwave5
+	envelope
+//		vertex updegree uplevel lodegree lolevel
+		vertex	15	1.0	31	1.0
+		vertex	32	0.5	60	0.8
+		vertex	180	0.0	70	0.25
+		vertex	200	-0.8	300	-0.3
+		vertex	320	-0.9	320	-0.6
+		vertex	335	-1.0	335	-1.0
+	envelope
+	in_phase_trig	osc5	out_phase_trig
+	in_deg_size	osc5	out_deg_size
+	in_level_mod	lfo1wave	out_output
+	in_time_mod	adsr1	out_output
+	recycle_mode	off
+	zero_retrigger	off
+uwave5
+
+
+sine_wave
+swave5
+	in_phase_trig	osc0	out_phase_trig	// when to begin journey through (360 degrees)
+	in_deg_size	osc5	out_deg_size 	// <--deg_size is 360 / (samplerate / frequency)
+						// or amount to step through on each sample.
+						// whether to stop after one cycle or 
+	recycle_mode		on 		// <-- continue till retrigger.
+						// whether to _jump_ to zero degrees on 
+	on_trig_reset_phase	on 		// <-- trigger - better left off in most cases
+	phase_cycles 1.0			// amount of a cycle (360 degrees) to do
+swave5
+
+lfo_clock
+lfo_clock1
+	in_phase_trig	seq1 out_start_trig
+	in_freq_mod1	off
+	in_freq_mod2	off
+	freq	1.250
+	freq_mod1_size	0.00
+	freq_mod2_size	0.00
+lfo_clock1
+
+tri_wave
+lfo1wave
+	in_phase_trig	lfo_clock1	out_phase_trig
+	in_deg_size	lfo_clock1	out_deg_size
+	recycle_mode	off
+	zero_retrigger	off
+lfo1wave
+
+user_wave
+uwave0
+	envelope
+//		vertex updegree uplevel lodegree lolevel
+		vertex	30	0.3	30	0.3
+		vertex	60	1.0	60	1.0
+		vertex	180	0.8	180	0.8
+		vertex	270	0.6	270	0.6
+		vertex	320	0.25	320	0.25
+	envelope
+	in_phase_trig	osc0	out_phase_trig
+	in_deg_size	osc0	out_deg_size
+	in_level_mod	off
+	in_time_mod	off
+	recycle_mode	off
+	zero_retrigger	off
+uwave0
+
+clock
+clock1
+	in_freq_mod1	adsr1	out_output
+	freq	250
+	freq_mod1_size	8
+clock1
+
+clock
+clock2
+	in_freq_mod1	adsr1	out_output
+	freq	250
+	freq_mod1_size	8
+clock2
+
+lp_filter
+lpf1
+	in_signal		uwave4	out_output
+	in_cutoff_degsize	clock1	out_deg_size
+	in_res_amp_mod	off
+	res_level	1.0
+	res_amp_modsize	0.0
+lpf1
+
+
+hp_filter
+hpf1
+	in_signal		uwave5	out_output
+	in_cutoff_degsize	clock2	out_deg_size
+	in_res_amp_mod	off
+	res_level	1.0
+	res_amp_modsize	0.0
+hpf1
+
+wcnt_signal
+sig1
+	in_signal	lpf1	out_output
+sig1
+
+wcnt_signal
+sig2
+	in_signal	hpf1	out_output
+sig2
+
+
+combiner
+cmb1
+	signals
+		sig1
+		sig2
+	signals
+	mean_total	on
+cmb1
+
+stereo_amp
+amp1
+									// (mono) signal (within range -1.0 to 1.0 ):
+	in_signal	cmb1	out_output	// to amplify (to range -32767 to 32767):
+	in_amp_eg	adsr1	out_output 	// <- amplitude shape signal
+	in_amp_mod	uwave0	out_output //out_velocity	// <- amplitude modulation signal
+	in_pan_mod	lfo1wave	out_output	// <- panning modulation signal
+	amplitude	20000			// <- -32767 to 32767  (negative inverts)
+	amp_mod_size	0.25			// <- ratio module amplitude by in_amp_mod input
+	pan		0.00  			// <- -1 left 0 center 1 right
+	pan_mod_size	0.99 			// <- -0.999... to 0.999...
+	clip_mode		clip			// <- clip or invert_clip - cut or invert excess 
+	clip_level		32000			// <- -32767 to 32767 chop off level
+	dc_level		0				// <- -32767 to 32767 
+									// dc_level: amount to offset amplified signal:
+									// note: dc_level is also shaped by in_amp_eg etc
+amp1
+
+stereo_amp
+amp2
+									// (mono) signal (within range -1.0 to 1.0 ):
+	in_signal	cmb1	out_output	// to amplify (to range -32767 to 32767):
+	in_amp_eg	adsr1	out_output 	// <- amplitude shape signal
+	in_amp_mod	uwave0	out_output //out_velocity	// <- amplitude modulation signal
+	in_pan_mod	lfo1wave	out_output	// <- panning modulation signal
+	amplitude	20000			// <- -32767 to 32767  (negative inverts)
+	amp_mod_size	0.25			// <- ratio module amplitude by in_amp_mod input
+	pan		0.00  			// <- -1 left 0 center 1 right
+	pan_mod_size	-0.99 			// <- -0.999... to 0.999...
+	clip_mode		clip			// <- clip or invert_clip - cut or invert excess 
+	clip_level		32000			// <- -32767 to 32767 chop off level
+	dc_level		0				// <- -32767 to 32767 
+									// dc_level: amount to offset amplified signal:
+									// note: dc_level is also shaped by in_amp_eg etc
+amp2
+
+mix_chan
+chan1
+	in_left		amp1	out_left
+	in_right	amp1	out_right
+chan1
+
+mix_chan
+chan2
+	in_left		amp2	out_left
+	in_right	amp2	out_right
+chan2
+
+mixer
+mix1
+	desk
+		chan1
+		chan2
+	desk
+	master_level	0.75
+mix1
+
+wavfile_out
+wav1
+	in_left		mix1	out_left  // <- amplified signal (range -32767 to 32767)
+	in_right	mix1	out_right // <- amplified signal
+	filename	demo1v3.wav		// <- any valid filename
+	write_from_bar	0 // begin on start of 1st bar
+	write_to_bar	5 // end on start of 3nd bar 
+	// use start_sample	as alternative 
+	// use end_sample as alternative
+wav1
+
+wcnt/jwmsynth   // everything from here on is ignored
+
+

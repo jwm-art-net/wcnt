@@ -1,0 +1,252 @@
+wcnt/jwmsynth  // <-- that header must be on first line (and last line too)
+//------------------------------------------------------------------
+// demo4.wc //
+//------------------
+//
+// using modules: riff, sequencer, osc_clock + sinewave, adsr, amp, wavfileout
+// lfo_clock + sinewave, sampler, mix_chan(s) + mixer
+// this--> // signifies to wcnt to ignore the rest of the line:
+//
+// comments can be placed anywhere except inbetween a 'command' and it's value. ie 
+//
+//		riff // **cannot have comment here** talkriff1
+// or
+//		in_frequency //**or here**	seq1 //**or here** out_frequency 
+// but
+// 		riff talkriff1 // **this is ok**
+//------------------------------------
+// use whitespace as you wish.
+// ie:
+//	in_frequency
+//		seq1 out_frequency
+//-------------------------------------------------------------------
+//
+// wcnt 'expects' more header info next, in the following order
+
+samplerate 	44100
+bpm		160
+signature 	4/4
+
+// exit_bar tells the synth when to finish, regardless of anything else
+// otherwise it would go on for ever or until it crashed.
+// bar 0 is the first bar. stop when exit_bar is reached.
+
+exit_bar 16
+
+
+// end of header
+
+// all the modules and riff's and wavfilein's can be defined in any order
+// but the parts of each module are expected to be defined in specific order ;)
+
+// note length and position translation:
+// note_length : <-- whole half quarter eigth sixteenth thirtysecond -->
+// length value: <-- 256   128  64      32    16        8 -->
+riff 
+talkriff1
+// 		name position length velocity
+	note c0		0 	500	1.0
+talkriff1
+
+riff 
+talkriff2
+// 		name position length velocity
+	note c0		0 		50		1.0
+	note d1		64		66		1.0
+	note e0		128		52		1.0
+	note f0		192		52		1.0
+talkriff2
+
+sequencer 
+talkseq
+	track 	// riffname	bar position
+		talkriff1 		0
+		talkriff2 		2
+		talkriff2 		3
+		talkriff1 		4
+		talkriff2 		6
+		talkriff2 		7
+		talkriff1 		8
+		talkriff2 		10
+		talkriff2 		11
+		talkriff1 		12
+		talkriff2 		14
+		talkriff2 		15
+	track
+	velocity_response_time	20	// in some conditions can help prevent nasting popping sounds from
+					// sudden changes of velocity ie when velocity is used by amplifier
+talkseq 
+
+adsr  
+talkadsr
+// adsr is really two adsr's:
+// high velocity (1.0) outputs upper adsr low velocity (0.0) outputs lower adsr
+// any other velocity outputs in-between. sustain section is held until note_off
+// and it's level is the same as decay level it is automatically generated so you don't have to.
+// note that all the velocity input does is modulate between the two shapes,
+// it does not change the 'loudness'.
+//			up time(ms)	up level	low time(ms)low level
+	envelope
+		attack	5.0		1.0			15.0		0.45
+		attack	5.0		0.9			15.0		0.80
+		decay	70.0		0.9			45.0		0.75
+		decay	45.0		0.8			10.0		0.65
+		release	45.0		0.25			35.0		0.25
+		release	15.0		0.0			25.0		0.0
+	envelope
+	in_note_on_trig		talkseq		out_note_on_trig
+	in_note_off_trig	talkseq 	out_note_off_trig
+	in_velocity 		talkseq 	out_velocity //negative inverted.  
+	sustain_state 		on
+	zero_retrigger		off
+talkadsr
+
+
+
+osc_clock
+talkosc
+	in_note_on_trig		talkseq	out_note_on_trig
+	in_note_slide_trig	talkseq	out_note_slide_trig
+	in_frequency		talkseq	out_frequency
+	in_freq_mod1		off
+	in_freq_mod2		off
+	octave_offset	0
+	tuning_semitones 0
+	portamento_time	250.0
+	freq_mod1_size	1.0
+	freq_mod2_size	1.0
+talkosc
+
+lfo_clock
+lfo_clock1
+	in_phase_trig	talkseq out_start_trig
+	in_freq_mod1	off
+	in_freq_mod2	off
+	freq		0.023
+	freq_mod1_size	1.0
+	freq_mod2_size	1.0
+lfo_clock1
+
+tri_wave
+lfo1wave
+	in_phase_trig	lfo_clock1	out_phase_trig
+	in_deg_size	lfo_clock1	out_deg_size
+	recycle_mode	off
+	zero_retrigger	off
+lfo1wave
+
+lfo_controller
+lfo1ctrl
+	in_trig		talkseq out_note_on_trig
+	in_waveform	lfo1wave out_output
+	in_amp_mod	off
+	delay_time	75.00
+	ramp_time	75.00
+	start_level	0.00
+	end_level	1.00
+	amp_mod_size	1.00
+lfo1ctrl
+
+// to use the sampler we need to open the wav with wavfilein
+// more than one sampler can use the same wav.
+wavfilein countbilly.wav // countbilly.wav is 392225 samples
+
+sampler
+talksampler
+	in_play_trig	talkosc out_phase_trig  	// using an osc to trigger playback from start position
+	in_deg_size	talkosc out_deg_size		// which is modulated by lfo1wave at freq 0.03 
+	in_start_pos_mod lfo1wave	out_output	// modulated between start_pos_min and start_pos_max
+	wavfile countbilly.wav		// the bigger the gap, the slower the modulating freq needs to be
+	start_pos_min	0				// to get something sounding similiar to the original sample
+	start_pos_max	390000				// lfo1wave output is in range -1.0 to 1.0  0
+	loop_mode	off				// startpos is (max - min) / 2 + ((max - min) / 2) * modulator
+	loop_start_pos	100				// or  -1.0 will give startpos of start_pos_min
+	loop_end_pos	200				// and  1.0 will give startpos of start_pos_max
+	anti_clip_samples 50
+	root_note	c-1				
+	degsize_amount	1.00
+talksampler
+
+sampler  
+talksampler2  // this sampler has a different root_note and is also slightly out of sync.
+	in_play_trig	talkosc out_phase_trig  	// using an osc to trigger playback from start position
+	in_deg_size	talkosc out_deg_size		// which is modulated by lfo1wave at freq 0.03 
+	in_start_pos_mod lfo1wave	out_output	// modulated between start_pos_min and start_pos_max
+	wavfile countbilly.wav		// the bigger the gap, the slower the modulating freq needs to be
+	start_pos_min	4000				// to get something sounding similiar to the original sample
+	start_pos_max	389996				// lfo1wave output is in range -1.0 to 1.0  0
+	loop_mode	off				// startpos is (max - min) / 2 + ((max - min) / 2) * modulator
+	loop_start_pos	100				// or  -1.0 will give startpos of start_pos_min
+	loop_end_pos	200				// and  1.0 will give startpos of start_pos_max
+	anti_clip_samples 50
+	root_note	c0				
+	degsize_amount	1.00
+talksampler2
+
+
+stereo_amp
+talkamp					// (mono) signal (within range -1.0 to 1.0 ):
+	in_signal	talksampler	out_l	// to amplify (to range -32767 to 32767):
+	in_amp_eg	talkadsr	out_output 	// <- amplitude shape signal
+	in_amp_mod	talkseq		out_velocity	// <- amplitude modulation signal
+	in_pan_mod	off			// <- panning modulation signal
+	amplitude	32000			// <- -32767 to 32767  (negative inverts)
+	amp_mod_size	0.75			// <- ratio module amplitude by in_amp_mod input
+	pan		0.00  			// <- -1 left 0 center 1 right
+	pan_mod_size	0.99 			// <- -0.999... to 0.999...
+	clip_mode	invert_clip		// <- clip or invert_clip - cut or invert excess 
+	clip_level	32000		// <- -32767 to 32767 chop off level
+	dc_level	0		// <- -32767 to 32767 
+						// dc_level: amount to offset amplified signal:
+						// note: dc_level is also shaped by in_amp_eg etc
+talkamp
+
+stereo_amp
+talkamp2				// (mono) signal (within range -1.0 to 1.0 ):
+	in_signal	talksampler2	out_l	// to amplify (to range -32767 to 32767):
+	in_amp_eg	talkadsr	out_output 	// <- amplitude shape signal
+	in_amp_mod	talkseq		out_velocity	// <- amplitude modulation signal
+	in_pan_mod	off			// <- panning modulation signal
+	amplitude	32000			// <- -32767 to 32767  (negative inverts)
+	amp_mod_size	0.75			// <- ratio module amplitude by in_amp_mod input
+	pan		0.00  			// <- -1 left 0 center 1 right
+	pan_mod_size	0.99 			// <- -0.999... to 0.999...
+	clip_mode	invert_clip		// <- clip or invert_clip - cut or invert excess 
+	clip_level	32000		// <- -32767 to 32767 chop off level
+	dc_level	0		// <- -32767 to 32767 
+						// dc_level: amount to offset amplified signal:
+						// note: dc_level is also shaped by in_amp_eg etc
+talkamp2
+
+mix_chan
+talkchan
+	in_left		talkamp out_left
+	in_right	talkamp out_right
+talkchan
+
+mix_chan
+talkchan2
+	in_left		talkamp2 out_left
+	in_right	talkamp2 out_right
+talkchan2
+
+mixer mixer
+	desk
+		talkchan
+		talkchan2
+	desk
+	master_level 0.8
+mixer
+
+wavfile_out
+wavout
+	in_left		mixer	out_left  // <- amplified signal (range -32767 to 32767)
+	in_right	mixer	out_right // <- amplified signal
+	filename	demo4.wav		// <- any valid filename
+	write_from_bar	0 // begin on start of 1st bar
+	write_to_bar	16 // end on start of 3nd bar 
+	// use start_sample	as alternative 
+	// use end_sample as alternative
+wavout
+
+wcnt/jwmsynth

@@ -1,0 +1,297 @@
+wcnt/jwmsynth  // <-- that header must be on first line (and last line too)
+//------------------------------------------------------------------
+// demo5random.wc //
+//------------------
+// 
+// using modules:  	osc_clock sinewave adsr amp wavfileout sample_hold
+// 			noise_generator freq_generator clock 
+// this--> // signifies to wcnt to ignore the rest of the line:
+//
+// comments can be placed anywhere except inbetween a 'command' and it's value. ie 
+//
+//		riff // **cannot have comment here** riff1
+// or
+//		in_frequency //**or here**	seq1 //**or here** out_frequency 
+// but
+// 		riff riff1 // **this is ok**
+//------------------------------------
+// use whitespace as you wish.
+// ie:
+//	in_frequency
+//		seq1 out_frequency
+//-------------------------------------------------------------------
+//
+// wcnt 'expects' more header info next, in the following order
+
+samplerate 	44100
+bpm		160
+signature 	4/4
+exit_bar 16
+
+clock
+shclock1
+	in_freq_mod1	off
+	freq	4.0  // ticks per second
+	freq_mod1_size	1.0
+shclock1
+
+
+clock
+shclock2
+	in_freq_mod1	off
+	freq	16.0 // ticks per second
+	freq_mod1_size	1.0
+shclock2
+
+noise_generator noisegen1 noisegen1
+noise_generator noisegen2 noisegen2
+
+sample_hold
+s&h1
+	in_trig		shclock1	out_phase_trig
+	in_signal	noisegen1	out_output
+	decay_time	0.00 		// 0.00 for everlasting  (ms)
+s&h1
+
+sample_hold
+s&h2
+	in_trig		shclock2	out_phase_trig
+	in_signal	noisegen2	out_output
+	decay_time	0.00 		// 0.00 for everlasting  (ms)
+s&h2
+
+freq_generator
+freqgen1
+	in_signal	s&h1	out_output
+	step_count	32
+	sig_range_lo	-1.0
+	sig_range_hi	1.0
+	freq_range_lo	60
+	freq_range_hi	250
+freqgen1
+
+freq_generator
+freqgen2
+	in_signal	s&h2	out_output
+	step_count	32
+	sig_range_lo	-1.0
+	sig_range_hi	1.0
+	freq_range_lo	100
+	freq_range_hi	800
+freqgen2
+
+lfo_clock
+lfo_clock2
+	in_phase_trig	off
+	in_freq_mod1	lfo2wave	out_output
+	in_freq_mod2	lfo1wave	out_output
+	freq		0.35
+	freq_mod1_size	1.25
+	freq_mod2_size	1.0
+lfo_clock2
+
+tri_wave 
+lfo2wave
+	in_phase_trig	lfo_clock2	out_phase_trig
+	in_deg_size	lfo_clock2	out_deg_size
+	recycle_mode	off
+	zero_retrigger	off
+lfo2wave
+
+osc_clock
+osc1
+	in_note_on_trig		shclock1	out_phase_trig
+	in_note_slide_trig	off
+	in_frequency		freqgen1	out_frequency
+	in_freq_mod1		off	
+	in_freq_mod2		off
+	octave_offset	0
+	tuning_semitones 0
+	portamento_time	50.0
+	freq_mod1_size	1.0
+	freq_mod2_size	1.0
+osc1
+
+osc_clock
+osc2
+	in_note_on_trig		shclock2	out_phase_trig
+	in_note_slide_trig	off
+	in_frequency		freqgen2	out_frequency
+	in_freq_mod1		off
+	in_freq_mod2		off
+	octave_offset	1
+	tuning_semitones 0
+	portamento_time	50.0
+	freq_mod1_size	1.0
+	freq_mod2_size	1.0
+osc2
+
+sine_wave
+swave1
+	in_phase_trig	osc1	out_phase_trig
+	in_deg_size	osc1	out_deg_size 
+	recycle_mode		off
+	on_trig_reset_phase	off
+	phase_cycles 1.0						
+swave1
+
+sine_wave
+swave2
+	in_phase_trig	osc2	out_phase_trig	
+	in_deg_size	osc2	out_deg_size 
+	recycle_mode		off 	
+	on_trig_reset_phase	off 	
+	phase_cycles 1.0					
+swave2
+
+lfo_clock
+lfo_clock1
+	in_phase_trig	off
+	in_freq_mod1	lfo1wave out_output
+	in_freq_mod2	lfo2wave out_output
+	freq		0.85
+	freq_mod1_size	1.25
+	freq_mod2_size	1.00
+lfo_clock1
+
+tri_wave 
+lfo1wave
+	in_phase_trig	lfo_clock1	out_phase_trig
+	in_deg_size	lfo_clock1	out_deg_size
+	recycle_mode	off
+	zero_retrigger	off
+lfo1wave
+
+constant one 		value 1.0 	one
+
+clock
+f1000
+	in_freq_mod1	off
+	freq		1000
+	freq_mod1_size	1.0
+f1000
+
+lp_filter
+lpf1
+	in_signal		s&h1		out_output
+	in_cutoff_degsize	f1000		out_deg_size
+	in_res_amp_mod	off
+	res_level	0.0
+	res_amp_modsize	0.0
+lpf1
+
+freq_generator
+freqgen3
+	in_signal	lfo1wave	out_output
+	step_count	32
+	sig_range_lo	-1.0
+	sig_range_hi	1.0
+	freq_range_lo	1000
+	freq_range_hi	10000
+freqgen3
+
+lp_filter
+lpf3
+	in_signal		noisegen1	out_output
+	in_cutoff_degsize	freqgen3	out_deg_size
+	in_res_amp_mod		lfo1wave	out_output
+	res_level	0.65
+	res_amp_modsize	0.75
+lpf3
+
+rnd_trigger
+rndtrig
+	in_trig	lfo_clock1	out_phase_trig
+	probability	0.5
+	not_probability 0.5
+rndtrig
+
+adsr
+adsr1
+	envelope
+		attack  300	1.0	300	1.0
+		decay   100	0.75	100	0.75
+		release 1000	0	1000	0
+	envelope
+	in_note_on_trig		rndtrig	out_trig
+	in_note_off_trig	rndtrig out_not_trig
+	in_velocity		off
+	sustain_state	on
+	zero_retrigger	off
+adsr1
+
+adsr
+adsr2
+	envelope
+		attack  300	1.0	300	1.0
+		decay   100	0.75	100	0.75
+		release 1000	0	1000	0
+	envelope
+	in_note_on_trig		rndtrig	out_not_trig
+	in_note_off_trig	rndtrig out_trig
+	in_velocity		off
+	sustain_state	on
+	zero_retrigger	off
+adsr2
+
+stereo_amp
+amp1
+	in_signal	swave1		out_output		// to amplify (to range -32767 to 32767):
+	in_amp_eg	adsr1		out_output	 	// <- amplitude shape signal
+	in_amp_mod	swave2		out_output				// <- amplitude modulation signalav
+	in_pan_mod	lpf1		out_output	// <- panning modulation signal
+	amplitude	20000			// <- -32767 to 32767  (negative inverts)
+	amp_mod_size	0.5			// <- ratio module amplitude by in_amp_mod input
+	pan		0.00  			// <- -1 left 0 center 1 right
+	pan_mod_size	0.99 			// <- -0.999... to 0.999...
+	clip_mode	clip			// <- clip or invert_clip - cut or invert excess 
+	clip_level	32000			// <- -32767 to 32767 chop off level
+	dc_level	0				// <- -32767 to 32767 
+amp1
+
+stereo_amp
+amp2
+	in_signal	lpf3		out_output		// to amplify (to range -32767 to 32767):
+	in_amp_eg	adsr2		out_output	 	// <- amplitude shape signal
+	in_amp_mod	swave2		out_output				// <- amplitude modulation signalav
+	in_pan_mod	lfo2wave	out_output	// <- panning modulation signal
+	amplitude	30000			// <- -32767 to 32767  (negative inverts)
+	amp_mod_size	0.75			// <- ratio module amplitude by in_amp_mod input
+	pan		0.00  			// <- -1 left 0 center 1 right
+	pan_mod_size	0.99 			// <- -0.999... to 0.999...
+	clip_mode	clip			// <- clip or invert_clip - cut or invert excess 
+	clip_level	32000			// <- -32767 to 32767 chop off level
+	dc_level	0				// <- -32767 to 32767 
+amp2
+
+mix_chan
+chan1
+	in_left		amp1 	out_left
+	in_right	amp1	out_right
+chan1
+
+mix_chan
+chan2
+	in_left		amp2 	out_left
+	in_right	amp2	out_right
+chan2
+
+mixer
+mix1
+	desk
+		chan1
+		chan2
+	desk
+	master_level	1.0
+mix1
+
+wavfile_out
+wav1
+	in_left		mix1	out_left  // <- amplified signal (range -32767 to 32767)
+	in_right	mix1	out_right // <- amplified signal
+	filename	demo5random.wav		// <- any valid filename
+	write_from_bar	0 // begin on start of 1st bar
+	write_to_bar	16 // end on start of 3nd bar 
+wav1
+
+wcnt/jwmsynth
