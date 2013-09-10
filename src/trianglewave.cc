@@ -83,7 +83,7 @@ void triangle_wave::run()
         if (zero_retrigger_mode == ON)
             output = 0;
         sect = 0;
-        sectsample = 0;
+        sectsample -= sectmaxsamps;
         sect_startlvl = output;
         sect_spanlvl = 1 - sect_startlvl;
     }
@@ -96,7 +96,7 @@ void triangle_wave::run()
         sectsample++;
         if (sectsample >= sectmaxsamps)
         {
-            sectsample = 0;
+            sectsample -= sectmaxsamps;
             sect++;
             switch(sect)
             {

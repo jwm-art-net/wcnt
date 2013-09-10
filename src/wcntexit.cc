@@ -12,6 +12,7 @@ wcnt_exit::wcnt_exit(char const* uname) :
 
 wcnt_exit::~wcnt_exit()
 {
+    get_inputlist()->delete_module_inputs(this);
 }
 
 void const* wcnt_exit::set_in(inputnames::IN_TYPE it, void const* o)

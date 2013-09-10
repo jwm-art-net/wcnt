@@ -1,4 +1,13 @@
 --------------------------------------------------------------
+Wednesday 11th October 2006
+
+FIXES:
+    * wcnt_exit module did not delete its inputs. [ caused a
+      problem when the module was excluded twice before being
+      defined - memory addresses coincided and wcnt requested
+      for wcnt_exit, two in_bar inputs instead of one. ]
+
+--------------------------------------------------------------
 Tuesday 10th October 2006
 
 FIXES:
