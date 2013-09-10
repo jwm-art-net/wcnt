@@ -64,10 +64,16 @@ multiplier mm1
     in_modifier sine2       out_output
 mm1
 
+// edit inputs and params here, before group copying, so as
+// to not have to do so with each group copy.
+
 input_editor
 inputs1
     editlist
         connect clock1 in_freq_mod1 mm1 out_output
+        connect wav1
+            in_left     mix1    out_left
+            in_right    mix1    out_right
     editlist
 inputs1
 
@@ -162,15 +168,6 @@ mix1
     mix
     master_level  0.125
 mix1
-
-input_editor
-inputs11
-    editlist
-        connect wav1
-            in_left     mix1    out_left
-            in_right    mix1    out_right
-    editlist
-inputs11
 
 // all done...
 

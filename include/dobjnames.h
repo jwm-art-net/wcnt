@@ -85,7 +85,6 @@ public:
         DEF_RIFFEDITOR,
         DEF_COPIER,
         DEF_GROUP,
-        DEF_GROUPCLONE,
         //---------------------------------------------
         // special dobj for inserting synthmodules into
         // list see dobjmod.h for more info.

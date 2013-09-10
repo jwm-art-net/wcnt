@@ -66,7 +66,6 @@ bool connector::connect()
     }
     const void* out_data = outmod->get_out(out_type);
     if (!out_data) {
-        cout << "\nout_data:" << out_data;
         connect_err_msg = "\nIn module ";
         connect_err_msg += in_mod->get_username();
         connect_err_msg += ", cannot connect input ";

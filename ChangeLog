@@ -1,7 +1,21 @@
 --------------------------------------------------------------
+Friday 6th October 2006
+
+FIXES:
+    * connector::connect had a cout << null_pointer left
+      inside it by accident.
+
+    * removed group_clone data object name from dobjnames.
+
+    * removed unecessary requirement in
+      inputedit::create_connectors for the output module to
+      exist (ie to have previously been defined prior to the
+      definition of the input_editor.)
+
+--------------------------------------------------------------
 Thursday 5th October 2006
 
-Changes:
+CHANGES:
     * added duplication code to combiner module. the combiner
       when duplicated as part of a group, and when the
       wcnt_signals it combines are part of the same group, now

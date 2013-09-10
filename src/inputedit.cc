@@ -76,15 +76,7 @@ bool inputedit::create_connectors(bool verbose)
             out_type = outnames->get_nonezerotype(iocat);
         }
         else {
-            if (!smlist->get_synthmod_by_name(out_modname.c_str())) {
-                *err_msg = "in connection for ";
-                *err_msg += modname;
-                *err_msg += " output module ";
-                *err_msg += out_modname;
-                *err_msg += " does not exist.";
-                invalidate();
-                return false;
-            }
+            // allow output module to not exist yet.
             strm >> output_name;
             out_type = outnames->get_type(output_name.c_str());
             if (out_type == outputnames::OUT_FIRST) {

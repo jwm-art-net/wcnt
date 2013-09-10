@@ -54,7 +54,6 @@ dobjnames::dobjnames()
     dobj_name[DEF_RIFFEDITOR] = "riff_editor";
     dobj_name[DEF_COPIER] = "copier";
     dobj_name[DEF_GROUP] = "group";
-    dobj_name[DEF_GROUPCLONE] = "group_clone";
 //------------------------------------------------------
     dobj_name[DOBJ_SYNTHMOD] = "synthmod";
 //------------------------------------------------------
