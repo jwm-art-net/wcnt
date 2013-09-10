@@ -38,7 +38,7 @@ ordered_insert_replace(linked_list<T>* list, T* data, R(T::*func)())
         R value = (tmp->get_data()->*func)();
         if (value == needle) {
             tmp->set_data(data);
-            return data;
+            return tmp;
         }
         else if (value > needle) {
             if (!after)

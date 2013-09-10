@@ -67,7 +67,6 @@ public:
         SIMPLEDELAY,
         DIFFFILTER,
         IMPULSE,
-        COSINEWAVE,
         ORBIT,
         #ifdef WITH_LADSPA
         GLAME_BUTTERWORTH,

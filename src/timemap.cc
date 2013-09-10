@@ -6,6 +6,9 @@
 #include "../include/modparamlist.h"
 #include "../include/moddobjlist.h"
 #include "../include/dobjdobjlist.h"
+#include "../include/jwm_init.h"
+
+#include <sstream>
 
 timemap::timemap(char const* uname) :
 
@@ -21,7 +24,8 @@ timemap::timemap(char const* uname) :
  currentmeter(0),
  bpmsampletot(0), bpmchangesamp(0),
  bpmchange_pos(0), bpmrampsize(0), bpmchange_ratio(0), targbpm(0),
- pos_in_bar(0), bpmchange_notelen(0), bpmchangebar(0)
+ pos_in_bar(0), bpmchange_notelen(0), bpmchangebar(0),
+ barlength(0)
 {
     jwm.get_outputlist()->add_output(this,outputnames::OUT_BPM);
     jwm.get_outputlist()->add_output(this,outputnames::OUT_BAR);
@@ -40,15 +44,7 @@ timemap::timemap(char const* uname) :
                                     outputnames::OUT_BPM_CHANGE_STATE);
 
     bpm_map = new linked_list<bpmchange>;
-    if (!bpm_map->add_at_head(new bpmchange(0, 0)))
-        invalidate();
     meter_map = new linked_list<meterchange>;
-    if (!meter_map->add_at_head(
-        new meterchange(
-            0,
-            jwm.beats_per_measure(),
-            jwm.beat_value())))
-        invalidate();
     create_moddobj();
 }
 
@@ -60,97 +56,75 @@ timemap::~timemap()
         delete meter_map;
 }
 
-bpmchange* timemap::add_bpm_change(short atbar, double bpm)
-{
-    bpmchange* newbpm = new bpmchange(atbar, bpm);
-    if (!(currentbpm = add_bpm_change(newbpm))) {
-        delete newbpm;
-        return 0;
-    }
-    return newbpm;
-}
-
 bpmchange* timemap::add_bpm_change(bpmchange * bch)
 {
-    currentbpm = bpm_map->goto_first();
-    if (bch->get_bar() == 0) {
-        delete currentbpm;
-        bpm_map->sneak_current()->set_data(bch);
-        return (currentbpm = bch);
-    }
-    while(currentbpm){
-        bpmchange* bc = bpm_map->sneak_next()->get_data();
-        if (currentbpm->get_bar() == bch->get_bar()) {
-            if (!bc) { // currentbpm is last in list - safe to add
-                return currentbpm =
-                    bpm_map->add_at_tail(bch)->get_data();
-            }
-            if (bc->get_bar() == bch->get_bar())
-                return 0;
-            if (bc->get_bar() > bch->get_bar()) {
-                return currentbpm =
-                    bpm_map->insert_after(
-                        bpm_map->sneak_current(), bch
-                    )->get_data();
-            }
-        }
-        if (bc) {
-            if (bc->get_bar() > bch->get_bar()) { // insert after current
-                return currentbpm =
-                    bpm_map->insert_after(
-                        bpm_map->sneak_current(), bch
-                    )->get_data();
-            }
-        }
-        else
-            return currentbpm = bpm_map->add_at_tail(bch)->get_data();
-        currentbpm = bpm_map->goto_next();
-    }
-    return 0;  // should not ever get here..
-}
-
-meterchange* timemap::add_meter_change(short atbar, char btpb, char btval)
-{
-    meterchange* newmeter = new meterchange(atbar, btpb, btval);
-    if (!(currentmeter = add_meter_change(newmeter))){
-        delete newmeter;
-        return 0;
-    }
-    return newmeter;
+    return (currentbpm =
+        ordered_insert_replace(bpm_map, bch, &bpmchange::get_bar)
+            ->get_data());
 }
 
 meterchange* timemap::add_meter_change(meterchange* mch)
 {
-    currentmeter = meter_map->goto_first();
-    // don't forget the list will *never* be empty
-    if (mch->get_bar() == 0) {
-        delete currentmeter;
-        meter_map->sneak_first()->set_data(mch);
-        return currentmeter = mch;
+    return (currentmeter =
+        ordered_insert_replace(meter_map, mch, &meterchange::get_bar)
+            ->get_data());
+}
+
+stockerrs::ERR_TYPE timemap::validate()
+{
+    if (!(currentmeter = meter_map->goto_first())) {
+        *err_msg = "time signature not set for ";
+        *err_msg += get_username();
+        *err_msg += " - will not continue.";
+        invalidate();
+        return stockerrs::ERR_ERROR;
     }
-    while(currentmeter){
-        if (currentmeter->get_bar() == mch->get_bar()) {
-            delete currentmeter;
-            meter_map->sneak_current()->set_data(mch);
-            return (currentmeter = mch);
-        }
-        meterchange* mc = meter_map->sneak_next()->get_data();
-        if (mc) {
-            if (mc->get_bar() > mch->get_bar()) {
-                return currentmeter =
-                    meter_map->insert_after(
-                        meter_map->sneak_current(), mch)
-                            ->get_data();
-            }
-        }
-        else {
-            
-            return currentmeter =
-                meter_map->add_at_tail(mch)->get_data();
-        }
-        currentmeter = meter_map->goto_next();
+    if (!(currentbpm = bpm_map->goto_first())) {
+        *err_msg = "bpm not set for ";
+        *err_msg += get_username();
+        *err_msg += " - will not continue.";
+        invalidate();
+        return stockerrs::ERR_ERROR;
     }
-    return 0;
+    std::ostringstream conv;
+    if (currentmeter->get_bar() > 0) {
+        *err_msg = "the first added time signature is at bar ";
+        conv << currentmeter->get_bar();
+        *err_msg += conv.str();
+        *err_msg += " - should start at bar 0.";
+        invalidate();
+        return stockerrs::ERR_ERROR;
+    }
+    if (currentbpm->get_bar() > 0) {
+        *err_msg = "the first added tempo is at bar ";
+        conv << currentbpm->get_bar();
+        *err_msg += conv.str();
+        *err_msg += " - should start at bar 0.";
+        invalidate();
+        return stockerrs::ERR_ERROR;
+    }
+    double bpm = 0;
+    while(currentbpm){
+        bpm += currentbpm->get_bpm();
+        if (bpm < jwm_init::min_bpm) {
+            conv << "at bar " << currentbpm->get_bar();
+            conv << " bpm change takes tempo below minimum value of ";
+            conv << jwm_init::min_bpm;
+            *err_msg = conv.str() + ".";
+            invalidate();
+            return stockerrs::ERR_ERROR;
+        }
+        if (bpm > jwm_init::max_bpm) {
+            conv << "at bar " << currentbpm->get_bar();
+            conv << " bpm change takes tempo above maximum value of ";
+            conv << jwm_init::max_bpm;
+            *err_msg = conv.str() + ".";
+            invalidate();
+            return stockerrs::ERR_ERROR;
+        }
+        currentbpm = bpm_map->goto_next();
+    }
+    return stockerrs::ERR_NO_ERROR;
 }
 
 void timemap::init()
@@ -166,7 +140,6 @@ void timemap::init()
     barlength = out_beats_per_bar * beatlength;
     pos_in_bar = barlength; // trig first bar - not favorite sollution
     out_bar = -1;           // ...it just gets worse!
-    p_bpm = jwm.bpm();
 }
 
 void timemap::run()

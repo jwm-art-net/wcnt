@@ -1,8 +1,6 @@
 wcnt-1.26/jwmsynth
 
 samplerate 44100
-bpm 120
-signature 4/4
 
 // this was just created because valgrind (my version atleast)
 // reports invalid read size errors etc with dlopen etc. just

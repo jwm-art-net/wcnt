@@ -5,8 +5,6 @@ wcnt-1.26/jwmsynth
 
 
 samplerate 44100
-bpm 120
-signature 4/4
 
 constant one value 1.0 one
 
@@ -61,25 +59,6 @@ tcount
     count       10
     wrap        off
 tcount
-
-inspector
-i
-    _in_double_float_       off
-    _in_double_float_trig_  off
-    _in_short_int_          tcount out_count
-    _in_short_int_trig_     off //clockt out_phase_trig
-    _in_unsigned_long_      off
-    _in_unsigned_long_trig_ off
-    _in_state_              tcount out_play_state
-    _in_state_trig_         off //clockt out_phase_trig
-    _in_string_             off
-    _in_string_trig_        off
-    _double_float_msg_  .
-    _short_int_msg_     tcount:_______out_count:
-    _long_int_msg_      .
-    _state_msg_         tcount:__out_play_state:
-    _string_msg_        .
-i
 
 trig_echo
 trigecho
@@ -179,3 +158,22 @@ wcnt_exit_module
 
 wcnt-1.26/jwmsynth
 
+
+inspector
+i
+    _in_double_float_       off
+    _in_double_float_trig_  off
+    _in_short_int_          tcount out_count
+    _in_short_int_trig_     off //clockt out_phase_trig
+    _in_unsigned_long_      off
+    _in_unsigned_long_trig_ off
+    _in_state_              tcount out_play_state
+    _in_state_trig_         off //clockt out_phase_trig
+    _in_string_             off
+    _in_string_trig_        off
+    _double_float_msg_  .
+    _short_int_msg_     tcount:_______out_count:
+    _long_int_msg_      .
+    _state_msg_         tcount:__out_play_state:
+    _string_msg_        .
+i

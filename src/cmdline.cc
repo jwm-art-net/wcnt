@@ -485,8 +485,6 @@ void cmdline::dobj_help()
     int p = 10;
 
     while(ddlist && p) {
-        std::cout << "\ncmdline ddlist: " << ddlist;
-        std::cout << "\nmsg = " << msg;
         dobjdobj* dd = ddlist->goto_first();
         while(dd) {
             dobjnames::DOBJ_TYPE sprogtype = dd->get_dobj_sprog();
@@ -623,14 +621,19 @@ void cmdline::input_help()
                         jwm.get_modnames()->get_name(
                             (synthmodnames::SYNTH_MOD_TYPE)i));
                 if (!sm) {
-                    msg += "\nnot enough memory to process request.";
+                    msg += "\nnot enough memory to process request to"
+                        "create synthmodule type: ";
+                    msg += jwm.get_modnames()->get_name(
+                            (synthmodnames::SYNTH_MOD_TYPE)i);
                     return;
                 }
                 jwm.get_modlist()->add_module(sm);
             }
         }
     }
-    msg += "\navailable outputs are:\n";
+    msg += "\nOutputs matching category of input ";
+    msg += jwm.get_inputnames()->get_name(intype);
+    msg += " are:\n";
     // now get the outputs matching category of input
     modoutputlist* outputs =
         jwm.get_outputlist()->list_of_category(incat);

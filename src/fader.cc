@@ -13,7 +13,7 @@ fader::fader(char const* uname) :
     SM_HAS_OUT_TRIG),
 
  in_bar_trig(0), in_bar(0),
- out_output(0), out_trig(OFF), out_bar(0), out_play_state(OFF),
+ out_output(0), out_bar_trig(OFF), out_bar(0), out_play_state(OFF),
  start_bar(0), end_bar(1), fade_in_time(0), fade_out_time(0),
  fade_in_smps(0), fismp(0), fade_out_smps(0), fosmp(0),
  _end_bar(0), fisz(0), fosz(0)
@@ -21,7 +21,7 @@ fader::fader(char const* uname) :
     jwm.get_inputlist()->add_input(this, inputnames::IN_BAR);
     jwm.get_inputlist()->add_input(this, inputnames::IN_BAR_TRIG);
     jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_TRIG);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_BAR_TRIG);
     jwm.get_outputlist()->add_output(this, outputnames::OUT_BAR);
     jwm.get_outputlist()->add_output(this, outputnames::OUT_PLAY_STATE);
 
@@ -58,7 +58,7 @@ void const* fader::get_out(outputnames::OUT_TYPE ot) const
     switch(ot)
     {
         case outputnames::OUT_OUTPUT:     return &out_output;
-        case outputnames::OUT_TRIG:       return &out_trig;
+        case outputnames::OUT_BAR_TRIG:   return &out_bar_trig;
         case outputnames::OUT_BAR:        return &out_bar;
         case outputnames::OUT_PLAY_STATE: return &out_play_state;
         default: return 0;
@@ -151,13 +151,13 @@ void fader::init()
 void fader::run()
 {
     if (out_play_state == OFF) {
-        if (out_trig == ON)
-            out_trig = OFF;
+        if (out_bar_trig == ON)
+            out_bar_trig = OFF;
         if (*in_bar_trig == ON && *in_bar == start_bar) {
             fismp = fade_in_smps;
             out_bar = *in_bar;
             out_output = 0;
-            out_play_state = out_trig = ON;
+            out_play_state = out_bar_trig = ON;
         }
     }
     else if (fismp > 0) {
@@ -165,8 +165,8 @@ void fader::run()
         fismp--;
         if (fismp == 0)
             out_output = 1;
-        if (out_trig == ON)
-            out_trig = OFF;
+        if (out_bar_trig == ON)
+            out_bar_trig = OFF;
     }
     else if (fosmp > 0) {
         out_output -= fosz;
@@ -174,7 +174,7 @@ void fader::run()
         if (fosmp == 0) {
             out_output = 0;
             out_play_state = OFF;
-            out_trig = ON;
+            out_bar_trig = ON;
             out_bar = _end_bar;
         }
     }

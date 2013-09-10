@@ -18,14 +18,10 @@ rms::rms(char const* uname) :
     create_params();
 }
 
-#include <iostream>
-
 rms::~rms()
 {
     if (rmsarr)
         delete [] rmsarr;
-    else
-        std::cout << "\noh shit!";
 }
 
 void const* rms::get_out(outputnames::OUT_TYPE ot) const
@@ -102,7 +98,6 @@ void rms::init()
 
 void rms::run()
 {
-// really should have worked this one out, myself:
     sqrsum -= rmsarr[arrpos];
     sqrsum += (rmsarr[arrpos] = *in_signal * *in_signal);
     arrpos++;
@@ -110,18 +105,6 @@ void rms::run()
         arrpos = 0;
     out_rms = sqrt(sqrsum / arraymax);
 }
-
-/*
-    sqrsum = 0;
-    for (int i = arrpos; i < arrpos + arraymax; i++)
-        sqrsum += rmsarr[i % arraymax];
-    out_rms = sqrt(sqrsum / arraymax);
-    rmsarr[arrpos] = *in_signal * *in_signal;
-    arrpos--;
-    if (arrpos < 0)
-        arrpos = arraymax - 1;
-*/
-
 
 bool rms::done_params = false;
 

@@ -8,8 +8,6 @@ wcnt-1.26/jwmsynth
 // here it is used to modulate the frequency of a waveform.
 
 samplerate 44100
-bpm 120
-signature 4/4
 
 // duration of sound
 

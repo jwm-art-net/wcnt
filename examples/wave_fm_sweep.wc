@@ -3,8 +3,6 @@ wcnt-1.26/jwmsynth
 // examples/lp_filter_test.wc
 
 samplerate 44100
-bpm 120
-signature 4/4
 
 constant one value 1.0 one
 

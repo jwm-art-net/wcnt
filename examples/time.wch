@@ -20,8 +20,10 @@ header header.wch
 time_map
 time1
     meter_map
+        meter tsig 4/4 bar 0
     meter_map
     bpm_map
+        tempo bpm 130 bar 0
     bpm_map
 time1
 

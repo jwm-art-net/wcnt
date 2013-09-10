@@ -82,8 +82,7 @@ private:
 //--- private member methods ---//
 
     FILE_STATUS open_file();
-    bool read_header(unsigned long* samplerate, double* bpm, 
-     short* beatspermeasure, short* beatvalue);
+    bool read_header(unsigned long* samplerate);
     std::string const* read_command();
     synthmod* const read_synthmodule(std::string const* command);
     dobj* const read_dobj(std::string const* command);
@@ -103,8 +102,7 @@ private:
     const std::string*
         read_string_list_param(const char* enda, const char* endb);
     // method for ......
-    bool eff_ing_header_bodge(unsigned long *samplerate, double *bpm,
-     short *beatspermeasure, short *beatvalue);
+    bool eff_ing_header_bodge(unsigned long *samplerate);
     void create_params();
     static bool done_params;
 };

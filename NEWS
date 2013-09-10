@@ -1,97 +1,23 @@
-wcnt-1.26.2
+wcnt-1.26.3
 
 http://wcnt.sourceforge.net
 
-(source code only)
+mainly a bug fix release:
 
-Second release of wcnt-1.26 after the pre releases...
 
-* rudimentary polyphony
-    no, no polyphonic sequencer.... but several new modules
-    (wcnt-1.26.1) to create polyphonic effects:
+    * removed bpm and time signature information from the 'header'
+      part of a .wc file. this effects the time_map module.
 
-        trig_counter  - counts and (?restricts) outputs input trigger
-        trig_echo     - echos input trigger n times
-        trig_router   - sends trigger n to auto-created output modules
-        group_control - only runs modules when appropriate -
-                        but easy to make it in-appropriate.
+    * fader module's output out_trig has become out_bar_trig to
+      reflect it's input names and function.
 
-* fader (module)
-    created to make easy a fade in and fade out at the start and
-    end of the file to be written. uses either the time_map or
-    timer (out_bar_trig/out_trig and out_bar/out_count) outputs
-    and start and end bar parameters and extends the end by
-    fade_out_time milliseconds.
+    * removed display clutter from --data-object-help command 
+      line option.
 
-* sample_climb (module)
-    like sample_hold, but uses the grabbed 'sample' as a target
-    to climb to ( output += (target - output) * rate ).
+    * removed references to the non-existant cosine_wave module
+      which had been causing problems for --input-help cmdline
+      option.
 
-* inspector (wcnt-1.26.1)
-    arkward to use module for displaying messages and values of
-    outputs/inputs.
+    * can now read a .wc file which only contains a single
+      wcnt_exit module without crashing. oi! oi!
 
-wcnt now has over 80 modules...(81 to be precise)
-
-CHANGES:
-    * wavfile_out (module)
-      now has snapshot_mode parameter. adds date and time (down
-      to the millisecond) to the filename being written. now you
-      can edit a .wc file to your hearts content and not loose
-      the sounds generated.
-
-    * square_wave (module)
-      has rate parameter for adding curvature to the square_wave.
-      works with same method as sample_climb.
-
-    * user_wave (module)
-      vertices which (via modulation) collide with previous vertices
-      will be dropped from the waveform - as opposed to causing
-      nasty peaks(previous version).
-
-    * removed restrictions of combiner, spreader, and switcher to
-      only allow usage of wcnt_signals. these modules can now use
-      any module which provides the out_output output.
-
-    * removed restriction of mixer module to only allow use of
-      mix_chan modules. the mixer can now use any module which
-      provides out_left and out_right outputs.
-
-    * removed restriction of trig_switcher module to only allow
-      use of wcnt_trigger module. trig_switcher can now use any
-      module which provides the out_trig output (ie most of the
-      trigger modules).
-
-RE-CODED:
-    * (wcnt-1.26.1) many things which should not make any difference
-      to the user, except maybe a marginal speed increase in some
-      situations.
-
-    * many more things, (synthmod changes for a start).
-
-FIXES:
-    * dynamic module was checking for existence of wrong vertex.
-
--------------
-
-NOTES:
-    * tested it as much i can by myself and without any strict
-      regime. i will have missed something...
-
-    * documentation is very much out of date now, sorry. the only
-      thing I can offer right now is the occasional comment in the
-      examples, and tests (directories of .wc files bundled with
-      source code).
-
-    * another version might pop-along next week perhaps.
-
--------------
-
-http://wcnt.sourceforge.net
-
-(source code only)
-
-wcnt-1.26.2
-
-regards,
-james jwm-art net

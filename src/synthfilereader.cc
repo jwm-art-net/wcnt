@@ -123,9 +123,6 @@ bool synthfilereader::read_and_create()
             return false;
     }
     unsigned long srate;
-    double bpm;
-    short bp_msr;
-    short b_val;
     if (wc_file_type == WC_INCLUDE_FILE) {
         if (jwm.is_verbose()) // pretty please right?
             cout << "\n";
@@ -134,21 +131,13 @@ bool synthfilereader::read_and_create()
     else
         cout << "\nProcessing ";
     cout << wc_filename;
-    if (!read_header(&srate, &bpm, &bp_msr, &b_val)) {
+    if (!read_header(&srate)) {
         return false;
     }
-    if (wc_file_type == WC_MAIN_FILE) {
+    if (wc_file_type == WC_MAIN_FILE)
         jwm.samplerate(srate);
-        jwm.bpm(bpm);
-        jwm.beats_per_measure(bp_msr);
-        jwm.beat_value(b_val);
-    }
     else {
-        if (srate     != jwm.samplerate()
-            || bpm    != jwm.bpm()
-            || bp_msr != jwm.beats_per_measure()
-            || b_val  != jwm.beat_value())
-        {
+        if (srate != jwm.samplerate()) {
             *wc_err_msg = "\nWarning!\nFile ";
             *wc_err_msg+= wc_filename;
             *wc_err_msg+= " has conflicting header information"
@@ -187,6 +176,18 @@ bool synthfilereader::read_and_create_synthmod(string const* com)
     if (jwm.is_verbose())
         cout << "\nend " << mod->get_username();
     if (include_mod(mod->get_username())) {
+        if (mod->get_module_type() == synthmodnames::WCNTEXIT)
+        {
+            if (jwm.get_modlist()->
+                    get_first_of_type(synthmodnames::WCNTEXIT))
+            {
+                *wc_err_msg
+                   = "\nCannot create more than one wcnt_exit module: ";
+                *wc_err_msg += mod->get_username();
+                delete mod;
+                return 0;
+            }
+        }
         if (!jwm.get_modlist()->add_module(mod)) {
             *wc_err_msg = "\ncould not add module ";
             *wc_err_msg += mod->get_username();
@@ -307,15 +308,6 @@ synthmod *const synthfilereader::read_synthmodule(string const *com)
     {
         *wc_err_msg = "\nUnrecognised wcnt/jwmsynth module: " + *com;
         return 0;
-    }
-    if (smt == synthmodnames::WCNTEXIT) {
-        if (jwm.get_modlist()->get_first_of_type(synthmodnames::WCNTEXIT))
-        {
-            *wc_err_msg
-               = "\nCannot create more than one wcnt_exit module ";
-            *wc_err_msg += *com;
-            return 0;
-        }
     }
     string modname;
     *synthfile >> modname;
@@ -1048,9 +1040,7 @@ synthfilereader::open_file()
     return filestatus;
 }
 
-bool synthfilereader::read_header(
-    unsigned long *samplerate, double *bpm,
-    short *beatspermeasure, short *beatvalue)
+bool synthfilereader::read_header(unsigned long *samplerate)
 {
     if (filestatus != FILE_OPEN) {
         *wc_err_msg = "\nProgrammer Error! Attempted read of header";
@@ -1062,11 +1052,8 @@ bool synthfilereader::read_header(
         return false;
     }
     if (*buff == "header") {
-        if (!eff_ing_header_bodge(samplerate, bpm, beatspermeasure,
-                                  beatvalue))
-        {
+        if (!eff_ing_header_bodge(samplerate))
             return false;
-        }
     }
     else {
         if (*buff == "samplerate") {
@@ -1090,81 +1077,6 @@ bool synthfilereader::read_header(
         else {
             *wc_err_msg = "Expected 'header' or 'samplerate' got "
                        + *buff + " instead.";
-            return false;
-        }
-        if (!skip_remarks()) {
-            *wc_err_msg = "Unexpected end of file.";
-            return false;
-        }
-        if (*buff == "bpm") {
-            if (!(*synthfile >> *bpm)) {
-                *wc_err_msg = "Expected value for bpm";
-                return false;
-            }
-            if (*bpm >= 20 && *bpm <= 1000) {
-                if (jwm.is_verbose() && wc_file_type == WC_MAIN_FILE)
-                    cout << "\nbpm set at " << *bpm;
-            }
-            else {
-                ostringstream conv;
-                conv << *bpm;
-                *wc_err_msg =
-                    "Invalid bpm: " + conv.str() +
-                    ". valid values between 20 and 1000.";
-                return false;
-            }
-        }
-        else {
-            *wc_err_msg = "Expected 'bpm' got " + *buff + " instead.";
-            return false;
-        }
-        if (!skip_remarks()) {
-            *wc_err_msg = "Unexpected end of file.";
-            return false;
-        }
-        if (*buff == "signature") {
-            if (!(*synthfile >> *beatspermeasure)) {
-                *wc_err_msg =
-                 "Expected value for time signature - beats per measure.";
-                return false;
-            }
-            if (*beatspermeasure < 1 || *beatspermeasure > 16) {
-                ostringstream conv;
-                conv << *beatspermeasure;
-                *wc_err_msg =
-                 "Invalid time signature with beats per measure: "
-                 + conv.str() + ". valid value in range 1 to 16.";
-                return false;
-            }
-            char ch;
-            while (synthfile->get(ch)) {
-                if (ch == '/') break;
-            }
-            if (synthfile->eof()) {
-                *wc_err_msg =
-                 "Unexpected end of file while scanning time signature.";
-                return false;
-            }
-            if (!(*synthfile >> *beatvalue)) {
-                *wc_err_msg =
-                    "Expected value for time signature - beat value.";
-                return false;
-            }
-            if (*beatvalue < 1 || *beatvalue > 128) {
-                ostringstream conv;
-                conv << *beatvalue;
-                *wc_err_msg =
-                    "Invalid time signature with beat value: " +
-                    conv.str() + ". valid value in range 1 to 128.";
-                return false;
-            }
-            if (jwm.is_verbose() && wc_file_type == WC_MAIN_FILE) {
-                cout << "\ntime signature set to " << *beatspermeasure;
-                cout << "/" << *beatvalue;
-            }
-        }
-        else {
-            *wc_err_msg = "Expected 'signature'.";
             return false;
         }
     }
@@ -1218,8 +1130,7 @@ bool synthfilereader::skip_remarks()
 
 // (snip swearing,  wingeing, and excuse making, for what follows ;)
 
-bool synthfilereader::eff_ing_header_bodge(unsigned long *samplerate,
-        double *bpm, short *beatspermeasure, short *beatvalue)
+bool synthfilereader::eff_ing_header_bodge(unsigned long *samplerate)
 {
     ifstream headerfile;
     string hf_name;
@@ -1266,85 +1177,8 @@ bool synthfilereader::eff_ing_header_bodge(unsigned long *samplerate,
         headerfile.close();
         return false;
     }
-    headerfile >> *buff;
-    if (*buff == "bpm") {
-        if (!(headerfile >> *bpm)) {
-            *wc_err_msg = "in header: " + hf_name 
-             + " expected value for bpm";
-            headerfile.close();
-            return false;
-        }
-        if (*bpm >= 20 && *bpm <= 1000) {
-            if (jwm.is_verbose() && wc_file_type == WC_MAIN_FILE)
-                cout << "\nbpm set at " << *bpm;
-        } else {
-            ostringstream conv;
-            conv << *bpm;
-            *wc_err_msg = "in header: " + hf_name +
-                       " Invalid bpm: " + conv.str() +
-                       ". valid values between 20 and 1000.";
-            headerfile.close();
-            return false;
-        }
-    } else {
-        *wc_err_msg = "in header: " + hf_name + " Expected 'bpm' got "
-                   + *buff + " instead.";
-        headerfile.close();
-        return false;
-    }
-    headerfile >> *buff;
-    if (*buff == "signature") {
-        if (!(headerfile >> *beatspermeasure)) {
-            *wc_err_msg = "in header: " + hf_name
-             + " Expected value for time signature - beats per measure.";
-            return false;
-        }
-        if (*beatspermeasure < 1 || *beatspermeasure > 16) {
-            ostringstream conv;
-            conv << *beatspermeasure;
-            *wc_err_msg = "in header: " + hf_name 
-             + " Invalid time signature with beats per measure: "
-             + conv.str() + ". valid value in range 1 to 16.";
-            headerfile.close();
-            return false;
-        }
-        char ch;
-        while (headerfile.get(ch)) {
-            if (ch == '/')
-                break;
-        }
-        if (headerfile.eof()) {
-            *wc_err_msg =
-                "Unexpected end of file while scanning time signature.";
-            headerfile.close();
-            return false;
-        }
-        if (!(headerfile >> *beatvalue)) {
-            *wc_err_msg =
-                "Expected value for time signature - beat value.";
-            headerfile.close();
-            return false;
-        }
-        if (*beatvalue < 1 || *beatvalue > 128) {
-            ostringstream conv;
-            conv << *beatvalue;
-            *wc_err_msg = "in header: " + hf_name 
-             + " Invalid time signature with beat value: "
-             + conv.str() + ". valid value in range 1 to 128.";
-            headerfile.close();
-            return false;
-        }
-        if (jwm.is_verbose() && wc_file_type == WC_MAIN_FILE) {
-            cout << "\ntime signature set to " << *beatspermeasure;
-            cout << "/" << *beatvalue;
-        }
-    } else {
-        *wc_err_msg = "in header: " + hf_name + " Expected 'signature'.";
-        headerfile.close();
-        return false;
-    }
     filestatus = FILE_READY;
-    headerfile.close();  // holy mudcow we made it!
+    headerfile.close();
     return true;
 }
 

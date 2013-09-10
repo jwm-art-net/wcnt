@@ -9,22 +9,35 @@ header header.wch
 
 //------------------------------------------------------------------------
 
-synth_file_reader
-timefile
-    filename time.wch
-    mod_action  exclude
-    dobj_action exclude
-    modules
-    modules
-    data_objects
-    data_objects
-timefile
+constant one value 1.0 one
+
+time_map
+time1
+    meter_map
+        meter tsig 4/4 bar 0
+    meter_map
+    bpm_map
+        tempo bpm 90 bar 0
+    bpm_map
+time1
 
 riff
 riffl
-    quarter_value   1
+    quarter_value   16
     notelist
-        note name c0 pos 0  len 57  vel 1.0
+        note name a0  pos 0  len 3  vel 1.0
+        note name c#0 pos 4  len 3  vel 1.0
+        note name a0  pos 8  len 3  vel 1.0
+        note name e0  pos 12 len 3  vel 1.0
+        note name c#0 pos 16 len 3  vel 1.0
+        note name f#0 pos 20 len 3  vel 1.0
+        note name a0  pos 24 len 3  vel 1.0
+        note name d0  pos 28 len 3  vel 1.0
+        note name f#0 pos 32 len 7  vel 1.0
+        note name e0  pos 40 len 3  vel 1.0
+        note name f#0 pos 44 len 3  vel 1.0
+        note name d0  pos 48 len 3  vel 1.0
+        note name e0  pos 52 len 7  vel 1.0
     notelist
 riffl
 
@@ -33,7 +46,10 @@ seq1
     track
         riff_node
             riff riffl  bar 0   transpose 0
-            repeat 0 repeat_stripe 1
+            repeat 19 repeat_stripe 1
+        riff_node
+            riff riffl  bar 3   transpose -3
+            repeat 8 repeat_stripe 4
     track
     in_bar              time1 out_bar
     in_bar_trig         time1 out_bar_trig
@@ -48,17 +64,17 @@ adsr
 adsr1
         envelope
         section name attack
-            ut  1000.0    ul  1.0
-            lt  1000.0    ll  1.0
+            ut  100.0    ul  1.0
+            lt  100.0    ll  1.0
         section name decay
-            ut  2005.0    ul  0.99
-            lt  2005.0    ll  0.99
+            ut  205.0    ul  0.99
+            lt  205.0    ll  0.99
         section name release
-            ut  1005.0    ul  0.3
-            lt  1005.0    ll  0.3
+            ut  305.0    ul  0.3
+            lt  305.0    ll  0.3
         section name release
-            ut  2005.0    ul  0.0
-            lt  2005.0    ll  0.0
+            ut  505.0    ul  0.0
+            lt  505.0    ll  0.0
         envelope
         in_note_on_trig     seq1    out_note_on_trig
         in_note_off_trig    seq1    out_note_off_trig
@@ -93,11 +109,11 @@ orbit
 orbit1
     in_restart_trig  off
     in_trig          orb_clock  out_phase_trig
-    orbit_type       hopalong
-    a  4.2
-    b -3.1
-    c  2.7
-    test_iterations  100000
+    orbit_type       quadrup //threeply
+    a  1.42
+    b -0.003
+    c  0.0027
+    test_iterations  10000
 orbit1
 
 osc_clock
@@ -108,7 +124,7 @@ osc-l
         in_frequency        seq1    out_frequency
         in_freq_mod1        orbit1 out_x
         in_freq_mod2        orbit1 out_y
-        octave_offset       -2
+        octave_offset       0
         tuning_semitones    0
         portamento_time     15.0
         response_time       5.0
@@ -152,8 +168,28 @@ multiplier shaped-r
     in_signal2 adsr1   out_output
 shaped-r
 
-wcnt_signal ws-l in_signal shaped-l out_output level 0.125 ws-l
-wcnt_signal ws-r in_signal shaped-r out_output level 0.125 ws-r
+constant h value 0.5 h
+
+modifier
+mml
+    in_signal1 shaped-l out_output
+    in_signal2 off
+    in_bias    h out_output
+    function  add
+    type      m1
+mml
+
+modifier
+mmr
+    in_signal1 shaped-r out_output
+    in_signal2 off
+    in_bias    h out_output
+    function  add
+    type      m1
+mmr
+
+wcnt_signal ws-l in_signal mml out_output level 0.125 ws-l
+wcnt_signal ws-r in_signal mmr out_output level 0.125 ws-r
 
 group g1
 modules
@@ -166,6 +202,8 @@ modules
     synthmod name sine-r
     synthmod name shaped-l
     synthmod name shaped-r
+    synthmod name mml
+    synthmod name mmr
     synthmod name ws-l
     synthmod name ws-r
 modules
@@ -179,49 +217,32 @@ copier gc5 from g1 to g6 gc5
 copier gc6 from g1 to g7 gc6
 copier gc7 from g1 to g8 gc7
 
+input_editor
+ie_lr2
+    editlist
+        connect g1.mml in_signal2 g2.shaped-l out_output
+        connect g1.mmr in_signal2 g2.shaped-r out_output
+        connect g2.mml in_signal2 g3.shaped-l out_output
+        connect g2.mmr in_signal2 g3.shaped-r out_output
+        connect g3.mml in_signal2 g4.shaped-l out_output
+        connect g3.mmr in_signal2 g4.shaped-r out_output
+        connect g4.mml in_signal2 g5.shaped-l out_output
+        connect g4.mmr in_signal2 g5.shaped-r out_output
+        connect g5.mml in_signal2 g6.shaped-l out_output
+        connect g5.mmr in_signal2 g6.shaped-r out_output
+        connect g6.mml in_signal2 g7.shaped-l out_output
+        connect g6.mmr in_signal2 g7.shaped-r out_output
+        connect g7.mml in_signal2 g8.shaped-l out_output
+        connect g7.mmr in_signal2 g8.shaped-r out_output
+        connect g8.mml in_signal2 g1.shaped-l out_output
+        connect g8.mmr in_signal2 g1.shaped-r out_output
+    editlist
+ie_lr2
+
+
 param_editor
 pe1
     editlist
-        edit g1.orbit1
-    orbit_type             hopalong
-            a .0001
-            b .0001
-            c .0001
-        edit g2.orbit1
-    orbit_type             quadrup
-            a .0002
-            b .0002
-            c .0002
-        edit g3.orbit1
-    orbit_type             hopalong
-            a .0003
-            b .0003
-            c .0003
-        edit g4.orbit1
-    orbit_type             quadrup
-            a .0004
-            b .0004
-            c .0004
-        edit g5.orbit1
-    orbit_type             hopalong
-            a .0005
-            b .0005
-            c .0005
-        edit g6.orbit1
-    orbit_type             quadrup
-            a .0006
-            b .0006
-            c .0006
-        edit g7.orbit1
-    orbit_type             hopalong
-            a .0007
-            b .0007
-            c .0007
-        edit g8.orbit1
-    orbit_type             quadrup
-            a .0008
-            b .0008
-            c .0008
         edit g2.osc-l
             freq_mod1_size 4.0
             freq_mod2_size 2.0
@@ -235,43 +256,29 @@ pe1
             freq_mod1_size 2.0
             freq_mod2_size 4.0
         edit g5.osc-l
-            octave_offset -1
             tuning_semitones 1
             freq_mod1_size 4.0
             freq_mod2_size 2.0
         edit g5.osc-r
-            octave_offset -1
             tuning_semitones 1
             freq_mod1_size 2.0
             freq_mod2_size 4.0
         edit g6.osc-l
-            octave_offset 2
             tuning_semitones -2
             freq_mod1_size 4.0
             freq_mod2_size 2.0
         edit g6.osc-r
-            octave_offset 2
             tuning_semitones -2
             freq_mod1_size 2.0
             freq_mod2_size 4.0
-        edit g6.ws-l level 0.025
-        edit g6.ws-r level 0.025
         edit g7.osc-l
             tuning_semitones 5
-            octave_offset 1
         edit g7.osc-r
             tuning_semitones 5
-            octave_offset 1
-        edit g7.ws-l level 0.0415
-        edit g7.ws-r level 0.0415
         edit g8.osc-l
             tuning_semitones -7
-            octave_offset 2
         edit g8.osc-r
             tuning_semitones -7
-            octave_offset 2
-        edit g8.ws-l level 0.025
-        edit g8.ws-r level 0.025
     editlist
 pe1
 
@@ -326,7 +333,7 @@ wav1
     data_format float32
     filename    sequenced_orbit2.wav
     start_bar   0
-    end_bar     16
+    end_bar     25
 wav1
 
 // setup how long to process:
@@ -334,7 +341,7 @@ wav1
 wcnt_exit
 wcnt_exit_module
     in_bar  time1   out_bar
-    exit_bar    16
+    exit_bar    25
 wcnt_exit_module
 
 //------------------------------------------------------------------------

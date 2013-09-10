@@ -97,7 +97,6 @@ const synthmodnames::mod_data synthmodnames::data[LAST] =
     { SIMPLEDELAY,      "simple_delay"      },
     { DIFFFILTER,       "diff_filter"       },
     { IMPULSE,          "impulse"           },
-    { COSINEWAVE,       "cosine_wave"       },
     { ORBIT,            "orbit"             },
     #ifdef WITH_LADSPA
     { GLAME_BUTTERWORTH,        "glame_butterworth"         },

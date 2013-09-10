@@ -28,8 +28,6 @@ wcnt-1.26/jwmsynth
 //------------------------------------------------------------------------
 
 samplerate 44100
-bpm 120
-signature 4/4
 
 timer
 t
@@ -298,7 +296,7 @@ wav_out
     in_left     amp out_left
     in_right    amp out_right
     in_bar      fade out_bar
-    in_bar_trig fade out_trig
+    in_bar_trig fade out_bar_trig
     snapshot_mode off
     data_format float32
     filename    drop_check.wav

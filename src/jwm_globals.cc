@@ -46,10 +46,6 @@ jwm_globals::jwm_globals() :
  x_exit_bar(0), x_in_bar(0),
  verbose(false), dont_run(false), no_title(false),
  sample_rate(   jwm_init::default_samplerate),
- bt_per_minute( jwm_init::default_bpm),
- bt_per_measure(jwm_init::default_beats_per_measure),
- bt_value(      jwm_init::default_beat_value),
-
  iocatnames(0), modnames(0), innames(0), outnames(0), parnames(0),
  dbjnames(0), modlist(0), inputlist(0), outputlist(0), paramlist(0),
  connectlist(0), moddbjlist(0), fxsparlist(0), dbjlist(0), dparlist(0),

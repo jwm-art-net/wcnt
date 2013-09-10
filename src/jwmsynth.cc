@@ -155,7 +155,8 @@ bool jwmsynth::execute_synth()
             counter = 0;
         }
     }
-    destroy_array_moved_from_list(runlist);
+    if (runlist)
+        destroy_array_moved_from_list(runlist);
     return true;
 }
 #endif

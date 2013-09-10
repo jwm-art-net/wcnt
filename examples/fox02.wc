@@ -8,16 +8,16 @@ wcnt-1.26/jwmsynth
 //------------------------------------------------------------------------
 
 samplerate  44100
-bpm         20
-signature   4/4
 
 //------------------------------------------------------------------------
 
 time_map
 time1  
     meter_map
+        meter   tsig 4/4 bar 0
     meter_map
     bpm_map
+        tempo   bpm 20 bar 0
         tempo   bpm 20 bar 1
         tempo   bpm 20 bar 2
         tempo   bpm 20 bar 3

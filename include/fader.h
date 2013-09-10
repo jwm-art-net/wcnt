@@ -23,7 +23,7 @@ class fader: public synthmod
     const short*  in_bar;
 
     double out_output;
-    STATUS out_trig;
+    STATUS out_bar_trig;
     short out_bar;
     STATUS out_play_state;
 

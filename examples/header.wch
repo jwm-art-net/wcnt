@@ -1,6 +1,8 @@
 samplerate  44100
-bpm         130
-signature   4/4
 
-this file is read by all the .wc files in the examples directory.
-changing the bpm here effects them all.
+you may write anything in this file which is used as a header,
+
+ * * * * * provided * * * * *
+
+    the first line starts with 'samplerate'
+    followed by an integer number ;)

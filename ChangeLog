@@ -1,4 +1,58 @@
 --------------------------------------------------------------
+Wednesday 13th February 2008 - wcnt-1.26.3
+
+FIXES:
+    * synthfilereader.cc
+      synth_file_reader data object stopped dead on
+      encountering a second wcnt_exit module - which in some
+      situations was what it should do. however, if the second
+      wcnt_exit was not meant to be created it should have
+      simply been ignored.
+
+      fixed by moving checks elsewhere within synthfilereader
+      class.
+
+--------------------------------------------------------------
+Tuesday 12th February 2008 - wcnt-1.26.3
+
+CHANGES:
+    * fader module
+      changed out_trig to out_bar_trig to reflect the input
+      names.
+
+    * data object help commandline option
+      removed display of data object definition during it's
+      generation - should have done this before.
+
+--------------------------------------------------------------
+Thursday 7th February 2008 - wcnt-1.26.3
+
+FIXES:
+    * removed references to cosine_wave module which no longer
+      exists - caused problems for --input-help <input_name>
+      cmdline options.
+
+--------------------------------------------------------------
+Wednesday 6th February 2008 - wcnt-1.26.3
+
+CHANGES:
+    * removed bpm and time signature information from 'header'
+      only the sample_rate must be specified now.
+
+    * time_map
+      because bpm and time signature data is no longer created
+      as part of the header, the time_map now requires a
+      meter and tempo added to the meter_map and bpm_map
+      respectively.
+      added validation of tempo - so that relative tempo
+      changes won't take the tempo below or above the minimum
+      or maximum allowed tempos.
+
+FIXES:
+    * jwmsynth no longer seg-faults when only a wcnt_exit
+      module is created.
+
+--------------------------------------------------------------
 Monday 4th February 2008 - wcnt-1.26.2
 
 CHANGES:

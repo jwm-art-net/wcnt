@@ -1,14 +1,16 @@
 wcnt-1.26/jwmsynth
 
 samplerate 44100
-bpm 120
-signature 4/4
 
 time_map
 time
     meter_map
+        meter   tsig 6/4    bar 0
     meter_map
     bpm_map
+        tempo   bpm 120     bar 0
+        tempo   bpm 0       bar 4 // @ bar 4, is still 120
+        tempo   bpm -50     bar 8 // @ from bar 4, graduates to 70.
     bpm_map
 time
 
@@ -22,8 +24,8 @@ riff1
         note name c0    pos 128 len 80      vel 1.0
         note name e0    pos 160 len 16      vel 1.0
         note name g0    pos 208 len 12      vel 1.0
-        note name =P+N  pos 208 len 6       vel 0.0
-        note name IP+N  pos 90  len 90      vel 5.0
+        note name =P+N  pos 208 len 13      vel 0.0
+        note name IP+N  pos 90  len 90      vel -5.0
         note name >P+Q  pos -1  len 256     vel 5.0
     notelist
 riff1
@@ -43,10 +45,10 @@ seq
     track
         riff_node
             riff riff1  bar 0   transpose 0
-            repeat 0 repeat_stripe 1
+            repeat 3 repeat_stripe 2
         riff_node
             riff riff2  bar 1   transpose 0
-            repeat 0 repeat_stripe 1
+            repeat 3 repeat_stripe 2
     track
     in_bar              time out_bar
     in_bar_trig         time out_bar_trig
@@ -65,7 +67,7 @@ osc
         in_frequency        seq out_frequency
         in_freq_mod1        off
         in_freq_mod2        off
-        octave_offset       0
+        octave_offset       -1
         tuning_semitones    0
         portamento_time     50
         response_time       10
@@ -73,25 +75,16 @@ osc
         freq_mod2_size      1
 osc
 
-wave
-sine
-    in_phase_step osc out_phase_step
-    type sine
-sine
-
-wave_phase
-sine2
-    in_phase_trig       osc out_phase_trig
-    in_phase_step       osc out_phase_step
-    in_shape_phase_step off
-    type        sine
-    shape_type  one
-    on_trig_reset_phase off
-    recycle_mode        on
-    sync_shape          off
-    invert_alt          off
-    phase_cycles        1
-sine2
+square_wave
+squ
+    in_phase_trig  osc out_phase_trig
+    in_phase_step  osc out_phase_step
+    in_pwm         off
+    rate          0.1
+    pulse_width   0.5
+    pwm_size      0
+    recycle_mode  off
+squ
 
 adsr
 adsr
@@ -124,7 +117,7 @@ adsr
 
 multiplier
 out
-    in_signal1 sine2 out_output
+    in_signal1 squ out_output
     in_signal2 adsr out_output
 out
 
@@ -135,16 +128,16 @@ wav
     in_bar      time out_bar
     in_bar_trig time out_bar_trig
     snapshot_mode off
-    data_format pcm16
+    data_format float32
     filename    errors.wav
     start_bar   0
-    end_bar     5
+    end_bar     10
 wav
 
 wcnt_exit
 exit
     in_bar      time out_bar
-    exit_bar    5
+    exit_bar    10
 exit
 
 wcnt-1.26/jwmsynth

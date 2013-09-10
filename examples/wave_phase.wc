@@ -3,8 +3,6 @@ wcnt-1.26/jwmsynth
 // examples/sinewave.wc
 
 samplerate 44100
-bpm 120
-signature 4/4
 
 timer
 t1

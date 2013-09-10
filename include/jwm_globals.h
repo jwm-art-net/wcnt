@@ -29,7 +29,7 @@ class wave_tables;
 
 class synthfilereader;
 
-const char* const wcnt_version = "1.26.2";
+const char* const wcnt_version = "1.26.3";
 const char* const wcnt_id = "wcnt-1.26/jwmsynth";
 
 class jwm_globals
@@ -55,14 +55,8 @@ class jwm_globals
     void set_verbose(bool v)    { verbose = v; }
 
     unsigned long samplerate()  { return sample_rate;   }
-    double  bpm()               { return bt_per_minute; }
-    short   beats_per_measure() { return bt_per_measure;}
-    short   beat_value()        { return bt_value;      }
 
     void    samplerate(unsigned long sr);
-    void    bpm(double bpm)             { bt_per_minute = bpm; }
-    void    beats_per_measure(short bpm){ bt_per_measure = bpm;}
-    void    beat_value(short bv)        { bt_value = bv;       }
 
     double & get_mid_a_phase_step() { return mid_a_phase_step; }
 
@@ -106,9 +100,6 @@ class jwm_globals
     bool no_title;
 
     unsigned long sample_rate;
-    double  bt_per_minute;
-    short   bt_per_measure;
-    short   bt_value;
 
     double mid_a_phase_step;
 
