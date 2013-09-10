@@ -1,88 +1,76 @@
 #ifndef RANGELIMIT_H
 #include "../include/rangelimit.h"
+#include "../include/jwm_globals.h"
+#include "../include/modoutputlist.h"
+#include "../include/modinputlist.h"
+#include "../include/modparamlist.h"
 
 range_limit::range_limit(char const* uname) :
- synthmod(synthmodnames::MOD_RANGELIMIT, range_limit_count, uname),
+ synthmod(synthmodnames::RANGELIMIT, uname),
  in_signal(0), out_output(0), sigrangehi(0), sigrangelo(0)
 {
-    get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
-    get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
-    range_limit_count++;
+    jwm.get_outputlist().add_output(this, outputnames::OUT_OUTPUT);
+    jwm.get_inputlist().add_input(this, inputnames::IN_SIGNAL);
     create_params();
 }
 
 range_limit::~range_limit()
 {
-    get_outputlist()->delete_module_outputs(this);
-    get_inputlist()->delete_module_inputs(this);
+    jwm.get_outputlist().delete_module_outputs(this);
+    jwm.get_inputlist().delete_module_inputs(this);
 }
 
-void const* range_limit::get_out(outputnames::OUT_TYPE ot)
+void const* range_limit::get_out(outputnames::OUT_TYPE ot) const
 {
-    void const* o = 0;
     switch(ot)
     {
-    case outputnames::OUT_OUTPUT:
-        o = &out_output;
-        break;
-    default:
-        o = 0;
+        case outputnames::OUT_OUTPUT: return &out_output;
+        default: return 0;
     }
-    return o;
 }
 
 void const* range_limit::set_in(inputnames::IN_TYPE it, void const* o)
 {
     switch(it)
     {
-    case inputnames::IN_SIGNAL:
-        return in_signal = (double*)o;
-    default:
-        return 0;
+        case inputnames::IN_SIGNAL:
+            return in_signal = (double*)o;
+        default:
+            return 0;
     }
 }
 
-void const* range_limit::get_in(inputnames::IN_TYPE it)
+void const* range_limit::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
-    case inputnames::IN_SIGNAL:
-        return in_signal;
-    default:
-        return 0;
+        case inputnames::IN_SIGNAL: return in_signal;
+        default: return 0;
     }
 }
 
 bool range_limit::set_param(paramnames::PAR_TYPE pt, void const* data)
 {
-    bool retv = false;
     switch(pt)
     {
-    case paramnames::PAR_SIG_RANGE_HI:
-        set_signal_range_hi(*(double*)data);
-        retv = true;
-        break;
-    case paramnames::PAR_SIG_RANGE_LO:
-        set_signal_range_lo(*(double*)data);
-        retv = true;
-        break;
-    default:
-        retv = false;
-        break;
+        case paramnames::SIG_RANGE_HI:
+            sigrangehi = *(double*)data;
+            return true;
+        case paramnames::SIG_RANGE_LO:
+            sigrangelo = *(double*)data;
+            return true;
+        default:
+            return false;
     }
-    return retv;
 }
 
-void const* range_limit::get_param(paramnames::PAR_TYPE pt)
+void const* range_limit::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {
-    case paramnames::PAR_SIG_RANGE_HI:
-        return &sigrangehi;
-    case paramnames::PAR_SIG_RANGE_LO:
-        return &sigrangelo;
-    default:
-        return 0;
+        case paramnames::SIG_RANGE_HI: return &sigrangehi;
+        case paramnames::SIG_RANGE_LO: return &sigrangelo;
+        default: return 0;
     }
 }
 
@@ -103,18 +91,16 @@ void range_limit::run()
         out_output = sigrangehi;
 }
 
-int range_limit::range_limit_count = 0;
-
 bool range_limit::done_params = false;
 
 void range_limit::create_params()
 {
     if (done_params == true)
         return;
-    get_paramlist()->add_param(
-     synthmodnames::MOD_RANGELIMIT, paramnames::PAR_SIG_RANGE_HI);
-    get_paramlist()->add_param(
-     synthmodnames::MOD_RANGELIMIT, paramnames::PAR_SIG_RANGE_LO);
+    jwm.get_paramlist().add_param(
+        synthmodnames::RANGELIMIT, paramnames::SIG_RANGE_HI);
+    jwm.get_paramlist().add_param(
+        synthmodnames::RANGELIMIT, paramnames::SIG_RANGE_LO);
     done_params = true;
 }
 

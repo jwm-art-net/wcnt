@@ -1,4 +1,4 @@
-wcnt-1.25/jwmsynth
+wcnt-1.26/jwmsynth
 
 header header.wch
 
@@ -119,7 +119,7 @@ osc4
     in_freq_mod1        echo-ch   out_output
     in_freq_mod2        echo-ch2   out_output
     octave_offset       -4
-    tuning_semitones    0.10
+    tuning_semitones    0.1
     portamento_time    25.0
     response_time       5.0
     freq_mod1_size      4.0
@@ -128,22 +128,32 @@ osc4
 
 // the sine waveform, driven by clock1
 
-sine_wave
+wave_phase
 sinewave
-    in_phase_trig  osc3 out_phase_trig
-    in_deg_size    osc3 out_deg_size
-    recycle_mode         off
-    on_trig_reset_phase  off
-    phase_cycles         1.0
+    in_phase_trig        osc4 out_phase_trig
+    in_phase_step        osc3 out_phase_step
+    in_shape_phase_step  osc4 out_phase_step
+    type                 sine
+    shape_type           saw
+    on_trig_reset_phase  on
+    recycle_mode         on
+    sync_shape           on
+    invert_alt           on
+    phase_cycles         1
 sinewave
 
-sine_wave
+wave_phase
 sinewave2
-    in_phase_trig  osc4 out_phase_trig
-    in_deg_size    osc4 out_deg_size
-    recycle_mode         off
-    on_trig_reset_phase  off
-    phase_cycles         1.0
+    in_phase_trig        osc3 out_phase_trig
+    in_phase_step        osc4 out_phase_step
+    in_shape_phase_step  osc3 out_phase_step
+    type                 sine
+    shape_type           saw
+    on_trig_reset_phase  on
+    recycle_mode         on
+    sync_shape           on
+    invert_alt           on
+    phase_cycles         1
 sinewave2
 
 clock
@@ -153,13 +163,10 @@ pwclock
     freq_mod1_size  1.0
 pwclock
 
-sine_wave
+wave
 pwswave
-    in_phase_trig  pwclock out_phase_trig
-    in_deg_size    pwclock out_deg_size
-    recycle_mode         off
-    on_trig_reset_phase  off
-    phase_cycles         1.0
+    in_phase_step    pwclock out_phase_step
+    type saw
 pwswave
 
 clock
@@ -169,13 +176,10 @@ plclock
     freq_mod1_size  1.0
 plclock
 
-sine_wave
+wave
 plswave
-    in_phase_trig  plclock out_phase_trig
-    in_deg_size    plclock out_deg_size
-    recycle_mode         off
-    on_trig_reset_phase  off
-    phase_cycles         1.0
+    in_phase_step    plclock out_phase_step
+    type saw
 plswave
 
 user_wave
@@ -188,7 +192,7 @@ uwave
         vertex  ud 355  ul  0.4         ld 310  ll  -0.4
     waveform
     in_phase_trig  osc1      out_phase_trig
-    in_deg_size    osc1      out_deg_size
+    in_phase_step    osc1      out_phase_step
     in_level_mod   plswave    out_output
     in_time_mod    pwswave   out_output
     recycle_mode    off
@@ -205,23 +209,43 @@ uwave2
         vertex  ud 355  ul  0.4         ld 310  ll  -0.4
     waveform
     in_phase_trig  osc2      out_phase_trig
-    in_deg_size    osc2      out_deg_size
+    in_phase_step    osc2      out_phase_step
     in_level_mod   plswave   out_output
     in_time_mod    pwswave   out_output
     recycle_mode    off
     zero_retrigger  off
 uwave2
 
+glame_filter
+uwf1
+    in_signal       uwave out_output
+    in_freq_mod1    uwf1 out_output
+    filter_type     lowpass
+    freq            2500
+    freq_mod1_size  2.0
+    stages          2
+uwf1
+
+glame_filter
+uwf2
+    in_signal       uwave2 out_output
+    in_freq_mod1    uwf1 out_output
+    filter_type     lowpass
+    freq            2500
+    freq_mod1_size  2.0
+    stages          2
+uwf2
+
 multiplier
 swad
-    in_signal   uwave out_output
-    in_modifier adsr1    out_output
+    in_signal1 uwf1 out_output
+    in_signal2 adsr1    out_output
 swad
 
 multiplier
 swad2
-    in_signal   uwave2 out_output
-    in_modifier adsr1    out_output
+    in_signal1 uwf2 out_output
+    in_signal2 adsr1    out_output
 swad2
 
 echo
@@ -232,9 +256,9 @@ echo-ch
     in_feedback_mod  adsr1       out_output
     delay_time        7.0
     gain                1.0
-    gain_modsize        0.0
+    gain_mod_size        0.0
     feedback            0.975
-    feedback_modsize    1.0
+    feedback_mod_size    1.0
     wet/dry             0.5
 echo-ch
 
@@ -253,9 +277,9 @@ echo-ch2
     in_feedback_mod  adsr1       out_output
     delay_time        15.0
     gain                1.0
-    gain_modsize        0.0
+    gain_mod_size        0.0
     feedback            0.975
-    feedback_modsize    1.0
+    feedback_mod_size    1.0
     wet/dry             0.5
 echo-ch2
 
@@ -274,9 +298,9 @@ echo-l
     in_feedback_mod  echo-ch    out_output
     delay_time        12.0
     gain                1.0
-    gain_modsize        0.0
+    gain_mod_size        0.0
     feedback            0.99
-    feedback_modsize    1.0
+    feedback_mod_size    1.0
     wet/dry             0.5
 echo-l
 
@@ -295,9 +319,9 @@ echo-r
     in_feedback_mod  echo-ch2    out_output
     delay_time        12.3
     gain                1.0
-    gain_modsize        0.0
+    gain_mod_size        0.0
     feedback            0.99
-    feedback_modsize    1.0
+    feedback_mod_size    1.0
     wet/dry             0.5
 echo-r
 
@@ -316,9 +340,9 @@ echo-ll
     in_feedback_mod  off
     delay_time        25.4
     gain                1.0
-    gain_modsize        0.0
+    gain_mod_size        0.0
     feedback            0.5
-    feedback_modsize    0.0
+    feedback_mod_size    0.0
     wet/dry             0.5
 echo-ll
 
@@ -330,23 +354,25 @@ echo-rr
     in_feedback_mod  off
     delay_time        624.30
     gain                1.0
-    gain_modsize        0.0
+    gain_mod_size        0.0
     feedback            0.85
-    feedback_modsize    0.0
+    feedback_mod_size    0.0
     wet/dry             0.5
 echo-rr
 
+dc_offset_remover dc-l in_signal echo-ll out_output dc-l
+dc_offset_remover dc-r in_signal echo-rr out_output dc-r
 
 stereo_amp
 amp1
-    in_l        echo-ll   out_output
-    in_r        echo-rr   out_output
-    in_amp_eg   one         out_output
+    in_left     dc-l   out_output
+    in_right    dc-r   out_output
+    in_amp_eg   one    out_output
     in_amp_mod  off
-    left_amplitude  32767
-    right_amplitude 32767
-    amp_mod_size        0.0
-    clip_level      32767
+    left_level      1.0
+    right_level     1.0
+    amp_mod_size    0.0
+    clip_level      1.0
 amp1
 
 // write amplified signal to wav file
@@ -357,9 +383,10 @@ wav_out
     in_right    amp1  out_right
     in_bar      time1    out_bar
     in_bar_trig time1    out_bar_trig
+    data_format float32
     filename    frellpuv-01.wav
     start_bar   0
-    end_bar     16
+    end_bar     34
 wav_out
 
 // when to stop
@@ -367,7 +394,7 @@ wav_out
 wcnt_exit
 wcnt_exit_module
     in_bar      time1 out_bar
-    exit_bar 16
+    exit_bar 34
 wcnt_exit_module
 
-wcnt-1.25/jwmsynth
+wcnt-1.26/jwmsynth

@@ -1,5 +1,7 @@
 #ifndef TIMING_H
 #include "../include/timing.h"
+#include "../include/jwm_globals.h"
+#include "../include/dobjparamlist.h"
 
 timing::timing():
  dobj(dobjnames::SIN_TIME), seconds(0.0)
@@ -16,37 +18,33 @@ timing::timing(double s):
 
 bool timing::set_param(paramnames::PAR_TYPE pt, void* data)
 {
-    bool retv = false;
     switch(pt)
     {
-    case paramnames::PAR_SECONDS:
-        set_time(*(double*)data);
-        retv = true;
-        break;
-    default:
-        retv = false;
-        break;
+        case paramnames::SECONDS:
+            set_time(*(double*)data);
+            return true;
+        default:
+            return false;
     }
-    return retv;
 }
 
-void const* timing::get_param(paramnames::PAR_TYPE pt)
+void const* timing::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {
-    case paramnames::PAR_SECONDS:
-        return &seconds;
-    default:
-        return 0;
+        case paramnames::SECONDS:
+            return &seconds;
+        default:
+            return 0;
     }
 }
 
 stockerrs::ERR_TYPE timing::validate()
 {
-    if (!get_dparlist()->validate(
-        this, paramnames::PAR_SECONDS, stockerrs::ERR_NEGATIVE))
+    if (!jwm.get_dparlist().validate(
+        this, paramnames::SECONDS, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = get_paramnames()->get_name(paramnames::PAR_BAR);
+        *err_msg = jwm.get_paramnames().get_name(paramnames::BAR);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -58,8 +56,8 @@ bool timing::done_params = false;
 void timing::create_params()
 {
     if (done_params == true) return;
-    get_dparlist()->add_dobjparam(
-     dobjnames::SIN_TIME, paramnames::PAR_SECONDS);
+    jwm.get_dparlist().add_dobjparam(
+        dobjnames::SIN_TIME, paramnames::SECONDS);
     done_params = true;
 }
 

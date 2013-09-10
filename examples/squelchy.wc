@@ -1,0 +1,443 @@
+wcnt-1.26/jwmsynth
+
+// examples/sinewave.wc
+
+samplerate 44100
+bpm 120
+signature 4/4
+
+constant one value 1.0 one
+
+// duration of sound
+
+timer
+t1
+    timings
+        time seconds 0.0
+        time seconds 20.0
+    timings
+t1
+
+timer
+t2
+    timings
+        time seconds 0.01
+    timings
+t2
+
+clock
+clockzz
+    in_freq_mod1 swbb out_output
+    freq 1.01113
+    freq_mod1_size 2.0
+clockzz
+
+wave
+swzz
+    in_phase_step         clockzz out_phase_step
+    type sine
+swzz
+
+clock
+clockbb
+    in_freq_mod1 swyy out_output
+    freq 0.4061113
+    freq_mod1_size 2.0
+clockbb
+
+wave
+swbb
+    in_phase_step         clockbb out_phase_step
+    type sine
+swbb
+
+clock
+clockyy
+    in_freq_mod1 swzz out_output
+    freq 0.12521312
+    freq_mod1_size 2.0
+clockyy
+
+wave
+swyy
+    in_phase_step         clockyy out_phase_step
+    type sine
+swyy
+
+
+//************************************************************************
+// start of modules to be grouped --------->>>
+
+clock
+clock1
+    in_freq_mod1    swbb out_output
+    freq            30
+    freq_mod1_size  1.025
+clock1
+
+wave
+sw1
+    in_phase_step         clock1 out_phase_step
+    type sine
+sw1
+
+clock
+clock1b
+    in_freq_mod1    swzz out_output
+    freq            70
+    freq_mod1_size  1.025
+clock1b
+
+user_wave
+bwv
+     waveform
+        vertex
+            ud  0.0     ul  0.0
+            ld  0.0     ll  0.0
+        vertex
+            ud  90.0     ul  0.0
+            ld  90.0     ll  0.0
+        vertex
+            ud  180.0   ul  1.0
+            ld  180.0   ll  1.0
+        vertex
+            ud  270.0   ul  0.0
+            ld  270.0   ll  0.0
+        vertex
+            ud  360.0   ul  0.0
+            ld  360.0   ll  0.0
+    waveform
+    in_phase_trig  clock1b out_phase_trig
+    in_phase_step    clock1b out_phase_step
+    in_level_mod   off
+    in_time_mod    off
+    recycle_mode    on
+    zero_retrigger  off
+bwv
+
+lfo_clock
+clock2
+    in_phase_trig off
+    in_freq_mod1    sw1 out_output
+    in_freq_mod2    swyy out_output
+    freq            500
+    freq_mod1_size  2.25
+    freq_mod2_size  2.25
+clock2
+
+clock
+clockx
+    in_freq_mod1 swyy out_output
+    freq 2.25
+    freq_mod1_size 1.025
+clockx
+
+user_wave
+uw1
+     waveform
+        vertex
+            ud  0.0     ul  0.0125
+            ld  0.0     ll  0.0125
+        vertex
+            ud  180.0   ul  1.0
+            ld  180.0   ll  1.0
+        vertex
+            ud  360.0   ul  0.0125
+            ld  360.0   ll  0.0125
+    waveform
+    in_phase_trig  clockx out_phase_trig
+    in_phase_step    clockx out_phase_step
+    in_level_mod   off
+    in_time_mod    off
+    recycle_mode    on
+    zero_retrigger  off
+uw1
+
+multiplier
+xmx1
+    in_signal1 clock2 out_phase_step
+    in_signal2 uw1 out_output
+xmx1
+
+wave_phase
+sw2
+    in_phase_trig        clock1 out_phase_trig
+    in_phase_step        xmx1 out_output
+    in_shape_phase_step  off
+    type                 sine
+    shape_type           one
+    on_trig_reset_phase  off
+    recycle_mode         on
+    sync_shape           off
+    invert_alt           off
+    phase_cycles         1
+sw2
+
+wcnt_signal wv1 in_signal sw1 out_output level 1.0 wv1
+wcnt_signal wv2 in_signal sw2 out_output level 1.0 wv2
+
+spreader
+sp1
+    signals
+        synthmod    name  wv1
+        synthmod    name  wv2
+    signals
+    in_modulation bwv out_output
+    start_level 0.0
+    end_level   1.0
+sp1
+
+wcnt_signal out in_signal sp1 out_output level 0.3333 out
+
+group
+grp1
+    modules
+        synthmod name clock1
+        synthmod name sw1
+        synthmod name clock1b
+        synthmod name bwv
+        synthmod name clock2
+        synthmod name clockx
+        synthmod name uw1
+        synthmod name xmx1
+        synthmod name sw2
+        synthmod name wv1
+        synthmod name wv2
+        synthmod name sp1
+        synthmod name out
+    modules
+grp1
+
+copier c1 from grp1 to grp2 c1
+copier c2 from grp1 to grp3 c2
+copier c3 from grp1 to grp4 c3
+copier c4 from grp1 to grp5 c4
+copier c5 from grp1 to grp6 c5
+copier c6 from grp1 to grp7 c6
+copier c7 from grp1 to grp8 c7
+
+copier c0b from grp1 to grp1b c0b
+copier c1b from grp1 to grp2b c1b
+copier c2b from grp1 to grp3b c2b
+copier c3b from grp1 to grp4b c3b
+copier c4b from grp1 to grp5b c4b
+copier c5b from grp1 to grp6b c5b
+copier c6b from grp1 to grp7b c6b
+copier c7b from grp1 to grp8b c7b
+
+param_editor
+pe1
+    editlist
+        // ---------
+        edit grp1.clock1    freq 37
+        edit grp1.clock1b   freq 37
+        edit grp1.clock2    freq 25.0
+        edit grp1.clockx    freq 3.7
+        edit grp1.out       level 0.7
+        // ---------
+        edit grp2.clock1    freq 73
+        edit grp2.clock1b   freq 7.3
+        edit grp2.clock2    freq 220
+        edit grp2.clockx    freq 173
+        // ---------
+        edit grp3.clock1    freq 75
+        edit grp3.clock1b   freq 75
+        edit grp3.clock2    freq 236
+        edit grp3.clockx    freq 375
+        // ---------
+        edit grp4.clock1    freq 91.27
+        edit grp4.clock1b   freq 91.27
+        edit grp4.clock2    freq 210
+        edit grp4.clockx    freq 91.27
+        // ---------
+        edit grp5.clock1    freq 132
+        edit grp5.clock1b   freq 13.2
+        edit grp5.clock2    freq 205
+        edit grp5.clockx    freq 13.2
+        edit grp5.out       level 0.4
+        // ---------
+        edit grp6.clock1    freq 170
+        edit grp6.clock1b   freq 170
+        edit grp6.clock2    freq 4.20
+        edit grp6.clockx    freq 17.0
+        // ---------
+        edit grp7.clock1    freq 151
+        edit grp7.clock1b   freq 1.51
+        edit grp7.clock2    freq 1236.5
+        edit grp7.clockx    freq 1.51
+        edit grp7.out       level 0.175
+        // ---------
+        edit grp8.clock1    freq 131.3
+        edit grp8.clock1b   freq 131.3
+        edit grp8.clock2    freq 1290
+        edit grp8.clockx    freq 1313
+        edit grp8.out       level 0.175
+//---------------------- b ---------------
+        // ---------
+        edit grp1b.clock1    freq 93.456 //36
+        edit grp1b.clock1b   freq 93.456 //36
+        edit grp1b.clock2    freq 62.304 //24.0
+        edit grp1b.clockx    freq 10.1244 //3.9
+        edit grp1b.out       level 0.7
+        // ---------
+        edit grp2b.clock1    freq 190.157 //73.25
+        edit grp2b.clock1b   freq 18.24988 //7.03
+        edit grp2b.clock2    freq 574.365 //221.25
+        edit grp2b.clockx    freq 449.972468 //173.333
+        // ---------
+        edit grp3b.clock1    freq 197.296 //76
+        edit grp3b.clock1b   freq 197.296 //76
+        edit grp3b.clock2    freq 534.776 //206
+        edit grp3b.clockx    freq 921.58 //355
+        // ---------
+        edit grp4b.clock1    freq 236.67732 //91.17
+        edit grp4b.clock1b   freq 236.67732 //91.17
+        edit grp4b.clock2    freq 547.00316 //210.71
+        edit grp4b.clockx    freq 236.67732 //91.17
+        // ---------
+        edit grp5b.clock1    freq 345.268 //133
+        edit grp5b.clock1b   freq 34.5268 //13.3
+        edit grp5b.clock2    freq 533.478 //205.5
+        edit grp5b.clockx    freq 34.7864 //13.4
+        edit grp5b.out       level 0.4
+        // ---------
+        edit grp6b.clock1    freq 443.3370892 //170.777
+        edit grp6b.clock1b   freq 443.3370892 //170.777
+        edit grp6b.clock2    freq 10.905796 //4.201
+        edit grp6b.clockx    freq 45.97516 //17.71
+        // ---------
+        edit grp7b.clock1    freq 392.5152 //151.2
+        edit grp7b.clock1b   freq 3.94592 //1.52
+        edit grp7b.clock2    freq 3213.7182 //1237.95
+        edit grp7b.clockx    freq 3.92645 //1.5125
+        edit grp7b.out       level 0.175
+        // ---------
+        edit grp8b.clock1    freq 341.6336 //131.6
+        edit grp8b.clock1b   freq 341.6336 //131.6
+        edit grp8b.clock2    freq 3349.0996 //1290.1
+        edit grp8b.clockx    freq 3408.8076 //1313.1
+        edit grp8b.out       level 0.175
+
+        edit grp1.clock1    freq 94.456 //36
+        edit grp1.clock1b   freq 94.456 //36
+        edit grp1.clock2    freq 61.304 //24.0
+        edit grp1.clockx    freq 9.1244 //3.9
+        edit grp1.out       level 0.7
+        // ---------
+        edit grp2.clock1    freq 191.157 //73.25
+        edit grp2.clock1b   freq 17.24988 //7.03
+        edit grp2.clock2    freq 575.365 //221.25
+        edit grp2.clockx    freq 448.972468 //173.333
+        // ---------
+        edit grp3.clock1    freq 196.296 //76
+        edit grp3.clock1b   freq 198.296 //76
+        edit grp3.clock2    freq 532.776 //206
+        edit grp3.clockx    freq 922.58 //355
+        // ---------
+        edit grp4.clock1    freq 238.67732 //91.17
+        edit grp4.clock1b   freq 237.67732 //91.17
+        edit grp4.clock2    freq 546.00316 //210.71
+        edit grp4.clockx    freq 235.67732 //91.17
+        // ---------
+        edit grp5.clock1    freq 344.268 //133
+        edit grp5.clock1b   freq 35.5268 //13.3
+        edit grp5.clock2    freq 534.478 //205.5
+        edit grp5.clockx    freq 33.7864 //13.4
+        edit grp5.out       level 0.4
+        // ---------
+        edit grp6.clock1    freq 442.3370892 //170.777
+        edit grp6.clock1b   freq 441.3370892 //170.777
+        edit grp6.clock2    freq 11.905796 //4.201
+        edit grp6.clockx    freq 46.97516 //17.71
+        // ---------
+        edit grp7.clock1    freq 391.5152 //151.2
+        edit grp7.clock1b   freq 3.84592 //1.52
+        edit grp7.clock2    freq 3212.7182 //1237.95
+        edit grp7.clockx    freq 3.82645 //1.5125
+        edit grp7.out       level 0.175
+        // ---------
+        edit grp8.clock1    freq 340.6336 //131.6
+        edit grp8.clock1b   freq 340.6336 //131.6
+        edit grp8.clock2    freq 3348.0996 //1290.1
+        edit grp8.clockx    freq 3407.8076 //1313.1
+        edit grp8.out       level 0.175
+
+    editlist
+pe1
+
+combiner
+mix1
+    signals
+        synthmod name grp1.out
+        synthmod name grp2.out
+        synthmod name grp3.out
+        synthmod name grp4.out
+        synthmod name grp5.out
+        synthmod name grp6.out
+        synthmod name grp7.out
+        synthmod name grp8.out
+    signals
+    mean_total off
+mix1
+
+combiner
+mix1b
+    signals
+        synthmod name grp1b.out
+        synthmod name grp2b.out
+        synthmod name grp3b.out
+        synthmod name grp4b.out
+        synthmod name grp5b.out
+        synthmod name grp6b.out
+        synthmod name grp7b.out
+        synthmod name grp8b.out
+    signals
+    mean_total off
+mix1b
+
+caps_plate2x2
+cp1
+    in_left     mix1  out_output
+    in_right    mix1b out_output
+    bandwidth  0.978
+    tail       0.654
+    damping    0.0005
+    wet/dry    0.2
+cp1
+
+stereo_amp
+amp1
+    in_left cp1 out_left
+    in_right cp1 out_right
+    in_amp_eg   one out_output
+    in_amp_mod  off
+    left_level    0.5
+    right_level   0.5
+    amp_mod_size  0.0
+    clip_level    0.96
+amp1
+
+// write amplified signal to wav file
+
+wavfile_out
+wav1
+    in_left     amp1 out_left
+    in_right    amp1 out_right
+    in_bar t1   out_count
+    in_bar_trig t1 out_trig
+    data_format float32
+    filename    squelchy.wav
+    start_bar   0
+    end_bar     1
+wav1
+
+// when to stop
+
+wcnt_exit
+wcnt_exit_module
+    in_bar      t1 out_count
+    exit_bar    1
+wcnt_exit_module
+
+wcnt-1.26/jwmsynth
+

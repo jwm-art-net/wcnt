@@ -1,10 +1,16 @@
 #ifndef INPUTEDITOR_H
 #include "../include/inputeditor.h"
 #include "../include/connectorlist.h"
+#include "../include/jwm_globals.h"
+#include "../include/topdobjlist.h"
+#include "../include/dobjdobjlist.h"
+
+#include <iostream>
+#include <string>
 
 inputeditor::inputeditor() :
  dobj(dobjnames::DEF_INPUTEDITOR),
- input_edit_list(0), input_item(0), input_edit(0), verbose(false)
+ input_edit_list(0), input_item(0), input_edit(0)
 {
     input_edit_list = 
      new linkedlist(linkedlist::MULTIREF_OFF,linkedlist::NO_NULLDATA);
@@ -32,13 +38,14 @@ bool inputeditor::create_connectors()
 {
     goto_first_inputedit();
     while(input_item) {
-        if (verbose) {
-            cout << "\nsetting inputs for " << input_edit->get_modname();
+        if (jwm.is_verbose()) {
+            std::cout
+                << "\nsetting inputs for " << input_edit->get_modname();
         }
-        if (!input_edit->create_connectors(verbose)) {
-            string errmsg = *err_msg;
+        if (!input_edit->create_connectors()) {
+            std::string errmsg = *err_msg;
             *err_msg = "\nIn ";
-            *err_msg += get_dobjnames()->get_name(get_object_type());
+            *err_msg += jwm.get_dobjnames().get_name(get_object_type());
             *err_msg += " ";
             *err_msg += get_username();
             *err_msg += ", connection attempt failed, ";
@@ -74,7 +81,7 @@ void inputeditor::create_params()
 {
     if (inputeditor::done_params == true)
         return;
-    dobjdobjlist* dbjlist = get_topdobjlist()->create_dobjdobjlist(
+    dobjdobjlist* dbjlist = jwm.get_topdobjlist().create_dobjdobjlist(
         dobjnames::DEF_INPUTEDITOR, dobjnames::LST_EDITS);
     dbjlist->add_dobjdobj(
         dobjnames::LST_EDITS, dobjnames::SIN_EDIT_INPUT);

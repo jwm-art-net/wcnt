@@ -1,5 +1,24 @@
-By default, wcnt is compiled with compiler optimizations.  Look in the
-top of the Makefile if you dislike them, or for debugging wcnt..
+************************************************************************
+
+wcnt is now dependant on libsndfile - please make sure you have the
+current stable version installed (development packages if not compiling
+libsndfile from source). ( http://www.mega-nerd.com/libsndfile/ )
+
+wcnt now has several modules which interface with selected LADSPA
+plugins. the modules will compile and be available even if the plugins
+are not, but if used when the plugins are unavailable then wcnt will
+complain and refuse to proceed any further.
+
+Please obtain the SWH plugins ( http://www.plugin.org.uk ) and the
+CAPS plugins ( http://quitte.de/dsp/caps.html )   :-)
+
+(only a small percentage of these plugins are used by wcnt).
+
+
+************************************************************************
+By default, wcnt is compiled with compiler optimizations and without
+debuggin information.  Look in the top of the Makefile if you dislike this,
+it will tell you what you must do to change it - it's very simple.
 
 To compile wcnt simply type:
 
@@ -33,4 +52,10 @@ Please do email me at james@jwm-art.net if you have difficulties getting
 wcnt to compile. If it crashes then please send me the .wc file(s) which
 it happened to be processing at the time of the crash.
 
-I have only tested it within Debian Sarge on a 1.6Ghz AMD Duron blah.
+I have tested wcnt within Debian Etch on an AMD Athlon XP 3000, with
+2GB of dodgy SDRAM :(
+
+
+[eof]
+
+--jwm2008

@@ -1,4 +1,43 @@
 TODO:
+----------
+_Official_
+----------
+
+for completed 1.26 version:
+
+ Complete commandline module help to display descriptions of what a module
+ does alongwith the definition of the module
+ 
+---------------------------------------------------------------------
+(unofficial)
+TODO - 1st December 2007
+
+i'm thinking about some  kind of thing, some kind of stuff...
+
+something to parameters to be specified as optional by the module - so that
+sensible values are chosen by the module. something to make groups of inputs
+connect to corresponding groups of outputs - by specifying the module name
+only...
+
+something to choose the obvious output choice when connecting an input and
+only the output module name is specified. something to choose the less
+obvious choice when the output categories are the same amongst similiar
+outputs (ie for tagging inputs/outputs as frequency, or amplitude etcetc).
+
+something to provide as many input/parameter pairings for frequency
+modulation as user requires (ie not limited to one or two pair). [[[ urgh
+i doubt this will happen... 1stjan08 ]]]
+
+something better to make certain types of modulation - more transparent
+in their function. someway of choosing scale units (ie semitones or ratio
+etc) [[[ hmmm maybe... 1stjan08 ]]].
+
+some of this may make it faster for the user to type out quickly, but then
+it might make the program /even/ slower.
+
+
+------------------------------------------
+TODO:
     * Test it fully.
 
     * although parameters of modules and data objects can be edited, it
@@ -16,13 +55,8 @@ TODO:
       correct rampage.  I'm not sure if I correctly figured out that it is
       impossible in wcnt's current state.
 
-    * figure out why set_wc_filename in synthfilereader gets reported as
-      creating a memory leak by ccmalloc and valgrind memory profilers.
-
     * still not got any anti-aliasing on waveforms etc.
     * still not made those module variating auto generation features
     * still not made those sample data and sample mapping features
     * still not made those polyphany enabling modules.
-    * still not using LADSPA
-    * still not using secret rabbit code, libsndfile.
     * still not making lots of money, money, money, money, money, money..

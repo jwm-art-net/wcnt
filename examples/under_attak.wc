@@ -1,0 +1,325 @@
+wcnt-1.26/jwmsynth
+
+header header.wch
+
+// synth_file_reader sfr
+//
+// grab time map module from time.wch
+//
+// mod action is exclude - to exclude specified modules.
+// (here, no modules are specified for exclusion so all are included).
+// on the command line use:
+//
+//      wcnt --data-object-help synth_file_reader
+//
+// to see how to do this.
+
+synth_file_reader
+sfr
+            filename     time.wch
+            mod_action   exclude
+            dobj_action  exclude
+    modules
+    modules
+    data_objects
+    data_objects
+sfr
+
+// ---------------- note sequencing ----------------------
+
+riff
+riff1
+    quarter_value 8
+    notelist
+        note name f0 pos 0  len 4.5 vel 1.0
+        note name e0 pos 4  len 3.5 vel 1.0
+        note name d0 pos 6  len 3.5 vel 1.0
+        note name a0 pos 8  len 2.5 vel 1.0
+        note name a0 pos 10 len 3.5 vel 1.0
+        note name c1 pos 12 len 3.5 vel 1.0
+    notelist
+riff1
+
+// alternate riff1 with a transposed riff1 over 32 bars.
+
+sequencer
+seq
+    track
+        riff_node
+            riff riff1 bar 0 transpose 0 repeat 15 repeat_stripe 2
+        riff_node
+            riff riff1 bar 1 transpose 3 repeat 15 repeat_stripe 2
+    track
+    in_bar            time1 out_bar
+    in_bar_trig       time1 out_bar_trig
+    in_pos_step_size  time1 out_pos_step_size
+    in_beats_per_bar  time1 out_beats_per_bar
+    in_beat_value     time1 out_beat_value
+    start_bar 0
+    velocity_response_time  1.0
+seq
+
+//---------------- adsr envelopes ---------------------
+
+// dual shaped envelope to be used for amplitude shaping
+// here, both shapes are exactly the same
+
+adsr
+env
+    envelope
+            section name attack
+                ut 1.0 ul 0.25
+                lt 1.0 ll 0.25
+            section name attack
+                ut 2.5 ul 0.5
+                lt 2.5 ll 0.5
+            section name attack
+                ut 5.0 ul 0.75
+                lt 5.0 ll 0.75
+            section name decay
+                ut 7.5 ul 1.0
+                lt 7.5 ll 1.0
+            section name release
+                ut 7.5 ul 0.75
+                lt 7.5 ll 0.75
+            section name release
+                ut 45.0 ul 0.5
+                lt 45.0 ll 0.5
+            section name release
+                ut 15 ul 0.25
+                lt 15 ll 0.25
+            section name release
+                ut 10 ul 0.0
+                lt 10 ll 0.0
+    envelope
+    in_note_on_trig   seq out_note_on_trig
+    in_note_off_trig  seq out_note_off_trig
+    in_velocity       off
+    up_thresh         0.85
+    lo_thresh         0.15
+    start_level       0.0
+    min_time          0.0
+    max_sustain_time  0.0
+    release_is_ratio  off
+    sustain_state     on
+    zero_retrigger    off
+env
+
+// envelope to be used for frequency modulation of the filters...
+
+adsr
+penv
+    envelope
+            section name attack
+                ut 1.0 ul 0.25
+                lt 1.0 ll 0.25
+            section name decay
+                ut 17.5 ul 1.0
+                lt 17.5 ll 1.0
+            section name release
+                ut 77.5 ul -1.0
+                lt 77.5 ll -1.0
+    envelope
+    in_note_on_trig   seq out_note_on_trig
+    in_note_off_trig  off
+    in_velocity       off
+    up_thresh         0.85
+    lo_thresh         0.15
+    start_level       1.0
+    min_time          0.0
+    max_sustain_time  0.0
+    release_is_ratio  off
+    sustain_state     off
+    zero_retrigger    on
+penv
+
+// envelope for pitch modulation of the waveforms...
+
+adsr
+penv2
+    envelope
+            section name attack
+                ut 1.0 ul 0.25
+                lt 1.0 ll 0.25
+            section name decay
+                ut 4.5 ul 1.0
+                lt 4.5 ll 1.0
+            section name release
+                ut 1.5 ul 0.0
+                lt 1.5 ll 0.0
+    envelope
+    in_note_on_trig   seq out_note_on_trig
+    in_note_off_trig  off
+    in_velocity       off
+    up_thresh         0.85
+    lo_thresh         0.15
+    start_level       1.0
+    min_time          0.0
+    max_sustain_time  0.0
+    release_is_ratio  off
+    sustain_state     off
+    zero_retrigger    on
+penv2
+
+//--------------------- clocks & waveforms ------------------------
+
+osc_clock
+pclock
+    in_note_on_trig     seq out_note_on_trig
+    in_note_slide_trig  seq out_note_slide_trig
+    in_play_state       env out_play_state
+    in_frequency        seq out_frequency
+    in_freq_mod1        penv2 out_output
+    in_freq_mod2        ng1 out_output
+    octave_offset     -3
+    tuning_semitones  0.0
+    portamento_time   15.0
+    response_time     2.0
+    freq_mod1_size    2.0
+    freq_mod2_size    1.25
+pclock
+
+// slow modulation for pulse width modulation of square wave...
+
+clock
+clock
+    in_freq_mod1    off
+    freq            1.0
+    freq_mod1_size  1.0
+clock
+
+wave
+sine
+    in_phase_step clock out_phase_step
+    type sine
+sine
+
+// and combine with penv for a more interesting pulse width modulation
+
+multiplier
+pwm1
+    in_signal1 penv out_output
+    in_signal2 sine out_output
+pwm1
+
+square_wave
+psquare
+    in_phase_trig  pclock out_phase_trig
+    in_phase_step  pclock out_phase_step
+    in_pwm         pwm1 out_output
+    pulse_width   0.5
+    pwm_size      0.75
+    recycle_mode  off
+psquare
+
+wave
+psine
+    in_phase_step   pclock out_phase_step
+    type sine
+psine
+
+// add 1 to psine output so it's output is in range 0.0 to 2.0
+// which provides freq modulation more appropriate to our cause here.
+
+adder
+sine_plus_1
+    in_signal1 psine out_output
+    in_signal2 one out_output
+sine_plus_1
+
+osc_clock
+lpf_clock
+    in_note_on_trig     seq out_note_on_trig
+    in_note_slide_trig  seq out_note_slide_trig
+    in_play_state       env out_play_state
+    in_frequency        seq out_frequency
+    in_freq_mod1        sine_plus_1 out_output
+    in_freq_mod2        penv out_output
+    octave_offset     2
+    tuning_semitones  0
+    portamento_time   15.0
+    response_time     2.0
+    freq_mod1_size    4.0
+    freq_mod2_size    3.0
+lpf_clock
+
+noise_generator ng1 ng1
+
+mono_amp
+amp1
+    in_signal   psquare out_output
+    in_amp_eg   env     out_output
+    in_amp_mod  ng1     out_output
+    level         1.0
+    amp_mod_size  0.0275
+    clip_level    1.0
+amp1
+
+glame_butterworth
+gbw_lp
+    in_signal          amp1       out_output
+    in_cutoff_phase_step  lpf_clock out_phase_step
+    in_res_mod         off
+    filter_type        lowpass
+    resonance       0.975
+    res_mod_size    0.0
+gbw_lp
+
+// compress the peaks of the sound so that when amplified (again)
+// there's less dynamic range - ie the whole sound is louder.
+
+sc1
+sc
+    in_signal       gbw_lp out_output
+    attack_time     2.0
+    release_time    55.0
+    threshold_db    -20
+    ratio_1:n       10
+    knee_db         5.0
+    makeup_db       0.0
+sc
+
+caps_plate
+reverb
+    in_signal  sc out_output
+    bandwidth  0.75
+    tail       0.25
+    damping    0.63
+    wet/dry    0.125
+reverb
+
+// over amplify the sound to force loudness (and clipping to occur).
+
+stereo_amp
+boost_and_clip
+    in_left     reverb out_left
+    in_right    reverb out_right
+    in_amp_eg   one out_output
+    in_amp_mod  off
+    left_level    4.0
+    right_level   4.0
+    amp_mod_size  0.0
+    clip_level    0.9
+boost_and_clip
+
+wavfile_out
+wav
+    in_left      boost_and_clip out_left
+    in_right     boost_and_clip out_right
+    in_bar       time1 out_bar
+    in_bar_trig  time1 out_bar_trig
+
+    data_format  float32 // standard 16bit integer WAV
+    filename     under_attak.wav
+    start_bar    0
+    end_bar      8
+wav
+
+wcnt_exit
+exit
+    in_bar      time1 out_bar
+    exit_bar    8
+exit
+
+wcnt-1.26/jwmsynth
+

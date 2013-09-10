@@ -1,11 +1,7 @@
 #ifndef STEPDATA_H
 #define STEPDATA_H
 
-#include <string.h>
-
-#include "linkedlist.h"
-#include "conversions.h"
-#include "dobjparamlist.h"
+#include "dobj.h"
 
 /*
     step_data
@@ -38,7 +34,7 @@ public:
 
     // virtuals from dobj
     bool set_param(paramnames::PAR_TYPE, void*);
-    void const* get_param(paramnames::PAR_TYPE);
+    void const* get_param(paramnames::PAR_TYPE) const;
     stockerrs::ERR_TYPE validate();
 
 private:

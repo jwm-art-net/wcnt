@@ -1,11 +1,8 @@
 #ifndef NOTEDATA_H
 #define NOTEDATA_H
 
-#include <string.h>
-
-#include "linkedlist.h"
-#include "conversions.h"
-#include "dobjparamlist.h"
+#include "dobj.h"
+#include "jwm_init.h"
 
 // note_data
 // there used to be a whole load of comments with regards to note length
@@ -39,7 +36,7 @@
 
 class note_data : public dobj
 {
-public:
+ public:
     enum NOTE_TYPE {
         NOTE_TYPE_ERR = -1,
         NOTE_TYPE_NORMAL = 0,
@@ -111,31 +108,26 @@ public:
     char const* get_username(){ return notename;}
     // virtuals from dobj
     bool set_param(paramnames::PAR_TYPE, void*);
-    void const* get_param(paramnames::PAR_TYPE);
+    void const* get_param(paramnames::PAR_TYPE) const;
     stockerrs::ERR_TYPE validate();
-    #ifdef SHOW_NOTE_COUNT
-    static long get_created_count(){ return notes_created_count;}
-    static long get_destroyed_count(){ return notes_destroyed_count;}
-    static long get_max_count(){ return notes_max_count;}
-    #endif
 
-private:
+#ifdef NOTE_STATS
+STATS_FUNCS
+#endif
+
+ private:
     NOTE_TYPE note_type;
-    char notename[NOTE_ARRAY_SIZE];
+    char notename[jwm_init::note_array_size];
     double position;
     double length;
     double velocity;
     void create_params();
     static bool done_params;
-    #ifdef SEQ_NOTE_DEBUG
-    void display_note();
-    #endif
-    #ifdef SHOW_NOTE_COUNT
-    static long notes_created_count;
-    static long notes_destroyed_count;
-    static long notes_count;
-    static long notes_max_count;
-    #endif
+
+#ifdef NOTE_STATS
+STATS_VARS
+#endif
+
 };
 
 #endif

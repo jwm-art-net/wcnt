@@ -1,14 +1,9 @@
 #ifndef DYNAMIC_H
 #define DYNAMIC_H
 
-#include "dynvertex.h"
 #include "synthmodule.h"
+#include "dynvertex.h"
 #include "linkedlist.h"
-#include "modoutputslist.h"
-#include "modinputslist.h"
-#include "modparamlist.h"
-#include "dobjparamlist.h"
-#include "dobjdobjlist.h"
 
 /*  dynamic - applies amplitude dynamics to the input signal
               remaps the amplitude of input signal.
@@ -66,25 +61,15 @@ public:
     // returns dynvertex with sil > passed sil, and sets
     // current to the previous dynvertex with sil <= passed sil.
     dynvertex* goto_dvertex(double sil);
-    void set_input_signal(double const*i){ in_signal = i;}
-    void set_input_modulation(double const*i){ in_mod= i;}
-    void set_upper_thresh(double ut){ up_thresh = ut;}
-    void set_lower_thresh(double lt){ lo_thresh = lt;}
-    void set_posneg_mirror(STATUS pm){ posnegmirror = pm;}
-    void set_use_ratios(STATUS ur){ use_ratios = ur;}
-    double get_upper_thresh(){ return up_thresh;}
-    double get_lower_thresh(){ return lo_thresh;}
-    STATUS get_posneg_mirror(){ return posnegmirror;}
-    STATUS get_use_ratios(){ return use_ratios;}
     // virtual funcs
     void run();
     void init();
     stockerrs::ERR_TYPE validate();
-    void const* get_out(outputnames::OUT_TYPE);
+    void const* get_out(outputnames::OUT_TYPE) const;
     void const* set_in(inputnames::IN_TYPE, void const*);
-    const void* get_in(inputnames::IN_TYPE it);
+    const void* get_in(inputnames::IN_TYPE it) const;
     bool set_param(paramnames::PAR_TYPE, void const*);
-    void const* get_param(paramnames::PAR_TYPE);
+    void const* get_param(paramnames::PAR_TYPE) const;
     dobj* add_dobj(dobj*);
     synthmod* duplicate_module(const char* uname, DUP_IO);
 
@@ -107,7 +92,6 @@ private:
     dynvertex* dvtx;
     dynvertex* dvtx1;
     double thresh_range;
-    static int dynamic_count;
     void create_params();
     void create_dobj();
     static bool done_params;

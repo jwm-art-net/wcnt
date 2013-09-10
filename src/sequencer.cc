@@ -1,8 +1,18 @@
 #ifndef SEQUENCER_H
 #include "../include/sequencer.h"
+#include "../include/jwm_globals.h"
+#include "../include/modoutputlist.h"
+#include "../include/modinputlist.h"
+#include "../include/modparamlist.h"
+#include "../include/conversions.h"
+#include "../include/timemap.h"
+#include "../include/moddobjlist.h"
+#include "../include/dobjdobjlist.h"
+
+#include <iostream>
 
 sequencer::sequencer(char const* uname) :
- synthmod(synthmodnames::MOD_SEQUENCER, sequencer_count, uname),
+ synthmod(synthmodnames::SEQUENCER, uname),
  in_bar_trig(0), in_bar(0), in_pos_step_size(0), in_beats_per_bar(0),
  in_beat_value(0),
  out_note_on_trig(OFF), out_note_slide_trig(OFF),
@@ -11,7 +21,7 @@ sequencer::sequencer(char const* uname) :
  out_notename(0), out_freq(0), out_velocity(0), out_velocity_ramp(0),
  out_transpose(0),
  riff_play_state(OFF), note_play_state(OFF),
- freq_mod1size(0), vel_response(0), 
+ start_bar(0), vel_response(0),
  riffnodelist(0), cur_node(0), riff_node_ptr(0), riff_ptr(0),
  riffnodeitem(0), riff_start_bar(0), riff_pos(0),
  riff_len(0), posconv(0), velrsp_max_samps(0), velrsp_samp(0),
@@ -19,30 +29,36 @@ sequencer::sequencer(char const* uname) :
  play_item(0), next_in_riff(0), play_note(0), next_note(0), note_ptr(0),
  next_note_on_pos(-1), play_note_off_pos(-1)
 {
-    get_inputlist()->add_input(this, inputnames::IN_BAR);
-    get_inputlist()->add_input(this, inputnames::IN_BAR_TRIG);
-    get_inputlist()->add_input(this, inputnames::IN_POS_STEP_SIZE);
-    get_inputlist()->add_input(this, inputnames::IN_BEATS_PER_BAR);
-    get_inputlist()->add_input(this, inputnames::IN_BEAT_VALUE);
-    get_outputlist()->add_output(this, outputnames::OUT_NOTE_ON_TRIG);
-    get_outputlist()->add_output(this, outputnames::OUT_NOTE_SLIDE_TRIG);
-    get_outputlist()->add_output(this, outputnames::OUT_NOTE_OFF_TRIG);
-    get_outputlist()->add_output(this, outputnames::OUT_NOTENAME);
-    get_outputlist()->add_output(this, outputnames::OUT_FREQ);
-    get_outputlist()->add_output(this, outputnames::OUT_VELOCITY);
-    get_outputlist()->add_output(this, outputnames::OUT_VELOCITY_RAMP);
-    get_outputlist()->add_output(this, outputnames::OUT_TRANSPOSE);
-    get_outputlist()->add_output(this, outputnames::OUT_RIFF_START_TRIG);
-    get_outputlist()->add_output(this, outputnames::OUT_RIFF_END_TRIG);
-    get_outputlist()->add_output(this, outputnames::OUT_START_TRIG);
-    get_outputlist()->add_output(this, outputnames::OUT_END_TRIG);
-    get_outputlist()->add_output(this, outputnames::OUT_RIFF_PLAY_STATE);
-    get_outputlist()->add_output(this, outputnames::OUT_NOTE_PLAY_STATE);
+    jwm.get_inputlist().add_input(this, inputnames::IN_BAR);
+    jwm.get_inputlist().add_input(this, inputnames::IN_BAR_TRIG);
+    jwm.get_inputlist().add_input(this, inputnames::IN_POS_STEP_SIZE);
+    jwm.get_inputlist().add_input(this, inputnames::IN_BEATS_PER_BAR);
+    jwm.get_inputlist().add_input(this, inputnames::IN_BEAT_VALUE);
+    jwm.get_outputlist().add_output(this, outputnames::OUT_NOTE_ON_TRIG);
+    jwm.get_outputlist().add_output(this, 
+                                        outputnames::OUT_NOTE_SLIDE_TRIG);
+    jwm.get_outputlist().add_output(this,
+                                        outputnames::OUT_NOTE_OFF_TRIG);
+    jwm.get_outputlist().add_output(this, outputnames::OUT_NOTENAME);
+    jwm.get_outputlist().add_output(this, outputnames::OUT_FREQ);
+    jwm.get_outputlist().add_output(this, outputnames::OUT_VELOCITY);
+    jwm.get_outputlist().add_output(this,
+                                        outputnames::OUT_VELOCITY_RAMP);
+    jwm.get_outputlist().add_output(this, outputnames::OUT_TRANSPOSE);
+    jwm.get_outputlist().add_output(this,
+                                        outputnames::OUT_RIFF_START_TRIG);
+    jwm.get_outputlist().add_output(this,
+                                        outputnames::OUT_RIFF_END_TRIG);
+    jwm.get_outputlist().add_output(this, outputnames::OUT_START_TRIG);
+    jwm.get_outputlist().add_output(this, outputnames::OUT_END_TRIG);
+    jwm.get_outputlist().add_output(this,
+                                        outputnames::OUT_RIFF_PLAY_STATE);
+    jwm.get_outputlist().add_output(this,
+                                        outputnames::OUT_NOTE_PLAY_STATE);
     riffnodelist =
      new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
     play_list =
      new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
-    sequencer_count++;
     create_params();
     create_moddobj();
 }
@@ -75,11 +91,11 @@ sequencer::~sequencer()
         delete next_note;
     }
     if (out_notename) delete [] out_notename;
-    get_outputlist()->delete_module_outputs(this);
-    get_inputlist()->delete_module_inputs(this);
+    jwm.get_outputlist().delete_module_outputs(this);
+    jwm.get_inputlist().delete_module_inputs(this);
 }
 
-void const* sequencer::get_out(outputnames::OUT_TYPE ot)
+void const* sequencer::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -135,7 +151,7 @@ void const* sequencer::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* sequencer::get_in(inputnames::IN_TYPE it)
+void const* sequencer::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -156,28 +172,26 @@ void const* sequencer::get_in(inputnames::IN_TYPE it)
 
 bool sequencer::set_param(paramnames::PAR_TYPE pt, void const* data)
 {
-    bool retv = false;
     switch(pt)
     {
-    case paramnames::PAR_VELOCITY_RESPONSE:
-        set_velocity_response_time(*(double*)data);
-        retv = true;
-        break;
-    default:
-        retv = false;
-        break;
+        case paramnames::VELOCITY_RESPONSE:
+            vel_response = *(double*)data;
+            return true;
+        case paramnames::START_BAR:
+            start_bar = *(short*)data;
+            return true;
+        default:
+            return false;
     }
-    return retv;
 }
 
-void const* sequencer::get_param(paramnames::PAR_TYPE pt)
+void const* sequencer::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {
-    case paramnames::PAR_VELOCITY_RESPONSE:
-        return &vel_response;
-    default:
-        return false;
+        case paramnames::VELOCITY_RESPONSE: return &vel_response;
+        case paramnames::START_BAR:         return &start_bar;
+        default: return false;
     }
 }
 
@@ -208,12 +222,12 @@ synthmod* sequencer::duplicate_module(const char* uname, DUP_IO dupio)
 
 stockerrs::ERR_TYPE sequencer::validate()
 {
-    if (!get_paramlist()->validate(this,
-            paramnames::PAR_VELOCITY_RESPONSE,
+    if (!jwm.get_paramlist().validate(this,
+            paramnames::VELOCITY_RESPONSE,
             stockerrs::ERR_NEGATIVE))
     {
-        *err_msg +=
-         get_paramnames()->get_name(paramnames::PAR_VELOCITY_RESPONSE);
+        *err_msg =
+         jwm.get_paramnames().get_name(paramnames::VELOCITY_RESPONSE);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -289,15 +303,22 @@ bool sequencer::delete_riff_node(riff_node* rn)
 void sequencer::init()
 {
     velrsp_max_samps = ms_to_samples(vel_response);
-    riff_node_ptr = (riff_node*)
-     (riffnodeitem = riffnodelist->goto_first())->get_data();
-    if (riff_node_ptr)
-        riff_start_bar = riff_node_ptr->get_start_bar();
-    else
+    riff_node_ptr = goto_first();
 // (time_map is initialised with out_bar = -1 before first run().)
-        riff_start_bar = -2;
 // sensible people would define it before the sequencer in a .wc file!
-    freq_mod1size -= 1;
+// so here, init riff_start_bar to -2 to avoid you know what...
+    riff_start_bar = -2;
+    while(riff_node_ptr){
+        if(riff_node_ptr->get_start_bar() == start_bar) {
+            riff_start_bar = riff_node_ptr->get_start_bar() - start_bar;
+            break;
+        }
+        else if (riff_node_ptr->get_start_bar() > start_bar) {
+            riff_start_bar = riff_node_ptr->get_start_bar() - start_bar;
+            break;
+        }
+        riff_node_ptr = goto_next();
+    }
 }
 
 note_data* sequencer::posconv_note(note_data* rn)
@@ -306,9 +327,6 @@ note_data* sequencer::posconv_note(note_data* rn)
     // convert to time_map quarter_value, and transpose.
     const char* tr_notename =
         transpose_notename(rn->get_name(), out_transpose);
-    #ifdef NOTE_EDIT_DEBUG
-    cout << "\nSequencer creating new note:";
-    #endif
     note_data* newnote = new note_data(
                         tr_notename,
                         rn->get_position() * posconv,
@@ -321,7 +339,7 @@ note_data* sequencer::posconv_note(note_data* rn)
 void sequencer::init_next_note(ll_item* riff_note_item)
 {
     if (next_note != 0) {
-        cout << "\nProgrammer Error! next_note is not NULL";
+        std::cout << "\nProgrammer Error! next_note is not NULL";
     }
     if (riff_note_item) {
         next_in_riff = riff_note_item;
@@ -383,7 +401,8 @@ void sequencer::run()
             riff_node_ptr = (riff_node*)
              (riffnodeitem = riffnodelist->goto_next())->get_data();
             if (riff_node_ptr)
-                riff_start_bar = riff_node_ptr->get_start_bar();
+                riff_start_bar = riff_node_ptr->get_start_bar()
+                    - start_bar;
             else {
                 end_pending = ON;
                 riff_start_bar = -1;
@@ -478,26 +497,28 @@ void sequencer::run()
     riff_pos += *in_pos_step_size;
 }
 
-int sequencer::sequencer_count = 0;
-
 bool sequencer::done_params = false;
 
 void sequencer::create_params()
 {
     if (done_params == true)
         return;
-    get_paramlist()->add_param(
-     synthmodnames::MOD_SEQUENCER, paramnames::PAR_VELOCITY_RESPONSE);
+    jwm.get_paramlist().add_param(
+        synthmodnames::SEQUENCER, paramnames::START_BAR);
+    jwm.get_paramlist().add_param(
+        synthmodnames::SEQUENCER, paramnames::VELOCITY_RESPONSE);
     done_params = true;
 }
+
 bool sequencer::done_moddobj = false;
+
 void sequencer::create_moddobj()
 {
     if (done_moddobj == true)
         return;
     moddobj* mdbj;
-    mdbj = get_moddobjlist()->add_moddobj(
-        synthmodnames::MOD_SEQUENCER, dobjnames::LST_TRACK);
+    mdbj = jwm.get_moddobjlist().add_moddobj(
+        synthmodnames::SEQUENCER, dobjnames::LST_TRACK);
     mdbj->get_dobjdobjlist()->add_dobjdobj(
         dobjnames::LST_TRACK, dobjnames::SIN_RIFFNODE);
     done_moddobj = true;

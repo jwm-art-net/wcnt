@@ -1,7 +1,7 @@
 #ifndef METERCHANGE_H
 #define METERCHANGE_H
 
-#include "dobjparamlist.h"
+#include "dobj.h"
 
 // struct timesig used by synthfilereader to read time signature in one
 // go, so user can represent time signature as 4/4 or 3/4 etc rather than
@@ -18,6 +18,7 @@ class meterchange : public dobj
 public:
     meterchange();
     meterchange(short br, char btpb, char btval);
+    // these accessor methods are used by timemap
     void set_bar(short br){bar = br;}
     void set_beatsperbar(char bpb){time_sig.beatsperbar = bpb;}
     void set_beatvalue(char bv){time_sig.beatvalue = bv;}
@@ -27,7 +28,7 @@ public:
     // virtuals from dobj
     stockerrs::ERR_TYPE validate();
     bool set_param(paramnames::PAR_TYPE, void*);
-    void const* get_param(paramnames::PAR_TYPE pt);
+    void const* get_param(paramnames::PAR_TYPE pt) const;
 
 private:
     short bar;

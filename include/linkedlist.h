@@ -1,15 +1,17 @@
 #ifndef LINKEDLIST_H
 #define LINKEDLIST_H
 
+#include "types.h"
+
 /*
     DESCRIPTION
     -----------
     class ll_item:      an element in the linkedlist
-    class linkedlist:   a doubly linked list of ll_items.  
+    class linkedlist:   a doubly linked list of ll_items.
 
     MULTIPLE REFERENCES to a single data item
     -----------------------------------------
-    default behaviour cannot have several ll_items pointing to one 
+    default behaviour cannot have several ll_items pointing to one
     peice of data. Any atempts to do so will fail and return NULL.
     the user will need to check this.
 
@@ -26,14 +28,14 @@
     HEAD and TAIL
     -------------
     head and tail members never hold any data, except for next and prev
-    members which point to the first and last elements in the list. these 
+    members which point to the first and last elements in the list. these
     members remain private and hidden to 3rd parties. The first element's
-    prev member allways points to NULL, as does the last element's next 
+    prev member allways points to NULL, as does the last element's next
     member.
 
     SEARCHING
     ---------
-    The find_data(void* data) member function searches the linkedlist 
+    The find_data(void* data) member function searches the linkedlist
     until it finds the ll_item which points to void* data.  find_data()
     stores the ll_item found, for find_next() to know where to start
     searching, and to know what to look for.  find_next() is only usefull
@@ -41,7 +43,7 @@
 
     DESTRUCTOR
     ----------
-    ll_item destructor does not delete the object pointed to by its data 
+    ll_item destructor does not delete the object pointed to by its data
     member.  linkedlist, likewise does not delete data either.
 
     GENERAL DESIGN
@@ -51,8 +53,8 @@
 
     I use it as follows:-
 
-    the listed objects do not use ll_item whatsoever. the list object has 
-    a private member of type linkedlist. the list object will have its 
+    the listed objects do not use ll_item whatsoever. the list object has
+    a private member of type linkedlist. the list object will have its
     own member functions to access the linked list member functions,
     depending on it's requirements.  These member functions will do the
     typecasting, and provide the typecast saftey beloved by the sensible
@@ -78,7 +80,7 @@
     ------------------------
     there were methods such as goto_item_no(int), unlink_item_no(int)
     and add_item_to_be_no(ll_item*, int).  I have taken these out because
-    of doubts about usefulness when I have not even bothered to overload 
+    of doubts about usefulness when I have not even bothered to overload
     any [] operators and I don't really need them for my purpose anyway.
 
     LINKEDLIST RETURN VALUES
@@ -95,7 +97,16 @@
     setting current. find_????() functions do not set current either, but
     return result, NULL, if not found.
 
-    ADDED: 
+    UNLINKING OF ITEMS
+    ------------------
+    when an item is unlinked, it is not deleted, but returned by
+    unlink_item. if the unlinked item was the first item in the list, then
+    the item next in the list becomes the first, and current is set to
+    point to it. if the unlinked item was between two other items, then
+    they will point to each other (as prev & next), and the first of these
+    two items (the unlinked item's prev) will be pointed to as current.
+
+    ADDED:
     ------------
     ORDERED_INSERT TEMPLATE FUNCTION
     -------------------------------------------------------------------
@@ -138,22 +149,19 @@ public:
     ll_item *get_prev() { return (this) ? prev : 0; }
     ll_item *get_next() { return (this) ? next : 0; }
 
-    #ifdef SHOW_LL_ITEM_COUNT
-    static long get_created_count() { return ll_items_created;}
-    static long get_destroyed_count() { return ll_items_destroyed;}
-    static long get_max_count() { return ll_items_max_count;}
-    #endif
+#ifdef LIST_STATS
+STATS_FUNCS
+#endif
 
 private:
     void *data;
     ll_item *prev;
     ll_item *next;
-    #ifdef SHOW_LL_ITEM_COUNT
-    static long ll_items_created;
-    static long ll_items_destroyed;
-    static long ll_items_count;
-    static long ll_items_max_count;
-    #endif
+
+#ifdef LIST_STATS
+STATS_VARS
+#endif
+
 };
 
 class linkedlist
@@ -197,14 +205,24 @@ public:
     bool is_last();
     bool is_empty() { return (this) ? (head->get_next() == 0) : false; }
     int get_item_count();
+
+#ifdef LIST_STATS
+STATS_FUNCS
+#endif
+
 private:
-    ll_item * head;
+    ll_item *head;
     ll_item *tail;
     ll_item *current;
     ll_item *find_result;
     ll_item *tempory;
     MULTIREF multiref;
     NULLDATA nulldata;
+
+#ifdef LIST_STATS
+STATS_VARS
+#endif
+
 };
 
 /*
@@ -292,7 +310,7 @@ T * lookup_data_match_next(linkedlist * thelist, T * data,
     R match = (data->*match_func) ();
     ll_item *tmp;
     T *tdata = (T *)(tmp = thelist->goto_item(
-        thelist->get_tempory())->goto_next())->get_data();
+        thelist->get_tempory())->get_next())->get_data();
     while (tmp) {
         if ((tdata->*match_func) () == match) {
             thelist->set_tempory(tmp);  // store search result in list

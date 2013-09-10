@@ -1,4 +1,498 @@
 --------------------------------------------------------------
+Wednesday 1st January 2008
+
+CHANGES:
+    * modifier module
+      modifier module now works differently. the modifier has
+      always been unclear as to what it's intentions are, but
+      now, it takes two signals and creates a third which is
+      some kind of modification of the two - rather than them
+      just being mixed together.
+
+    * adder, subtracter, modifier, and multiplier modules had
+      previously, a pair of inputs named in_signal and
+      in_modifier - these have now become in_signal1 and
+      in_signal2.
+
+ADDITIONS:
+    * balance module
+      the balance module takes two signals and creates a third
+      which is a balance of the two. if both input signals are
+      within -1.0 to +1.0 range, then the output will be
+      within that range also.
+
+--------------------------------------------------------------
+Monday 31st December 2007
+
+FIXES:
+    * peak_detector
+      fixed msg display for when in_signal > sig_range_hi to
+      display upper bound instead of lower.
+
+ADDITIONS:
+    * --no-title commandline option
+--------------------------------------------------------------
+Sunday 30th December 2007
+
+ADDITIONS:
+    * constant_freq (module)
+      From a single parameter - freq - the module outputs
+      the frequency, and the phase step for that frequency
+
+    * constant_note (module)
+      The same as the constant_freq module, except it has a
+      an extra output - out_notename, and a parameter for
+      specifying a name of a note instead of frequency.
+
+NOTES:
+    * I really don't know why I have not thought of creating
+      the constant_freq and constant_note modules before.
+      There has been countless times when I really would have
+      benefited from them.
+
+CHANGES:
+    * synthmodlist class has been updated to unlink the two
+      new constant modules.
+
+    * linkedlist::unlink_item now only sets current to the
+      very first item in the list if the unlinked item was the
+      first item in the list - otherwise current points to the
+      item previous to the unlinked item.
+      
+--------------------------------------------------------------
+Saturday 29th December 2007
+
+NOTES:
+    * removed the sine module created yesterday.
+
+CHANGES:
+    * removed sine_wave, and tri_wave modules. Replaced them
+      with...
+
+ADDITIONS:
+    * wave module. four waveform types to choose from:
+      one, sine, tri, and saw - and three more 0.0 ~ 1.0
+      versions. the module is quick and simple to use. it is
+      wave table based.
+
+    * wave_phase module. this also has  the same  wave table
+      types to choose from. this module has the features the
+      old sine_wave and tri_wave modules had. you can have
+      a phase step from a clock running at a different
+      frequency to where the phase trig comes from. there is
+      also shaping functionality which requires it's own
+      phase_step input, and, the shaping can be sync'd with
+      the primary phase_trigger. a further parameter not found
+      in the old sinewave and triwave modules is the
+      invert_alt parameter which when on means every other
+      'phase' is inverted. works much better than the old
+      modules.
+
+--------------------------------------------------------------
+Friday 28th December 2007
+
+ADDITIONS:
+    * sine module
+      This is a stripped down version of the sine_wave module.
+      It uses a lookup table, with code derived from Richard
+      W.E. Furse's sine plugin from the Computer Music Toolkit
+      (CMT) LADSPA plugin library.
+
+CHANGES:
+    * Renamed all deg_size inputs, outputs, and parameters to
+      phase_step, which is more standard, and also removes the
+      reference to degrees... which I might change the inputs
+      and outputs to pass radians instead of degrees so that
+      the conversion from degrees to radians is no longer
+      required within modules with in_phase_step inputs.
+
+    * Code within the dc_filter and rms modules now does the
+      calculations in a sensible manner rather than in a very
+      slow and brainless stupid way. Harsh, but true.
+
+NOTES:
+    * The sine module is only marginally faster than the
+      sine_wave module. The benefits don't really amount to
+      much until complex wcnt synths are created, and then its
+      only shaving a few seconds off the time. I'm assuming
+      it would be faster if wcnt did not do so many virtual
+      function calls - ie 1 call per module for every sample
+      processed - but that will not change.
+
+--------------------------------------------------------------
+Thursday 27th December 2007
+
+NOTES:
+    * Still in the process of removing module help out of the
+      compiled program and into text files...
+    * Been playing around with wcnt too much...
+
+FIXES:
+    * synthfilereader::skip_remarks only detected EOF within a
+      remark (which surely, thinking about it, is impossible).
+      it now detects EOF properly.
+
+    * consequently, when an input_editor or param_editor
+      definition had a missing editlist (causing EOF) wcnt no
+      longer crashes. Note: EOF is unavoidable when the
+      terminating editlist (of the edits) is missing - due to
+      the nature of the params the editlist consists of.
+
+    * comment processing was handled incorrectly. comments
+      cannot any longer be created with just a single /
+      character.
+
+    * minor memory leaks fixed in duplicate_module methods of
+      combiner, spreader, stereo_mixer, switcher, and
+      trig_switcher modules. 
+
+    * fixed segfault occurring when EOF occurred unexpectedly
+      in a circumstance (outside of skip_remarks or
+      read_command) which i've almost certainly immediately
+      forgotten.
+
+CHANGES:
+    * (experimental) added reflect parameter to sine_wave
+      module. this does nothing under normal circumstances,
+      but when phase_cycles is not set to 1.0, it 'reflects'
+      the waveform (negating and travelling backwards) when
+      reflect set to on.
+
+    * added start_bar parameter to sequencer. using this, you
+      may instruct the sequencer to start at whatever bar you
+      like. good for when you quickly want to hear a new riff
+      added at the end of a sequence.
+
+NOTES:
+    * start_bar remains in sequencer despite me thinking it
+      should be within the time_map. having it in the
+      sequencer is less restrictive i think, and, i might
+      change the time_map to also use a start_bar parameter.
+      this could require several changes in a number of
+      modules - and,,,, well,,,, you can't expect miracles.
+
+--------------------------------------------------------------
+Sunday 16th December 2007
+
+NOTES:
+    * The orbit module's output differed because one version
+      of wcnt I tried it with was compiled with -ffast_math
+      while this version was not. The -ffast_math is what
+      causes the problem, probably better off without it.
+
+CHANGES:
+    * Begun writing module help text to display along with the
+      module definition when requested from the command line.
+      Currently this help text is part of the executable, maybe
+      it should be in text files for example in ~/.wcnt_help ?
+
+--------------------------------------------------------------
+Saturday 15th December 2007
+
+NOTES:
+    * Should be out Christmas shopping...
+
+    * Is the outputlist only used (when asked from the command
+      line) to display a module definition? --see orbit fix.
+
+BUGS:
+    * I noticed a while ago that the output of orbit.wc
+      differed between this version and the wcnt-1.26-test
+      version - which I should say are exactly the same. So I
+      create a .wc file with only three modules, one of which
+      is the orbit module. I use this wcnt and wcnt-1.26-test
+      wcnt both with verbose so the orbit::init test results
+      display.
+
+CHANGES:
+    * Created tests for checking modules inputs/outputs and
+      params.
+
+    * Added extra methods to fixstrparam, to get a count of
+      substrings, and to get a substring from an index no.
+
+FIXES:
+    * Discovered on_off_trig::get_out was not returning
+      out_attack_state or out_release_state.
+
+    * orbit module was returning it's out_x and out_y outputs
+      despite the outputs having not been added to the output
+      list. Which confused me slightly.
+
+--------------------------------------------------------------
+Friday 14th December 2007
+
+TODO:
+    * Write conditionally compiled testing code. Something to
+      set and get inputs and parameters to make sure they are
+      referenced correctly within each module and data object.
+      Write code to spot unused inputs/outputs/params.
+
+NOTES:
+    * Yesterday I got sidetracked writing some code based on
+      the collumnize function, but to collumnize C++ code and
+      for it to still compile. This required checking for
+      quotes etc.
+
+    * Tonight I can't remember what else there is to do. I
+      *know* there is something, somewhere, that I put to the
+      back of my mind for when I had finished whatever it was
+      I was doing when I thought of it, but I can't remember
+      whatever it was that I should be going back to. Lots of
+      late nights coding. I half asleep at work, am nearly
+      always late. I wake up when I get home - when I need to
+      be awake... Such is the life of a hospital porter.
+
+    * I'm starting to learn a few more things about gdb now.
+      Things I've never tried before like conditional breaks
+      and watches, small things. Which reminds me, I need to
+      do more memory leak testing for various things.
+
+    * I've spent a lot longer on this version and done more
+      to it than I planned to when I half released the
+      1.26-testing version. The way it's going seems to be
+      heading toward, or preparing the way for the new port
+      class to handle option input/param pairs and groups.
+      Things tidied up - not everything. Certainly
+      re-aquainting myself very well with the code I'd
+      written.
+
+CHANGES:
+    * Created collumnize function such that when wcnt is asked
+      from the command line to display a list of types (such
+      as modules, inputs, data objects) the list is sorted
+      alphabetically into collumns.
+
+FIXES:
+    * The memory leak when using
+          synthfilereader::set_wc_filename
+      was fixed several days ago now. Was not actually caused
+      by set_wc_filename, but by synthfilereader::open_file()
+      causing set_wc_filename to inadvertantly copy using
+      src == dest.
+
+--------------------------------------------------------------
+Thursday 13th December 2007
+
+CHANGES:
+    * Finished updating header files, and changing access of
+      certain content to be handled via jwm_globals.
+
+    * Removed the creation of the ladspa_loader and
+      synthmodlist classes from jwm_globals and instead have
+      them created within main(). However, they are still
+      accessed via jwm_globals. There was a problem with
+      dlclose when the ladspa_loader class was created/deleted
+      within an object (jwm_globals) at global scope. - and all
+      synthmodules must be deleted before ladspa_loader.
+
+    * Removed commandline processing from jwmsynth and created
+      cmdline class with improved command line handling and
+      message display. Still needs some work on the logic of
+      it's functioning. Some options when invoked require
+      modules or data objects to be created and one option
+      requires a .wc file to be read - this latter option:
+      the workings of - was formlerly within jwmsynth...
+
+    * Some new command line options:
+      --dont-run
+      --help
+      --longhelp
+      --about
+
+    * Settings like --verbose and --dont-run are accessible to
+      modules and data objects via jwm_globals (jwmsynth will
+      simply _not_ run() modules when --dont-run is used).
+
+--------------------------------------------------------------
+Sunday 9th December 2007
+
+CHANGES:
+    * Renamed globals.h to jwm_globals.h. Created jwm_globals
+      class. Creates instance named jwm. This used instead of
+      jwm namespace. This is because the classes created,
+      (formerly by jwmsynth) need to be created in the correct
+      order.
+
+    * Removing includes from header files not required for
+      declarations. Using forward declarations where possible,
+      and including in src files only those includes required
+      for compilation.
+
+NOTES:
+   * This process to achieve the above changes is also quite
+     tedious and slow going. It has to be done.
+
+--------------------------------------------------------------
+Saturday 8th December 2007
+
+NOTES:
+    * This reorganization is proving very very very tedious.
+      It's at times like this I wish I knew how to use grep,
+      but I can't help thinking that much of what needs doing
+      is a manual job... Whatever. Tediumus Extremus.
+
+CHANGES:
+    * Removing static data and methods from dobj, now. It was
+      mostly the same as that which appeared in synthmod. Into
+      globals jwm namespace it goes...
+
+    * Tidying up the very silly things going on in some of the
+      set_ and get_ methods...
+
+--------------------------------------------------------------
+Friday 7th December 2007
+
+CHANGES:
+    * Removing static data from synthmod... Or beginning to.
+      I never really liked how it looked in synthmod...
+      The data, along with the methods to access it is being
+      moved to globals.h & globals.cc. The classes are no
+      longer pointers, but returned as references from
+      functions with static data...
+      synthmod class should hopefully look a little more like
+      how it should - less cluttered.
+
+    * Turning synthmod virtual functions for getting inputs,
+      parameters and outputs to const. Again, this is tricky
+      because the compiler does not warn that the non const
+      versions (declared in derived classes) are not the
+      right ones...
+
+    * Removing (mostly 99%) unused non-generic methods for
+      setting and getting inputs/parameters/outputs (ie
+      specific set & get methods for specific parameters,
+      inputs, and outputs). This is because the generic
+      methods are (mostly) the only methods used (ie the ones
+      which pass void* data and paramnames, inputnames, and
+      outputnames types).
+
+    * Renamed PAR_TYPE enumerations so they no longer begin
+      with PAR_ (ie paramnames::PAR_LEVEL becomes
+      paramnames::LEVEL). Renamed synthmod::SYNTH_MOD_TYPE
+      enumerations to no longer begin with MOD_.
+
+    * Changed synthmod's virtual get_input, get_output and
+      get_param methods to const... Slowly changing derived
+      classes...
+
+    * Removed number_id member from synthmod, it has always
+      been unused.
+
+    * Removing counts of specific module types. The counts
+      were used to initialise a particular modules's number_id
+      member - which was never used for anything except
+      slightly variating certain error messages.
+
+--------------------------------------------------------------
+Thursday 6th December 2007
+
+CHANGES:
+    * Changed class structure of inputnames, outputnames,
+      paramnames, dobjnames, synthmodnames, and iocat
+      (formerly iocat_names). These now include a privately
+      declared struct to incorporate the name, iocat (for
+      input/output/param names) and the type (enum). storing
+      the enum is a small waste of memory but it helps keep
+      things clear and allows a check (conditional #DEFINE)
+      to take place to help maintain (for sanity) the correct
+      order of indices and names (getting these mixed up would
+      cause trouble).
+      Within the .cc files for these classes, the layout of
+      setting the name to the type is now much easier to
+      read. Lastly, the member functions for these classes
+      are now const.
+
+    * the IOCAT (enum) type is now placed within the iocat
+      class and the IOCAT enumerations no longer begin with
+      "CAT_". (ie CAT_DOUBLE is now referred to as
+      iocat::DOUBLE).
+
+    * Am generally going const crazy...
+
+--------------------------------------------------------------
+Saturday 1st December 2007
+
+CHANGES:
+    * Removed lp_average and hp_average filters. These were
+      the basic implimentations of the original lp_filter and
+      hp_filter modules. Instead of a frequency, the number of
+      samples to average was specified. No modulation (the
+      filters click when modulated). These filters did not
+      appear in wcnt-1.25, and were just ideas.
+
+FIXES:
+    * Removed blank paramnames which were laying about from
+      testing ideas - these caused segmentation faults.
+
+    * Some of the new LADSPA interfacing modules were not
+      validating all of their parameters. They are now.
+
+--------------------------------------------------------------
+Friday 31st November 2007
+
+ADDITIONS:
+    * adsr_scaler - data object - scales the time lengths of
+      the adsr envelope within an adsr. very basic: you specify
+      the adsr module to operate on, and then individual amounts
+      to scale the attack, decay, and release sections.
+
+CHANGES:
+    * Sure, there's been some, somewhere.
+
+NOTES:
+    * Added other modules which interface with LADSPA plugins.
+
+--------------------------------------------------------------
+Wednesday 20th November 2007
+
+ADDITIONS:
+    * LADSPA - very early stages here. I'm taking the easy
+      route, there is no LADSPA module to handle _any_ LADSPA
+      plugin. I'm selecting plugins I consider important and
+      then hardcoding them within specialised modules...
+
+    * glame_butterworth is a hardcoded LADSPA plugin module
+      implimenting the GLAME butterworth high and low pass
+      filters. (But not the x-over filter from the same lib
+      because it has a different number of ports).
+
+CHANGES:
+    * added extra check for module validity after the call to
+      synthmod::init() in jwmsynth. this because LADSPA 
+      modules instantiate the LADSPA plugin within their init
+      method.
+
+NOTES:
+     I've rehashed the plugin loading code by Richard Furse
+     from the LADSPA SDK, into a simple C++ class.
+
+--------------------------------------------------------------
+Tuesday 20th November 2007
+
+It's been a long time. I was beginning to think I'd never code
+on wcnt ever again (yeah right, as if).
+
+CHANGES:
+    * now using libsndfile for file input/output. so that...
+
+    * some inputs/outputs which were previously 16bit, are now
+      double precision floating point. other inputs/outputs
+      which were 16bit are gone altogether.
+
+    * in other words all audio signals are around the range of
+      -1.0 to +1.0 instead of some being in the 16bit integer
+      range of -32767 to +32767.
+
+    * orbit module: fractal orbits for modulating purposes.
+      nice.
+
+    * some other silly little modules barely worth the hassle
+      which actually i coded a few months prior to this.
+
+--------------------------------------------------------------
+**************************************************************
+--------------------------------------------------------------
 Wednesday 11th October 2006
 
 FIXES:

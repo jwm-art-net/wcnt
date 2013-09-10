@@ -1,70 +1,49 @@
-     wcnt-1.25/jwmsynth
+wcnt-1.26/jwmsynth
 
-    // examples/sinewave.wc
+//------------------------------------------------------------------------
+// examples/sinewave.wc
+//
+//      creates 1 second WAV file containg a sinewave running
+//      at the frequency of middle-C
+//
+//------------------------------------------------------------------------
 
-    samplerate 44100
-    bpm 120
-    signature 4/4
+samplerate 44100
+bpm 120
+signature 4/4
 
-    // duration of sound
+timer
+t
+    timings
+        time seconds 0
+        time seconds 1
+    timings
+t
 
-    timer t1
-        timings
-            time seconds 0.0
-            time seconds 1.0
-            time seconds 59.0
-        timings
-    t1
+constant_note n name c0 n
 
-    // clock will run at frequency of sine wave
+wave
+s
+    in_phase_step   n out_phase_step
+    type            sine
+s
 
-    clock clock1
-        in_freq_mod1 off
-        freq 220
-        freq_mod1_size 1.0
-    clock1
+wavfile_out
+w
+    in_left     s out_output
+    in_right    s out_output
+    in_bar      t out_count
+    in_bar_trig t out_trig
+    data_format float32
+    filename    sinewave.wav
+    start_bar   0
+    end_bar     1
+w
 
-    // the sine waveform, driven by clock1
+wcnt_exit
+x
+    in_bar      t out_count
+    exit_bar    1
+x
 
-    sine_wave sinewave
-        in_phase_trig clock1 out_phase_trig
-        in_deg_size clock1 out_deg_size
-        recycle_mode off
-        on_trig_reset_phase off
-        phase_cycles 1.0
-    sinewave
-
-    // amplify waveform to a 16 bit signal
-
-    constant one value 1.0 one
-
-    mono_amp amp1
-        in_signal sinewave out_output
-        in_amp_eg one out_output
-        in_amp_mod off
-        amplitude 20000
-        amp_mod_size 0.0
-        clip_level 32767
-    amp1
-
-    // write amplified signal to wav file
-
-    wavfile_out wav1
-        in_left amp1 out_mono
-        in_right amp1 out_mono
-        in_bar t1 out_count
-        in_bar_trig t1 out_trig
-        filename sinewave.wav
-        start_bar 0
-        end_bar 1
-    wav1
-
-    // when to stop
-
-    wcnt_exit wcnt_exit_module
-        in_bar t1 out_count
-        exit_bar 1
-    wcnt_exit_module
-
-    wcnt-1.25/jwmsynth 
-
+wcnt-1.26/jwmsynth

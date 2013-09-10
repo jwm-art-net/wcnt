@@ -1,4 +1,4 @@
-wcnt-1.25/jwmsynth
+wcnt-1.26/jwmsynth
 //------------------------------------------------------------------------
 //
 //  drums01.wc:  
@@ -93,6 +93,7 @@ seq1
     in_pos_step_size    time1 out_pos_step_size
     in_beats_per_bar    time1 out_beats_per_bar
     in_beat_value       time1 out_beat_value
+    start_bar 0
     velocity_response_time 5
 seq1
 
@@ -119,7 +120,7 @@ sampler1
         in_play_trig        seq1    out_note_on_trig
         in_stop_trig        off
         in_start_pos_mod    drumpos1    out_output
-        in_deg_size         osc1        out_deg_size
+        in_phase_step         osc1        out_phase_step
         wavfile     drumloop1
         play_dir                fwd
         play_mode               wrap
@@ -134,7 +135,7 @@ sampler1
         anti_clip_samples       50
         anti_clip_each_end      on
         zero_search_range       15
-        degsize_amount          1.0
+        phase_step_amount          1.0
 sampler1
 
 sampler
@@ -142,7 +143,7 @@ sampler2
         in_play_trig        seq1    out_note_on_trig
         in_stop_trig        off
         in_start_pos_mod    drumpos2    out_output
-        in_deg_size         osc2        out_deg_size
+        in_phase_step         osc2        out_phase_step
         wavfile     drumloop1
         play_dir                fwd
         play_mode               wrap
@@ -157,7 +158,7 @@ sampler2
         anti_clip_samples       50
         anti_clip_each_end      on
         zero_search_range       15
-        degsize_amount          1.0
+        phase_step_amount          1.0
 sampler2
 
 sampler
@@ -165,7 +166,7 @@ sampler3
         in_play_trig        seq1    out_note_on_trig
         in_stop_trig        off
         in_start_pos_mod    drumpos1    out_output
-        in_deg_size         osc1        out_deg_size
+        in_phase_step         osc1        out_phase_step
         wavfile     drumloop1
         play_dir                fwd
         play_mode               wrap
@@ -180,7 +181,7 @@ sampler3
         anti_clip_samples       50
         anti_clip_each_end      on
         zero_search_range       15
-        degsize_amount          1.0
+        phase_step_amount          1.0
 sampler3
 
 sampler
@@ -188,7 +189,7 @@ sampler4
         in_play_trig        seq1    out_note_on_trig
         in_stop_trig        off
         in_start_pos_mod    drumpos2    out_output
-        in_deg_size         osc2        out_deg_size
+        in_phase_step         osc2        out_phase_step
         wavfile     drumloop1
         play_dir                fwd
         play_mode               wrap
@@ -203,7 +204,7 @@ sampler4
         anti_clip_samples       50
         anti_clip_each_end      on
         zero_search_range       15
-        degsize_amount          1.0
+        phase_step_amount          1.0
 sampler4
 
 constant one value 1.0 one
@@ -259,6 +260,7 @@ seq2
         in_pos_step_size    time1   out_pos_step_size
         in_beats_per_bar    time1   out_beats_per_bar
         in_beat_value       time1   out_beat_value
+        start_bar 0
         velocity_response_time  5
 seq2
 
@@ -369,8 +371,8 @@ constant posdif value 0.0001 posdif
 
 adder
 drumpos2
-    in_signal   drumpos1    out_output
-    in_modifier posdif      out_output
+    in_signal1 drumpos1    out_output
+    in_signal2 posdif      out_output
 drumpos2
 
 // set frequency for sample to playback at:
@@ -578,50 +580,50 @@ adsr44
 
 multiplier
 dl1
-    in_signal   sampler1    out_l
-    in_modifier adsr3       out_output
+    in_signal1 sampler1    out_left
+    in_signal2 adsr3       out_output
 dl1
 
 multiplier
 dr1
-    in_signal   sampler1    out_r
-    in_modifier adsr3       out_output
+    in_signal1 sampler1    out_right
+    in_signal2 adsr3       out_output
 dr1
 
 multiplier
 dl2
-    in_signal   sampler2    out_l
-    in_modifier adsr3       out_output
+    in_signal1 sampler2    out_left
+    in_signal2 adsr3       out_output
 dl2
 
 multiplier
 dr2
-    in_signal   sampler2    out_r
-    in_modifier adsr3       out_output
+    in_signal1 sampler2    out_right
+    in_signal2 adsr3       out_output
 dr2
 
 multiplier
 dl3
-    in_signal   sampler3    out_l
-    in_modifier adsr3       out_output
+    in_signal1 sampler3    out_left
+    in_signal2 adsr3       out_output
 dl3
 
 multiplier
 dr3
-    in_signal   sampler3    out_r
-    in_modifier adsr3       out_output
+    in_signal1 sampler3    out_right
+    in_signal2 adsr3       out_output
 dr3
 
 multiplier
 dl4
-    in_signal   sampler4    out_l
-    in_modifier adsr3       out_output
+    in_signal1 sampler4    out_left
+    in_signal2 adsr3       out_output
 dl4
 
 multiplier
 dr4
-    in_signal   sampler4    out_r
-    in_modifier adsr3       out_output
+    in_signal1 sampler4    out_right
+    in_signal2 adsr3       out_output
 dr4
 
 wcnt_signal sdl1 in_signal dl1 out_output level 1.0 sdl1
@@ -663,9 +665,9 @@ lecho1
     in_feedback_mod off
     delay_time          612.5
     gain                0.625
-    gain_modsize        1.0
+    gain_mod_size        1.0
     feedback            0.625
-    feedback_modsize    0.0
+    feedback_mod_size    0.0
     wet/dry             1.0
 lecho1
 
@@ -677,9 +679,9 @@ recho1
     in_feedback_mod off
     delay_time          587.5
     gain                0.625
-    gain_modsize        1.0
+    gain_mod_size        1.0
     feedback            0.625
-    feedback_modsize    0.0
+    feedback_mod_size    0.0
     wet/dry             1.0
 recho1
 
@@ -691,9 +693,9 @@ lecho2
     in_feedback_mod off
     delay_time          412.5
     gain                0.625
-    gain_modsize        1.0
+    gain_mod_size        1.0
     feedback            0.625
-    feedback_modsize    0.0
+    feedback_mod_size    0.0
     wet/dry             1.0
 lecho2
 
@@ -705,9 +707,9 @@ recho2
     in_feedback_mod off
     delay_time          387.5
     gain                0.625
-    gain_modsize        1.0
+    gain_mod_size        1.0
     feedback            0.625
-    feedback_modsize    0.0
+    feedback_mod_size    0.0
     wet/dry             1.0
 recho2
 
@@ -719,9 +721,9 @@ lecho3
     in_feedback_mod off
     delay_time          212.5
     gain                0.625
-    gain_modsize        1.0
+    gain_mod_size        1.0
     feedback            0.625
-    feedback_modsize    0.0
+    feedback_mod_size    0.0
     wet/dry             1.0
 lecho3
 
@@ -733,9 +735,9 @@ recho3
     in_feedback_mod off
     delay_time          187.5
     gain                0.625
-    gain_modsize        1.0
+    gain_mod_size        1.0
     feedback            0.625
-    feedback_modsize    0.0
+    feedback_mod_size    0.0
     wet/dry             1.0
 recho3
 
@@ -747,9 +749,9 @@ lecho4
     in_feedback_mod off
     delay_time          112.5
     gain                0.625
-    gain_modsize        1.0
+    gain_mod_size        1.0
     feedback            0.625
-    feedback_modsize    0.0
+    feedback_mod_size    0.0
     wet/dry             1.0
 lecho4
 
@@ -761,9 +763,9 @@ recho4
     in_feedback_mod off
     delay_time          87.5
     gain                0.625
-    gain_modsize        1.0
+    gain_mod_size        1.0
     feedback            0.625
-    feedback_modsize    0.0
+    feedback_mod_size    0.0
     wet/dry             1.0
 recho4
 
@@ -871,14 +873,14 @@ dynr
 
 stereo_amp
 amp1
-    in_l        dynl    out_output
-    in_r        dynr    out_output
+    in_left        dynl    out_output
+    in_right        dynr    out_output
     in_amp_eg   adsr1   out_output
     in_amp_mod      off
-    left_amplitude  32000
-    right_amplitude 32000
+    left_level  0.975
+    right_level 0.975
     amp_mod_size    0.0 
-    clip_level      32767
+    clip_level      1.0
 amp1
 
 wavfile_out
@@ -887,6 +889,7 @@ wav1
     in_right    amp1    out_right
     in_bar      time1   out_bar
     in_bar_trig time1   out_bar_trig
+    data_format float32
     filename    fox02.wav
     start_bar   0
     end_bar     8
@@ -903,4 +906,4 @@ wcnt_exit_module
 //------------------------------------------------------------------------
 // End Of File _jwm 2005.
 //------------------------------------------------------------------------
-wcnt-1.25/jwmsynth
+wcnt-1.26/jwmsynth

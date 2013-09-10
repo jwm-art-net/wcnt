@@ -1,116 +1,97 @@
 #ifndef PAN_H
 #include "../include/pan.h"
+#include "../include/jwm_globals.h"
+#include "../include/modoutputlist.h"
+#include "../include/modinputlist.h"
+#include "../include/modparamlist.h"
 
 pan::pan(char const* uname) :
- synthmod(synthmodnames::MOD_PAN, pan_count,	uname),
+ synthmod(synthmodnames::PAN, uname),
  in_signal(0), in_pan_mod(0), out_l(0), out_r(0), panpos(0),
  pan_modsize(0), pan_pos(0)
 {
-    get_outputlist()->add_output(this, outputnames::OUT_L);
-    get_outputlist()->add_output(this, outputnames::OUT_R);
-    get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
-    get_inputlist()->add_input(this, inputnames::IN_PAN_MOD);
-    pan_count++;
+    jwm.get_outputlist().add_output(this, outputnames::OUT_LEFT);
+    jwm.get_outputlist().add_output(this, outputnames::OUT_RIGHT);
+    jwm.get_inputlist().add_input(this, inputnames::IN_SIGNAL);
+    jwm.get_inputlist().add_input(this, inputnames::IN_PAN_MOD);
     create_params();
 }
 
 pan::~pan()
 {
-    get_outputlist()->delete_module_outputs(this);
-    get_inputlist()->delete_module_inputs(this);
+    jwm.get_outputlist().delete_module_outputs(this);
+    jwm.get_inputlist().delete_module_inputs(this);
 }
 
-void const* pan::get_out(outputnames::OUT_TYPE ot)
+void const* pan::get_out(outputnames::OUT_TYPE ot) const
 {
-    void const* o = 0;
     switch(ot)
     {
-    case outputnames::OUT_L:
-        o = &out_l;
-        break;
-    case outputnames::OUT_R:
-        o = &out_r;
-        break;
-    default:
-        o = 0;
+        case outputnames::OUT_LEFT: return &out_l;
+        case outputnames::OUT_RIGHT:return &out_r;
+        default: return 0;
     }
-    return o;
 }
 
 void const* pan::set_in(inputnames::IN_TYPE it, void const* o)
 {
     switch(it)
     {
-    case inputnames::IN_SIGNAL:
-        return in_signal = (double*)o;
-    case inputnames::IN_PAN_MOD:
-        return in_pan_mod = (double*)o;
-    default:
-        return 0;
+        case inputnames::IN_SIGNAL: return in_signal = (double*)o;
+        case inputnames::IN_PAN_MOD:return in_pan_mod = (double*)o;
+        default: return 0;
     }
 }
 
-void const* pan::get_in(inputnames::IN_TYPE it)
+void const* pan::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
-    case inputnames::IN_SIGNAL:
-        return in_signal;
-    case inputnames::IN_PAN_MOD:
-        return in_pan_mod;
-    default:
-        return 0;
+        case inputnames::IN_SIGNAL: return in_signal;
+        case inputnames::IN_PAN_MOD:return in_pan_mod;
+        default: return 0;
     }
 }
 
 bool pan::set_param(paramnames::PAR_TYPE pt, void const* data)
 {
-    bool retv = false;
     switch(pt)
     {
-    case paramnames::PAR_PAN:
-        set_pan(*(double*)data);
-        retv = true;
-        break;
-    case paramnames::PAR_PAN_MODSIZE:
-        set_pan_modsize(*(double*)data);
-        retv = true;
-        break;
-    default:
-        retv = false;
-        break;
+        case paramnames::PAN:
+            panpos = *(double*)data;
+            return true;
+        case paramnames::PAN_MODSIZE:
+            pan_modsize = *(double*)data;
+            return true;
+        default:
+            return false;
     }
-    return retv;
 }
 
-void const* pan::get_param(paramnames::PAR_TYPE pt)
+void const* pan::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {
-    case paramnames::PAR_PAN:
-        return &pan_pos;
-    case paramnames::PAR_PAN_MODSIZE:
-        return &pan_modsize;
-    default:
-        return 0;
+        case paramnames::PAN:        return &pan_pos;
+        case paramnames::PAN_MODSIZE:return &pan_modsize;
+        default: return 0;
     }
 }
 
 stockerrs::ERR_TYPE pan::validate()
 {
-    modparamlist* pl = get_paramlist();
-    if (!pl->validate(this, paramnames::PAR_PAN,
+    if (!jwm.get_paramlist().validate(this, paramnames::PAN,
             stockerrs::ERR_RANGE_M1_1))
     {
-        *err_msg = get_paramnames()->get_name(paramnames::PAR_PAN);
+        *err_msg = jwm.get_paramnames().get_name(paramnames::PAN);
         invalidate();
         return stockerrs::ERR_RANGE_M1_1;
     }
-    if (!pl->validate(this, paramnames::PAR_PAN_MODSIZE,
+    if (!jwm.get_paramlist().validate(this, paramnames::PAN_MODSIZE,
             stockerrs::ERR_RANGE_0_1))
     {
         *err_msg =
-         get_paramnames()->get_name(paramnames::PAR_PAN_MODSIZE);
+         jwm.get_paramnames().get_name(paramnames::PAN_MODSIZE);
         invalidate();
         return stockerrs::ERR_RANGE_0_1;
     }
@@ -132,18 +113,15 @@ void pan::run()
     }
 }
 
-int pan::pan_count = 0;
-
 bool pan::done_params = false;
 
 void pan::create_params()
 {
     if (done_params == true)
         return;
-    get_paramlist()->add_param(
-     synthmodnames::MOD_PAN, paramnames::PAR_PAN);
-    get_paramlist()->add_param(
-     synthmodnames::MOD_PAN, paramnames::PAR_PAN_MODSIZE);
+    jwm.get_paramlist().add_param(synthmodnames::PAN, paramnames::PAN);
+    jwm.get_paramlist().add_param(synthmodnames::PAN,
+                                                paramnames::PAN_MODSIZE);
     done_params = true;
 }
 #endif

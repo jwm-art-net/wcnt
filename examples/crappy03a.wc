@@ -1,4 +1,4 @@
-wcnt-1.25/jwmsynth
+wcnt-1.26/jwmsynth
 //------------------------------------------------------------------------
 //
 //  crappy03a.wc:  
@@ -79,6 +79,7 @@ seq1
     in_pos_step_size    time1 out_pos_step_size
     in_beats_per_bar    time1 out_beats_per_bar
     in_beat_value       time1 out_beat_value
+    start_bar 0
     velocity_response_time 5
 seq1
 
@@ -150,7 +151,7 @@ sampler1
         in_play_trig        strig1 out_trig
         in_stop_trig        off
         in_start_pos_mod    stepper1    out_output
-        in_deg_size         osc1        out_deg_size
+        in_phase_step         osc1        out_phase_step
         wavfile                 crappy
         play_dir                fwd
         play_mode               wrap
@@ -165,7 +166,7 @@ sampler1
         anti_clip_samples       150
         anti_clip_each_end      on
         zero_search_range       0
-        degsize_amount          1.0
+        phase_step_amount          1.0
 sampler1
 
 adsr
@@ -197,18 +198,41 @@ adsr1
         zero_retrigger   off
 adsr1
 
+// filter out high-pitched whiney frequencies
+// (artifacts from tv recording)
+
+glame_filter
+glpf-l
+    in_signal     sampler1  out_left
+    in_freq_mod1  off
+    filter_type     lowpass
+    freq            4000
+    freq_mod1_size  1.0
+    stages          2
+glpf-l
+
+glame_filter
+glpf-r
+    in_signal     sampler1  out_right
+    in_freq_mod1  off
+    filter_type     lowpass
+    freq            4000
+    freq_mod1_size  1.0
+    stages          2
+glpf-r
+
 // apply enevelopes
 
 multiplier
 dl1
-    in_signal   sampler1    out_l
-    in_modifier adsr1       out_output
+    in_signal1 glpf-l out_output
+    in_signal2 adsr1  out_output
 dl1
 
 multiplier
 dr1
-    in_signal   sampler1    out_r
-    in_modifier adsr1       out_output
+    in_signal1 glpf-r out_output
+    in_signal2 adsr1  out_output
 dr1
 
 // want to let part of each sampler through to an echo
@@ -270,9 +294,9 @@ lecho1
     in_feedback_mod off
     delay_time          912.5
     gain                1.0
-    gain_modsize        1.0
+    gain_mod_size        1.0
     feedback            0.825
-    feedback_modsize    1.0
+    feedback_mod_size    1.0
     wet/dry             1.0
 lecho1
 
@@ -284,9 +308,9 @@ recho1
     in_feedback_mod off
     delay_time          287.5
     gain                1.0
-    gain_modsize        1.0
+    gain_mod_size        1.0
     feedback            0.825
-    feedback_modsize    1.0
+    feedback_mod_size    1.0
     wet/dry             1.0
 recho1
 
@@ -306,6 +330,8 @@ g1
         synthmod name osc1
         synthmod name sampler1
         synthmod name adsr1
+        synthmod name glpf-l
+        synthmod name glpf-r
         synthmod name dl1
         synthmod name dr1
         synthmod name atrig1
@@ -422,11 +448,11 @@ fclock1
 lp_filter
 lpfL
     in_signal          mix_l    out_output
-    in_cutoff_degsize  fclock1  out_deg_size
+    in_cutoff_phase_step  fclock1  out_phase_step
     in_feedback        off
     in_feedback_mod    off
     feedback          0.0
-    feedback_modsize  0.0
+    feedback_mod_size  0.0
     wet/dry           1.0
 lpfL
 
@@ -444,14 +470,14 @@ crappy03_wc_ie
 
 stereo_amp
 amp1
-    in_l        lpfL    out_output
-    in_r        lpfR    out_output
+    in_left     lpfL    out_output
+    in_right    lpfR    out_output
     in_amp_eg       one out_output
     in_amp_mod      off
-    left_amplitude  32000
-    right_amplitude 32000
+    left_level      0.9875
+    right_level     0.9875
     amp_mod_size    0.0
-    clip_level      32767
+    clip_level      1.0
 amp1
 
 wavfile_out
@@ -460,9 +486,10 @@ wav1
     in_right    amp1    out_right
     in_bar      time1   out_bar
     in_bar_trig time1   out_bar_trig
+    data_format float32
     filename    crappy03a.wav
     start_bar   0
-    end_bar     18
+    end_bar     4
 wav1
 
 // setup how long to process:
@@ -470,10 +497,10 @@ wav1
 wcnt_exit
 wcnt_exit_module
     in_bar  time1   out_bar
-    exit_bar    18
+    exit_bar    4
 wcnt_exit_module
 
 //------------------------------------------------------------------------
 // End Of File _jwm 2005.
 //------------------------------------------------------------------------
-wcnt-1.25/jwmsynth
+wcnt-1.26/jwmsynth

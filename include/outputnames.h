@@ -21,8 +21,8 @@ public:
         OUT_RIGHT,
         OUT_TRIG,
         OUT_PHASE_TRIG,
-        OUT_PREMOD_DEG_SIZE,
-        OUT_DEG_SIZE,
+        OUT_PREMOD_PHASE_STEP,
+        OUT_PHASE_STEP,
         OUT_FREQ,
         OUT_NOTE_ON_TRIG,
         OUT_NOTE_SLIDE_TRIG,
@@ -36,8 +36,6 @@ public:
         OUT_RIFF_PLAY_STATE,
         OUT_NOTE_PLAY_STATE,
         OUT_OFF_PULSE,
-        OUT_L,
-        OUT_R,
         OUT_WRITE_STATE,
         OUT_WRITE_START_TRIG,
         OUT_WRITE_END_TRIG,
@@ -60,10 +58,8 @@ public:
         OUT_NOTENAME,
         OUT_VELOCITY_RAMP,
         OUT_OFF_TRIG,
-        OUT_MONO,
         OUT_WET_OUTPUT,
         OUT_RMS,
-        OUT_M,
         OUT_RISE_TRIG,
         OUT_FALL_TRIG,
         OUT_TRANSPOSE,
@@ -75,18 +71,28 @@ public:
         OUT_WAIT_STATE,
         OUT_ATTACK_STATE,
         OUT_RELEASE_STATE,
-        OUT_LAST // know when to stop
+        OUT_X,
+        OUT_Y,
+        #ifdef WITH_LADSPA
+        OUT_UP,
+        OUT_DOWN,
+        #endif
+        OUT_LAST
     };
     outputnames();
-    ~outputnames();
-    char const* get_name(OUT_TYPE) const;
-    IOCAT get_category(OUT_TYPE) const;
-    OUT_TYPE get_type(char const*) const;
-    OUT_TYPE get_nonezerotype(IOCAT);
-
+    ~outputnames(){};
+    const char* const get_name(OUT_TYPE type) const;
+    iocat::IOCAT get_category(OUT_TYPE type) const;
+    OUT_TYPE get_type(char const* const name) const;
+    OUT_TYPE get_nonezerotype(iocat::IOCAT cat) const;
 private:
-    char** outname;
-    IOCAT* outcat;
+    struct output_data
+    {
+        OUT_TYPE type;
+        const char* const name;
+        iocat::IOCAT cat;
+    };
+    static const output_data data[OUT_LAST];
 };
 
 #endif

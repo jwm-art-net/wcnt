@@ -1,4 +1,4 @@
-wcnt-1.25/jwmsynth
+wcnt-1.26/jwmsynth
 //------------------------------------------------------------------------
 //
 //  drums01.wc:  
@@ -51,7 +51,7 @@ sampler1
         in_play_trig        drum_trig   out_phase_trig
         in_stop_trig        off
         in_start_pos_mod    stepper1    out_output
-        in_deg_size         osc1        out_deg_size
+        in_phase_step         osc1        out_phase_step
         wavfile     drumloop
         play_dir                fwd
         play_mode               wrap
@@ -66,7 +66,7 @@ sampler1
         anti_clip_samples       150
         anti_clip_each_end      on
         zero_search_range       25
-        degsize_amount          1.0
+        phase_step_amount          1.0
 sampler1
 
 constant one value 1.0 one
@@ -101,6 +101,7 @@ seq1
         in_pos_step_size    time1   out_pos_step_size
         in_beats_per_bar    time1   out_beats_per_bar
         in_beat_value       time1   out_beat_value
+        start_bar 0
         velocity_response_time  5
 seq1
 
@@ -229,13 +230,10 @@ drum_trig
 
 constant quart value 0.25 quart
 
-sine_wave
+wave
 wobble2
-    in_phase_trig           drum_trig   out_phase_trig
-    in_deg_size             drum_trig   out_deg_size
-    recycle_mode            on
-    on_trig_reset_phase     off
-    phase_cycles            1.0
+    in_phase_step           drum_trig   out_phase_step
+    type                    sine
 wobble2
 
 // use square_wave to generate a note_off...
@@ -243,7 +241,7 @@ wobble2
 square_wave
 drum_off
         in_phase_trig   drum_trig   out_phase_trig
-        in_deg_size     drum_trig   out_deg_size
+        in_phase_step     drum_trig   out_phase_step
         in_pwm          wobble      out_output
         pulse_width     0.95
         pwm_size        0.25
@@ -261,13 +259,10 @@ wobbler
 wobbler
 
 
-sine_wave
+wave
 wobble
-    in_phase_trig           wobbler   out_phase_trig
-    in_deg_size             wobbler   out_deg_size
-    recycle_mode            off
-    on_trig_reset_phase     off
-    phase_cycles            1.0
+    in_phase_step           wobbler   out_phase_step
+    type sine
 wobble
 
 // don't always jump to next drum for new position
@@ -328,6 +323,13 @@ drum_kill
 
 // envelope for individual drums
 
+constant_freq f1 freq 0.225 f1
+wave
+w1
+    in_phase_step f1 out_phase_step
+    type saw
+w1
+
 adsr
 adsr3
         envelope
@@ -338,14 +340,16 @@ adsr3
             ut  25    ul  0.9
             lt  25    ll  0.9
         section name release
-            ut  40    ul  0.0
+            ut  240    ul  0.0
             lt  40    ll  0.0
         envelope
         in_note_on_trig     drum_trig   out_phase_trig
         in_note_off_trig    drum_kill   out_trig
-        in_velocity         off
+        in_velocity         w1 out_output
         up_thresh       1.0
-        lo_thresh       0.0
+// w1 outputs -1.0 to +1.0 and we don't want too much of the tight
+// sampler loop to be heard
+        lo_thresh       0.25
         start_level     0.0
         min_time         50.0
         max_sustain_time 0.0
@@ -358,14 +362,14 @@ adsr3
 
 multiplier
 dl
-    in_signal   sampler1    out_l
-    in_modifier adsr3       out_output
+    in_signal1 sampler1    out_left
+    in_signal2 adsr3       out_output
 dl
 
 multiplier
 dr
-    in_signal   sampler1    out_r
-    in_modifier adsr3       out_output
+    in_signal1 sampler1    out_right
+    in_signal2 adsr3       out_output
 dr
 
 
@@ -436,15 +440,51 @@ dynr
 
 // amplify
 
+caps_plate2x2
+revb
+    in_left   dynl out_output
+    in_right  dynr out_output
+    bandwidth  0.6235
+    tail       0.0367
+    damping    0.06
+    wet/dry    0.075
+revb
+
+constant_freq f2 freq 110 f2
+
+single_band_parametric
+sbp-l
+    in_signal         revb out_left
+    in_phase_step     f2 out_phase_step
+    in_gain_mod       off
+    in_bandwidth_mod  off
+    gain_db             8
+    gain_mod_size       0
+    bandwidth           0.5
+    bandwidth_mod_size  0
+sbp-l
+
+single_band_parametric
+sbp-r
+    in_signal         revb out_right
+    in_phase_step     f2 out_phase_step
+    in_gain_mod       off
+    in_bandwidth_mod  off
+    gain_db             8
+    gain_mod_size       0
+    bandwidth           0.5
+    bandwidth_mod_size  0
+sbp-r
+
 stereo_amp
 amp1
-    in_l        dynl    out_output
-    in_r        dynr    out_output
+    in_left     sbp-l    out_output
+    in_right    sbp-r    out_output
     in_amp_eg   adsr1   out_output
     in_amp_mod      off
-    left_amplitude  32000
-    right_amplitude 32000
-    amp_mod_size    0.0 
+    left_level      0.75
+    right_level     0.75
+    amp_mod_size    0.0
     clip_level      32767
 amp1
 
@@ -454,6 +494,7 @@ wav1
     in_right    amp1    out_right
     in_bar      time1   out_bar
     in_bar_trig time1   out_bar_trig
+    data_format float32
     filename    drums01.wav
     start_bar   0
     end_bar     16
@@ -470,4 +511,4 @@ wcnt_exit_module
 //------------------------------------------------------------------------
 // End Of File _jwm 2005.
 //------------------------------------------------------------------------
-wcnt-1.25/jwmsynth
+wcnt-1.26/jwmsynth

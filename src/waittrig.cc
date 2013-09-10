@@ -1,48 +1,37 @@
 #ifndef WAITTRIG_H
 #include "../include/waittrig.h"
+#include "../include/jwm_globals.h"
+#include "../include/modoutputlist.h"
+#include "../include/modinputlist.h"
+#include "../include/modparamlist.h"
+#include "../include/conversions.h"
 
 waittrig::waittrig(char const* uname) :
- synthmod(synthmodnames::MOD_WAITTRIG, waittrig_count, uname),
+ synthmod(synthmodnames::WAITTRIG, uname),
  in_trig1(0), in_trig2(0), out_trig(OFF), out_wait_state(ON),
  min_time(0), max_time(0), count(1), min_samples(0), max_samples(0),
  mins(0), maxs(0), counter(0)
 {
-    get_outputlist()->add_output(this, outputnames::OUT_TRIG);
-    get_outputlist()->add_output(this, outputnames::OUT_WAIT_STATE);
-    get_inputlist()->add_input(this, inputnames::IN_TRIG1);
-    get_inputlist()->add_input(this, inputnames::IN_TRIG2);
-    waittrig_count++;
+    jwm.get_outputlist().add_output(this, outputnames::OUT_TRIG);
+    jwm.get_outputlist().add_output(this, outputnames::OUT_WAIT_STATE);
+    jwm.get_inputlist().add_input(this, inputnames::IN_TRIG1);
+    jwm.get_inputlist().add_input(this, inputnames::IN_TRIG2);
     create_params();
 }
 
 waittrig::~waittrig()
 {
-    get_outputlist()->delete_module_outputs(this);
-    get_inputlist()->delete_module_inputs(this);
+    jwm.get_outputlist().delete_module_outputs(this);
+    jwm.get_inputlist().delete_module_inputs(this);
 }
 
-void waittrig::set_min_time(double t)
-{
-    min_time = t;
-    mins = min_samples = ms_to_samples(min_time);
-}
-
-void waittrig::set_max_time(double t)
-{
-    max_time = t;
-    maxs = max_samples = ms_to_samples(max_time);
-}
-
-void const* waittrig::get_out(outputnames::OUT_TYPE ot)
+void const* waittrig::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
-    case outputnames::OUT_TRIG:
-        return &out_trig;
-    case outputnames::OUT_WAIT_STATE:
-        return &out_wait_state;
-    default:
-        return 0;
+        case outputnames::OUT_TRIG:         return &out_trig;
+        case outputnames::OUT_WAIT_STATE:   return &out_wait_state;
+        default: return 0;
     }
 }
 
@@ -50,25 +39,19 @@ void const* waittrig::set_in(inputnames::IN_TYPE it, void const* o)
 {
     switch(it)
     {
-    case inputnames::IN_TRIG1:
-        return in_trig1 = (STATUS*)o;
-    case inputnames::IN_TRIG2:
-        return in_trig2 = (STATUS*)o;
-    default:
-        return 0;
+        case inputnames::IN_TRIG1: return in_trig1 = (STATUS*)o;
+        case inputnames::IN_TRIG2: return in_trig2 = (STATUS*)o;
+        default: return 0;
     }
 }
 
-void const* waittrig::get_in(inputnames::IN_TYPE it)
+void const* waittrig::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
-    case inputnames::IN_TRIG1:
-        return in_trig1;
-    case inputnames::IN_TRIG2:
-        return in_trig2;
-    default:
-        return 0;
+        case inputnames::IN_TRIG1: return in_trig1;
+        case inputnames::IN_TRIG2: return in_trig2;
+        default: return 0;
     }
 }
 
@@ -76,56 +59,52 @@ bool waittrig::set_param(paramnames::PAR_TYPE pt, void const* data)
 {
     switch(pt)
     {
-    case paramnames::PAR_MIN_WAIT:
-        set_min_time(*(double*)data);
-        return true;
-    case paramnames::PAR_MAX_WAIT:
-        set_max_time(*(double*)data);
-        return true;
-    case paramnames::PAR_COUNT:
-        set_count(*(short*)data);
-        return true;
-    default:
-        return false;
+        case paramnames::MIN_WAIT:
+            min_time = *(double*)data;
+            return true;
+        case paramnames::MAX_WAIT:
+            max_time = *(double*)data;
+            return true;
+        case paramnames::COUNT:
+            count = *(short*)data;
+            return true;
+        default:
+            return false;
     }
 }
 
-void const* waittrig::get_param(paramnames::PAR_TYPE pt)
+void const* waittrig::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {
-    case paramnames::PAR_MIN_WAIT:
-        return &min_time;
-    case paramnames::PAR_MAX_WAIT:
-        return &max_time;
-    case paramnames::PAR_COUNT:
-        return &count;
-    default:
-        return 0;
+        case paramnames::MIN_WAIT:  return &min_time;
+        case paramnames::MAX_WAIT:  return &max_time;
+        case paramnames::COUNT:     return &count;
+        default: return 0;
     }
 }
 
 stockerrs::ERR_TYPE waittrig::validate()
 {
-    modparamlist* pl = get_paramlist();
-    if (!pl->validate(this, paramnames::PAR_MIN_WAIT,
+    modparamlist& pl = jwm.get_paramlist();
+    if (!pl.validate(this, paramnames::MIN_WAIT,
             stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = get_paramnames()->get_name(paramnames::PAR_MIN_WAIT);
+        *err_msg = jwm.get_paramnames().get_name(paramnames::MIN_WAIT);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
-    if (!pl->validate(this, paramnames::PAR_MAX_WAIT,
+    if (!pl.validate(this, paramnames::MAX_WAIT,
             stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = get_paramnames()->get_name(paramnames::PAR_MAX_WAIT);
+        *err_msg = jwm.get_paramnames().get_name(paramnames::MAX_WAIT);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
-    if (!pl->validate(this, paramnames::PAR_COUNT,
+    if (!pl.validate(this, paramnames::COUNT,
             stockerrs::ERR_NEG_ZERO))
     {
-        *err_msg = get_paramnames()->get_name(paramnames::PAR_COUNT);
+        *err_msg = jwm.get_paramnames().get_name(paramnames::COUNT);
         invalidate();
         return stockerrs::ERR_NEG_ZERO;
     }
@@ -134,6 +113,8 @@ stockerrs::ERR_TYPE waittrig::validate()
 
 void waittrig::init()
 {
+    mins = min_samples = ms_to_samples(min_time);
+    maxs = max_samples = ms_to_samples(max_time);
     mins = min_samples;
     maxs = max_samples;
     out_wait_state = ON;
@@ -171,20 +152,18 @@ void waittrig::run()
         out_trig = OFF;
 }
 
-int waittrig::waittrig_count = 0;
-
 bool waittrig::done_params = false;
 
 void waittrig::create_params()
 {
     if (done_params == true)
         return;
-    get_paramlist()->add_param(
-     synthmodnames::MOD_WAITTRIG, paramnames::PAR_MIN_WAIT);
-    get_paramlist()->add_param(
-     synthmodnames::MOD_WAITTRIG, paramnames::PAR_MAX_WAIT);
-    get_paramlist()->add_param(
-     synthmodnames::MOD_WAITTRIG, paramnames::PAR_COUNT);
+    jwm.get_paramlist().add_param(
+     synthmodnames::WAITTRIG, paramnames::MIN_WAIT);
+    jwm.get_paramlist().add_param(
+     synthmodnames::WAITTRIG, paramnames::MAX_WAIT);
+    jwm.get_paramlist().add_param(
+     synthmodnames::WAITTRIG, paramnames::COUNT);
     done_params = true;
 }
 

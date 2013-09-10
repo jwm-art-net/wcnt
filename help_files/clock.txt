@@ -1,0 +1,21 @@
+The clock module is a basic clock. The various clock modules in wcnt
+are the means to dictating the frequency of occurrence of things.
+Mostly the clock is used to drive a waveform module, but it is also
+used by other modules such as filters which also require a frequency to
+operate at, and by other modules which use triggers in some way.
+
+The frequency of the clock can be modulated by using the input
+in_freq_mod1 and it's corresponding parameter freq_mod1_size. For
+freq_mod1_size, the input should be connected to an output whose values
+will be within -1.0 to +1.0. In such cases, when in_freq_mod1 receives
+1.0, and freq_mod1_size is 2.0, then the clock's frequency will be
+doubled, and when in_freq_mod1 receives -1.0 the frequency will be
+halved.
+
+The clock provides an out_phase_step output, this is a value to step
+through for each sample to complete a full phase cycle. This output
+is most commonly used by the waveform modules.
+
+out_phase_trig triggers at the start of each clock cycle.
+
+See also: lfo_clock osc_clock sync_clock

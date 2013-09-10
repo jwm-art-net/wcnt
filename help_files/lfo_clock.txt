@@ -1,0 +1,5 @@
+The lfo_clock works in much the same way as the clock module,  except
+it's phase can be reset (for example by sequencer out_note_on_trig) and
+it has two modulation inputs instead of one.
+
+See also: lfo_controller clock osc_clock sync_clock sine_wave

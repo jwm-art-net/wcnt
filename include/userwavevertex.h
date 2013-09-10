@@ -1,7 +1,7 @@
 #ifndef USERWAVEVERTEX_H
 #define USERWAVEVERTEX_H
 
-#include "dobjparamlist.h"
+#include "dobj.h"
 
 class wave_vertex : public dobj
 {
@@ -20,7 +20,7 @@ public:
     void modulate(double vmod, double hmod);
     virtual stockerrs::ERR_TYPE validate();
     bool set_param(paramnames::PAR_TYPE, void*);
-    void const* get_param(paramnames::PAR_TYPE pt);
+    void const* get_param(paramnames::PAR_TYPE pt) const;
     // oh so naughty:
     double out_deg;
     double out_pos;

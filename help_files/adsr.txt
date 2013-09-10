@@ -1,0 +1,29 @@
+A dual-shaped implimentation of the classic ADSR envelope allowing the
+shape of the envelope to change in response to it's input in_velocity.
+How you impliment this is up to you. The lower shape could be quieter
+than the upper shape, or the upper shape might have longer duration for
+example.
+
+Within each envelope section are four parameters representing
+the two shapes:
+    ut (upper time - ms) and ul (upper level)
+    lt (lower time - ms) and ll (lower level)
+
+The levels should normally be set between 0.0 and 1.0 for amplitude
+shaping. The up_thresh and lo_thresh parameters control how values from
+in_velocity are interpreted to cause the upper or lower shapes to be
+created. Values from in_velocity between up_thresh and lo_thresh will
+create in-between shapes.
+
+start_level will normally be set to 0.0 if the adsr is to be used for
+controlling amplitude. zero_retrigger should also be off in this case.
+
+Sometimes while using a slow attack time, in_note_off_trig triggers
+while the envelope's levels are still building up, such that when the
+release stage starts, the levels increase rather than decrease as
+intended. By using release_is_ratio, this behaviour can be corrected.
+
+If you don't use in_note_off_trig, then set sustain_state to off to
+avoid infinite length sustain sections.
+
+See also: mono_amp stereo_amp multiplier

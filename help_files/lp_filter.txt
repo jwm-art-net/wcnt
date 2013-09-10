@@ -1,0 +1,8 @@
+This module is a kind of low pass filter. It works by calculating the
+average sample from the number of samples contained in one cycle of a
+particular frequency. The lp_filter module is very slow for low
+frequency cutoff points and very inaccurate for high frequency cutoff
+points. You're better off using the LADSPA plugin modules instead
+(GLAME).
+
+See also: hp_filter glame_filter glame_butterworth

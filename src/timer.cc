@@ -1,22 +1,27 @@
 #ifndef TIMER_H
 #include "../include/timer.h"
+#include "../include/jwm_globals.h"
+#include "../include/modoutputlist.h"
+#include "../include/modinputlist.h"
+#include "../include/modparamlist.h"
+#include "../include/moddobjlist.h"
+#include "../include/dobjdobjlist.h"
 
 timer::timer(char const* uname) :
- synthmod(synthmodnames::MOD_TIMER, timer_count, uname),
+ synthmod(synthmodnames::TIMER, uname),
  out_count(0), out_trig(OFF), t_item(0), t_list(0), current(0),
  samples(0)
 {
-    get_outputlist()->add_output(this,outputnames::OUT_TRIG);
-    get_outputlist()->add_output(this,outputnames::OUT_COUNT);
+    jwm.get_outputlist().add_output(this, outputnames::OUT_TRIG);
+    jwm.get_outputlist().add_output(this, outputnames::OUT_COUNT);
     t_list =
         new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
-    timer_count++;
     create_moddobj();
 }
 
 timer::~timer()
 {
-    get_outputlist()->delete_module_outputs(this);
+    jwm.get_outputlist().delete_module_outputs(this);
     goto_first();
     while(current) {
         delete current;
@@ -43,7 +48,7 @@ void timer::init()
 {
     goto_first();
     if (current)
-        samples = (unsigned long)(current->get_time() * audio_samplerate);
+        samples = (unsigned long)(current->get_time() * jwm.samplerate());
     else
         samples = (unsigned long) -1;
     out_count = -1;
@@ -57,7 +62,7 @@ void timer::run()
         goto_next();
         if (current)
             samples
-             = (unsigned long)(current->get_time() * audio_samplerate);
+             = (unsigned long)(current->get_time() * jwm.samplerate());
         else
             samples = (unsigned long) -1;
     }
@@ -68,16 +73,13 @@ void timer::run()
     }
 }
 
-void const* timer::get_out(outputnames::OUT_TYPE ot)
+void const* timer::get_out(outputnames::OUT_TYPE ot) const
 {
     switch (ot)
     {
-    case outputnames::OUT_TRIG:
-        return &out_trig;
-    case outputnames::OUT_COUNT:
-        return &out_count;
-    default:
-        return 0;
+        case outputnames::OUT_TRIG: return &out_trig;
+        case outputnames::OUT_COUNT:return &out_count;
+        default: return 0;
     }
 }
 
@@ -113,13 +115,11 @@ void timer::create_moddobj()
     if (done_moddobj == true)
         return;
     moddobj* mdbj;
-    mdbj = get_moddobjlist()->add_moddobj(
-        synthmodnames::MOD_TIMER, dobjnames::LST_TIMINGS);
+    mdbj = jwm.get_moddobjlist().add_moddobj(
+        synthmodnames::TIMER, dobjnames::LST_TIMINGS);
     mdbj->get_dobjdobjlist()->add_dobjdobj(
         dobjnames::LST_TIMINGS, dobjnames::SIN_TIME);
     done_moddobj = true;
 }
-
-short timer::timer_count = 0;
 
 #endif

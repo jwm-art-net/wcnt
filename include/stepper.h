@@ -2,16 +2,8 @@
 #define STEPPER_H
 
 #include "stepdata.h"
-
-#include "conversions.h"
+#include "synthmodule.h"
 #include "linkedlist.h"
-
-#include "modoutputslist.h"
-#include "modinputslist.h"
-#include "modparamlist.h"
-#include "dobjparamlist.h"
-#include "moddobjlist.h"
-#include "dobjlist.h"
 
 /*   _______
     /===#===\
@@ -65,35 +57,15 @@ public:
         return step = (step_data*)
          (step_item = steplist->goto_next())->get_data();
     }
-    // inputs
-    void set_input_trig(STATUS const* it){ in_trig = it;}
-    void set_input_restart_trig(STATUS const* rt){ in_restart_trig = rt;}
-    void set_input_modulation(double const* im){ in_modulation = im;}
-    STATUS const* get_input_trig(){ return in_trig;}
-    STATUS const* get_input_restart_trig(){ return in_restart_trig;}
-    double const* get_input_modulation(){ return in_modulation;}
-    // params
-    void set_step_count(short sc){ step_count = sc; }
-    void set_upper_thresh(double ut){ up_thresh = ut;}
-    void set_lower_thresh(double lt){ lo_thresh = lt;}
-    void set_response_time(double rt){ rtime = rt;}
-    void set_recycle_mode(STATUS rm){ recycle = rm; }
-    short get_step_count(){ return step_count;}
-    double get_upper_thresh(){ return up_thresh;}
-    double get_lower_thresh(){ return lo_thresh;}
-    double get_response_time(){ return rtime;}
-    STATUS get_recycle_mode(){ return recycle; }
-    // outputs
-    double const* get_output(){ return &out_output;}
     // virtual funcs
     void run();
     void init();
     stockerrs::ERR_TYPE validate();
-    void const* get_out(outputnames::OUT_TYPE);
+    void const* get_out(outputnames::OUT_TYPE) const;
     void const* set_in(inputnames::IN_TYPE, void const*);
-    const void* get_in(inputnames::IN_TYPE it);
+    const void* get_in(inputnames::IN_TYPE it) const;
     bool set_param(paramnames::PAR_TYPE, void const*);
-    void const* get_param(paramnames::PAR_TYPE);
+    void const* get_param(paramnames::PAR_TYPE) const;
     synthmod* duplicate_module(const char* uname, DUP_IO);
     dobj* add_dobj(dobj*);
 private:
@@ -125,7 +97,6 @@ private:
     ll_item*    step_item;
     step_data*  step;
     // interface stuff
-    static int stepper_count;
     static bool done_params;
     void create_params();
     static bool done_moddobj;

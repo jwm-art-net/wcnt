@@ -1,49 +1,55 @@
 #ifndef LINKEDLIST_H
 #include "../include/linkedlist.h"
 
-#ifdef SHOW_LL_ITEM_COUNT
-#include <iostream>
-using namespace std;
-long ll_item::ll_items_created   = 0;
-long ll_item::ll_items_destroyed = 0;
-long ll_item::ll_items_count     = 0;
-long ll_item::ll_items_max_count = 0;
-#endif
-
-
 ll_item::ll_item(void *d) :
  data(d), prev(0), next(0)
 {
-    #ifdef SHOW_LL_ITEM_COUNT
-    ll_items_created++;
-    ll_items_count++;
-    ll_items_max_count = (ll_items_count > ll_items_max_count)
-            ? ll_items_count : ll_items_max_count;
-    #endif
+
+#ifdef LIST_STATS
+STATS_INC
+#endif
+
 }
 
-ll_item::~ll_item() 
+ll_item::~ll_item()
 {
-    #ifdef SHOW_LL_ITEM_COUNT
-    ll_items_destroyed++;
-    ll_items_count--;
-    #endif
+
+#ifdef LIST_STATS
+STATS_DEC
+#endif
+
 }
 
-linkedlist::linkedlist() :  
+#ifdef LIST_STATS
+STATS_INIT(ll_item)
+#endif
+
+//------------------------------------------------------------------------
+
+linkedlist::linkedlist() :
  head(0), tail(0), current(0), find_result(0),
  multiref(MULTIREF_OFF), nulldata(NO_NULLDATA)
 {
     head = new ll_item(0);
     tail = new ll_item(0);
+
+#ifdef LIST_STATS
+STATS_INC
+#endif
+
 }
 
 linkedlist::linkedlist(MULTIREF mf, NULLDATA nd) :
- head(0), tail(0), current(0), find_result(0), 
+ head(0), tail(0), current(0), find_result(0),
  multiref(mf), nulldata(nd)
 {
     head = new ll_item(0);
     tail = new ll_item(0);
+
+#ifdef LIST_STATS
+STATS_INC
+#endif
+
 }
 
 linkedlist::~linkedlist()
@@ -57,6 +63,11 @@ linkedlist::~linkedlist()
     }
     delete head;
     delete tail;
+
+#ifdef LIST_STATS
+STATS_DEC
+#endif
+
 }
 
 ll_item * linkedlist::add_at_head(void *data)
@@ -195,8 +206,12 @@ ll_item * linkedlist::unlink_item(ll_item * llitem)
             }
             // if we've just removed item that current is (which goto_
             // funcs use), reset current to first (if any).
-            if (current == i)
-                current = head->get_next();
+            if (current == i) {
+                if (i->get_prev())
+                    current = i->get_prev();
+                else
+                    current = i->get_next();
+            }
             return i;
         }
     }
@@ -279,5 +294,9 @@ linkedlist::get_item_count()
     }
     return count;
 }
+
+#ifdef LIST_STATS
+STATS_INIT(linkedlist)
+#endif
 
 #endif

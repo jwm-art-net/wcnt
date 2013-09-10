@@ -2,7 +2,7 @@
 #define RIFFNODE_H
 
 #include "riffdata.h"
-#include "dobjparamlist.h"
+#include "dobj.h"
 
 /*
 class riff_node 
@@ -86,7 +86,7 @@ public:
     short get_repeat_stripe(){ return repeat_stripe;}
     virtual stockerrs::ERR_TYPE validate();
     bool set_param(paramnames::PAR_TYPE, void*);
-    void const* get_param(paramnames::PAR_TYPE pt);
+    void const* get_param(paramnames::PAR_TYPE pt) const;
 private:
     short start_bar;
     riffdata* riff_source;

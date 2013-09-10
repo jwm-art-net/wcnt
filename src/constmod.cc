@@ -1,60 +1,51 @@
 #ifndef CONSTMOD_H
 #include "../include/constmod.h"
+#include "../include/jwm_globals.h"
+#include "../include/modoutputlist.h"
+#include "../include/modparamlist.h"
 
-constmod::constmod(char const* uname) : 
- synthmod(synthmodnames::MOD_CONSTMOD, constmod_count, uname),
+constmod::constmod(char const* uname) :
+ synthmod(synthmodnames::CONSTMOD, uname),
  output(0)
 {
-    get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
-    constmod_count++;
+    jwm.get_outputlist().add_output(this, outputnames::OUT_OUTPUT);
     create_params();
 }
 
 constmod::~constmod()
 {
-    get_outputlist()->delete_module_outputs(this);
+    jwm.get_outputlist().delete_module_outputs(this);
 }
 
-void const* constmod::get_out(outputnames::OUT_TYPE ot)
+void const* constmod::get_out(outputnames::OUT_TYPE ot) const
 {
-    void const* o = 0;
-    switch(ot) {
-    case outputnames::OUT_OUTPUT:
-        o = &output;
-        break;
-    default:
-        o = 0;
+    switch(ot) 
+    {
+        case outputnames::OUT_OUTPUT: return &output;
+        default: return 0;
     }
-    return o;
 }
 
 bool constmod::set_param(paramnames::PAR_TYPE pt, void const* data)
 {
-    bool retv = false;
     switch(pt) {
-    case paramnames::PAR_VALUE:
-        set_value(*(double*)data);
-        retv = true;
-        break;
-    default:
-        retv = false;
-        break;
+        case paramnames::VALUE:
+            output = *(double*)data;
+            return true;
+        default:
+            return false;
     }
-    return retv;
 }
 
-void const* constmod::get_param(paramnames::PAR_TYPE pt)
+void const* constmod::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {
-    case paramnames::PAR_VALUE:
-        return &output; // parameter /is/ output.
-    default:
-        return 0;
+        // parameter /is/ output.
+        case paramnames::VALUE: return &output;
+        default: return 0;
     }
 }
-
-int constmod::constmod_count = 0;
 
 bool constmod::done_params = false;
 
@@ -62,8 +53,8 @@ void constmod::create_params()
 {
     if (done_params == true)
         return;
-    get_paramlist()->add_param(
-     synthmodnames::MOD_CONSTMOD, paramnames::PAR_VALUE);
+    jwm.get_paramlist().add_param(
+     synthmodnames::CONSTMOD, paramnames::VALUE);
     done_params = true;
 }
 

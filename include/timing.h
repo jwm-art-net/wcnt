@@ -1,7 +1,7 @@
 #ifndef TIMING_H
 #define TIMING_H
 
-#include "dobjparamlist.h"
+#include "dobj.h"
 
 // a length of time
 
@@ -14,7 +14,7 @@ public:
     double get_time(){ return seconds;}
     stockerrs::ERR_TYPE validate();
     bool set_param(paramnames::PAR_TYPE, void*);
-    void const* get_param(paramnames::PAR_TYPE pt);
+    void const* get_param(paramnames::PAR_TYPE pt) const;
 
 private:
     double seconds;

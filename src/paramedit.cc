@@ -1,5 +1,14 @@
 #ifndef PARAMEDIT_H
 #include "../include/paramedit.h"
+#include "../include/synthmodule.h"
+#include "../include/synthmodulelist.h"
+#include "../include/dobjlist.h"
+#include "../include/modparamlist.h"
+#include "../include/dobjparamlist.h"
+#include "../include/setparam.h"
+#include "../include/jwm_globals.h"
+
+#include <iostream>
 
 paramedit::paramedit() :
  dobj(dobjnames::SIN_EDIT_PARAM),
@@ -18,8 +27,8 @@ paramedit::~paramedit()
 
 bool paramedit::set_name(const char* n)
 {
-    synthmod* sm = synthmod::get_modlist()->get_synthmod_by_name(n);
-    dobj* dbj = dobj::get_dobjlist()->get_dobj_by_name(n);
+    synthmod* sm = jwm.get_modlist().get_synthmod_by_name(n);
+    dobj* dbj = jwm.get_dobjlist().get_dobj_by_name(n);
     if (!sm && !dbj)
         return false;
     if (name)
@@ -38,10 +47,10 @@ void paramedit::set_parstr(const char* n)
     return;
 }
 
-bool paramedit::do_param_edits(bool verbose)
+bool paramedit::do_param_edits()
 {
-    synthmod* sm = synthmod::get_modlist()->get_synthmod_by_name(name);
-    dobj* dbj = dobj::get_dobjlist()->get_dobj_by_name(name);
+    synthmod* sm = jwm.get_modlist().get_synthmod_by_name(name);
+    dobj* dbj = jwm.get_dobjlist().get_dobj_by_name(name);
     if (sm && dbj) {
         *err_msg ="\na data object and module share username ";
         *err_msg += name;
@@ -57,9 +66,9 @@ bool paramedit::do_param_edits(bool verbose)
         invalidate();
         return false;
     }
-    stringstream strm;
-    string parname;
-    string valstr;
+    std::stringstream strm;
+    std::string parname;
+    std::string valstr;
     strm << parstr;
     strm >> parname;
     do {
@@ -74,8 +83,8 @@ bool paramedit::do_param_edits(bool verbose)
                 return false;
             }
         }
-        if (verbose)
-            cout << "\n    " << parname << " " << valstr;
+        if (jwm.is_verbose())
+            std::cout << "\n    " << parname << " " << valstr;
         strm >> parname;
     }while (!strm.eof());
     return true;
@@ -85,16 +94,16 @@ bool paramedit::mod_param_edit(synthmod* module, const char* parname,
                                const char* valstr)
 {
     synthmodnames::SYNTH_MOD_TYPE smt = module->get_module_type();
-    modparamlist* parlist = synthmod::get_paramlist()->
+    modparamlist* parlist = jwm.get_paramlist().
         get_paramlist_for_moduletype(smt);
     modparam* mp = parlist->goto_first();
-    paramnames::PAR_TYPE pt = paramnames::PAR_FIRST;
+    paramnames::PAR_TYPE pt = paramnames::FIRST;
     bool confused = false;
     while(mp) {
         paramnames::PAR_TYPE mpt = mp->get_paramtype();
-        char const* mparname = get_paramnames()->get_name(mpt);
+        char const* mparname = jwm.get_paramnames().get_name(mpt);
         if (strcmp(parname, mparname) == 0) {
-            if (pt != paramnames::PAR_FIRST)
+            if (pt != paramnames::FIRST)
                 confused = true;
             pt = mpt;
         }
@@ -108,7 +117,7 @@ bool paramedit::mod_param_edit(synthmod* module, const char* parname,
         delete parlist;
         return false;
     }
-    if (pt == paramnames::PAR_FIRST) {
+    if (pt == paramnames::FIRST) {
         *err_msg = "\nmodule ";
         *err_msg += module->get_username();
         *err_msg += " does not have any parameter named ";
@@ -132,16 +141,16 @@ bool paramedit::dobj_param_edit(dobj* dobject, const char* parname,
                                 const char* valstr)
 {
     dobjnames::DOBJ_TYPE dt = dobject->get_object_type();
-    dobjparamlist* parlist = dobj::get_dparlist()->
+    dobjparamlist* parlist = jwm.get_dparlist().
         get_dobjparamlist_for_dobj_type(dt);
     dobjparam* dp = parlist->goto_first();
-    paramnames::PAR_TYPE pt = paramnames::PAR_FIRST;
+    paramnames::PAR_TYPE pt = paramnames::FIRST;
     bool confused = false;
     while(dp) {
         paramnames::PAR_TYPE dpt = dp->get_partype();
-        char const* mparname = get_paramnames()->get_name(dpt);
+        char const* mparname = jwm.get_paramnames().get_name(dpt);
         if (strcmp(parname, mparname) == 0) {
-            if (pt != paramnames::PAR_FIRST)
+            if (pt != paramnames::FIRST)
                 confused = true;
             pt = dpt;
         }
@@ -155,7 +164,7 @@ bool paramedit::dobj_param_edit(dobj* dobject, const char* parname,
         delete parlist;
         return false;
     }
-    if (pt == paramnames::PAR_FIRST) {
+    if (pt == paramnames::FIRST) {
         *err_msg = "\ndata object ";
         *err_msg += dobject->get_username();
         *err_msg += " does not have any parameter named ";
@@ -177,56 +186,44 @@ bool paramedit::dobj_param_edit(dobj* dobject, const char* parname,
 
 bool paramedit::set_param(paramnames::PAR_TYPE dt, void* data)
 {
-    bool retv = false;
     switch(dt)
     {
-    case paramnames::PAR_STR_UNNAMED:
+    case paramnames::STR_UNNAMED:
         if (!set_name((char*)data)) {
             *err_msg = "\nthere are no data objects or modules named ";
             *err_msg += (char*)data;
             *err_msg +=
                 ". cannot edit parameters of non-existant entity.";
             invalidate();
-            retv = false;
+            return false;
         }
-        else retv = true;
-        break;
-    case paramnames::PAR_STR_LIST:
+        return true;
+    case paramnames::STR_LIST:
         set_parstr((char*)data);
-        retv = true;
-        break;
+        return true;
     default:
-        retv = false;
-        break;
+        return false;
     }
-    return retv;
 }
 
-void const* paramedit::get_param(paramnames::PAR_TYPE dt)
+void const* paramedit::get_param(paramnames::PAR_TYPE dt) const
 {
-    const void* retv = 0;
     switch(dt)
     {
-    case paramnames::PAR_STR_UNNAMED:
-        retv = get_name();
-        break;
-    case paramnames::PAR_STR_LIST:
-        retv = get_parstr();
-        break;
-    default:
-        retv = 0;
+        case paramnames::STR_UNNAMED:   return get_name();
+        case paramnames::STR_LIST:      return get_parstr();
+        default: return 0;
     }
-    return retv;
 }
 
 void paramedit::create_params()
 {
     if (done_params == true)
         return;
-    get_dparlist()->add_dobjparam(
-     dobjnames::SIN_EDIT_PARAM, paramnames::PAR_STR_UNNAMED);
-    get_dparlist()->add_dobjparam(
-     dobjnames::SIN_EDIT_PARAM, paramnames::PAR_STR_LIST);
+    jwm.get_dparlist().add_dobjparam(
+        dobjnames::SIN_EDIT_PARAM, paramnames::STR_UNNAMED);
+    jwm.get_dparlist().add_dobjparam(
+        dobjnames::SIN_EDIT_PARAM, paramnames::STR_LIST);
     done_params = true;
 }
 

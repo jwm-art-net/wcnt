@@ -1,7 +1,6 @@
 #ifndef STOCKERRS_H
 #include "../include/stockerrs.h"
 #include <iostream>
-using namespace std;
 
 stockerrs::stockerrs() : errmsg(0)
 {

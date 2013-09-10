@@ -1,63 +1,53 @@
 #ifndef MULTIPLIER_H
 #include "../include/multiplier.h"
+#include "../include/jwm_globals.h"
+#include "../include/modoutputlist.h"
+#include "../include/modinputlist.h"
 
 multiplier::multiplier(char const* uname) :
- synthmod(synthmodnames::MOD_MULTIPLIER, multiplier_count, uname),
- in_signal(0), in_mod(0), out_output(0.00)
+ synthmod(synthmodnames::MULTIPLIER, uname),
+ in_signal1(0), in_signal2(0), out_output(0.00)
 {
-    get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
-    get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
-    get_inputlist()->add_input(this, inputnames::IN_MODIFIER);
-    multiplier_count++;
-    // no params, no bother
+    jwm.get_outputlist().add_output(this, outputnames::OUT_OUTPUT);
+    jwm.get_inputlist().add_input(this, inputnames::IN_SIGNAL1);
+    jwm.get_inputlist().add_input(this, inputnames::IN_SIGNAL2);
 }
 
 multiplier::~multiplier()
 {
-    get_outputlist()->delete_module_outputs(this);
-    get_inputlist()->delete_module_inputs(this);
+    jwm.get_outputlist().delete_module_outputs(this);
+    jwm.get_inputlist().delete_module_inputs(this);
 }
 
-void const* multiplier::get_out(outputnames::OUT_TYPE ot)
+void const* multiplier::get_out(outputnames::OUT_TYPE ot) const
 {
-    void const* o = 0;
     switch(ot)
     {
-    case outputnames::OUT_OUTPUT:
-        o = &out_output;
-        break;
-    default:
-        o = 0;
+        case outputnames::OUT_OUTPUT: return &out_output;
+        default: return 0;
     }
-    return o;
 }
 
 void const* multiplier::set_in(inputnames::IN_TYPE it, void const* o)
 {
     switch(it)
     {
-    case inputnames::IN_SIGNAL:
-        return in_signal = (double*)o;
-    case inputnames::IN_MODIFIER:
-        return in_mod = (double*)o;
-    default:
-        return 0;
+        case inputnames::IN_SIGNAL1:    return in_signal1 = (double*)o;
+        case inputnames::IN_SIGNAL2:    return in_signal2 = (double*)o;
+        default: return 0;
     }
 }
 
-void const* multiplier::get_in(inputnames::IN_TYPE it)
+void const* multiplier::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
-    case inputnames::IN_SIGNAL:
-        return in_signal;
-    case inputnames::IN_MODIFIER:
-        return in_mod;
-    default:
-        return 0;
+        case inputnames::IN_SIGNAL1:    return in_signal1;
+        case inputnames::IN_SIGNAL2:    return in_signal2;
+        default: return 0;
     }
 }
 
-int multiplier::multiplier_count = 0;
-// go on, give us a snare rush rush rush rush.
+// go on... givvus a snare rush - rush - rush - rush.
+
 #endif

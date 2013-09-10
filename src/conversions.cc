@@ -1,5 +1,12 @@
 #ifndef CONVERSIONS_H
 #include "../include/conversions.h"
+#include "../include/jwm_globals.h"
+#include "../include/jwm_init.h"
+
+#include <math.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 double note_to_step(const char *note_name)
 {
@@ -20,7 +27,7 @@ double note_to_step(
 double freq_to_step(double freq)
 {
     if (freq == 0) return 0;
-    return 360 / ((double)audio_samplerate / freq);
+    return 360.0 / ((double)jwm.samplerate() / freq);
 }
 
 double freq_to_step(double freq, char oct_offset)
@@ -31,7 +38,7 @@ double freq_to_step(double freq, char oct_offset)
         fr = 2 * oct_offset;
     else if (oct_offset < 0)
         fr = (double)1 / (2 * -oct_offset);
-    return 360 / (audio_samplerate / (freq * fr));
+    return 360.0 / ((double)jwm.samplerate() / (freq * fr));
 }
 
 double freq_to_step(double freq, char oct_offset, double semitones)
@@ -42,7 +49,7 @@ double freq_to_step(double freq, char oct_offset, double semitones)
         fr = 2 * oct_offset;
     else if (oct_offset < 0)
         fr = (double)1 / (2 * -oct_offset);
-    return 360 / ((double)audio_samplerate /
+    return 360 / ((double)jwm.samplerate() /
                   (freq * fr * pow(2, (semitones / 12))));
 }
 
@@ -95,7 +102,7 @@ const char* transpose_notename(const char* note_name, char semitones)
         newname[2] = '\0';
     }
     else newname[1] = '\0';
-    char* newnotename = new char[NOTE_ARRAY_SIZE];
+    char* newnotename = new char[jwm_init::note_array_size];
     sprintf(newnotename, "%s%d", newname, oct);
     delete [] newname;
     return newnotename;
@@ -148,12 +155,12 @@ char extract_octave(const char* note_name)
 
 unsigned long freq_to_samples(double f)
 {
-    return (unsigned long)(audio_samplerate / f);
+    return (unsigned long)(jwm.samplerate() / f);
 }
 
 unsigned long ms_to_samples(double t)
 {
-    return (unsigned long)(audio_samplerate * (t / 1000));
+    return (unsigned long)(jwm.samplerate() * (t / 1000));
 }
 
 #endif

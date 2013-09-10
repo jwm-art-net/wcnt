@@ -1,5 +1,7 @@
 #ifndef USERWAVEVERTEX_H
 #include "../include/userwavevertex.h"
+#include "../include/jwm_globals.h"
+#include "../include/dobjparamlist.h"
 
 wave_vertex::wave_vertex() :
  dobj(dobjnames::SIN_VERTEX), out_deg(0), out_pos(0),
@@ -26,16 +28,16 @@ bool wave_vertex::set_param(paramnames::PAR_TYPE pt, void* data)
 {
     switch(pt)
     {
-    case paramnames::PAR_UPDEG:
+    case paramnames::UPDEG:
         set_updeg(*(double*)data);
         return true;
-    case paramnames::PAR_UPLEVEL:
+    case paramnames::UPLEVEL:
         set_uppos(*(double*)data);
         return true;
-    case paramnames::PAR_LODEG:
+    case paramnames::LODEG:
         set_lodeg(*(double*)data);
         return true;
-    case paramnames::PAR_LOLEVEL:
+    case paramnames::LOLEVEL:
         set_lopos(*(double*)data);
         return true;
     default:
@@ -43,17 +45,17 @@ bool wave_vertex::set_param(paramnames::PAR_TYPE pt, void* data)
     }
 }
 
-void const* wave_vertex::get_param(paramnames::PAR_TYPE pt)
+void const* wave_vertex::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {
-    case paramnames::PAR_UPDEG:
+    case paramnames::UPDEG:
         return &up_deg;
-    case paramnames::PAR_UPLEVEL:
+    case paramnames::UPLEVEL:
         return &up_pos;
-    case paramnames::PAR_LODEG:
+    case paramnames::LODEG:
         return &lo_deg;
-    case paramnames::PAR_LOLEVEL:
+    case paramnames::LOLEVEL:
         return &lo_pos;
     default:
         return 0;
@@ -62,18 +64,17 @@ void const* wave_vertex::get_param(paramnames::PAR_TYPE pt)
 
 stockerrs::ERR_TYPE wave_vertex::validate()
 {
-    dobjparamlist* dpl = get_dparlist();
-    if (!dpl->validate(
-        this, paramnames::PAR_UPDEG, stockerrs::ERR_RANGE_DEGS))
+    if (!jwm.get_dparlist().validate(this,
+        paramnames::UPDEG, stockerrs::ERR_RANGE_DEGS))
     {
-        *err_msg = get_paramnames()->get_name(paramnames::PAR_UPDEG);
+        *err_msg = jwm.get_paramnames().get_name(paramnames::UPDEG);
         invalidate();
         return stockerrs::ERR_RANGE_DEGS;
     }
-    if (!dpl->validate(
-        this, paramnames::PAR_LODEG, stockerrs::ERR_RANGE_DEGS))
+    if (!jwm.get_dparlist().validate(this,
+        paramnames::LODEG, stockerrs::ERR_RANGE_DEGS))
     {
-        *err_msg = get_paramnames()->get_name(paramnames::PAR_LODEG);
+        *err_msg = jwm.get_paramnames().get_name(paramnames::LODEG);
         invalidate();
         return stockerrs::ERR_RANGE_DEGS;
     }
@@ -83,14 +84,14 @@ stockerrs::ERR_TYPE wave_vertex::validate()
 void wave_vertex::create_params()
 {
     if (done_params == true) return;
-    get_dparlist()->add_dobjparam(
-     dobjnames::SIN_VERTEX, paramnames::PAR_UPDEG);
-    get_dparlist()->add_dobjparam(
-     dobjnames::SIN_VERTEX, paramnames::PAR_UPLEVEL);
-    get_dparlist()->add_dobjparam(
-     dobjnames::SIN_VERTEX, paramnames::PAR_LODEG);
-    get_dparlist()->add_dobjparam(
-     dobjnames::SIN_VERTEX, paramnames::PAR_LOLEVEL);
+    jwm.get_dparlist().add_dobjparam(
+        dobjnames::SIN_VERTEX, paramnames::UPDEG);
+    jwm.get_dparlist().add_dobjparam(
+        dobjnames::SIN_VERTEX, paramnames::UPLEVEL);
+    jwm.get_dparlist().add_dobjparam(
+        dobjnames::SIN_VERTEX, paramnames::LODEG);
+    jwm.get_dparlist().add_dobjparam(
+        dobjnames::SIN_VERTEX, paramnames::LOLEVEL);
     done_params = true;
 }
 

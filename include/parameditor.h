@@ -2,9 +2,7 @@
 #define PARAMEDITOR_H
 
 #include "paramedit.h"
-
-// forward definition
-class paramedit;
+#include "linkedlist.h"
 
 class parameditor : public dobj
 {
@@ -34,7 +32,6 @@ public:
         return stockerrs::ERR_NO_ERROR;
     }
     dobj const* add_dobj(dobj* dbj);
-    void set_verbose(){ verbose = true; }
 
 private:
     linkedlist* par_edit_list;
@@ -42,7 +39,6 @@ private:
     paramedit* par_edit;
     void create_params();
     static bool done_params;
-    bool verbose;
 };
 
 #endif

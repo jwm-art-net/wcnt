@@ -1,11 +1,7 @@
 #ifndef DOBJNAMEDOBJ_H
 #define DOBJNAMEDOBJ_H
 
-#include <stdio.h>
-#include <string.h>
-
-#include "dobjparamlist.h"
-
+#include "dobj.h"
 
 class dobjnamedobj : public dobj
 {
@@ -19,7 +15,7 @@ public:
         return stockerrs::ERR_NO_ERROR;
     }
     bool set_param(paramnames::PAR_TYPE, void*);
-    void const* get_param(paramnames::PAR_TYPE);
+    void const* get_param(paramnames::PAR_TYPE) const;
 
 private:
     char* dobjname;

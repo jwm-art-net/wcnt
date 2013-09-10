@@ -1,156 +1,148 @@
 #ifndef SYNCCLOCK_H
 #include "../include/syncclock.h"
+#include "../include/jwm_globals.h"
+#include "../include/modoutputlist.h"
+#include "../include/modinputlist.h"
+#include "../include/modparamlist.h"
+#include "../include/timemap.h"
+
+#include <math.h>
 
 sync_clock::sync_clock(char const* uname) :
- synthmod(synthmodnames::MOD_SYNCCLOCK, sync_clock_count, uname),
+ synthmod(synthmodnames::SYNCCLOCK, uname),
  in_bpm(0), in_pos_stepsz(0), in_beats_per_bar(0), in_beat_value(0),
  in_phase_trig(0), in_freq_mod1(0), in_freq_mod2(0), out_phase_trig(OFF),
- out_deg_size(0), freq_mod1size(0), freq_mod2size(0), quarter_val(0),
+ out_phase_step(0), freq_mod1size(0), freq_mod2size(0), quarter_val(0),
  note_length(0), snap_to(0), posconv(0), phaselen(0), beatlen(0),
  phasepos(0), snapto(0)
 {
 // degs initialised at 360 so immediately triggers if in_phase_trig is off
-    get_inputlist()->add_input(this, inputnames::IN_BPM);
-    get_inputlist()->add_input(this, inputnames::IN_POS_STEP_SIZE);
-    get_inputlist()->add_input(this, inputnames::IN_BEATS_PER_BAR);
-    get_inputlist()->add_input(this, inputnames::IN_BEAT_VALUE);
-    get_inputlist()->add_input(this, inputnames::IN_PHASE_TRIG);
-    get_inputlist()->add_input(this, inputnames::IN_FREQ_MOD1);
-    get_inputlist()->add_input(this, inputnames::IN_FREQ_MOD2);
-    get_outputlist()->add_output(this, outputnames::OUT_PHASE_TRIG);
-    get_outputlist()->add_output(this, outputnames::OUT_DEG_SIZE);
-    sync_clock_count++;
+    jwm.get_inputlist().add_input(this, inputnames::IN_BPM);
+    jwm.get_inputlist().add_input(this, inputnames::IN_POS_STEP_SIZE);
+    jwm.get_inputlist().add_input(this, inputnames::IN_BEATS_PER_BAR);
+    jwm.get_inputlist().add_input(this, inputnames::IN_BEAT_VALUE);
+    jwm.get_inputlist().add_input(this, inputnames::IN_PHASE_TRIG);
+    jwm.get_inputlist().add_input(this, inputnames::IN_FREQ_MOD1);
+    jwm.get_inputlist().add_input(this, inputnames::IN_FREQ_MOD2);
+    jwm.get_outputlist().add_output(this, outputnames::OUT_PHASE_TRIG);
+    jwm.get_outputlist().add_output(this, outputnames::OUT_PHASE_STEP);
     create_params();
 }
 
 sync_clock::~sync_clock()
 {
-    get_outputlist()->delete_module_outputs(this);
-    get_inputlist()->delete_module_inputs(this);
+    jwm.get_outputlist().delete_module_outputs(this);
+    jwm.get_inputlist().delete_module_inputs(this);
 }
 
-void const* sync_clock::get_out(outputnames::OUT_TYPE ot)
+void const* sync_clock::get_out(outputnames::OUT_TYPE ot) const
 {
-    switch(ot) {
-    case outputnames::OUT_PHASE_TRIG:
-        return &out_phase_trig;
-    case outputnames::OUT_DEG_SIZE:
-        return &out_deg_size;
-    default:
-        return 0;
+    switch(ot)
+    {
+        case outputnames::OUT_PHASE_TRIG: return &out_phase_trig;
+        case outputnames::OUT_PHASE_STEP: return &out_phase_step;
+        default: return 0;
     }
 }
 
 void const* sync_clock::set_in(inputnames::IN_TYPE it, void const* o)
 {
-    switch(it) {
-    case inputnames::IN_BPM:
-        return in_bpm = (double*)o;
-    case inputnames::IN_POS_STEP_SIZE:
-        return in_pos_stepsz = (double*)o;
-    case inputnames::IN_BEATS_PER_BAR:
-        return in_beats_per_bar = (short*)o;
-    case inputnames::IN_BEAT_VALUE:
-        return in_beat_value = (short*)o;
-    case inputnames::IN_PHASE_TRIG:
-        return in_phase_trig = (STATUS*)o;
-    case inputnames::IN_FREQ_MOD1:
-        return in_freq_mod1 = (double*)o;
-    case inputnames::IN_FREQ_MOD2:
-        return in_freq_mod2 = (double*)o;
-    default:
-        return 0;
+    switch(it)
+    {
+        case inputnames::IN_BPM:
+            return in_bpm = (double*)o;
+        case inputnames::IN_POS_STEP_SIZE:
+            return in_pos_stepsz = (double*)o;
+        case inputnames::IN_BEATS_PER_BAR:
+            return in_beats_per_bar = (short*)o;
+        case inputnames::IN_BEAT_VALUE:
+            return in_beat_value = (short*)o;
+        case inputnames::IN_PHASE_TRIG:
+            return in_phase_trig = (STATUS*)o;
+        case inputnames::IN_FREQ_MOD1:
+            return in_freq_mod1 = (double*)o;
+        case inputnames::IN_FREQ_MOD2:
+            return in_freq_mod2 = (double*)o;
+        default:
+            return 0;
     }
 }
 
-void const* sync_clock::get_in(inputnames::IN_TYPE it)
+void const* sync_clock::get_in(inputnames::IN_TYPE it) const
 {
-    switch(it) {
-    case inputnames::IN_BPM:
-        return in_bpm;
-    case inputnames::IN_POS_STEP_SIZE:
-        return in_pos_stepsz;
-    case inputnames::IN_BEATS_PER_BAR:
-        return in_beats_per_bar;
-    case inputnames::IN_BEAT_VALUE:
-        return in_beat_value;
-    case inputnames::IN_PHASE_TRIG:
-        return in_phase_trig;
-    case inputnames::IN_FREQ_MOD1:
-        return in_freq_mod1;
-    case inputnames::IN_FREQ_MOD2:
-        return in_freq_mod2;
-    default:
-        return 0;
+    switch(it)
+    {
+        case inputnames::IN_BPM:
+            return in_bpm;
+        case inputnames::IN_POS_STEP_SIZE:
+            return in_pos_stepsz;
+        case inputnames::IN_BEATS_PER_BAR:
+            return in_beats_per_bar;
+        case inputnames::IN_BEAT_VALUE:
+            return in_beat_value;
+        case inputnames::IN_PHASE_TRIG:
+            return in_phase_trig;
+        case inputnames::IN_FREQ_MOD1:
+            return in_freq_mod1;
+        case inputnames::IN_FREQ_MOD2:
+            return in_freq_mod2;
+        default:
+            return 0;
     }
 }
 
 bool sync_clock::set_param(paramnames::PAR_TYPE pt, void const* data)
 {
-    bool retv = false;
-    switch(pt) {
-    case paramnames::PAR_FREQ_MOD1SIZE:
-        set_freq_mod1size(*(double*)data);
-        retv = true;
-        break;
-    case paramnames::PAR_FREQ_MOD2SIZE:
-        set_freq_mod2size(*(double*)data);
-        retv = true;
-        break;
-    case paramnames::PAR_QUARTER_VAL:
-        set_quarter_value(*(short*)data);
-        retv = true;
-        break;
-    case paramnames::PAR_NOTE_LEN:
-        set_note_length(*(double*)data);
-        retv = true;
-        break;
-    case paramnames::PAR_SNAP_TO:
-        set_snap_to(*(double*)data);
-        retv = true;
-        break;
-    default:
-        retv = false;
-        break;
+    switch(pt)
+    {
+        case paramnames::FREQ_MOD1SIZE:
+            freq_mod1size = *(double*)data;
+            return true;
+        case paramnames::FREQ_MOD2SIZE:
+            freq_mod2size = *(double*)data;
+            return true;
+        case paramnames::QUARTER_VAL:
+            quarter_val = *(short*)data;
+            return true;
+        case paramnames::NOTE_LEN:
+            note_length = *(double*)data;
+            return true;
+        case paramnames::SNAP_TO:
+            snap_to = *(double*)data;
+            return true;
+        default:
+            return false;
     }
-    return retv;
 }
 
-void const* sync_clock::get_param(paramnames::PAR_TYPE pt)
+void const* sync_clock::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {
-    case paramnames::PAR_FREQ_MOD1SIZE:
-        return &freq_mod1size;
-    case paramnames::PAR_FREQ_MOD2SIZE:
-        return &freq_mod2size;
-    case paramnames::PAR_QUARTER_VAL:
-        return &quarter_val;
-    case paramnames::PAR_NOTE_LEN:
-        return &note_length;
-    case paramnames::PAR_SNAP_TO:
-        return &snap_to;
-    default:
-        return 0;
+        case paramnames::FREQ_MOD1SIZE: return &freq_mod1size;
+        case paramnames::FREQ_MOD2SIZE: return &freq_mod2size;
+        case paramnames::QUARTER_VAL:   return &quarter_val;
+        case paramnames::NOTE_LEN:      return &note_length;
+        case paramnames::SNAP_TO:       return &snap_to;
+        default: return 0;
     }
 }
 
 stockerrs::ERR_TYPE sync_clock::validate()
 {
-    modparamlist* pl = get_paramlist();
-    if (!pl->validate(
-        this, paramnames::PAR_QUARTER_VAL, stockerrs::ERR_NEGATIVE))
+    if (!jwm.get_paramlist().validate(
+        this, paramnames::QUARTER_VAL, stockerrs::ERR_NEGATIVE))
     {
         *err_msg =
-         get_paramnames()->get_name(paramnames::PAR_QUARTER_VAL);
+         jwm.get_paramnames().get_name(paramnames::QUARTER_VAL);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
-    if (!pl->validate(
-        this, paramnames::PAR_NOTE_LEN, stockerrs::ERR_NEGATIVE))
+    if (!jwm.get_paramlist().validate(
+        this, paramnames::NOTE_LEN, stockerrs::ERR_NEGATIVE))
     {
         *err_msg =
-         get_paramnames()->get_name(paramnames::PAR_NOTE_LEN);
+         jwm.get_paramnames().get_name(paramnames::NOTE_LEN);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -201,12 +193,10 @@ void sync_clock::run()
         else phaselen = nlen2;
     } else if (out_phase_trig == ON) out_phase_trig = OFF;
     beatlen = (timemap::QUARTER_VALUE * (4.0 / (double)*in_beat_value));
-    out_deg_size = 360.0 * (1 / ((audio_samplerate * (60.0 / *in_bpm)
+    out_phase_step = 360.0 * (1 / ((jwm.samplerate() * (60.0 / *in_bpm)
      * (phaselen / beatlen))));
     phasepos += *in_pos_stepsz;
 }
-
-int sync_clock::sync_clock_count = 0;
 
 bool sync_clock::done_params = false;
 
@@ -214,16 +204,12 @@ void sync_clock::create_params()
 {
     if (done_params == true)
         return;
-    get_paramlist()->add_param(
-     synthmodnames::MOD_SYNCCLOCK, paramnames::PAR_FREQ_MOD1SIZE);
-    get_paramlist()->add_param(
-     synthmodnames::MOD_SYNCCLOCK, paramnames::PAR_FREQ_MOD2SIZE);
-    get_paramlist()->add_param(
-     synthmodnames::MOD_SYNCCLOCK, paramnames::PAR_QUARTER_VAL);
-    get_paramlist()->add_param(
-     synthmodnames::MOD_SYNCCLOCK, paramnames::PAR_NOTE_LEN);
-    get_paramlist()->add_param(
-     synthmodnames::MOD_SYNCCLOCK, paramnames::PAR_SNAP_TO);
+    modparamlist& pl = jwm.get_paramlist();
+    pl.add_param(synthmodnames::SYNCCLOCK, paramnames::FREQ_MOD1SIZE);
+    pl.add_param(synthmodnames::SYNCCLOCK, paramnames::FREQ_MOD2SIZE);
+    pl.add_param(synthmodnames::SYNCCLOCK, paramnames::QUARTER_VAL);
+    pl.add_param(synthmodnames::SYNCCLOCK, paramnames::NOTE_LEN);
+    pl.add_param(synthmodnames::SYNCCLOCK, paramnames::SNAP_TO);
     done_params = true;
 }
 

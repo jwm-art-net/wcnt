@@ -1,9 +1,7 @@
 #ifndef WCNTEXIT_H
 #define WCNTEXIT_H
 
-#include "modoutputslist.h"
-#include "modinputslist.h"
-#include "modparamlist.h"
+#include "synthmodule.h"
 
 /*
 wcnt_exit
@@ -38,21 +36,17 @@ class wcnt_exit: public synthmod
 public:
     wcnt_exit(char const*);
     ~wcnt_exit();
-    // inputs
-    void set_input_bar(const short* b){ in_bar = b;}
-    const short* get_input_bar(){ return in_bar;}
-    // no outputs
-    // params
-    void set_exit_bar(short eb){ exit_bar = eb;}
+    // these two needed by jwmsynth - to exit ;_)...
+    const short* get_input_bar(){ return in_bar; }
     short get_exit_bar() { return exit_bar; }
     // virtual funcs
     void run(){};
     stockerrs::ERR_TYPE validate();
-    void const* get_out(outputnames::OUT_TYPE) { return 0; }
+    void const* get_out(outputnames::OUT_TYPE) const { return 0; }
     void const* set_in(inputnames::IN_TYPE, void const*);
-    const void* get_in(inputnames::IN_TYPE it);
+    const void* get_in(inputnames::IN_TYPE it) const;
     bool set_param(paramnames::PAR_TYPE, void const*);
-    void const* get_param(paramnames::PAR_TYPE);
+    void const* get_param(paramnames::PAR_TYPE) const;
     synthmod* duplicate_module(const char* uname, DUP_IO);
 private:
     // inputs
@@ -61,7 +55,6 @@ private:
     // params
     short exit_bar;
     // synthmod stuff
-    static short wcnt_exit_count;
     void create_params();
     static bool done_params;
 };

@@ -2,9 +2,9 @@
 #include "../include/groupnames.h"
 
 #include <stdio.h>
-#include <iostream>
-using namespace std;
-char* get_groupname(char const* name)
+#include <string.h>
+
+const char* const get_groupname(char const* const name)
 {
     if (!name) return 0;
     char* chkname = new char[strlen(name) + 1];
@@ -25,7 +25,7 @@ char* get_groupname(char const* name)
     return 0;
 }
 
-char* set_groupname(char const* groupname, char const* name)
+char* set_groupname(const char* const groupname, const char* const name)
 {
     char* non_grp_name;
     char* tmp_name = new char[strlen(name ) + 1];

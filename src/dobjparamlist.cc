@@ -1,5 +1,6 @@
 #ifndef DOBJPARAMLIST_H
 #include "../include/dobjparamlist.h"
+#include "../include/dobj.h"
 
 dobjparamlist::dobjparamlist() :
  dpar_list(0), dpar_item(0), dpar(0)

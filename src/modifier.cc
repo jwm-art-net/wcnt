@@ -1,117 +1,117 @@
 #ifndef MODIFIER_H
 #include "../include/modifier.h"
+#include "../include/jwm_globals.h"
+#include "../include/modoutputlist.h"
+#include "../include/modinputlist.h"
+#include "../include/modparamlist.h"
+#include "../include/fxsparamlist.h"
 
 modifier::modifier(char const* uname) :
- synthmod(synthmodnames::MOD_MODIFIER, modifier_count, uname),
- in_signal(0), in_mod(0), out_output(0), func(ADD), bias(0)
+ synthmod(synthmodnames::MODIFIER, uname),
+ in_signal1(0), in_signal2(0),out_output(0), func(ADD), type(M1), bias(0)
 {
-    get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
-    get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
-    get_inputlist()->add_input(this, inputnames::IN_MODIFIER);
-    modifier_count++;
+    jwm.get_outputlist().add_output(this, outputnames::OUT_OUTPUT);
+    jwm.get_inputlist().add_input(this, inputnames::IN_SIGNAL1);
+    jwm.get_inputlist().add_input(this, inputnames::IN_SIGNAL2);
     create_params();
 }
 
 modifier::~modifier()
 {
-    get_outputlist()->delete_module_outputs(this);
-    get_inputlist()->delete_module_inputs(this);
+    jwm.get_outputlist().delete_module_outputs(this);
+    jwm.get_inputlist().delete_module_inputs(this);
 }
 
-void const* modifier::get_out(outputnames::OUT_TYPE ot)
+void const* modifier::get_out(outputnames::OUT_TYPE ot) const
 {
-    void const* o = 0;
     switch(ot)
     {
-    case outputnames::OUT_OUTPUT:
-        o = &out_output;
-        break;
-    default:
-        o = 0;
+        case outputnames::OUT_OUTPUT: return &out_output;
+        default: return 0;
     }
-    return o;
 }
 
 void const* modifier::set_in(inputnames::IN_TYPE it, void const* o)
 {
     switch(it)
     {
-    case inputnames::IN_SIGNAL:
-        return in_signal = (double*)o;
-    case inputnames::IN_MODIFIER:
-        return in_mod = (double*)o;
-    default:
-        return 0;
+        case inputnames::IN_SIGNAL1:     return in_signal1 = (double*)o;
+        case inputnames::IN_SIGNAL2:     return in_signal2 = (double*)o;
+        default: return 0;
     }
 }
 
-void const* modifier::get_in(inputnames::IN_TYPE it)
+void const* modifier::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
-    case inputnames::IN_SIGNAL:
-        return in_signal;
-    case inputnames::IN_MODIFIER:
-        return in_mod;
-    default:
-        return 0;
+        case inputnames::IN_SIGNAL1:     return in_signal1;
+        case inputnames::IN_SIGNAL2:     return in_signal2;
+        default: return 0;
     }
 }
 
 bool modifier::set_param(paramnames::PAR_TYPE pt, void const* data)
 {
-    bool retv = false;
     switch(pt)
     {
-    case paramnames::PAR_MODIFIER_FUNC:
-        set_func((MOD_FUNC)(*(int*)data));
-        retv = true;
-        break;
-    case paramnames::PAR_BIAS:
-        set_bias(*(double*)data);
-        retv = true;
-        break;
-    default:
-        retv = false;
-        break;
+        case paramnames::FUNC:
+            func = (FUNC)(*(int*)data);
+            return true;
+        case paramnames::MODIFIER_TYPE:
+            type = (TYPE)(*(int*)data);
+            return true;
+        case paramnames::BIAS:
+            bias = *(double*)data;
+            return true;
+        default:
+            return false;
     }
-    return retv;
 }
 
-void const* modifier::get_param(paramnames::PAR_TYPE pt)
+void const* modifier::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {
-    case paramnames::PAR_MODIFIER_FUNC:
-        return &func;
-    case paramnames::PAR_BIAS:
-        return &bias;
-    default:
-        return 0;
+        case paramnames::FUNC:          return &func;
+        case paramnames::MODIFIER_TYPE: return &type;
+        case paramnames::BIAS:          return &bias;
+        default: return 0;
     }
 }
 
 stockerrs::ERR_TYPE modifier::validate()
 {
-    if (!get_paramlist()->validate(this, paramnames::PAR_BIAS,
+    if (!jwm.get_paramlist().validate(this, paramnames::BIAS,
                                         stockerrs::ERR_RANGE_0_1))
     {
-        *err_msg = get_paramnames()->get_name(paramnames::PAR_BIAS);
+        *err_msg = jwm.get_paramnames().get_name(paramnames::BIAS);
         invalidate();
         return stockerrs::ERR_RANGE_0_1;
     }
     return stockerrs::ERR_NO_ERROR;
 }
 
+#include <math.h>
+
 void modifier::run()
 {
-    if (func == ADD)
-        out_output = *in_signal * (1 - bias) + *in_mod * bias;
-    else
-        out_output = *in_signal * (1 - bias) - *in_mod * bias;
+    if (func == ADD) {
+        out_output = *in_signal1 * (1 - bias) + 
+            *in_signal2 * fabs(-*in_signal1) * bias *
+                (type == M1 ? 1 : *in_signal1);
+    }
+    else if (func == SUB) {
+        out_output = *in_signal1 * (1 - bias) -
+            *in_signal2 * fabs(*in_signal1) * bias *
+                (type == M1 ? 1 : *in_signal1);
+    }
+    else {
+        out_output = *in_signal1 * (1 - bias) * *in_signal2 +
+            *in_signal2 * fabs(*in_signal1) * bias *
+                (type == M1 ? 1 : *in_signal1);
+    }
 }
-
-int modifier::modifier_count = 0;
 
 bool modifier::done_params = false;
 
@@ -119,12 +119,16 @@ void modifier::create_params()
 {
     if (done_params == true)
         return;
-    get_paramlist()->add_param(
-            synthmodnames::MOD_MODIFIER, paramnames::PAR_MODIFIER_FUNC);
-    get_fxsparamlist()->add_param("add/sub",
-                                    paramnames::PAR_MODIFIER_FUNC);
-    get_paramlist()->add_param(
-            synthmodnames::MOD_MODIFIER, paramnames::PAR_BIAS);
+    jwm.get_paramlist().
+        add_param(synthmodnames::MODIFIER, paramnames::FUNC);
+    jwm.get_fxsparamlist().
+        add_param("add/sub/mul", paramnames::FUNC);
+    jwm.get_paramlist().
+        add_param(synthmodnames::MODIFIER, paramnames::MODIFIER_TYPE);
+    jwm.get_fxsparamlist().
+        add_param("m1/m2", paramnames::MODIFIER_TYPE);
+    jwm.get_paramlist().
+        add_param(synthmodnames::MODIFIER, paramnames::BIAS);
     done_params = true;
 }
 

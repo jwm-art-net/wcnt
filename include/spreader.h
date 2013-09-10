@@ -2,15 +2,7 @@
 #define SPREADER_H
 
 #include "wcntsignal.h"
-#include "conversions.h"
 #include "linkedlist.h"
-
-#include "modoutputslist.h"
-#include "modinputslist.h"
-#include "modparamlist.h"
-#include "dobjparamlist.h"
-#include "moddobjlist.h"
-#include "dobjlist.h"
 
 class spreader: public synthmod
 {
@@ -37,20 +29,15 @@ public:
         return wcntsig = (wcnt_signal*)
         (wcntsig_item = wcntsiglist->goto_next())->get_data();
     }
-    void set_input_modulation(double const* i){ in_mod = i;}
-    double const* get_input_modulation(){ return in_mod;}
-    double const* get_output(){ return &out_output;}
-    void set_start_level(double sl) { start_level = sl;}
-    void set_end_level(double el){ end_level = el;}
     // virtual funcs
     void run();
     void init();
     stockerrs::ERR_TYPE validate();
-    void const* get_out(outputnames::OUT_TYPE);
+    void const* get_out(outputnames::OUT_TYPE) const;
     void const* set_in(inputnames::IN_TYPE, void const*);
-    const void* get_in(inputnames::IN_TYPE it);
+    const void* get_in(inputnames::IN_TYPE it) const;
     bool set_param(paramnames::PAR_TYPE, void const*);
-    void const* get_param(paramnames::PAR_TYPE);
+    void const* get_param(paramnames::PAR_TYPE) const;
     synthmod* duplicate_module(const char* uname, DUP_IO);
     // wcnt_signal is not a dobj, but a synthmod, so a dobj wrapper class
     // - dobjmod, is passed which contains a pointer to the wcnt_signal
@@ -73,7 +60,6 @@ private:
     double const* sig;
     double const* prevsig;
     double zero;// for initial stuff
-    static int spreader_count;
     static bool done_params;
     void create_params();
     static bool done_moddobj;

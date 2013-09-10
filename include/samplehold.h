@@ -1,34 +1,23 @@
 #ifndef SAMPLEHOLD_H
 #define SAMPLEHOLD_H
 
-#include "conversions.h"
-#include "modoutputslist.h"
-#include "modinputslist.h"
-#include "modparamlist.h"
+#include "synthmodule.h"
 
-// decay time of 0 means do not decay to zero
+/* decay time of 0 means do not decay to zero */
 
 class sample_hold : public synthmod
 {
 public:
     sample_hold(char const*);
     ~sample_hold();
-    void set_input_trig(const STATUS* trg){ in_trig = trg;}
-    void set_input_signal(const double* in){ in_signal = in;}
-    const STATUS* get_input_trig(){ return in_trig;}
-    const double* get_input_signal(){ return in_signal;}
-    const double* get_output(){ return &output;}
-    void set_decay_time(double ms){ decay_time = ms;}
-    double get_decay_time(){ return decay_time;}
-    // virtual funcs
     void run();
     void init();
     stockerrs::ERR_TYPE validate();
-    void const* get_out(outputnames::OUT_TYPE);
+    void const* get_out(outputnames::OUT_TYPE) const;
     void const* set_in(inputnames::IN_TYPE, void const*);
-    const void* get_in(inputnames::IN_TYPE it);
+    const void* get_in(inputnames::IN_TYPE it) const;
     bool set_param(paramnames::PAR_TYPE, void const*);
-    void const* get_param(paramnames::PAR_TYPE);
+    void const* get_param(paramnames::PAR_TYPE) const;
 
 private:
     const STATUS* in_trig;
@@ -38,7 +27,6 @@ private:
     unsigned long decay_samps;
     unsigned long ds;
     double decay_size;
-    static int sample_hold_count;
     void create_params();
     static bool done_params;
 };

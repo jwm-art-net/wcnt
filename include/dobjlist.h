@@ -1,9 +1,10 @@
 #ifndef DOBJLIST_H
 #define DOBJLIST_H
 
-#include "dobj.h"
+#include "dobjnames.h"
 #include "linkedlist.h"
-#include "dataobjects.h"
+
+class dobj;
 
 class dobjlist
 {

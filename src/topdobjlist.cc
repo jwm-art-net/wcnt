@@ -1,5 +1,8 @@
 #ifndef TOPDOBJLIST_H
 #include "../include/topdobjlist.h"
+#include "../include/jwm_globals.h"
+#include "../include/dobjdobjlist.h"
+#include "../include/dobjdobj.h"
 
 topdobjlist::topdobjlist() :
  tldobj_list(0), tldobj_item(0), dd_list(0)
@@ -23,9 +26,9 @@ topdobjlist::~topdobjlist()
 dobjdobjlist* topdobjlist::create_dobjdobjlist(
     dobjnames::DOBJ_TYPE parent, dobjnames::DOBJ_TYPE child)
 {
-    if (dobj::get_dobjnames()->check_type(parent)
+    if (jwm.get_dobjnames().check_type(parent)
         == dobjnames::DOBJ_FIRST) return 0;
-    if (dobj::get_dobjnames()->check_type(child)
+    if (jwm.get_dobjnames().check_type(child)
         == dobjnames::DOBJ_FIRST) return 0;
     dobjdobjlist* newddlist = new dobjdobjlist;
     newddlist->add_dobjdobj(parent, child);
@@ -37,7 +40,7 @@ dobjdobjlist* topdobjlist::get_first_of_type(dobjnames::DOBJ_TYPE dt)
 {
     search_dbjtype = dt;
     search_result = 0;
-    if (dobj::get_dobjnames()->check_type(dt) == dobjnames::DOBJ_FIRST)
+    if (jwm.get_dobjnames().check_type(dt) == dobjnames::DOBJ_FIRST)
         return 0;
     goto_first();
     while (dd_list) {

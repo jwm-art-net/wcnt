@@ -1,5 +1,6 @@
 #ifndef MODNAMEDOBJ_H
 #include "../include/modnamedobj.h"
+#include "../include/dobjparamlist.h"
 
 modnamedobj::modnamedobj() :
  dobj(dobjnames::SIN_MODNAME),
@@ -25,40 +26,31 @@ void modnamedobj::set_modname(const char* name)
 
 bool modnamedobj::set_param(paramnames::PAR_TYPE dt, void* data)
 {
-    bool retv = false;
     switch(dt)
     {
-    case paramnames::PAR_NAME:
-        set_modname((char*)data);
-        retv = true;
-        break;
-    default:
-        retv = false;
-        break;
+        case paramnames::NAME:
+            set_modname((char*)data);
+            return true;
+        default:
+            return false;
     }
-    return retv;
 }
 
-void const* modnamedobj::get_param(paramnames::PAR_TYPE dt)
+void const* modnamedobj::get_param(paramnames::PAR_TYPE dt) const
 {
-    void* retv = 0;
     switch(dt)
     {
-    case paramnames::PAR_NAME:
-        retv = modname;
-        break;
-    default:
-        retv = 0;
+        case paramnames::NAME: return modname;
+        default: return 0;
     }
-    return retv;
 }
 
 void modnamedobj::create_params()
 {
     if (done_params == true)
         return;
-    get_dparlist()->add_dobjparam(
-     dobjnames::SIN_MODNAME, paramnames::PAR_NAME);
+    jwm.get_dparlist().add_dobjparam(
+        dobjnames::SIN_MODNAME, paramnames::NAME);
     done_params = true;
 }
 

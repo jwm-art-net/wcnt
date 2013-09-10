@@ -1,20 +1,28 @@
 #ifndef USERWAVE_H
 #include "../include/userwave.h"
+#include "../include/jwm_globals.h"
+#include "../include/modoutputlist.h"
+#include "../include/modinputlist.h"
+#include "../include/modparamlist.h"
+#include "../include/moddobjlist.h"
+#include "../include/dobjdobjlist.h"
+
+#include <iostream>
 
 user_wave::user_wave(char const* uname) :
- synthmod(synthmodnames::MOD_USERWAVE, user_wave_count, uname),
- in_phase_trig(0), in_deg_size(0), in_h_mod(0), in_v_mod(0),
+ synthmod(synthmodnames::USERWAVE, uname),
+ in_phase_trig(0), in_phase_step(0), in_h_mod(0), in_v_mod(0),
  output(0.0), play_state(OFF), env(0), vertex_item(0), vertex(0),
  sect(0), sect_spanlvl(0.0), sect_startlvl(0.0),
  counter_ratio(0), sectdegs(0), degs(360), recycle(OFF),
  zero_retrigger_mode(OFF)
 {
-    get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
-    get_outputlist()->add_output(this, outputnames::OUT_PLAY_STATE);
-    get_inputlist()->add_input(this, inputnames::IN_PHASE_TRIG);
-    get_inputlist()->add_input(this, inputnames::IN_DEG_SIZE);
-    get_inputlist()->add_input(this, inputnames::IN_V_MOD);
-    get_inputlist()->add_input(this, inputnames::IN_H_MOD);
+    jwm.get_outputlist().add_output(this, outputnames::OUT_OUTPUT);
+    jwm.get_outputlist().add_output(this, outputnames::OUT_PLAY_STATE);
+    jwm.get_inputlist().add_input(this, inputnames::IN_PHASE_TRIG);
+    jwm.get_inputlist().add_input(this, inputnames::IN_PHASE_STEP);
+    jwm.get_inputlist().add_input(this, inputnames::IN_V_MOD);
+    jwm.get_inputlist().add_input(this, inputnames::IN_H_MOD);
     env =
         new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
     // wcnt-1.25
@@ -24,7 +32,6 @@ user_wave::user_wave(char const* uname) :
     add_vertex(  0.0, 0.0,   0.0, 0.0);
     add_vertex(180.0, 0.0, 180.0, 0.0);
     add_vertex(360.0, 0.0, 360.0, 0.0);
-    user_wave_count++;
     create_params();
     create_dobj();
 }
@@ -39,20 +46,17 @@ user_wave::~user_wave()
         delete tmp;
     }
     delete env;
-    get_outputlist()->delete_module_outputs(this);
-    get_inputlist()->delete_module_inputs(this);
+    jwm.get_outputlist().delete_module_outputs(this);
+    jwm.get_inputlist().delete_module_inputs(this);
 }
 
-void const* user_wave::get_out(outputnames::OUT_TYPE ot)
+void const* user_wave::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
-    case outputnames::OUT_OUTPUT:
-        return &output;
-    case outputnames::OUT_PLAY_STATE:
-        return &play_state;
-    default:
-        return 0;
+        case outputnames::OUT_OUTPUT:       return &output;
+        case outputnames::OUT_PLAY_STATE:   return &play_state;
+        default: return 0;
     }
 }
 
@@ -60,33 +64,23 @@ void const* user_wave::set_in(inputnames::IN_TYPE it, void const* o)
 {
     switch(it)
     {
-    case inputnames::IN_PHASE_TRIG:
-        return in_phase_trig = (STATUS*)o;
-    case inputnames::IN_DEG_SIZE:
-        return in_deg_size = (double*)o;
-    case inputnames::IN_V_MOD:
-        return in_v_mod = (double*)o;
-    case inputnames::IN_H_MOD:
-        return in_h_mod = (double*)o;
-    default:
-        return 0;
+        case inputnames::IN_PHASE_TRIG: return in_phase_trig = (STATUS*)o;
+        case inputnames::IN_PHASE_STEP: return in_phase_step = (double*)o;
+        case inputnames::IN_V_MOD:      return in_v_mod = (double*)o;
+        case inputnames::IN_H_MOD:      return in_h_mod = (double*)o;
+        default: return 0;
     }
 }
 
-void const* user_wave::get_in(inputnames::IN_TYPE it)
+void const* user_wave::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
-    case inputnames::IN_PHASE_TRIG:
-        return in_phase_trig;
-    case inputnames::IN_DEG_SIZE:
-        return in_deg_size;
-    case inputnames::IN_V_MOD:
-        return in_v_mod;
-    case inputnames::IN_H_MOD:
-        return in_h_mod;
-    default:
-        return 0;
+        case inputnames::IN_PHASE_TRIG: return in_phase_trig;
+        case inputnames::IN_PHASE_STEP: return in_phase_step;
+        case inputnames::IN_V_MOD:      return in_v_mod;
+        case inputnames::IN_H_MOD:      return in_h_mod;
+        default: return 0;
     }
 }
 
@@ -94,27 +88,24 @@ bool user_wave::set_param(paramnames::PAR_TYPE pt, void const* data)
 {
     switch(pt)
     {
-    case paramnames::PAR_RECYCLE_MODE:
-        set_recycle_mode(*(STATUS*)data);
-        return true;
-    case paramnames::PAR_ZERO_RETRIGGER:
-        set_zero_retrigger_mode(*(STATUS*)data);
-        return true;
-    default:
-        return false;
+        case paramnames::RECYCLE_MODE:
+            recycle = *(STATUS*)data;
+            return true;
+        case paramnames::ZERO_RETRIGGER:
+            zero_retrigger_mode = *(STATUS*)data;
+            return true;
+        default:
+            return false;
     }
 }
 
-void const* user_wave::get_param(paramnames::PAR_TYPE pt)
+void const* user_wave::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {
-    case paramnames::PAR_RECYCLE_MODE:
-        return &recycle;
-    case paramnames::PAR_ZERO_RETRIGGER:
-        return &zero_retrigger_mode;
-    default:
-        return 0;
+        case paramnames::RECYCLE_MODE:  return &recycle;
+        case paramnames::ZERO_RETRIGGER:return &zero_retrigger_mode;
+        default: return 0;
     }
 }
 
@@ -149,8 +140,9 @@ synthmod* user_wave::duplicate_module(const char* uname, DUP_IO dupio)
                               vertex->get_lodeg(), vertex->get_lopos());
         if (!dup->add_vertex(tmp))
         {
-            cout << "\ncould not duplicate vertices for copied user_wave";
-            cout << " " << uname;
+            std::cout << "\ncould not duplicate vertices for copied"
+                "user_wave";
+            std::cout << " " << uname;
             delete dup;
             return 0;
         }
@@ -185,7 +177,7 @@ wave_vertex* user_wave::add_vertex(wave_vertex* wv)
     }
     wave_vertex* added = ordered_insert(env, wv, &wave_vertex::get_lodeg);
     if (!added) {
-        cout << "\nfailed to add vertex to envelope....!?!?!?";
+        std::cout << "\nfailed to add vertex to envelope....!?!?!?";
         return 0;
     }
     return added;
@@ -241,7 +233,7 @@ void user_wave::run()
         degs = 0;
         pdegs = 0;
     }
-    degs += *in_deg_size;
+    degs += *in_phase_step;
     if (play_state == ON) {
         counter_ratio = (degs - pdegs) / (sectdegs - pdegs);
         output = sect_startlvl + sect_spanlvl * counter_ratio;
@@ -255,7 +247,8 @@ void user_wave::run()
                 sectdegs = vertex->out_deg;
             } else {
                 if (*in_phase_trig == ON)
-                    cout << "userwave at end of waveform & in_phase_trig";
+                    std::cout << "userwave at end of waveform"
+                        " & in_phase_trig";
                 if (recycle == ON) {
                     play_state = ON;
                     goto_first();
@@ -282,8 +275,6 @@ void user_wave::run()
     if (degs >= 360) degs -= 360;
 }
 
-int user_wave::user_wave_count = 0;
-
 bool user_wave::done_params = false;
 bool user_wave::done_dobj = false;
 
@@ -291,10 +282,10 @@ void user_wave::create_params()
 {
     if (done_params == true)
         return;
-    get_paramlist()->
-    add_param(synthmodnames::MOD_USERWAVE, paramnames::PAR_RECYCLE_MODE);
-    get_paramlist()->add_param(
-     synthmodnames::MOD_USERWAVE, paramnames::PAR_ZERO_RETRIGGER);
+    jwm.get_paramlist().
+        add_param(synthmodnames::USERWAVE, paramnames::RECYCLE_MODE);
+    jwm.get_paramlist().add_param(
+        synthmodnames::USERWAVE, paramnames::ZERO_RETRIGGER);
     done_params = true;
 }
 
@@ -303,8 +294,8 @@ void user_wave::create_dobj()
     if (done_dobj == true)
         return;
     moddobj* mdbj;
-    mdbj = get_moddobjlist()->add_moddobj(
-        synthmodnames::MOD_USERWAVE, dobjnames::LST_WAVEFORM);
+    mdbj = jwm.get_moddobjlist().add_moddobj(
+        synthmodnames::USERWAVE, dobjnames::LST_WAVEFORM);
     mdbj->get_dobjdobjlist()->add_dobjdobj(
         dobjnames::LST_WAVEFORM, dobjnames::SIN_VERTEX);
     done_dobj = true;

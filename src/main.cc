@@ -3,83 +3,97 @@
 //                     O---\      [:::>  <:::]      /---O                |
 //                     \ ----------   wcnt   ---------- /                |
 //                          Wav Composer Not Toilet!                     |
-//                     / ----------   1.25   ---------- \                |
+//                     / ----------   1.26   ---------- \                |
 //                     O---/      [::>    <::]      \---O                |
 //                                     ||                                |
 //                          ========================                     |
-//                          | 2006 James W. Morris.|                     |
+//                          | 2007 James W. Morris.|                     |
 //                          ------------------------                     |
 //                          |  Made In Stourmouth  |                     |
 //                          ------------------------                     |
 //                                                                       /
-// contact->James_W.Morris( james@jwm-art.net or sirrom75@hotmail.com )  /
+// contact: James_W.Morris ( james@jwm-art.net )                         /
 //                                                                       /
 //----------------------------------------------------------------------*/
 
+#include <iostream>
+
+#include "../include/cmdline.h"
 #include "../include/jwmsynth.h"
+#include "../include/jwm_globals.h"
+#include "../include/ladspa_loader.h"
+#include "../include/synthmodulelist.h"
+#include "../include/sanity_checks.h"
 
-void title(const char* version);
+void title();
 void exitramblings();
-void memerr(const char* msg);
-void show_counts();
 
-int main(int argc, char **argv)
+int main(const int argc, const char** const argv)
 {
-    jwmsynth* thesynth = new jwmsynth(argc, argv);
-    title(thesynth->get_version());
-    if (   !thesynth->is_valid()       || !thesynth->scan_cl_options()
-        || !thesynth->generate_synth() || !thesynth->connect_synth()
-        || !thesynth->validate_synth() || !thesynth->execute_synth())
+    #ifdef SANITY_CHECKS
+    sanity_checks();
+    return 0;
+    #endif
+    cmdline* cmd = new cmdline(argc, argv);
+    cmd->scan();
+    cmd->set_jwm_globals();
+    if (!jwm.is_no_title())
+        title();
+    if (!cmd->is_good_opts()) {
+        std::cout << cmd->get_message() << "\n";
+        delete cmd;
+        return -1;
+    }
+    // ladspa_loader uses dynamic linker - which disliked it when
+    // dlclose was called while globals were destructing... so
+    // ladspa_loader is created/deleted here now instead... along
+    // with modlist which needed to be delete BEFORE ladspa_loader.
+    #ifdef WITH_LADSPA
+    ladspa_loader* ladspaloader = new ladspa_loader;
+    jwm.register_ladspaloader(ladspaloader);
+    #endif
+    synthmodlist* modlist = new synthmodlist;
+    jwm.register_modlist(modlist);
+    // the above is needed before cmd->scan because scan might be
+    // prompted (by commandline) to create help (ie for modules etc).
+    jwmsynth* thesynth = new jwmsynth();
+    if (   !thesynth->is_valid()       || !thesynth->generate_synth()
+        || !thesynth->connect_synth()  || !thesynth->validate_synth()
+        || !thesynth->execute_synth())
     {
-        cout << thesynth->get_error_msg();
-        cout << "\n... exiting program ...\n";
+        std::cout << thesynth->get_error_msg();
+        std::cout << "\n... exiting program ...\n";
         delete thesynth;
-        show_counts();
+        delete cmd;
+        delete modlist;
+        #ifdef WITH_LADSPA
+        delete ladspaloader;
+        #endif
         return -1;
     }
     delete thesynth;
-    exitramblings();
-    show_counts();
+    delete cmd;
+    if (jwm.is_no_title())
+        std::cout << "\n";
+    else
+        exitramblings();
+    delete modlist;
+    #ifdef WITH_LADSPA
+    delete ladspaloader;
+    #endif
     return 0;
 }
 
-void show_counts()
+void title()
 {
-    #ifdef SHOW_LL_ITEM_COUNT
-    cout << "\nll_items created:  " << ll_item::get_created_count();
-    cout << "\nll_items destroyed:" << ll_item::get_destroyed_count();
-    cout << "\nmost ll_items at one time: " << ll_item::get_max_count();
-    #endif
-    #ifdef SHOW_DOBJ_COUNT
-    cout << "\ndata objects created:  " << dobj::get_created_count();
-    cout << "\ndata objects destroyed:" << dobj::get_destroyed_count();
-    cout << "\nmost data objects at one time:" << dobj::get_max_count();
-    #endif
-    #ifdef SHOW_MOD_COUNT
-    cout << "\nsynthmods created:  " << synthmod::get_created_count();
-    cout << "\nsynthmods destroyed:" << synthmod::get_destroyed_count();
-    cout << "\nmost synthmods at one time:" << synthmod::get_max_count();
-    #endif
-    #ifdef SHOW_NOTE_COUNT
-    cout << "\nnotes created:  " << note_data::get_created_count();
-    cout << "\nnotes destroyed:" << note_data::get_destroyed_count();
-    cout << "\nmost notes at one time:" << note_data::get_max_count();
-    #endif
-    cout << "\n";
-}
-
-void title(const char* version)
-{
-    cout << "\no----{                      }----o";
-    cout << "\n \\-------==\\   wcnt   /==-------/";
-    cout << "\n  -> Wav Composer Not Toilet! <-";
-    cout << "\n /-------==/   " << version << "   \\==-------\\";
-    cout << "\no----{                      }----o";
+    std::cout << "\n  \\,  wcnt_\\\\.\\\\...\\.\\..  .       ^";
+    std::cout << "\n-   )< Wav Composer Not Toilet  >(";
+    std::cout << "\n  /'    '/'''/''///'  '   " << wcnt_version;
+    std::cout << "!-" << std::endl;
 }
 
 void exitramblings()
 {
-    cout << "\nFlush complete.  Please wash your &&s, ";
-    cout << "naturally.\n";
-    cout.flush();
+    std::cout << "\nFlush complete.  Please wash your &&s, ";
+    std::cout << "naturally.\n";
 }

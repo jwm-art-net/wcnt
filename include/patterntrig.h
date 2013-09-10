@@ -2,12 +2,6 @@
 #define PATTERNTRIG_H
 
 #include "synthmodule.h"
-#include "conversions.h"
-
-
-#include "modoutputslist.h"
-#include "modinputslist.h"
-#include "modparamlist.h"
 
 /*  from a text pattern string, consisting of an arbitrary length
     of 1's and 0's, outputs a trigger or not, when triggered.
@@ -21,17 +15,14 @@ class patterntrig: public synthmod
 public:
     patterntrig(char const*);
     ~patterntrig();
-    void set_input_trig(STATUS const* it){ in_trig = it; }
-    STATUS const* get_input_trig(){ return in_trig;}
-    STATUS const* get_output_trig(){ return &out_trig;}
     void set_pattern_string(char*);
     // virtual funcs
     void run();
-    void const* get_out(outputnames::OUT_TYPE);
+    void const* get_out(outputnames::OUT_TYPE) const;
     void const* set_in(inputnames::IN_TYPE, void const*);
-    const void* get_in(inputnames::IN_TYPE it);
+    const void* get_in(inputnames::IN_TYPE it) const;
     bool set_param(paramnames::PAR_TYPE, void const*);
-    void const* get_param(paramnames::PAR_TYPE);
+    void const* get_param(paramnames::PAR_TYPE) const;
 
     stockerrs::ERR_TYPE validate();
 private:
@@ -41,7 +32,6 @@ private:
     STATUS out_end_trig;
     char* pattern;
     char* ptr;
-    static int patterntrig_count;
     void create_params();
     static bool done_params;
 };

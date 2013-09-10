@@ -1,11 +1,9 @@
 #ifndef NOTETRAN_H
 #define NOTETRAN_H
 
-#include "conversions.h"
-#include "modoutputslist.h"
-#include "modinputslist.h"
-#include "modparamlist.h"
+#include "synthmodule.h"
 
+/*
 // class notetran
 
 // allows note names, in notedata, in riffs, in sequencer, to be put to
@@ -37,54 +35,21 @@
 // the triggers triggering depends on note_on or note_slide causing the
 // translation, and if the note name is within or out side of the
 // corresponding note range.
+*/
 
 class notetran: public synthmod
 {
 public:
     notetran(char const*);
     ~notetran();
-    // inputs
-    void set_input_notename(char const ** n){ in_notename = n; }
-    void set_input_detranspose(short const* t){ in_detranspose = t;}
-    void set_input_note_on_trig(STATUS const* ot){ in_note_on_trig = ot;}
-    void set_input_note_slide_trig(STATUS const* st) {
-        in_note_slide_trig = st;
-    }
-    char const** get_input_notename(){ return in_notename;}
-    short const* get_input_detranspose(){ return in_detranspose;}
-    STATUS const* get_input_note_on_trig(){ return in_note_on_trig;}
-    STATUS const* get_input_note_slide_trig(){ return in_note_slide_trig;}
-    // outputs
-    double const* get_output_no_value(){ return &out_no_value;}
-    double const* get_output_ns_value(){ return &out_ns_value;}
-    STATUS const* get_output_note_on_trig(){ return &out_note_on_trig;}
-    STATUS const* get_output_not_no_trig(){ return &out_not_no_trig;}
-    STATUS const* get_output_note_slide_trig() {
-        return &out_note_slide_trig;
-    }
-    STATUS const* get_output_not_ns_trig(){ return &out_not_ns_trig;}
-    // params
-    void set_no_lo_notename(char const* nol);
-    void set_no_hi_notename(char const* noh);
-    void set_ns_lo_notename(char const* nsl);
-    void set_ns_hi_notename(char const* nsh);
-    void set_min_no_out(double minno){ min_no_out = minno; }
-    void set_max_no_out(double maxno){ max_no_out  = maxno; }
-    void set_min_ns_out(double minns){ min_ns_out  = minns; }
-    void set_max_ns_out(double maxns){ max_ns_out  = maxns; }
-    void set_detranspose_no(STATUS dno){ detran_no = dno;}
-    void set_detranspose_ns(STATUS dns){ detran_ns = dns;}
-    void set_no_response_time(double nort){ no_resptime = nort;}
-    void set_ns_response_time(double nsrt){ ns_resptime = nsrt;}
-    // virtual funcs
     void run();
     void init();
     stockerrs::ERR_TYPE validate();
-    void const* get_out(outputnames::OUT_TYPE);
+    void const* get_out(outputnames::OUT_TYPE) const;
     void const* set_in(inputnames::IN_TYPE, void const*);
-    const void* get_in(inputnames::IN_TYPE it);
+    const void* get_in(inputnames::IN_TYPE it) const;
     bool set_param(paramnames::PAR_TYPE, void const*);
-    void const* get_param(paramnames::PAR_TYPE);
+    void const* get_param(paramnames::PAR_TYPE) const;
 
 private:
     // inputs
@@ -121,7 +86,10 @@ private:
     unsigned long nsrt_samples;
     double no_respsize;
     double ns_respsize;
-    static int notetran_count;
+    void set_no_lo_notename(char const* nol);
+    void set_no_hi_notename(char const* noh);
+    void set_ns_lo_notename(char const* nsl);
+    void set_ns_hi_notename(char const* nsh);
     void create_params();
     static bool done_params;
 };

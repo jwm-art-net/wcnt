@@ -1,0 +1,6 @@
+The trigger module does nothing until in_signal receives a value above that
+set for trigger_level - when it will trigger out_trig. The trigger module waits
+until delay_time ms has elapsed before monitoring in_signal again. Only
+during this waiting time will out_wait_state be on.
+
+See also: on_off_trig

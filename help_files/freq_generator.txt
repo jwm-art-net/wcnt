@@ -1,0 +1,17 @@
+The freq_generator takes values from it's in_signal input and
+translates them into frequency and deg_size (degrees per sample).
+
+When in_signal provides a signal below sig_range_lo, then freq_range_lo
+is the frequency which will be output. Conversly, when in_signal's
+value is above sig_range_hi, freq_range_hi will be the outputted
+frequency.
+
+The step_count parameter says there should be n number of divisions
+between the two frequencies specified. If the two frequencies are an
+octave apart, you might specify step_count as 12 so that the
+frequencies output are those used by the western equal temperament
+note scale.
+
+out_phase_step outputs the frequency translated to a step value.
+
+See also: osc_clock sine_wave note_tran

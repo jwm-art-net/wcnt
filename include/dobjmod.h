@@ -1,6 +1,8 @@
 #ifndef DOBJMOD_H
 #define DOBJMOD_H
 
+#include "dobj.h"
+
 /*
 dobjmod.h
 
@@ -74,9 +76,7 @@ the user and will be deleted when wcnt exits.
      ***************** ---------- hope that's clear for you.
 */
 
-#include "synthmodule.h"
-#include "dobjparamlist.h"
-#include "dobjdobjlist.h"
+class synthmod;
 
 class dobjmod : public dobj
 {
@@ -89,7 +89,7 @@ public:
         return stockerrs::ERR_NO_ERROR; 
     }
     bool set_param(paramnames::PAR_TYPE, void*);
-    void const* get_param(paramnames::PAR_TYPE pt);
+    void const* get_param(paramnames::PAR_TYPE pt) const;
 
 private:
     synthmod* synth_mod;

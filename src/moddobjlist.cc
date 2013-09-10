@@ -23,7 +23,7 @@ moddobjlist::~moddobjlist()
 moddobj* moddobjlist::add_moddobj(synthmodnames::SYNTH_MOD_TYPE smt,
     dobjnames::DOBJ_TYPE fc)
 {
-    if (smt <= synthmodnames::MOD_FIRST || smt >= synthmodnames::MOD_LAST)
+    if (smt <= synthmodnames::FIRST || smt >= synthmodnames::LAST)
         return 0;
     moddobj* mo = new moddobj(smt, fc);
     moddobj_item = moddobj_list->add_at_tail(mo);
@@ -55,7 +55,7 @@ moddobj* moddobjlist::get_first_of_type(synthmodnames::SYNTH_MOD_TYPE smt)
 {
     search_type = smt;
     search_result = 0;
-    if (smt <= synthmodnames::MOD_FIRST || smt >= synthmodnames::MOD_LAST)
+    if (smt <= synthmodnames::FIRST || smt >= synthmodnames::LAST)
         return 0;
     goto_first();
     while (mod_dobj) {
@@ -72,7 +72,7 @@ moddobj* moddobjlist::get_next_of_type()
     if (search_result == 0)
         return 0;
     mod_dobj = (moddobj*)(search_result->get_data());
-    goto_next(); // !otherwise it get's stuck..
+    goto_next(); // !otherwise it gets stuck..
     while(mod_dobj) {
         if (mod_dobj->get_moduletype() == search_type) {
             return mod_dobj = (moddobj*)

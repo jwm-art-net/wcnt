@@ -1,4 +1,4 @@
-wcnt-1.25/jwmsynth
+wcnt-1.26/jwmsynth
 //------------------------------------------------------------------------
 //
 //  produces a bass line
@@ -63,7 +63,7 @@ bass02_pe
         edit g3.con2
             power_max       24.0
         edit g3.osc1
-            tuning_semitones  5
+            tuning_semitones  1
         edit wav1
             filename        bass02.wav
     editlist
@@ -81,20 +81,20 @@ bass02_ie
 
 mix_chan
 ch1
-    in_left   g1.amp1   out_mono
-    in_right  g1.amp1   out_mono
+    in_left   g1.amp1   out_output
+    in_right  g1.amp1   out_output
 ch1
 
 mix_chan
 ch2
-    in_left   g2.amp1   out_mono
-    in_right  g2.amp1   out_mono
+    in_left   g2.amp1   out_output
+    in_right  g2.amp1   out_output
 ch2
 
 mix_chan
 ch3
-    in_left   g3.amp1   out_mono
-    in_right  g3.amp1   out_mono
+    in_left   g3.amp1   out_output
+    in_right  g3.amp1   out_output
 ch3
 
 mixer
@@ -110,4 +110,4 @@ mix1
 //------------------------------------------------------------------------
 // End Of File _jwm 2005.
 //------------------------------------------------------------------------
-wcnt-1.25/jwmsynth
+wcnt-1.26/jwmsynth

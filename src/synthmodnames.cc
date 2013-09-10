@@ -1,93 +1,122 @@
 #ifndef SYNTHMODNAMES_H
 #include "../include/synthmodnames.h"
 
+#ifdef NAME_CHECK
+#include <iostream>
+#endif
+
 synthmodnames::synthmodnames()
-        :mod_name(NULL)
 {
-    mod_name = new char*[MOD_LAST];
-    mod_name[MOD_FIRST] = "BAD_MODULE_TYPE";
-    mod_name[MOD_NONEZERO] = "none";
-    mod_name[MOD_ADSR] = "adsr";
-    mod_name[MOD_STEREOAMP] = "stereo_amp";
-    mod_name[MOD_CLOCK] = "clock";
-    mod_name[MOD_CONSTMOD] = "constant";
-    mod_name[MOD_FREQGEN] = "freq_generator";
-    mod_name[MOD_LFOCLOCK] = "lfo_clock";
-    mod_name[MOD_LFOCONTROL] = "lfo_controller";
-    mod_name[MOD_LPFILTER] = "lp_filter";
-    mod_name[MOD_MODIFIER] = "modifier";
-    mod_name[MOD_NOISEGEN] = "noise_generator";
-    mod_name[MOD_OSCCLOCK] = "osc_clock";
-    mod_name[MOD_SAMPLEHOLD] = "sample_hold";
-    mod_name[MOD_SEQUENCER] = "sequencer";
-    mod_name[MOD_SINEWAVE] = "sine_wave";
-    mod_name[MOD_SQUAREWAVE] = "square_wave";
-    mod_name[MOD_TRIGGER] = "trigger";
-    mod_name[MOD_TRIWAVE] = "tri_wave";
-    mod_name[MOD_TRIWAVE2] = "tri_wave2";
-    mod_name[MOD_USERWAVE] = "user_wave";
-    mod_name[MOD_SAMPLER] = "sampler";
-    mod_name[MOD_WAVFILEOUT] = "wavfile_out";
-    mod_name[MOD_STEREOCHANNEL] = "mix_chan";
-    mod_name[MOD_STEREOMIXER] = "mixer";
-    mod_name[MOD_RANDTRIGGER] = "rnd_trigger";
-    mod_name[MOD_LOGICTRIGGER] = "logic_trigger";
-    mod_name[MOD_SWITCHER] = "switcher";
-    mod_name[MOD_WCNTSIGNAL] = "wcnt_signal";
-    mod_name[MOD_HPFILTER] = "hp_filter";
-    mod_name[MOD_COMBINER] = "combiner";
-    mod_name[MOD_TIMEMAP] = "time_map";
-    mod_name[MOD_CONTRASTER] = "contraster";
-    mod_name[MOD_SERIALWAVFILEOUT] = "serial_wavout";
-    mod_name[MOD_DELAY] = "delay";
-    mod_name[MOD_ECHO] = "echo";
-    mod_name[MOD_MONOAMP] = "mono_amp";
-    mod_name[MOD_WCNTEXIT] = "wcnt_exit";
-    mod_name[MOD_MULTIPLIER] = "multiplier";
-    mod_name[MOD_RANGELIMIT] = "range_limit";
-    mod_name[MOD_PAN] = "panner";
-    mod_name[MOD_RMS] = "rms";
-    mod_name[MOD_DCFILTER] = "dc_filter";
-    mod_name[MOD_DYNAMIC] = "dynamic";
-    mod_name[MOD_SPREADER] = "spreader";
-    mod_name[MOD_NOTETRAN] = "note_tran";
-    mod_name[MOD_WAITTRIG] = "wait_trig";
-    mod_name[MOD_PATTERNTRIG] = "pattern_trig";
-    mod_name[MOD_STATEGATETRIG] = "state_gate_trig";
-    mod_name[MOD_INVERT] = "invert";
-    mod_name[MOD_TIMER] = "timer";
-    mod_name[MOD_SYNCCLOCK] = "sync_clock";
-    mod_name[MOD_WCNTTRIGGER] = "wcnt_trigger";
-    mod_name[MOD_TRIGSWITCHER] = "trig_switcher";
-    mod_name[MOD_ONOFFTRIG] = "on_off_trig";
-    mod_name[MOD_PEAKDETECTOR] = "peak_detector";
-    mod_name[MOD_STEPPER] = "stepper";
-    mod_name[MOD_ADDER] = "adder";
-    mod_name[MOD_SUBTRACTER] = "subtracter";
-    mod_name[MOD_TRIGDELAY] = "trig_delay";
-    mod_name[MOD_SIMPLEDELAY] = "simple_delay";
+#ifdef NAME_CHECK
+    for (int i = FIRST; i < LAST; i++){
+        if (data[i].type != i) {
+            std::cout << "\n***** synthmodnames error *****\n";
+            std::cout << data[i].name << " is in array index " << i;
+            std::cout << " but has type index of " << data[i].type;
+            std::cout << "\nthese values should tally!\n";
+        }
+    }
+#endif
 }
 
-synthmodnames::~synthmodnames()
+const char* const synthmodnames::get_name(SYNTH_MOD_TYPE id) const
 {
-    delete [] mod_name;
-}
-
-char const* synthmodnames::get_name(SYNTH_MOD_TYPE id)
-{
-    if (id > MOD_FIRST && id < MOD_LAST)
-        return mod_name[id];
+    if (id > FIRST && id < LAST)
+        return data[id].name;
     else
-        return mod_name[MOD_FIRST];
+        return data[FIRST].name;
 }
 
-synthmodnames::SYNTH_MOD_TYPE synthmodnames::get_type(char const* mname)
+synthmodnames::SYNTH_MOD_TYPE
+synthmodnames::get_type(const char* const mname) const
 {
-    int i;
-    for (i = MOD_FIRST + 1; i < MOD_LAST; i++)
-        if (strcmp(mod_name[i], mname) == 0)
+    for (int i = FIRST; i < LAST; i++)
+        if (strcmp(data[i].name, mname) == 0)
             return (SYNTH_MOD_TYPE)i;
-    return MOD_FIRST;
+    return FIRST;
 }
+
+const synthmodnames::mod_data synthmodnames::data[LAST] =
+{
+    { FIRST,            "BAD_MODULE_TYPE"   },
+    { NONEZERO,         "none"              },
+    { ADSR,             "adsr"              },
+    { STEREOAMP,        "stereo_amp"        },
+    { CLOCK,            "clock"             },
+    { CONSTMOD,         "constant"          },
+    { FREQGEN,          "freq_generator"    },
+    { LFOCLOCK,         "lfo_clock"         },
+    { LFOCONTROL,       "lfo_controller"    },
+    { LPFILTER,         "lp_filter"         },
+    { MODIFIER,         "modifier"          },
+    { NOISEGEN,         "noise_generator"   },
+    { OSCCLOCK,         "osc_clock"         },
+    { SAMPLEHOLD,       "sample_hold"       },
+    { SEQUENCER,        "sequencer"         },
+    { SQUAREWAVE,       "square_wave"       },
+    { TRIGGER,          "trigger"           },
+    { TRIWAVE2,         "tri_wave2"         },
+    { USERWAVE,         "user_wave"         },
+    { SAMPLER,          "sampler"           },
+    { WAVFILEOUT,       "wavfile_out"       },
+    { STEREOCHANNEL,    "mix_chan"          },
+    { STEREOMIXER,      "mixer"             },
+    { RANDTRIGGER,      "rnd_trigger"       },
+    { LOGICTRIGGER,     "logic_trigger"     },
+    { SWITCHER,         "switcher"          },
+    { WCNTSIGNAL,       "wcnt_signal"       },
+    { HPFILTER,         "hp_filter"         },
+    { COMBINER,         "combiner"          },
+    { TIMEMAP,          "time_map"          },
+    { CONTRASTER,       "contraster"        },
+    { SERIALWAVFILEOUT, "serial_wavout"     },
+    { DELAY,            "delay"             },
+    { ECHO,             "echo"              },
+    { MONOAMP,          "mono_amp"          },
+    { WCNTEXIT,         "wcnt_exit"         },
+    { MULTIPLIER,       "multiplier"        },
+    { RANGELIMIT,       "range_limit"       },
+    { PAN,              "panner"            },
+    { RMS,              "rms"               },
+    { DCFILTER,         "dc_filter"         },
+    { DYNAMIC,          "dynamic"           },
+    { SPREADER,         "spreader"          },
+    { NOTETRAN,         "note_tran"         },
+    { WAITTRIG,         "wait_trig"         },
+    { PATTERNTRIG,      "pattern_trig"      },
+    { STATEGATETRIG,    "state_gate_trig"   },
+    { INVERT,           "invert"            },
+    { TIMER,            "timer"             },
+    { SYNCCLOCK,        "sync_clock"        },
+    { WCNTTRIGGER,      "wcnt_trigger"      },
+    { TRIGSWITCHER,     "trig_switcher"     },
+    { ONOFFTRIG,        "on_off_trig"       },
+    { PEAKDETECTOR,     "peak_detector"     },
+    { STEPPER,          "stepper"           },
+    { ADDER,            "adder"             },
+    { SUBTRACTER,       "subtracter"        },
+    { TRIGDELAY,        "trig_delay"        },
+    { SIMPLEDELAY,      "simple_delay"      },
+    { DIFFFILTER,       "diff_filter"       },
+    { IMPULSE,          "impulse"           },
+    { COSINEWAVE,       "cosine_wave"       },
+    { ORBIT,            "orbit"             },
+    #ifdef WITH_LADSPA
+    { GLAME_BUTTERWORTH,        "glame_butterworth"         },
+    { FAST_LOOKAHEAD_LIMITER,   "fast_lookahead_limiter"    },
+    { DC_OFFSET_REMOVER,        "dc_offset_remover"         },
+    { SC1,                      "sc1"                       },
+    { SINGLE_BAND_PARA,         "single_band_parametric"    },
+    { GLAME_FILTER,             "glame_filter"              },
+    { BODE_FREQ_SHIFTER,        "bode_freq_shifter"         },
+    { CAPS_PLATE,               "caps_plate"                },
+    { CAPS_PLATE2X2,            "caps_plate2x2"             },
+    { WAVE,             "wave"              },
+    { WAVE_PHASE,       "wave_phase"        },
+    { CONSTANT_FREQ,    "constant_freq"     },
+    { CONSTANT_NOTE,    "constant_note"     },
+    { BALANCE,          "balance"           }
+    #endif
+};
 
 #endif

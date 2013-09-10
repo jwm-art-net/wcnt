@@ -2,8 +2,7 @@
 #define GROUP_H
 
 #include "dobj.h"
-#include "synthmodule.h"
-
+#include "linkedlist.h"
 
 /*
     group
@@ -73,6 +72,12 @@
 ----------------
 */
 
+// oh look, my comments were never updated to reflect the fact i got this
+// all working. notice there is no name parameter anymore. so whatever you
+// call the group-data-object, will be the name of the 'group' - ie the
+// name which gets prefixed to the module name.  --jwm2007
+
+class synthmod;
 
 class group : public dobj
 {

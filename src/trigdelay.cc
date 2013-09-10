@@ -1,34 +1,37 @@
 #ifndef TRIGDELAY_H
 #include "../include/trigdelay.h"
+#include "../include/jwm_globals.h"
+#include "../include/modoutputlist.h"
+#include "../include/modinputlist.h"
+#include "../include/modparamlist.h"
 
 trigdelay::trigdelay(char const* uname) :
- synthmod(synthmodnames::MOD_TRIGDELAY, trigdelay_count, uname),
+ synthmod(synthmodnames::TRIGDELAY, uname),
  in_trig(0), out_trig(OFF), delay_time(0.0),
  past_trigs(0), pastmax(0), pastpos(0)
 {
-    get_outputlist()->add_output(this, outputnames::OUT_TRIG);
-    get_inputlist()->add_input(this, inputnames::IN_TRIG);
-    trigdelay_count++;
+    jwm.get_outputlist().add_output(this, outputnames::OUT_TRIG);
+    jwm.get_inputlist().add_input(this, inputnames::IN_TRIG);
     create_params();
 }
 
 trigdelay::~trigdelay()
 {
-    get_outputlist()->delete_module_outputs(this);
-    get_inputlist()->delete_module_inputs(this);
+    jwm.get_outputlist().delete_module_outputs(this);
+    jwm.get_inputlist().delete_module_inputs(this);
     if (past_trigs)
         delete [] past_trigs;
 }
 
 void trigdelay::init()
 {
-    pastmax = (long)((delay_time * audio_samplerate) / 1000);
+    pastmax = (long)((delay_time * jwm.samplerate()) / 1000);
     past_trigs = new STATUS[pastmax];
     for (long i = 0; i < pastmax; i++) past_trigs[i] = OFF;
     pastpos = pastmax - 1;
 }
 
-void const* trigdelay::get_out(outputnames::OUT_TYPE ot)
+void const* trigdelay::get_out(outputnames::OUT_TYPE ot) const
 {
     if (ot == outputnames::OUT_TRIG)
         return &out_trig;
@@ -38,42 +41,41 @@ void const* trigdelay::get_out(outputnames::OUT_TYPE ot)
 void const* trigdelay::set_in(inputnames::IN_TYPE it, void const* o)
 {
     if (it == inputnames::IN_TRIG) {
-        set_input_trig((STATUS*)o);
+        in_trig = (STATUS*)o;
         return o;
     }
     return  0;
 }
 
-void const* trigdelay::get_in(inputnames::IN_TYPE it)
+void const* trigdelay::get_in(inputnames::IN_TYPE it) const
 {
     if (it == inputnames::IN_TRIG)
-        return get_input_trig();
+        return in_trig;
     return  0;
 }
 
 bool trigdelay::set_param(paramnames::PAR_TYPE pt, void const* data)
 {
-    if (pt == paramnames::PAR_DELAY_TIME) {
-        set_delay_time(*(double*)data);
+    if (pt == paramnames::DELAY_TIME) {
+        delay_time = *(double*)data;
         return true;
     }
     return false;
 }
 
-void const* trigdelay::get_param(paramnames::PAR_TYPE pt)
+void const* trigdelay::get_param(paramnames::PAR_TYPE pt) const
 {
-    if (pt == paramnames::PAR_DELAY_TIME) {
+    if (pt == paramnames::DELAY_TIME)
         return &delay_time;
-    }
     return 0;
 }
 
 stockerrs::ERR_TYPE trigdelay::validate()
 {
-    if (!get_paramlist()->validate(this, paramnames::PAR_DELAY_TIME,
+    if (!jwm.get_paramlist().validate(this, paramnames::DELAY_TIME,
             stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = get_paramnames()->get_name(paramnames::PAR_DELAY_TIME);
+        *err_msg = jwm.get_paramnames().get_name(paramnames::DELAY_TIME);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -88,16 +90,14 @@ void trigdelay::run()
     if (pastpos < 0) pastpos = pastmax - 1;
 }
 
-int trigdelay::trigdelay_count = 0;
-
 bool trigdelay::done_params = false;
 
 void trigdelay::create_params()
 {
     if (done_params == true)
         return;
-    get_paramlist()->add_param(
-     synthmodnames::MOD_TRIGDELAY, paramnames::PAR_DELAY_TIME);
+    jwm.get_paramlist().add_param(
+        synthmodnames::TRIGDELAY, paramnames::DELAY_TIME);
     done_params = true;
 }
 

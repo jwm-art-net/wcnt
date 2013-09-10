@@ -1,41 +1,47 @@
 #ifndef TIMEMAP_H
 #include "../include/timemap.h"
+#include "../include/jwm_globals.h"
+#include "../include/modoutputlist.h"
+#include "../include/modinputlist.h"
+#include "../include/modparamlist.h"
+#include "../include/moddobjlist.h"
+#include "../include/dobjdobjlist.h"
 
 timemap::timemap(char const* uname) :
- synthmod(synthmodnames::MOD_TIMEMAP, timemap_count, uname),
+ synthmod(synthmodnames::TIMEMAP, uname),
  out_bar(0), out_pos_in_bar(0), out_pos_step_size(0), out_bpm(0.0),
  out_sample_total(0), out_sample_in_bar(0), bpm_item(0), bpm_map(0),
  currentbpm(0), targetbpm(0), bpmsampletot(0), bpmchangesamp(0),
  bpmchange_pos(0), bpmrampsize(0), bpmchange_ratio(0), targbpm(0),
  pos_in_bar(0), bpmchange_notelen(0), bpmchangebar(0)
 {
-    get_outputlist()->add_output(this,outputnames::OUT_BPM);
-    get_outputlist()->add_output(this,outputnames::OUT_BAR);
-    get_outputlist()->add_output(this,outputnames::OUT_BAR_TRIG);
-    get_outputlist()->add_output(this,outputnames::OUT_POS_IN_BAR);
-    get_outputlist()->add_output(this,outputnames::OUT_POS_STEP_SIZE);
-    get_outputlist()->add_output(this,outputnames::OUT_SAMPLE_TOTAL);
-    get_outputlist()->add_output(this,outputnames::OUT_SAMPLE_IN_BAR);
-    get_outputlist()->add_output(this,outputnames::OUT_BEATS_PER_BAR);
-    get_outputlist()->add_output(this,outputnames::OUT_BEAT_VALUE);
-    get_outputlist()->add_output(this,outputnames::OUT_BPM_CHANGE_TRIG);
-    get_outputlist()->add_output(this,outputnames::OUT_METER_CHANGE_TRIG);
-    get_outputlist()->add_output(this,outputnames::OUT_BPM_CHANGE_STATE);
+    jwm.get_outputlist().add_output(this,outputnames::OUT_BPM);
+    jwm.get_outputlist().add_output(this,outputnames::OUT_BAR);
+    jwm.get_outputlist().add_output(this,outputnames::OUT_BAR_TRIG);
+    jwm.get_outputlist().add_output(this,outputnames::OUT_POS_IN_BAR);
+    jwm.get_outputlist().add_output(this,outputnames::OUT_POS_STEP_SIZE);
+    jwm.get_outputlist().add_output(this,outputnames::OUT_SAMPLE_TOTAL);
+    jwm.get_outputlist().add_output(this,outputnames::OUT_SAMPLE_IN_BAR);
+    jwm.get_outputlist().add_output(this,outputnames::OUT_BEATS_PER_BAR);
+    jwm.get_outputlist().add_output(this,outputnames::OUT_BEAT_VALUE);
+    jwm.get_outputlist().add_output(this,
+                                    outputnames::OUT_BPM_CHANGE_TRIG);
+    jwm.get_outputlist().add_output(this,
+                                    outputnames::OUT_METER_CHANGE_TRIG);
+    jwm.get_outputlist().add_output(this,
+                                    outputnames::OUT_BPM_CHANGE_STATE);
     bpm_map =
         new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
-// *** relative bpm changes ***
-// add_bpm_change(0, sm_beats_per_minute);
     add_bpm_change(0, 0);
     meter_map =
         new linkedlist(linkedlist::MULTIREF_OFF,linkedlist::NO_NULLDATA);
-    add_meter_change(0, sm_beats_per_measure, sm_beat_value);
-    timemap_count++;
+    add_meter_change(0, jwm.beats_per_measure(), jwm.beat_value());
     create_moddobj();
 }
 
 timemap::~timemap()
 {
-    get_outputlist()->delete_module_outputs(this);
+    jwm.get_outputlist().delete_module_outputs(this);
     goto_first_bpm();
     while(currentbpm) {
         delete currentbpm;
@@ -211,7 +217,7 @@ void timemap::init()
     barlength = out_beats_per_bar * beatlength;
     pos_in_bar = barlength; // trig first bar - not favorite sollution
     out_bar = -1;           // ...it just gets worse!
-    p_bpm = sm_beats_per_minute;
+    p_bpm = jwm.bpm();
 }
 
 void timemap::run()
@@ -275,7 +281,7 @@ void timemap::run()
                 out_bpm_change_state = ON;
             }
         }
-        out_pos_step_size = barlength / (audio_samplerate *
+        out_pos_step_size = barlength / (jwm.samplerate() *
          (60.0 / out_bpm) * out_beats_per_bar);
     }
     else {
@@ -287,18 +293,18 @@ void timemap::run()
                 bpmchange_pos = 0;
                 bpmsampletot = notelen_to_samples(bpmchange_notelen);
                 bpmrampsize = (targbpm - out_bpm) / (double) bpmsampletot;
-                out_pos_step_size = barlength / (audio_samplerate *
+                out_pos_step_size = barlength / (jwm.samplerate() *
                  (60.0 / out_bpm) * out_beats_per_bar);
             }
             out_bpm += bpmrampsize;
             bpmchange_ratio = (double) bpmchange_pos / bpmchange_notelen;
             bpmsampletot
-             = (unsigned long)(audio_samplerate * (60 / out_bpm)
+             = (unsigned long)(jwm.samplerate() * (60 / out_bpm)
              * ((double) (bpmchange_notelen - bpmchange_pos) 
              / beatlength));
             bpmrampsize = (targbpm - out_bpm) / (double) bpmsampletot;
             out_pos_step_size
-             = barlength / (audio_samplerate * (60 / out_bpm) 
+             = barlength / (jwm.samplerate() * (60 / out_bpm) 
              * out_beats_per_bar);
             bpmchange_pos += out_pos_step_size;
         } else out_bpm_change_state = OFF;
@@ -311,7 +317,7 @@ void timemap::run()
 
 unsigned long timemap::notelen_to_samples(short nl)
 {
-    return (unsigned long)(audio_samplerate
+    return (unsigned long)(jwm.samplerate()
      * ((double) 60 / out_bpm) * ((double)nl / beatlength));
 }
 
@@ -328,10 +334,10 @@ double timemap::notelen_to_frequency(short nl)
 
 unsigned long timemap::ms_to_samples(double ms)
 {
-    return (unsigned long)(audio_samplerate * (ms / 1000));
+    return (unsigned long)(jwm.samplerate() * (ms / 1000));
 }
 
-void const* timemap::get_out(outputnames::OUT_TYPE ot)
+void const* timemap::get_out(outputnames::OUT_TYPE ot) const
 {
     switch (ot) {
     case outputnames::OUT_BPM:
@@ -399,17 +405,15 @@ void timemap::create_moddobj()
     if (done_moddobj == true)
         return;
     moddobj* mdbj;
-    mdbj = get_moddobjlist()->add_moddobj(
-        synthmodnames::MOD_TIMEMAP, dobjnames::LST_METER);
+    mdbj = jwm.get_moddobjlist().add_moddobj(
+        synthmodnames::TIMEMAP, dobjnames::LST_METER);
     mdbj->get_dobjdobjlist()->add_dobjdobj(
         dobjnames::LST_METER, dobjnames::SIN_METER);
-    mdbj = get_moddobjlist()->add_moddobj(
-        synthmodnames::MOD_TIMEMAP, dobjnames::LST_BPM);
+    mdbj = jwm.get_moddobjlist().add_moddobj(
+        synthmodnames::TIMEMAP, dobjnames::LST_BPM);
     mdbj->get_dobjdobjlist()->add_dobjdobj(
         dobjnames::LST_BPM, dobjnames::SIN_BPM);
     done_moddobj = true;
 }
-
-short timemap::timemap_count = 0;
 
 #endif

@@ -1,0 +1,565 @@
+wcnt-1.26/jwmsynth
+
+// price_crash.mp3
+//
+// quite intensive use of the old processor here... may take some time
+// to process the full 384 seconds...
+//
+// http://www.jwm-art.net/art/audio/price_crash.mp3
+//
+// dark, slow, ambient...
+//
+// http://www.jwm-art.net/o7.php?p=price_crash
+//
+
+samplerate 44100
+bpm 120
+signature 4/4
+
+constant one value 1.0 one
+
+//  duration of test = 1ms
+//      we are just trying to create something, not actually using it
+
+timer t1
+    timings
+
+    // 1st trigger used for  note on of 'master' envelope:
+    // (named env (below))
+
+        time seconds 0.0
+
+    // 2nd trigger used to end processing, and end of file:
+
+        time seconds 29.0
+
+    // full length version - commented out:
+    //        time seconds 384.0
+
+    timings
+t1
+
+timer t2
+    timings
+
+    // this trigger is used to initiate the release stage of 
+    // of the 'master' envelope - so the sound fades out to silence
+    // before processing ends and file writing ends.
+
+        time seconds 10.0 // (it's a long release stage! )
+
+    // full length version - commented out:
+    //    time seconds 359.0
+
+    timings
+t2
+
+// this is the 'master' envelope:
+adsr
+env
+    envelope
+            section name attack
+                ut 10 ul 0.25
+                lt 10 ll 0.25
+            section name attack
+                ut 25 ul 0.5
+                lt 25 ll 0.5
+            section name attack
+                ut 50 ul 0.75
+                lt 50 ll 0.75
+            section name decay
+                ut 75 ul 1.0
+                lt 75 ll 1.0
+            section name release
+                ut 7500 ul 0.75
+                lt 7500 ll 0.75
+            section name release
+                ut 5000 ul 0.5
+                lt 5000 ll 0.5
+            section name release
+                ut 2500 ul 0.25
+                lt 2500 ll 0.25
+            section name release
+                ut 1000 ul 0.0
+                lt 1000 ll 0.0
+    envelope
+    in_note_on_trig   t1 out_trig
+    in_note_off_trig  t2 out_trig
+    in_velocity       off
+    up_thresh         0.85
+    lo_thresh         0.15
+    start_level       0.0
+    min_time          0.0
+    max_sustain_time  0.0
+    release_is_ratio  off
+    sustain_state     on
+    zero_retrigger    off
+env
+
+// envelope for individual 'notes' - for creating something to be
+// perceived as notes :
+
+adsr
+env_alt
+    envelope
+            section name attack
+                ut 25 ul 0.25
+                lt 25 ll 0.25
+            section name attack
+                ut 40 ul 0.5
+                lt 40 ll 0.5
+            section name attack
+                ut 65 ul 0.75
+                lt 65 ll 0.75
+            section name decay
+                ut 90 ul 1.0
+                lt 90 ll 1.0
+            section name release
+                ut 90 ul 0.75
+                lt 90 ll 0.75
+            section name release
+                ut 65 ul 0.5
+                lt 65 ll 0.5
+            section name release
+                ut 40 ul 0.25
+                lt 40 ll 0.25
+            section name release
+                ut 25 ul 0.0
+                lt 25 ll 0.0
+    envelope
+    in_note_on_trig   f1.orb_clock out_phase_trig
+    in_note_off_trig  off
+    in_velocity       off
+    up_thresh         0.85
+    lo_thresh         0.15
+    start_level       0.0
+    min_time          600.0
+    max_sustain_time  0.0
+    release_is_ratio  off
+    sustain_state     off
+    zero_retrigger    off
+env_alt
+
+lfo_clock
+orb_clock
+    in_phase_trig  off
+    in_freq_mod1   orbit out_x
+    in_freq_mod2   orbit out_y
+    freq            0.8875
+    freq_mod1_size  2.0
+    freq_mod2_size  2.0
+orb_clock
+
+orbit
+orbit
+    in_restart_trig  off
+    in_trig          orb_clock out_phase_trig
+    orbit_type       quadrup
+    a  -0.000000282
+    b 1.1
+    c  0.0001627
+    test_iterations  100000
+orbit
+
+group f1 modules synthmod name orb_clock synthmod name orbit modules f1
+
+copier fc1 from f1 to f2 fc1
+copier fc2 from f1 to f3 fc2
+
+input_editor
+fie1
+    editlist
+        connect f1.orb_clock
+            in_freq_mod1 f2.orbit out_x
+            in_freq_mod2 f2.orbit out_y
+        connect f2.orb_clock
+            in_freq_mod1 f1.orbit out_x
+            in_freq_mod2 f1.orbit out_y
+    editlist
+fie1
+
+param_editor
+fpe1
+    editlist
+        edit f2.orbit
+            a -0.0003
+            b 0.000000087342
+            c -1.8746631795388
+        edit f3.orb_clock
+            freq 1101
+        edit f3.orbit
+            orbit_type hopalong
+            a -1.111212221
+            b 12.112112212
+            c 2.1211222112
+    editlist
+fpe1
+
+clock
+clkx
+    in_freq_mod1    off
+    freq            .136
+    freq_mod1_size  3.0
+clkx
+
+wave
+snx
+    in_phase_step     clkx out_phase_step
+    type sine
+snx
+
+//----------------------------------------
+
+clock
+lfo1_clock
+    in_freq_mod1    snx out_output
+    freq            0.6
+    freq_mod1_size  1.125
+lfo1_clock
+
+wave
+lfo1_sine
+    in_phase_step     lfo1_clock out_phase_step
+    type sine
+lfo1_sine
+
+clock
+lfo2_clock
+    in_freq_mod1    snx out_output
+    freq            0.36
+    freq_mod1_size  1.125
+lfo2_clock
+
+wave
+lfo2_sine
+    in_phase_step     lfo2_clock out_phase_step
+    type sine
+lfo2_sine
+
+clock
+lfo3_clock
+    in_freq_mod1    snx out_output
+    freq            0.26
+    freq_mod1_size  1.125
+lfo3_clock
+
+wave
+lfo3_sine
+    in_phase_step     lfo3_clock out_phase_step
+    type sine
+lfo3_sine
+
+clock
+lfo4_clock
+    in_freq_mod1    snx out_output
+    freq            0.116
+    freq_mod1_size  1.125
+lfo4_clock
+
+wave
+lfo4_sine
+    in_phase_step     lfo4_clock out_phase_step
+    type sine
+lfo4_sine
+
+lfo_clock
+hpf_clock
+    in_phase_trig   off
+    in_freq_mod1    lfo1_sine out_output
+    in_freq_mod2    f2.orbit out_x
+    freq            300.0
+    freq_mod1_size  4
+    freq_mod2_size  2.75
+hpf_clock
+
+lfo_clock
+lpf_clock
+    in_phase_trig   off
+    in_freq_mod1    lfo2_sine out_output
+    in_freq_mod2    f2.orbit out_y
+    freq            2000.0
+    freq_mod1_size  3.0
+    freq_mod2_size  2.75
+lpf_clock
+
+lfo_clock
+tf1
+    in_phase_trig   off
+    in_freq_mod1    f1.orbit out_x
+    in_freq_mod2    f3.orbit out_x
+    freq 220
+    freq_mod1_size 8.0
+    freq_mod2_size  1.9
+tf1
+
+wave
+sq1
+    in_phase_step    tf1 out_phase_step
+    type sine
+sq1
+
+//************** AMP ****************\\
+//************** AMP ****************\\
+//************** AMP ****************\\
+//************** AMP ****************\\
+mono_amp
+amp1
+    in_signal   sq1     out_output
+    in_amp_eg   env_alt out_output
+    in_amp_mod  env     out_output
+    level         0.211
+    amp_mod_size  1.0
+    clip_level    1.0
+amp1
+//************** AMP ****************\\
+//************** AMP ****************\\
+//************** AMP ****************\\
+//************** AMP ****************\\
+
+glame_butterworth
+gbw_hp
+    in_signal          amp1       out_output
+    in_cutoff_phase_step hpf_clock out_phase_step
+    in_res_mod         f1.orbit out_x
+    filter_type        highpass
+    resonance       1.0
+    res_mod_size    0.15
+gbw_hp
+
+glame_butterworth
+gbw_lp
+    in_signal          gbw_hp    out_output
+    in_cutoff_phase_step lpf_clock out_phase_step
+    in_res_mod         f1.orbit out_y
+    filter_type        lowpass
+    resonance       1.0
+    res_mod_size    0.15
+gbw_lp
+
+wcnt_signal
+ws1
+    in_signal gbw_lp out_output
+    level 1.0
+ws1
+
+group
+tqa
+    modules
+        synthmod name lfo1_clock
+        synthmod name lfo2_clock
+        synthmod name lfo3_clock
+        synthmod name lfo4_clock
+
+        synthmod name lfo1_sine
+        synthmod name lfo2_sine
+        synthmod name lfo3_sine
+        synthmod name lfo4_sine
+
+        synthmod name lpf_clock
+        synthmod name hpf_clock
+
+        synthmod name tf1
+        synthmod name sq1
+        synthmod name amp1
+        synthmod name gbw_hp
+        synthmod name gbw_lp
+        synthmod name ws1
+    modules
+tqa
+
+copier cc1 from tqa to tqb cc1
+copier cc2 from tqa to tqc cc2
+copier cc3 from tqa to tqd cc3
+copier cc4 from tqa to tqe cc4
+copier cc5 from tqa to tqf cc5
+copier cc6 from tqa to tqg cc6
+copier cc7 from tqa to tqh cc7
+copier cc8 from tqa to tqi cc8
+copier cc9 from tqa to tqj cc9
+copier cc10 from tqa to tqk cc10
+copier cc11 from tqa to tql cc11
+
+param_editor
+pupe1
+    editlist
+
+        edit tqb.lfo1_clock freq 0.04921
+        edit tqb.lfo2_clock freq 0.002952
+        edit tqb.lfo3_clock freq 0.07642
+        edit tqb.lfo4_clock freq 0.03022
+
+        edit tqc.lfo1_clock freq 0.044921
+        edit tqc.lfo2_clock freq 0.052952
+        edit tqc.lfo3_clock freq 0.0074642
+        edit tqc.lfo4_clock freq 0.0022
+
+        edit tqd.lfo1_clock freq 0.0034921
+        edit tqd.lfo2_clock freq 0.062952
+        edit tqd.lfo3_clock freq 0.027642
+        edit tqd.lfo4_clock freq 0.03022
+
+        edit tqe.lfo1_clock freq 0.04921
+        edit tqe.lfo2_clock freq 0.02952
+        edit tqe.lfo3_clock freq 0.07642
+        edit tqe.lfo4_clock freq 0.03022
+
+        edit tqf.lfo1_clock freq 0.04921
+        edit tqf.lfo2_clock freq 0.02952
+        edit tqf.lfo3_clock freq 0.00642
+        edit tqf.lfo4_clock freq 0.03022
+
+        edit tqg.lfo1_clock freq 0.034921
+        edit tqg.lfo2_clock freq 0.00952
+        edit tqg.lfo3_clock freq 0.042
+        edit tqg.lfo4_clock freq 0.09322
+
+        edit tqh.lfo1_clock freq 0.034921
+        edit tqh.lfo2_clock freq 0.02952
+        edit tqh.lfo3_clock freq 0.007642
+        edit tqh.lfo4_clock freq 0.03022
+
+        edit tqi.lfo1_clock freq 0.0444921
+        edit tqi.lfo2_clock freq 0.02952
+        edit tqi.lfo3_clock freq 0.07642
+        edit tqi.lfo4_clock freq 0.03022
+
+        edit tqj.lfo1_clock freq 0.04921
+        edit tqj.lfo2_clock freq 0.02952
+        edit tqj.lfo3_clock freq 0.07642
+        edit tqj.lfo4_clock freq 0.03022
+
+        edit tqk.lfo1_clock freq 0.0874921
+        edit tqk.lfo2_clock freq 0.02623
+        edit tqk.lfo3_clock freq 0.07642
+        edit tqk.lfo4_clock freq 0.05722
+
+        edit tql.lfo1_clock freq 0.04921
+        edit tql.lfo2_clock freq 0.02952
+        edit tql.lfo3_clock freq 0.07642
+        edit tql.lfo4_clock freq 0.0022
+
+        edit tqb.tf1 freq 203 freq_mod1_size 4.192
+        edit tqc.tf1 freq 226 freq_mod1_size 3.02
+        edit tqd.tf1 freq 127 freq_mod1_size 3.42
+        edit tqe.tf1 freq 238 freq_mod1_size 5.32
+        edit tqf.tf1 freq 245 freq_mod1_size 3.072
+        edit tqg.tf1 freq 263 freq_mod1_size 6.32
+        edit tqh.tf1 freq 120 freq_mod1_size 4.72
+        edit tqi.tf1 freq 193 freq_mod1_size 7.32
+        edit tqj.tf1 freq 276 freq_mod1_size 8.0132
+        edit tqk.tf1 freq 152 freq_mod1_size 2.02
+        edit tql.tf1 freq 134 freq_mod1_size 3.92
+    editlist
+pupe1
+
+
+combiner
+cbbb-l
+    signals
+        synthmod name tqa.ws1
+        synthmod name tqc.ws1
+        synthmod name tqe.ws1
+        synthmod name tqg.ws1
+        synthmod name tqi.ws1
+        synthmod name tqk.ws1
+    signals
+    mean_total off
+cbbb-l
+
+combiner
+cbbb-r
+    signals
+        synthmod name tqb.ws1
+        synthmod name tqd.ws1
+        synthmod name tqf.ws1
+        synthmod name tqh.ws1
+        synthmod name tqj.ws1
+        synthmod name tql.ws1
+    signals
+    mean_total off
+cbbb-r
+
+dc_offset_remover
+dc-l
+    in_signal cbbb-l out_output
+dc-l
+
+dc_offset_remover
+dc-r
+    in_signal cbbb-r out_output
+dc-r
+
+
+echo
+ekl
+    in_signal        dc-l out_output
+    in_gain_mod      off
+    in_feedback      ekr out_wet_output
+    in_feedback_mod  off
+    delay_time         125
+    gain               1.0
+    gain_mod_size      0.0
+    feedback           0.85236
+    feedback_mod_size  0.0
+    wet/dry            0.335
+ekl
+
+echo
+ekr
+    in_signal        dc-r out_output
+    in_gain_mod      off
+    in_feedback      ekl out_wet_output
+    in_feedback_mod  off
+    delay_time         207.5
+    gain               1.0
+    gain_mod_size      0.0
+    feedback           0.85236
+    feedback_mod_size  0.0
+    wet/dry            0.335
+ekr
+
+
+sc1
+scl
+    in_signal     ekl out_output
+    attack_time   50
+    release_time  125
+    threshold_db  -16
+    ratio_1:n     2
+    knee_db       3.75
+    makeup_db     0
+scl
+
+sc1
+scr
+    in_signal     ekr out_output
+    attack_time   50
+    release_time  125
+    threshold_db  -16
+    ratio_1:n     2
+    knee_db       3.75
+    makeup_db     0
+scr
+
+wavfile_out
+wav
+    in_left      scl out_output
+    in_right     scr out_output
+    in_bar       t1 out_count
+    in_bar_trig  t1 out_trig
+
+    data_format  float32
+    filename     price_crash.wav
+    start_bar    0
+    end_bar      1
+wav
+
+
+wcnt_exit
+exit
+    in_bar      t1 out_count
+    exit_bar    1
+exit
+
+wcnt-1.26/jwmsynth 
+

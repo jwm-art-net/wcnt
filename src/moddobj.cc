@@ -1,5 +1,6 @@
 #ifndef MODDOBJ_H
 #include "../include/moddobj.h"
+#include "../include/dobjdobjlist.h"
 
 moddobj::moddobj(synthmodnames::SYNTH_MOD_TYPE smt, 
                  dobjnames::DOBJ_TYPE fc) :

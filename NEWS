@@ -1,74 +1,82 @@
--------------------------
-New features in wcnt-1.25
--------------------------
+Pre-release of Wav Composer Not Toilet 1.26
 
-* group
-    * group modules together then the whole group can be copied.
+wcnt is a not-real-time commandline text-file-based modular synth/sequencer/sampler for GNU/Linux to generate WAV audio files.
 
-* copier
-    * copy single data objects and modules.
+Download from:
+http://wcnt.sourceforge.net
 
-* peak_detector
-    * output a message when the input signal falls outside a
-      specified range.
+--------------------------------------------------------------------------
+This is the second release building up to wcnt-1.26
 
-* adder
-    * add two signals together.
+Since wcnt-1.25.5, the program has undergone many important changes.
 
-* subtracter
-    * subtract a signal from another.
+  * libsndfile: the audio file IO lib from mega-nerd.com allows wcnt
+    to read and write *WAV* audio in other data formats besides 16bit
+    pcm. Consequently, all 16bit 'audio' inputs and outputs have been
+    removed. *** Make sure you have it installed *** :)
 
-* simple_delay
-    * a simple delay.
+  * LADSPA: a number of modules (9) have been created to use a select
+    few LADSPA plugins. These provide much better filters, reverb,
+    limiting, and compression. More might be added in future.
 
-* trig_delay
-    * delay a trigger.
+  * orbit module: impliments three orbit fractals which iterate upon
+    a trigger, and the output of which is scaled (via an interation
+    test) within the -1.0 to +1.0 range.
 
-* stepper
-    * takes a step through a shape of values each time it 
-      is triggered.
+  * adsr_scaler data object: allows indivdual sections of previously
+    defined adsr modules to be scaled on the time axis. it's quick
+    and easy.
 
+  * improved command line option handling: help describing the command
+    line options. several new options such as --dont-run and --no-title.
+    module help now lists the modules sorted into three alphabetical
+    collumns to make life easier.
 
---------------------------
-new features in wcnt-1.128
---------------------------
-* time_map
-    * tempo changes have been changed so that you add or
-      subtract from the existing tempo, instead of specifiying
-      an absolute value to set the bpm at.
+  * many memory leaks plugged, and numerous operational bugs squashed.
 
-* sequencer
-    * new implimentation of note slide handling.  It now remembers
-      notes to slide back to.
-    * slight improvements made to time keeping code.
-    * no longer provides out_end_trig when out_start_trig requested
-    * removed a redundant parameter hold_notename
+  * no more -ffast_math compiler optimizations causing dodgy calculations.
 
-* adsr
-    * release section can now only be triggered once. subsequent
-      note_off triggers which occurr before a note_on have no effect.
-    * min_time parameter, specifies minimum time adsr can run before
-      note_off.
-    * max_sustain_time, specifies maximum time sustain section can hold.
-    * release_is_ratio (on/off) turns levels in release section to
-      ratios.
+  * removed sine_wave and tri_wave modules altogether.
 
-* osc_clock
-    * response_time parameter added.
-    * in_play_state input added.  used in combination with response_time
-      parameter. when in_play_state input is on, take n milliseconds to
-      change frequency.  when in_play_state is off, ignore response_time.
+  * wave module: a new easy-to-use module for quickly generating sine,
+    triangle, and sawtooth waveforms and a number of variations of these
+    outputting in the 0.0 to +1.0 range (instead of -1.0 to +1.0).
 
-* logic_trigger
-    * new function - xornot. only trigger if trigger1 triggers, but not
-      if trigger2 triggers simultaneously.
-    * precision parameter added. tells the logic_trigger how many samples
-      may elaspe between in_trig1 and in_trig2 triggering and still treat
-      them as occurring simultaneously.
+  * wave_phase module: comes close to the old sine_wave and triangle_wave
+    implimentations. seperate phase trigger and phase_step inputs, and
+    seperate phase_step input for a shaping waveform. improved algorythm
+    means it's more likely to do what it's meant to :). new parameter to
+    invert every other phase (or every other partial phase etc), combined
+    with shaping (ie multiplication of two waveforms) allows a greater
+    variety of waveforms to be created.
 
-* sync_clock - new module
-    * a LFO-like clock module which keeps in time with tempo via inputs
-      connected to a time_map module.
-    * quarter_value and note_length parameters specify how fast to tick.
-    * phase can be reset.
-    * can be connected to sine_wave module etc.
+  * dc_filter and rms modules: no longer do their calculations in such an
+    extremely defficient manner.
+
+  * deg_size type inputs and outputs renamed to the far more sensible
+    phase_step type.
+
+  * constant_freq and constant_note: two new constant modules which
+    output translations of their parameter, so they're independant of
+    the sample rate unlike doing the same thing with the constant module.
+
+  * balance module: this is the modifier module renamed to show what it
+    actually does: balance two signals.
+
+  * modifier module: does something much more interesting than balance
+    two signals - ie combining two waveforms to create a third.
+
+  * many code changes and improvments.
+--------------------------------------------------------------------------
+
+*****
+Please note the online help at wcnt.sf.net is now out of date. I've begun working on inline help, the beginnings of which are included as a number of text files. The text files provide short descriptions and guidlines on the usages of individual modules.
+
+*****
+All your old .wc files will now be broken with this version. Sorry - things change as I slowly learn.
+
+http://wcnt.sourceforge.net
+
+best regards,
+
+james jwm-art net

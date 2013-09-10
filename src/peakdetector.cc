@@ -1,21 +1,26 @@
 #ifndef PEAKDETECTOR_H
 #include "../include/peakdetector.h"
+#include "../include/jwm_globals.h"
+#include "../include/modoutputlist.h"
+#include "../include/modinputlist.h"
+#include "../include/modparamlist.h"
+
+#include <iostream>
 
 peak_detector::peak_detector(char const* uname) :
- synthmod(synthmodnames::MOD_PEAKDETECTOR, peak_detector_count, uname),
+ synthmod(synthmodnames::PEAKDETECTOR, uname),
  in_signal(0), sig_range_hi(0.0), sig_range_lo(0.0), message(0),
  force_abort(OFF), max_peaks(0), check(true)
 {
-    get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
+    jwm.get_inputlist().add_input(this, inputnames::IN_SIGNAL);
     create_params();
-    peak_detector_count++;
 }
 
 peak_detector::~peak_detector()
 {
     if (message)
         delete [] message;
-    get_inputlist()->delete_module_inputs(this);
+    jwm.get_inputlist().delete_module_inputs(this);
 }
 
 void peak_detector::set_message(const char* msg)
@@ -30,21 +35,17 @@ void const* peak_detector::set_in(inputnames::IN_TYPE it, void const* o)
 {
     switch(it)
     {
-    case inputnames::IN_SIGNAL:
-        return in_signal = (double*)o;
-    default:
-        return 0;
+        case inputnames::IN_SIGNAL: return in_signal = (double*)o;
+        default: return 0;
     }
 }
 
-void const* peak_detector::get_in(inputnames::IN_TYPE it)
+void const* peak_detector::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
-    case inputnames::IN_SIGNAL:
-        return in_signal;
-    default:
-        return 0;
+        case inputnames::IN_SIGNAL: return in_signal;
+        default: return 0;
     }
 }
 
@@ -53,11 +54,11 @@ void peak_detector::run()
     if (check) {
         if (*in_signal < sig_range_lo) {
             if (peak_count < max_peaks) {
-                cout << "\n" << message << " ";
-                cout << *in_signal << " < " << sig_range_lo;
+                std::cout << "\n" << message << " ";
+                std::cout << *in_signal << " < " << sig_range_lo;
             }
             else if (force_abort == ON) {
-                cout << "\nToo many peaks detected, abort forced!";
+                std::cout << "\nToo many peaks detected, abort forced!";
                 synthmod::force_abort();
             }
             else
@@ -66,11 +67,11 @@ void peak_detector::run()
         }
         else if (*in_signal > sig_range_hi) {
             if (peak_count < max_peaks) {
-                cout << "\n" << message << " ";
-                cout << *in_signal << " > " << sig_range_lo;
+                std::cout << "\n" << message << " ";
+                std::cout << *in_signal << " > " << sig_range_hi;
             }
             else if (force_abort == ON) {
-                cout << "\nToo many peaks detected, abort forced!";
+                std::cout << "\nToo many peaks detected, abort forced!";
                 synthmod::force_abort();
             }
             else
@@ -92,52 +93,38 @@ void peak_detector::init()
 
 bool peak_detector::set_param(paramnames::PAR_TYPE pt, void const* data)
 {
-    bool retv = false;
     switch(pt)
     {
-    case paramnames::PAR_SIG_RANGE_HI:
-        set_signal_range_hi(*(double*)data);
-        retv = true;
-        break;
-    case paramnames::PAR_SIG_RANGE_LO:
-        set_signal_range_lo(*(double*)data);
-        retv = true;
-        break;
-    case paramnames::PAR_MSG:
-        set_message((char*)data);
-        retv = true;
-        break;
-    case paramnames::PAR_FORCE_ABORT:
-        set_force_abort(*(STATUS*)data);
-        retv = true;
-        break;
-    case paramnames::PAR_MAXPEAKS:
-        set_max_peaks(*(short*)data);
-        retv = true;
-        break;
-    default:
-        retv = false;
-        break;
+        case paramnames::SIG_RANGE_HI:
+            sig_range_hi = *(double*)data;
+            return true;
+        case paramnames::SIG_RANGE_LO:
+            sig_range_lo = *(double*)data;
+            return true;
+        case paramnames::MSG:
+            set_message((char*)data);
+            return true;
+        case paramnames::FORCE_ABORT:
+            force_abort = *(STATUS*)data;
+            return true;
+        case paramnames::MAXPEAKS:
+            max_peaks = *(short*)data;
+            return true;
+        default:
+            return false;
     }
-    return retv;
 }
 
-void const* peak_detector::get_param(paramnames::PAR_TYPE pt)
+void const* peak_detector::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {
-    case paramnames::PAR_SIG_RANGE_HI:
-        return &sig_range_hi;
-    case paramnames::PAR_SIG_RANGE_LO:
-        return &sig_range_lo;
-    case paramnames::PAR_MSG:
-        return message;
-    case paramnames::PAR_FORCE_ABORT:
-        return &force_abort;
-    case paramnames::PAR_MAXPEAKS:
-        return &max_peaks;
-    default:
-        return 0;
+        case paramnames::SIG_RANGE_HI:  return &sig_range_hi;
+        case paramnames::SIG_RANGE_LO:  return &sig_range_lo;
+        case paramnames::MSG:           return message;
+        case paramnames::FORCE_ABORT:   return &force_abort;
+        case paramnames::MAXPEAKS:      return &max_peaks;
+        default: return 0;
     }
 }
 
@@ -147,19 +134,17 @@ void peak_detector::create_params()
 {
     if (done_params == true)
         return;
-    get_paramlist()->add_param(
-     synthmodnames::MOD_PEAKDETECTOR, paramnames::PAR_SIG_RANGE_HI);
-    get_paramlist()->add_param(
-     synthmodnames::MOD_PEAKDETECTOR, paramnames::PAR_SIG_RANGE_LO);
-    get_paramlist()->add_param(
-     synthmodnames::MOD_PEAKDETECTOR, paramnames::PAR_MSG);
-    get_paramlist()->add_param(
-     synthmodnames::MOD_PEAKDETECTOR, paramnames::PAR_FORCE_ABORT);
-    get_paramlist()->add_param(
-     synthmodnames::MOD_PEAKDETECTOR, paramnames::PAR_MAXPEAKS);
+    jwm.get_paramlist().add_param(
+        synthmodnames::PEAKDETECTOR, paramnames::SIG_RANGE_HI);
+    jwm.get_paramlist().add_param(
+        synthmodnames::PEAKDETECTOR, paramnames::SIG_RANGE_LO);
+    jwm.get_paramlist().add_param(
+        synthmodnames::PEAKDETECTOR, paramnames::MSG);
+    jwm.get_paramlist().add_param(
+        synthmodnames::PEAKDETECTOR, paramnames::FORCE_ABORT);
+    jwm.get_paramlist().add_param(
+        synthmodnames::PEAKDETECTOR, paramnames::MAXPEAKS);
     done_params = true;
 }
-
-int peak_detector::peak_detector_count = 0;
 
 #endif

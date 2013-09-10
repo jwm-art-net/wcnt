@@ -1,0 +1,29 @@
+The name of the lfo_controller module is a little misleading. It does
+not control, but shape a waveform (or anything else for that matter)
+which could be used for modulation.
+
+For normal behaviour, in_trig should connect to thesame trigger output
+(for example sequencer out_note_on_trig) as the lfo_clock which drives
+the waveform intended for modulation purposes.
+
+The in_waveform takes the waveforms output and...
+
+delay_time (ms) the time it takes after in_trig triggering for the ramp
+time to begin.
+
+start_level is a multiplier, it is the level used for controlling
+output when in_trig triggers. It stays at this level until delay_time
+ms have elapsed. 0.0 might be a recommended value.
+
+ramp_time (ms) the time it takes for the output levels to assume the
+full levels which in_waveform provides (if end_level is set to 1.0 that
+is).
+
+end_level is also a multiplier, it is the level attained at the end of
+the ramp time.
+
+response_time is the time in ms it takes for the current output
+controlling level to be reset back to start_level when in_trig
+triggers. This makes for a nice smooth transition...
+
+See also: lfo_clock

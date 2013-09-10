@@ -1,68 +1,65 @@
 #ifndef COMBINER_H
 #include "../include/combiner.h"
-#include "../include/groupnames.h"
+#include "../include/jwm_globals.h"
+#include "../include/modoutputlist.h"
+#include "../include/modinputlist.h"
+#include "../include/modparamlist.h"
+#include "../include/synthmodulelist.h"
+#include "../include/dobjlist.h"
+#include "../include/moddobjlist.h"
+#include "../include/dobjdobjlist.h"
+#include "../include/dobjmod.h"
+
+#include <iostream>
 
 combiner::combiner(char const* uname) :
- synthmod(synthmodnames::MOD_COMBINER, combiner_count, uname),
+ synthmod(synthmodnames::COMBINER, uname),
  out_output(0), sigcount(0), meantotal(ON), wcntsiglist(0),
  wcntsig_item(0), wcntsig(0)
 {
-    get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
+    jwm.get_outputlist().add_output(this, outputnames::OUT_OUTPUT);
     wcntsiglist = 
      new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
-    combiner_count++;
     create_params();
     create_moddobj();
 }
 
 combiner::~combiner()
 {
-    get_outputlist()->delete_module_outputs(this);
-    get_inputlist()->delete_module_inputs(this);
-/*
-    wcntsig is a synthmodule which would have been created
-    before this module.  don't need to delete here. */
+    jwm.get_outputlist().delete_module_outputs(this);
+    jwm.get_inputlist().delete_module_inputs(this);
+//  wcntsig is a synthmodule which would have been created
+//  before this module.  don't need to delete here.
     delete wcntsiglist;
 }
 
-void const* combiner::get_out(outputnames::OUT_TYPE ot)
+void const* combiner::get_out(outputnames::OUT_TYPE ot) const
 {
-    void const* o = 0;
     switch(ot)
     {
-    case outputnames::OUT_OUTPUT:
-        o = &out_output;
-        break;
-    default:
-        o = 0;
+        case outputnames::OUT_OUTPUT: return &out_output;
+        default: return 0;
     }
-    return o;
 }
 
 bool combiner::set_param(paramnames::PAR_TYPE pt, void const* data)
 {
-    bool retv = false;
     switch(pt)
     {
-    case paramnames::PAR_MEAN_TOTAL:
-        meantotal = *(STATUS*)data;
-        retv = true;
-        break;
-    default:
-        retv = false;
-        break;
+        case paramnames::MEAN_TOTAL:
+            meantotal = *(STATUS*)data;
+            return true;
+        default:
+            return false;
     }
-    return retv;
 }
 
-void const* combiner::get_param(paramnames::PAR_TYPE pt)
+void const* combiner::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {
-    case paramnames::PAR_MEAN_TOTAL:
-        return &meantotal;
-    default:
-        return 0;
+        case paramnames::MEAN_TOTAL: return &meantotal;
+        default: return 0;
     }
 }
 
@@ -72,58 +69,62 @@ synthmod* combiner::duplicate_module(const char* uname, DUP_IO dupio)
     if (dupio == AUTO_CONNECT)
         duplicate_inputs_to(dup);
     duplicate_params_to(dup);
-    char* current_grp = get_groupname(get_username());
-    char* new_grp = get_groupname(uname);
+    const char* const current_grp = get_groupname(get_username());
+    const char* const new_grp = get_groupname(uname);
     bool regroup_wcnt_sigs = false;
     if (current_grp && new_grp) {
         if (strcmp(current_grp, new_grp) != 0) {
             regroup_wcnt_sigs = true;
         }
     }
-    synthmodlist* modlist = get_modlist();
-    if (get_verbose())
-        cout << "\n----------\nadding to duplicated combiner " << uname;
+    synthmodlist& modlist = jwm.get_modlist();
+    if (jwm.is_verbose())
+        std::cout << "\n----------\nadding to duplicated combiner "
+            << uname;
     goto_first();
     while (wcntsig) {
-        char* sig_grp = get_groupname(wcntsig->get_username());
+        const char* const sig_grp =
+            get_groupname(wcntsig->get_username());
         synthmod* sig_to_add = wcntsig;
         if (sig_grp && regroup_wcnt_sigs == true) {
             if (strcmp(sig_grp, current_grp) == 0) {
-                char* grpsigname =
+                const char* const grpsigname =
                         set_groupname(new_grp, wcntsig->get_username());
                 synthmod* grpsig =
-                            modlist->get_synthmod_by_name(grpsigname);
+                            modlist.get_synthmod_by_name(grpsigname);
                 if (grpsig) {
                     if (grpsig->get_module_type() ==
-                                            synthmodnames::MOD_WCNTSIGNAL)
+                                            synthmodnames::WCNTSIGNAL)
                         sig_to_add = grpsig;
                     else {
-                        cout << "\nin combiner::duplicate, an attempt to";
-                        cout << " fetch a wcnt_signal named "
-                                                            << grpsigname;
-                        cout << "resulted in finding ";
-                        cout << grpsig->get_username();
-                        cout << " which is not a wcnt_signal!?!?";
+                        std::cout << 
+                            "\nin combiner::duplicate, an attempt to";
+                        std::cout << " fetch a wcnt_signal named " <<
+                            grpsigname;
+                        std::cout << "resulted in finding ";
+                        std::cout << grpsig->get_username();
+                        std::cout << " which is not a wcnt_signal!?!?";
                     }
                 }
-                else if (get_verbose()) {
-                    cout << "\nWarning! combiner " << uname;
-                    cout << " was expecting to find " << grpsigname;
-                    cout << " but could not.";
-                    cout << "\nCheck the order of grouping in original";
-                    cout << " group definition.";
+                else if (jwm.is_verbose()) {
+                    std::cout << "\nWarning! combiner " << uname;
+                    std::cout << " was expecting to find " << grpsigname;
+                    std::cout << " but could not.\nCheck the order of"
+                        "grouping in original group definition.";
                 }
                 delete [] grpsigname;
             }
             delete [] sig_grp;
         }
         dup->add_signal((wcnt_signal*)sig_to_add);
-        if (get_verbose())
-            cout << "\nadded " << sig_to_add->get_username();
+        if (jwm.is_verbose())
+            std::cout << "\nadded " << sig_to_add->get_username();
         goto_next();
     }
-    if (get_verbose())
-        cout << "\n----------";
+    delete [] current_grp;
+    delete [] new_grp;
+    if (jwm.is_verbose())
+        std::cout << "\n----------";
     return dup;
 }
 
@@ -145,7 +146,7 @@ dobj* combiner::add_dobj(dobj* dbj)
 {
     if (dbj->get_object_type() == dobjnames::DOBJ_SYNTHMOD) {
         synthmod* sm = ((dobjmod*)dbj)->get_synthmod();
-        if (sm->get_module_type() != synthmodnames::MOD_WCNTSIGNAL) {
+        if (sm->get_module_type() != synthmodnames::WCNTSIGNAL) {
             *err_msg += sm->get_username();
             *err_msg += " is not a wcnt_signal";
             return 0;
@@ -158,7 +159,7 @@ dobj* combiner::add_dobj(dobj* dbj)
         }
         // add the dobj synthmod wrapper to the dobjlist
         // so it gets deleted in the end.
-        dobj::get_dobjlist()->add_dobj(dbj);
+        jwm.get_dobjlist().add_dobj(dbj);
         return dbj;
     }
     *err_msg = "\n***major error*** attempt made to add an ";
@@ -186,15 +187,13 @@ void combiner::run()
         out_output = total;
 }
 
-int combiner::combiner_count = 0;
-
 bool combiner::done_params = false;
 void combiner::create_params()
 {
     if (done_params == true)
         return;
-    get_paramlist()->
-    add_param(synthmodnames::MOD_COMBINER, paramnames::PAR_MEAN_TOTAL);
+    jwm.get_paramlist().
+    add_param(synthmodnames::COMBINER, paramnames::MEAN_TOTAL);
     done_params = true;
 }
 
@@ -204,8 +203,8 @@ void combiner::create_moddobj()
     if (done_moddobj == true)
         return;
     moddobj* mdbj;
-    mdbj = get_moddobjlist()->add_moddobj(
-        synthmodnames::MOD_COMBINER, dobjnames::LST_SIGNALS);
+    mdbj = jwm.get_moddobjlist().add_moddobj(
+        synthmodnames::COMBINER, dobjnames::LST_SIGNALS);
     mdbj->get_dobjdobjlist()->add_dobjdobj(
         dobjnames::LST_SIGNALS, dobjnames::DOBJ_SYNTHMOD);
     done_moddobj = true;

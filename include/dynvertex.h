@@ -1,7 +1,8 @@
 #ifndef DYNVERTEX_H
 #define DYNVERTEX_H
 
-#include "dobjparamlist.h"
+#include "dobj.h"
+
 /*
 dynvertex - dynamic vertex
 
@@ -41,7 +42,7 @@ public:
         return lso_level * (1 - height) + uso_level * height; }
     stockerrs::ERR_TYPE validate();
     bool set_param(paramnames::PAR_TYPE, void*);
-    void const* get_param(paramnames::PAR_TYPE pt);
+    void const* get_param(paramnames::PAR_TYPE pt) const;
 
 private:
     double si_level;

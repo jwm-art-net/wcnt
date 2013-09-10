@@ -1,24 +1,6 @@
 #ifndef SAMPLERCOMMON_H
 #define SAMPLERCOMMON_H
 
-#include "wavfileheader.h" // to get WAV_BUFFER_SIZE
-#include "wavfilein.h"
-
-// max size of anti clip buffer
-#define MAX_ANTI_CLIP_SIZE (WAV_BUFFER_SIZE / 2)
-// max anti_clip samples specifiable by user. (depreciated)
-#define MAX_ANTI_CLIP_SAMPLES MAX_ANTI_CLIP_SIZE
-// max search range specifiable by user. (unimplimentated)
-#define MAX_SEARCH_RANGE (WAV_BUFFER_SIZE / 2)
-#define SR_DIV_BI 8
-// SR_DIV_BI - divide search range by n.  tells the sampler how many
-// samples to search for a match closest to zero when calculating the
-// bi-directional offset from the current position when changing
-// direction. result should be pretty small because the user specifies 
-// the offset from the loop point.  The target is to jump half a phase 
-// in the waveform so that continuity of alternating positive and 
-// negative waveforms is not lost.
-
 // play forward or reverse
 enum PLAY_DIR{ PLAY_FWD, PLAY_REV};
 

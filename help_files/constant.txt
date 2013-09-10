@@ -1,0 +1,4 @@
+The constant module provides a never changing value to connect to inputs when a
+constant unchanging signal is required.
+
+See also: constant_note constant_freq

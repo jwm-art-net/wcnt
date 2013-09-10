@@ -1,4 +1,4 @@
-wcnt-1.25/jwmsynth
+wcnt-1.26/jwmsynth
 //------------------------------------------------------------------------
 //
 //  produces a bass line
@@ -84,14 +84,10 @@ clock1
 copier c5 from clock1 to clock2 c5
 copier c8 from clock1 to clock3 c8
 
-
-sine_wave
+wave
 sinetime
-    in_phase_trig  clock1 out_phase_trig
-    in_deg_size    clock1 out_deg_size
-    recycle_mode         off
-    on_trig_reset_phase  on
-    phase_cycles         1.0
+    in_phase_step   clock1 out_phase_step
+    type sine
 sinetime
 
 copier c9 from sinetime to sine3 c9
@@ -101,7 +97,7 @@ seq1
     track
         riff_node
             riff riff1a  bar 0   transpose 0
-            repeat 3 repeat_stripe 4
+            repeat 0 repeat_stripe 1
         riff_node
             riff riff1a  bar 2   transpose 5
             repeat 3 repeat_stripe 4
@@ -118,7 +114,8 @@ seq1
     in_pos_step_size    time1 out_pos_step_size
     in_beats_per_bar    time1 out_beats_per_bar
     in_beat_value       time1 out_beat_value
-    velocity_response_time 5
+    start_bar               0
+    velocity_response_time  5
 seq1
 
 adsr
@@ -170,21 +167,18 @@ osc1
 
 copier c6 from osc1 to osc2 c6
 
-sine_wave
+wave
 sine
-    in_phase_trig  osc1 out_phase_trig
-    in_deg_size    osc1 out_deg_size
-    recycle_mode         on
-    on_trig_reset_phase  off
-    phase_cycles         1.0
+    in_phase_step   osc1 out_phase_step
+    type sine
 sine
 
 copier c7 from sine to sine2 c7
 
 multiplier
 m1
-    in_signal   sine2       out_output
-    in_modifier sinetime    out_output
+    in_signal1 sine2       out_output
+    in_signal2 sinetime    out_output
 m1
 
 contraster
@@ -212,17 +206,20 @@ ie1
     editlist
         connect con2
             in_signal           adsr1   out_output
+
         connect adsr2
             in_note_on_trig     clock2  out_phase_trig
-            in_note_off_trig off
+            in_note_off_trig    off
+
         connect sine2
-            in_phase_trig       osc2    out_phase_trig
-            in_deg_size         osc2    out_deg_size
+            in_phase_step       osc2    out_phase_step
+
         connect sine3
-            in_phase_trig       clock3  out_phase_trig
-            in_deg_size         clock3  out_deg_size
+            in_phase_step       clock3  out_phase_step
+
         connect osc2
             in_freq_mod1        sh1     out_output
+
     editlist
 ie1
 
@@ -231,15 +228,20 @@ p1
     editlist
         edit clock2
             freq            1.75
+
         edit clock3
             freq            8.076
+
         edit con2
             power_max       6.0
+
         edit adsr2
             sustain_state   off
+
         edit osc2
             octave_offset   -1
             freq_mod1_size  2.0
+
     editlist
 p1
 
@@ -290,20 +292,21 @@ amp1
     in_signal   dynsine out_output
     in_amp_eg   con2    out_output
     in_amp_mod  seq1    out_velocity_ramp
-    amplitude     32000
+    level         1.0
     amp_mod_size  0.0
-    clip_level    32767
+    clip_level    1.0
 amp1
 
 wavfile_out
 wav1
-    in_left     amp1    out_mono
-    in_right    amp1    out_mono
+    in_left     amp1 out_output
+    in_right    amp1 out_output
     in_bar      time1   out_bar
     in_bar_trig time1   out_bar_trig
+    data_format float32
     filename    bass01.wav
     start_bar   0
-    end_bar     8
+    end_bar     4
 wav1
 
 // setup how long to process:
@@ -311,10 +314,10 @@ wav1
 wcnt_exit
 wcnt_exit_module
     in_bar  time1   out_bar
-    exit_bar    8
+    exit_bar    4
 wcnt_exit_module
 
 //------------------------------------------------------------------------
 // End Of File _jwm 2005.
 //------------------------------------------------------------------------
-wcnt-1.25/jwmsynth
+wcnt-1.26/jwmsynth

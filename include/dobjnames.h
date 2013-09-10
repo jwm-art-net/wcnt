@@ -1,10 +1,6 @@
 #ifndef DOBJNAMES_H
 #define DOBJNAMES_H
 
-#include <string.h>
-
-using namespace std;
-
 // if you want to add new dobj types then MAKE SURE you add them
 // to the CORRECT part of the enum.... and be prepared for hassle!
 
@@ -25,7 +21,7 @@ public:
         //---------------------------------------------
         DOBJ_NONE,      // hmmm, no dobj inserted?
         //---------------------------------------------
-        DOBJ_LISTS,   // seperator
+        DOBJ_LISTS,     // seperator
         //---------------------------------------------
         // lists to be defined within the module
         // or data object
@@ -46,7 +42,7 @@ public:
         LST_TRIGGERS,
         LST_STEPS,
         //---------------------------------------------
-        DOBJ_SINGLES, // seperator
+        DOBJ_SINGLES,   // seperator
         //---------------------------------------------
         // single objects to be inserted in lists
         // dobj inherited
@@ -85,6 +81,7 @@ public:
         DEF_RIFFEDITOR,
         DEF_COPIER,
         DEF_GROUP,
+        DEF_ADSR_SCALER,
         //---------------------------------------------
         // special dobj for inserting synthmodules into
         // list see dobjmod.h for more info.
@@ -95,14 +92,19 @@ public:
         //---------------------------------------------
     };
     dobjnames();
-    ~dobjnames();
-    char const* get_name(DOBJ_TYPE);
-    DOBJ_TYPE get_type(char const*);
-    DOBJ_TYPE check_type(DOBJ_TYPE);
-    DOBJ_TYPE get_sub_type(DOBJ_TYPE);
-    char const* get_sub_name(DOBJ_TYPE);
+    ~dobjnames(){};
+    const char* const get_name(DOBJ_TYPE) const;
+    DOBJ_TYPE get_type(const char* const) const;
+    DOBJ_TYPE check_type(DOBJ_TYPE) const;
+    DOBJ_TYPE get_sub_type(DOBJ_TYPE) const;
+    const char* const get_sub_name(DOBJ_TYPE) const;
 
 private:
-    char** dobj_name;
+    struct dobj_data
+    {
+        DOBJ_TYPE type;
+        const char* const name;
+    };
+    static const dobj_data data[DOBJ_LAST];
 };
 #endif

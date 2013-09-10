@@ -1,0 +1,6 @@
+The constant_freq module can be used to translate a never changing
+frequency to it's corresponding phase_step value. This in turn can
+be used by waveforms etc which you wish to remain at a constate
+frequency.
+
+See also: constant_note constant clock wave

@@ -4,13 +4,6 @@
 #include "wcnttrigger.h"
 #include "linkedlist.h"
 
-#include "modoutputslist.h"
-#include "modinputslist.h"
-#include "modparamlist.h"
-#include "dobjparamlist.h"
-#include "moddobjlist.h"
-#include "dobjlist.h"
-
 class trigswitcher: public synthmod
 {
 public:
@@ -36,16 +29,13 @@ public:
         return wcnttrig = (wcnt_trigger*)
          (wcnttrig_item = wcnttriglist->goto_next())->get_data();
     }
-    void set_in_trig(STATUS const* it){ in_trig = it; }
-    STATUS const* get_in_trig(){ return in_trig;}
-    STATUS const* get_out_trig(){ return &out_trig;}
     // virtual funcs
     void run();
     void init();
     stockerrs::ERR_TYPE validate();
-    void const* get_out(outputnames::OUT_TYPE);
+    void const* get_out(outputnames::OUT_TYPE) const;
     void const* set_in(inputnames::IN_TYPE, void const*);
-    const void* get_in(inputnames::IN_TYPE it);
+    const void* get_in(inputnames::IN_TYPE it) const;
     synthmod* duplicate_module(const char* uname, DUP_IO);
     dobj* add_dobj(dobj*);
 
@@ -56,7 +46,6 @@ private:
     ll_item* wcnttrig_item;
     wcnt_trigger* wcnttrig;
     STATUS const* trig;
-    static int trigswitcher_count;
     static bool done_moddobj;
     void create_moddobj();
 };

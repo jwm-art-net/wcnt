@@ -1,0 +1,11 @@
+The wave module generates oscillating waveforms. There are three basic
+waveform types to choose from: sine, tri, and saw. These waveforms
+output is within the -1.0 to 1.0 range. There are alternative versions
+of these waveforms which will output the same shape but within the 0.0
+to 1.0 range instead. There is also a waveform named one, and this will
+only output the value 1.0, constantly unchanging.
+
+in_phase_step should normally connect with an out_phase_step output
+coming from one of the clock type modules.
+
+See also: wave_phase square_wave user_wave clock osc_clock

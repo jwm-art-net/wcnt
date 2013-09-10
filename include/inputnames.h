@@ -21,7 +21,7 @@ public:
         IN_FREQ_MOD1,
         IN_FREQ_MOD2,
         IN_PHASE_TRIG,
-        IN_DEG_SIZE,
+        IN_PHASE_STEP,
         IN_SIGNAL,
         IN_EG,
         IN_AMP_MOD,
@@ -29,10 +29,9 @@ public:
         IN_TRIG,
         IN_WAVE,
         IN_PWM,
-        IN_CUTOFF_DEG_SIZE,
+        IN_CUTOFF_PHASE_STEP,
         IN_PLAY_TRIG,
         IN_START_POS_MOD,
-        IN_MODIFIER,
         IN_NORM_MOD,
         IN_V_MOD,
         IN_H_MOD,
@@ -48,8 +47,6 @@ public:
         IN_POWER_MOD,
         IN_RUDE_SWITCH_TRIG,
         IN_NOTENAME,
-        IN_L,
-        IN_R,
         IN_GAIN_MOD,
         IN_FEEDBACK,
         IN_FB_MOD,
@@ -60,18 +57,33 @@ public:
         IN_STATE,
         IN_PLAY_STATE,
         IN_RESTART_TRIG,
+        #ifdef WITH_LADSPA
+        IN_RES_MOD,
+        IN_THRESH_MOD,
+        IN_BANDWIDTH_MOD,
+        IN_SHIFT_MOD,
+        #endif
+        IN_SHAPE_PHASE_STEP,
+        IN_FREQ_MOD,
+        IN_SIGNAL1,
+        IN_SIGNAL2,
         // used for array to know how many:
         IN_LAST
     };
     inputnames();
-    ~inputnames();
-    const char* get_name(IN_TYPE);
-    IOCAT get_category(IN_TYPE);
-    IN_TYPE get_type(const char*);
+    ~inputnames(){};
+    const char* const get_name(IN_TYPE) const;
+    iocat::IOCAT get_category(IN_TYPE) const;
+    IN_TYPE get_type(const char* const) const;
 
 private:
-    char** inname;
-    IOCAT* incat;
+    struct input_data
+    {
+        IN_TYPE type;
+        const char* const name;
+        iocat::IOCAT cat;
+    };
+    static const input_data data[IN_LAST];
 };
 
 #endif

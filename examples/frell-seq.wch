@@ -1,4 +1,4 @@
-wcnt-1.25/jwmsynth
+wcnt-1.26/jwmsynth
 
 header header.wch
 
@@ -57,14 +57,9 @@ seq1
     in_pos_step_size    time1 out_pos_step_size
     in_beats_per_bar    time1 out_beats_per_bar
     in_beat_value       time1 out_beat_value
+    start_bar 0
     velocity_response_time  5.0
 seq1
 
 
-wcnt-1.25/jwmsynth
-
-        riff_node
-            riff      1note_riff
-            bar       0
-            transpose 0
-            repeat  0 repeat_stripe 1
+wcnt-1.26/jwmsynth

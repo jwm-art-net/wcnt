@@ -1,0 +1,13 @@
+The square_wave is a very square square_wave with very sharp corners.
+
+(See sine_wave or clock for description of what in_deg_size is.)
+
+in_pwm is the square_wave's pulse width modulation input. The amount of
+modulation is controlled by pwm_size, and the pulse_width parameter. For an
+equally balanced square wave, the pulse width should be 0.5. pwm_size
+should be between 0.0 and 0.9...
+
+This waveform is not anti-aliased.
+Output values alternate -1.0 and +1.0
+
+See also: sine_wave tri_wave user_wave lfo_controller clock osc_clock

@@ -1,0 +1,1 @@
+A secret module which provides outputs to any input turned 'off'

@@ -1,0 +1,16 @@
+The sine_wave generates a smoothly oscillating sine waveform - or it can do.
+It's not perfect though. so generally you want it to get on with things by it's
+own accord. Do this by not connecting it's in_phase_trig, and set recycle_mode
+to on so it produces more than one cycle.
+
+The in_deg_size input is frequency_translated_to_degrees-per-sample. The various
+clock modules provide out_deg_size outputs.
+
+This is where the lo-fi stuff comes in, the sine_wave output is not anti-aliased
+meaning waveforms operating at frequencies above the nyquist frequency (1/2 the 
+sample rate) start to sound wrong... (just think of wheels on a car).
+
+You should set phase_cycles to 1.0 for normal operation.
+Output values from this module are between -1.0 and +1.0
+
+See also: square_wave tri_wave cosine_wave

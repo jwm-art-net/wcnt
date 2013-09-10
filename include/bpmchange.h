@@ -1,7 +1,7 @@
 #ifndef BPMCHANGE_H
 #define BPMCHANGE_H
 
-#include "dobjparamlist.h"
+#include "dobj.h"
 
 // tempo changes are now relative.
 // so when tobpm is 10, the tempo will increase by 10 bpm.
@@ -18,7 +18,7 @@ public:
     double get_bpm(){ return tobpm;}
     stockerrs::ERR_TYPE validate();
     bool set_param(paramnames::PAR_TYPE, void*);
-    void const* get_param(paramnames::PAR_TYPE pt);
+    void const* get_param(paramnames::PAR_TYPE pt) const;
 
 private:
     short atbar;

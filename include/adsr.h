@@ -1,15 +1,9 @@
 #ifndef ADSR_H
 #define ADSR_H
 
+#include "synthmodule.h"
 #include "adsrcoord.h"
 #include "linkedlist.h"
-
-#include "modoutputslist.h"
-#include "modinputslist.h"
-#include "modparamlist.h"
-#include "dobjparamlist.h"
-#include "moddobjlist.h"
-
 
 /*
 ADSR - Attack Decay Sustain Release Envelope
@@ -68,43 +62,15 @@ public:
          (coord_item = env->goto_next())->get_data();
     }
     void scale_section(adsr_coord::SECT, double ratio);
-    // inputs
-    void set_input_velocity(double const* v){ in_velocity = v;}
-    void set_input_note_on_trig(STATUS const* ot){ in_note_on_trig = ot;}
-    void set_input_note_off_trig(STATUS const* ot){in_note_off_trig = ot;}
-    double const* get_input_velocity(){ return in_velocity;}
-    STATUS const* get_input_note_on_trig(){ return in_note_on_trig;}
-    STATUS const* get_input_note_off_trig(){ return in_note_off_trig;}
-    // outputs
-    double const* get_output() { return &output; }
-    STATUS const* get_output_off_trig(){ return &out_off_trig;}
-    STATUS const* get_play_state() { return &play_state; }
-    // params
-    void set_upper_thresh(double ut){ up_thresh = ut;}
-    void set_lower_thresh(double lt){ lo_thresh = lt;}
-    void set_start_level(double sl){ start_level = sl;}
-    void set_min_time(double mt){ min_time = mt;}
-    void set_max_sustain_time(double mt){ max_sus_time = mt;}
-    void set_sustain_status(STATUS s){ sustain_status = s;}
-    void set_release_ratio(STATUS r){ release_ratio = r;}
-    void set_zero_retrigger_mode(STATUS zrm) { zero_retrigger = zrm; }
-    double get_upper_thresh(){ return up_thresh;}
-    double get_lower_thresh(){ return lo_thresh;}
-    double get_start_level(){ return start_level;}
-    double get_min_time(){ return min_time;}
-    double get_max_sustain_time(){ return max_sus_time;}
-    STATUS get_sustain_status() { return sustain_status; }
-    STATUS get_release_ratio(){return release_ratio;}
-    STATUS get_zero_retrigger_mode() { return zero_retrigger; }
     // virtual funcs
     void run();
     void init();
     stockerrs::ERR_TYPE validate();
-    const void* get_out(outputnames::OUT_TYPE);
+    const void* get_out(outputnames::OUT_TYPE) const;
     const void* set_in(inputnames::IN_TYPE, void const*);
-    const void* get_in(inputnames::IN_TYPE it);
+    const void* get_in(inputnames::IN_TYPE it) const;
     bool set_param(paramnames::PAR_TYPE, void const*);
-    void const* get_param(paramnames::PAR_TYPE);
+    void const* get_param(paramnames::PAR_TYPE) const;
     dobj* add_dobj(dobj*);
     synthmod* duplicate_module(const char* uname, DUP_IO);
 
@@ -142,7 +108,6 @@ private:
     ll_item* coord_item;
     adsr_coord* coord;
     void ready_section();
-    static short adsr_count;
     static bool done_params;
     void create_params();
     static bool done_moddobj;

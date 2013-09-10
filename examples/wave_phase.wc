@@ -1,0 +1,221 @@
+wcnt-1.26/jwmsynth
+
+// examples/sinewave.wc
+
+samplerate 44100
+bpm 120
+signature 4/4
+
+timer
+t1
+    timings
+        time seconds 0.0
+        time seconds 20.0
+    timings
+t1
+
+constant_freq lfof  freq 3.125  lfof
+
+wave
+lfowave
+    in_phase_step   lfof out_phase_step
+    type tri
+lfowave
+
+constant_freq lfof2  freq 0.125  lfof2
+
+wave
+lfowave2
+    in_phase_step   lfof2 out_phase_step
+    type tri
+lfowave2
+
+constant_note note name a-2 note
+
+osc_clock
+clocka
+    in_note_on_trig     t1 out_trig
+    in_note_slide_trig  off
+    in_play_state       off
+    in_frequency        note out_frequency
+    in_freq_mod1        off
+    in_freq_mod2        off
+    octave_offset       0
+    tuning_semitones    0
+    portamento_time     125
+    response_time       5
+    freq_mod1_size      1
+    freq_mod2_size      1
+clocka
+
+wave
+awfm
+    in_phase_step clocka out_phase_step
+    type saw
+awfm
+
+osc_clock
+clockb
+    in_note_on_trig     t1 out_trig
+    in_note_slide_trig  off
+    in_play_state       off
+    in_frequency        note out_frequency
+    in_freq_mod1        awfm out_output
+    in_freq_mod2        off
+    octave_offset       1
+    tuning_semitones    0
+    portamento_time     125
+    response_time       5
+    freq_mod1_size      4
+    freq_mod2_size      1
+clockb
+
+wcnt_signal
+cfrq
+    in_signal note out_frequency
+    level 1.6818181818181818
+cfrq
+
+osc_clock
+clockc
+    in_note_on_trig     t1 out_trig
+    in_note_slide_trig  off
+    in_play_state       off
+    in_frequency        cfrq out_output
+    in_freq_mod1        lfowave out_output
+    in_freq_mod2        off
+    octave_offset       0
+    tuning_semitones    0
+    portamento_time     125
+    response_time       5
+    freq_mod1_size      2
+    freq_mod2_size      1
+clockc
+
+wave_phase
+wp1
+    in_phase_trig       clocka out_phase_trig
+    in_phase_step       clockb out_phase_step
+    in_shape_phase_step clockc out_phase_step
+    type                sine
+    shape_type          sine_01
+    on_trig_reset_phase on
+    recycle_mode        on
+    sync_shape          on
+    invert_alt          on
+    phase_cycles        0.5
+wp1
+
+wcnt_signal
+dfrq
+    in_signal note out_frequency
+    level 2.72727272727272727
+dfrq
+
+osc_clock
+clockd
+    in_note_on_trig     t1 out_trig
+    in_note_slide_trig  off
+    in_play_state       off
+    in_frequency        dfrq out_output
+    in_freq_mod1        lfowave2 out_output
+    in_freq_mod2        off
+    octave_offset       0
+    tuning_semitones    0
+    portamento_time     125
+    response_time       5
+    freq_mod1_size      0.5
+    freq_mod2_size      1
+clockd
+
+square_wave
+sq1
+    in_phase_trig  clockd out_phase_trig
+    in_phase_step  clockd out_phase_step
+    in_pwm         off
+    pulse_width   0.125
+    pwm_size      0.0
+    recycle_mode  off
+sq1
+
+wave_phase
+wp2
+    in_phase_trig       clocka out_phase_trig // sq1 out_pulse_off_trig
+    in_phase_step       clocka out_phase_step
+    in_shape_phase_step clockd out_phase_step
+    type                sine_01
+    shape_type          sine_01
+    on_trig_reset_phase on
+    recycle_mode        on
+    sync_shape          on
+    invert_alt          off
+    phase_cycles        0.5
+wp2
+
+modifier
+m1
+    in_signal1 wp1 out_output
+    in_signal2 wp2 out_output
+    function mul
+    type m2
+    bias 0.25
+m1
+
+clock
+clockf
+    in_freq_mod1    lfowave2 out_output
+    freq            110
+    freq_mod1_size  2.0
+clockf 
+
+glame_butterworth
+hpf1
+    in_signal               m1 out_output
+    in_cutoff_phase_step    clockf out_phase_step
+    in_res_mod              off
+    filter_type   highpass
+    resonance     0.45
+    res_mod_size  0.0
+hpf1
+
+glame_filter
+lpf1
+    in_signal     hpf1 out_output
+    in_freq_mod1  lfowave2 out_output
+    filter_type     lowpass
+    freq            2500
+    freq_mod1_size  2
+    stages          1
+lpf1
+
+wcnt_signal out in_signal lpf1 out_output level 0.8 out
+
+peak_detector
+pk1
+    in_signal       out out_output
+    sig_range_hi    1.0
+    sig_range_lo   -1.0
+    message         out_peaked:
+    force_abort     on
+    max_peaks       25
+pk1
+
+wavfile_out
+wav
+    in_left     out out_output
+    in_right    out out_output
+    in_bar t1   out_count
+    in_bar_trig t1 out_trig
+    data_format float32
+    filename    wave_phase.wav
+    start_bar   0
+    end_bar     1
+wav
+
+wcnt_exit
+wcnt_exit_module
+    in_bar      t1 out_count
+    exit_bar    1
+wcnt_exit_module
+
+wcnt-1.26/jwmsynth

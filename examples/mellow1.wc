@@ -1,4 +1,4 @@
-wcnt-1.25/jwmsynth
+wcnt-1.26/jwmsynth
 //
 // mellow1.wc - fairly mellow i guess
 //
@@ -40,12 +40,12 @@ seq1
             repeat 3 repeat_stripe 4
 //            repeat 7 repeat_stripe 4
     track
-
     in_bar              time1 out_bar
     in_bar_trig         time1 out_bar_trig
     in_pos_step_size    time1 out_pos_step_size
     in_beats_per_bar    time1 out_beats_per_bar
     in_beat_value       time1 out_beat_value
+    start_bar 0
     velocity_response_time 5
 seq1
 
@@ -100,19 +100,16 @@ adsr1
         zero_retrigger   off
 adsr1
 
-sine_wave sinewave
-    in_phase_trig   osc1 out_phase_trig
-    in_deg_size     osc1 out_deg_size
-    recycle_mode    off
-    on_trig_reset_phase off
-    phase_cycles        1.0
-sinewave
+wave wave-a
+    in_phase_step     osc1 out_phase_step
+    type tri
+wave-a
 
 square_wave
 squarewave
     in_phase_trig  osc1 out_phase_trig
-    in_deg_size    osc1 out_deg_size
-    in_pwm         sine2    out_output
+    in_phase_step    osc1 out_phase_step
+    in_pwm         wave2    out_output
     pulse_width   0.285
     pwm_size      0.125
     recycle_mode  off
@@ -125,48 +122,45 @@ clock2
     freq_mod1_size  1.0
 clock2
 
-sine_wave
-sine2
-    in_phase_trig  clock2 out_phase_trig
-    in_deg_size    clock2 out_deg_size
-    recycle_mode        on
-    on_trig_reset_phase off
-    phase_cycles        1.0
-sine2
+wave
+wave2
+    in_phase_step clock2 out_phase_step
+    type sine
+wave2
 
 multiplier
-ssine
-    in_signal sinewave out_output
-    in_modifier adsr1 out_output
-ssine
+swave
+    in_signal1 wave-a out_output
+    in_signal2 adsr1 out_output
+swave
 
 invert
 isq
-    in_signal squarewave    out_output
+    in_signal squarewave out_output
 isq
 
 multiplier mm1
-    in_signal   sinewave  out_output
-    in_modifier isq       out_output
+    in_signal1 wave-a out_output
+    in_signal2 isq out_output
 mm1
 
 noise_generator ng1 ng1
 
-modifier
+balance
 mm1x
-    in_signal    mm1 out_output
-    in_modifier  ng1 out_output
+    in_signal1  mm1 out_output
+    in_signal2  ng1 out_output
     function  add
     bias      0.185
 mm1x
 
 copier clkcp1 from clock2 to panclk clkcp1
-copier sncp1 from sine2 to pansin sncp1
+copier sncp1 from wave2 to panwave sncp1
 
 panner
 pan1
-    in_signal   ssine    out_output
-    in_pan_mod  pansin      out_output
+    in_signal   swave    out_output
+    in_pan_mod  panwave      out_output
     pan           0.0
     pan_mod_size  0.99
    
@@ -174,42 +168,42 @@ pan1
 
 echo
 echosl
-    in_signal        pan1   out_l
+    in_signal        pan1   out_left
     in_gain_mod      off
     in_feedback      echosr  out_wet_output
     in_feedback_mod  off
     delay_time        125
     gain              1.0
-    gain_modsize      0.0
-    feedback          -0.5
-    feedback_modsize  0.0
+    gain_mod_size     0.0
+    feedback         -0.5
+    feedback_mod_size 0.0
     wet/dry           0.384
 echosl
 
 echo
 echosr
-    in_signal        pan1   out_r
+    in_signal        pan1   out_right
     in_gain_mod      off
     in_feedback      echosl  out_wet_output
     in_feedback_mod  off
     delay_time        155
     gain              1.0
-    gain_modsize      0.0
+    gain_mod_size     0.0
     feedback          0.5
-    feedback_modsize  0.0
+    feedback_mod_size 0.0
     wet/dry           0.384
 echosr
 
 stereo_amp
 stamp
-    in_l        echosl out_output
-    in_r        echosr out_output
+    in_left     echosl out_output
+    in_right    echosr out_output
     in_amp_eg   one    out_output
     in_amp_mod  off
-    left_amplitude   20000
-    right_amplitude  20000
-    amp_mod_size     0.0
-    clip_level       32767
+    left_level      0.75
+    right_level     0.75
+    amp_mod_size    0.0
+    clip_level      1.0
 stamp
 
 // edit inputs and params here, before group copying, so as
@@ -218,9 +212,8 @@ stamp
 input_editor
 inputs1
     editlist
-        connect pansin 
-            in_phase_trig panclk out_phase_trig
-            in_deg_size panclk out_deg_size
+        connect panwave
+            in_phase_step panclk out_phase_step
     editlist
 inputs1
 
@@ -230,9 +223,9 @@ group
 g1
     modules
         synthmod name osc1
-        synthmod name sinewave
+        synthmod name wave-a
         synthmod name squarewave
-        synthmod name ssine
+        synthmod name swave
         synthmod name ng1
         synthmod name mm1
         synthmod name mm1x
@@ -240,7 +233,7 @@ g1
         synthmod name echosl
         synthmod name echosr
         synthmod name panclk
-        synthmod name pansin
+        synthmod name panwave
         synthmod name pan1
         synthmod name stamp
         synthmod name ch_out
@@ -293,16 +286,16 @@ params1
 input_editor
 inpsfb
     editlist
-        connect g1.mm1  in_modifier g2.isq  out_output
-        connect g2.mm1  in_modifier g3.isq  out_output
-        connect g3.mm1  in_modifier g4.isq  out_output
-        connect g4.mm1  in_modifier g5.isq  out_output
-        connect g5.mm1  in_modifier g6.isq  out_output
-        connect g6.mm1  in_modifier g7.isq  out_output
-        connect g7.mm1  in_modifier g8.isq  out_output
-        connect g8.mm1  in_modifier g9.isq  out_output
-        connect g9.mm1  in_modifier g10.isq out_output
-        connect g10.mm1 in_modifier g1.isq  out_output
+        connect g1.mm1  in_signal2 g2.isq  out_output
+        connect g2.mm1  in_signal2 g3.isq  out_output
+        connect g3.mm1  in_signal2 g4.isq  out_output
+        connect g4.mm1  in_signal2 g5.isq  out_output
+        connect g5.mm1  in_signal2 g6.isq  out_output
+        connect g6.mm1  in_signal2 g7.isq  out_output
+        connect g7.mm1  in_signal2 g8.isq  out_output
+        connect g8.mm1  in_signal2 g9.isq  out_output
+        connect g9.mm1  in_signal2 g10.isq out_output
+        connect g10.mm1 in_signal2 g1.isq  out_output
         connect g1.osc1  in_freq_mod1  g10.mm1x  out_output
         connect g2.osc1  in_freq_mod1  g1.mm1x  out_output
         connect g3.osc1  in_freq_mod1  g2.mm1x  out_output
@@ -330,8 +323,28 @@ mix1
         synthmod name g9.ch_out
         synthmod name g10.ch_out
     mix
-    master_level  0.2
+    master_level  0.5
 mix1
+
+peak_detector
+pk1
+    in_signal mix1 out_left
+    sig_range_hi  1.0
+    sig_range_lo  -1.0
+    message       mix1__out_left__peaked:
+    force_abort   on
+    max_peaks     10
+pk1
+
+peak_detector
+pk2
+    in_signal mix1 out_left
+    sig_range_hi  1.0
+    sig_range_lo  -1.0
+    message       mix1__out_right__peaked:
+    force_abort   on
+    max_peaks     10
+pk2
 
 wavfile_out
 wav1
@@ -339,6 +352,7 @@ wav1
     in_right    mix1    out_right
     in_bar      time1   out_bar
     in_bar_trig time1   out_bar_trig
+    data_format float32
     filename    mellow1.wav
     start_bar   0
     end_bar     18
@@ -355,7 +369,7 @@ wcnt_exit_module
 
 // all done...
 
-wcnt-1.25/jwmsynth
+wcnt-1.26/jwmsynth
 
 
 

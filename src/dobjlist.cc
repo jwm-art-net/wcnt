@@ -1,5 +1,7 @@
 #ifndef DOBJLIST_H
 #include "../include/dobjlist.h"
+#include "../include/jwm_globals.h"
+#include "../include/dataobjects.h"
 
 dobjlist::dobjlist() :
  dobj_list(0), dobj_item(0), d_obj(0),
@@ -27,7 +29,7 @@ dobj* dobjlist::add_dobj(dobj* d)
 
 dobj* dobjlist::create_dobj(dobjnames::DOBJ_TYPE dt)
 {
-    if (dobj::get_dobjnames()->check_type(dt) == dobjnames::DOBJ_FIRST)
+    if (jwm.get_dobjnames().check_type(dt) == dobjnames::DOBJ_FIRST)
         return 0;
     dobj* dobjy = 0;
     switch(dt) {
@@ -94,6 +96,9 @@ dobj* dobjlist::create_dobj(dobjnames::DOBJ_TYPE dt)
     case dobjnames::DEF_GROUP:
         dobjy = new group;
         break;
+    case dobjnames::DEF_ADSR_SCALER:
+        dobjy = new adsr_scaler;
+        break;
     case dobjnames::DOBJ_SYNTHMOD:
         dobjy = new dobjmod;
         break;
@@ -123,7 +128,7 @@ dobj* dobjlist::get_first_of_dobj_type(dobjnames::DOBJ_TYPE dt)
 {
     dobj_search = 0;
     search_dobj_type = dobjnames::DOBJ_FIRST;
-    if (dobj::get_dobjnames()->check_type(dt) == dobjnames::DOBJ_FIRST)
+    if (jwm.get_dobjnames().check_type(dt) == dobjnames::DOBJ_FIRST)
         return 0;
     goto_first();
     while(d_obj) {
@@ -139,7 +144,7 @@ dobj* dobjlist::get_first_of_dobj_type(dobjnames::DOBJ_TYPE dt)
 
 dobj* dobjlist::get_next_of_dobj_type()
 {
-    if (dobj::get_dobjnames()->check_type(search_dobj_type)
+    if (jwm.get_dobjnames().check_type(search_dobj_type)
             == dobjnames::DOBJ_FIRST)
         return 0;
     dobj_item = dobj_list->goto_item(dobj_search);

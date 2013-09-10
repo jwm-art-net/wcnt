@@ -1,11 +1,7 @@
 #ifndef INPUTEDIT_H
 #define INPUTEDIT_H
 
-#include <sstream>
-
-#include "dobjdobjlist.h"
-#include "dobjparamlist.h"
-#include "synthmodulelist.h"
+#include "dobj.h"
 
 // inputedit
 // ---------
@@ -24,15 +20,15 @@ public:
     ~inputedit();
     bool set_modname(const char*);
     void set_iostr(const char*);
-    const char* get_modname() { return modname; }
-    const char* get_iostr() { return iostr;}
-    bool create_connectors(bool verbose);
+    const char* get_modname() const { return modname; }
+    const char* get_iostr() const { return iostr;}
+    bool create_connectors();
     // virtuals from dobj
     virtual stockerrs::ERR_TYPE validate(){
         return stockerrs::ERR_NO_ERROR;
     }
     bool set_param(paramnames::PAR_TYPE, void*);
-    void const* get_param(paramnames::PAR_TYPE);
+    void const* get_param(paramnames::PAR_TYPE) const;
 
 private:
     char* modname;

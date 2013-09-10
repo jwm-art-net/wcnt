@@ -1,134 +1,114 @@
 #ifndef FREQGENERATOR_H
 #include "../include/freqgenerator.h"
+#include "../include/jwm_globals.h"
+#include "../include/modoutputlist.h"
+#include "../include/modinputlist.h"
+#include "../include/modparamlist.h"
 
 freq_generator::freq_generator(char const* uname) :
- synthmod(synthmodnames::MOD_FREQGEN, freq_generator_count, uname),
+ synthmod(synthmodnames::FREQGEN, uname),
  in_signal(0), out_freq(220.00), sig_range_hi(1.00), sig_range_lo(-1.00),
  freq_range_hi(440.00), freq_range_lo(110.00), step_count(24)
 {
-    get_outputlist()->add_output(this, outputnames::OUT_FREQ);
-    get_outputlist()->add_output(this, outputnames::OUT_DEG_SIZE);
-    get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
-    freq_generator_count++;
+    jwm.get_outputlist().add_output(this, outputnames::OUT_FREQ);
+    jwm.get_outputlist().add_output(this, outputnames::OUT_PHASE_STEP);
+    jwm.get_inputlist().add_input(this, inputnames::IN_SIGNAL);
     init();
     create_params();
 }
 
 freq_generator::~freq_generator()
 {
-    get_outputlist()->delete_module_outputs(this);
-    get_inputlist()->delete_module_inputs(this);
+    jwm.get_outputlist().delete_module_outputs(this);
+    jwm.get_inputlist().delete_module_inputs(this);
 }
 
-void const* freq_generator::get_out(outputnames::OUT_TYPE ot)
+void const* freq_generator::get_out(outputnames::OUT_TYPE ot) const
 {
-    void const* o = 0;
-    switch(ot) {
-    case outputnames::OUT_FREQ:
-        o = &out_freq;
-        break;
-    case outputnames::OUT_DEG_SIZE:
-        o = &out_deg_size;
-        break;
-    default:
-        o = 0;
+    switch(ot)
+    {
+        case outputnames::OUT_FREQ:     return &out_freq;
+        case outputnames::OUT_PHASE_STEP: return &out_phase_step;
+        default: return 0;
     }
-    return o;
 }
 
 void const* freq_generator::set_in(inputnames::IN_TYPE it, void const* o)
 {
-    switch(it) {
-    case inputnames::IN_SIGNAL:
-        return in_signal = (double*)o;
-    default:
-        return 0;
+    switch(it)
+    {
+        case inputnames::IN_SIGNAL: return in_signal = (double*)o;
+        default: return 0;
     }
 }
 
-void const* freq_generator::get_in(inputnames::IN_TYPE it)
+void const* freq_generator::get_in(inputnames::IN_TYPE it) const
 {
-    switch(it) {
-    case inputnames::IN_SIGNAL:
-        return in_signal;
-    default:
-        return 0;
+    switch(it)
+    {
+        case inputnames::IN_SIGNAL: return in_signal;
+        default: return 0;
     }
 }
 
 bool freq_generator::set_param(paramnames::PAR_TYPE pt, void const* data)
 {
-    bool retv = false;
     switch(pt)
     {
-    case paramnames::PAR_SIG_RANGE_HI:
-        set_signal_range_hi(*(double*)data);
-        retv = true;
-        break;
-    case paramnames::PAR_SIG_RANGE_LO:
-        set_signal_range_lo(*(double*)data);
-        retv = true;
-        break;
-    case paramnames::PAR_FREQ_RANGE_HI:
-        set_freq_range_hi(*(double*)data);
-        retv = true;
-        break;
-    case paramnames::PAR_FREQ_RANGE_LO:
-        set_freq_range_lo(*(double*)data);
-        retv = true;
-        break;
-    case paramnames::PAR_STEP_COUNT:
-        set_step_count(*(short*)data);
-        retv = true;
-        break;
-    default:
-        retv = false;
-        break;
+        case paramnames::SIG_RANGE_HI:
+            sig_range_hi = *(double*)data;
+            return true;
+        case paramnames::SIG_RANGE_LO:
+            sig_range_lo = *(double*)data;
+            return true;
+        case paramnames::FREQ_RANGE_HI:
+            freq_range_hi = *(double*)data;
+            return true;
+        case paramnames::FREQ_RANGE_LO:
+            freq_range_lo = *(double*)data;
+            return true;
+        case paramnames::STEP_COUNT:
+            step_count = *(short*)data;
+            return true;
+        default:
+            return false;
     }
-    return retv;
 }
 
-void const* freq_generator::get_param(paramnames::PAR_TYPE pt)
+void const* freq_generator::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {
-    case paramnames::PAR_SIG_RANGE_HI:
-        return &sig_range_hi;
-    case paramnames::PAR_SIG_RANGE_LO:
-        return &sig_range_lo;
-    case paramnames::PAR_FREQ_RANGE_HI:
-        return &freq_range_hi;
-    case paramnames::PAR_FREQ_RANGE_LO:
-        return &freq_range_lo;
-    case paramnames::PAR_STEP_COUNT:
-        return &step_count;
-    default:
-        return 0;
+        case paramnames::SIG_RANGE_HI:  return &sig_range_hi;
+        case paramnames::SIG_RANGE_LO:  return &sig_range_lo;
+        case paramnames::FREQ_RANGE_HI: return &freq_range_hi;
+        case paramnames::FREQ_RANGE_LO: return &freq_range_lo;
+        case paramnames::STEP_COUNT:    return &step_count;
+        default: return 0;
     }
 }
 
 stockerrs::ERR_TYPE freq_generator::validate()
 {
     if (step_count <= 1) {
-        *err_msg = get_paramnames()->get_name(paramnames::PAR_STEP_COUNT);
+        *err_msg = jwm.get_paramnames().get_name(paramnames::STEP_COUNT);
         *err_msg += "must be of a larger value than 1";
         invalidate();
         return stockerrs::ERR_ERROR;
     }
-    modparamlist* pl = get_paramlist();
-    if (!pl->validate(this, paramnames::PAR_FREQ_RANGE_HI,
+    if (!jwm.get_paramlist().validate(this, paramnames::FREQ_RANGE_HI,
             stockerrs::ERR_RANGE_FREQ))
     {
         *err_msg =
-         get_paramnames()->get_name(paramnames::PAR_FREQ_RANGE_HI);
+         jwm.get_paramnames().get_name(paramnames::FREQ_RANGE_HI);
         invalidate();
         return stockerrs::ERR_RANGE_FREQ;
     }
-    if (!pl->validate(this, paramnames::PAR_FREQ_RANGE_LO,
+    if (!jwm.get_paramlist().validate(this, paramnames::FREQ_RANGE_LO,
             stockerrs::ERR_RANGE_FREQ))
     {
         *err_msg =
-         get_paramnames()->get_name(paramnames::PAR_FREQ_RANGE_LO);
+         jwm.get_paramnames().get_name(paramnames::FREQ_RANGE_LO);
         invalidate();
         return stockerrs::ERR_RANGE_FREQ;
     }
@@ -146,10 +126,8 @@ void freq_generator::run()
     out_freq =
         freq_range_lo + ((int)((*in_signal - sig_range_lo)
                                / sig_step_size)) * freq_step_size;
-    out_deg_size = (double)audio_samplerate / out_freq;
+    out_phase_step = jwm.samplerate() / out_freq;
 }
-
-int freq_generator::freq_generator_count = 0;
 
 bool freq_generator::done_params = false;
 
@@ -157,16 +135,16 @@ void freq_generator::create_params()
 {
     if (done_params == true)
         return;
-    get_paramlist()->add_param(
-     synthmodnames::MOD_FREQGEN, paramnames::PAR_STEP_COUNT);
-    get_paramlist()->add_param(
-     synthmodnames::MOD_FREQGEN, paramnames::PAR_SIG_RANGE_LO);
-    get_paramlist()->add_param(
-     synthmodnames::MOD_FREQGEN, paramnames::PAR_SIG_RANGE_HI);
-    get_paramlist()->add_param(
-     synthmodnames::MOD_FREQGEN, paramnames::PAR_FREQ_RANGE_LO);
-    get_paramlist()->add_param(
-     synthmodnames::MOD_FREQGEN, paramnames::PAR_FREQ_RANGE_HI);
+    jwm.get_paramlist().add_param(
+     synthmodnames::FREQGEN, paramnames::STEP_COUNT);
+    jwm.get_paramlist().add_param(
+     synthmodnames::FREQGEN, paramnames::SIG_RANGE_LO);
+    jwm.get_paramlist().add_param(
+     synthmodnames::FREQGEN, paramnames::SIG_RANGE_HI);
+    jwm.get_paramlist().add_param(
+     synthmodnames::FREQGEN, paramnames::FREQ_RANGE_LO);
+    jwm.get_paramlist().add_param(
+     synthmodnames::FREQGEN, paramnames::FREQ_RANGE_HI);
     done_params = true;
 }
 

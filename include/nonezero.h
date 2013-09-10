@@ -2,7 +2,6 @@
 #define NONEZERO_H
 
 #include "synthmodule.h"
-#include "modoutputslist.h"
 
 /* There should be only one..........'cos there's no point 'aving two or
 more.  the plan is that it should not be an option for the user to create
@@ -18,6 +17,12 @@ instead of a pointer to a var whose value was 0 - zero. Using GNU C++
 v2.95 using NULL creates seg faults.  But I was vaguely aware that I
 needed a better solution so created the nonezero module.......*/
 
+// this class could be very soon becoming deprecated...
+// ... favour of shifting the 'outputs' into synthmod itself
+// of course, they would also become static... i'm not sure
+// yet... other things ta dee first like...
+// 7th december 2007
+
 class nonezero: public synthmod
 {
 public:
@@ -32,7 +37,7 @@ public:
     const STATUS* get_output_none_state(){ return &out_none_STATUS; }
     // virtual funcs
     void run(){};
-    void const* get_out(outputnames::OUT_TYPE);
+    void const* get_out(outputnames::OUT_TYPE) const;
     synthmod* duplicate_module(const char* uname, DUP_IO);
 
 private:

@@ -1,0 +1,5 @@
+The sample_hold, when in_trig triggers, 'samples' the value provided by
+in_signal and 'holds' it until decay_time ms has elapsed. When
+decay_time is 0.0 the held value will not decay to zero.
+
+See also: noise_generator

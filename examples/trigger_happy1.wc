@@ -1,0 +1,166 @@
+wcnt-1.26/jwmsynth
+
+samplerate 44100
+bpm 120
+signature 4/4
+
+constant one value 1.0 one
+
+timer
+t1
+    timings
+        time seconds 0.0
+        time seconds 20.0
+    timings
+t1
+
+clock
+clock1
+    in_freq_mod1   off
+    freq           100
+    freq_mod1_size 1.0
+clock1
+
+wave
+sinewave1
+    in_phase_step   clock1 out_phase_step
+    type sine
+sinewave1
+
+wcnt_signal ws1 in_signal sinewave1 out_output level 1.0 ws1
+
+square_wave
+squ_wave1
+    in_phase_trig   clock1 out_phase_trig
+    in_phase_step   clock1 out_phase_step
+    in_pwm          off
+    pulse_width   0.5
+    pwm_size      0.0
+    recycle_mode  off
+squ_wave1
+
+wcnt_signal ws2 in_signal squ_wave1 out_output level 1.0 ws2
+
+wcnt_signal
+cws1
+    in_signal clock1 out_phase_step
+    level 2.333
+cws1
+
+wave
+triwave1
+    in_phase_step  cws1 out_output
+    type tri
+triwave1
+
+wcnt_signal ws3 in_signal triwave1 out_output level 1.0 ws3
+
+clock
+clock2
+    in_freq_mod1   off
+    freq           0.2121212
+    freq_mod1_size 1.0
+clock2
+
+wave
+sinewave2
+    in_phase_step     clock2 out_phase_step
+    type sine
+sinewave2
+
+clock
+clock3
+    in_freq_mod1   off
+    freq           0.1111
+    freq_mod1_size 1.0
+clock3
+
+wave
+sinewave3
+    in_phase_step     clock3 out_phase_step
+    type sine
+sinewave3
+
+clock
+clock4
+    in_freq_mod1   sinewave2 out_output
+    freq           1.0
+    freq_mod1_size 2.0
+clock4
+
+switcher
+sw1
+    signals
+        synthmod name ws1
+        synthmod name ws2
+        synthmod name ws3
+    signals
+    in_trig clock4 out_phase_trig
+    xfade_time 15.0
+sw1
+
+on_off_trig
+oot
+    in_signal       sinewave1 out_output
+    attack_time     1.0
+    attack_level    0.75
+    release_time    1.0
+    release_level   0.5
+    check_levels    on
+oot
+
+adsr
+adsr1
+        envelope
+        section name attack
+            ut  1.0    ul  1.0
+            lt  2.0    ll  1.0
+        section name decay
+            ut  2.0    ul  0.9
+            lt  1.0    ll  0.75
+        section name release
+            ut  1.0    ul  0.0
+            lt  2.0    ll  0.0
+        envelope
+        in_note_on_trig     oot out_trig
+        in_note_off_trig    oot out_not_trig
+        in_velocity         sinewave3 out_output
+        up_thresh        0.75
+        lo_thresh        -0.75
+        start_level      0.0
+        min_time         0.0
+        max_sustain_time 0.0
+        release_is_ratio off
+        sustain_state    on
+        zero_retrigger   off
+adsr1
+
+mono_amp
+amp1
+    in_signal   sw1     out_output
+    in_amp_eg   adsr1   out_output
+    in_amp_mod  off
+    level        1.0
+    amp_mod_size 0.0
+    clip_level   1.0
+amp1
+
+wavfile_out
+wav1
+    in_left     amp1 out_output
+    in_right    amp1 out_output
+    in_bar      t1 out_count
+    in_bar_trig t1 out_trig
+    data_format pcm16 //float32
+    filename    trigger_happy1.wav
+    start_bar   0
+    end_bar     1
+wav1
+
+wcnt_exit
+wcnt_exit_module
+    in_bar      t1 out_count
+    exit_bar    1
+wcnt_exit_module
+
+wcnt-1.26/jwmsynth

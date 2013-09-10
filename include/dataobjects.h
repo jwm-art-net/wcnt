@@ -10,6 +10,7 @@
 #include "dobjmod.h"
 #include "dynvertex.h"
 #include "timing.h"
+#include "stepdata.h"
 #include "dobjnamedobj.h"
 #include "modnamedobj.h"
 #include "synthfilereader.h"
@@ -20,5 +21,6 @@
 #include "riffeditor.h"
 #include "copier.h"
 #include "group.h"
+#include "adsr_scaler.h"
 
 #endif

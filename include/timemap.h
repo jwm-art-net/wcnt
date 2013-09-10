@@ -2,15 +2,7 @@
 #define TIMEMAP_H
 
 #include "synthmodule.h"
-#include "conversions.h"
 #include "linkedlist.h"
-
-#include "modoutputslist.h"
-#include "modinputslist.h"
-#include "modparamlist.h"
-#include "dobjparamlist.h"
-#include "moddobjlist.h"
-
 #include "bpmchange.h"
 #include "meterchange.h"
 
@@ -195,30 +187,11 @@ public:
          (meter_item = meter_map->goto_next())->get_data();
     }
     // general purpose method used for checking by other modules,
-    //	bool check_position(short bar, double pos, short quarter_val);
-    // outputs access:
-    short const* get_out_bar(){return &out_bar;}
-    unsigned long const* get_out_pos_in_bar(){return &out_pos_in_bar;}
-    double const* get_out_pos_step_size(){return &out_pos_step_size;}
-    double const* get_out_bpm(){return &out_bpm;}
-    unsigned long const* get_out_sample_total(){return &out_sample_total;}
-    unsigned long const* get_out_sample_in_bar() {
-        return &out_sample_in_bar;
-    }
-    STATUS const* get_out_bar_trig(){return &out_bar_trig;}
-    short const* get_out_beats_per_bar(){ return &out_beats_per_bar;}
-    short const* get_out_beat_value(){ return &out_beat_value;}
-    STATUS const* get_out_bpm_change_trig(){ return &out_bpm_change_trig;}
-    STATUS const* get_out_meter_change_trig() {
-        return &out_meter_change_trig;
-    }
-    STATUS const* get_out_bpm_change_state() {
-        return &out_bpm_change_state;
-    }
+    // bool check_position(short bar, double pos, short quarter_val);
     // virtual methods
     void run();
     void init(); // init will grab global bpm to start with
-    void const* get_out(outputnames::OUT_TYPE);
+    void const* get_out(outputnames::OUT_TYPE) const;
     synthmod* duplicate_module(const char* uname, DUP_IO);
     dobj* add_dobj(dobj*);
 
@@ -265,7 +238,6 @@ private:
     double notelen_to_frequency(short);
     double notelen_to_ms(short);
     // synthmod stuff for keeping things cushdy.
-    static short timemap_count;
     static bool done_moddobj;
     void create_moddobj();
 };

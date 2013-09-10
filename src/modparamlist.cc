@@ -1,5 +1,6 @@
 #ifndef MODPARAMLIST_H
 #include "../include/modparamlist.h"
+#include "../include/synthmodule.h"
 
 modparamlist::modparamlist() : parlist(0), param(0)
 {
@@ -36,7 +37,7 @@ modparam* modparamlist::add_param(
 modparamlist* modparamlist::get_paramlist_for_moduletype(
  synthmodnames::SYNTH_MOD_TYPE smt)
 {
-    if (smt == synthmodnames::MOD_FIRST)
+    if (smt == synthmodnames::FIRST)
         return 0;
     modparamlist* mpl = new modparamlist;
     goto_first();

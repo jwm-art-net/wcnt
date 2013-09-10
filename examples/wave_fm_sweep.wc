@@ -1,0 +1,111 @@
+wcnt-1.26/jwmsynth
+
+// examples/lp_filter_test.wc
+
+samplerate 44100
+bpm 120
+signature 4/4
+
+constant one value 1.0 one
+
+// duration of sound
+
+timer
+t1
+    timings
+        time seconds 0.0
+        time seconds 10
+    timings
+t1
+
+clock
+clock1
+    in_freq_mod1    s out_output
+    freq            100
+    freq_mod1_size  4
+clock1
+
+clock
+clock2
+    in_freq_mod1    s2 out_output
+    freq            55 //27.5
+    freq_mod1_size  1.00025
+clock2
+
+wave
+s
+    in_phase_step clock2 out_phase_step
+    type sine
+s
+
+wave
+saw
+    in_phase_step clock2 out_phase_step
+    type tri
+saw
+
+subtracter
+a1
+    in_signal1 saw out_output
+    in_signal2 one  out_output
+a1
+
+wcnt_signal saws in_signal a1 out_output level 0.5 saws
+
+clock
+clock3
+    in_freq_mod1    off
+    freq            0.25
+    freq_mod1_size  1
+clock3
+
+wave
+s2
+    in_phase_step clock3 out_phase_step
+    type sine
+s2
+
+wave
+tri1
+    in_phase_step   clock1 out_phase_step
+    type                 tri
+tri1
+
+modifier
+m1
+    in_signal1 tri1 out_output
+    in_signal2 saws out_output
+    function mul
+    type m2
+    bias 0.5
+m1
+
+mono_amp
+amp1
+    in_signal   m1 out_output
+    in_amp_eg   one out_output
+    in_amp_mod  off
+    level           1
+    amp_mod_size    0
+    clip_level      1
+amp1
+
+wavfile_out
+wav1
+    in_left     amp1 out_output
+    in_right    amp1 out_output
+    in_bar t1   out_count
+    in_bar_trig t1 out_trig
+    data_format float32
+    filename    wave_fm_sweep.wav
+    start_bar   0
+    end_bar     1
+wav1
+
+wcnt_exit
+wcnt_exit_module
+    in_bar      t1 out_count
+    exit_bar    1
+wcnt_exit_module
+
+wcnt-1.26/jwmsynth

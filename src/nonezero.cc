@@ -1,21 +1,23 @@
 #ifndef NONEZERO_H
 #include "../include/nonezero.h"
+#include "../include/jwm_globals.h"
+#include "../include/modoutputlist.h"
 
 nonezero::nonezero(char const* uname) :
- synthmod(synthmodnames::MOD_NONEZERO, 0, uname),
+ synthmod(synthmodnames::NONEZERO, uname),
  out_none_double(0.00), out_none_short(0), out_none_ulong(0), 
  out_none_STATUS(OFF)
 {
-    get_outputlist()->add_output(this, outputnames::OUT_NONE_DOUBLE);
-    get_outputlist()->add_output(this, outputnames::OUT_NONE_SHORT);
-    get_outputlist()->add_output(this, outputnames::OUT_NONE_ULONG);
-    get_outputlist()->add_output(this, outputnames::OUT_NONE_TRIG);
-    get_outputlist()->add_output(this, outputnames::OUT_NONE_STATE);
+    jwm.get_outputlist().add_output(this, outputnames::OUT_NONE_DOUBLE);
+    jwm.get_outputlist().add_output(this, outputnames::OUT_NONE_SHORT);
+    jwm.get_outputlist().add_output(this, outputnames::OUT_NONE_ULONG);
+    jwm.get_outputlist().add_output(this, outputnames::OUT_NONE_TRIG);
+    jwm.get_outputlist().add_output(this, outputnames::OUT_NONE_STATE);
 }
 
 nonezero::~nonezero()
 {
-    get_outputlist()->delete_module_outputs(this);
+    jwm.get_outputlist().delete_module_outputs(this);
 }
 
 synthmod* nonezero::duplicate_module(const char* uname, DUP_IO dupio)
@@ -26,30 +28,17 @@ synthmod* nonezero::duplicate_module(const char* uname, DUP_IO dupio)
 }
 
 
-void const* nonezero::get_out(outputnames::OUT_TYPE ot)
+void const* nonezero::get_out(outputnames::OUT_TYPE ot) const
 {
-    void const* o = 0;
     switch(ot)
     {
-    case outputnames::OUT_NONE_DOUBLE:
-        o = &out_none_double;
-        break;
-    case outputnames::OUT_NONE_SHORT:
-        o = &out_none_short;
-        break;
-    case outputnames::OUT_NONE_ULONG:
-        o = &out_none_ulong;
-        break;
-    case outputnames::OUT_NONE_TRIG:
-        o = &out_none_STATUS;
-        break;
-    case outputnames::OUT_NONE_STATE:
-        o = &out_none_STATUS;
-        break;
-    default:
-        o = 0;
+        case outputnames::OUT_NONE_DOUBLE:  return &out_none_double;
+        case outputnames::OUT_NONE_SHORT:   return &out_none_short;
+        case outputnames::OUT_NONE_ULONG:   return &out_none_ulong;
+        case outputnames::OUT_NONE_TRIG:    return &out_none_STATUS;
+        case outputnames::OUT_NONE_STATE:   return &out_none_STATUS;
+        default: return 0;
     }
-    return o;
 }
 
 #endif

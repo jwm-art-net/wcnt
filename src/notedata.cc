@@ -1,20 +1,20 @@
 #ifndef NOTEDATA_H
 #include "../include/notedata.h"
+#include "../include/jwm_init.h"
+#include "../include/jwm_globals.h"
+#include "../include/conversions.h"
+#include "../include/dobjparamlist.h"
 
 note_data::note_data() :
  dobj(dobjnames::SIN_NOTE),
  note_type(NOTE_TYPE_ERR),position(0), length(0), velocity(0)
 {
     create_params();
-    #ifdef SEQ_NOTE_DEBUG
-    cout << "\nnote_data(default) this:" << this;
-    #endif
-    #ifdef SHOW_NOTE_COUNT
-    notes_created_count++;
-    notes_count++;
-    notes_max_count = (notes_count > notes_max_count)
-                        ? notes_count : notes_max_count;
-    #endif
+
+#ifdef NOTE_STATS
+STATS_INC
+#endif
+
 }
 
 note_data::note_data(const char *name, double pos, double len, double vel)
@@ -24,34 +24,26 @@ note_data::note_data(const char *name, double pos, double len, double vel)
 {
     set_name(name);
     create_params();
-    #ifdef SEQ_NOTE_DEBUG
-    cout << "\nnote_data(name,pos,len,vel) this:" << this;
-    display_note();
-    #endif
-    #ifdef SHOW_NOTE_COUNT
-    notes_created_count++;
-    notes_count++;
-    notes_max_count = (notes_count > notes_max_count)
-                        ? notes_count : notes_max_count;
-    #endif
+
+#ifdef NOTE_STATS
+STATS_INC
+#endif
+
 }
 
 note_data::~note_data()
 {
-    #ifdef SHOW_NOTE_COUNT
-    notes_destroyed_count++;
-    notes_count--;
-    #endif
-    #ifdef SEQ_NOTE_DEBUG
-    cout << "\n~note_data() this:" << this;
-    display_note();
-    #endif
+
+#ifdef NOTE_STATS
+STATS_DEC
+#endif
+
 }
 
 void note_data::set_name(const char *name)
 {
-    strncpy(notename, name, NOTE_NAME_LEN);
-    notename[NOTE_NAME_LEN] = '\0';
+    strncpy(notename, name, jwm_init::note_name_len);
+    notename[jwm_init::note_name_len] = '\0';
     get_note_type();
 }
 
@@ -132,25 +124,25 @@ note_data::NOTE_TYPE note_data::get_note_type()
         if (get_note_sel_op() == NOTE_SEL_OP_ERR) {
             retv = NOTE_TYPE_ERR;
             #ifdef NOTE_EDIT_DEBUG
-            cout << "\n\tfailed on note_sel_op";
+            std::cout << "\n\tfailed on note_sel_op";
             #endif
         }
         if (get_note_sel() == NOTE_SEL_ERR) {
             retv = NOTE_TYPE_ERR;
             #ifdef NOTE_EDIT_DEBUG
-            cout << "\n\tfailed on note_sel";
+            std::cout << "\n\tfailed on note_sel";
             #endif
         }
         if (get_note_op() == NOTE_OP_ERR) {
             retv = NOTE_TYPE_ERR;
             #ifdef NOTE_EDIT_DEBUG
-            cout << "\n\tfailed on note_op";
+            std::cout << "\n\tfailed on note_op";
             #endif
         }
         if (get_note_par() == NOTE_PAR_ERR) {
             retv = NOTE_TYPE_ERR;
             #ifdef NOTE_EDIT_DEBUG
-            cout << "\n\tfailed on note_par";
+            std::cout << "\n\tfailed on note_par";
             #endif
         }
     }
@@ -188,78 +180,58 @@ double note_data::get_note_frequency()
 
 bool note_data::set_param(paramnames::PAR_TYPE dt, void* data)
 {
-    bool retv = false;
     switch(dt)
     {
-    case paramnames::PAR_NAME:
+    case paramnames::NAME:
         set_name((char*)data); // pass pointer
-        retv = true;
-        break;
-    case paramnames::PAR_NOTE_POS:
+        return true;
+    case paramnames::NOTE_POS:
         set_position(*(double*)data);
-        retv = true;
-        break;
-    case paramnames::PAR_NOTE_LEN:
+        return true;
+    case paramnames::NOTE_LEN:
         set_length(*(double*)data);
-        retv = true;
-        break;
-    case paramnames::PAR_NOTE_VEL:
+        return true;
+    case paramnames::NOTE_VEL:
         set_velocity(*(double*)data);
-        retv = true;
-        break;
+        return true;
     default:
-        retv = false;
-        break;
+        return false;
     }
-    return retv;
 }
 
-void const* note_data::get_param(paramnames::PAR_TYPE dt)
+void const* note_data::get_param(paramnames::PAR_TYPE dt) const
 {
-    void* retv = 0;
     switch(dt)
     {
-    case paramnames::PAR_NAME:
-        retv = notename;
-        break;
-    case paramnames::PAR_NOTE_POS:
-        retv = &position;
-        break;
-    case paramnames::PAR_NOTE_LEN:
-        retv = &length;
-        break;
-    case paramnames::PAR_NOTE_VEL:
-        retv = &velocity;
-        break;
-    default:
-        retv = 0;
-        break;
+        case paramnames::NAME:      return notename;
+        case paramnames::NOTE_POS:  return &position;
+        case paramnames::NOTE_LEN:  return &length;
+        case paramnames::NOTE_VEL:  return &velocity;
+        default: return 0;
     }
-    return retv;
 }
 
 stockerrs::ERR_TYPE note_data::validate()
 {
     if (note_type == NOTE_TYPE_ERR) {
-        *err_msg = get_paramnames()->get_name(paramnames::PAR_NAME);
+        *err_msg = jwm.get_paramnames().get_name(paramnames::NAME);
         *err_msg += " is problematically set with ";
         *err_msg += notename;
         invalidate();
         return stockerrs::ERR_NOTENAME;
     } else if (note_type == NOTE_TYPE_EDIT)
         return stockerrs::ERR_NO_ERROR;
-    dobjparamlist* dpl = get_dparlist();
-    if (!dpl->validate(
-        this, paramnames::PAR_NOTE_POS, stockerrs::ERR_NEGATIVE))
+    if (!jwm.get_dparlist().validate(this,
+        paramnames::NOTE_POS, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = get_paramnames()->get_name(paramnames::PAR_NOTE_POS);
+        *err_msg = jwm.get_paramnames().get_name(paramnames::NOTE_POS);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
-    if (!dpl->validate(
-        this, paramnames::PAR_NOTE_LEN, stockerrs::ERR_NEGATIVE))
+    if (!jwm.get_dparlist().validate(this,
+        paramnames::NOTE_LEN, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = get_paramnames()->get_name(paramnames::PAR_NOTE_LEN);
+        *err_msg = jwm.get_paramnames().get_name(paramnames::NOTE_LEN);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -269,36 +241,21 @@ stockerrs::ERR_TYPE note_data::validate()
 void note_data::create_params()
 {
     if (note_data::done_params == true) return;
-    get_dparlist()->add_dobjparam(
-     dobjnames::SIN_NOTE, paramnames::PAR_NAME);
-    get_dparlist()->add_dobjparam(
-     dobjnames::SIN_NOTE, paramnames::PAR_NOTE_POS);
-    get_dparlist()->add_dobjparam(
-     dobjnames::SIN_NOTE, paramnames::PAR_NOTE_LEN);
-    get_dparlist()->add_dobjparam(
-     dobjnames::SIN_NOTE, paramnames::PAR_NOTE_VEL);
+    jwm.get_dparlist().add_dobjparam(
+        dobjnames::SIN_NOTE, paramnames::NAME);
+    jwm.get_dparlist().add_dobjparam(
+        dobjnames::SIN_NOTE, paramnames::NOTE_POS);
+    jwm.get_dparlist().add_dobjparam(
+        dobjnames::SIN_NOTE, paramnames::NOTE_LEN);
+    jwm.get_dparlist().add_dobjparam(
+        dobjnames::SIN_NOTE, paramnames::NOTE_VEL);
     note_data::done_params = true;
 }
 
 bool note_data::done_params = false;
 
-#ifdef SHOW_NOTE_COUNT
-long note_data::notes_created_count = 0;
-long note_data::notes_destroyed_count = 0;
-long note_data::notes_count = 0;
-long note_data::notes_max_count = 0;
-#endif
-
-#ifdef SEQ_NOTE_DEBUG
-#include <iostream>
-using namespace std;
-void note_data::display_note()
-{
-    cout << "\tname: " << notename;
-    cout << " pos: " << position;
-    cout << " len: " << length;
-    cout << " vel: " << velocity;
-}
+#ifdef NOTE_STATS
+STATS_INIT(note_data)
 #endif
 
 #endif

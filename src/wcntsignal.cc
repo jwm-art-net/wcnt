@@ -1,30 +1,31 @@
 #ifndef WCNTSIGNAL_H
 #include "../include/wcntsignal.h"
+#include "../include/jwm_globals.h"
+#include "../include/modoutputlist.h"
+#include "../include/modinputlist.h"
+#include "../include/modparamlist.h"
 
 wcnt_signal::wcnt_signal(char const* uname) :
- synthmod(synthmodnames::MOD_WCNTSIGNAL, wcnt_signal_count, uname),
+ synthmod(synthmodnames::WCNTSIGNAL, uname),
  in_signal(0), out_output(0.0), level(0.0)
 {
-    get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
-    get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
+    jwm.get_outputlist().add_output(this, outputnames::OUT_OUTPUT);
+    jwm.get_inputlist().add_input(this, inputnames::IN_SIGNAL);
     create_params();
-    wcnt_signal_count++;
 }
 
 wcnt_signal::~wcnt_signal()
 {
-    get_outputlist()->delete_module_outputs(this);
-    get_inputlist()->delete_module_inputs(this);
+    jwm.get_outputlist().delete_module_outputs(this);
+    jwm.get_inputlist().delete_module_inputs(this);
 }
 
-void const* wcnt_signal::get_out(outputnames::OUT_TYPE ot)
+void const* wcnt_signal::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
-    case outputnames::OUT_OUTPUT:
-        return &out_output;
-    default:
-        return 0;
+        case outputnames::OUT_OUTPUT: return &out_output;
+        default: return 0;
     }
 }
 
@@ -32,21 +33,17 @@ void const* wcnt_signal::set_in(inputnames::IN_TYPE it, void const* o)
 {
     switch(it)
     {
-    case inputnames::IN_SIGNAL:
-        return in_signal = (double*)o;
-    default:
-        return 0;
+        case inputnames::IN_SIGNAL: return in_signal = (double*)o;
+        default: return 0;
     }
 }
 
-void const* wcnt_signal::get_in(inputnames::IN_TYPE it)
+void const* wcnt_signal::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
-    case inputnames::IN_SIGNAL:
-        return in_signal;
-    default:
-        return 0;
+        case inputnames::IN_SIGNAL: return in_signal;
+        default: return 0;
     }
 }
 
@@ -54,22 +51,20 @@ bool wcnt_signal::set_param(paramnames::PAR_TYPE pt, void const* data)
 {
     switch(pt)
     {
-    case paramnames::PAR_LEVEL:
-        set_level(*(double*)data);
-        return true;
-    default:
-        return false;
+        case paramnames::LEVEL:
+            level = *(double*)data;
+            return true;
+        default:
+            return false;
     }
 }
 
-void const* wcnt_signal::get_param(paramnames::PAR_TYPE pt)
+void const* wcnt_signal::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {
-    case paramnames::PAR_LEVEL:
-        return &level;
-    default:
-        return 0;
+        case paramnames::LEVEL: return &level;
+        default: return 0;
     }
 }
 
@@ -79,11 +74,9 @@ void wcnt_signal::create_params()
 {
     if (done_params == true)
         return;
-    get_paramlist()->add_param(
-     synthmodnames::MOD_WCNTSIGNAL, paramnames::PAR_LEVEL);
+    jwm.get_paramlist().add_param(
+        synthmodnames::WCNTSIGNAL, paramnames::LEVEL);
     done_params = true;
 }
-
-int wcnt_signal::wcnt_signal_count = 0;
 
 #endif

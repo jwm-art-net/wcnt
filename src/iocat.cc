@@ -1,33 +1,46 @@
 #ifndef IOCAT_H
 #include "../include/iocat.h"
 
-iocat_names::iocat_names() :
- ioname(0)
+
+#ifdef NAME_CHECK
+#include <iostream>
+#endif
+
+iocat::iocat()
 {
-    ioname = new char*[CAT_LAST + 1];
-    ioname[CAT_FIRST] = "Error Cat";
-    ioname[CAT_DOUBLE] = "float_value";
-    ioname[CAT_SHORT] = "integer_value";
-    ioname[CAT_ULONG] = "integer_value";
-    ioname[CAT_TRIG] = "on/off";
-    ioname[CAT_STATE] = "on/off";
-    ioname[CAT_STRING] = "text_string";
-    ioname[CAT_FIX_STR] = "fixed_string";
-    ioname[CAT_METER] = "integer_value/integer_value";
-    ioname[CAT_DOBJ] = "data_object_name";
-    ioname[CAT_SYNTHMOD] = "module_name";
+#ifdef NAME_CHECK
+    for (int i = FIRST; i < LAST; i++){
+        if (data[i].cat != i) {
+            std::cout << "\n***** iocat error *****\n";
+            std::cout << data[i].name << " is in array index " << i;
+            std::cout << " but has type index of " << data[i].cat;
+            std::cout << "\nthese values should tally!\n";
+        }
+    }
+#endif
 }
 
-iocat_names::~iocat_names()
+const char* const iocat::get_name(IOCAT iocat) const
 {
-    delete [] ioname;
+    if (iocat <= FIRST || iocat >= LAST)
+        return data[FIRST].name;
+    return data[iocat].name;
 }
 
-char* iocat_names::get_name(IOCAT iocat)
+const iocat::iocat_data iocat::data[LAST] =
 {
-    if (iocat <= CAT_FIRST || iocat >= CAT_LAST)
-        return ioname[CAT_FIRST];
-    return ioname[iocat];
-}
+    { FIRST,    "Error Cat"                     },
+    { DOUBLE,   "float_value"                   },
+    { SHORT,    "integer_value"                 },
+    { ULONG,    "integer_value"                 },
+    { TRIG,     "on/off"                        },
+    { STATE,    "on/off"                        },
+    { STRING,   "text_string"                   },
+    { FIX_STR,  "fixed_string"                  },
+    { METER,    "integer_value/integer_value"   },
+    { DOBJ,     "data_object_name"              },
+    { SYNTHMOD, "module_name"                   }
+};
+
 
 #endif

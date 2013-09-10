@@ -1,10 +1,16 @@
 #ifndef PARAMEDITOR_H
 #include "../include/parameditor.h"
 #include "../include/setparam.h"
+#include "../include/jwm_globals.h"
+#include "../include/topdobjlist.h"
+#include "../include/dobjdobjlist.h"
+
+#include <iostream>
+#include <string>
 
 parameditor::parameditor() :
  dobj(dobjnames::DEF_PARAMEDITOR),
- par_edit_list(0), edit_item(0), par_edit(0), verbose(false)
+ par_edit_list(0), edit_item(0), par_edit(0)
 {
     par_edit_list = 
      new linkedlist(linkedlist::MULTIREF_OFF,linkedlist::NO_NULLDATA);
@@ -32,14 +38,14 @@ bool parameditor::do_param_edits()
 {
     goto_first_paramedit();
     while(edit_item) {
-        if (verbose) {
-            cout << "\nsetting parameters for ";
-            cout << par_edit->get_name();
+        if (jwm.is_verbose()) {
+            std::cout << "\nsetting parameters for ";
+            std::cout << par_edit->get_name();
         }
-        if (!par_edit->do_param_edits(verbose)) {
-            string errmsg = *err_msg;
+        if (!par_edit->do_param_edits()) {
+            std::string errmsg = *err_msg;
             *err_msg = "\nIn ";
-            *err_msg += get_dobjnames()->get_name(get_object_type());
+            *err_msg += jwm.get_dobjnames().get_name(get_object_type());
             *err_msg += " ";
             *err_msg += get_username();
             *err_msg += ", set parameter attempt failed, ";
@@ -76,10 +82,10 @@ void parameditor::create_params()
 {
     if (parameditor::done_params == true)
         return;
-    dobjdobjlist* dbjlist = get_topdobjlist()->create_dobjdobjlist(
+    dobjdobjlist* dbjlist = jwm.get_topdobjlist().create_dobjdobjlist(
         dobjnames::DEF_PARAMEDITOR, dobjnames::LST_EDITS);
-    dbjlist->add_dobjdobj(
-        dobjnames::LST_EDITS, dobjnames::SIN_EDIT_PARAM);
+    dbjlist->add_dobjdobj(dobjnames::LST_EDITS,
+        dobjnames::SIN_EDIT_PARAM);
     parameditor::done_params = true;
 }
 

@@ -1,9 +1,13 @@
 #ifndef CONNECTORLIST_H
 #include "../include/connectorlist.h"
+#include "../include/synthmodule.h"
+#include "../include/jwm_globals.h"
+
+#include <iostream>
 
 connectorlist::connectorlist() :
  connectlist(0), connect_item(0), connect(0),
- delete_connections(true), verbose(false)
+ delete_connections(true)
 {
     connectlist = 
      new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
@@ -11,7 +15,7 @@ connectorlist::connectorlist() :
 
 connectorlist::connectorlist(DELCON) :
  connectlist(0), connect_item(0), connect(0),
- delete_connections(false), verbose(false)
+ delete_connections(false)
 {
     connectlist = 
      new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
@@ -30,8 +34,8 @@ connectorlist::~connectorlist()
 }
 
 connector* 
-connectorlist::get_connector_by_input(
-    synthmod* sm, inputnames::IN_TYPE it)
+connectorlist::get_connector_by_input(synthmod* sm,
+                                      inputnames::IN_TYPE it)
 {
     if (!sm)
         return 0;
@@ -67,7 +71,7 @@ bool connectorlist::delete_connector(connector* c)
 }
 
 connectorlist* connectorlist::duplicate_connections_for_module(
-                synthmod* from_mod, synthmod* to_mod)
+                                synthmod* from_mod, synthmod* to_mod)
 {
     connectorlist* conlist = new connectorlist(NO_DELETE_CONNECTIONS);
     if (from_mod->get_module_type() != to_mod->get_module_type())
@@ -86,24 +90,24 @@ void connectorlist::reconnect_output_module_by_name(
 {
     char spaces[50];
     for (int i = 0; i < 50; spaces[i] = ' ', i++);
-    string cmsg;
-    outputnames* outnames = synthmod::get_outputnames();
-    inputnames* innames = synthmod::get_inputnames();
+    std::string cmsg;
     goto_first();
     while(connect) {
         if (strcmp(connect->get_output_module_name(), from) == 0) {
             connect->set_output_module_name(to);
-            if (verbose) {
+            if (jwm.is_verbose()) {
                 cmsg = "\nreforming connection: ";
                 cmsg += connect->get_input_module()->get_username();
                 cmsg += " ";
-                cmsg += innames->get_name(connect->get_input_type());
+                cmsg += jwm.get_inputnames().get_name(
+                    connect->get_input_type());
                 int i = cmsg.length();
                 if (i > 40) i = 40;
                 cmsg.append(spaces, 40 - i);
-                cout << cmsg << "<-- ";
-                cout << "from " << from << " to " << to << " ";
-                cout << outnames->get_name(connect->get_output_type());
+                std::cout << cmsg << "<-- ";
+                std::cout << "from " << from << " to " << to << " ";
+                std::cout << jwm.get_outputnames().get_name(
+                    connect->get_output_type());
             }
         }
         goto_next();
@@ -114,28 +118,28 @@ bool connectorlist::make_connections()
 {
     char spaces[40];
     for (int i = 0; i < 40; spaces[i] = ' ', i++);
-    string cmsg;
-    outputnames* outnames = synthmod::get_outputnames();
-    inputnames* innames = synthmod::get_inputnames();
+    std::string cmsg;
     goto_first();
     do {
         // ok if list is empty cos it checks for that kind of thing:
         if (!connect->connect())
             return false;
-        if (verbose) {
+        if (jwm.is_verbose()) {
             cmsg = connect->get_output_module_name();
             cmsg += " ";
-            cmsg += outnames->get_name(connect->get_output_type());
+            cmsg += jwm.get_outputnames().get_name(
+                connect->get_output_type());
             int i = cmsg.length();
             if (i > 30) i = 30;
             cmsg.append(spaces, 30 - i);
-            cout << "\n" << cmsg << "-->  ";
-            cout << connect->get_input_module()->get_username();
-            cout << " " << innames->get_name(connect->get_input_type());
+            std::cout << "\n" << cmsg << "-->  ";
+            std::cout << connect->get_input_module()->get_username();
+            std::cout << " " << jwm.get_inputnames().get_name(
+                connect->get_input_type());
         }
         goto_next();
     }while(connect);
-    cout << endl;
+    std::cout << std::endl;
     return true;
 }
 

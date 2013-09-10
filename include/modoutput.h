@@ -1,7 +1,10 @@
 #ifndef MODOUTPUT_H
 #define MODOUTPUT_H
 
-#include "synthmodule.h"
+#include "synthmodnames.h"
+#include "outputnames.h"
+
+class synthmod;
 
 class modoutput
 {
@@ -13,7 +16,7 @@ class modoutput
     }
     synthmodnames::SYNTH_MOD_TYPE get_moduletype();
     outputnames::OUT_TYPE get_outputtype();
-    IOCAT get_outputcategory();
+    iocat::IOCAT get_outputcategory();
 
  private:
     synthmod * synthmodule;

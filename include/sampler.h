@@ -1,72 +1,38 @@
 #ifndef SAMPLER_H
 #define SAMPLER_H
 
-#include "modoutputslist.h"
-#include "modinputslist.h"
-#include "modparamlist.h"
 #include "samplercommon.h"
+#include "synthmodule.h"
 
 /* removed all sorts of guff I'd written in 70 lines of comment */
+
+class wavfilein;
+class st_data;
 
 class sampler : public synthmod
 {
 public:
     sampler(char const*);
     ~sampler();
-    // inputs
-    void set_input_play_trig(const STATUS* pt ){ in_play_trig = pt;}
-    void set_input_stop_trig(const STATUS* st) { in_stop_trig = st;}
-    void set_input_deg_size(const double* ds){ in_deg_size = ds;}
-    void set_input_start_pos_mod(const double* sp) {
-        in_start_pos_mod = sp;
-    }
-    // outputs
-    const short* get_output_left(){ return &out_left;}
-    const short* get_output_right(){ return &out_right;}
-    const double* get_output_l(){ return &out_l;}
-    const double* get_output_r(){ return &out_r;}
-    const STATUS* get_output_loop_trig(){ return &out_loop_trig;}
-    const STATUS* get_play_state(){ return &play_state;}
-    // params
-    void set_wavfilein(wavfilein* wi);
-    void set_play_dir(PLAY_DIR pd)   { play_dir = pd;}
-    void set_play_mode(PLAY_MODE pm) { play_mode = pm;}
-    void set_jump_mode(JUMP_DIR jm) { jump_mode = jm;}
-    void set_start_pos_min(unsigned long samps){ min_start_pos = samps;}
-    void set_start_pos_max(unsigned long samps){ max_start_pos = samps;}
-    void set_loop_begin(unsigned long samps){ loop_begin = samps;}
-    void set_loop_end(unsigned long samps){ loop_end = samps;}
-    void set_loop_mode(LOOP_MODE lm){ loop_mode = lm;}
-    void set_loop_is_offset(STATUS o){ loop_is_offset = o;}
-    void set_loop_bi_offset(short lbo){ loop_bi_offset = lbo;}
-    void set_anti_clip_samples(short acs);
-    void set_anti_clip_each_end(STATUS acee){ ac_each_end = acee;}
-    void set_zero_search_range(short zsr) {
-        search_range = (zsr != 1) ? zsr : 2;
-    }
-    void set_degsize_amount(double css){ deg_size_amount = css;} 
-    // 0 ignore 1 western  > 0 && < 1 macrotonal
     // virtual funcs
     void run();
     void init();
     stockerrs::ERR_TYPE validate();
-    void const* get_out(outputnames::OUT_TYPE);
+    void const* get_out(outputnames::OUT_TYPE) const;
     void const* set_in(inputnames::IN_TYPE, void const*);
-    const void* get_in(inputnames::IN_TYPE it);
+    const void* get_in(inputnames::IN_TYPE it) const;
     bool set_param(paramnames::PAR_TYPE, void const*);
-    void const* get_param(paramnames::PAR_TYPE);
+    void const* get_param(paramnames::PAR_TYPE) const;
 
 private:
     // inputs
     const STATUS* in_play_trig;
     const STATUS* in_stop_trig;
     const double* in_start_pos_mod;
-    const double* in_deg_size;
+    const double* in_phase_step;
     // outputs
-    short out_left;
-    short out_right;
-    double out_l;
-    double out_r;
+    double out_left;
+    double out_right;
     STATUS out_loop_trig;
     STATUS play_state;
     // params
@@ -84,16 +50,16 @@ private:
     short anti_clip_size;
     STATUS ac_each_end;
     short search_range;
-    double deg_size_amount;
+    double phase_step_amount;
     // working
-    double root_deg_size;
+    double root_phase_step;
     PLAY_DIR playdir;
     PLAY_DIR acplaydir;
     bool loop_yet;
-    short* mono_buffer;
-    short* ac_m_buf;
-    stereodata* st_buffer;
-    stereodata* ac_st_buf;
+    double* mono_buffer;
+    double* ac_m_buf;
+    st_data* st_buffer;
+    st_data* ac_st_buf;
     unsigned long buffer_start_pos;
     int buff_pos;
     unsigned long wavstart;
@@ -122,11 +88,11 @@ private:
     double ac_size;
     double ac_out_left;
     double ac_out_right;
-    WAV_CHANNELS ch;
+    short ch;
     unsigned long sampletot;
     // private helper functions:
     inline void fill_buffer(unsigned long);
-    inline short calc_midpoint(short, short, double);
+    inline double calc_midpoint(double, double, double);
     unsigned long zero_search(unsigned long, short range);
     void trigger_playback();
     void pos_wavlen();
@@ -135,16 +101,15 @@ private:
     void pos_loopbegin();
     void anti_clip_fwd();
     void anti_clip_rev();
-    void ac_copy_fwd_mono(short*);
-    void ac_copy_fwd_stereo(stereodata*);
-    void ac_copy_rev_mono(short*);
-    void ac_copy_rev_stereo(stereodata*);
-    void ac_mix_fwd_mono(short*);
-    void ac_mix_fwd_stereo(stereodata*);
-    void ac_mix_rev_mono(short*);
-    void ac_mix_rev_stereo(stereodata*);
+    void ac_copy_fwd_mono(double*);
+    void ac_copy_fwd_stereo(st_data*);
+    void ac_copy_rev_mono(double*);
+    void ac_copy_rev_stereo(st_data*);
+    void ac_mix_fwd_mono(double*);
+    void ac_mix_fwd_stereo(st_data*);
+    void ac_mix_rev_mono(double*);
+    void ac_mix_rev_stereo(st_data*);
     // synthmod stuff
-    static int sampler_count;
     static void create_params();
     static bool done_params;
 };

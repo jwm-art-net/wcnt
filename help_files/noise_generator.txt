@@ -1,0 +1,4 @@
+The noise_generator generates random values to be output between -1.0
+and +1.0.
+
+See also: sample_hold freq_generator

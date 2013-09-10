@@ -1,9 +1,12 @@
 #ifndef DYNVERTEX_H
 #include "../include/dynvertex.h"
+#include "../include/jwm_globals.h"
+#include "../include/dobjparamlist.h"
+
 
 dynvertex::dynvertex() :
  dobj(dobjnames::SIN_DVERTEX),
- si_level(0),	uso_level(0), lso_level(0)
+ si_level(0), uso_level(0), lso_level(0)
 {
     create_params();
 }
@@ -22,58 +25,42 @@ stockerrs::ERR_TYPE dynvertex::validate()
 
 bool dynvertex::set_param(paramnames::PAR_TYPE pt, void* data)
 {
-    bool retv = false;
     switch(pt)
     {
-    case paramnames::PAR_SIGIN_LEVEL:
-        set_signal_in_level(*(double*)data);
-        retv = true;
-        break;
-    case paramnames::PAR_SIGOUT_UPLEVEL:
-        set_upper_signal_out_level(*(double*)data);
-        retv = true;
-        break;
-    case paramnames::PAR_SIGOUT_LOLEVEL:
-        set_lower_signal_out_level(*(double*)data);
-        retv = true;
-        break;
-    default:
-        retv = false;
-        break;
+        case paramnames::SIGIN_LEVEL:
+            si_level = *(double*)data;
+            return true;
+        case paramnames::SIGOUT_UPLEVEL:
+            uso_level = *(double*)data;
+            return true;
+        case paramnames::SIGOUT_LOLEVEL:
+            lso_level = *(double*)data;
+            return true;
+        default:
+            return false;
     }
-    return retv;
 }
 
-void const* dynvertex::get_param(paramnames::PAR_TYPE pt)
+void const* dynvertex::get_param(paramnames::PAR_TYPE pt) const
 {
-    void* retv = 0;
     switch(pt)
     {
-    case paramnames::PAR_SIGIN_LEVEL:
-        retv = new double(get_signal_in_level());
-        break;
-    case paramnames::PAR_SIGOUT_UPLEVEL:
-        retv = new double(get_upper_signal_out_level());
-        break;
-    case paramnames::PAR_SIGOUT_LOLEVEL:
-        retv = new double(get_lower_signal_out_level());
-        break;
-    default:
-        retv = 0;
-        break;
+        case paramnames::SIGIN_LEVEL:       return &si_level;
+        case paramnames::SIGOUT_UPLEVEL:    return &uso_level;
+        case paramnames::SIGOUT_LOLEVEL:    return &lso_level;
+        default: return 0;
     }
-    return retv;
 }
 
 void dynvertex::create_params()
 {
     if (done_params == true) return;
-    get_dparlist()->add_dobjparam(
-     dobjnames::SIN_DVERTEX, paramnames::PAR_SIGIN_LEVEL);
-    get_dparlist()->add_dobjparam(
-     dobjnames::SIN_DVERTEX, paramnames::PAR_SIGOUT_UPLEVEL);
-    get_dparlist()->add_dobjparam(
-     dobjnames::SIN_DVERTEX, paramnames::PAR_SIGOUT_LOLEVEL);
+    jwm.get_dparlist().add_dobjparam(
+        dobjnames::SIN_DVERTEX, paramnames::SIGIN_LEVEL);
+    jwm.get_dparlist().add_dobjparam(
+        dobjnames::SIN_DVERTEX, paramnames::SIGOUT_UPLEVEL);
+    jwm.get_dparlist().add_dobjparam(
+        dobjnames::SIN_DVERTEX, paramnames::SIGOUT_LOLEVEL);
     done_params = true;
 }
 

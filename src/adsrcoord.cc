@@ -1,5 +1,8 @@
 #ifndef ADSRCOORD_H
 #include "../include/adsrcoord.h"
+#include "../include/jwm_globals.h"
+#include "../include/dobjparamlist.h"
+#include "../include/fxsparamlist.h"
 
 adsr_coord::adsr_coord() :
         dobj(dobjnames::SIN_COORD), sect(ADSR_ATTACK),
@@ -30,73 +33,58 @@ void adsr_coord::run(double velocity)
     output_time = lower_time + (upper_time - lower_time) * velocity;
     output_level = lower_level + (upper_level - lower_level) * velocity;
 }
-#include <iostream>
-using namespace std;
+
 bool adsr_coord::set_param(paramnames::PAR_TYPE pt, void* data)
 {
-    bool retv = false;
     switch(pt)
     { // PAR_ADSRSECT is iocat::CAT_FIX_STR.
-    case paramnames::PAR_ADSRSECT:
-        set_adsr_section((SECT)(*(int*)data));
-        retv = true;
-        break;
-    case paramnames::PAR_UPTIME:
-        set_upper_time(*(double*)data);
-        retv = true;
-        break;
-    case paramnames::PAR_UPLEVEL:
-        set_upper_level(*(double*)data);
-        retv = true;
-        break;
-    case paramnames::PAR_LOTIME:
-        set_lower_time(*(double*)data);
-        retv = true;
-        break;
-    case paramnames::PAR_LOLEVEL:
-        set_lower_level(*(double*)data);
-        retv = true;
-        break;
-    default:
-        retv = false;
-        break;
+        case paramnames::ADSRSECT:
+            set_adsr_section((SECT)(*(int*)data));
+            return true;
+        case paramnames::UPTIME:
+            set_upper_time(*(double*)data);
+            return true;
+        case paramnames::UPLEVEL:
+            set_upper_level(*(double*)data);
+            return true;
+        case paramnames::LOTIME:
+            set_lower_time(*(double*)data);
+            return true;
+        case paramnames::LOLEVEL:
+            set_lower_level(*(double*)data);
+            return true;
+        default:
+            return false;
     }
-    return retv;
 }
 
-void const* adsr_coord::get_param(paramnames::PAR_TYPE pt)
+void const* adsr_coord::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {
-    case paramnames::PAR_ADSRSECT:
-        return &sect;
-    case paramnames::PAR_UPTIME:
-        return &upper_time;
-    case paramnames::PAR_UPLEVEL:
-        return &upper_level;
-    case paramnames::PAR_LOTIME:
-        return &lower_time;
-    case paramnames::PAR_LOLEVEL:
-        return &lower_level;
-    default:
-        return 0;
+        case paramnames::ADSRSECT:  return &sect;
+        case paramnames::UPTIME:    return &upper_time;
+        case paramnames::UPLEVEL:   return &upper_level;
+        case paramnames::LOTIME:    return &lower_time;
+        case paramnames::LOLEVEL:   return &lower_level;
+        default: return 0;
     }
 }
 
 stockerrs::ERR_TYPE adsr_coord::validate()
 {
-    dobjparamlist* dpl = get_dparlist();
-    if (!dpl->validate(
-        this, paramnames::PAR_UPTIME, stockerrs::ERR_NEGATIVE))
+    dobjparamlist& dpl = jwm.get_dparlist();
+    if (!dpl.validate(
+        this, paramnames::UPTIME, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = get_paramnames()->get_name(paramnames::PAR_UPTIME);
+        *err_msg = jwm.get_paramnames().get_name(paramnames::UPTIME);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
-    if (!dpl->validate(
-        this, paramnames::PAR_LOTIME, stockerrs::ERR_NEGATIVE))
+    if (!dpl.validate(
+        this, paramnames::LOTIME, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = get_paramnames()->get_name(paramnames::PAR_LOTIME);
+        *err_msg = jwm.get_paramnames().get_name(paramnames::LOTIME);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -106,18 +94,18 @@ stockerrs::ERR_TYPE adsr_coord::validate()
 void adsr_coord::create_params()
 {
     if (adsr_coord::done_params == true) return;
-    get_dparlist()->add_dobjparam(
-     dobjnames::SIN_COORD, paramnames::PAR_ADSRSECT);
-    get_fxsparamlist()->add_param("attack/decay/sustain/release",
-     paramnames::PAR_ADSRSECT);
-    get_dparlist()->add_dobjparam(
-     dobjnames::SIN_COORD, paramnames::PAR_UPTIME);
-    get_dparlist()->add_dobjparam(
-     dobjnames::SIN_COORD, paramnames::PAR_UPLEVEL);
-    get_dparlist()->add_dobjparam(
-     dobjnames::SIN_COORD, paramnames::PAR_LOTIME);
-    get_dparlist()->add_dobjparam(
-     dobjnames::SIN_COORD, paramnames::PAR_LOLEVEL);
+    jwm.get_dparlist().add_dobjparam(
+        dobjnames::SIN_COORD, paramnames::ADSRSECT);
+    jwm.get_fxsparamlist().add_param("attack/decay/sustain/release",
+        paramnames::ADSRSECT);
+    jwm.get_dparlist().add_dobjparam(
+        dobjnames::SIN_COORD, paramnames::UPTIME);
+    jwm.get_dparlist().add_dobjparam(
+        dobjnames::SIN_COORD, paramnames::UPLEVEL);
+    jwm.get_dparlist().add_dobjparam(
+        dobjnames::SIN_COORD, paramnames::LOTIME);
+    jwm.get_dparlist().add_dobjparam(
+        dobjnames::SIN_COORD, paramnames::LOLEVEL);
     done_params = true;
 }
 

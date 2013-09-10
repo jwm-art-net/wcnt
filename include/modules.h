@@ -15,12 +15,10 @@
 #include "samplehold.h"
 #include "sampler.h"
 #include "sequencer.h"
-#include "sinewave.h"
 #include "squarewave.h"
 #include "stereoamp.h"
 #include "stereochannel.h"
 #include "stereomixer.h"
-#include "trianglewave.h"
 #include "trianglewave2.h"
 #include "trigger.h"
 #include "userwave.h"
@@ -67,5 +65,28 @@
 #include "subtracter.h"
 #include "trigdelay.h"
 #include "simpledelay.h"
+// wcnt-1.26
+#include "difffilter.h"
+#include "impulse.h"
+#include "cosinewave.h"
+#include "orbit.h"
+
+#ifdef WITH_LADSPA // hardcoded ladspa plugin modules
+#include "glame_butterworth.h"
+#include "fast_lookahead_limiter.h"
+#include "dc_offset_remover.h"
+#include "sc1.h"
+#include "single_band_para.h"
+#include "glame_filter.h"
+#include "bode_freq_shifter.h"
+#include "caps_plate.h"
+#include "caps_plate2x2.h"
+#endif
+
+#include "wave.h"
+#include "wave_phase.h"
+#include "constant_freq.h"
+#include "constant_note.h"
+#include "balance.h"
 
 #endif

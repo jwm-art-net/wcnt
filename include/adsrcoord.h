@@ -1,8 +1,7 @@
 #ifndef ADSRCOORD_H
 #define ADSRCOORD_H
 
-#include "conversions.h"
-#include "dobjparamlist.h"
+#include "dobj.h"
 
 class adsr_coord : public dobj
 {
@@ -17,6 +16,7 @@ public:
     adsr_coord();
     adsr_coord(SECT s, double ut, double ul, double lt, double ll);
     ~adsr_coord();
+    // i do believe this accessor methods are used by the adsr_scaler:
     void set_upper_time(double t){ upper_time = t; }
     void set_lower_time(double t){ lower_time = t; }
     void set_upper_level(double l){ upper_level = l; }
@@ -33,7 +33,7 @@ public:
     // virtuals from dobj
     stockerrs::ERR_TYPE validate();
     bool set_param(paramnames::PAR_TYPE, void*);
-    void const* get_param(paramnames::PAR_TYPE pt);
+    void const* get_param(paramnames::PAR_TYPE pt) const;
 
 private:
     SECT sect;

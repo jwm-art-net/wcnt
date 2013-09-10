@@ -2,8 +2,6 @@
 #define COPIER_H
 
 #include "dobj.h"
-#include "synthmodule.h"
-
 
 /*
     copier
@@ -19,21 +17,19 @@
     appropriate storage list, be it the dobj list or mod list.
 */
 
+class synthmod;
 
 class copier : public dobj
 {
  public:
     copier();
     ~copier();
-
+    // these two lookup dobj/synthmod names:
     bool set_from_name(const char*);
     bool set_to_name(const char*);
-    const char* get_from_name(){ return from_name;}
-    const char* get_to_name(){ return to_name;}
-
     // virtuals from dobj
     bool set_param(paramnames::PAR_TYPE, void*);
-    void const* get_param(paramnames::PAR_TYPE);
+    void const* get_param(paramnames::PAR_TYPE) const;
     stockerrs::ERR_TYPE validate();
 
  private:

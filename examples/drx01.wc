@@ -1,4 +1,4 @@
-wcnt-1.25/jwmsynth
+wcnt-1.26/jwmsynth
 //------------------------------------------------------------------------
 //
 //  drx01.wc:
@@ -56,6 +56,7 @@ seq1
     in_pos_step_size    time1 out_pos_step_size
     in_beats_per_bar    time1 out_beats_per_bar
     in_beat_value       time1 out_beat_value
+    start_bar 0
     velocity_response_time 5
 seq1
 
@@ -65,7 +66,7 @@ seq1
 // crappytvsample.wav is 5.24771 seconds & 231424 samples
 // 5512.5625 samples per 16th note
 // 82688.438 position of last drum noise
-
+                                                                             
 wavfilein
 drumloop
     filename    samples/crappytvsamplev2.wav
@@ -77,7 +78,7 @@ sampler1
         in_play_trig        drumtrig    out_trig
         in_stop_trig        off
         in_start_pos_mod    drumpos1    out_output
-        in_deg_size         osc1        out_deg_size
+        in_phase_step         osc1        out_phase_step
         wavfile     drumloop
         play_dir                fwd
         play_mode               wrap
@@ -92,7 +93,7 @@ sampler1
         anti_clip_samples       50
         anti_clip_each_end      on
         zero_search_range       15
-        degsize_amount          1.0
+        phase_step_amount          1.0
 sampler1
 
 sampler
@@ -100,7 +101,7 @@ sampler2
         in_play_trig        drumtrigi    out_trig
         in_stop_trig        off
         in_start_pos_mod    drumpos1i    out_output
-        in_deg_size         osc2        out_deg_size
+        in_phase_step         osc2        out_phase_step
         wavfile     drumloop
         play_dir                fwd
         play_mode               wrap
@@ -115,7 +116,7 @@ sampler2
         anti_clip_samples       50
         anti_clip_each_end      on
         zero_search_range       15
-        degsize_amount          1.0
+        phase_step_amount          1.0
 sampler2
 
 riff 
@@ -166,6 +167,7 @@ seq2
         in_pos_step_size    time1   out_pos_step_size
         in_beats_per_bar    time1   out_beats_per_bar
         in_beat_value       time1   out_beat_value
+        start_bar 0
         velocity_response_time  5
 seq2
 
@@ -339,8 +341,6 @@ drumtone
     xfade_time  50
 drumtone
 
-
-
 // set frequency for sample to playback at:
 
 osc_clock
@@ -375,13 +375,10 @@ osc2
         freq_mod2_size      1.0
 osc2
 
-sine_wave
+wave
 ringsw1
-    in_phase_trig  osc2 out_phase_trig
-    in_deg_size    osc2 out_deg_size
-    recycle_mode         off
-    on_trig_reset_phase  off
-    phase_cycles         1.0
+    in_phase_step    osc2 out_phase_step
+    type sine
 ringsw1
 
 logic_trigger
@@ -457,43 +454,88 @@ adsr4
     zero_retrigger  off
 adsr4
 
+//filter out high-frequency-tv-interference-crap (I):
+
+glame_filter
+glpf1-left
+    in_signal     sampler1  out_left
+    in_freq_mod1  off
+    filter_type     lowpass
+    freq            4000
+    freq_mod1_size  1.0
+    stages          2
+glpf1-left
+
+glame_filter
+glpf1-right
+    in_signal     sampler1  out_right
+    in_freq_mod1  off
+    filter_type     lowpass
+    freq            4000
+    freq_mod1_size  1.0
+    stages          2
+glpf1-right
+
 // apply drum enevelope
 
 multiplier
 dl
-    in_signal   sampler1    out_l
-    in_modifier adsr3       out_output
+    in_signal1 glpf1-left out_output //sampler1    out_left
+    in_signal2  adsr3       out_output
 dl
 
 multiplier
 dr
-    in_signal   sampler1    out_r
-    in_modifier adsr3       out_output
+    in_signal1 glpf1-right out_output //out_right
+    in_signal2  adsr3       out_output
 dr
 
 multiplier
 dcl
-    in_signal sampler1 out_l
-    in_modifier adsr4 out_output
+    in_signal1 glpf1-left out_output //sampler1 out_left
+    in_signal2  adsr4 out_output
 dcl
 
 multiplier
 dcr
-    in_signal sampler1 out_r
-    in_modifier adsr4 out_output
+    in_signal1 glpf1-right out_output //sampler1 out_right
+    in_signal2  adsr4 out_output
 dcr
+
+//filter out high-frequency-tv-interference-crap (II):
+
+glame_filter
+glpf2-left
+    in_signal     sampler2  out_left
+    in_freq_mod1  off
+    filter_type     lowpass
+    freq            4000
+    freq_mod1_size  1.0
+    stages          2
+glpf2-left
+
+glame_filter
+glpf2-right
+    in_signal     sampler2  out_right
+    in_freq_mod1  off
+    filter_type     lowpass
+    freq            4000
+    freq_mod1_size  1.0
+    stages          2
+glpf2-right
+
 
 echo
 lecho
     in_signal       dl      out_output
     in_gain_mod     adsr4   out_output
     in_feedback     recho   out_wet_output
-    in_feedback_mod sampler2 out_l //ringsw1 out_output
+    in_feedback_mod glpf2-left out_output //sampler2 out_left
     delay_time          325
     gain                0.95
-    gain_modsize        1.0
+    gain_mod_size        1.0
     feedback            0.9995
-    feedback_modsize    1.0
+    feedback_mod_size    1.0
     wet/dry             1.0
 lecho
 
@@ -502,12 +544,12 @@ recho
     in_signal       dr      out_output
     in_gain_mod     adsr4   out_output
     in_feedback     lecho   out_wet_output
-    in_feedback_mod sampler2 out_r //ringsw1 out_output
+    in_feedback_mod glpf2-right out_output //sampler2 out_right
     delay_time          317.5
     gain                0.95
-    gain_modsize        1.0
+    gain_mod_size        1.0
     feedback            0.9995
-    feedback_modsize    1.0
+    feedback_mod_size    1.0
     wet/dry             1.0
 recho
 
@@ -516,12 +558,12 @@ clecho
     in_signal       dcl      out_output
     in_gain_mod     adsr4   out_output
     in_feedback     crecho   out_wet_output
-    in_feedback_mod sampler1 out_l //ringsw1 out_output
+    in_feedback_mod glpf1-left out_output //sampler1 out_left
     delay_time          225
     gain                0.95
-    gain_modsize        1.0
+    gain_mod_size        1.0
     feedback            0.9995
-    feedback_modsize    1.0
+    feedback_mod_size    1.0
     wet/dry             1.0
 clecho
 
@@ -530,12 +572,12 @@ crecho
     in_signal       dcr      out_output
     in_gain_mod     adsr4   out_output
     in_feedback     clecho   out_wet_output
-    in_feedback_mod sampler1 out_r //ringsw1 out_output
+    in_feedback_mod glpf1-right out_output //sampler1 out_right
     delay_time          277.5
     gain                0.95
-    gain_modsize        1.0
+    gain_mod_size        1.0
     feedback            0.9995
-    feedback_modsize    1.0
+    feedback_mod_size    1.0
     wet/dry             1.0
 crecho
 
@@ -634,26 +676,26 @@ dynr
 
 stereo_amp
 amp1
-    in_l        drums_l    out_output
-    in_r        drums_r    out_output
+    in_left     drums_l    out_output
+    in_right    drums_r    out_output
     in_amp_eg   adsr1   out_output
-    in_amp_mod      off
-    left_amplitude  32000
-    right_amplitude 32000
-    amp_mod_size    0.0 
-    clip_level      32767
+    in_amp_mod    off
+    left_level    0.9
+    right_level   0.9
+    amp_mod_size  0.0 
+    clip_level    1.0
 amp1
 
 stereo_amp
 amp2
-    in_l        dynl    out_output
-    in_r        dynr    out_output
+    in_left     dynl    out_output
+    in_right    dynr    out_output
     in_amp_eg   adsr1 out_output
-    in_amp_mod      off
-    left_amplitude  12000
-    right_amplitude 12000
-    amp_mod_size    0.0 
-    clip_level      32767
+    in_amp_mod   off
+    left_level   0.4
+    right_level  0.4
+    amp_mod_size 0.0 
+    clip_level   1.0
 amp2
 
 mix_chan ch1 in_left amp1 out_left in_right amp1 out_right ch1
@@ -668,12 +710,23 @@ mix1
         master_level 1.0
 mix1
 
+caps_plate2x2
+revb
+    in_left   mix1 out_left
+    in_right  mix1 out_right
+    bandwidth  0.8235
+    tail       0.7
+    damping    0.16
+    wet/dry    0.17
+revb
+
 wavfile_out
 wav1
-    in_left     mix1    out_left
-    in_right    mix1    out_right
-    in_bar      time1   out_bar
-    in_bar_trig time1   out_bar_trig
+    in_left     revb out_left
+    in_right    revb out_right
+    in_bar      time1 out_bar
+    in_bar_trig time1 out_bar_trig
+    data_format float32
     filename    drx01.wav
     start_bar   0
     end_bar     17
@@ -690,4 +743,4 @@ wcnt_exit_module
 //------------------------------------------------------------------------
 // End Of File _jwm 2005.
 //------------------------------------------------------------------------
-wcnt-1.25/jwmsynth
+wcnt-1.26/jwmsynth

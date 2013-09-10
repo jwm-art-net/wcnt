@@ -1,18 +1,35 @@
 #ifndef SYNTHFILEREADER_H
 #include "../include/synthfilereader.h"
-#include "../include/groupnames.h"
-
-// don't put this #include back in this file's header
+#include "../include/jwm_globals.h"
+#include "../include/jwm_init.h"
+#include "../include/synthmodule.h"
+#include "../include/synthmodulelist.h"
+#include "../include/dobjlist.h"
+#include "../include/moddobjlist.h"
+#include "../include/topdobjlist.h"
+#include "../include/modinputlist.h"
+#include "../include/modoutputlist.h"
 #include "../include/connectorlist.h"
-// it causes compilation problems!
+#include "../include/dobjparamlist.h"
+#include "../include/modparamlist.h"
+#include "../include/setparam.h"
+#include "../include/parameditor.h"
+#include "../include/inputeditor.h"
+#include "../include/fxsparamlist.h"
+#include "../include/dobjdobjlist.h"
+#include "../include/dobjdobj.h"
+
+#include <iostream>
+#include <fstream>
+using namespace std; // just this once as it's used so much in here...
 
 synthfilereader::synthfilereader() :
  dobj(dobjnames::DEF_WCFILE),
  wc_filename(0), mod_action(WC_INCLUDE), dobj_action(WC_INCLUDE),
  modnamelist(0), dobjnamelist(0), mname_item(0), dname_item(0),
- modname(0), dobjname(0), wc_file_type(WC_INCLUDE_FILE), wcnt_id(0),
+ modname(0), dobjname(0), wc_file_type(WC_INCLUDE_FILE),
  filestatus(NOT_FOUND), synthfile(0), buff(0), command(0),
- synthheader(0), wc_err_msg(0), conv(0), verbose(false)
+ synthheader(0), wc_err_msg(0), conv(0)
 {
     synthfile = new ifstream;
     buff = new string;
@@ -30,9 +47,9 @@ synthfilereader::synthfilereader(WC_FILE_TYPE ft) :
  dobj(dobjnames::DEF_WCFILE),
  wc_filename(0), mod_action(WC_INCLUDE), dobj_action(WC_INCLUDE),
  modnamelist(0), dobjnamelist(0), mname_item(0), dname_item(0),
- modname(0), dobjname(0), wc_file_type(ft),wcnt_id(0),
+ modname(0), dobjname(0), wc_file_type(ft),
  filestatus(NOT_FOUND), synthfile(0), buff(0), command(0),
- synthheader(0), wc_err_msg(0), conv(0), verbose(false)
+ synthheader(0), wc_err_msg(0), conv(0)
 {
     synthfile = new ifstream;
     buff = new string;
@@ -58,7 +75,7 @@ synthfilereader::~synthfilereader()
     delete synthheader;
     delete wc_err_msg;
     if (conv) delete conv;
-        goto_first_dobjname();
+    goto_first_dobjname();
     while(dobjname) {
         delete dobjname;
         goto_next_dobjname();
@@ -78,18 +95,19 @@ void synthfilereader::set_wc_filename(char const* filename)
         delete [] wc_filename;
         wc_filename = 0;
     }
-    const char* path = synthmod::get_path();
+    const char* path = jwm.path();
     // I still have no idea about what is wrong here
+    // regarding ccmalloc/valgrind
     if (wc_file_type == WC_MAIN_FILE
-        || *filename == '/' || path == NULL)
+        || *filename == '/' || !path)
     {
-        wc_filename = new char[strlen(filename)+1];
+        wc_filename = new char[strlen(filename) + 1];
         strcpy(wc_filename, filename);
     }
     else {
         char* ptr;
         wc_filename = new char[strlen(filename) + strlen(path) + 1];
-        strcpy(wc_filename, path);
+        strncpy(wc_filename, path, strlen(path));
         ptr = wc_filename + strlen(path);
         strcpy(ptr, filename);
     }
@@ -103,23 +121,6 @@ modnamedobj* synthfilereader::add_modname(modnamedobj* mn)
     return modname = (modnamedobj*)mname_item->get_data();
 }
 
-/*
-void synthfilereader::delete_modname(const char* mn)
-{
-    goto_first_modname();
-    while (modname) {
-        if (strcmp(mn, modname->get_modname()) == 0) {
-            modnamelist->unlink_item(mname_item);
-            delete mname_item;
-            delete modname;
-            goto_first_modname();
-        }
-        else
-            goto_next_modname();
-    }
-}
-*/
-
 dobjnamedobj* synthfilereader::add_dobjname(dobjnamedobj* dn)
 {
     if (!(dname_item = dobjnamelist->add_at_tail(dn)))
@@ -127,28 +128,11 @@ dobjnamedobj* synthfilereader::add_dobjname(dobjnamedobj* dn)
     return dobjname = (dobjnamedobj*)dname_item->get_data();
 }
 
-/*
-bool synthfilereader::delete_dobjname(const char* dn)
-{
-    goto_first_dobjname();
-    while (dobjname) {
-        if (strcmp(dn, dobjname->get_dobjname()) == 0) {
-            dobjnamelist->unlink_item(dname_item);
-            delete dname_item;
-            delete dobjname;
-            goto_first_dobjname();
-        }
-        else
-            goto_next_dobjname();
-    }
-}
-*/
-
 bool synthfilereader::read_and_create()
 {
     if (!wc_filename)
         return false;
-    switch (open_file(wc_filename)) {
+    switch (open_file()) {
         case synthfilereader::NOT_FOUND:
             *wc_err_msg = "\nfile ";
             *wc_err_msg += wc_filename;
@@ -172,41 +156,38 @@ bool synthfilereader::read_and_create()
     short bp_msr;
     short b_val;
     if (wc_file_type == WC_INCLUDE_FILE) {
-        if (verbose) // pretty please right?
+        if (jwm.is_verbose()) // pretty please right?
             cout << "\n";
         cout << "\n  Including ";
     }
     else
-        cout << "\nProccessing ";
+        cout << "\nProcessing ";
     cout << wc_filename;
     if (!read_header(&srate, &bpm, &bp_msr, &b_val)) {
         return false;
     }
     if (wc_file_type == WC_MAIN_FILE) {
-        audio_samplerate = srate;
-        sm_beats_per_minute = bpm;
-        sm_beats_per_measure = bp_msr;
-        sm_beat_value = b_val;
+        jwm.samplerate(srate);
+        jwm.bpm(bpm);
+        jwm.beats_per_measure(bp_msr);
+        jwm.beat_value(b_val);
     }
     else {
-        if (srate != audio_samplerate
-            || bpm != sm_beats_per_minute
-            || bp_msr != sm_beats_per_measure
-            || b_val != sm_beat_value) 
+        if (srate     != jwm.samplerate()
+            || bpm    != jwm.bpm()
+            || bp_msr != jwm.beats_per_measure()
+            || b_val  != jwm.beat_value())
         {
             *wc_err_msg = "\nWarning!\nFile ";
             *wc_err_msg+= wc_filename;
-            *wc_err_msg+= " has conflicting header information";
-            *wc_err_msg+= " with that already in use.";
+            *wc_err_msg+= " has conflicting header information"
+                          " with that already in use.";
         }
     }
     string const *com = read_command();
     while (*com != wcnt_id)
     {
-        if (!com) {
-            return false;
-        }
-        if (dobj::get_dobjnames()->get_type(com->c_str())
+        if (jwm.get_dobjnames().get_type(com->c_str())
             != dobjnames::DOBJ_FIRST)
         {
             if (!read_and_create_dobj(com))
@@ -217,8 +198,11 @@ bool synthfilereader::read_and_create()
                 return false;
         }
         com = read_command();
+        if (!com) {
+            return false;
+        }
     }
-    if (verbose)
+    if (jwm.is_verbose())
         cout << "\n\nend wcnt/jwmsynth: " << wc_filename;
     return true;
 }
@@ -229,10 +213,10 @@ bool synthfilereader::read_and_create_synthmod(string const* com)
     if (!mod) {
         return false;
     }
-    if (verbose)
+    if (jwm.is_verbose())
         cout << "\nend " << mod->get_username();
     if (include_mod(mod->get_username())) {
-        if (!synthmod::get_modlist()->add_module(mod)) {
+        if (!jwm.get_modlist().add_module(mod)) {
             *wc_err_msg = "\ncould not add module ";
             *wc_err_msg += mod->get_username();
             *wc_err_msg += " to list.";
@@ -241,7 +225,7 @@ bool synthfilereader::read_and_create_synthmod(string const* com)
         }
     }
     else {
-        if (verbose) {
+        if (jwm.is_verbose()) {
             cout << "\n\n***** " << mod->get_username();
             cout << " is not being included *****";
         }
@@ -263,7 +247,7 @@ bool synthfilereader::read_and_create_dobj(string const* com)
     }
     string dbjuname = dbj->get_username();
     if (include_dbj(dbj->get_username())) {
-        if (!dobj::get_dobjlist()->add_dobj(dbj)) {
+        if (!jwm.get_dobjlist().add_dobj(dbj)) {
             *wc_err_msg = "\ncould not add data object ";
             *wc_err_msg += dbj->get_username();
             *wc_err_msg += " to list.";
@@ -277,9 +261,6 @@ bool synthfilereader::read_and_create_dobj(string const* com)
             case dobjnames::DEF_WCFILE:
             {
                 synthfilereader* wcf = (synthfilereader*)dbj;
-                wcf->set_wcnt_id(wcnt_id);
-                if (verbose)
-                    wcf->set_verbose();
                 if (!(wcf->read_and_create())) { // ooooh
                     *wc_err_msg = wcf->get_wc_error_msg();
                     return false;
@@ -289,8 +270,6 @@ bool synthfilereader::read_and_create_dobj(string const* com)
             case dobjnames::DEF_PARAMEDITOR:
             {
                 parameditor* pe = (parameditor*)dbj;
-                if (verbose)
-                    pe->set_verbose();
                 if (!pe->do_param_edits()) {
                     *wc_err_msg = *dobj::get_error_msg();
                     return false;
@@ -300,8 +279,6 @@ bool synthfilereader::read_and_create_dobj(string const* com)
             case dobjnames::DEF_INPUTEDITOR:
             {
                 inputeditor* ie = (inputeditor*)dbj;
-                if (verbose)
-                    ie->set_verbose();
                 if (!ie->create_connectors()) {
                     *wc_err_msg = *dobj::get_error_msg();
                     return false;
@@ -311,13 +288,15 @@ bool synthfilereader::read_and_create_dobj(string const* com)
         }
     }
     else {
-        if (verbose) {
+        if (jwm.is_verbose()) {
             cout << "\n\n***** " << dbj->get_username();
             cout << " is not being included *****";
         }
         delete dbj;
     }
-    if (verbose)
+    if (dbj->get_object_type() == dobjnames::DEF_WCFILE)
+        cout << "\n    (back in " << wc_filename << ")";
+    if (jwm.is_verbose())
         cout << "\nend " << dbjuname;
     return true;
 }
@@ -355,16 +334,15 @@ bool synthfilereader::include_dbj(const char* name)
 synthmod *const synthfilereader::read_synthmodule(string const *com)
 {
     synthmodnames::SYNTH_MOD_TYPE
-                smt = synthmod::get_modnames()->get_type(com->c_str());
-    if (smt == synthmodnames::MOD_FIRST 
-        || smt == synthmodnames::MOD_NONEZERO)
+                smt = jwm.get_modnames().get_type(com->c_str());
+    if (smt == synthmodnames::FIRST 
+        || smt == synthmodnames::NONEZERO)
     {
         *wc_err_msg = "\nUnrecognised wcnt/jwmsynth module: " + *com;
         return 0;
     }
-    if (smt == synthmodnames::MOD_WCNTEXIT) {
-        if (synthmod::get_modlist()->
-            get_first_of_type(synthmodnames::MOD_WCNTEXIT))
+    if (smt == synthmodnames::WCNTEXIT) {
+        if (jwm.get_modlist().get_first_of_type(synthmodnames::WCNTEXIT))
         {
             *wc_err_msg
                = "\nCannot create more than one wcnt_exit module ";
@@ -380,19 +358,20 @@ synthmod *const synthfilereader::read_synthmodule(string const *com)
         return 0;
     }
     if (strcmp(modname.c_str(),
-                get_dobjnames()->get_name(dobjnames::LST_EDITS)) == 0)
+        jwm.get_dobjnames().get_name(dobjnames::LST_EDITS)) == 0)
     {
         *wc_err_msg = "\ncannot use reserved word ";
-        *wc_err_msg += get_dobjnames()->get_name(dobjnames::LST_EDITS);
+        *wc_err_msg +=
+            jwm.get_dobjnames().get_name(dobjnames::LST_EDITS);
         *wc_err_msg += " to name module ";
         *wc_err_msg += *com;
         return 0;
     }
-    char* grpname = get_groupname(modname.c_str());
+    const char* const grpname = get_groupname(modname.c_str());
     if (grpname) {
         delete [] grpname;
         *wc_err_msg = "\nthe ";
-        *wc_err_msg += synthmod::get_modnames()->get_name(smt);
+        *wc_err_msg += jwm.get_modnames().get_name(smt);
         *wc_err_msg += " name ";
         *wc_err_msg += modname;
         *wc_err_msg += " uses the . character which is reserved for ";
@@ -401,15 +380,13 @@ synthmod *const synthfilereader::read_synthmodule(string const *com)
         return 0;
     }
     if (include_mod(modname.c_str())) {
-        if (synthmod::get_modlist()->
-                                get_synthmod_by_name(modname.c_str()))
+        if (jwm.get_modlist().get_synthmod_by_name(modname.c_str()))
         {
             *wc_err_msg = "\nsynth module already exists named ";
             *wc_err_msg += modname;
             return 0;
         }
-        dobj* dbj =
-                dobj::get_dobjlist()->get_dobj_by_name(modname.c_str());
+        dobj* dbj = jwm.get_dobjlist().get_dobj_by_name(modname.c_str());
         if (dbj){ // formality because of parameditor.cc workings.
             *wc_err_msg = "\nwill not name ";
             *wc_err_msg += *com;
@@ -418,19 +395,18 @@ synthmod *const synthfilereader::read_synthmodule(string const *com)
             *wc_err_msg += 
              ", the name has already been taken by data object of type ";
             *wc_err_msg +=
-             dobj::get_dobjnames()->get_name(dbj->get_object_type());
+             jwm.get_dobjnames().get_name(dbj->get_object_type());
             return 0;
         }
         inc_current = true;
     }
     else
         inc_current = false;
-    if (verbose) {
+    if (jwm.is_verbose()) {
         cout << "\n\n================================";
         cout << "\nCreating synth module " << modname;
     }
-    synthmod*
-     sm = synthmod::get_modlist()->create_module(smt, modname.c_str());
+    synthmod* sm = jwm.get_modlist().create_module(smt, modname.c_str());
     if (!read_dobjs(sm)){
         *wc_err_msg = sm->get_username() + *wc_err_msg;
         *wc_err_msg = "\nIn module " + *wc_err_msg;
@@ -479,9 +455,9 @@ synthmod *const synthfilereader::read_synthmodule(string const *com)
 //--
 dobj* const synthfilereader::read_dobj(string const* com)
 {
-    dobjnames* dbjnames = dobj::get_dobjnames();
-    dobjnames::DOBJ_TYPE dobjtype = dbjnames->get_type(com->c_str());
-    dobjnames::DOBJ_TYPE subtype = dbjnames->get_sub_type(dobjtype);
+    const dobjnames& dbjnames = jwm.get_dobjnames();
+    dobjnames::DOBJ_TYPE dobjtype = dbjnames.get_type(com->c_str());
+    dobjnames::DOBJ_TYPE subtype = dbjnames.get_sub_type(dobjtype);
     if (subtype < dobjnames::DOBJ_DEFS ||
             subtype >= dobjnames::DOBJ_SYNTHMOD)
     {
@@ -496,19 +472,19 @@ dobj* const synthfilereader::read_dobj(string const* com)
         return 0;
     }
     if (strcmp(dobjname.c_str(),
-        get_dobjnames()->get_name(dobjnames::LST_EDITS)) == 0)
+        dbjnames.get_name(dobjnames::LST_EDITS)) == 0)
     {
         *wc_err_msg = "\ncannot use reserved word ";
-        *wc_err_msg += get_dobjnames()->get_name(dobjnames::LST_EDITS);
+        *wc_err_msg += dbjnames.get_name(dobjnames::LST_EDITS);
         *wc_err_msg += " to name data object ";
         *wc_err_msg += *com;
         return 0;
     }
-    char* grpname = get_groupname(dobjname.c_str());
+    const char* const grpname = get_groupname(dobjname.c_str());
     if (grpname) {
         delete [] grpname;
         *wc_err_msg = "\nthe ";
-        *wc_err_msg += dbjnames->get_name(dobjtype);
+        *wc_err_msg += dbjnames.get_name(dobjtype);
         *wc_err_msg += " name ";
         *wc_err_msg += dobjname;
         *wc_err_msg += " uses the . character which is reserved for";
@@ -516,13 +492,13 @@ dobj* const synthfilereader::read_dobj(string const* com)
         return 0;
     }
     if (include_dbj(dobjname.c_str())) {
-        if (dobj::get_dobjlist()->get_dobj_by_name(dobjname.c_str())) {
+        if (jwm.get_dobjlist().get_dobj_by_name(dobjname.c_str())) {
             *wc_err_msg = "\ndata object " + *com
                       + " already exists named "+dobjname;
             return 0;
         }
         synthmod* sm =
-         synthmod::get_modlist()->get_synthmod_by_name(dobjname.c_str());
+            jwm.get_modlist().get_synthmod_by_name(dobjname.c_str());
         if (sm){ // formality because of parameditor.cc workings.
             *wc_err_msg = "\nwill not name ";
             *wc_err_msg += *com;
@@ -531,18 +507,18 @@ dobj* const synthfilereader::read_dobj(string const* com)
             *wc_err_msg += 
                 ", the name has already been taken by module of type ";
             *wc_err_msg +=
-                synthmod::get_modnames()->get_name(sm->get_module_type());
+                jwm.get_modnames().get_name(sm->get_module_type());
             return 0;
         }
         inc_current = true;
     }
     else
         inc_current = false;
-    if (verbose) {
+    if (jwm.is_verbose()) {
         cout << "\n\n================================";
         cout << "\nCreating data object " << dobjname;
     }
-    dobj* dbj = dobj::get_dobjlist()->create_dobj(dobjtype);
+    dobj* dbj = jwm.get_dobjlist().create_dobj(dobjtype);
     if (dbj == 0) {
         *wc_err_msg = "\ncould note create data object of type " + *com;
         return 0;
@@ -561,7 +537,7 @@ dobj* const synthfilereader::read_dobj(string const* com)
         return 0;
     }
     if (include_dbj(dbj->get_username())) {
-        if (verbose) cout << "\n----\nvalidating...";
+        if (jwm.is_verbose()) cout << "\n----\nvalidating...";
         stockerrs::ERR_TYPE et = dbj->validate();
         if (et != stockerrs::ERR_NO_ERROR) {
             *wc_err_msg = "\nIn data object ";
@@ -569,12 +545,12 @@ dobj* const synthfilereader::read_dobj(string const* com)
             *wc_err_msg += ", parameter ";
             *wc_err_msg += *dbj->get_error_msg();
             *wc_err_msg += " ";
-            *wc_err_msg += stock_errs->get_prefix_err(et);
-            *wc_err_msg += stock_errs->get_err(et);
+            *wc_err_msg += jwm.get_stockerrs().get_prefix_err(et);
+            *wc_err_msg += jwm.get_stockerrs().get_err(et);
             delete dbj;
             return 0;
         }
-        if (verbose) cout << "Ok.";
+        if (jwm.is_verbose()) cout << "Ok.";
     }
     com = read_command();
     if (*com != dobjname) {
@@ -603,16 +579,16 @@ dobj* const synthfilereader::read_dobj(string const* com)
 bool synthfilereader::read_dobjs(dobj* dbj)
 {
     dobjnames::DOBJ_TYPE dt = dbj->get_object_type();
-    dobjnames* dbjnames = dobj::get_dobjnames();
+    const dobjnames& dbjnames = jwm.get_dobjnames();
     // get first encapsulating list type
-    dobjdobjlist* enc_list = get_topdobjlist()->get_first_of_type(dt);
+    dobjdobjlist* enc_list = jwm.get_topdobjlist().get_first_of_type(dt);
     if (!enc_list) // not dobjs in this dbj dobj
         return true;
     while(enc_list) {
         dobjdobj* enc_dobj = enc_list->goto_first();
         string enc_com = *read_command();
         dobjnames::DOBJ_TYPE enc_type = enc_dobj->get_dobj_sprog();
-        char const* enc_name = dbjnames->get_name(enc_type);
+        char const* enc_name = dbjnames.get_name(enc_type);
         if (enc_com != enc_name) {
             *wc_err_msg = "\nIn data object ";
             *wc_err_msg += dbj->get_username();
@@ -626,12 +602,12 @@ bool synthfilereader::read_dobjs(dobj* dbj)
         dobjdobjlist* dd_list;
         dd_list = enc_list->get_dobjdobjlist_for_dobjtype(enc_type);
         dobjdobj* dd = dd_list->goto_first();
-        if (verbose)
+        if (jwm.is_verbose())
             cout << "\n--------\nfor " << enc_name;
         while(dd) {
             string com = *read_command();
             dobjnames::DOBJ_TYPE sprogtype = dd->get_dobj_sprog();
-            char const* sprogname = dbjnames->get_name(sprogtype);
+            char const* sprogname = dbjnames.get_name(sprogtype);
             while (com != enc_name) {
                 if (com != sprogname) {
                     *wc_err_msg = "\nIn data object ";
@@ -645,7 +621,7 @@ bool synthfilereader::read_dobjs(dobj* dbj)
                     return false;
                 }
                 dobj* sprog =
-                    dobj::get_dobjlist()->create_dobj(sprogtype);
+                    jwm.get_dobjlist().create_dobj(sprogtype);
                 if (sprog == 0) {
                     *wc_err_msg = "\n***major error***";
                     *wc_err_msg += "\ncould not create data object ";
@@ -655,7 +631,7 @@ bool synthfilereader::read_dobjs(dobj* dbj)
                     delete dd_list;
                     return false;
                 }
-                if (verbose)
+                if (jwm.is_verbose())
                     cout << "\n--------\ncreating " << sprogname;
                 if (!read_dobj_params(sprog, enc_com.c_str())) {
                     *wc_err_msg = dbj->get_username() + *wc_err_msg;
@@ -674,8 +650,9 @@ bool synthfilereader::read_dobjs(dobj* dbj)
                         *wc_err_msg += ", ";
                         *wc_err_msg += *sprog->get_error_msg();
                         *wc_err_msg += " ";
-                        *wc_err_msg += stock_errs->get_prefix_err(et);
-                        *wc_err_msg += stock_errs->get_err(et);
+                        *wc_err_msg +=
+                            jwm.get_stockerrs().get_prefix_err(et);
+                        *wc_err_msg += jwm.get_stockerrs().get_err(et);
                         delete sprog;
                         delete dd_list;
                         return false;
@@ -697,14 +674,14 @@ bool synthfilereader::read_dobjs(dobj* dbj)
                 }
                 else
                     delete sprog;
-                if (verbose)
+                if (jwm.is_verbose())
                     cout << "\nadded " << sprogname;
                 com = *read_command();
             }
             dd = dd_list->goto_next();
         }
         delete dd_list;
-        enc_list = get_topdobjlist()->get_next_of_type();
+        enc_list = jwm.get_topdobjlist().get_next_of_type();
     }
     return true;
 }
@@ -726,13 +703,13 @@ bool synthfilereader::read_dobjs(dobj* dbj)
 bool synthfilereader::read_dobjs(synthmod* sm)
 {
     synthmodnames::SYNTH_MOD_TYPE smt = sm->get_module_type();
-    moddobjlist* mdbjslist = synthmod::get_moddobjlist();
-    moddobj* mdbj = mdbjslist->get_first_of_type(smt);
-    dobjnames* dbjnames = dobj::get_dobjnames();
+    moddobjlist& mdbjslist = jwm.get_moddobjlist();
+    moddobj* mdbj = mdbjslist.get_first_of_type(smt);
+    const dobjnames& dbjnames = jwm.get_dobjnames();
     while(mdbj) { // module may contain more than one list (ie timemap)
         string dbjname = *read_command();//one of envelope/track etc
         dobjnames::DOBJ_TYPE dt = mdbj->get_first_child();
-        char const* xdbjname = dbjnames->get_name(dt);
+        char const* xdbjname = dbjnames.get_name(dt);
         if (dbjname != xdbjname) {
             *wc_err_msg = ", expected ";
             *wc_err_msg += xdbjname;
@@ -741,13 +718,13 @@ bool synthfilereader::read_dobjs(synthmod* sm)
             *wc_err_msg += " instead";
             return false;
         }
-        if (verbose)
+        if (jwm.is_verbose())
             cout << "\n--------\nfor " + dbjname;
         dobjdobjlist* ddlist = mdbj->get_dobjdobjlist();
         dobjdobj* dd = ddlist->goto_first();
         while(dd) {//maybe the dobj has one or more dobjies inside?
             dobjnames::DOBJ_TYPE sprogtype = dd->get_dobj_sprog();
-            char const* xsprogname = dbjnames->get_name(sprogtype);
+            char const* xsprogname = dbjnames.get_name(sprogtype);
             string com = *read_command();
             // now read the list of items (each item's type is sprogtype)
             while (com != dbjname) {
@@ -762,9 +739,9 @@ bool synthfilereader::read_dobjs(synthmod* sm)
                     *wc_err_msg += " instead.";
                     return false;
                 }
-                if (verbose)
+                if (jwm.is_verbose())
                     cout << "\n--------\ncreating " << xsprogname;
-                dobj* dbj = dobj::get_dobjlist()->create_dobj(sprogtype);
+                dobj* dbj = jwm.get_dobjlist().create_dobj(sprogtype);
                 if (dbj == 0) { // failed to create dobj
                     *wc_err_msg =
                      "\n***major error***\ncould not create data object ";
@@ -790,8 +767,9 @@ bool synthfilereader::read_dobjs(synthmod* sm)
                         *wc_err_msg += ", ";
                         *wc_err_msg += *dbj->get_error_msg();
                         *wc_err_msg += " ";
-                        *wc_err_msg += stock_errs->get_prefix_err(et);
-                        *wc_err_msg += stock_errs->get_err(et);
+                        *wc_err_msg +=
+                            jwm.get_stockerrs().get_prefix_err(et);
+                        *wc_err_msg += jwm.get_stockerrs().get_err(et);
                         delete dbj;
                         return false;
                     }
@@ -811,13 +789,13 @@ bool synthfilereader::read_dobjs(synthmod* sm)
                 }
                 else
                     delete dbj;
-                if (verbose)
+                if (jwm.is_verbose())
                     cout << "\nadded data object " << xsprogname;
                 com = *read_command();
             }
             dd = ddlist->goto_next();
         }
-        mdbj = mdbjslist->get_next_of_type();
+        mdbj = mdbjslist.get_next_of_type();
     }
     return true;
 }
@@ -832,29 +810,29 @@ bool synthfilereader::read_dobjs(synthmod* sm)
 // when reading an EDIT dobj type contained in an EDIT_LST dobjtype. they
 // point to a char string which is the EDIT dobj name, and another which 
 // is the EDITLIST dobj name and are used to terminate reading strings
-// to add to the string list paramnames::PAR_TYPE PAR_STR_LIST.
+// to add to the string list paramnames::TYPE PAR_STR_LIST.
 
 bool synthfilereader::
 read_dobj_params(dobj* dbj, const char* endterm)
 {
     dobjnames::DOBJ_TYPE dobjtype = dbj->get_object_type();
-    dobjparamlist* parlist = dobj::get_dparlist()->
+    dobjparamlist* parlist = jwm.get_dparlist().
                               get_dobjparamlist_for_dobj_type(dobjtype);
     dobjparam* param = parlist->goto_first();
-    char const* enda = dobj::get_dobjnames()->get_name(dobjtype);
+    char const* enda = jwm.get_dobjnames().get_name(dobjtype);
     while(param) {
         if (conv)
             delete conv;
         conv = new ostringstream;
         paramnames::PAR_TYPE pt = param->get_partype();
         string parname;
-        if (pt != paramnames::PAR_STR_UNNAMED
-            && pt != paramnames::PAR_STR_LIST) 
+        if (pt != paramnames::STR_UNNAMED
+            && pt != paramnames::STR_LIST) 
         {
             parname = *read_command();
         }
         string* datastr;
-        if (pt == paramnames::PAR_STR_LIST) {
+        if (pt == paramnames::STR_LIST) {
             datastr = (string*)read_string_list_param(enda, endterm);
             if (!datastr)
                 return false;
@@ -874,7 +852,7 @@ read_dobj_params(dobj* dbj, const char* endterm)
             }
         }
         delete datastr;
-        if (verbose) {
+        if (jwm.is_verbose()) {
             cout << "\nparameter ";
             cout << parname << "\t" << conv->str();
         }
@@ -904,8 +882,12 @@ synthfilereader::read_string_list_param
     const string* com;
     bool ready_to_finish = false;
     while(true) {
-        if (!(com = read_command()))
+        if (!(com = read_command())) {
+            *wc_err_msg = "\nUnexpected end of file...\nThe data object "
+                "is missing its editlist terminator...";
+            invalidate();
             return 0;
+        }
         #ifdef DEBUG_STRLIST_PAR
         cout << "\nread_string_list_param got " << *com;
         #endif
@@ -962,19 +944,19 @@ synthfilereader::read_string_list_param
 bool synthfilereader::read_inputs(synthmod* sm)
 {
     bool inc_mod = include_mod(sm->get_username());
-    modinputlist* inlist;
-    inlist = synthmod::get_inputlist()->get_inputlist_for_module(sm);
+    modinputlist* inlist =
+        jwm.get_inputlist().get_inputlist_for_module(sm);
     modinput* inp = inlist->goto_first();
-    inputnames* innames = synthmod::get_inputnames();
-    outputnames* outnames = synthmod::get_outputnames();
+    const inputnames& innames = jwm.get_inputnames();
+    const outputnames& outnames = jwm.get_outputnames();
     string inputname;
-    if (verbose && inp)
+    if (jwm.is_verbose() && inp)
         cout << "\n--------";
     while(inp) { // step through each  input for module
         inputname = *read_command();
-        if (innames->get_name(inp->get_inputtype()) != inputname){
+        if (innames.get_name(inp->get_inputtype()) != inputname){
             *wc_err_msg = ", expected input type ";
-            *wc_err_msg += innames->get_name(inp->get_inputtype());
+            *wc_err_msg += innames.get_name(inp->get_inputtype());
             *wc_err_msg += ", got ";
             *wc_err_msg += inputname;
             *wc_err_msg += " instead";
@@ -982,19 +964,19 @@ bool synthfilereader::read_inputs(synthmod* sm)
             return false;
         } else {
             inputnames::IN_TYPE input_type
-             =innames->get_type(inputname.c_str());
+                = innames.get_type(inputname.c_str());
             string outmodname;
             *synthfile >> outmodname;
             if (outmodname == "off") {
                 if (inc_mod) {
                     outputnames::OUT_TYPE offout =
-                     outnames->get_nonezerotype(
-                     innames->get_category(input_type));
+                     outnames.get_nonezerotype(
+                     innames.get_category(input_type));
                     connector* connect = new
                      connector(sm, input_type,
                         outmodname.c_str(), offout);
-                    synthmod::get_connectlist()->add_connector(connect);
-                    if (verbose) {
+                    jwm.get_connectlist().add_connector(connect);
+                    if (jwm.is_verbose()) {
                         cout << "\nadded connector ";
                         cout << inputname << "\toff";
                     }
@@ -1005,7 +987,7 @@ bool synthfilereader::read_inputs(synthmod* sm)
                 string outputname;
                 *synthfile >> outputname;
                 outputnames::OUT_TYPE output_type =
-                    outnames->get_type(outputname.c_str());
+                    outnames.get_type(outputname.c_str());
                 if (output_type == outputnames::OUT_FIRST) {
                     *wc_err_msg = ", input ";
                     *wc_err_msg += inputname;
@@ -1014,8 +996,8 @@ bool synthfilereader::read_inputs(synthmod* sm)
                     delete inlist;
                     return false;
                 }
-                if (innames->get_category(input_type)
-                        != outnames->get_category(output_type))
+                if (innames.get_category(input_type)
+                    != outnames.get_category(output_type))
                 {
                     *wc_err_msg = ", input ";
                     *wc_err_msg += inputname;
@@ -1028,8 +1010,8 @@ bool synthfilereader::read_inputs(synthmod* sm)
                     connector* connect =
                         new connector(sm, input_type, 
                             outmodname.c_str(), output_type);
-                    synthmod::get_connectlist()->add_connector(connect);
-                    if (verbose){
+                    jwm.get_connectlist().add_connector(connect);
+                    if (jwm.is_verbose()){
                         cout << "\nadded connector " << inputname << "\t";
                         cout << outmodname << "\t" << outputname;
                     }
@@ -1046,16 +1028,16 @@ bool synthfilereader::read_inputs(synthmod* sm)
 // a module without params is not an error.
 bool synthfilereader::read_params(synthmod* sm)
 {
-    modparamlist* parlist
-     = synthmod::get_paramlist()->get_paramlist_for_moduletype(
-      sm->get_module_type());
+    modparamlist* parlist =
+        jwm.get_paramlist().get_paramlist_for_moduletype(
+            sm->get_module_type());
     if (!parlist) {
         *wc_err_msg = "\n*** Big problems getting params ***";
         return false;
     }
     modparam* param = parlist->goto_first();
     string paramname;
-    if (verbose && param)
+    if (jwm.is_verbose() && param)
         cout << "\n--------";
     while(param) {
         paramname = *read_command();
@@ -1074,7 +1056,7 @@ bool synthfilereader::read_params(synthmod* sm)
                 return false;
             }
         }
-        if (verbose) {
+        if (jwm.is_verbose()) {
             cout << "\nparameter ";
             cout << paramname << "\t" << conv->str();
         }
@@ -1085,10 +1067,8 @@ bool synthfilereader::read_params(synthmod* sm)
 }
 
 synthfilereader::FILE_STATUS
-synthfilereader::open_file(char *synthfilename)
+synthfilereader::open_file()
 {
-    wc_filename = new char[strlen(synthfilename) + 1];
-    strcpy(wc_filename, synthfilename);
     synthfile->open(wc_filename);
     if (!synthfile->is_open())
         filestatus = NOT_FOUND;
@@ -1131,7 +1111,7 @@ bool synthfilereader::read_header(
                 return false;
             }
             if (*samplerate > 4000 && *samplerate < 200000) {
-                if (verbose && wc_file_type == WC_MAIN_FILE)
+                if (jwm.is_verbose() && wc_file_type == WC_MAIN_FILE)
                     cout << "\nsamplerate set at " << *samplerate;
             }
             else {
@@ -1157,7 +1137,7 @@ bool synthfilereader::read_header(
                 return false;
             }
             if (*bpm >= 20 && *bpm <= 1000) {
-                if (verbose && wc_file_type == WC_MAIN_FILE)
+                if (jwm.is_verbose() && wc_file_type == WC_MAIN_FILE)
                     cout << "\nbpm set at " << *bpm;
             }
             else {
@@ -1210,7 +1190,7 @@ bool synthfilereader::read_header(
                     conv->str() + ". valid value in range 1 to 128.";
                 return false;
             }
-            if (verbose && wc_file_type == WC_MAIN_FILE) {
+            if (jwm.is_verbose() && wc_file_type == WC_MAIN_FILE) {
                 cout << "\ntime signature set to " << *beatspermeasure;
                 cout << "/" << *beatvalue;
             }
@@ -1237,6 +1217,7 @@ synthfilereader::read_command()
         command = 0;
     }
     else if (!skip_remarks()) {
+        // in all likelyhood, this msg will get overwritten (nevermind):
         *wc_err_msg = "\nUnexpected end of file.\n";
         return 0;
     }
@@ -1247,20 +1228,23 @@ synthfilereader::read_command()
 bool synthfilereader::skip_remarks()
 {
     *synthfile >> *buff;
+    if (synthfile->eof())
+        return false;
     while ((*buff)[0] == '/') {
-        if ((*buff)[0] == '/') {
+        if ((*buff)[1] == '/') {
             char ch;
             while (synthfile->get(ch)) {
                 if (ch == '\n')
                     break;
             }
-            if (synthfile->eof())
-                return false;// error end of file
         }
+        else return true; // single / character == not comment.
         *synthfile >> *buff;
         if (synthfile->eof())
-            return false; // error end of file -- do i need this again?
+            return false; // catches EOF immediately AFTER a comment
     }
+    if (synthfile->eof())
+        return false;
     return true;          // i'm happy - honest
 }
 
@@ -1273,7 +1257,7 @@ bool synthfilereader::eff_ing_header_bodge(unsigned long *samplerate,
     string hf_name;
     *synthfile >> hf_name;
     // stop reading from that (synthfile) for mo now we got header name.
-    char const* path = synthmod::get_path();
+    char const* path = jwm.path();
     if (!(hf_name[0] == '/' || path == NULL)) {
         string tmp = hf_name;
         hf_name = path + tmp;
@@ -1286,7 +1270,7 @@ bool synthfilereader::eff_ing_header_bodge(unsigned long *samplerate,
         *wc_err_msg = "Requested header refused open: " + hf_name;
         return false;
     }
-    if (verbose)
+    if (jwm.is_verbose())
         cout << "\nReading header info from file: " + hf_name;
     headerfile >> *buff;
     if (*buff == "samplerate") {
@@ -1297,7 +1281,7 @@ bool synthfilereader::eff_ing_header_bodge(unsigned long *samplerate,
             return false;
         }
         if (*samplerate > 4000 && *samplerate < 200000) {
-            if (verbose && wc_file_type == WC_MAIN_FILE)
+            if (jwm.is_verbose() && wc_file_type == WC_MAIN_FILE)
                 cout << "\nsamplerate set at " << *samplerate;
         } else {
             *conv << *samplerate;
@@ -1322,7 +1306,7 @@ bool synthfilereader::eff_ing_header_bodge(unsigned long *samplerate,
             return false;
         }
         if (*bpm >= 20 && *bpm <= 1000) {
-            if (verbose && wc_file_type == WC_MAIN_FILE)
+            if (jwm.is_verbose() && wc_file_type == WC_MAIN_FILE)
                 cout << "\nbpm set at " << *bpm;
         } else {
             *conv << *bpm;
@@ -1378,7 +1362,7 @@ bool synthfilereader::eff_ing_header_bodge(unsigned long *samplerate,
             headerfile.close();
             return false;
         }
-        if (verbose && wc_file_type == WC_MAIN_FILE) {
+        if (jwm.is_verbose() && wc_file_type == WC_MAIN_FILE) {
             cout << "\ntime signature set to " << *beatspermeasure;
             cout << "/" << *beatvalue;
         }
@@ -1399,46 +1383,31 @@ stockerrs::ERR_TYPE synthfilereader::validate()
 
 bool synthfilereader::set_param(paramnames::PAR_TYPE pt, void* data)
 {
-    bool retv = false;
     switch(pt)
     { // PAR_ADSRSECT is iocat::CAT_FIX_STR.
-    case paramnames::PAR_FILENAME:
-        set_wc_filename((char*)data);
-        retv = true;
-        break;
-    case paramnames::PAR_MOD_ACTION:
-        set_module_action((ACTION)(*(int*)data));
-        retv = true;
-        break;
-    case paramnames::PAR_DOBJ_ACTION:
-        set_dobj_action((ACTION)(*(int*)data));
-        retv = true;
-        break;
-    default:
-        retv = false;
-        break;
+        case paramnames::FILENAME:
+            set_wc_filename((char*)data);
+            return true;
+        case paramnames::MOD_ACTION:
+            mod_action = (ACTION)(*(int*)data);
+            return true;
+        case paramnames::DOBJ_ACTION:
+            dobj_action = (ACTION)(*(int*)data);
+            return true;
+        default:
+            return false;
     }
-    return retv;
 }
 
-void const* synthfilereader::get_param(paramnames::PAR_TYPE pt)
+void const* synthfilereader::get_param(paramnames::PAR_TYPE pt) const
 {
-    void* retv = 0;
     switch(pt)
     {
-    case paramnames::PAR_FILENAME:
-        retv = wc_filename;
-        break;
-    case paramnames::PAR_MOD_ACTION:
-        retv = &mod_action;
-        break;
-    case paramnames::PAR_DOBJ_ACTION:
-        retv = &dobj_action;
-        break;
-    default:
-        retv = 0;
+        case paramnames::FILENAME:      return wc_filename;
+        case paramnames::MOD_ACTION:    return &mod_action;
+        case paramnames::DOBJ_ACTION:   return &dobj_action;
+        default: return 0;
     }
-    return retv;
 }
 
 dobj const* synthfilereader::add_dobj(dobj* dbj)
@@ -1462,33 +1431,26 @@ dobj const* synthfilereader::add_dobj(dobj* dbj)
     return retv;
 }
 
-stockerrs* synthfilereader::stock_errs = 0;
-
 bool synthfilereader::done_params = false;
 
 void synthfilereader::create_params()
 {
     if (done_params == true)
         return;
-    get_dparlist()->add_dobjparam(
-        dobjnames::DEF_WCFILE, paramnames::PAR_FILENAME);
-    get_dparlist()->add_dobjparam(
-        dobjnames::DEF_WCFILE, paramnames::PAR_MOD_ACTION);
-    get_fxsparamlist()->add_param("include/exclude",
-        paramnames::PAR_MOD_ACTION);
-    get_dparlist()->add_dobjparam(
-        dobjnames::DEF_WCFILE, paramnames::PAR_DOBJ_ACTION);
-    get_fxsparamlist()->add_param("include/exclude",
-        paramnames::PAR_DOBJ_ACTION);
-
-    dobjdobjlist* dbjlist = get_topdobjlist()->create_dobjdobjlist(
+    dobjparamlist& dl = jwm.get_dparlist();
+    dl.add_dobjparam(dobjnames::DEF_WCFILE, paramnames::FILENAME);
+    dl.add_dobjparam(dobjnames::DEF_WCFILE, paramnames::MOD_ACTION);
+    jwm.get_fxsparamlist().add_param("include/exclude",
+                                      paramnames::MOD_ACTION);
+    dl.add_dobjparam(dobjnames::DEF_WCFILE, paramnames::DOBJ_ACTION);
+    jwm.get_fxsparamlist().add_param("include/exclude",
+                                      paramnames::DOBJ_ACTION);
+    dobjdobjlist* dbjlist = jwm.get_topdobjlist().create_dobjdobjlist(
         dobjnames::DEF_WCFILE, dobjnames::LST_MODULES);
     dbjlist->add_dobjdobj(dobjnames::LST_MODULES, dobjnames::SIN_MODNAME);
-
-    dbjlist = get_topdobjlist()->create_dobjdobjlist(
+    dbjlist = jwm.get_topdobjlist().create_dobjdobjlist(
         dobjnames::DEF_WCFILE, dobjnames::LST_DOBJS);
     dbjlist->add_dobjdobj(dobjnames::LST_DOBJS, dobjnames::SIN_DOBJNAME);
-
     done_params = true;
 }
 

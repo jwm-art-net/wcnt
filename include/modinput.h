@@ -1,7 +1,10 @@
 #ifndef MODINPUT_H
 #define MODINPUT_H
 
-#include "synthmodule.h"
+#include "inputnames.h"
+#include "synthmodnames.h"
+
+class synthmod;
 
 class modinput
 {
@@ -13,7 +16,7 @@ class modinput
     }
     synthmodnames::SYNTH_MOD_TYPE get_moduletype();
     inputnames::IN_TYPE get_inputtype();
-    IOCAT get_inputcategory();
+    iocat::IOCAT get_inputcategory();
 
 private:
     synthmod* synthmodule;

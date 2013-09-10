@@ -1,0 +1,50 @@
+The wave_phase module is a more advanced version of the wave module. It
+offers exactly the same waveforms but they can be manipulated to
+produce a variety of shapes.
+
+The module has a primary waveform and a secondary wave form used for
+'shaping'.
+
+in_phase_trig and in_phase_step should connect to the corresponding
+outpus from the primary clock source. The module will output 0 and not
+begin a cycle of the waveform until in_phase_trig triggers.
+
+in_shape_phase_step could connect to a different clock source running
+at a different frequency to the first.
+
+The primary waveform shape is multiplied by the secondary 'shape'
+waveform.
+
+on_trig_reset_phase resets the phase to 0 each time in_phase_trig
+triggers.
+
+recycle_mode is primarily used when in_phase_trig is a trigger source
+coming from a module other than a clock type. recycle_mode is set to on
+or off. When on, the waveform will repeatedly cycle.
+
+sync_shape when on, will reset the phase of the shaping waveform along
+with the primary waveform. sync_shape only works when
+on_trig_reset_phase is also on.
+
+invert_alt when on, will invert the levels of the waveform (so that
+-1.0 become +1.0 and so on). If the on_trig_reset_phase parameter is
+also on, then the phase_cycles will only be inverted when the phase is
+reset, but if on_trig_reset_phase is off and recycle_mode is on, then
+levels of every other recycled phase will alternately invert.
+
+phase_cycles controls how much of a phase should be output. 1.0 is a
+full phase - the waveform will travel from 0 to 1 back to 0, to -1 and
+to 0 again for a full phase. 0.5 will output only the first half of the
+waveform, while 1.5 will output 1 and a half cycles of the waveform.
+
+By carefully setting the values for phase_cycles, invert_alt, and
+recycle_mode, a variety of alternative waveform shapes can be achieved,
+which can be further modified by the shaping waveform.
+
+Incidently, if you don't wish to have any wave-shaping,
+in_shape_phase_step should be turned off and shape_type set to one.
+(Remember a waveform starts at 0.0, and the shape waveform is a
+multiplier, so if in_shape_phase_step is off, then the main waveform
+will be multiplied by zero and never ever be audible.)
+
+See also: wave square_wave user_wave clock osc_clock

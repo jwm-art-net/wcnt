@@ -1,4 +1,4 @@
-wcnt-1.25/jwmsynth
+wcnt-1.26/jwmsynth
 //------------------------------------------------------------------------
 //
 //  drums03.wc:  
@@ -26,30 +26,34 @@ par-pattern
         edit drum_trig1 freq 14.0
         edit drum_trig2 freq 6.0
         edit drum_trig
-            min_wait_time 0.0
-            max_wait_time 0.0
+            min_wait_time 220.0
+            max_wait_time 300.0
             count 16
         edit drum_trigb
-            min_wait_time 250.0
-            max_wait_time 0.0
+            min_wait_time 450.0
+            max_wait_time 750.0
             count 1
         edit drum_next function xor
         edit osc1b
-            octave_offset 0
+            octave_offset 1
             tuning_semitones 2
         edit lecho
-            delay_time 8.0
+            delay_time 28.0
         edit recho
-            delay_time 8.1
+            delay_time 28.1
     editlist
 par-pattern
 
 param_editor
 par-master
     editlist
-        edit wav1 filename drums03.wav
+        edit wav1
+            filename drums03.wav
+            end_bar 16
+        edit wcnt_exit_module
+            exit_bar 16
     editlist
 par-master
 
 //------------------------------------------------------------------------
-wcnt-1.25/jwmsynth
+wcnt-1.26/jwmsynth

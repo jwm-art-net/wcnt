@@ -2,54 +2,40 @@
 #define MONOAMP_H
 
 #include "synthmodule.h"
-#include "modoutputslist.h"
-#include "modinputslist.h"
-#include "modparamlist.h"
+
+// because we're now using libsndfile to handle file input/output
+// we no longer have 16bit integer input/output and amplitude levels
 
 class mono_amp : public synthmod
 {
-public:
+ public:
     mono_amp(char const*);
     ~mono_amp();
-    void set_input_signal(const double* in){ in_signal = in; }
-    void set_input_amp_eg(const double* aeg){ in_amp_eg = aeg; }
-    void set_input_amp_mod(const double* am){ in_amp_mod = am; }
-    const double* get_input_signal(){ return in_signal; }
-    const double* get_input_amp_eg(){ return in_amp_eg; }
-    const double* get_input_amp_mod(){ return in_amp_mod; }
-    const short* get_output_mono(){ return &out_mono; }
-    const double* get_output_m(){ return &out_m; }
-    void set_amplitude(short a){ amplitude = a; }
-    void set_amp_modsize(double ams){ amp_modsize = ams; }
-    void set_clip_level(short cl){ clip_level = cl; }
-    int get_amplitude(){ return amplitude; }
-    double get_amp_modsize(){ return amp_modsize; }
-    short get_clip_level(){ return clip_level; }
-    // virtual funcs
     void run();
     stockerrs::ERR_TYPE validate();
-    void const* get_out(outputnames::OUT_TYPE);
+    void const* get_out(outputnames::OUT_TYPE) const;
     void const* set_in(inputnames::IN_TYPE, void const*);
-    const void* get_in(inputnames::IN_TYPE it);
+    const void* get_in(inputnames::IN_TYPE it) const;
     bool set_param(paramnames::PAR_TYPE, void const*);
-    void const* get_param(paramnames::PAR_TYPE);
+    void const* get_param(paramnames::PAR_TYPE) const;
 
-private:
+ private:
     // inputs
     const double* in_signal;
     const double* in_amp_eg;
     const double* in_amp_mod;
+
     // outputs
-    short out_mono;
-    double out_m;
+    double out_output;
+
     // params
-    short amplitude;
+    double level;
     double amp_modsize;
-    short clip_level;
+    double clip_level;
+
     // working
     double amp_level;
     double ampsig;
-    static int monoamp_count;
     void create_params();
     static bool done_params;
 };

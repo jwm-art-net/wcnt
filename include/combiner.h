@@ -2,15 +2,7 @@
 #define COMBINER_H
 
 #include "wcntsignal.h"
-#include "conversions.h"
 #include "linkedlist.h"
-#include "modoutputslist.h"
-#include "modinputslist.h"
-#include "modparamlist.h"
-#include "dobjparamlist.h"
-#include "moddobjlist.h"
-#include "dobjmod.h"
-#include "dobjlist.h"
 
 class combiner: public synthmod
 {
@@ -38,8 +30,6 @@ public:
         return wcntsig = (wcnt_signal*)
          (wcntsig_item = wcntsiglist->goto_next())->get_data();
     }
-    void set_mean_total(STATUS s){ meantotal = s;}
-    double const* get_output(){ return &out_output;}
     // virtual funcs
     void run();
     void init();
@@ -47,9 +37,9 @@ public:
     // wcnt_signal is not a dobj, but a synthmod, so a dobj wrapper class
     // - dobjmod, is passed which contains a pointer to the wcnt_signal
     dobj* add_dobj(dobj*);
-    void const* get_out(outputnames::OUT_TYPE);
+    void const* get_out(outputnames::OUT_TYPE) const;
     bool set_param(paramnames::PAR_TYPE, void const*);
-    void const* get_param(paramnames::PAR_TYPE);
+    void const* get_param(paramnames::PAR_TYPE) const;
     synthmod* duplicate_module(const char* uname, DUP_IO);
 
 private:
@@ -63,7 +53,6 @@ private:
     double const* sig;
     double const* prevsig;
     double zero;// for initial stuff
-    static int combiner_count;
     static bool done_params;
     void create_params();
     static bool done_moddobj;

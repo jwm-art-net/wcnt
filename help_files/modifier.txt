@@ -1,0 +1,13 @@
+This module works much like the adder and subtractor modules do, but
+has an effect which is more like mixing two signals together and
+adjusting their levels so they still remain within similiar value
+ranges.
+
+When the function parameter is set to sub, then in_modifier will be subtracted
+from in_signal.
+
+The bias parameter controls how much to balance the two signals.
+Setting bias to 0.25 means 3/4 of in_signal will be heard, while only
+1/4 of in_modifier will.
+
+See also: adder subtractor muliplier

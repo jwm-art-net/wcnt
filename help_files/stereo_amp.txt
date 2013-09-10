@@ -1,0 +1,15 @@
+The stereo_amp 'amplifies' the two input signals (in_left and in_right). It can
+also shape them via in_amp_eg (hint: connect to adsr out_output).
+
+right_level and left_level should be set to 1.0 for the input signals to remain
+as they are. 0.5 will halve their loudness, and 2.0 will double it. By setting
+clip_level to 1.0 the output from out_left and out_right will be forced within
+the range -1.0 to +1.0 - which is generally how you want it - with higher
+amplitudes sheered off.
+
+If you wish to use in_amp_mod for velocity changes of 'notes' then you will
+certainly wish to use the sequencer module's out_velocity_ramp so that clicks
+(as velocity changes) are avoided. The adsr might be better used for controlling
+velocity levels.
+
+See also: mono_amp adsr sequencer

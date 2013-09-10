@@ -1,6 +1,7 @@
 #ifndef MODOBJLIST_H
 #define MODOBJLIST_H
 
+#include "linkedlist.h"
 #include "moddobj.h"
 
 // behaves in similiar fashion to topdobjlist - see topdobjlist.h

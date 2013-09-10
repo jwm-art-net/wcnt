@@ -1,12 +1,7 @@
 #ifndef RIFFEDITOR_H
 #define RIFFEDITOR_H
 
-#include "notedata.h"
-#include "dobjparamlist.h"
-#include "topdobjlist.h"
-#include "riffdata.h"
-
-
+#include "dobj.h"
 
 /*
     riff_editor
@@ -24,6 +19,7 @@
     work such as storing and processing them etc.
 */
 
+class riffdata;
 
 class riff_editor : public dobj
 {
@@ -31,12 +27,12 @@ class riff_editor : public dobj
     riff_editor();
     ~riff_editor();
 
-    void set_riff_source(riffdata* rs){ riff_source = rs; }
-    riffdata* get_riff_source(){ return riff_source; }
+    void set_riff_source(riffdata* rs)  { riff_source = rs;     }
+    riffdata* get_riff_source()         { return riff_source;   }
 
     // virtuals from dobj
     bool set_param(paramnames::PAR_TYPE, void*);
-    void const* get_param(paramnames::PAR_TYPE);
+    void const* get_param(paramnames::PAR_TYPE) const;
     dobj const* add_dobj(dobj*);
     stockerrs::ERR_TYPE validate();
 

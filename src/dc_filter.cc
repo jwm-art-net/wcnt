@@ -1,101 +1,89 @@
 #ifndef DC_FILTER_H
 #include "../include/dc_filter.h"
+#include "../include/jwm_globals.h"
+#include "../include/modoutputlist.h"
+#include "../include/modinputlist.h"
+#include "../include/modparamlist.h"
+#include "../include/dtr.h"
 
 dc_filter::dc_filter(char const* uname) :
- synthmod(synthmodnames::MOD_DCFILTER, dc_filter_count, uname),
+ synthmod(synthmodnames::DCFILTER, uname),
  in_signal(0), output(0), dc_time(0), filter(0), filterarraymax(0),
  fpos(0), filtertotal(0)
 {
-    get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
-    get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
-    dc_filter_count++;
+    jwm.get_outputlist().add_output(this, outputnames::OUT_OUTPUT);
+    jwm.get_inputlist().add_input(this, inputnames::IN_SIGNAL);
     create_params();
 }
 
 dc_filter::~dc_filter()
 {
-    get_outputlist()->delete_module_outputs(this);
-    get_inputlist()->delete_module_inputs(this);
+    jwm.get_outputlist().delete_module_outputs(this);
+    jwm.get_inputlist().delete_module_inputs(this);
     delete [] filter;
 }
 
 void dc_filter::init()
 {
-    filterarraymax = (short)((dc_time * audio_samplerate) / 1000);
+    filterarraymax = (short)((dc_time * jwm.samplerate()) / 1000);
     filter = new double[filterarraymax];
     for (int i = 0; i < filterarraymax; i++) filter[i] = 0;
-    fpos = filterarraymax - 1;
 }
 
-void const* dc_filter::get_out(outputnames::OUT_TYPE ot)
+void const* dc_filter::get_out(outputnames::OUT_TYPE ot) const
 {
-    void const* o = 0;
     switch(ot)
     {
-    case outputnames::OUT_OUTPUT:
-        o = &output;
-        break;
-    default:
-        o = 0;
+        case outputnames::OUT_OUTPUT: return &output;
+        default: return 0;
     }
-    return o;
 }
 
 void const* dc_filter::set_in(inputnames::IN_TYPE it, void const* o)
 {
     switch(it)
     {
-    case inputnames::IN_SIGNAL:
-        return in_signal = (double*)o;
-    default:
-        return 0;
+        case inputnames::IN_SIGNAL: return in_signal = (double*)o;
+        default: return 0;
     }
 }
 
-void const* dc_filter::get_in(inputnames::IN_TYPE it)
+void const* dc_filter::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
-    case inputnames::IN_SIGNAL:
-        return in_signal;
-    default:
-        return 0;
+        case inputnames::IN_SIGNAL: return in_signal;
+        default: return 0;
     }
 }
 
 bool dc_filter::set_param(paramnames::PAR_TYPE pt, void const* data)
 {
-    bool retv = false;
     switch(pt)
     {
-    case paramnames::PAR_DC_TIME:
-        set_dc_time(*(double*)data);
-        retv = true;
-        break;
-    default:
-        retv = false;
-        break;
+        case paramnames::DC_TIME:
+            dc_time = *(double*)data;
+            return true;
+        default:
+            return false;
     }
-    return retv;
 }
 
-void const* dc_filter::get_param(paramnames::PAR_TYPE pt)
+void const* dc_filter::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {
-    case paramnames::PAR_DC_TIME:
-        return &dc_time;
-    default:
-        return 0;
+        case paramnames::DC_TIME: return &dc_time;
+        default: return 0;
     }
 }
 
 stockerrs::ERR_TYPE dc_filter::validate()
 {
-    if (!get_paramlist()->validate(this, paramnames::PAR_DC_TIME,
+    if (!jwm.get_paramlist().validate(this, paramnames::DC_TIME,
             stockerrs::ERR_NEG_ZERO))
     {
-        *err_msg = get_paramnames()->get_name(paramnames::PAR_DC_TIME);
+        *err_msg = jwm.get_paramnames().get_name(paramnames::DC_TIME);
         invalidate();
         return stockerrs::ERR_NEG_ZERO;
     }
@@ -104,17 +92,13 @@ stockerrs::ERR_TYPE dc_filter::validate()
 
 void dc_filter::run()
 {
-    filtertotal = 0;
-    for (int i = fpos; i < fpos + filterarraymax; i ++)
-        filtertotal += filter[i % filterarraymax];
     output = (filtertotal / filterarraymax) - filter[fpos];
-    filter[fpos] = *in_signal;
-    fpos--;
-    if (fpos < 0)
-        fpos = filterarraymax - 1;
+    filtertotal -= filter[fpos];
+    filtertotal += (filter[fpos] = *in_signal);
+    fpos++;
+    if (fpos == filterarraymax)
+        fpos = 0;
 }
-
-int dc_filter::dc_filter_count = 0;
 
 bool dc_filter::done_params = false;
 
@@ -122,8 +106,8 @@ void dc_filter::create_params()
 {
     if (done_params == true)
         return;
-    get_paramlist()->add_param(
-     synthmodnames::MOD_DCFILTER, paramnames::PAR_DC_TIME);
+    jwm.get_paramlist().add_param(
+     synthmodnames::DCFILTER, paramnames::DC_TIME);
     done_params = true;
 }
 

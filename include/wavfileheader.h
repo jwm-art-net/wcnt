@@ -1,9 +1,14 @@
 #ifndef WAVHEADER_H
 #define WAVHEADER_H
 
-#define WAV_BUFFER_SIZE 4096
-
-#include <string.h>
+enum DATA_FMT
+{
+    FMT_PCM16,
+    FMT_PCM24,
+    FMT_PCM32,
+    FMT_FLT32,
+    FMT_FLT64
+};
 
 enum WAV_WRITEHEAD
 {
@@ -51,44 +56,10 @@ struct stereodata
     short right;
 };
 
-class wavheader
+struct st_data
 {
-public:
-    wavheader(){};
-    wavheader(short channels, unsigned long samplerate, short resolution);
-    ~wavheader(){}
-    void SetChannels(short ch) { itsChannels = ch; }
-    void SetSampleRate(unsigned long sr) { itsSampleRate = sr; }
-    void SetResolution(short res) { itsResolution = res; }
-    WAV_WRITEHEAD SetReady(unsigned long &length);
-    unsigned long SecondsToSamples(double &secs) {
-        return (unsigned long) (itsSampleRate * secs);
-    }
-    unsigned long	GetSampleRate() { return itsSampleRate; }
-    unsigned long	GetSampleLength() {
-        return itsSampleLength / itsBlockAlign;
-    }
-    short GetChannels() { return itsChannels; }
-    short GetResolution() { return itsResolution; }
-    char GetBlockAlign() { return itsBlockAlign; }
-    unsigned short get_format_tag(){ return format_tag;}
-    bool valid_format_name();
-    bool valid_type_name();
-    bool valid_riff_name();
-private:
-    char itsText1[4]; //riff
-    unsigned long itsLength;//36(noof bytes before itsText3[4] aparently)
-    char itsText2[4]; //type name
-    char itsData1[4]; // format name
-    unsigned long its_length; // sixteen what?
-    unsigned short format_tag; //1 is pcm
-    short itsChannels;
-    unsigned long itsSampleRate;
-    unsigned long itsBlockSampleRate;
-    unsigned short itsBlockAlign;
-    short itsResolution;
-    unsigned char itsText3[4];
-    unsigned long itsSampleLength;
+    double left;
+    double right;
 };
 
 #endif // WAVHEADER_H

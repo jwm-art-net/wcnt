@@ -1,16 +1,6 @@
 #ifndef CONVERSIONS_H
 #define CONVERSIONS_H
 
-#include <math.h>
-#include <stdio.h>
-
-// to get sample rate
-#include "synthmodule.h"
-
-#define NOTE_ARRAY_SIZE 10
-#define NOTE_NAME_LEN 9
-
-
 /*----------------------------------------------------------------
     conversion of note names to frequencies have been adapted 
     from code contained in a book by Ian Waugh, entitled:

@@ -1,0 +1,26 @@
+A monophonic sequencer with seperate trigger outputs for note on events
+and note slide events (when notes overlap their pitch slides). Riffs of
+notes are inserted at bar positions and can be transposed at the point
+of insertion,  repeated across any number of bars, or repeatedly
+inserted once every few bars.
+
+See also: riff (data object)
+
+The sequencer module's inputs should be connected to the time_map
+module's similarly named outputs. Connecting the sequencer in any other
+way is still untested to be honest.
+
+The velocity_response_time parameter is the number of ms it takes for
+each note's velocity to be ramped up to the new note's velocity. This
+only affects out_velocity_ramp. out_velocity will output the note's
+velocity as it is. You will want to use out_velocity_ramp if you use
+one of the amp modules for velocity changes.
+
+The start_bar parameter can be used to skip bars in the sequence so you
+can quickly and easily hear how additional riffs will sound without
+having to process the entire lot.
+
+Full documentation for sequencing in wcnt can be found at:
+http://wcnt.sourceforge.net
+
+See also: time_map osc_clock adsr stereo_amp sync_clock

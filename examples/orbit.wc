@@ -1,0 +1,383 @@
+wcnt-1.26/jwmsynth
+
+// examples/orbit.wc
+
+// modification of sinewave.wc to give example of the orbit module.
+// the orbit module calculates an orbit fractal...
+
+// here it is used to modulate the frequency of a waveform.
+
+samplerate 44100
+bpm 120
+signature 4/4
+
+// duration of sound
+
+timer t1
+    timings
+        time seconds 0.0
+        time seconds 30.0
+    timings
+t1
+
+clock clock0
+    in_freq_mod1 off
+    freq 0.125
+    freq_mod1_size 1
+clock0
+
+
+lfo_clock
+orb_clock1
+    in_phase_trig  off
+    in_freq_mod1   orbit1 out_x
+    in_freq_mod2   orbit1 out_y
+    freq            3.75
+    freq_mod1_size  2
+    freq_mod2_size  2
+orb_clock1
+
+clock
+orb_clock2
+    in_freq_mod1    orbit2 out_y
+    freq            350
+    freq_mod1_size  2
+orb_clock2
+
+constant_freq nl freq 100 nl
+constant_freq nr freq 100 nr
+
+osc_clock
+clock_l
+    in_note_on_trig     orb_clock1 out_phase_trig
+    in_note_slide_trig  off
+    in_play_state       off
+    in_frequency        nl out_frequency
+    in_freq_mod1        orbit1 out_x
+    in_freq_mod2        orbit2 out_x
+    octave_offset       -1
+    tuning_semitones    0
+    portamento_time     25
+    response_time       5
+    freq_mod1_size      2
+    freq_mod2_size      1.25
+clock_l
+
+osc_clock
+clock_r
+    in_note_on_trig     orb_clock1 out_phase_trig
+    in_note_slide_trig  off
+    in_play_state       off
+    in_frequency        nr out_frequency
+    in_freq_mod1        orbit1 out_y
+    in_freq_mod2        orbit2 out_x
+    octave_offset       -1
+    tuning_semitones    0
+    portamento_time     25
+    response_time       5
+    freq_mod1_size      2
+    freq_mod2_size      1.25
+clock_r
+
+orbit
+orbit1
+    in_restart_trig  off
+    in_trig          orb_clock1 out_phase_trig
+    orbit_type       hopalong
+    a                2.0055
+    b                -1.005
+    c                -3.0042
+    test_iterations  7500
+orbit1
+
+pattern_trig
+pt1
+    in_trig orb_clock1 out_phase_trig
+    pattern 100000000000
+pt1
+
+orbit
+orbit2
+    in_restart_trig  off //orb_clock1 out_phase_trig
+    in_trig          orb_clock2 out_phase_trig
+    orbit_type       quadrup
+    a                0.0013055
+    b                0.005
+    c                -0.0042
+    test_iterations  1000000
+orbit2
+
+adsr
+env
+    envelope
+        section name  attack
+            ut 2.5      ul 1.0
+            lt 3.5      ll 1.0
+        section name  decay
+            ut 12.5      ul 0.845
+            lt 13.5      ll 0.845
+        section name  release
+            ut 32.5      ul 0.125
+            lt 33.5      ll 0.125
+        section name  release
+            ut 85.5      ul 0
+            lt 85.5      ll 0
+    envelope
+    in_note_on_trig   orb_clock1 out_phase_trig
+    in_note_off_trig  off
+    in_velocity       off
+    up_thresh         0.0
+    lo_thresh         -0.1
+    start_level       0.0
+    min_time          30.0
+    max_sustain_time  40.0
+    release_is_ratio  off
+    sustain_state     off
+    zero_retrigger    off
+env
+
+wave sine_l
+    in_phase_step   clock_l out_phase_step
+    type sine
+sine_l
+
+wave sine_r
+    in_phase_step   clock_r out_phase_step
+    type sine
+sine_r
+
+stereo_amp amp1
+    in_left     sine_l out_output
+    in_right    sine_r out_output
+    in_amp_eg   env out_output
+    in_amp_mod  off
+    left_level      0.75
+    right_level     0.75
+    amp_mod_size    0.0
+    clip_level      1.0
+amp1
+
+group g1
+modules
+    synthmod name nl
+    synthmod name nr
+    synthmod name clock_l
+    synthmod name clock_r
+    synthmod name orbit1
+    synthmod name sine_l
+    synthmod name sine_r
+    synthmod name env
+    synthmod name amp1
+modules
+g1
+
+copier c1 from g1 to g2 c1
+copier c2 from g1 to g3 c2
+copier c3 from g1 to g4 c3
+copier c4 from g1 to g5 c4
+
+param_editor
+pe1
+    editlist
+        edit g1.nl freq 310
+        edit g1.nr freq 300
+        edit g2.nl freq 200
+        edit g2.nr freq 210
+        edit g3.nl freq 400
+        edit g3.nr freq 410
+        edit g4.nl freq 510.5
+        edit g4.nr freq 500.5
+        edit g5.nl freq 650.5
+        edit g5.nr freq 660.5
+
+        edit g2.clock_l octave_offset 0
+        edit g2.clock_r octave_offset 0
+        edit g4.clock_l octave_offset 0
+        edit g4.clock_r octave_offset 0
+
+        edit g2.amp1
+            left_level  0.6
+            right_level 0.6
+        edit g3.amp1
+            left_level  0.5
+            right_level 0.5
+        edit g4.amp1
+            left_level  0.4
+            right_level 0.4
+        edit g5.amp1
+            left_level  0.25
+            right_level 0.25
+
+        edit g2.orbit1
+            a                2.0057
+            b                -1.007
+            c                -3.0044
+        edit g3.orbit1
+            a                2.0059
+            b                -1.009
+            c                -3.0046
+        edit g4.orbit1
+            a                2.0061
+            b                -1.011
+            c                -3.0048
+        edit g5.orbit1
+            a                2.0063
+            b                -1.013
+            c                -3.0050
+    editlist
+pe1
+
+adsr_scaler
+asc1
+            adsr_name      g1.env
+            attack_scale   2
+            decay_scale    2
+            release_scale  2
+asc1
+
+adsr_scaler
+asc2
+            adsr_name      g2.env
+            attack_scale   1.75
+            decay_scale    1.75
+            release_scale  1.75
+asc2
+
+adsr_scaler
+asc3
+            adsr_name      g3.env
+            attack_scale   1.5
+            decay_scale    1.5
+            release_scale  1.5
+asc3
+
+adsr_scaler
+asc4
+            adsr_name      g4.env
+            attack_scale   1.25
+            decay_scale    1.25
+            release_scale  1.25
+asc4
+
+modifier
+g12_l
+    in_signal1 g1.amp1 out_left
+    in_signal2 g2.amp1 out_left
+    function  add
+    type      m2
+    bias      0.175
+g12_l
+
+modifier
+g12_r
+    in_signal1 g1.amp1 out_right
+    in_signal2 g2.amp1 out_right
+    function  add
+    type      m2
+    bias      0.175
+g12_r
+
+modifier
+g15_l
+    in_signal1 g1.amp1 out_left
+    in_signal2 g5.amp1 out_left
+    function  add
+    type      m2
+    bias      0.75
+g15_l
+
+modifier
+g15_r
+    in_signal1 g1.amp1 out_right
+    in_signal2 g5.amp1 out_right
+    function  add
+    type      m2
+    bias      0.75
+g15_r
+
+modifier
+g34_l
+    in_signal1 g3.amp1 out_left
+    in_signal2 g4.amp1 out_left
+    function  add
+    type      m2
+    bias      0.5
+g34_l
+
+modifier
+g34_r
+    in_signal1 g3.amp1 out_right
+    in_signal2 g4.amp1 out_right
+    function  add
+    type      m2
+    bias      0.5
+g34_r
+
+mix_chan ch1 in_left g12_l out_output in_right g12_r out_output ch1
+mix_chan ch2 in_left g15_l out_output in_right g15_r out_output ch2
+mix_chan ch3 in_left g34_l out_output in_right g34_r out_output ch3
+
+mixer
+mix1
+    mix
+        synthmod name ch1
+        synthmod name ch2
+        synthmod name ch3
+    mix
+    master_level  0.75
+mix1
+
+caps_plate2x2
+rvb
+    in_left mix1 out_left
+    in_right mix1 out_right
+    bandwidth  0.6
+    tail       0.5
+    damping    0.4
+    wet/dry    0.12
+rvb
+
+constant one value 1.0 one
+
+// write amplified signal to wav file
+
+wavfile_out wav1
+    in_left     rvb out_left
+    in_right    rvb out_right
+    in_bar      t1 out_count
+    in_bar_trig t1 out_trig
+    data_format pcm16
+    filename    orbit.wav
+    start_bar   0
+    end_bar     1
+wav1
+
+// when to stop
+
+wcnt_exit wcnt_exit_module
+    in_bar      t1 out_count
+    exit_bar    1
+wcnt_exit_module
+
+wcnt-1.26/jwmsynth
+
+input_editor
+ie1
+    editlist
+        connect g1.orb_clock
+            in_freq_mod1   g2.orbit1 out_x
+            in_freq_mod2   g2.orbit1 out_y
+        connect g2.orb_clock
+            in_freq_mod1   g3.orbit1 out_x
+            in_freq_mod2   g3.orbit1 out_y
+        connect g3.orb_clock
+            in_freq_mod1   g4.orbit1 out_x
+            in_freq_mod2   g4.orbit1 out_y
+        connect g4.orb_clock
+            in_freq_mod1   g5.orbit1 out_x
+            in_freq_mod2   g5.orbit1 out_y
+        connect g5.orb_clock
+            in_freq_mod1   g1.orbit1 out_x
+            in_freq_mod2   g1.orbit1 out_y
+    editlist
+ie1

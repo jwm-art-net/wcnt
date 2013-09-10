@@ -1,8 +1,17 @@
 #ifndef STEPPER_H
 #include "../include/stepper.h"
+#include "../include/jwm_globals.h"
+#include "../include/modoutputlist.h"
+#include "../include/modinputlist.h"
+#include "../include/modparamlist.h"
+#include "../include/synthmodule.h"
+#include "../include/synthmodulelist.h"
+#include "../include/conversions.h"
+#include "../include/moddobjlist.h"
+#include "../include/dobjdobjlist.h"
 
 stepper::stepper(char const* uname) :
- synthmod(synthmodnames::MOD_STEPPER, stepper_count, uname),
+ synthmod(synthmodnames::STEPPER, uname),
  in_trig(0), in_restart_trig(0), in_modulation(0),
  step_count(0), rtime(0), recycle(OFF),
  out_output(0),
@@ -10,23 +19,22 @@ stepper::stepper(char const* uname) :
  rtime_samp(0), rtime_max_samps(0), rtime_stpsz(0), rtime_size(0),
  steplist(0), step_item(0), step(0)
 {
-    get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
-    get_inputlist()->add_input(this, inputnames::IN_TRIG);
-    get_inputlist()->add_input(this, inputnames::IN_RESTART_TRIG);
-    get_inputlist()->add_input(this, inputnames::IN_MODULATION);
+    jwm.get_outputlist().add_output(this, outputnames::OUT_OUTPUT);
+    jwm.get_inputlist().add_input(this, inputnames::IN_TRIG);
+    jwm.get_inputlist().add_input(this, inputnames::IN_RESTART_TRIG);
+    jwm.get_inputlist().add_input(this, inputnames::IN_MODULATION);
     steplist =
         new linkedlist(linkedlist::MULTIREF_ON, linkedlist::NO_NULLDATA);
     insert_step(new step_data(0.0, 0.0, 0.0));
     insert_step(new step_data(1.0, 1.0, 1.0));
-    stepper_count++;
     create_params();
     create_moddobj();
 }
 
 stepper::~stepper()
 {
-    get_outputlist()->delete_module_outputs(this);
-    get_inputlist()->delete_module_inputs(this);
+    jwm.get_outputlist().delete_module_outputs(this);
+    jwm.get_inputlist().delete_module_inputs(this);
     goto_first();
     while(step) {
         delete step;
@@ -37,14 +45,12 @@ stepper::~stepper()
     if (lo_levels) delete [] lo_levels;
 }
 
-void const* stepper::get_out(outputnames::OUT_TYPE ot)
+void const* stepper::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
-    case outputnames::OUT_OUTPUT:
-        return &out_output;
-    default:
-        return 0;
+        case outputnames::OUT_OUTPUT: return &out_output;
+        default: return 0;
     }
 }
 
@@ -52,80 +58,62 @@ void const* stepper::set_in(inputnames::IN_TYPE it, void const* o)
 {
     switch(it)
     {
-    case inputnames::IN_TRIG:
-        return in_trig = (STATUS*)o;
-    case inputnames::IN_RESTART_TRIG:
-        return in_restart_trig = (STATUS*)o;
-    case inputnames::IN_MODULATION:
-        return in_modulation = (double*)o;
-    default:
-        return 0;
+        case inputnames::IN_TRIG:
+            return in_trig = (STATUS*)o;
+        case inputnames::IN_RESTART_TRIG:
+            return in_restart_trig = (STATUS*)o;
+        case inputnames::IN_MODULATION:
+            return in_modulation = (double*)o;
+        default:
+            return 0;
     }
 }
 
-void const* stepper::get_in(inputnames::IN_TYPE it)
+void const* stepper::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
-    case inputnames::IN_TRIG:
-        return in_trig;
-    case inputnames::IN_RESTART_TRIG:
-        return in_restart_trig;
-    case inputnames::IN_MODULATION:
-        return in_modulation;
-    default:
-        return 0;
+        case inputnames::IN_TRIG:           return in_trig;
+        case inputnames::IN_RESTART_TRIG:   return in_restart_trig;
+        case inputnames::IN_MODULATION:     return in_modulation;
+        default: return 0;
     }
 }
 
 bool stepper::set_param(paramnames::PAR_TYPE pt, void const* data)
 {
-    bool retv = false;
     switch(pt)
     {
-    case paramnames::PAR_STEP_COUNT:
-        set_step_count(*(short*)data);
-        retv = true;
-        break;
-    case paramnames::PAR_UP_THRESH:
-        set_upper_thresh(*(double*)data);
-        retv = true;
-        break;
-    case paramnames::PAR_LO_THRESH:
-        set_lower_thresh(*(double*)data);
-        retv = true;
-        break;
-    case paramnames::PAR_RESPONSE_TIME:
-        set_response_time(*(double*)data);
-        retv = true;
-        break;
-    case paramnames::PAR_RECYCLE_MODE:
-        set_recycle_mode(*(STATUS*)data);
-        retv = true;
-        break;
-    default:
-        retv = false;
-        break;
+        case paramnames::STEP_COUNT:
+            step_count = *(short*)data;
+            return true;
+        case paramnames::UP_THRESH:
+            up_thresh = *(double*)data;
+            return true;
+        case paramnames::LO_THRESH:
+            lo_thresh = *(double*)data;
+            return true;
+        case paramnames::RESPONSE_TIME:
+            rtime = *(double*)data;
+            return true;
+        case paramnames::RECYCLE_MODE:
+            recycle = *(STATUS*)data;
+            return true;
+        default:
+            return false;
     }
-    return retv;
 }
 
-void const* stepper::get_param(paramnames::PAR_TYPE pt)
+void const* stepper::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {
-    case paramnames::PAR_STEP_COUNT:
-        return &step_count;
-    case paramnames::PAR_UP_THRESH:
-        return &up_thresh;
-    case paramnames::PAR_LO_THRESH:
-        return &lo_thresh;
-    case paramnames::PAR_RESPONSE_TIME:
-        return &rtime;
-    case paramnames::PAR_RECYCLE_MODE:
-        return &recycle;
-    default:
-        return 0;
+        case paramnames::STEP_COUNT:    return &step_count;
+        case paramnames::UP_THRESH:     return &up_thresh;
+        case paramnames::LO_THRESH:     return &lo_thresh;
+        case paramnames::RESPONSE_TIME: return &rtime;
+        case paramnames::RECYCLE_MODE:  return &recycle;
+        default: return 0;
     }
 }
 
@@ -156,20 +144,20 @@ stockerrs::ERR_TYPE stepper::validate()
         invalidate();
         return stockerrs::ERR_ERROR;
     }
-    if (!get_paramlist()->validate(this, paramnames::PAR_RESPONSE_TIME,
+    if (!jwm.get_paramlist().validate(this, paramnames::RESPONSE_TIME,
                                             stockerrs::ERR_NEGATIVE))
     {
         *err_msg =
-            get_paramnames()->get_name(paramnames::PAR_RESPONSE_TIME);
+            jwm.get_paramnames().get_name(paramnames::RESPONSE_TIME);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (up_thresh < lo_thresh) {
         *err_msg =
-         get_paramnames()->get_name(paramnames::PAR_UP_THRESH);
+         jwm.get_paramnames().get_name(paramnames::UP_THRESH);
         *err_msg += " must not be less than ";
         *err_msg +=
-         get_paramnames()->get_name(paramnames::PAR_LO_THRESH);
+         jwm.get_paramnames().get_name(paramnames::LO_THRESH);
         invalidate();
         return stockerrs::ERR_ERROR;
     }
@@ -206,13 +194,13 @@ dobj* stepper::add_dobj(dobj* dbj)
         if (insert_step((step_data*)dbj))
             return dbj;
         *err_msg = "\ncould not insert ";
-        *err_msg += dobj::get_dobjnames()->get_name(dobjnames::SIN_STEP);
+        *err_msg += jwm.get_dobjnames().get_name(dobjnames::SIN_STEP);
         *err_msg += " into stepper";
         return 0;
     }
     *err_msg = "\n***major error*** attempt made to add an ";
     *err_msg += "\ninvalid object type of ";
-    *err_msg += dobj::get_dobjnames()->get_name(dbj->get_object_type());
+    *err_msg += jwm.get_dobjnames().get_name(dbj->get_object_type());
     *err_msg += " to ";
     *err_msg += get_username();
     return 0;
@@ -271,8 +259,8 @@ void stepper::run()
         else if (premod > up_thresh) premod = up_thresh;
         double mod = (premod - lo_thresh) / (up_thresh - lo_thresh);
         last_output = out_output;
-        output = lo_levels[step_no] + 
-                        (up_levels[step_no]  - lo_levels[step_no]) * mod;
+        output = lo_levels[step_no] +
+                        (up_levels[step_no] - lo_levels[step_no]) * mod;
         rtime_samp = rtime_max_samps;
         rtime_size = 0;
         if (++next_step_no >= step_count)
@@ -287,24 +275,22 @@ void stepper::run()
     else out_output = output;
 }
 
-int stepper::stepper_count = 0;
-
 bool stepper::done_params = false;
 
 void stepper::create_params()
 {
     if (done_params == true)
         return;
-    get_paramlist()->add_param( synthmodnames::MOD_STEPPER,
-                                        paramnames::PAR_STEP_COUNT);
-    get_paramlist()->add_param( synthmodnames::MOD_STEPPER,
-                                        paramnames::PAR_UP_THRESH);
-    get_paramlist()->add_param( synthmodnames::MOD_STEPPER,
-                                        paramnames::PAR_LO_THRESH);
-    get_paramlist()->add_param( synthmodnames::MOD_STEPPER,
-                                        paramnames::PAR_RESPONSE_TIME);
-    get_paramlist()->add_param( synthmodnames::MOD_STEPPER,
-                                        paramnames::PAR_RECYCLE_MODE);
+    jwm.get_paramlist().add_param( synthmodnames::STEPPER,
+                                        paramnames::STEP_COUNT);
+    jwm.get_paramlist().add_param( synthmodnames::STEPPER,
+                                        paramnames::UP_THRESH);
+    jwm.get_paramlist().add_param( synthmodnames::STEPPER,
+                                        paramnames::LO_THRESH);
+    jwm.get_paramlist().add_param( synthmodnames::STEPPER,
+                                        paramnames::RESPONSE_TIME);
+    jwm.get_paramlist().add_param( synthmodnames::STEPPER,
+                                        paramnames::RECYCLE_MODE);
     done_params = true;
 }
 
@@ -315,8 +301,8 @@ void stepper::create_moddobj()
     if (done_moddobj == true)
         return;
     moddobj* mdbj;
-    mdbj = get_moddobjlist()->add_moddobj(
-        synthmodnames::MOD_STEPPER, dobjnames::LST_STEPS);
+    mdbj = jwm.get_moddobjlist().add_moddobj(
+        synthmodnames::STEPPER, dobjnames::LST_STEPS);
     mdbj->get_dobjdobjlist()->add_dobjdobj(
         dobjnames::LST_STEPS, dobjnames::SIN_STEP);
     done_moddobj = true;

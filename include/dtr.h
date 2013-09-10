@@ -3,10 +3,9 @@
 
 #include <math.h>
 
-// mingw32 and visual c++ 6 don't appear to have this:
-#ifndef M_PI
-#define M_PI 3.1415926535897932384626433832795
-#endif
+//#ifndef M_PI
+//#define M_PI 3.1415926535897932384626433832795
+//#endif
 
 // multiply degrees by DTR to get radians for
 // use with maths functions: sin, cos, etc

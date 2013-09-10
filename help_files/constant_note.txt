@@ -1,0 +1,5 @@
+The constant_note module can be used to translate a never changing
+note name (such as c0 for middle-C) to it's corresponding
+frequency and phase_step values.
+
+See also: constant_freq constant osc_clock wave

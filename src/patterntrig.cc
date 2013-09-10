@@ -1,24 +1,27 @@
 #ifndef PATTERNTRIG_H
 #include "../include/patterntrig.h"
+#include "../include/jwm_globals.h"
+#include "../include/modoutputlist.h"
+#include "../include/modinputlist.h"
+#include "../include/modparamlist.h"
 
 patterntrig::patterntrig(char const* uname) :
- synthmod(synthmodnames::MOD_PATTERNTRIG, patterntrig_count, uname),
- in_trig(0), out_trig(OFF), out_start_trig(OFF), 
+ synthmod(synthmodnames::PATTERNTRIG, uname),
+ in_trig(0), out_trig(OFF), out_start_trig(OFF),
  out_end_trig(OFF), pattern(0), ptr(0)
 {
-    get_outputlist()->add_output(this, outputnames::OUT_TRIG);
-    get_outputlist()->add_output(this, outputnames::OUT_START_TRIG);
-    get_outputlist()->add_output(this, outputnames::OUT_END_TRIG);
-    get_inputlist()->add_input(this, inputnames::IN_TRIG);
-    patterntrig_count++;
+    jwm.get_outputlist().add_output(this, outputnames::OUT_TRIG);
+    jwm.get_outputlist().add_output(this, outputnames::OUT_START_TRIG);
+    jwm.get_outputlist().add_output(this, outputnames::OUT_END_TRIG);
+    jwm.get_inputlist().add_input(this, inputnames::IN_TRIG);
     create_params();
 }
 
 patterntrig::~patterntrig()
 {
     if (pattern) delete [] pattern;
-    get_outputlist()->delete_module_outputs(this);
-    get_inputlist()->delete_module_inputs(this);
+    jwm.get_outputlist().delete_module_outputs(this);
+    jwm.get_inputlist().delete_module_inputs(this);
 }
 
 void patterntrig::set_pattern_string(char* pat)
@@ -73,72 +76,53 @@ stockerrs::ERR_TYPE patterntrig::validate()
     return (is_valid()) ? stockerrs::ERR_NO_ERROR : stockerrs::ERR_ERROR;
 }
 
-void const* patterntrig::get_out(outputnames::OUT_TYPE ot)
+void const* patterntrig::get_out(outputnames::OUT_TYPE ot) const
 {
-    void const* o = 0;
     switch(ot)
     {
-    case outputnames::OUT_TRIG:
-        o = &out_trig;
-        break;
-    case outputnames::OUT_START_TRIG:
-        o = &out_start_trig;
-        break;
-    case outputnames::OUT_END_TRIG:
-        o = &out_end_trig;
-        break;
-    default:
-        o = 0;
+        case outputnames::OUT_TRIG:         return &out_trig;
+        case outputnames::OUT_START_TRIG:   return &out_start_trig;
+        case outputnames::OUT_END_TRIG:     return &out_end_trig;
+        default: return 0;
     }
-    return o;
 }
 
 void const* patterntrig::set_in(inputnames::IN_TYPE it, void const* o)
 {
     switch(it)
     {
-    case inputnames::IN_TRIG:
-        return in_trig = (STATUS*)o;
-    default:
-        return 0;
+        case inputnames::IN_TRIG: return in_trig = (STATUS*)o;
+        default: return 0;
     }
 }
 
-void const* patterntrig::get_in(inputnames::IN_TYPE it)
+void const* patterntrig::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
-    case inputnames::IN_TRIG:
-        return in_trig;
-    default:
-        return 0;
+        case inputnames::IN_TRIG: return in_trig;
+        default: return 0;
     }
 }
 
 bool patterntrig::set_param(paramnames::PAR_TYPE pt, void const* data)
 {
-    bool retv = false;
     switch(pt)
     {
-    case paramnames::PAR_TRIG_STRING:
-        set_pattern_string((char*)data);
-        retv = true;
-        break;
-    default:
-        retv = false;
-        break;
+        case paramnames::TRIG_STRING:
+            set_pattern_string((char*)data);
+            return true;
+        default:
+            return false;
     }
-    return retv;
 }
 
-void const* patterntrig::get_param(paramnames::PAR_TYPE pt)
+void const* patterntrig::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {
-    case paramnames::PAR_TRIG_STRING:
-        return pattern;
-    default:
-        return 0;
+        case paramnames::TRIG_STRING: return pattern;
+        default: return 0;
     }
 }
 
@@ -164,16 +148,14 @@ void patterntrig::run()
     }
 }
 
-int patterntrig::patterntrig_count = 0;
-
 bool patterntrig::done_params = false;
 
 void patterntrig::create_params()
 {
     if (done_params == true)
         return;
-    get_paramlist()->add_param(
-     synthmodnames::MOD_PATTERNTRIG, paramnames::PAR_TRIG_STRING);
+    jwm.get_paramlist().add_param(
+        synthmodnames::PATTERNTRIG, paramnames::TRIG_STRING);
     done_params = true;
 }
 

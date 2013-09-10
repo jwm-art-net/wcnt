@@ -1,5 +1,7 @@
 #ifndef DOBJDOBJLIST_H
 #include "../include/dobjdobjlist.h"
+#include "../include/jwm_globals.h"
+#include "../include/dobjdobj.h"
 
 dobjdobjlist::dobjdobjlist() :
  dobjdobj_list(0), dobjdobj_item(0), dobj_dobj(0)
@@ -29,9 +31,9 @@ dobjdobj * dobjdobjlist::add_dobjdobj(dobjdobj* mo)
 dobjdobj * dobjdobjlist::add_dobjdobj(
  dobjnames::DOBJ_TYPE dt, dobjnames::DOBJ_TYPE kid)
 {
-    if (dobj::get_dobjnames()->check_type(dt) == dobjnames::DOBJ_FIRST)
+    if (jwm.get_dobjnames().check_type(dt) == dobjnames::DOBJ_FIRST)
         return 0;
-    if (dobj::get_dobjnames()->check_type(kid) == dobjnames::DOBJ_FIRST)
+    if (jwm.get_dobjnames().check_type(kid) == dobjnames::DOBJ_FIRST)
         return 0;
     dobjdobj* mo = new dobjdobj(dt, kid);
     ll_item* ll;
@@ -42,10 +44,10 @@ dobjdobj * dobjdobjlist::add_dobjdobj(
     return (dobj_dobj = (dobjdobj*)(dobjdobj_item = ll)->get_data());
 }
 
-dobjdobjlist * dobjdobjlist::get_dobjdobjlist_for_dobjtype(
- dobjnames::DOBJ_TYPE dt)
+dobjdobjlist *
+dobjdobjlist::get_dobjdobjlist_for_dobjtype(dobjnames::DOBJ_TYPE dt)
 {
-    if (dobj::get_dobjnames()->check_type(dt) == dobjnames::DOBJ_FIRST)
+    if (jwm.get_dobjnames().check_type(dt) == dobjnames::DOBJ_FIRST)
         return 0;
     dobjdobjlist* mdl = new dobjdobjlist();
     goto_first();
@@ -64,7 +66,7 @@ dobjdobjlist * dobjdobjlist::get_dobjdobjlist_for_dobjtype(
 dobjdobjlist * dobjdobjlist::get_dobjdobjlist_of_sprogs(
  dobjnames::DOBJ_TYPE kid)
 {
-    if (dobj::get_dobjnames()->check_type(kid) == dobjnames::DOBJ_FIRST)
+    if (jwm.get_dobjnames().check_type(kid) == dobjnames::DOBJ_FIRST)
         return 0; // check_type returns DOBJ_FIRST if dt not user type
     dobjdobjlist* mdl = new dobjdobjlist();
     goto_first();

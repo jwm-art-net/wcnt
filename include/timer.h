@@ -2,16 +2,8 @@
 #define TIMER_H
 
 #include "synthmodule.h"
-#include "conversions.h"
-#include "linkedlist.h"
-
-#include "modoutputslist.h"
-#include "modinputslist.h"
-#include "modparamlist.h"
-#include "dobjparamlist.h"
-#include "moddobjlist.h"
-
 #include "timing.h"
+#include "linkedlist.h"
 
 /*
     timer
@@ -50,13 +42,10 @@ public:
     timing* get_prev(){
         return (timing*)(t_item->get_prev())->get_data();
     }
-    // outputs access:
-    short const* get_out_count(){return &out_count;}
-    STATUS const* get_out_trig(){return &out_trig;}
     // virtual methods
     void run();
     void init();
-    void const* get_out(outputnames::OUT_TYPE);
+    void const* get_out(outputnames::OUT_TYPE) const;
     synthmod* duplicate_module(const char* uname, DUP_IO);
     dobj* add_dobj(dobj*);
 private:
@@ -70,7 +59,6 @@ private:
     timing* current;
     unsigned long samples;
     // synthmod stuff for keeping things cushdy.
-    static short timer_count;
     static bool done_moddobj;
     void create_moddobj();
 };

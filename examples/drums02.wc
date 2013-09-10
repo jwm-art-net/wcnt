@@ -1,4 +1,4 @@
-wcnt-1.25/jwmsynth
+wcnt-1.26/jwmsynth
 //------------------------------------------------------------------------
 //
 //  drums02.wc:  
@@ -31,8 +31,8 @@ sampler1
         in_play_trig        drum_trig   out_trig
         in_stop_trig        off
         in_start_pos_mod    stepper1    out_output
-        in_deg_size         osc1b       out_deg_size
-        wavfile     drumloop
+        in_phase_step         osc1b       out_phase_step
+        wavfile                 drumloop
         play_dir                fwd
         play_mode               wrap
         jump_mode               play
@@ -46,7 +46,7 @@ sampler1
         anti_clip_samples       50
         anti_clip_each_end      on
         zero_search_range       15
-        degsize_amount          1.0
+        phase_step_amount          1.0
 sampler1
 
 sampler
@@ -54,8 +54,8 @@ sampler1b
         in_play_trig        drum_trigb  out_trig
         in_stop_trig        off
         in_start_pos_mod    stepper1    out_output
-        in_deg_size         osc1        out_deg_size
-        wavfile     drumloop
+        in_phase_step         osc1        out_phase_step
+        wavfile                 drumloop
         play_dir                fwd
         play_mode               wrap
         jump_mode               play
@@ -69,7 +69,7 @@ sampler1b
         anti_clip_samples       50
         anti_clip_each_end      on
         zero_search_range       15
-        degsize_amount          1.0
+        phase_step_amount          1.0
 sampler1b
 
 
@@ -105,6 +105,7 @@ seq1
         in_pos_step_size    time1   out_pos_step_size
         in_beats_per_bar    time1   out_beats_per_bar
         in_beat_value       time1   out_beat_value
+        start_bar 0
         velocity_response_time  5
 seq1
 
@@ -218,7 +219,6 @@ adsr2b
         zero_retrigger  off
 adsr2b
 
-
 // set 'tempo' using lfo_clock:
 
 lfo_clock
@@ -259,14 +259,13 @@ drum_trigb
     count 1
 drum_trigb
 
-
-// use square_wave to generate a note_off...notice trigger and deg_size
+// use square_wave to generate a note_off...notice trigger and phase_step
 // inputs modules differ.
 
 square_wave
 drum_off
         in_phase_trig   drum_trig   out_trig
-        in_deg_size     drum_trig2  out_deg_size
+        in_phase_step     drum_trig2  out_phase_step
         in_pwm          wobble      out_output
         pulse_width     0.95
         pwm_size        0.25
@@ -283,14 +282,10 @@ wobbler
     freq_mod2_size  0.125
 wobbler
 
-
-sine_wave
+wave
 wobble
-    in_phase_trig           wobbler   out_phase_trig
-    in_deg_size             wobbler   out_deg_size
-    recycle_mode            off
-    on_trig_reset_phase     off
-    phase_cycles            1.0
+    in_phase_step           wobbler   out_phase_step
+    type                    sine
 wobble
 
 // don't always jump to next drum for new position
@@ -423,28 +418,27 @@ adsr3b
 
 multiplier
 dl
-    in_signal   sampler1    out_l
-    in_modifier adsr3       out_output
+    in_signal1 sampler1    out_left
+    in_signal2 adsr3       out_output
 dl
 
 multiplier
 dr
-    in_signal   sampler1    out_r
-    in_modifier adsr3       out_output
+    in_signal1 sampler1    out_right
+    in_signal2 adsr3       out_output
 dr
 
 multiplier
 dlb
-    in_signal   sampler1b   out_l
-    in_modifier adsr3b      out_output
+    in_signal1 sampler1b   out_left
+    in_signal2 adsr3b      out_output
 dlb
 
 multiplier
 drb
-    in_signal   sampler1b   out_r
-    in_modifier adsr3b      out_output
+    in_signal1 sampler1b   out_right
+    in_signal2 adsr3b      out_output
 drb
-
 
 dynamic
 dynl
@@ -477,7 +471,6 @@ dynl
     posneg_mirror   on
     use_ratios      off
 dynl
-
 
 dynamic
 dynr
@@ -519,9 +512,9 @@ lecho
     in_feedback_mod dlb     out_output
     delay_time          25
     gain                1.0
-    gain_modsize        1.0
+    gain_mod_size        1.0
     feedback            0.9995
-    feedback_modsize    0.5350
+    feedback_mod_size    0.5350
     wet/dry             0.75
 lecho
 
@@ -533,36 +526,38 @@ recho
     in_feedback_mod drb     out_output
     delay_time          17.5
     gain                1.0
-    gain_modsize        1.0
+    gain_mod_size        1.0
     feedback            0.9995
-    feedback_modsize    0.5350
+    feedback_mod_size    0.5350
     wet/dry             0.75
 recho
 
 // amplify
 
+constant_freq f2 freq 3580 f2
+
 stereo_amp
 amp1
-    in_l        dynl    out_output
-    in_r        dynr    out_output
+    in_left        dynl    out_output
+    in_right        dynr    out_output
     in_amp_eg   adsr1   out_output
     in_amp_mod      off
-    left_amplitude  28000
-    right_amplitude 28000
-    amp_mod_size    0.0 
-    clip_level      32767
+    left_level      0.975
+    right_level     0.975
+    amp_mod_size    0.0
+    clip_level      1.0
 amp1
 
 stereo_amp
 amp1b
-    in_l        lecho  out_output
-    in_r        recho  out_output
+    in_left        lecho  out_output
+    in_right        recho  out_output
     in_amp_eg   adsr1  out_output
     in_amp_mod      off
-    left_amplitude  32000
-    right_amplitude 32000
-    amp_mod_size    0.0 
-    clip_level      32767
+    left_level      0.975
+    right_level     0.975
+    amp_mod_size    0.0
+    clip_level      1.0
 amp1b
 
 mix_chan
@@ -594,6 +589,7 @@ wav1
     in_right    mix1    out_right
     in_bar      time1   out_bar
     in_bar_trig time1   out_bar_trig
+    data_format float32
     filename    drums02.wav
     start_bar   0
     end_bar     16
@@ -610,4 +606,4 @@ wcnt_exit_module
 //------------------------------------------------------------------------
 // End Of File _jwm 2005.
 //------------------------------------------------------------------------
-wcnt-1.25/jwmsynth
+wcnt-1.26/jwmsynth

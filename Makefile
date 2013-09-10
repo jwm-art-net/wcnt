@@ -1,27 +1,53 @@
-#optimised defs
-DEFS=-O2 -fomit-frame-pointer -ffast-math
+#---------------------------------------------------
+# optimised #DEFINES for general use:
+#---------------------------------------------------
+DEFS=-O2 -fomit-frame-pointer -DWITH_LADSPA
 
-# development&debugging DEFS:
+# Previously the optimised #DEFINES had a -ffast-math but this causes trouble
+# for the orbit module, well, not trouble, but it messes with the values.
+
+# remove -DWITH_LADSPA from the DEFS= line if you wish to remove the (meagre)
+#                      LADSPA plugin support.
+
+#---------------------------------------------------
+# development/debugging #DEFINES  (pretty ugly)
+#---------------------------------------------------
 # add -DSEQ_NOTE_DEBUG and/or -DNOTE_EDIT_DEBUG to DEFS to display
-#			note_data info whenever one is created/deleted.
-# add -DSHOW_LL_ITEM_COUNT to show counts of ll_item (linkedlist items)
-# 						created and destroyed.
-# add -DSHOW_DOBJ_COUNT to show counts of dobj (data objects) created
-#							and destroyed.
-# add -DSHOW_DOBJ_NAMES to show names of data objects created/destroyed.
-#					(a lot less verbose than wcnt -v)
-# add -DSHOW_NOTE_COUNT to show a count of notes created/destroyed
+#   (might be broken) note_data info whenever one is created/deleted.
+#
 # add -DDEBUG_STRLIST_PAR to show what synthfileread::read_string_list_param
 #						has encountered.
 # add -DCRAZY_SAMPLER if you want to see far too much information.
-# add -DSHOW_MOD_COUNT to show count of modules created/destroyed/max
-# general debugging defs
-#DEFS=-g3 -fno-inline -DSHOW_LL_ITEM_COUNT -DSHOW_DOBJ_COUNT -DSHOW_MOD_COUNT
+
+#---------------------------------------------------
+# new 1.26 development/debugging/statistics #DEFINES
+#---------------------------------------------------
+# MOD_STATS     = counts of synthmod created/destroyed
+# DOBJ_STATS    = counts of dobj created/destroyed
+# NOTE_STATS    = counts of note_data created/destroyed
+# LIST_STATS	= counts of ll_item and linkedlist created/destroyed
+
+# NAME_CHECK    = checks that the inputnames/outputnames etc are created
+#                 properly - that they're not created in the wrong order.
+
+# CMDLINE_DBG   = displays random information while processing commandline.
+
+# SANITY_CHECKS = checks that when inputs and params are set, the same values
+#                 are returned by the get methods. Also checks that all the
+#                 outputs created for a module can be accessed.
+
+# ie add -DLIST_STATS to DEFS to show statistics about lists created
+
+# DEBUG_STRLIST_PAR = displays strings read from file while processing the
+#                     special parameter type used by the input_editor and
+#                     param_editor data objects.
+#DEFS=-g3 -fno-inline -DWITH_LADSPA -DNAME_CHECK
 
 # the rest:
 PROG=wcnt
 WARNS=-Wall -ansi -pedantic -D_GNU_SOURCE
-CFLAGS=$(DEFS) $(WARNS)
+CFLAGS=$(DEFS) $(WARNS) `pkg-config sndfile --cflags`
+LIBS=`pkg-config sndfile --libs`
 SRC=$(wildcard src/*.cc)
 OBJS=$(SRC:.cc=.o)
 HEADERS=$(wildcard include/*.h)
@@ -30,10 +56,10 @@ WAVS=$(EXAMPLES:.wc=.wav)
 
 $(PROG) : $(OBJS)
 	@echo Linking $(PROG)
-	@$(CXX) $(CFLAGS) $(OBJS) -o $(PROG)
+	@$(CXX) $(CFLAGS) $(OBJS) $(LIBS) -ldl -o $(PROG)
 # uncomment line below and comment out line above to use ccmalloc 
 # memory profiler in the linking process...
-#	@ccmalloc $(CXX) $(CFLAGS) $(OBJS) -o $(PROG)
+#	@ccmalloc $(CXX) $(CFLAGS) $(OBJS) $(LIBS) -ldl -o $(PROG)
 	@echo $(PROG) was compiled with:
 	@echo $(CXX) $(CFLAGS)
 
@@ -46,7 +72,7 @@ main.o: main.c $(HEADERS)
 examples: $(WAVS)
 
 %.wav :  %.wc $(PROG)
-	@./$(PROG) $<
+	@./$(PROG) --no-title $<
 
 clean:
 	@rm -vf $(OBJS) $(PROG)

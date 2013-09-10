@@ -1,24 +1,24 @@
 #ifndef MODPARAM_H
 #define MODPARAM_H
 
-#include "checkvalue.h"
+#include "synthmodnames.h"
+#include "paramnames.h"
+#include "stockerrs.h"
+
+class synthmod;
 
 class modparam
 {
  public:
     modparam(synthmodnames::SYNTH_MOD_TYPE, paramnames::PAR_TYPE);
     ~modparam(){};
-    synthmodnames::SYNTH_MOD_TYPE get_moduletype() { 
-        return (this) ? synthmodule_type : synthmodnames::MOD_FIRST;
+    synthmodnames::SYNTH_MOD_TYPE get_moduletype() {
+        return (this) ? synthmodule_type : synthmodnames::FIRST;
     }
     paramnames::PAR_TYPE get_paramtype() {
-        return (this) ? param_type: paramnames::PAR_FIRST;
+        return (this) ? param_type: paramnames::FIRST;
     }
-    IOCAT get_paramcategory() {
-        return (this) 
-         ? synthmod::get_paramnames()->get_category(param_type) 
-         : CAT_FIRST;
-    }
+    iocat::IOCAT get_paramcategory();
     bool validate(synthmod* sm, stockerrs::ERR_TYPE et);
 
  private:

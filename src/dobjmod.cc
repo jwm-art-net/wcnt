@@ -1,5 +1,7 @@
 #ifndef DOBJMOD_H
 #include "../include/dobjmod.h"
+#include "../include/jwm_globals.h"
+#include "../include/dobjparamlist.h"
 
 dobjmod::dobjmod() :
  dobj(dobjnames::DOBJ_SYNTHMOD), synth_mod(0)
@@ -9,33 +11,23 @@ dobjmod::dobjmod() :
 
 bool dobjmod::set_param(paramnames::PAR_TYPE pt, void* data)
 {
-    bool retv = false;
     switch(pt)
     {
-    case paramnames::PAR_MODNAME:
+    case paramnames::MODNAME:
         set_synthmod((synthmod*)data);
-        retv = true;
-        break;
-    default:
-        retv = false;
-        break;
+         return true;
+   default:
+        return false;
     }
-    return retv;
 }
 
-void const* dobjmod::get_param(paramnames::PAR_TYPE pt)
+void const* dobjmod::get_param(paramnames::PAR_TYPE pt) const
 {
-    void* retv = 0;
     switch(pt)
     {
-    case paramnames::PAR_MODNAME:
-        retv = 0;   // not sure how to handle this yet and besides,
-        break;      // there is currently no reason to use it.
-    default:
-        retv = 0;
-        break;
+        case paramnames::MODNAME: // aparently, no reason to use this.
+        default: return 0;
     }
-    return retv;
 }
 
 bool dobjmod::done_params = false;
@@ -43,8 +35,8 @@ bool dobjmod::done_params = false;
 void dobjmod::create_params()
 {
     if (done_params == true) return;
-    get_dparlist()->add_dobjparam(
-     dobjnames::DOBJ_SYNTHMOD, paramnames::PAR_MODNAME);
+    jwm.get_dparlist().add_dobjparam(
+        dobjnames::DOBJ_SYNTHMOD, paramnames::MODNAME);
     done_params = true;
 }
 

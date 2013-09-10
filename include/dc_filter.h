@@ -1,16 +1,7 @@
 #ifndef DC_FILTER_H
 #define DC_FILTER_H
 
-#include <math.h>
-
-#include "dtr.h"
 #include "synthmodule.h"
-#include "modoutputslist.h"
-#include "modinputslist.h"
-#include "modparamlist.h"
-
-#define FILTERARRAYSIZE 8192
-
 
 // I have wanted one of these for quite a long while.. had a look at
 // musicdsp.org etc and found some code snippets and mathamatical
@@ -31,20 +22,14 @@ class dc_filter : public synthmod
 public:
     dc_filter(char const*);
     ~dc_filter();
-    void set_input_signal(const double* in){ in_signal = in;}
-    const double* get_input_signal(){ return in_signal;}
-    void set_dc_time(double dct){ dc_time = dct;}
-    double get_dc_time(){ return dc_time;}
-    const double* get_output(){ return &output;}
-    // virtual funcs
     void run();
     void init();
     stockerrs::ERR_TYPE validate();
-    void const* get_out(outputnames::OUT_TYPE);
+    void const* get_out(outputnames::OUT_TYPE) const;
     void const* set_in(inputnames::IN_TYPE, void const*);
-    const void* get_in(inputnames::IN_TYPE it);
+    const void* get_in(inputnames::IN_TYPE it) const;
     bool set_param(paramnames::PAR_TYPE, void const*);
-    void const* get_param(paramnames::PAR_TYPE);
+    void const* get_param(paramnames::PAR_TYPE) const;
 
 private:
     // inputs
@@ -58,7 +43,6 @@ private:
     short filterarraymax;
     short fpos;
     double filtertotal;
-    static int dc_filter_count;
     void create_params();
     static bool done_params;
 };

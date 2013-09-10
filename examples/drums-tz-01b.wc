@@ -1,0 +1,71 @@
+wcnt-1.26/jwmsynth
+
+header header.wch
+
+synth_file_reader
+tz-01-file
+    filename drums-tz-01.wc
+    mod_action  exclude
+    dobj_action exclude
+    modules
+    modules
+    data_objects
+    data_objects
+tz-01-file
+
+
+glame_filter
+m2-hpf
+    in_signal     m2 out_output
+    in_freq_mod1  sine1 out_output
+    filter_type     highpass
+    freq            300
+    freq_mod1_size  2.0
+    stages          2
+m2-hpf
+
+param_editor
+pe1b
+    editlist
+        edit bt1.sampler1
+            loop_mode bi
+            loop_end_pos 15000
+        edit bt2.pt1
+            pattern 1000-0000-0000-0000-0000-0000-1000-0000-0000-0000-0000-0000-1000-0000-0000-0000
+        edit clock3 freq_mod1_size 1.75
+        edit pan2
+            pan         -0.5
+            pan_mod_size 0.99
+        edit wav1 filename drums-tz-01b.wav
+    editlist
+pe1b
+
+input_editor
+ie1b
+    editlist
+        connect dyn-m2 in_signal m2-hpf out_output
+        connect clock3 in_freq_mod1 sine2 out_output
+    editlist
+ie1b
+
+adsr_scaler
+as1
+    adsr_name       adsr1
+    attack_scale    1.0
+    decay_scale     0.75
+    release_scale   0.65
+as1
+
+adsr_scaler
+as2
+    adsr_name       adsr2
+    attack_scale    1.0
+    decay_scale     0.25
+    release_scale   1.0
+as2
+
+
+wcnt-1.26/jwmsynth
+------------------------------------------------------------------------
+ EOF -{jwm 2007}-
+------------------------------------------------------------------------

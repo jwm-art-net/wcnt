@@ -2,28 +2,20 @@
 #define WCNTTRIGGER_H
 
 #include "synthmodule.h"
-#include "dobj.h"
-
-#include "modoutputslist.h"
-#include "modinputslist.h"
-#include "modparamlist.h"
 
 class wcnt_trigger : public synthmod
 {
 public:
     wcnt_trigger(char const*);
     ~wcnt_trigger();
-    void set_in_trig(const STATUS* is){ in_trig = is;}
-    const STATUS* get_in_trig(){ return in_trig;}
-    const STATUS* get_out_trig(){ return in_trig;}
-    // virtual funcs
+    // this method needed by trigswitcher (etc?)...
+    const STATUS* get_out_trig() { return in_trig; }
     void run(){};
-    void const* get_out(outputnames::OUT_TYPE);
+    void const* get_out(outputnames::OUT_TYPE) const;
     void const* set_in(inputnames::IN_TYPE, void const*);
-    const void* get_in(inputnames::IN_TYPE it);
+    const void* get_in(inputnames::IN_TYPE it) const;
 private:
     const STATUS* in_trig;
-    static int wcnt_trigger_count;
 };
 
 #endif

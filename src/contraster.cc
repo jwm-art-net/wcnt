@@ -1,109 +1,100 @@
 #ifndef CONTRASTER_H
 #include "../include/contraster.h"
+#include "../include/jwm_globals.h"
+#include "../include/modoutputlist.h"
+#include "../include/modinputlist.h"
+#include "../include/modparamlist.h"
 
 contraster::contraster(char const* uname) :
- synthmod(synthmodnames::MOD_CONTRASTER, contraster_count, uname),
+ synthmod(synthmodnames::CONTRASTER, uname),
  out_output(0.0), in_signal(0), in_power_mod(0),
  power_min(1.0), power_max(2.0), rude_mode(OFF),
  power(0.0), powerrad(0.0)
 {
-    get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
-    get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
-    get_inputlist()->add_input(this, inputnames::IN_POWER_MOD);
-    get_inputlist()->add_input(this, inputnames::IN_RUDE_SWITCH_TRIG);
-    contraster_count++;
+    jwm.get_outputlist().add_output(this, outputnames::OUT_OUTPUT);
+    jwm.get_inputlist().add_input(this, inputnames::IN_SIGNAL);
+    jwm.get_inputlist().add_input(this, inputnames::IN_POWER_MOD);
+    jwm.get_inputlist().add_input(this, inputnames::IN_RUDE_SWITCH_TRIG);
     create_params();
 }
 
 contraster::~contraster()
 {
-    get_outputlist()->delete_module_outputs(this);
-    get_inputlist()->delete_module_inputs(this);
+    jwm.get_outputlist().delete_module_outputs(this);
+    jwm.get_inputlist().delete_module_inputs(this);
 }
 
-void const* contraster::get_out(outputnames::OUT_TYPE ot)
+void const* contraster::get_out(outputnames::OUT_TYPE ot) const
 {
-    void const* o = 0;
     switch(ot)
     {
-    case outputnames::OUT_OUTPUT:
-        o = &out_output;
-        break;
-    default:
-        o = 0;
+        case outputnames::OUT_OUTPUT: return &out_output;
+        default: return 0;
     }
-    return o;
 }
 
 void const* contraster::set_in(inputnames::IN_TYPE it, void const* o)
 {
     switch(it)
     {
-    case inputnames::IN_SIGNAL:
-        return in_signal = (double*)o;
-    case inputnames::IN_POWER_MOD:
-        return in_power_mod = (double*)o;
-    case inputnames::IN_RUDE_SWITCH_TRIG:
-        return in_rude_switch_trig = (STATUS*)o;
-    default:
-        return 0;
+        case inputnames::IN_SIGNAL:
+            return in_signal = (double*)o;
+        case inputnames::IN_POWER_MOD:
+            return in_power_mod = (double*)o;
+        case inputnames::IN_RUDE_SWITCH_TRIG:
+            return in_rude_switch_trig = (STATUS*)o;
+        default:
+            return 0;
     }
 }
 
-void const* contraster::get_in(inputnames::IN_TYPE it)
+void const* contraster::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
-    case inputnames::IN_SIGNAL:
-        return in_signal;
-    case inputnames::IN_POWER_MOD:
-        return in_power_mod;
-    case inputnames::IN_RUDE_SWITCH_TRIG:
-        return in_rude_switch_trig;
-    default:
-        return 0;
+        case inputnames::IN_SIGNAL:
+            return in_signal;
+        case inputnames::IN_POWER_MOD:
+            return in_power_mod;
+        case inputnames::IN_RUDE_SWITCH_TRIG:
+            return in_rude_switch_trig;
+        default:
+            return 0;
     }
 }
 
 bool contraster::set_param(paramnames::PAR_TYPE pt, void const* data)
 {
-    bool retv = false;
     switch(pt)
     {
-    case paramnames::PAR_POWER_MIN:
-        set_power_min(*(double*)data);
-        retv = true;
-        break;
-    case paramnames::PAR_POWER_MAX:
-        set_power_max(*(double*)data);
-        retv = true;
-        break;
-    case paramnames::PAR_RUDE_MODE:
-        set_rude_mode(*(STATUS*)data);
-        retv = true;
-        break;
-    case paramnames::PAR_WETDRY:
-        set_wetdry(*(double*)data);
-        retv = true;
-        break;
-    default:
-        retv = false;
-        break;
+        case paramnames::POWER_MIN:
+            power_min = *(double*)data;
+            return true;
+        case paramnames::POWER_MAX:
+            power_max = *(double*)data;
+            return true;
+        case paramnames::RUDE_MODE:
+            rude_mode = *(STATUS*)data;
+            return true;
+        case paramnames::WETDRY:
+            wetdry = *(double*)data;
+            return true;
+        default:
+            return false;
     }
-    return retv;
 }
 
-void const* contraster::get_param(paramnames::PAR_TYPE pt)
+void const* contraster::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {
-    case paramnames::PAR_POWER_MIN:
+    case paramnames::POWER_MIN:
         return &power_min;
-    case paramnames::PAR_POWER_MAX:
+    case paramnames::POWER_MAX:
         return &power_max;
-    case paramnames::PAR_RUDE_MODE:
+    case paramnames::RUDE_MODE:
         return &rude_mode;
-    case paramnames::PAR_WETDRY:
+    case paramnames::WETDRY:
         return &wetdry;
     default:
         return 0;
@@ -112,10 +103,10 @@ void const* contraster::get_param(paramnames::PAR_TYPE pt)
 
 stockerrs::ERR_TYPE contraster::validate()
 {
-    if (!get_paramlist()->validate(this, paramnames::PAR_WETDRY,
+    if (!jwm.get_paramlist().validate(this, paramnames::WETDRY,
             stockerrs::ERR_RANGE_0_1))
     {
-        *err_msg = get_paramnames()->get_name(paramnames::PAR_WETDRY);
+        *err_msg = jwm.get_paramnames().get_name(paramnames::WETDRY);
         invalidate();
         return stockerrs::ERR_RANGE_0_1;
     }
@@ -157,22 +148,20 @@ void contraster::run()
     out_output = output * wetdry + *in_signal * (1.0 - wetdry);
 }
 
-int contraster::contraster_count = 0;
-
 bool contraster::done_params = false;
 
 void contraster::create_params()
 {
     if (done_params == true)
         return;
-    get_paramlist()->add_param(
-     synthmodnames::MOD_CONTRASTER, paramnames::PAR_POWER_MIN);
-    get_paramlist()->add_param(
-     synthmodnames::MOD_CONTRASTER, paramnames::PAR_POWER_MAX);
-    get_paramlist()->add_param(
-     synthmodnames::MOD_CONTRASTER, paramnames::PAR_RUDE_MODE);
-    get_paramlist()->add_param(
-     synthmodnames::MOD_CONTRASTER, paramnames::PAR_WETDRY);
+    jwm.get_paramlist().add_param(
+     synthmodnames::CONTRASTER, paramnames::POWER_MIN);
+    jwm.get_paramlist().add_param(
+     synthmodnames::CONTRASTER, paramnames::POWER_MAX);
+    jwm.get_paramlist().add_param(
+     synthmodnames::CONTRASTER, paramnames::RUDE_MODE);
+    jwm.get_paramlist().add_param(
+     synthmodnames::CONTRASTER, paramnames::WETDRY);
     done_params = true;
 }
 

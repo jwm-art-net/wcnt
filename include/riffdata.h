@@ -2,8 +2,8 @@
 #define RIFFDATA_HH
 
 #include "notedata.h"
-#include "dobjparamlist.h"
-#include "topdobjlist.h"
+#include "dobj.h"
+#include "linkedlist.h"
 
 /*
 RIFFDATA
@@ -119,7 +119,7 @@ public:
     // virtuals from dobj
     stockerrs::ERR_TYPE validate();
     bool set_param(paramnames::PAR_TYPE, void*);
-    void const* get_param(paramnames::PAR_TYPE);
+    void const* get_param(paramnames::PAR_TYPE) const;
     dobj const* add_dobj(dobj*);
     dobj* duplicate_dobj(const char*);
 

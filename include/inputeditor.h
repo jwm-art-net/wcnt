@@ -2,9 +2,7 @@
 #define INPUTEDITOR_H
 
 #include "inputedit.h"
-
-// forward definition
-class inputedit;
+#include "linkedlist.h"
 
 class inputeditor : public dobj
 {
@@ -34,7 +32,6 @@ public:
         return stockerrs::ERR_NO_ERROR;
     }
     dobj const* add_dobj(dobj* dbj);
-    void set_verbose(){ verbose = true; }
 
 private:
     linkedlist* input_edit_list;
@@ -42,7 +39,6 @@ private:
     inputedit* input_edit;
     void create_params();
     static bool done_params;
-    bool verbose;
 };
 
 #endif

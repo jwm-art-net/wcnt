@@ -2,13 +2,7 @@
 #define SEQUENCER_H
 
 #include "riffnode.h"
-#include "timemap.h" 
-
-#include "dobjlist.h"
-#include "modoutputslist.h"
-#include "modinputslist.h"
-#include "modparamlist.h"
-#include "moddobjlist.h"
+#include "synthmodule.h"
 
 /*
     wcnt-1.128
@@ -41,12 +35,12 @@ class sequencer : public synthmod
 public:
     sequencer(char const*);
     ~sequencer();
-    riff_node* add_riff(string const* riffname, short barpos);
+    riff_node* add_riff(const char* const riffname, short barpos);
     riff_node* add_riff(riffdata*, short barpos);
     riff_node* add_riff_node(riff_node*);
     bool delete_riff_node(riff_node* rn);
     riff_node* goto_first() {
-        return (riff_node*)riffnodelist->goto_first()->get_data(); 
+        return (riff_node*)riffnodelist->goto_first()->get_data();
     }
     riff_node* goto_last() {
         return (riff_node*)riffnodelist->goto_last()->get_data();
@@ -57,48 +51,15 @@ public:
     riff_node* goto_next() {
         return (riff_node*)riffnodelist->goto_next()->get_data();
     }
-    // set inputs
-    void set_input_bar_trig(const STATUS* bt){ in_bar_trig = bt;}
-    void set_input_bar(const short* b){ in_bar = b;}
-    void set_input_pos_step_size(const double* bs) {
-        in_pos_step_size = bs;
-    }
-    void set_input_beats_per_bar(const short* bpb) {
-        in_beats_per_bar = bpb;
-    }
-    void set_input_beat_value(const short* bv){ in_beat_value = bv;}
-    // get outputs
-    const STATUS* get_output_note_on_trig() { return &out_note_on_trig; }
-    const STATUS* get_output_note_slide_trig() {
-        return &out_note_slide_trig;
-    }
-    const STATUS* get_output_note_off_trig() {
-        return &out_note_off_trig; 
-    }
-    const STATUS* get_output_riff_start_trig() {
-        return &out_riff_start_trig;
-    }
-    const STATUS* get_output_riff_end_trig() {
-        return &out_riff_end_trig; 
-    }
-    const STATUS* get_output_end_trig() { return &out_end_trig; }
-    const double* get_output_freq() { return &out_freq; }
-    const double* get_output_velocity() { return &out_velocity; }
-    const double* get_output_velocity_ramp() {return &out_velocity_ramp;}
-    const STATUS* get_riff_play_state() { return &riff_play_state; }
-    const STATUS* get_note_play_state() { return &note_play_state; }
-    const char ** get_output_notename(){ return &out_notename;}
-    // params
-    void set_velocity_response_time(double ms){vel_response = ms;}
     // virtual funcs
     void run();
     void init();
     stockerrs::ERR_TYPE validate();
-    void const* get_out(outputnames::OUT_TYPE);
+    void const* get_out(outputnames::OUT_TYPE) const;
     void const* set_in(inputnames::IN_TYPE, void const*);
-    const void* get_in(inputnames::IN_TYPE it);
+    const void* get_in(inputnames::IN_TYPE it) const;
     bool set_param(paramnames::PAR_TYPE, void const*);
-    void const* get_param(paramnames::PAR_TYPE);
+    void const* get_param(paramnames::PAR_TYPE) const;
     synthmod* duplicate_module(const char* uname, DUP_IO dupio);
     dobj* add_dobj(dobj*);
 private:
@@ -124,7 +85,7 @@ private:
     STATUS riff_play_state;
     STATUS note_play_state;
     // ***** params *****
-    double freq_mod1size;
+    short start_bar;
     double vel_response;
     // ***** the riff node list *****
     linkedlist* riffnodelist;
@@ -157,7 +118,6 @@ private:
     void init_next_note(ll_item* riff_note_item);
     void output_note(note_data* note);
     // synthmod stuff
-    static int sequencer_count;
     static bool done_params;
     void create_params();
     static bool done_moddobj;

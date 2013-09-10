@@ -1,9 +1,11 @@
 #ifndef DOBJDOBJLIST_H
 #define DOBJDOBJLIST_H
 
-#include "dobj.h"
-#include "dobjdobj.h"
+
 #include "linkedlist.h"
+#include "dobjnames.h"
+
+class dobjdobj;
 
 // good name for a class I think, some may find it ugly, but beauty is
 // in the eye of the beholder. that's what I keep telling myself anyway.

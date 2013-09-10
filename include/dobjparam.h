@@ -1,8 +1,12 @@
 #ifndef DOBJPARAM_H
 #define DOBJPARAM_H
 
-#include "dobj.h"
-#include "checkvalue.h"
+#include "dobjnames.h"
+#include "paramnames.h"
+#include "stockerrs.h"
+#include "jwm_globals.h"
+
+class dobj;
 
 // ties object parameters to an object
 // the knot is a reference to an object type, and a refernce 
@@ -20,12 +24,12 @@ public:
         return (this) ? dobjtype : dobjnames::DOBJ_FIRST;
     }
     paramnames::PAR_TYPE get_partype() {
-        return (this) ? partype : paramnames::PAR_FIRST;
+        return (this) ? partype : paramnames::FIRST;
     }
-    IOCAT get_dparam_category() {
+    iocat::IOCAT get_dparam_category() {
         return (this) 
-            ? dobj::get_paramnames()->get_category(partype)
-            : CAT_FIRST;
+            ? jwm.get_paramnames().get_category(partype)
+            : iocat::FIRST;
     }
     bool validate(dobj*, stockerrs::ERR_TYPE);
 private:

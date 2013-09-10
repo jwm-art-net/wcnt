@@ -1,4 +1,4 @@
-wcnt-1.25/jwmsynth
+wcnt-1.26/jwmsynth
 
 header header.wch
 
@@ -54,6 +54,7 @@ seq1
     in_pos_step_size time1 out_pos_step_size
     in_beats_per_bar time1 out_beats_per_bar
     in_beat_value time1 out_beat_value
+    start_bar 0
     velocity_response_time  5.0
 seq1
 
@@ -90,20 +91,14 @@ clock fmclockb
     freq_mod1_size 1.0
 fmclockb
 
-sine_wave fmsinewave
-    in_phase_trig  fmclock out_phase_trig
-    in_deg_size    fmclock out_deg_size
-    recycle_mode         on
-    on_trig_reset_phase  off
-    phase_cycles         1.0
+wave fmsinewave
+    in_phase_step    fmclock out_phase_step
+    type sine
 fmsinewave
 
-sine_wave fmsinewaveb
-    in_phase_trig  fmclockb out_phase_trig
-    in_deg_size    fmclockb out_deg_size
-    recycle_mode         on
-    on_trig_reset_phase  off
-    phase_cycles         1.0
+wave fmsinewaveb
+    in_phase_step    fmclockb out_phase_step
+    type sine
 fmsinewaveb
 
 clock fmclock2
@@ -124,33 +119,38 @@ clock fmclock4
     freq_mod1_size 1.120
 fmclock4
 
-sine_wave fmsinewave2
+wave_phase fmsinewave2
     in_phase_trig  fmclock2 out_phase_trig
-    in_deg_size    fmclock3 out_deg_size
-    recycle_mode         off
-    on_trig_reset_phase  on
-    phase_cycles         1.0 //1.750 //1.25
+    in_phase_step    fmclock3 out_phase_step
+    in_shape_phase_step  fmclock2 out_phase_step
+    type                sine
+    shape_type          sine_01
+    on_trig_reset_phase on
+    recycle_mode        off
+    sync_shape          on
+    invert_alt         off
+    phase_cycles        1.0 //1.750 //1.25
 fmsinewave2
 
 lp_filter
 fmlpf
         in_signal           fmsinewave2 out_output
-        in_cutoff_degsize   fmclock4 out_deg_size
+        in_cutoff_phase_step   fmclock4 out_phase_step
         in_feedback         xfmlpf out_output //fmecho out_output
         in_feedback_mod     off
         feedback        -0.95
-        feedback_modsize 0.0
+        feedback_mod_size 0.0
         wet/dry          1.0
 fmlpf
 
 lp_filter
 xfmlpf
         in_signal           fmlpf out_wet_output //fmrl out_output
-        in_cutoff_degsize   fmclock3 out_deg_size
+        in_cutoff_phase_step   fmclock3 out_phase_step
         in_feedback         xfmlpf out_wet_output
         in_feedback_mod     off
-        feedback         0.1785
-        feedback_modsize 0.0
+        feedback         0.2785
+        feedback_mod_size 0.0
         wet/dry          1.0
 xfmlpf
 
@@ -190,41 +190,35 @@ osc2
 
 // the sine waveform, driven by clock1
 
-sine_wave sinewave
-    in_phase_trig  osc1 out_phase_trig
-    in_deg_size    osc1 out_deg_size
-    recycle_mode         on
-    on_trig_reset_phase  off
-    phase_cycles         1.0
+wave sinewave
+    in_phase_step    osc1 out_phase_step
+    type sine
 sinewave
 
-sine_wave sinewave2
-    in_phase_trig  osc2 out_phase_trig
-    in_deg_size    osc2 out_deg_size
-    recycle_mode         on
-    on_trig_reset_phase  off
-    phase_cycles         1.0
+wave sinewave2
+    in_phase_step    osc2 out_phase_step
+    type sine
 sinewave2
 
 lp_filter
 sin1lpfed
         in_signal           sinewave out_output
-        in_cutoff_degsize   fmclock4 out_deg_size
+        in_cutoff_phase_step   fmclock4 out_phase_step
         in_feedback         off
         in_feedback_mod     off
         feedback         0.0
-        feedback_modsize 0.0
+        feedback_mod_size 0.0
         wet/dry          1.0
 sin1lpfed
 
 lp_filter
 sin2lpfed
         in_signal           sinewave2 out_output
-        in_cutoff_degsize   fmclock4 out_deg_size
+        in_cutoff_phase_step   fmclock4 out_phase_step
         in_feedback         off
         in_feedback_mod     off
         feedback         0.0
-        feedback_modsize 0.0
+        feedback_mod_size 0.0
         wet/dry          1.0
 sin2lpfed
 
@@ -304,9 +298,9 @@ echo1
     in_feedback_mod  off
     delay_time        215.0
     gain              0.275
-    gain_modsize      1.0
+    gain_mod_size      1.0
     feedback          0.95
-    feedback_modsize  0.0
+    feedback_mod_size  0.0
     wet/dry           0.65
 echo1
 
@@ -318,21 +312,21 @@ echo2
     in_feedback_mod  off
     delay_time        325.0
     gain              1.0
-    gain_modsize      1.0
+    gain_mod_size      1.0
     feedback          -0.45
-    feedback_modsize  0.0
+    feedback_mod_size  0.0
     wet/dry           0.65
 echo2
 
 stereo_amp amp1
-    in_l echo1 out_output
-    in_r echo2 out_output
+    in_left     echo1 out_output
+    in_right    echo2 out_output
     in_amp_eg   adsr2 out_output
     in_amp_mod  off
-    left_amplitude     32767
-    right_amplitude     32767
-    amp_mod_size  0.0
-    clip_level    32767
+    left_level      1.0
+    right_level     1.0
+    amp_mod_size    0.0
+    clip_level      1.0
 amp1
 
 // write amplified signal to wav file
@@ -342,6 +336,7 @@ wavfile_out wav1
     in_right    amp1  out_right
     in_bar      t1 out_count
     in_bar_trig t1 out_trig
+    data_format float32
     filename    freekmod06.wav
     start_bar   0
     end_bar     1
@@ -354,4 +349,4 @@ wcnt_exit wcnt_exit_module
     exit_bar 1
 wcnt_exit_module
 
-wcnt-1.25/jwmsynth
+wcnt-1.26/jwmsynth

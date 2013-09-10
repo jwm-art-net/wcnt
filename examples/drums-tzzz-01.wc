@@ -1,0 +1,109 @@
+wcnt-1.26/jwmsynth
+
+header header.wch
+
+// *****************************************************************
+//
+// massacre drums-tz-01.wc
+
+
+// *****************************************************************
+// this reads drums-tz-01.wc and adds it's contents - but excludes
+// creating the module called dyn-m1:
+
+synth_file_reader
+tz-01-file
+    filename drums-tz-01.wc
+    mod_action  exclude
+    dobj_action exclude
+    modules
+        mod name dyn-m1 // this module is removed so a certain sound
+                        // is not too harsh.
+    modules
+    data_objects
+    data_objects
+tz-01-file
+
+// *****************************************************************
+// edit the modules created from reading drums-tz-01.wc so they do
+// something sounding very different
+
+param_editor
+pe1zzz
+    editlist
+        edit bt1.clock1
+            quarter_value   512
+
+        edit bt1.clock1b
+            quarter_value   256
+
+        edit stepper1
+            step_count      128
+
+        edit bt1.clock-s1f
+            freq            1000.0
+            freq_mod1_size  4
+
+        edit bt1.pt1
+            pattern 1101-1110-10000000000000000000000000000000000011-1101-1110-1110000000000000000000000000000000000000000000000000000000000000-1011-1101-1011-0000000000000000000000000001101-1011-1101-001000000000000000000000000000000000000000000-0100-1101-0010-1101-11000010-1011-1101-1110-1110-1011-1101-110000000000000000000000000000000010-1101-1011-1101-0010-00000000000000000000000000000-1111-0000
+
+        edit bt2.clock-s1f
+            freq            840.0
+            freq_mod1_size  0.0625
+
+        edit stepper2
+            step_count      512
+
+        edit bt2.clock1
+            quarter_value   1024
+
+        edit bt2.clock1b
+            quarter_value   256
+
+        edit cp1
+            bandwidth   0.99
+            tail        0.6
+            damping     0.3
+            wet/dry     0.375
+
+        edit wav1
+            filename drums-tzzz-01.wav
+    editlist
+pe1zzz
+
+// *****************************************************************
+// because there is no module named dyn-m1 in this version of
+// drums-tz-01.wc, we must replace any connections to it...
+// in this case, connect to the signal which dyn-m1 originally used.
+
+input_editor
+ie1zzz
+    editlist
+        connect pan1
+            in_signal   m1  out_output // replaces connection to dyn-m1
+    editlist
+ie1zzz
+
+// *****************************************************************
+// scale the adsr times a little.
+
+adsr_scaler
+as1
+    adsr_name       adsr1
+    attack_scale    4.0
+    decay_scale     0.2
+    release_scale   0.52
+as1
+
+adsr_scaler
+as2
+    adsr_name       adsr2
+    attack_scale    1.0
+    decay_scale     0.2
+    release_scale   2.0
+as2
+
+wcnt-1.26/jwmsynth
+------------------------------------------------------------------------
+ EOF -{jwm 2007}-
+------------------------------------------------------------------------

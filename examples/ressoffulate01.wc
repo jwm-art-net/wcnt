@@ -1,7 +1,9 @@
-wcnt-1.25/jwmsynth
+wcnt-1.26/jwmsynth
 //------------------------------------------------------------------------
 // ressoffulate01.wc experimenting with pairs of resonating frequencies
 //------------------------------------------------------------------------
+
+// ( so i told myself back in 2006... --jwm2007)
 
 header header.wch
 
@@ -27,8 +29,6 @@ riff1
         note name e0    pos 160 len 16      vel 1.0
         note name g0    pos 208 len 12      vel 1.0
         note name =P+N  pos 208 len 6       vel 0.0
-//        note name >P*P  pos 0   len 2       vel 1.0
-//        note name >P*L  pos 0   len 1.25    vel 1.0
         note name IP+N  pos 90  len 90      vel 5.0
         note name >P+Q  pos -1  len 256      vel 5.0
     notelist
@@ -60,12 +60,12 @@ seq1
             riff riff2  bar 14   transpose 0
             repeat 3 repeat_stripe 2
     track
-
     in_bar              time1 out_bar
     in_bar_trig         time1 out_bar_trig
     in_pos_step_size    time1 out_pos_step_size
     in_beats_per_bar    time1 out_beats_per_bar
     in_beat_value       time1 out_beat_value
+    start_bar 0
     velocity_response_time 0
 seq1
 
@@ -100,8 +100,6 @@ delayed_freq
     delay_time  2
 delayed_freq
 
-
-
 // clock and sinewave to add a little frequency modulation
 
 clock
@@ -111,32 +109,27 @@ plclock
     freq_mod1_size  1.125
 plclock
 
-sine_wave
+wave
 plswave
-    in_phase_trig  plclock out_phase_trig
-    in_deg_size    plclock out_deg_size
-    recycle_mode         off
-    on_trig_reset_phase  off
-    phase_cycles         1.0
+    in_phase_step    plclock out_phase_step
+    type sine
 plswave
 
-
-
-// grouped modules 
+// grouped modules
 
 constant Xf1 value 3.00125   Xf1
 constant Xf2 value 5.001     Xf2
 
 multiplier
 Xfreq1
-    in_signal   delayed_freq    out_output
-    in_modifier Xf1  out_output
+    in_signal1 delayed_freq out_output
+    in_signal2 Xf1 out_output
 Xfreq1
 
 multiplier
 Xfreq2
-    in_signal   delayed_freq    out_output
-    in_modifier Xf2  out_output
+    in_signal1 delayed_freq out_output
+    in_signal2 Xf2 out_output
 Xfreq2
 
 osc_clock
@@ -166,7 +159,7 @@ shave
         vertex  ud 360  ul  -1.0        ld 360  ll  -1.0
     waveform
     in_phase_trig   osc1      out_phase_trig
-    in_deg_size     osc1      out_deg_size
+    in_phase_step     osc1      out_phase_step
     in_level_mod    adsr1   out_output
     in_time_mod     adsr1   out_output
     recycle_mode    off
@@ -178,56 +171,63 @@ ishave
     in_signal   shave out_output
 ishave
 
-sine_wave
+wave_phase
 sine1
-    in_phase_trig   osc1    out_phase_trig
-    in_deg_size     osc2    out_deg_size
-    recycle_mode         on
-    on_trig_reset_phase  off
-    phase_cycles         1.5
+    in_phase_trig       osc1 out_phase_trig
+    in_phase_step       osc2 out_phase_step
+    in_shape_phase_step off
+    type                sine
+    shape_type          one
+    on_trig_reset_phase off
+    recycle_mode        on
+    sync_shape          on
+    invert_alt          off
+    phase_cycles        1.5
 sine1
 
-sine_wave
+wave_phase
 sine2
-    in_phase_trig   osc1    out_phase_trig
-    in_deg_size     osc3    out_deg_size
-    recycle_mode         on
-    on_trig_reset_phase  off
-    phase_cycles         2.5
+    in_phase_trig       osc1 out_phase_trig
+    in_phase_step       osc3 out_phase_step
+    in_shape_phase_step off
+    type                sine
+    shape_type          one
+    on_trig_reset_phase off
+    recycle_mode        on
+    sync_shape          on
+    invert_alt          off
+    phase_cycles        2.5
 sine2
 
-sine_wave
+wave
 bsine
-    in_phase_trig   osc1    out_phase_trig
-    in_deg_size     osc1    out_deg_size
-    recycle_mode         off
-    on_trig_reset_phase  off
-    phase_cycles         1.0
+    in_phase_step     osc1    out_phase_step
+    type sine
 bsine
 
 multiplier xm1
-    in_signal bsine out_output in_modifier shave out_output
+    in_signal1 bsine out_output in_signal2 shave out_output
 xm1
 
 multiplier xm2
-    in_signal bsine out_output in_modifier ishave out_output
+    in_signal1 bsine out_output in_signal2 ishave out_output
 xm2
 
-multiplier m1 in_signal sine1 out_output in_modifier xm1 out_output m1
-multiplier m2 in_signal sine2 out_output in_modifier xm2 out_output m2
+multiplier m1 in_signal1 sine1 out_output in_signal2 xm1 out_output m1
+multiplier m2 in_signal1 sine2 out_output in_signal2 xm2 out_output m2
 
-modifier
+balance
 md0
-    in_signal   m1  out_output
-    in_modifier m2  out_output
+    in_signal1  m1  out_output
+    in_signal2  m2  out_output
     function    add
     bias        0.5
 md0
 
-modifier
+balance
 md1
-    in_signal   bsine   out_output
-    in_modifier md0     out_output
+    in_signal1  bsine   out_output
+    in_signal2  md0     out_output
     function    add
     bias        0.5
 md1
@@ -266,8 +266,8 @@ adsr1
 
 multiplier
 shp1
-    in_signal   md1     out_output
-    in_modifier adsr1   out_output
+    in_signal1 md1     out_output
+    in_signal2 adsr1   out_output
 shp1
 
 panner
@@ -390,50 +390,50 @@ ressoff_pe1
     editlist
 ressoff_pe1
 
-modifier
+balance
 g1g2_l
-    in_signal   g1.pan1 out_l
-    in_modifier g2.pan1 out_l
+    in_signal1 g1.pan1 out_left
+    in_signal2 g2.pan1 out_left
     function   add
     bias 0.5
 g1g2_l
 
-modifier
+balance
 g1g2_r
-    in_signal   g1.pan1 out_r
-    in_modifier g2.pan1 out_r
+    in_signal1 g1.pan1 out_right
+    in_signal2 g2.pan1 out_right
     function   add
     bias 0.5
 g1g2_r
 
-modifier
+balance
 g3g4_l
-    in_signal   g3.pan1 out_l
-    in_modifier g4.pan1 out_l
+    in_signal1 g3.pan1 out_left
+    in_signal2 g4.pan1 out_left
     function   add
     bias 0.5
 g3g4_l
 
-modifier
+balance
 g3g4_r
-    in_signal   g3.pan1 out_r
-    in_modifier g4.pan1 out_r
+    in_signal1 g3.pan1 out_right
+    in_signal2 g4.pan1 out_right
     function   add
     bias 0.5
 g3g4_r
 
-modifier
+balance
 g1g2g3g4_l
-    in_signal   g1g2_l  out_output
-    in_modifier g3g4_l  out_output
+    in_signal1 g1g2_l  out_output
+    in_signal2 g3g4_l  out_output
     function   add
     bias 0.5
 g1g2g3g4_l
 
-modifier
+balance
 g1g2g3g4_r
-    in_signal   g1g2_r  out_output
-    in_modifier g3g4_r  out_output
+    in_signal1 g1g2_r  out_output
+    in_signal2 g3g4_r  out_output
     function   add
     bias 0.5
 g1g2g3g4_r
@@ -446,9 +446,9 @@ ec_l
     in_feedback_mod  off
     delay_time        37.5
     gain              1.0
-    gain_modsize      0.0
+    gain_mod_size      0.0
     feedback          -0.75
-    feedback_modsize  0.0
+    feedback_mod_size  0.0
     wet/dry           0.175
 ec_l
 
@@ -460,9 +460,9 @@ ec_r
     in_feedback_mod  off
     delay_time        15.8
     gain              1.0
-    gain_modsize      0.0
+    gain_mod_size      0.0
     feedback          -0.75
-    feedback_modsize  0.0
+    feedback_mod_size  0.0
     wet/dry           0.175
 ec_r
 
@@ -470,14 +470,14 @@ constant boost value 2.2 boost
 
 stereo_amp
 amp1
-    in_l        ec_l    out_output
-    in_r        ec_r    out_output
+    in_left        ec_l    out_output
+    in_right        ec_r    out_output
     in_amp_eg   boost   out_output
     in_amp_mod  off
-    left_amplitude   32767
-    right_amplitude  32767
+    left_level   1.0
+    right_level  1.0
     amp_mod_size     0.0
-    clip_level       32767
+    clip_level       1.0
 amp1
 
 wavfile_out wav1
@@ -485,6 +485,7 @@ wavfile_out wav1
     in_right    amp1  out_right
     in_bar      time1 out_bar
     in_bar_trig time1 out_bar_trig
+    data_format float32
     filename    ressoffulate01.wav
     start_bar   0
     end_bar     16
@@ -497,4 +498,4 @@ wcnt_exit_module
 wcnt_exit_module
 
 //------------------------------------------------------------------------
-wcnt-1.25/jwmsynth
+wcnt-1.26/jwmsynth

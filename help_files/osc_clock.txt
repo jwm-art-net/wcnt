@@ -1,0 +1,17 @@
+Another module with a name which might mislead. The osc_clock is just a
+clock, but it is supposed to be a clock which works like... For general
+usage connect as follows:
+
+in_note_on_trig:       connect to sequencer out_note_on_trig
+in_note_slide_trig:    connect to sequencer out_note_slide_trig
+in_play_state:         connect to adsr out_play_state (optional)
+in_frequency:          connect to sequencer out_frequency
+
+portamento_time is the time (ms) it takes (but only when
+in_note_slide_trig triggers) for the frequency of the current note to
+slide to the frequency of the new note. response_time is used when
+in_play_state input receives an ON when in_note_on_trig triggers - ie
+response_time is the number of ms for a normal note change (unless
+in_play_state is off - in which case it will change instantly).
+
+See also: clock lfo_clock freq_generator
