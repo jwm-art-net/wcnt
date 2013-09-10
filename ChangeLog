@@ -1,4 +1,12 @@
 --------------------------------------------------------------
+Tuesday 10th October 2006
+
+FIXES:
+    * commandline option --sample-info is working again. Forgot
+      that wavfilein::validate no longer opened the wav and to
+      update jwmsynth::sample_info accordingly.
+
+--------------------------------------------------------------
 Saturday 7th October 2006
 
 FIXES:

@@ -698,9 +698,10 @@ void jwmsynth::sample_info()
     wavfile.set_wav_filename(opts[2]);
     // set root note so that validate() won't complain about it
     wavfile.set_root_note("c0");
-    // validate actually opens the file, so that it can validate the
-    // format also.
+    // validate no longer actually opens the file, have to explicitly
+    // call wavfilein::open_wav, these days...
     wavfile.validate();
+    wavfile.open_wav();
     if (wavfile.get_status() != WAV_STATUS_OPEN) {
         err_msg = "\n";
         err_msg += *wavfile.get_error_msg();
