@@ -3,10 +3,12 @@
 
 serialwavfileout::serialwavfileout(char const* uname) :
  synthmod(synthmodnames::MOD_SERIALWAVFILEOUT, serialwavfileout_count,
- uname), in_left_channel(NULL), in_right_channel(NULL), in_bar(0),
- in_bar_trig(0), write_status(OFF), start_bar(0), end_bar(0),
- wav_basename(NULL), fileout(0), wavcount(0), header(0),
- status(WAV_STATUS_INIT), st_buffer(NULL), sample_total(0), buff_pos(0)
+ uname),
+ in_left_channel(0), in_right_channel(0), in_bar(0), in_bar_trig(0),
+ in_write_trig(0), in_stop_trig(0), write_status(OFF), start_bar(0),
+ end_bar(0), wav_basename(0), wavfilename(0), fileout(0), wavcount(0),
+ in_write_region(OFF), header(0), status(WAV_STATUS_INIT), 
+ st_buffer(NULL), sample_total(0), buff_pos(0)
 {
     get_inputlist()->add_input(this, inputnames::IN_LEFT);
     get_inputlist()->add_input(this, inputnames::IN_RIGHT);

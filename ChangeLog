@@ -1,4 +1,17 @@
 --------------------------------------------------------------
+Tuesday 28th June 2005
+
+wcnt-1.2
+
+FIXES:
+    * Fixed warning by valgrind of conditional jump using
+      unitialised member variable within serialwavfileout
+      destructor.
+
+    * Fixed memory leak occurring in command line help for
+      data objects.
+
+--------------------------------------------------------------
 Monday 27th June 2005
 
 wcnt-1.2

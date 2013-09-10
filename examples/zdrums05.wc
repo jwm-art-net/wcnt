@@ -38,12 +38,17 @@ master_01
 param_editor
 drumparams_05
     editlist
-        edit kik-freq freq 190
+        edit kik-freq freq 290
+        edit snr-freq freq 120
         edit kik-adsr min_time 200
+        edit snr-adsr min_time 400
         edit kik-smplr
             loop_start_pos 3200
             loop_end_pos   4700
-        edit hat-freq freq 140
+        edit snr-smplr
+            loop_start_pos 3200
+            loop_end_pos   4700
+        edit hat-freq freq 90
         edit kik-pat  pattern 10010100-00001010-10010100-00001111-10010100-00001010-10010100-00001111
         edit kik-pat2 pattern 10010100-00001010-10010100-00001111-10010100-00001010-10010101-00101011
         edit snr-pat  pattern 00101000-00100010-00101000-00100101
@@ -84,7 +89,7 @@ ring-l
 clock
 ring-freq-r
     in_freq_mod1 kik-adsr out_output
-    freq        250
+    freq        300
     freq_mod1_size 2.0
 ring-freq-r
 
@@ -108,7 +113,7 @@ snr-echo-l
     gain_modsize      0.0
     feedback          0.735
     feedback_modsize  1.0
-    wet/dry           0.25
+    wet/dry           0.75
 snr-echo-l
 
 echo
@@ -122,7 +127,7 @@ snr-echo-r
     gain_modsize      0.0
     feedback          0.735
     feedback_modsize  1.0
-    wet/dry           0.25
+    wet/dry           0.75
 snr-echo-r
 
 echo
@@ -131,12 +136,12 @@ snr-echo-l2
     in_gain_mod      off
     in_feedback      snr-echo-r2 out_wet_output
     in_feedback_mod  ring-l out_output
-    delay_time        104
+    delay_time        64
     gain              1.0
     gain_modsize      0.0
-    feedback          0.35
+    feedback          0.735
     feedback_modsize  0.25
-    wet/dry           0.25
+    wet/dry           0.75
 snr-echo-l2
 
 echo
@@ -145,12 +150,12 @@ snr-echo-r2
     in_gain_mod      off
     in_feedback      snr-echo-l2 out_wet_output
     in_feedback_mod  ring-r out_output
-    delay_time        152
+    delay_time        62
     gain              1.0
     gain_modsize      0.0
-    feedback          0.35
+    feedback          0.735
     feedback_modsize  0.25
-    wet/dry           0.25
+    wet/dry           0.75
 snr-echo-r2
 
 // add echo to hats...
@@ -161,10 +166,10 @@ hat-echo-l
     in_gain_mod      off
     in_feedback      hat-echo-r out_wet_output
     in_feedback_mod  off
-    delay_time        124
+    delay_time        84
     gain              1.0
     gain_modsize      0.0
-    feedback          0.635
+    feedback          0.7635
     feedback_modsize  0.0
     wet/dry           0.45
 hat-echo-l
@@ -175,10 +180,10 @@ hat-echo-r
     in_gain_mod      off
     in_feedback      hat-echo-l out_wet_output
     in_feedback_mod  off
-    delay_time        142
+    delay_time        13
     gain              1.0
     gain_modsize      0.0
-    feedback          0.635
+    feedback          0.7635
     feedback_modsize  0.0
     wet/dry           0.45
 hat-echo-r

@@ -532,7 +532,7 @@ void jwmsynth::dobj_help()
             dobjnames::DOBJ_TYPE sprogtype = dd->get_dobj_sprog();
             err_msg += "\n    ";
             err_msg += dobj_names->get_name(sprogtype);
-            dobjdobjlist* sddlist;
+            dobjdobjlist* sddlist = 0;
             sddlist = ddlist->get_dobjdobjlist_for_dobjtype(sprogtype);
             dobjdobj* sdd = sddlist->goto_first();
             while(sdd) {
@@ -543,6 +543,7 @@ void jwmsynth::dobj_help()
                 dobj_help_params(ssprogtype);
                 sdd = sddlist->goto_next();
             }
+            delete sddlist;
             err_msg += "\n    ";
             err_msg += dobj_names->get_name(sprogtype);
             delete dobj_list->create_dobj(sprogtype);

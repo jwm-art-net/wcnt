@@ -4,7 +4,7 @@ DEFS=-O2 -fomit-frame-pointer -ffast-math
 #debugging defs
 # add -DSEQ_NOTE_DEBUG to DEFS to display note_data
 # info whenever one is created/deleted.
-# DEFS=-g3 -fno-inline
+#DEFS=-g3 -fno-inline
 
 # the rest:
 PROG=wcnt
