@@ -1,0 +1,8 @@
+there are a few more modules I'd like to make
+
+controller - like a very long envelope
+trigdelay  - delay a trigger by n ms.
+effects    - delay, chorus, echo, reverb, better filters, etc
+
+And let's not forget a shiny spanky gui for one day in the distant future
+when everyone else has written programs miles better than this.

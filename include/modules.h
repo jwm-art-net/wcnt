@@ -1,0 +1,36 @@
+#ifndef MODULES_H
+#define MODULES_H
+
+#include "adsr.h"
+#include "clockclock.h"
+#include "constmod.h"
+#include "freqgenerator.h"
+#include "lfoclock.h"
+#include "lfocontroller.h"
+#include "lowpassfilter.h"
+#include "modifier.h"
+#include "noisegenerator.h"
+#include "nonezero.h"
+#include "oscclock.h"
+#include "samplehold.h"
+#include "sampler.h"
+#include "sequencer.h"
+#include "sinewave.h"
+#include "squarewave.h"
+#include "stereoamp.h"
+#include "stereochannel.h"
+#include "stereomixer.h"
+#include "trianglewave.h"
+#include "trianglewave2.h"
+#include "trigger.h"
+#include "userwave.h"
+#include "wavfileout.h"
+#include "randomtrigger.h"
+#include "logictrigger.h"
+#include "switcher.h"
+#include "highpassfilter.h"
+#include "combiner.h"
+
+#include "riffdata.h"
+
+#endif

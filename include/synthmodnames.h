@@ -1,0 +1,53 @@
+#ifndef SYNTHMODNAMES_H
+#define SYNTHMODNAMES_H
+
+#include <string>
+
+class synthmodnames 
+{
+ public:
+	enum SYNTH_MOD_TYPE 
+	{
+		MOD_FIRST,
+		MOD_ADSR,
+		MOD_STEREOAMP,
+		MOD_CLOCK,
+		MOD_CONSTMOD,
+		MOD_FREQGEN,
+		MOD_LFOCLOCK,
+		MOD_LFOCONTROL,
+		MOD_LPFILTER,
+		MOD_MODIFIER,
+		MOD_NOISEGEN,
+		MOD_NONEZERO,
+		MOD_OSCCLOCK,
+		MOD_SAMPLEHOLD,
+		MOD_SEQUENCER,
+		MOD_SINEWAVE,
+		MOD_SQUAREWAVE,
+		MOD_TRIGGER,
+		MOD_TRIWAVE,
+		MOD_TRIWAVE2,
+		MOD_USERWAVE,
+		MOD_SAMPLER,
+		MOD_WAVFILEOUT,
+		MOD_STEREOCHANNEL,
+		MOD_STEREOMIXER,
+		MOD_RANDTRIGGER,
+		MOD_LOGICTRIGGER,
+		MOD_SWITCHER,
+		MOD_WCNTSIGNAL,
+		MOD_HPFILTER,
+		MOD_COMBINER,
+		MOD_LAST
+	};
+	synthmodnames();
+	~synthmodnames();
+	string & get_name(SYNTH_MOD_TYPE id);
+	SYNTH_MOD_TYPE get_type(string const*);
+	
+ private:
+	string *mod_name;
+};
+
+#endif

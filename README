@@ -1,0 +1,47 @@
+||||||||||||||||||||||||||||||
+------------------------------
+wcnt - Wav Composer Not Toilet
+------------------------------
+||||||||||||||||||||||||||||||
+
+Version 1.0001 Released:
+        Monday 24th March 2003
+
+See Changelog for details of
+changes etc, and scrap the old
+demos if you have them or be
+prepared to modify them.  The
+replacement demos must now be 
+downloaded separately. 
+
+compile in the usual manner:
+
+./configure
+make
+make install
+
+type  wcnt   for  command line 
+options  which  will give  you 
+some help and  definitely 
+download the examples package
+to try the demos.  Point your 
+browser @ wcnt.sourceforge.net
+
+If you're still stuck email me
+jameswmorris   at   users  dot 
+sourceforge dot net.
+
+If  you  have any  suggestions  
+for code improvements etcetera
+then email me.
+
+If you  make a really cool .wc
+file email it  to me, I'd like 
+to hear it!
+
+||||||||||||||||||||||||||||||
+------------------------------
+wcnt - Wav Composer Not Toilet
+------------------------------
+||||||||||||||||||||||||||||||
+	

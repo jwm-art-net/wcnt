@@ -1,0 +1,69 @@
+Monday March 24 2003
+
+wcnt-1.0001
+
+FIXES:
+
+	* registered input in_pwm for square_wave properly.
+	* registered in_signal input for modifier
+	* lpfilter had the wrong parameters registerd
+	* osc_clock freq_mod2 now works
+	* velocity response time in sequencer
+		velocity response times of 0 don't cause velocity 
+		to always be 0 anymore.
+	* Appear to have corrected unexpected end of file warnings
+		which certain playback programs emit.
+
+CHANGES:
+
+	* the various clock modules trigger immediately on 
+		starting the first cycle rather than at the end 
+		of the first cycle.
+		
+	* improved frequency modulation code for various clock 
+		modules. Now a positive value of 1.0 from input 
+		multiplies freq by modsize, and negative value of -1.0
+		divides freq by modsize.
+		
+	* as a result of above, changed osc_clock frequency 
+		modulation parameters
+	
+	* improved user_wave run() code (possibly)
+	
+	* improved stereo_amp amplitude modulation code to work as 
+		expected. (rather than being slightly unfathomable as to 
+		what it actually does.)
+	
+ADDITIONS:
+
+	* added new output out_deg_size to freq_generator
+	
+NEW MODULES:
+
+	* random_trigger
+		if in_trig is on, randomly choose whether to set out_trig to on
+		if choice is against randomly choose whether to set out_not_trig
+		to on.  Two parameters: probability and not_probability. 0 ~ 1
+		
+	* logic_trigger
+		and/or/xor functions, take two triggers and decide to set 
+		out_trig to on or off.
+		
+	* wcnt_signal
+		wrapper for CAT_DOUBLE outputs NOT CAT_SHORT outputs like mix_chan
+		
+	* switcher
+		switches through a unlimited list of wcnt_signals, on trigger 
+		switch to next.
+	
+	* hp_filter
+		high pass filter, exactly the same as the lp_filter except it 
+		has an extra array to store the original values before doing 
+		the low pass thing and then subtracts the low pass from the 
+		original.
+	
+	* combiner
+		similiar to mixer except uses wcnt_signal not mix_chan.  No 
+		master level, but has mean_total instead, when set to on
+		calculates mean average.
+END
