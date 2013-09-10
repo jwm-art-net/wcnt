@@ -6,27 +6,20 @@ randomtrigger::randomtrigger(char const* uname) :
  in_trig(0), out_trig(OFF), out_not_trig(OFF), probability(0.5),
  not_probability(0.5)
 {
-#ifndef BARE_MODULES
     get_outputlist()->add_output(this, outputnames::OUT_TRIG);
     get_outputlist()->add_output(this, outputnames::OUT_NOT_TRIG);
     get_inputlist()->add_input(this, inputnames::IN_TRIG);
-#endif
     randomtrigger_count++;
-#ifndef BARE_MODULES
     create_params();
-#endif
     srandom(time(0)); //srand(time(0));
 }
 
 randomtrigger::~randomtrigger()
 {
-#ifndef BARE_MODULES
     get_outputlist()->delete_module_outputs(this);
     get_inputlist()->delete_module_inputs(this);
-#endif
 }
 
-#ifndef BARE_MODULES
 void const* randomtrigger::get_out(outputnames::OUT_TYPE ot)
 {
     void const* o = 0;
@@ -113,8 +106,6 @@ stockerrs::ERR_TYPE randomtrigger::validate()
     return stockerrs::ERR_NO_ERROR;
 }
 
-#endif // BARE_MODULES
-
 void randomtrigger::run()
 {
     if (*in_trig == ON) {
@@ -132,7 +123,6 @@ void randomtrigger::run()
 
 int randomtrigger::randomtrigger_count = 0;
 
-#ifndef BARE_MODULES
 bool randomtrigger::done_params = false;
 
 void randomtrigger::create_params()
@@ -145,5 +135,5 @@ void randomtrigger::create_params()
      synthmodnames::MOD_RANDTRIGGER, paramnames::PAR_NOTPROBABILITY);
     done_params = true;
 }
-#endif
+
 #endif

@@ -8,7 +8,6 @@ wavfileout::wavfileout(char const* uname) :
  start_bar(0), end_bar(0), filename(0), fileout(0), header(0),
  status(WAV_STATUS_INIT), st_buffer(0), sample_total(0), buff_pos(0)
 {
-#ifndef BARE_MODULES
     get_inputlist()->add_input(this, inputnames::IN_LEFT);
     get_inputlist()->add_input(this, inputnames::IN_RIGHT);
     get_inputlist()->add_input(this, inputnames::IN_BAR);
@@ -16,7 +15,6 @@ wavfileout::wavfileout(char const* uname) :
     get_outputlist()->add_output(this, outputnames::OUT_WRITE_START_TRIG);
     get_outputlist()->add_output(this, outputnames::OUT_WRITE_END_TRIG);
     get_outputlist()->add_output(this, outputnames::OUT_WRITE_STATE);
-#endif
     st_buffer = new stereodata[WAV_BUFFER_SIZE];
     for(short i = 0; i < WAV_BUFFER_SIZE; i++){
         st_buffer[i].left = 0;
@@ -26,9 +24,7 @@ wavfileout::wavfileout(char const* uname) :
      new wavheader(audio_channels, audio_samplerate, audio_bitrate);
     status = WAV_STATUS_OK;
     wavfileout_count++;
-#ifndef BARE_MODULES
     create_params();
-#endif
 }
 
 wavfileout::~wavfileout()
@@ -42,14 +38,10 @@ wavfileout::~wavfileout()
     delete [] st_buffer;
     if (header)
         delete header;
-#ifndef BARE_MODULES
     get_outputlist()->delete_module_outputs(this);
     get_inputlist()->delete_module_inputs(this);
-#endif
 }
 
-
-#ifndef BARE_MODULES
 void const* wavfileout::get_out(outputnames::OUT_TYPE ot)
 {
     void const* o = 0;
@@ -99,7 +91,7 @@ bool wavfileout::set_param(paramnames::PAR_TYPE pt, void const* data)
     switch(pt)
     {
     case paramnames::PAR_FILENAME:
-        open_wav((char*)data);
+        set_wav_filename((char*)data);
         retv = true;
         break;
     case paramnames::PAR_START_BAR:
@@ -134,6 +126,13 @@ void const* wavfileout::get_param(paramnames::PAR_TYPE pt)
 
 stockerrs::ERR_TYPE wavfileout::validate()
 {
+    if (open_wav() != WAV_STATUS_OPEN) {
+        *err_msg = "could not open ";
+        *err_msg += filename;
+        *err_msg += " for output.";
+        invalidate();
+        return stockerrs::ERR_ERROR;
+    }
     if (!get_paramlist()->validate(this, paramnames::PAR_START_BAR,
             stockerrs::ERR_NEGATIVE))
     {
@@ -149,21 +148,14 @@ stockerrs::ERR_TYPE wavfileout::validate()
         invalidate();
         return stockerrs::ERR_ERROR;
     }
-    if (status != WAV_STATUS_OPEN) {
-        *err_msg += "could not open ";
-        *err_msg += filename;
-        *err_msg += " for writing";
-        invalidate();
-        return stockerrs::ERR_ERROR;
-    }
     return stockerrs::ERR_NO_ERROR;
 }
 
-#endif // BARE_MODULES
-
-WAV_STATUS wavfileout::open_wav(char * fname)
+void wavfileout::set_wav_filename(char* fname)
 {
     char const* path = synthmod::get_path();
+    if (filename)
+        delete [] filename;
     if (*fname == '/' || path == NULL) {
         filename = new char[strlen(fname)+1];
         strcpy(filename, fname);
@@ -175,10 +167,15 @@ WAV_STATUS wavfileout::open_wav(char * fname)
         ptr = filename + strlen(path);
         strcpy(ptr, fname);
     }
+}
+
+WAV_STATUS wavfileout::open_wav()
+{
     if ((fileout = fopen(filename, "wb")) == NULL)
         return status = WAV_STATUS_OPENERR;
     return status = WAV_STATUS_OPEN;
 }
+
 
 void wavfileout::close_wav()
 {
@@ -256,7 +253,6 @@ void wavfileout::write_wav_header(unsigned long length)
 
 short wavfileout::wavfileout_count = 0;
 
-#ifndef BARE_MODULES
 bool wavfileout::done_params = false;
 
 void wavfileout::create_params()
@@ -274,5 +270,5 @@ void wavfileout::create_params()
 // define both rather than choose.
     done_params = true;
 }
-#endif
+
 #endif

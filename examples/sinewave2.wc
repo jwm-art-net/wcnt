@@ -1,97 +1,59 @@
-wcnt-1.127/jwmsynth
+wcnt-1.2/jwmsynth
 
-// examples/sinewave.wc
+// examples/sinewave2.wc
+// creates an irregular sinewave
 
-samplerate  44100
-bpm         120
-signature   4/4
+    samplerate 44100
+    bpm 120
+    signature 4/4
 
-// duration of sound
+// read and create totallity of sinewave.wc
 
-timer t1
-    timings
-        time seconds 0.0
-        time seconds 1.0
-    timings
-t1
+synth_file_reader
+sinwvfile
+    filename    sinewave.wc
+    mod_action  exclude
+    dobj_action exclude
+    modules
+    modules
+    data_objects
+    data_objects
+sinwvfile
 
-// clock will run at frequency of sine wave
+// now create a squarewave which will be used to modulate
+// the frequency of the sinewave.
 
-clock clock1
-    in_freq_mod1   off
-    freq           220
-    freq_mod1_size 1.0
-clock1
-
-// the sine waveform, driven by clock1
-
-sine_wave sinewave
+square_wave
+squarewave
     in_phase_trig  clock1 out_phase_trig
     in_deg_size    clock1 out_deg_size
-    recycle_mode         off
-    on_trig_reset_phase  off
-    phase_cycles         1.0
-sinewave
+    in_pwm         off
+    pulse_width   0.75
+    pwm_size      0.0
+    recycle_mode  off
+squarewave
 
-// amplify and shape waveform to a 16 bit signal
+// connect squarewave to clock1 (which drives the sinewave)
 
-constant one value 1.0 one
+input_editor
+inputs
+    editlist
+        connect clock1 in_freq_mod1 squarewave out_output
+    editlist
+inputs
 
-adsr
-adsr1
-    envelope
-        section name attack
-            ut 5.0  ul 0.1
-            lt 6.0  ll 0.0
-        section name attack
-            ut 6.0  ul 0.4
-            lt 7.0  ll 0.0
-        section name attack
-            ut 7.0  ul 1.0
-            lt 8.0  ll 0.0
-        section name decay
-            ut 125.0 ul 0.63
-            lt 75.0  ll 0.0
-        section name release
-            ut 795.0 ul 0.0
-            lt 50.0  ll 0.0
-    envelope
-        in_note_on_trig  t1  out_trig
-        in_note_off_trig off
-        in_velocity      one out_output
-        up_thresh      1.0
-        lo_thresh      0.0
-        start_level    0.0
-        sustain_state  off
-        zero_retrigger off
-adsr1
+// adjust clock1 so the squarewave does actually modulate it.
+// not forgetting to change the output filename so the original
+// is not written over.
 
-mono_amp amp1
-    in_signal   sinewave out_output
-    in_amp_eg   adsr1 out_output
-    in_amp_mod  off
-    amplitude     32767
-    amp_mod_size  0.0
-    clip_level    32767
-amp1
+param_editor
+params
+    editlist
+        edit clock1 freq_mod1_size 2.0
+        edit wav1 filename sinewave2.wav
+    editlist
+params
 
-// write amplified signal to wav file
+// all done...
 
-wavfile_out wav1
-    in_left     amp1  out_mono
-    in_right    amp1  out_mono
-    in_bar      t1 out_count
-    in_bar_trig t1 out_trig
-    filename    sinewave2.wav
-    start_bar   0
-    end_bar     1
-wav1
-
-// when to stop
-
-wcnt_exit wcnt_exit_module
-    in_bar   t1 out_count
-    exit_bar 1
-wcnt_exit_module
-
-wcnt-1.127/jwmsynth
+wcnt-1.2/jwmsynth

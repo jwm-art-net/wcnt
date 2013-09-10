@@ -5,20 +5,11 @@
 
 #include "synthmodnames.h"
 #include "stockerrs.h"
-
-// when you want to test a new module you've written without all the extra
-// data like module lists, output lists, input lists, parameter lists, and
-// connector lists:  define BARE_MODULES - to get just that, bare modules
-// with only enough functionality for them to run(), but you'll have to
-// hard code the outputs to inputs, etc, but that's ok when you just want
-// to test the thing.
-
-#ifndef BARE_MODULES
 #include "inputnames.h"
 #include "outputnames.h"
 #include "paramnames.h"
 #include "moddobjlist.h"
-#endif
+#include "fxsparamlist.h"
 
 // Default settings for audio output
 extern short audio_channels;
@@ -32,18 +23,16 @@ extern short audio_ysize;
 #define MAX_BPM 1000
 #endif
 
-extern short sm_beats_per_minute;
-extern short sm_beats_per_measure;
-extern short sm_beat_value;
+extern double sm_beats_per_minute;
+extern short  sm_beats_per_measure;
+extern short  sm_beat_value;
 
 // forward definitions
-#ifndef BARE_MODULES
 class synthmodlist;
 class modinputlist;
 class modoutputlist;
 class modparamlist;
 class connectorlist;
-#endif
 
 // although many synthmodules do not need access to much of the
 // register_xxx stuff, you can use synthmod to access them. Anything that
@@ -68,7 +57,6 @@ public:
     }
     void invalidate(){valid = false;}
     bool is_valid() { return valid;}
-#ifndef BARE_MODULES
     // more virtuals
     virtual void const* set_in(inputnames::IN_TYPE, void const*);
     virtual void const* get_out(outputnames::OUT_TYPE);
@@ -76,7 +64,8 @@ public:
     virtual void const* get_param(paramnames::PAR_TYPE);
     virtual dobj* add_dobj(dobj*);
     // statics - created and registered from jwmsynth constructor
-    static void register_err_msg(string* e){ err_msg = e;}
+    static void clear_error_msg(){ *err_msg = "";}
+    static void register_error_msg(string* e){ err_msg = e;}
     static void register_path(char* p){ path = p;}
     static void register_iocatnames(iocat_names* in){iocatnames = in;}
     static void register_modnames(synthmodnames* s) {modnames = s;}
@@ -89,6 +78,7 @@ public:
     static void register_paramlist(modparamlist* m){paramlist = m;}
     static void register_connectlist(connectorlist* c){ connectlist = c;}
     static void register_moddobjlist(moddobjlist* m){ mdobjlist = m;}
+    static void register_fxsparamlist(fxsparamlist* fl){fxsparlist = fl;}
     static string const* get_error_msg(){ return err_msg;}
     static char const* get_path(){ return path;}
     static iocat_names* get_iocatnames(){ return iocatnames;}
@@ -102,7 +92,7 @@ public:
     static modparamlist* get_paramlist(){ return paramlist;}
     static connectorlist* get_connectlist(){ return connectlist;}
     static moddobjlist* get_moddobjlist(){ return mdobjlist;}
-#endif
+    static fxsparamlist* get_fxsparamlist(){ return fxsparlist;}
 protected:
     static string* err_msg;
 private:
@@ -110,8 +100,7 @@ private:
     short number_id;
     char* username;
     bool valid;
-#ifndef BARE_MODULES
-    static char* path; /* path (if any) to the synthfile.wc */
+    static char* path; /* to synthfile.wc from cmdline */
     static synthmodnames* modnames;
     static iocat_names* iocatnames;
     static inputnames* innames;
@@ -123,7 +112,7 @@ private:
     static modparamlist* paramlist;
     static connectorlist* connectlist;
     static moddobjlist* mdobjlist;
-#endif
+    static fxsparamlist* fxsparlist;
 };
 
 #endif

@@ -1,9 +1,8 @@
 #ifndef OUTPUTNAMES_H
 #define OUTPUTNAMES_H
 
-#ifndef BARE_MODULES
-
 #include <string.h>
+
 #include "iocat.h"
 
 class outputnames {
@@ -73,9 +72,11 @@ public:
         OUT_NOT_NO_TRIG,
         OUT_NOT_NS_TRIG,
         OUT_COUNT,
+        OUT_WAIT_STATE,
+        OUT_ATTACK_STATE,
+        OUT_RELEASE_STATE,
         OUT_LAST // know when to stop
     };
-
     outputnames();
     ~outputnames();
     char const* get_name(OUT_TYPE) const;
@@ -88,5 +89,4 @@ private:
     IOCAT* outcat;
 };
 
-#endif
 #endif

@@ -42,22 +42,19 @@ public:
     const char* get_filename() { return fname; }
     const char* get_root_note() { return rootnote;}
     double get_root_deg_size();
-#ifndef BARE_MODULES
     // virtuals from dobj
-    bool set_dparam(dparamnames::DPAR_TYPE, void*);
-    void* get_dparam(dparamnames::DPAR_TYPE);
+    bool set_param(paramnames::PAR_TYPE, void*);
+    void const* get_param(paramnames::PAR_TYPE);
     virtual stockerrs::ERR_TYPE validate();
-#endif
+
 private:
     char* fname;
     char* rootnote;
     FILE* filein;
     wavheader* header;
-    WAV_STATUS 	status;
-#ifndef BARE_MODULES
-    void create_dparams();
-    static bool done_dparams;
-#endif
+    WAV_STATUS status;
+    void create_params();
+    static bool done_params;
 };
 
 #endif

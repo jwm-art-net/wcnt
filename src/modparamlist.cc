@@ -1,8 +1,6 @@
 #ifndef MODPARAMLIST_H
 #include "../include/modparamlist.h"
 
-#ifndef BARE_MODULES
-
 modparamlist::modparamlist() : parlist(0), param(0)
 {
     parlist = 
@@ -73,5 +71,4 @@ bool modparamlist::validate(
     return false;
 }
 
-#endif
 #endif

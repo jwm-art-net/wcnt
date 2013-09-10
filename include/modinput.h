@@ -1,13 +1,11 @@
 #ifndef MODINPUT_H
 #define MODINPUT_H
 
-#ifndef BARE_MODULES
-
 #include "synthmodule.h"
 
 class modinput
 {
-public:
+ public:
     modinput(synthmod*, inputnames::IN_TYPE);
     ~modinput(){};
     synthmod* get_synthmodule() {
@@ -22,5 +20,4 @@ private:
     inputnames::IN_TYPE input_type;
 };
 
-#endif
 #endif

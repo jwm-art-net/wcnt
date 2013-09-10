@@ -1,22 +1,13 @@
 TODO:
 
-    * Add generic way of handling special parameters which user specifies
-      in form of a text string, and handled by the synthmodule as enums.
-      for example sampler loop modes are fwd, rev, bi, logic_trigger 
-      functions are and, or, xor. A generic method would mean that the
-      coding of any new parameter types expressed like those above would
-      be done in the synth module which needs them, instead of having to 
-      accommadate it in several other already existing classes 
-      (iocat, synthfilereader, etc).
-
-    * timer which outputs a trigger at specified moments, along with a
-      count of how many times it has triggered.  Points specified as 
-      duration in time, specifically ms.  could be used by wcnt_exit
-      and wavfileout modules instead of timemap.
-
-    * LFO which oscilates in sync with timemap output, for example,
-      oscilates once every 3 quarter notes, and keeping in time while
-      bpm or time signature changes. see controller notes below.
+    * although parameters of modules and data objects can be edited, it
+      is not currently possible to edit the parameters of data objects
+      contained in a list.  a possible solution would be to create a
+      specialised dobj for each dobj type. for example a riff_editor,
+      or adsr_envelope_editor.  these would contain a list which
+      specifies which objects to select, and then another list which
+      specifies what to do with them. better would be a dobj_editor
+      which would work on any dobj type.
 
     * controller module.  outputs a signal which can be ramped from a
       point in one bar, to another point in the same, or different bar.
@@ -24,8 +15,13 @@ TODO:
       correct rampage.  I'm not sure if I correctly figured out that it is
       impossible in wcnt's current state.
 
+    * figure out why set_wc_filename in synthfilereader gets reported as
+      creating a memory leak by ccmalloc and valgrind memory profilers.
+
+    * still not got any anti-aliasing on waveforms etc.
     * still not made those module variating auto generation features
     * still not made those sample data and sample mapping features
+    * still not made those polyphany enabling modules.
     * still not using LADSPA
     * still not using secret rabbit code, libsndfile.
     * still not making lots of money, money, money, money, money, money..

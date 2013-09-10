@@ -3,39 +3,27 @@
 //                     O---\\\\|||[:::>  <:::]|||////---O                |
 //                     \ ----------   wcnt   ---------- /                |
 //                          Wav Composer Not Toilet!                     |
-//                     / ----------  v1.1za  ---------- \                |
+//                     / ----------   v1.2   ---------- \                |
 //                     O---////|||[::>    <::]|||\\\\---O                |
 //                                     ||                                |
 //                          ========================                     |
 //                          | 2005 James W. Morris.|                     |
 //                          ------------------------                     |
-//                          |    Made In England   |                     |
+//                          |  Made In Stourmouth  |                     |
 //                          ------------------------                     |
 //                                                                       /
-// contact->James_W.Morris( james@jwm-art.net )                          /
+// contact->James_W.Morris( james@jwm-art.net or sirrom75@hotmail.com )  /
 //                                                                       /
 //----------------------------------------------------------------------*/
 
-#ifdef BARE_MODULES
-#include "../include/synthmodule.h"
-#include "../include/modules.h"
-#else
 #include "../include/jwmsynth.h"
-#endif
 
 void title(const char* version);
 void exitramblings();
 void memerr(const char* msg);
 
-#ifdef BARE_MODULES	
-void moduletest();
-#endif
-
 int main(int argc, char **argv)
 {
-    #ifdef BARE_MODULES
-    moduletest();
-    #else
     jwmsynth* thesynth = new jwmsynth(argc, argv);
     title(thesynth->get_version());
     if (!thesynth->is_valid()) {
@@ -69,39 +57,22 @@ int main(int argc, char **argv)
         return -1;
     }
     delete thesynth;
-//    delete [] synthmod::path; // eek
-    #endif // BARE_MODULES
     exitramblings();
     return 0;
 }
 
 void title(const char* version)
 {
-    cout << "\n___...----*  wcnt  *----...___";
-    cout << "\n   Wav Composer Not Toilet!   ";
-    cout << "\n___...---*  v";
+    cout << "\n ___...---*  wcnt  *----...___";
+    cout << "\n/__Wav Composer Not Toilet!__/";
+    cout << "\n   /...---*  v";
     cout << version;
-    cout << "  *---...___\n";
+    cout << "  *---.../\n";
 }
 
 void exitramblings()
 {
     cout << "\nFlush complete.  Please wash your &&s, ";
     cout << "naturally.\n";
+    cout.flush();
 }
-
-#ifdef BARE_MODULES
-void moduletest()
-{
-    // place module testing code here...
-    cout << "\nDone testing...\n";
-}
-/*
- light heart, heavy head, light heart, heavy head, 
- light heart, heavy head, light heart, heavy head, 
- light heart, heavy head, light heart, heavy head, 
- light heart, heavy head, light heart, heavy head, 
- light heart, heavy head, light heart, heavy head, 
- .... and I can write anything.  boom bip & dose one - circle
- */
-#endif

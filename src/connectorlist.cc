@@ -1,8 +1,6 @@
 #ifndef CONNECTORLIST_H
 #include "../include/connectorlist.h"
 
-#ifndef BARE_MODULES
-
 connectorlist::connectorlist() :
  connectlist(0), connect_item(0), connect(0), verbose(false)
 {
@@ -18,6 +16,21 @@ connectorlist::~connectorlist()
         goto_next();
     }
     delete connectlist;
+}
+
+connector* 
+connectorlist::get_connector_by_input(
+    synthmod* sm, inputnames::IN_TYPE it)
+{
+    if (!sm)
+        return 0;
+    goto_first();
+    while(connect) {
+        if (connect->get_input_module() == sm
+            && connect->get_input_type() == it) return connect;
+        goto_next();
+    }
+    return 0;
 }
 
 connector* connectorlist::add_connector(connector* c)
@@ -72,5 +85,4 @@ bool connectorlist::make_connections()
     return true;
 }
 
-#endif
 #endif

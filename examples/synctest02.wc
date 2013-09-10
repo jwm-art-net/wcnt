@@ -1,0 +1,335 @@
+wcnt-1.2/jwmsynth
+//------------------------------------------------------------------------
+//
+// test synchronization of sequencer and sync_clock modules.
+// sequencer pattern is heard on left channel, while sync_clock
+// pattern is heard on right.
+//
+// the sequencer and sync_clock modules are out of sync by one
+// sample, but only during constant bpm. When using the
+// logic_trigger module, precision should be set to 1 (ie triggers
+// are treated as simultaneous when they occurr a sample after
+// each other).
+//
+//------------------------------------------------------------------------
+
+samplerate  44100
+bpm         90
+signature   4/4
+
+//------------------------------------------------------------------------
+
+time_map
+time1  
+    meter_map
+    meter_map
+    bpm_map
+    bpm_map
+time1
+
+riff
+riff1
+    quarter_value   64
+    notelist
+        note name c0  pos 0    len 11  vel 1.0
+        note name d1  pos 32   len 12  vel 1.0
+        note name e0  pos 64   len 9   vel 1.0
+        note name f1  pos 96   len 12  vel 1.0
+        note name g0  pos 128  len 12  vel 1.0
+        note name a1  pos 160  len 12  vel 1.0
+        note name b0  pos 192  len 12  vel 1.0
+        note name c1  pos 224  len 12  vel 1.0
+    notelist
+riff1
+
+riff
+riff11
+    quarter_value   64
+    notelist
+        note name c0  pos 0    len 11  vel 1.0
+        note name e0  pos 64    len 11  vel 1.0
+    notelist
+riff11
+
+
+sequencer
+seq1
+    track 
+        riff_node
+            riff riff1  bar 0   transpose 0
+            start_len 0 end_len 0
+        riff_node
+            riff riff1  bar 1   transpose 0
+            start_len 0 end_len 0
+        riff_node
+            riff riff1  bar 2   transpose 0
+            start_len 0 end_len 0
+        riff_node
+            riff riff1  bar 3   transpose 0
+            start_len 0 end_len 0
+        riff_node
+            riff riff1  bar 4   transpose 0
+            start_len 0 end_len 0
+        riff_node
+            riff riff1  bar 5   transpose 0
+            start_len 0 end_len 0
+        riff_node
+            riff riff1  bar 6   transpose 0
+            start_len 0 end_len 0
+        riff_node
+            riff riff1  bar 7   transpose 0
+            start_len 0 end_len 0
+        riff_node
+            riff riff1  bar 8   transpose 0
+            start_len 0 end_len 0
+    track
+    in_bar              time1 out_bar
+    in_bar_trig         time1 out_bar_trig
+    in_pos_step_size    time1 out_pos_step_size
+    in_beats_per_bar    time1 out_beats_per_bar
+    in_beat_value       time1 out_beat_value
+    velocity_response_time 5
+seq1
+
+sync_clock
+sclock
+    in_bpm              time1 out_bpm
+    in_pos_step_size    time1 out_pos_step_size
+    in_beats_per_bar    time1 out_beats_per_bar
+    in_beat_value       time1 out_beat_value
+    in_phase_trig       off
+    in_freq_mod1        off
+    in_freq_mod2        off
+    freq_mod1_size  1.0
+    freq_mod2_size  1.0
+    quarter_value   8
+    len             5
+    snap_to         1
+sclock
+
+logic_trigger
+lta
+    in_trig1  sclock out_phase_trig
+    in_trig2  seq1   out_note_on_trig
+    function  xornot
+    precision 1
+lta
+
+// logic_trigger::precision 
+// 0  - requires triggers to occurr with sample accuracy
+// 1  - allows the triggers to be a single sample late
+// 10 - allows 10 samples between the triggering of both inputs
+//      and will still treat them as if simultaneous.
+
+square_wave
+sqwave
+    in_phase_trig  lta out_trig
+    in_deg_size    sclock out_deg_size
+    in_pwm         off
+    pulse_width   0.25
+    pwm_size      0.0
+    recycle_mode  off
+sqwave
+
+sine_wave
+sinez
+    in_phase_trig  sclock out_phase_trig
+    in_deg_size    sclock out_deg_size
+    recycle_mode         off
+    on_trig_reset_phase  off
+    phase_cycles         1.0
+sinez
+
+timer
+master_on
+    timings
+        time seconds 0.01
+    timings
+master_on
+
+adsr
+adsr-master
+        envelope
+        section name attack
+            ut  2500.0    ul  1.0
+            lt  2500.0    ll  1.0
+        section name decay
+            ut  0.0    ul  1.0
+            lt  0.0    ll  1.0
+        section name release
+            ut  3000.0    ul  0.0
+            lt  3000.0    ll  0.0
+        envelope
+        in_note_on_trig     master_on out_trig
+        in_note_off_trig    seq1      out_end_trig
+        in_velocity         off
+        up_thresh        1.0
+        lo_thresh        0.0
+        start_level      0.0
+        min_time         50.0
+        max_sustain_time 0.0 // 0 = sustain forever until note off
+        release_is_ratio off
+        sustain_state    on
+        zero_retrigger   off
+adsr-master
+
+adsr
+adsr1
+        envelope
+        section name attack
+            ut  15.0    ul  1.0
+            lt  15.0    ll  1.0
+        section name decay
+            ut  15.0    ul  0.8
+            lt  15.0    ll  0.8
+        section name release
+            ut  25.0    ul  0.25
+            lt  25.0    ll  0.25
+        section name release
+            ut  125.0    ul  0.0
+            lt  125.0    ll  0.0
+        envelope
+        in_note_on_trig     seq1    out_note_on_trig
+        in_note_off_trig    seq1    out_note_off_trig
+        in_velocity         seq1    out_velocity
+        up_thresh        1.0
+        lo_thresh        0.0
+        start_level      0.0
+        min_time         50.0
+        max_sustain_time 0.0 // 0 = sustain forever until note off
+        release_is_ratio off
+        sustain_state    on
+        zero_retrigger   off
+adsr1
+
+adsr
+adsr2
+        envelope
+        section name attack
+            ut  50    ul  1.0
+            lt  50    ll  1.0
+        section name decay
+            ut  15.0    ul  0.8
+            lt  15.0    ll  0.8
+        section name release
+            ut  50.0    ul  0.6
+            lt  50.0    ll  0.6
+        section name release
+            ut  225.0    ul  0.4
+            lt  225.0    ll  0.4
+        section name release
+            ut  225.0    ul  0.0
+            lt  225.0    ll  0.0
+        envelope
+        in_note_on_trig     lta out_trig
+        in_note_off_trig    sqwave out_pulse_off_trig
+        in_velocity         off
+        up_thresh        1.0
+        lo_thresh        0.0
+        start_level      0.0
+        min_time         5.0
+        max_sustain_time 0.0 // 0 = sustain forever until note off
+        release_is_ratio on
+        sustain_state    on
+        zero_retrigger   off
+adsr2
+
+osc_clock
+osc1
+        in_note_on_trig     seq1    out_note_on_trig
+        in_note_slide_trig  seq1    out_note_slide_trig
+        in_play_state       off  //adsr1   out_play_state
+        in_frequency        seq1    out_frequency
+        in_freq_mod1        off
+        in_freq_mod2        off
+        octave_offset       -1
+        tuning_semitones    0
+        portamento_time     25.0
+        response_time       5.0
+        freq_mod1_size      1.0
+        freq_mod2_size      1.0
+osc1
+
+osc_clock
+osc2
+        in_note_on_trig     lta out_trig
+        in_note_slide_trig  off
+        in_play_state       adsr2   out_play_state
+        in_frequency        seq1 out_frequency
+        in_freq_mod1        off
+        in_freq_mod2        off
+        octave_offset       -1
+        tuning_semitones    0.0
+        portamento_time     0.0
+        response_time       5.0
+        freq_mod1_size      1.0
+        freq_mod2_size      1.0
+osc2
+
+sine_wave
+sine
+    in_phase_trig  osc1 out_phase_trig
+    in_deg_size    osc1 out_deg_size
+    recycle_mode         off
+    on_trig_reset_phase  off
+    phase_cycles         1.0
+sine
+
+multiplier
+m1sine
+    in_signal   sine out_output
+    in_modifier adsr-master out_output
+m1sine
+
+sine_wave
+sine2
+    in_phase_trig  osc2 out_phase_trig
+    in_deg_size    osc2 out_deg_size
+    recycle_mode         off
+    on_trig_reset_phase  off
+    phase_cycles         1.0
+sine2
+
+mono_amp
+amp1
+    in_signal   m1sine out_output
+    in_amp_eg   adsr1  out_output
+    in_amp_mod  seq1   out_velocity_ramp
+    amplitude     32000
+    amp_mod_size  1.0
+    clip_level    32767
+amp1
+
+mono_amp
+amp2
+    in_signal   sine2 out_output
+    in_amp_eg   adsr2 out_output
+    in_amp_mod  adsr-master out_output
+    amplitude     32000
+    amp_mod_size  1.0
+    clip_level    32767
+amp2
+
+wavfile_out
+wav1
+    in_left     amp1    out_mono
+    in_right    amp2    out_mono
+    in_bar      time1   out_bar
+    in_bar_trig time1   out_bar_trig
+    filename    synctest02.wav
+    start_bar   0
+    end_bar     11
+wav1
+
+// setup how long to process:
+
+wcnt_exit
+wcnt_exit_module
+    in_bar  time1   out_bar
+    exit_bar    11
+wcnt_exit_module
+
+//------------------------------------------------------------------------
+// End Of File _jwm 2005.
+//------------------------------------------------------------------------
+wcnt-1.2/jwmsynth

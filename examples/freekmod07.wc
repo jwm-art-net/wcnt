@@ -1,0 +1,33 @@
+wcnt-1.2/jwmsynth
+
+header header.wch
+
+synth_file_reader
+freekmod06
+    filename freekmod06.wc
+    mod_action  exclude
+    dobj_action exclude
+    modules
+    modules
+    data_objects
+    data_objects
+freekmod06
+
+param_editor
+freekparams
+    editlist
+        edit osc1 octave_offset    1
+        edit osc2 tuning_semitones 0.0
+        edit echo1
+            gain      0.75
+            feedback  0.35
+            wet/dry   0.35
+        edit echo2
+            feedback -0.35
+            wet/dry   0.35
+        edit wav1 filename freekmod07.wav
+            
+    editlist
+freekparams
+
+wcnt-1.2/jwmsynth

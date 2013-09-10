@@ -1,20 +1,18 @@
 #ifndef DOBJMOD_H
 #include "../include/dobjmod.h"
 
-#ifndef BARE_MODULES
-
 dobjmod::dobjmod() :
  dobj(dobjnames::DOBJ_SYNTHMOD), synth_mod(0)
 {
-    create_dparams();
+    create_params();
 }
 
-bool dobjmod::set_dparam(dparamnames::DPAR_TYPE pt, void* data)
+bool dobjmod::set_param(paramnames::PAR_TYPE pt, void* data)
 {
     bool retv = false;
     switch(pt)
     {
-    case dparamnames::DPAR_MODNAME:
+    case paramnames::PAR_MODNAME:
         set_synthmod((synthmod*)data);
         retv = true;
         break;
@@ -25,14 +23,14 @@ bool dobjmod::set_dparam(dparamnames::DPAR_TYPE pt, void* data)
     return retv;
 }
 
-void* dobjmod::get_dparam(dparamnames::DPAR_TYPE pt)
+void const* dobjmod::get_param(paramnames::PAR_TYPE pt)
 {
     void* retv = 0;
     switch(pt)
     {
-    case dparamnames::DPAR_MODNAME:
-        retv = 0;	// not sure how to handle this yet and besides,
-        break;		// there is currently no reason to use it.
+    case paramnames::PAR_MODNAME:
+        retv = 0;   // not sure how to handle this yet and besides,
+        break;      // there is currently no reason to use it.
     default:
         retv = 0;
         break;
@@ -40,15 +38,14 @@ void* dobjmod::get_dparam(dparamnames::DPAR_TYPE pt)
     return retv;
 }
 
-bool dobjmod::done_dparams = false;
+bool dobjmod::done_params = false;
 
-void dobjmod::create_dparams()
+void dobjmod::create_params()
 {
-    if (done_dparams == true) return;
+    if (done_params == true) return;
     get_dparlist()->add_dobjparam(
-     dobjnames::DOBJ_SYNTHMOD, dparamnames::DPAR_MODNAME);
-    done_dparams = true;
+     dobjnames::DOBJ_SYNTHMOD, paramnames::PAR_MODNAME);
+    done_params = true;
 }
 
-#endif
 #endif

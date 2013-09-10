@@ -24,7 +24,7 @@ bool dobj::is_named_by_user()
         return (valid = false);
     }
     // check_type(object_type) means need only check for 1 condition...
-    if (object_type > dobjnames::DOBJ_DEFLISTS)
+    if (object_type > dobjnames::DOBJ_DEFS)
         return true;
     return false; // should not be named by user
 }
@@ -59,8 +59,7 @@ char const* dobj::get_username()
     return username;
 }
 
-#ifndef BARE_MODULES
-bool dobj::set_dparam(dparamnames::DPAR_TYPE, void*)
+bool dobj::set_param(paramnames::PAR_TYPE, void*)
 {
     *err_msg = 
      "\n***programmer error***\nattempt made to set parameter data";
@@ -68,7 +67,7 @@ bool dobj::set_dparam(dparamnames::DPAR_TYPE, void*)
     return 0;
 }
 
-void* dobj::get_dparam(dparamnames::DPAR_TYPE)
+void const* dobj::get_param(paramnames::PAR_TYPE)
 {
     *err_msg = 
      "\n***programmer error***\nattempt made to get parameter data";
@@ -76,7 +75,7 @@ void* dobj::get_dparam(dparamnames::DPAR_TYPE)
     return 0;
 }
 
-dobj* dobj::add_dobj(dobj*)
+dobj const* dobj::add_dobj(dobj*)
 {
     *err_msg = 
      "\n***programmer error***\nattempt made to add data object to";
@@ -84,12 +83,13 @@ dobj* dobj::add_dobj(dobj*)
     return 0;
 }
 
+char* dobj::path = 0;
 string*  dobj::err_msg = 0;
 iocat_names* dobj::iocatnames = 0;
 dobjnames* dobj::dobj_names = 0;
 dobjlist* dobj::dobj_list = 0;
 dobjparamlist* dobj::dobjpar_list = 0;
-dparamnames* dobj::dpar_names = 0;
-dobjdobjlist* dobj::dobj_dobjlist = 0;
-#endif
+paramnames* dobj::par_names = 0;
+topdobjlist* dobj::top_dobjlist = 0;
+fxsparamlist* dobj::fxsparlist = 0;
 #endif

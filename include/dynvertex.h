@@ -40,18 +40,15 @@ public:
     double get_out_level(double height) {
         return lso_level * (1 - height) + uso_level * height; }
     stockerrs::ERR_TYPE validate();
-#ifndef BARE_MODULES
-    bool set_dparam(dparamnames::DPAR_TYPE, void*);
-    void* get_dparam(dparamnames::DPAR_TYPE pt);
-#endif
+    bool set_param(paramnames::PAR_TYPE, void*);
+    void const* get_param(paramnames::PAR_TYPE pt);
+
 private:
     double si_level;
     double uso_level;
     double lso_level;
-#ifndef BARE_MODULES
-    void create_dparams();
-    static bool done_dparams;
-#endif
+    void create_params();
+    static bool done_params;
 };
 
 #endif

@@ -1,0 +1,6 @@
+samplerate  44100
+bpm         130
+signature   4/4
+
+this file is read by all the .wc files in the examples directory.
+changing the bpm here effects them all.

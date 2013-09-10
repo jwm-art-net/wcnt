@@ -7,27 +7,20 @@ clockclock::clockclock(char const* uname) :
  in_freq_mod1(0), hrtz_freq(0.00), freq_mod1size(0.00), degs(360.00)
 {
     // degs initialised to 360 so that it immediately triggers
-#ifndef BARE_MODULES
     get_inputlist()->add_input(this, inputnames::IN_FREQ_MOD1);
     get_outputlist()->add_output(this, outputnames::OUT_PHASE_TRIG);
     get_outputlist()->add_output(this, outputnames::OUT_PREMOD_DEG_SIZE);
     get_outputlist()->add_output(this, outputnames::OUT_DEG_SIZE);
-#endif
     clockclock_count++;
-#ifndef BARE_MODULES
     create_params();
-#endif
 }
 
 clockclock::~clockclock()
 {
-#ifndef BARE_MODULES
     get_inputlist()->delete_module_inputs(this);
     get_outputlist()->delete_module_outputs(this);
-#endif
 }
 
-#ifndef BARE_MODULES
 void const* clockclock::get_out(outputnames::OUT_TYPE ot)
 {
     void const* o = 0;
@@ -116,8 +109,6 @@ stockerrs::ERR_TYPE clockclock::validate()
     return stockerrs::ERR_NO_ERROR;
 }
 
-#endif // BARE_MODULES
-
 void clockclock::set_frequency(double f)
 {
     hrtz_freq = f;
@@ -150,7 +141,6 @@ void clockclock::run()
 
 int clockclock::clockclock_count = 0;
 
-#ifndef BARE_MODULES
 bool clockclock::done_params = false;
 
 void clockclock::create_params()
@@ -163,5 +153,5 @@ void clockclock::create_params()
      synthmodnames::MOD_CLOCK, paramnames::PAR_FREQ_MOD1SIZE);
     done_params = true;
 }
-#endif
+
 #endif

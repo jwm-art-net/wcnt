@@ -4,12 +4,9 @@
 #include <math.h>
 
 #include "synthmodule.h"
-
-#ifndef BARE_MODULES
 #include "modoutputslist.h"
 #include "modinputslist.h"
 #include "modparamlist.h"
-#endif
 
 // rms
 // calculate the root mean square of a given signal
@@ -18,10 +15,6 @@
 // step 2) calculate the sum of the array
 // step 3) calculate the mean average of the array
 // step 4) calculate the square root of mean average
-
-// why?
-// if you're a coder of audio stuff you'll know for sure....or you should.
-// not that I've known for long what rms means.
 
 class rms : public synthmod
 {
@@ -37,12 +30,11 @@ public:
     void run();
     void init();
     stockerrs::ERR_TYPE validate();
-#ifndef BARE_MODULES
     void const* get_out(outputnames::OUT_TYPE);
     void const* set_in(inputnames::IN_TYPE, void const*);
     bool set_param(paramnames::PAR_TYPE, void const*);
     void const* get_param(paramnames::PAR_TYPE);
-#endif	
+
 private:
     // inputs
     const double* in_signal;
@@ -57,10 +49,8 @@ private:
     short arrpos;
     double sqrsum;
     static int rms_count;
-#ifndef BARE_MODULES
     void create_params();
     static bool done_params;
-#endif
 };
 
 #endif

@@ -1,16 +1,15 @@
-wcnt-1.127/jwmsynth
+wcnt-1.2/jwmsynth
 //------------------------------------------------------------------------
 //
 //  drums02.wc:  
 //      re-arranges a 2 second sample of a 1 bar drumloop.
 //      uses the wait_trig module with two lfo_clock triggers
-//      to create an interesting rythmic pattern.
+//      to create an interesting rythmic pattern. (ie the sequencer
+//      is not used to trigger the drums).
 //
 //------------------------------------------------------------------------
 
-samplerate  44100
-bpm         120 // makes no odds for this one
-signature   4/4
+header header.wch
 
 //------------------------------------------------------------------------
 
@@ -89,7 +88,9 @@ time1
 riff 
 riff1
     quarter_value 1
-    note name c0 pos 0 len 100 vel 1.0
+    notelist
+        note name c0 pos 0 len 100 vel 1.0
+    notelist
 riff1
 
 sequencer
@@ -105,7 +106,6 @@ seq1
         in_beats_per_bar    time1   out_beats_per_bar
         in_beat_value       time1   out_beat_value
         velocity_response_time  5
-        hold_notename           off
 seq1
 
 // the single note is to trigger this adsr, which sets the overall
@@ -130,6 +130,9 @@ adsr1
         up_thresh       0.9
         lo_thresh       0.5
         start_level     0.0
+        min_time         125.0
+        max_sustain_time 0.0
+        release_is_ratio off
         sustain_state   on
         zero_retrigger  off
 adsr1
@@ -167,6 +170,9 @@ adsr2
         up_thresh       0.9
         lo_thresh       0.5
         start_level     1.0
+        min_time         125.0
+        max_sustain_time 0.0
+        release_is_ratio off
         sustain_state   on
         zero_retrigger  off
 adsr2
@@ -205,6 +211,9 @@ adsr2b
         up_thresh       0.9
         lo_thresh       0.5
         start_level     1.0
+        min_time         125.0
+        max_sustain_time 0.0
+        release_is_ratio off
         sustain_state   on
         zero_retrigger  off
 adsr2b
@@ -236,8 +245,9 @@ wait_trig
 drum_trig
     in_trig1     drum_trig1 out_phase_trig
     in_trig2     drum_trig2 out_phase_trig
-    min_wait_time 10.0
-    max_wait_time 35.0
+    min_wait_time 100.0
+    max_wait_time 0.0
+    count 8
 drum_trig
 
 wait_trig
@@ -246,6 +256,7 @@ drum_trigb
     in_trig2     drum_trig2 out_phase_trig
     min_wait_time 0.0
     max_wait_time 0.0
+    count 1
 drum_trigb
 
 
@@ -291,6 +302,7 @@ drum_next
         in_trig1    drum_trig1 out_phase_trig
         in_trig2    drum_trig2 out_phase_trig
         function    xor
+        precision   1
 drum_next
 
 // positions in drumloop to trigger from, converted to range 0. ~ 1.0 :
@@ -358,12 +370,14 @@ osc_clock
 osc1
         in_note_on_trig     seq1    out_note_on_trig
         in_note_slide_trig  seq1    out_note_slide_trig
+        in_play_state       off
         in_frequency        seq1    out_frequency
         in_freq_mod1        wobble  out_output
         in_freq_mod2        adsr2b  out_output
         octave_offset       0
         tuning_semitones    -8
         portamento_time     50.0
+        response_time       0.0
         freq_mod1_size      1.025
         freq_mod2_size      4
 osc1
@@ -372,12 +386,14 @@ osc_clock
 osc1b
         in_note_on_trig     seq1    out_note_on_trig
         in_note_slide_trig  seq1    out_note_slide_trig
+        in_play_state       off
         in_frequency        seq1    out_frequency
         in_freq_mod1        wobble  out_output
         in_freq_mod2        adsr2b  out_output
         octave_offset       1
         tuning_semitones    0
         portamento_time     50.0
+        response_time       0.0
         freq_mod1_size      1.125
         freq_mod2_size      8
 osc1b
@@ -387,6 +403,7 @@ drum_kill
         in_trig1    off //drum_off    out_pulse_off_trig
         in_trig2    off //sampler1    out_loop_trig
         function    or
+        precision   0.0
 drum_kill
 
 // envelope for individual drums
@@ -410,6 +427,9 @@ adsr3
         up_thresh       1.0
         lo_thresh       0.0
         start_level     0.0
+        min_time         10.0
+        max_sustain_time 0.0
+        release_is_ratio off
         sustain_state   on
         zero_retrigger  off
 adsr3
@@ -433,6 +453,9 @@ adsr3b
         up_thresh       1.0
         lo_thresh       0.0
         start_level     0.0
+        min_time         10.0
+        max_sustain_time 0.0
+        release_is_ratio off
         sustain_state   off
         zero_retrigger  off
 adsr3b
@@ -628,4 +651,4 @@ wcnt_exit_module
 //------------------------------------------------------------------------
 // End Of File _jwm 2005.
 //------------------------------------------------------------------------
-wcnt-1.127/jwmsynth
+wcnt-1.2/jwmsynth

@@ -4,8 +4,6 @@
 #include "dobj.h"
 #include "checkvalue.h"
 
-#ifndef BARE_MODULES
-
 // ties object parameters to an object
 // the knot is a reference to an object type, and a refernce 
 // to a dparam type.
@@ -16,24 +14,23 @@
 class dobjparam
 {
 public:
-    dobjparam(dobjnames::DOBJ_TYPE dt, dparamnames::DPAR_TYPE dpt);
+    dobjparam(dobjnames::DOBJ_TYPE dt, paramnames::PAR_TYPE pt);
     ~dobjparam(){};
     dobjnames::DOBJ_TYPE get_dobjtype() {
         return (this) ? dobjtype : dobjnames::DOBJ_FIRST;
     }
-    dparamnames::DPAR_TYPE get_dpartype() {
-        return (this) ? dpartype : dparamnames::DPAR_FIRST;
+    paramnames::PAR_TYPE get_partype() {
+        return (this) ? partype : paramnames::PAR_FIRST;
     }
     IOCAT get_dparam_category() {
         return (this) 
-            ? dobj::get_dparnames()->get_category(dpartype)
+            ? dobj::get_paramnames()->get_category(partype)
             : CAT_FIRST;
     }
     bool validate(dobj*, stockerrs::ERR_TYPE);
 private:
     dobjnames::DOBJ_TYPE dobjtype;
-    dparamnames::DPAR_TYPE dpartype;
+    paramnames::PAR_TYPE partype;
 };
 
-#endif
 #endif

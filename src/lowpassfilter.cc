@@ -7,33 +7,26 @@ lpfilter::lpfilter(char const* uname) :
  wet_output(0), feed_level(0), feed_modsize(0), wetdry(0), filter(0),
  filterarraymax(0), fpos(0), filtertotal(0)
 {
-#ifndef BARE_MODULES
     get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
     get_outputlist()->add_output(this, outputnames::OUT_WET_OUTPUT);
     get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
     get_inputlist()->add_input(this, inputnames::IN_CUTOFF_DEG_SIZE);
     get_inputlist()->add_input(this, inputnames::IN_FEEDBACK);
     get_inputlist()->add_input(this, inputnames::IN_FB_MOD);
-#endif
     filter = new double[FILTERARRAYSIZE];
     for (int i = 0; i < FILTERARRAYSIZE; i++) filter[i] = 0;
     fpos = FILTERARRAYSIZE - 1;
     lpfilter_count++;
-#ifndef BARE_MODULES
     create_params();
-#endif
 }
 
 lpfilter::~lpfilter()
 {
-#ifndef BARE_MODULES
     get_outputlist()->delete_module_outputs(this);
     get_inputlist()->delete_module_inputs(this);
-#endif
     delete [] filter;
 }
 
-#ifndef BARE_MODULES
 void const* lpfilter::get_out(outputnames::OUT_TYPE ot)
 {
     void const* o = 0;
@@ -141,8 +134,6 @@ stockerrs::ERR_TYPE lpfilter::validate()
     return stockerrs::ERR_NO_ERROR;
 }
 
-#endif // BARE_MODULES
-
 void lpfilter::run()
 {
     filterarraymax = (short)(180 / *in_deg_size);
@@ -164,7 +155,6 @@ void lpfilter::run()
 
 int lpfilter::lpfilter_count = 0;
 
-#ifndef BARE_MODULES
 bool lpfilter::done_params = false;
 
 void lpfilter::create_params()
@@ -179,5 +169,5 @@ void lpfilter::create_params()
      synthmodnames::MOD_LPFILTER, paramnames::PAR_WETDRY);
     done_params = true;
 }
-#endif
+
 #endif

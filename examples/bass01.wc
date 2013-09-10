@@ -1,0 +1,211 @@
+wcnt-1.2/jwmsynth
+//------------------------------------------------------------------------
+//
+//  produces a bass line
+//
+//------------------------------------------------------------------------
+
+header header.wch
+
+//------------------------------------------------------------------------
+
+synth_file_reader
+timefile
+    filename time.wch
+    mod_action  exclude
+    dobj_action exclude
+    modules
+    modules
+    data_objects
+    data_objects
+timefile
+
+riff
+riff1z
+    quarter_value   64
+    notelist
+        note name c0  pos 0    len 10  vel 1.0
+        note name c1  pos 32   len 10  vel 1.0
+        note name f0  pos 64   len 10  vel 1.0
+        note name d1  pos 96   len 10  vel 1.0
+        note name c0  pos 128  len 10  vel 1.0
+        note name f1  pos 160  len 10  vel 1.0
+        note name c1  pos 192  len 10  vel 1.0
+        note name g1  pos 224  len 10  vel 1.0
+    notelist
+riff1z
+
+riff
+riff1
+    quarter_value   64
+    notelist
+        note name c0   pos 0    len 60  vel 1.0
+        note name c1   pos 32   len 16  vel 1.0
+        note name f0   pos 64   len 60  vel 1.0
+        note name c1   pos 96   len 12  vel 1.0
+        note name e0   pos 112  len 8   vel 1.0
+        note name c0   pos 128  len 60  vel 1.0
+        note name c1   pos 160  len 52  vel 1.0
+        note name e0   pos 172  len 16  vel 1.0
+        note name c-1  pos 192  len 16  vel 1.0
+        note name e1   pos 208  len 12  vel 1.0
+        note name g1   pos 224  len 16  vel 1.0
+    notelist
+riff1
+
+sequencer
+seq1
+    track 
+        riff_node
+            riff riff1  bar 0   transpose 0
+            start_len 0 end_len 0
+        riff_node
+            riff riff1  bar 1   transpose 0
+            start_len 0 end_len 8
+        riff_node
+            riff riff1  bar 2   transpose -2
+            start_len 8 end_len 16
+        riff_node
+            riff riff1  bar 3   transpose -2
+            start_len 16 end_len 0
+        riff_node
+            riff riff1  bar 4   transpose 0
+            start_len 0 end_len 0
+        riff_node
+            riff riff1  bar 5   transpose 0
+            start_len -4 end_len -8
+        riff_node
+            riff riff1  bar 6   transpose -2
+            start_len -8 end_len 0
+        riff_node
+            riff riff1  bar 7   transpose -2
+            start_len 0 end_len 0
+    track
+
+    in_bar              time1 out_bar
+    in_bar_trig         time1 out_bar_trig
+    in_pos_step_size    time1 out_pos_step_size
+    in_beats_per_bar    time1 out_beats_per_bar
+    in_beat_value       time1 out_beat_value
+    velocity_response_time 5
+seq1
+
+adsr
+adsr1
+        envelope
+        section name attack
+            ut  15.0    ul  1.0
+            lt  20.0    ll  1.0
+        section name decay
+            ut  35.0    ul  0.8
+            lt  15.0    ll  0.8
+        section name release
+            ut  25.0    ul  0.3
+            lt  25.0    ll  0.3
+        section name release
+            ut  250.0    ul  0.0
+            lt  250.0    ll  0.0
+        envelope
+        in_note_on_trig     seq1    out_note_on_trig
+        in_note_off_trig    seq1    out_note_off_trig
+        in_velocity         seq1    out_velocity
+        up_thresh        1.0
+        lo_thresh        0.0
+        start_level      0.0
+        min_time         50.0
+        max_sustain_time 0.0 // 0 = sustain forever until note off
+        release_is_ratio off
+        sustain_state    on
+        zero_retrigger   off
+adsr1
+
+osc_clock
+osc1
+        in_note_on_trig     seq1    out_note_on_trig
+        in_note_slide_trig  seq1    out_note_slide_trig
+        in_play_state       adsr1   out_play_state
+        in_frequency        seq1    out_frequency
+        in_freq_mod1        off
+        in_freq_mod2        off
+        octave_offset       -2
+        tuning_semitones    -6
+        portamento_time     50.0
+        response_time       5.0
+        freq_mod1_size      1.0
+        freq_mod2_size      1.0
+osc1
+
+sine_wave
+sine
+    in_phase_trig  osc1 out_phase_trig
+    in_deg_size    osc1 out_deg_size
+    recycle_mode         off
+    on_trig_reset_phase  off
+    phase_cycles         1.0
+sine
+
+dynamic
+dynsine
+    amp_map
+        dvertex
+            sigin_level 0.0
+                so_ul 2.0
+                so_ll 1.0
+        dvertex
+             sigin_level 0.25
+                so_ul 1.75
+                so_ll 1.0
+        dvertex
+             sigin_level 0.5
+                so_ul 1.5
+                so_ll 1.0
+        dvertex
+             sigin_level 0.75
+                so_ul 1.25
+                so_ll 1.0
+        dvertex
+             sigin_level 1.0
+                so_ul 1.0
+                so_ll 1.0
+    amp_map
+    in_signal       sine out_output
+    in_modulation   adsr1 out_output
+    up_thresh       1.0
+    lo_thresh       0.3
+    posneg_mirror   on
+    use_ratios      on
+dynsine
+
+mono_amp
+amp1
+    in_signal   dynsine out_output
+    in_amp_eg   adsr1   out_output
+    in_amp_mod  seq1    out_velocity_ramp
+    amplitude     32000
+    amp_mod_size  0.0
+    clip_level    32767
+amp1
+
+wavfile_out
+wav1
+    in_left     amp1    out_mono
+    in_right    amp1    out_mono
+    in_bar      time1   out_bar
+    in_bar_trig time1   out_bar_trig
+    filename    bass01.wav
+    start_bar   0
+    end_bar     1 //9
+wav1
+
+// setup how long to process:
+
+wcnt_exit
+wcnt_exit_module
+    in_bar  time1   out_bar
+    exit_bar    1 //9
+wcnt_exit_module
+
+//------------------------------------------------------------------------
+// End Of File _jwm 2005.
+//------------------------------------------------------------------------
+wcnt-1.2/jwmsynth

@@ -1,8 +1,6 @@
 #ifndef DOBJPARAMLIST_H
 #include "../include/dobjparamlist.h"
 
-#ifndef BARE_MODULES
-
 dobjparamlist::dobjparamlist() :
  dpar_list(0), dpar_item(0), dpar(0)
 {
@@ -28,7 +26,7 @@ dobjparam* dobjparamlist::add_dobjparam(dobjparam* dp)
 }
 
 dobjparam * dobjparamlist::add_dobjparam(
- dobjnames::DOBJ_TYPE dt, dparamnames::DPAR_TYPE dp)
+ dobjnames::DOBJ_TYPE dt, paramnames::PAR_TYPE dp)
 {
     dobjparam* dobjp = new dobjparam(dt, dp);
     dpar = (dobjparam*)
@@ -47,7 +45,7 @@ dobjparamlist * dobjparamlist::get_dobjparamlist_for_dobj_type(
     goto_first();
     while(dpar) {
         if (dpar->get_dobjtype() == dt) {
-            if (!dpl->add_dobjparam(dt, dpar->get_dpartype())){
+            if (!dpl->add_dobjparam(dt, dpar->get_partype())){
                 delete dpl;
                 return 0;
             }
@@ -58,7 +56,7 @@ dobjparamlist * dobjparamlist::get_dobjparamlist_for_dobj_type(
 }
 
 bool dobjparamlist::validate(
- dobj* dbj, dparamnames::DPAR_TYPE dpt, stockerrs::ERR_TYPE et)
+ dobj* dbj, paramnames::PAR_TYPE dpt, stockerrs::ERR_TYPE et)
 {
     if (!dbj) return false;
     if (!stockerrs::check_type(et) && et < stockerrs::ERR_TYPE4)
@@ -67,7 +65,7 @@ bool dobjparamlist::validate(
     goto_first();
     while (dpar) {
         if (dpar->get_dobjtype() == dt) {
-            if (dpar->get_dpartype() == dpt)
+            if (dpar->get_partype() == dpt)
                 return dpar->validate(dbj, et);
         }
         goto_next();
@@ -75,5 +73,4 @@ bool dobjparamlist::validate(
     return false;
 }
 
-#endif
 #endif

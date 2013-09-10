@@ -1,0 +1,521 @@
+wcnt-1.2/jwmsynth
+//------------------------------------------------------------------------
+//
+//  zdrums_base.wch
+//
+//  creates modules which will be used by zdrums__.wc files as a base
+//  for creating drumloops.  Using a sample with drum sounds on 16ths
+//  it provides 3 channels, the 1st has two kick drums, the 2nd two
+//  snares, and the 3rd has 2 hi-hats (open + closed).
+//
+//  the actual patterns are not created using riff's and sequencers,
+//  instead it uses 3 sync_clock modules which keep in time with
+//  the tempo provided by time.wch, and 3 pattern trigs to trigger
+//  a sample position change within the loop for each of the 3 sampler
+//  modules corresponding with the three channels.
+//
+//  the patterns can be edited using the parameter_editor by changing
+//  the frequency of the sync_clocks, and by changing the patterns in the
+//  pattern_trigs which switch between the sounds via sample positions.
+//
+//  editing should be done in the files that include this. even if this
+//  file did produce a wav, it would be silent.
+//
+//  the drum sounds in drumloop2-m.wav are the UltraAcousticKit
+//  from artemio.net for the Hydrogen drum machine software.
+//
+//------------------------------------------------------------------------
+
+header header.wch
+
+//------------------------------------------------------------------------
+
+synth_file_reader
+timefile
+    filename time.wch
+    mod_action  exclude
+    dobj_action exclude
+    modules // empty list so nothing's excluded
+    modules
+    data_objects // ditto above
+    data_objects
+timefile
+
+// the drumloop sample where it all comes from
+// length = 264602 samples 6.0  seconds
+//   16th =  16537 samples 0.375 seconds
+// monophonic
+
+wavfilein
+drumloop
+    filename    samples/drumloop02-m.wav
+    root_note   c0 // 261.626 hrtz
+drumloop
+
+// clocks for tuning of drum's pitch
+clock
+kik-freq
+    in_freq_mod1 off
+    freq        261.626
+    freq_mod1_size 1.0
+kik-freq
+
+clock
+snr-freq
+    in_freq_mod1 off
+    freq        261.626
+    freq_mod1_size 1.0
+snr-freq
+
+clock
+hat-freq
+    in_freq_mod1 off
+    freq        261.626
+    freq_mod1_size 1.0
+hat-freq
+
+// the clocks to provide underlying base of rhythm
+sync_clock
+sync_kik
+    in_bpm            time1 out_bpm
+    in_pos_step_size  time1 out_pos_step_size
+    in_beats_per_bar  time1 out_beats_per_bar
+    in_beat_value     time1 out_beat_value
+    in_phase_trig     off
+    in_freq_mod1      off
+    in_freq_mod2      off
+    freq_mod1_size  1.0
+    freq_mod2_size  1.0
+    quarter_value   4
+    len             1
+    snap_to         1
+sync_kik
+
+sync_clock
+sync_snr
+    in_bpm            time1 out_bpm
+    in_pos_step_size  time1 out_pos_step_size
+    in_beats_per_bar  time1 out_beats_per_bar
+    in_beat_value     time1 out_beat_value
+    in_phase_trig     off
+    in_freq_mod1      off
+    in_freq_mod2      off
+    freq_mod1_size  1.0
+    freq_mod2_size  1.0
+    quarter_value   4
+    len             1
+    snap_to         1
+sync_snr
+
+sync_clock
+sync_hat
+    in_bpm            time1 out_bpm
+    in_pos_step_size  time1 out_pos_step_size
+    in_beats_per_bar  time1 out_beats_per_bar
+    in_beat_value     time1 out_beat_value
+    in_phase_trig     off
+    in_freq_mod1      off
+    in_freq_mod2      off
+    freq_mod1_size  1.0
+    freq_mod2_size  1.0
+    quarter_value   4
+    len             1
+    snap_to         1
+sync_hat
+
+pattern_trig
+kik-pat
+    in_trig sync_kik out_phase_trig
+    pattern 0000
+kik-pat
+
+pattern_trig
+snr-pat
+    in_trig sync_snr out_phase_trig
+    pattern 0000
+snr-pat
+
+pattern_trig
+hat-pat
+    in_trig sync_hat out_phase_trig
+    pattern 0000
+hat-pat
+
+// specific positions in sample (0.0 ~ 1.0)
+wcnt_signal kik1_pos in_signal one out_output level 0.125  kik1_pos
+wcnt_signal kik2_pos in_signal one out_output level 0.0    kik2_pos
+wcnt_signal snr1_pos in_signal one out_output level 0.375  snr1_pos
+wcnt_signal snr2_pos in_signal one out_output level 0.25   snr2_pos
+wcnt_signal hat1_pos in_signal one out_output level 0.875  hat1_pos
+wcnt_signal hat2_pos in_signal one out_output level 0.5    hat2_pos
+
+// pattern trigs to trigger sampler change ie from kik1 to kik2
+pattern_trig
+kik-sw
+    in_trig sync_kik out_phase_trig
+    pattern 0000
+kik-sw
+
+pattern_trig
+snr-sw
+    in_trig sync_snr out_phase_trig
+    pattern 0000
+snr-sw
+
+pattern_trig
+hat-sw
+    in_trig sync_hat out_phase_trig
+    pattern 0000
+hat-sw
+
+// switchers to provide sampler position to samplers
+switcher
+kik-pos
+    signals
+        synthmod name kik1_pos
+        synthmod name kik2_pos
+    signals
+    in_trig kik-sw out_trig
+    xfade_time 0.0
+kik-pos
+
+switcher
+snr-pos
+    signals
+        synthmod name snr1_pos
+        synthmod name snr2_pos
+    signals
+    in_trig snr-sw out_trig
+    xfade_time 0.0
+snr-pos
+
+switcher
+hat-pos
+    signals
+        synthmod name hat1_pos
+        synthmod name hat2_pos
+    signals
+    in_trig hat-sw out_trig
+    xfade_time 0.0
+hat-pos
+
+// the sampler modules
+sampler
+kik-smplr
+    in_play_trig        kik-pat  out_trig
+    in_stop_trig        kik-adsr out_off_trig
+    in_start_pos_mod    kik-pos  out_output
+    in_deg_size         kik-freq out_deg_size
+    wavfile                 drumloop
+    play_dir                fwd
+    play_mode               wrap
+    jump_mode               play
+    start_pos_min           0
+    start_pos_max           264602
+    loop_mode               bi
+    loop_start_pos          16500
+    loop_end_pos            16530
+    loop_is_offset          on
+    bi-directional_offset   0
+    anti_clip_samples       150
+    anti_clip_each_end      on
+    zero_search_range       25
+    degsize_amount          1.0
+kik-smplr
+
+sampler
+snr-smplr
+    in_play_trig        snr-pat  out_trig
+    in_stop_trig        snr-adsr out_off_trig
+    in_start_pos_mod    snr-pos  out_output
+    in_deg_size         snr-freq out_deg_size
+    wavfile                 drumloop
+    play_dir                fwd
+    play_mode               wrap
+    jump_mode               play
+    start_pos_min           0
+    start_pos_max           264602
+    loop_mode               bi
+    loop_start_pos          16500
+    loop_end_pos            16530
+    loop_is_offset          on
+    bi-directional_offset   0
+    anti_clip_samples       150
+    anti_clip_each_end      on
+    zero_search_range       25
+    degsize_amount          1.0
+snr-smplr
+
+sampler
+hat-smplr
+    in_play_trig        hat-pat  out_trig
+    in_stop_trig        hat-adsr out_off_trig
+    in_start_pos_mod    hat-pos  out_output
+    in_deg_size         hat-freq out_deg_size
+    wavfile                 drumloop
+    play_dir                fwd
+    play_mode               wrap
+    jump_mode               play
+    start_pos_min           0
+    start_pos_max           264602
+    loop_mode               bi
+    loop_start_pos          16500
+    loop_end_pos            16530
+    loop_is_offset          on
+    bi-directional_offset   0
+    anti_clip_samples       150
+    anti_clip_each_end      on
+    zero_search_range       25
+    degsize_amount          1.0
+hat-smplr
+
+// volume envelopes
+adsr
+kik-adsr
+    envelope
+        section name attack
+            ut  2.0    ul  1.0
+            lt  2.0    ll  1.0
+        section name decay
+            ut  125.0    ul  0.9
+            lt  125.0    ll  0.9
+        section name release
+            ut  120.0    ul  0.0
+            lt  120.0    ll  0.0
+    envelope
+    in_note_on_trig  kik-pat out_trig
+    in_note_off_trig off
+    in_velocity      off
+    up_thresh        1.0
+    lo_thresh        0.0
+    start_level      0.0
+    min_time         15.0
+    max_sustain_time 0.0
+    release_is_ratio off
+    sustain_state    off
+    zero_retrigger   off
+kik-adsr
+
+adsr
+snr-adsr
+    envelope
+        section name attack
+            ut  2.0    ul  1.0
+            lt  2.0    ll  1.0
+        section name decay
+            ut  125.0    ul  0.9
+            lt  125.0    ll  0.9
+        section name release
+            ut  120.0    ul  0.0
+            lt  120.0    ll  0.0
+    envelope
+    in_note_on_trig  snr-pat out_trig
+    in_note_off_trig off
+    in_velocity      off
+    up_thresh        1.0
+    lo_thresh        0.0
+    start_level      0.0
+    min_time         15.0
+    max_sustain_time 0.0
+    release_is_ratio off
+    sustain_state    off
+    zero_retrigger   off
+snr-adsr
+
+adsr
+hat-adsr
+    envelope
+        section name attack
+            ut  2.0    ul  1.0
+            lt  2.0    ll  1.0
+        section name decay
+            ut  225.0    ul  0.9
+            lt  225.0    ll  0.9
+        section name release
+            ut  140.0    ul  0.0
+            lt  140.0    ll  0.0
+    envelope
+    in_note_on_trig  hat-pat out_trig
+    in_note_off_trig off
+    in_velocity      off
+    up_thresh        1.0
+    lo_thresh        0.0
+    start_level      0.0
+    min_time         15.0
+    max_sustain_time 0.0
+    release_is_ratio off
+    sustain_state    off
+    zero_retrigger   off
+hat-adsr
+
+// panning positions
+wcnt_signal kik1-pan in_signal one out_output level 0.0 kik1-pan
+wcnt_signal kik2-pan in_signal one out_output level 0.0 kik2-pan
+wcnt_signal snr1-pan in_signal one out_output level 0.0 snr1-pan
+wcnt_signal snr2-pan in_signal one out_output level 0.0 snr2-pan
+wcnt_signal hat1-pan in_signal one out_output level 0.0 hat1-pan
+wcnt_signal hat2-pan in_signal one out_output level 0.0 hat2-pan
+
+// switchers to provide panning modulation to panner modules
+// use same trigger modules as sample position switchers..
+switcher
+kik-panpos
+    signals
+        synthmod name kik1-pan synthmod name kik2-pan
+    signals
+    in_trig kik-sw out_trig
+    xfade_time 5.0
+kik-panpos
+
+switcher
+snr-panpos
+    signals
+        synthmod name snr1-pan synthmod name snr2-pan
+    signals
+    in_trig snr-sw out_trig
+    xfade_time 5.0
+snr-panpos
+
+switcher
+hat-panpos
+    signals
+        synthmod name hat1-pan synthmod name hat2-pan
+    signals
+    in_trig hat-sw out_trig
+    xfade_time 5.0
+hat-panpos
+
+// apply volume envelopes
+multiplier
+kik-m1
+    in_signal   kik-smplr out_l
+    in_modifier kik-adsr out_output
+kik-m1
+
+multiplier
+snr-m1
+    in_signal   snr-smplr out_l
+    in_modifier snr-adsr out_output
+snr-m1
+
+multiplier
+hat-m1
+    in_signal   hat-smplr out_l
+    in_modifier hat-adsr out_output
+hat-m1
+
+// panning of sampler output
+panner
+kik-pan
+    in_signal   kik-m1     out_output
+    in_pan_mod  kik-panpos out_output
+    pan           0.0
+    pan_mod_size  1.0
+kik-pan
+
+panner
+snr-pan
+    in_signal   snr-m1     out_output
+    in_pan_mod  snr-panpos out_output
+    pan           0.0
+    pan_mod_size  1.0
+snr-pan
+
+panner
+hat-pan
+    in_signal   hat-m1     out_output
+    in_pan_mod  hat-panpos out_output
+    pan           0.0
+    pan_mod_size  1.0
+hat-pan
+
+// amplification of panned signal + volume envelope shaping
+stereo_amp
+kik-amp
+    in_l       kik-pan  out_l
+    in_r       kik-pan  out_r
+    in_amp_eg  one      out_output
+    in_amp_mod off
+    left_amplitude   32000
+    right_amplitude  32000
+    amp_mod_size     0.0
+    clip_level       32767
+kik-amp
+
+stereo_amp
+snr-amp
+    in_l       snr-pan  out_l
+    in_r       snr-pan  out_r
+    in_amp_eg  one      out_output
+    in_amp_mod off
+    left_amplitude   32000
+    right_amplitude  32000
+    amp_mod_size     0.0
+    clip_level       32767
+snr-amp
+
+stereo_amp
+hat-amp
+    in_l       hat-pan  out_l
+    in_r       hat-pan  out_r
+    in_amp_eg  one      out_output
+    in_amp_mod off
+    left_amplitude   32000
+    right_amplitude  32000
+    amp_mod_size     0.0
+    clip_level       32767
+hat-amp
+
+// mixing
+mix_chan
+kik-ch
+    in_left  kik-amp out_left
+    in_right kik-amp out_right
+kik-ch
+
+mix_chan
+snr-ch
+    in_left  snr-amp out_left
+    in_right snr-amp out_right
+snr-ch
+
+mix_chan
+hat-ch
+    in_left  hat-amp out_left
+    in_right hat-amp out_right
+hat-ch
+
+mixer
+zdrums-mix
+    mix
+        synthmod name kik-ch
+        synthmod name snr-ch
+        synthmod name hat-ch
+    mix
+    master_level 0.0
+zdrums-mix
+
+wavfile_out
+zdrums-wav
+    in_left      zdrums-mix out_left
+    in_right     zdrums-mix out_right
+    in_bar       time1      out_bar
+    in_bar_trig  time1      out_bar_trig
+    filename     zdrums_base.wav
+    start_bar    0
+    end_bar      0
+zdrums-wav
+
+wcnt_exit
+zdrums_exit
+    in_bar   time1 out_bar
+    exit_bar 0
+zdrums_exit
+
+//------------------------------------------------------------------------
+// EOF
+//------------------------------------------------------------------------
+wcnt-1.2/jwmsynth
+
+
+notes: n/a

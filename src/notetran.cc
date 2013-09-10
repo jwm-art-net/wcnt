@@ -17,7 +17,6 @@ notetran::notetran(char const* uname) :
     no_hi_notename = new char[NOTE_ARRAY_SIZE];
     ns_lo_notename = new char[NOTE_ARRAY_SIZE];
     ns_hi_notename = new char[NOTE_ARRAY_SIZE];
-#ifndef BARE_MODULES
     get_outputlist()->add_output(this, outputnames::OUT_NOVALUE);
     get_outputlist()->add_output(this, outputnames::OUT_NSVALUE);
     get_outputlist()->add_output(this, outputnames::OUT_NOTE_ON_TRIG);
@@ -28,26 +27,20 @@ notetran::notetran(char const* uname) :
     get_inputlist()->add_input(this, inputnames::IN_NOTE_ON_TRIG);
     get_inputlist()->add_input(this, inputnames::IN_NOTE_SLIDE_TRIG);
     get_inputlist()->add_input(this, inputnames::IN_DETRANSPOSE);
-#endif
     notetran_count++;
-#ifndef BARE_MODULES
     create_params();
-#endif
 }
 
 notetran::~notetran()
 {
-#ifndef BARE_MODULES
     get_outputlist()->delete_module_outputs(this);
     get_inputlist()->delete_module_inputs(this);
-#endif
     delete [] no_lo_notename;
     delete [] no_hi_notename;
     delete [] ns_lo_notename;
     delete [] ns_hi_notename;
 }
 
-#ifndef BARE_MODULES
 void const* notetran::get_out(outputnames::OUT_TYPE ot)
 {
     void const* o = 0;
@@ -239,8 +232,6 @@ stockerrs::ERR_TYPE notetran::validate()
     return stockerrs::ERR_NO_ERROR;
 }
 
-#endif
-
 void notetran::set_no_lo_notename(char const* nol)
 {
     strncpy(no_lo_notename, nol, NOTE_NAME_LEN);
@@ -327,7 +318,6 @@ void notetran::run()
 
 int notetran::notetran_count = 0;
 
-#ifndef BARE_MODULES
 bool notetran::done_params = false;
 
 void notetran::create_params()
@@ -361,5 +351,5 @@ void notetran::create_params()
      synthmodnames::MOD_NOTETRAN, paramnames::PAR_NS_RESPTIME);
     done_params = true;
 }
-#endif
+
 #endif

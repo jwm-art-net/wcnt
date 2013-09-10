@@ -1,5 +1,430 @@
 --------------------------------------------------------------
+Monday 27th June 2005
+
+wcnt-1.2
+
+FIXES:
+    * Fixed memory leak occurring in sequencer by getting 
+      ~sequencer() to check if next_note had been added to its
+      play_list. If next_note was not in play_list then delete
+      it aswell.
+
+PROBLEMS:
+    * seems to be a memory leak with synthfilereader's
+      set_wc_filename() method, can't understand it yet.
+
+--------------------------------------------------------------
+Sunday 26th June 2005
+
+wcnt-1.2
+
+CHANGES:
+    * wait_trig has a new output - out_wait_state. The module 
+      code was forthright about it becoming an output - as if I
+      needed much persuasion.
+
+    * trigger module has been simplified to output out_trig when
+      the signal rises above trigger_level and out_not_trig when
+      it falls back down again.
+
+ADDITIONS:
+    * on_off_trig has a modified version of the old trigger
+      module's workings. removed independant parameter. added
+      check_levels parameter.
+
+--------------------------------------------------------------
+Friday 24th June 2005
+
+wcnt-1.2
+
+CHANGES:
+    * wait_trig has had a code revision.  It definately waits for
+      its second input trigger before sending the first input
+      trigger to output. A new parameter named count specifies
+      how many times to let the first input trigger before
+      waiting for the second again. The wait times are now timed
+      from the last trigger output.
+
+--------------------------------------------------------------
+Wednesday 22nd June 2005
+
+wcnt-1.2
+
+CHANGES:
+    * when using synth_file_reader data object and it's reading a
+      definition of something, the parameters are now not set
+      when that something is not being included. also, any data
+      objects contained in a list within a something not to be
+      included, are deleted instead of inserted. removed traces
+      of name_extension from synthfilereader class in anticipation
+      of a duplicator data object which would be better suited.
+
+    * sync_clock2 module has become the sync_clock module, the
+      original did not have modulation and the sync_clock2 has
+      been tested sufficiently to replace it.
+
+ADDITIONS:
+    * wcnt_trigger module similiar to wcnt_signal in that its
+      only use is for adding into trig_switcher module.
+
+    * trig_switcher module.  contains a list of wcnt_trigger
+      modules. has a single input, in_trig which tells it to
+      output the next trigger in the list.
+--------------------------------------------------------------
+Thursday 16th June 2005
+
+wcnt-1.2
+
+CHANGES:
+    * switcher module now initialises member variable zero to 0.0
+
+UNFIXED PROBLEMS:
+    * some parameters in a module or data object which require
+      a module or data object to exist when the parameter is set,
+      and neither is included by the synthfilereader, cause problems
+      because the synthfilereader creates the object and sets the
+      parameters in order to read the file.  set_param cannot find
+      the module or data object so wcnt aborts despite there being
+      nothing wrong.  example being a mixer module that is not to
+      be included along with mix_chan modules that have not been
+      included.
+
+--------------------------------------------------------------
+Monday 13th June 2005
+
+wcnt-1.2
+
+CHANGES:
+
+    * synthfilereader has been altered slightly so that it can handle
+      reading parameter types in which only the parameter value is
+      specified - the parameter name is ommitted.  these types can
+      only be used by an EDIT dobj within an EDITLIST.  In order for
+      this to work a new member variable is used called command which
+      is a pointer to a std::string.  when pointing to a string,
+      synthfilereader::read_command() returns the string pointed to
+      by command instead of reading a string from the file (it then
+      deletes command and sets it to null). read_dobj_params(dobj*)
+      now also requires an extra arguement which should be a char*
+      pointing to the dobj list termination string (ie "editlist").
+      finally there is a new private member method called
+      read_string_list_param which accepts two const char* which
+      point to two strings. if either is encountered it is given as
+      command for read_command and the string list is complete.
+
+    * inputedit class now uses the new unnamed parameter string types,
+      one is the module name, and the second is a string list which
+      contains an input name, module name, and an output name. it may
+      contain more than one group of these. a single inputedit can
+      only change the input settings of one module (but more than one
+      input), the inputeditor contains an inputedit for each module
+      to edit. (unless the user in their .wc file creates an edit for
+      each parameter in a module.)
+
+    * paramedit class is now using the short form like inputedit. and
+      both are working.
+
+--------------------------------------------------------------
+Sunday 12th June 2005
+
+wcnt-1.2
+
+CHANGES:
+
+    * synthfilereader is now functioning as intended.  name_ext
+      for modules and data objects requires more consideration
+      on how to accomplish it and has been postponed.
+
+ADDITIONS:
+    * param_editor.  you can now edit the parameters of modules
+      and the top-level parameters of data objects (not parameters
+      of encapsulated data objects).
+    * input_editor.  inputs of modules can also be edited. It removes
+      any connectors for the specific module input and then adds the
+      new one to the connectorlist.
+
+NOTES:
+    * working on new implimentation of param_editor and input_editor
+      as currently it is so long-winded that it defeats the object of
+      using it. it is simply shorter to exclude a module from an
+      included file and then re-create it in the main file. this is
+      because it is all dobj based with param names etc so that setting
+      osc1 freq 440 with parameditor currently is done thus:
+
+      param_editor
+      par1
+          editlist
+              edit
+              name  osc1
+                  param freq
+                  value 440
+              edit
+                  name  osc1
+                  param freq_mod1_size
+                  value 2.0
+          editlist
+      par1
+
+      the new implimentation of dobj classes paramedit and inputedit
+      have two string type parameters.  the first is the module name,
+      and the second is a string containing a list of paramter names
+      and thier values for paramedit, and a list of input names and
+      output module names and output names for inputedit.
+
+      thus the above example becomes:
+
+      param_editor
+      par1
+          editlist
+              edit osc1
+                  freq           440
+                  freq_mod1_size 2.0
+          editlist
+      par1
+
+      "osc1" becomes the first string, and the second string contains
+      everything after it before editlist, or if there is another edit
+      everything up to that.
+
+      in order to achieve this, the  'edit' dobj will require different
+      handling by synthfilereader (class). normally osc1 would be next
+      to a parameter name but here no parameter name is mentioned, and
+      the same for the string list parameter (which contains the list of
+      param names and thier values). the string list itself requires a
+      different handling as parameters cannot normally read a string
+      which contain spaces.
+
+--------------------------------------------------------------
+Monday 6th June 2005
+
+wcnt-1.2
+
+CHANGES:
+    * new class - topdobjlist.
+      used as a replacement for dobjdobjlist for synthfilereader
+      (and jwmsynth cmdline help) to get structure for standalone
+      data objects. topdobjlist is infact a list of dobjdobjlists.
+      allows more flexability.
+
+    * dobj::dobjdobjlist stuff replaced with dobj::topdobjlist
+
+    * moddobj has been altered so instead of having a 
+      dobjnames::DOBJ_TYPE to store the data object list type
+      contained in a module, it now has a dobjdobjlist - allowing
+      greater flexability.
+
+    * moddobjlist simplified because of moddobj modifications.
+
+--------------------------------------------------------------
+Sunday 5th June 2005
+
+wcnt-1.2
+
+CHANGES:
+    * still debugging synthfilereader. it's full of cout << to
+      help in the process which will be removed later.  but it
+      can include a file and works. removed name_ext parameter
+      from param list as I've not figured out how best to work
+      it. (problem: certain param types get shirty about the
+      name passed to it when the corresponding module or data
+      object cannot be found)
+
+    * created namespace iocatconv, within which are two
+      functions which replace the two functions formerly part
+      of synthfilereader.  this enables converting strings
+      to data types corresponding with iocat types, without
+      having to read the string from a file.  (for reasons to
+      do with parameter editing - not yet implimentated).
+
+    * constant modules are now unlinked from the main
+      synthmodlist before the synth is run.
+
+    * two new dobjs
+      dobjnamedobj holds the name of a dobj, and modnamedobj to 
+      hold the name of a module.
+
+--------------------------------------------------------------
+Friday 3rd June 2005 (3am Saturday morning)
+
+wcnt-1.2
+
+CHANGES:
+    * completed migration of file reading from jwmsynth to
+      synthfilereader so it can still read a .wc file. converted
+      synthfilereader to inherit dobj as a base class. need to
+      complete dobj stuff so user can define a .wc file to
+      include in another. this means adding code to add a name
+      extension to names of modules and data objects in the
+      include file, complete coding of parameters, and lists
+      of names to include/exclude, and then...
+
+   * just realised I need to create two dobj based classes to
+     add to the lists in synthfilereader. both consist of a
+     single parameter, nothing else. that parameter being a
+     string, the name of a module, or a dobj. This poses a
+     serious problem, a dobj based class to hold the name of
+     a dobj - should be called what?!?!
+
+--------------------------------------------------------------
+Thursday 2nd June 2005
+
+wcnt-1.2
+
+CHANGES:
+    * created classes to handle fixed string type parameters ie
+      logic_func can be set to 'or', 'and', 'xor' etc.
+    * removed several iocat types which will be handled by 
+      CAT_FIX_STR. removed code from synthfilereader which 
+      handled the old iocat types and replaced with code to
+      handle fixed string types.
+    * amended adsr_coord, sampler, logic_trigger, modifier, to
+      use the new CAT_FIX_STR types, easy.
+
+--------------------------------------------------------------
+Wednesday 1st June 2005
+
+wcnt-1.2
+
+Begun development of wcnt-1.2.  In wcnt-1.2 the synthfilereader
+and jwmsynth classes are having a mass overhaul, especially
+synthfilereader.  This is geared toward wcnt being capable of
+reading multiple wcnt files by way of a data object which
+specifies a file along with lists of modules and data objects
+to either include or exclude.
+
+This new data object (dobj based class) will eventually be all
+that remains of synthfilereader.  Everything at the current
+stage is still intact and working.
+
+CHANGES:
+    * standalone data objects (dobj) can now contain more than
+      one list.
+
+    * all dobj param names (formerly dparnames) have been moved
+      into the paramnames class.
+
+--------------------------------------------------------------
+Saturday 28 May 2005
+
+wcnt-1.128
+
+CHANGES:
+    * sequencer slide algorythm logic adjusted so it works
+      properly.
+
+--------------------------------------------------------------
+Thursday May 26 2005
+
+wcnt-1.128
+
+CHANGES:
+    * sequencer. completed initial coding of new note slide
+      handling.  New member methods to lesson code duplication
+      in run().  Testing and debugging to follow... Ha! After
+      a handful of simple bugs it sequences - almost properly!
+      Some problem with note_off and notes which don't overlap.
+      Slides when it should n't. Have removed winner of the
+      pointless parameter prize - hold_notename.
+
+--------------------------------------------------------------
+Wednesday May 25 2005
+
+wcnt-1.128
+
+BUGS:
+    * time_map, sequencer, and sync_clock modules have a problem.
+      Sample accurate synchronisation only occurrs during, and
+      after ramped tempo changes.  Otherwise the sequencer note_on
+      triggers a sample after the sync_clock phase_trig, which is
+      useless for using with the logic_trigger.
+
+CHANGES:
+    * logic_trigger has a new parameter - precision. This specifies
+      the number of samples to allow for drift of triggers due to
+      above bugs. So if the triggers drift out of sync with each
+      other by 1 sample (as they do) then setting precision to 1
+      will treat them as if they both occurred simultaneously.
+      I'll probably keep this even if the drift problem gets fixed
+      as it could have some 'creative' application.
+
+    * sequencer, begun work on enhanced note slide handling. (that
+      is, enhanced in comparison with current handleage.) it's all
+      worked out up here (taps head). just a matter of trudging 
+      through the run() code.
+
+--------------------------------------------------------------
+Monday May 23 2005
+
+wcnt-1.128
+
+CHANGES:
+    * adsr module has three new parameters. min_time which is
+      the minimum time before the release section can be
+      activated regardless of note_off occurring beforehand.
+      max_sustain_time which is exactly that. release_is_ratio
+      which says the release section levels should be taken
+      to be ratios of instead of absolute levels.  Rearranged
+      code in adsr::run() method and added new private method
+      to unclutter adsr::run().
+
+    * Added in_phase_trig input to sync_clock so that it's phase
+      can be reset.
+    
+--------------------------------------------------------------
+Monday May 23 2005
+
+wcnt-1.128
+
+ADDITIONS:
+    * sync_clock module. A clock module which keeps in time
+      with the tempo from the time_map module (via inputs). The
+      frequency it oscilates at is specified as a note length,
+      and thus a quarter value parameter is also required.
+
+    * XORNOT logic function in logic_trigger module. Similiar to
+      XOR function in that it does not output a trigger if both
+      trig1 and trig2 trigger, but unlike XOR, it only triggers
+      if trig1 alone triggers - a lone trig2 is ignored.
+
+CHANGES:
+    * Altered member variables in time_map and sequencer modules
+      from unsigned long to double for better time keeping.
+
+    * added in_play_state input, and response_time parameter, 
+      to osc_clock. Normal note changes when in_play_state
+      provides OFF are instantaneous.  While in_play_state is
+      ON, frequency changes take response_time ms to result.
+      Basically works by same mechanism as note_slide_trig but
+      with subtly different usage.
+
+BUGS:
+    * Moved incrementation of bar position code in sequencer so
+      it no longer skips some samples.  Discovered while testing
+      sync_clock module alongside sequencer module that they were
+      not precisely synchronized as they should be, but now are.
+      (edit: errrr, not quite, see Wed25May)
+
+    * Sequencer no longer provides out_end_trig when asked for
+      out_start_trig!
+
+    * Fixed bug in adsr module which caused the release section
+      to start over again when note off was triggered more than 
+      once in a row without a note on trigger.
+
+--------------------------------------------------------------
+Sunday May 22 2005
+
+wcnt-1.128
+
+CHANGES:
+    * time_map. Tempo changes are no longer absolute. ie a tempo
+      change of 10 will add 10 bpm to the tempo, instead of setting
+      tempo to 10 bpm.
+
+--------------------------------------------------------------
 Sunday April 24 2005
+
+wcnt-1.127
 
 ADDITIONS:
     * timer module.  Add a list of times for it to output a
@@ -10,8 +435,10 @@ ADDITIONS:
 --------------------------------------------------------------
 Wednesday April 20 2005
 
+wcnt-1.127
+
 CHANGES:
-    *  updated more error messages.
+    * updated more error messages.
 
 BUGS:
     * no more segmentation faults when a data object terminator
@@ -19,6 +446,8 @@ BUGS:
 
 --------------------------------------------------------------
 Tuesday April 19 2005
+
+wcnt-1.127
 
 CHANGES:
     * finally properly implimented dual frequency modulation
@@ -35,6 +464,8 @@ ADDITIONS:
 
 --------------------------------------------------------------
 Sunday April 17 2005
+
+wcnt-1.127
 
 CHANGES:
     * new class, stockerrs.  just a simple class with an enum
@@ -63,6 +494,7 @@ CHANGES:
 --------------------------------------------------------------
 Friday April 15 2005
 
+wcnt-1.127
 
 BUGS:
     * Used valgrind memory checker to discover even more memory 
@@ -80,6 +512,8 @@ CHANGES:
 
 --------------------------------------------------------------
 Thursday April 14 2005
+
+wcnt-1.127
 
 GENERAL:
 

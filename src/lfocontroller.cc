@@ -9,25 +9,19 @@ lfo_controller::lfo_controller(char const* uname) :
  ramp_samples(0), resp_size(0), resp_fa_level(0), resp_ac(0),
  level_size(0), current_level(0)
 {
-#ifndef BARE_MODULES
     get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
     get_outputlist()->add_output(this, outputnames::OUT_PRE_AMP_MOD);
     get_inputlist()->add_input(this, inputnames::IN_TRIG);
     get_inputlist()->add_input(this, inputnames::IN_WAVE);
     get_inputlist()->add_input(this, inputnames::IN_AMP_MOD);
-#endif
     lfo_controller_count++;
-#ifndef BARE_MODULES
     create_params();
-#endif
 }
 
 lfo_controller::~lfo_controller()
 {
-#ifndef BARE_MODULES
     get_outputlist()->delete_module_outputs(this);
     get_inputlist()->delete_module_inputs(this);
-#endif
 }
 
 void lfo_controller::init()
@@ -36,7 +30,6 @@ void lfo_controller::init()
     ams_r = 1 - amp_modsize;
 }
 
-#ifndef BARE_MODULES
 void const* lfo_controller::get_out(outputnames::OUT_TYPE ot)
 {
     void const* o = 0;
@@ -161,7 +154,6 @@ stockerrs::ERR_TYPE lfo_controller::validate()
     }
     return stockerrs::ERR_NO_ERROR;
 }
-#endif // BARE_MODULES
 
 void lfo_controller::set_amp_modsize(double ams)
 {
@@ -203,7 +195,6 @@ void lfo_controller::run()
 
 int lfo_controller::lfo_controller_count = 0;
 
-#ifndef BARE_MODULES
 bool lfo_controller::done_params = false;
 
 void lfo_controller::create_params()
@@ -224,5 +215,5 @@ void lfo_controller::create_params()
      synthmodnames::MOD_LFOCONTROL, paramnames::PAR_AMP_MODSIZE);
     done_params = true;
 }
-#endif
+
 #endif

@@ -8,19 +8,15 @@ dynamic::dynamic(char const* uname) :
  dynamics(0), dvtx_item(0), dvtx_item1(0), dvtx(0), dvtx1(0),
  thresh_range(0)
 {
-#ifndef BARE_MODULES
     get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
     get_outputlist()->add_output(this, outputnames::OUT_PLAY_STATE);
     get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
     get_inputlist()->add_input(this, inputnames::IN_MODULATION);
-#endif
     dynamics = 
      new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
     dynamic_count++;
-#ifndef BARE_MODULES
     create_params();
     create_dobj();
-#endif
 }
 
 dynamic::~dynamic()
@@ -33,13 +29,10 @@ dynamic::~dynamic()
         delete dvtx1;
     }
     delete dynamics;
-#ifndef BARE_MODULES // dynamic beef nodules
     get_outputlist()->delete_module_outputs(this);
     get_inputlist()->delete_module_inputs(this);
-#endif
 }
 
-#ifndef BARE_MODULES
 void const* dynamic::get_out(outputnames::OUT_TYPE ot)
 {
     void const* o = 0;
@@ -161,8 +154,6 @@ stockerrs::ERR_TYPE dynamic::validate()
     return stockerrs::ERR_NO_ERROR;
 }
 
-#endif // BARE_MODULES
-
 dynvertex* dynamic::add_dvertex(dynvertex* dv)
 {
     if (!dv) return 0;
@@ -246,7 +237,6 @@ void dynamic::run()
 
 int dynamic::dynamic_count = 0;
 
-#ifndef BARE_MODULES
 bool dynamic::done_params = false;
 bool dynamic::done_dobj = false;
 
@@ -269,11 +259,11 @@ void dynamic::create_dobj()
 {
     if (done_dobj == true)
         return;
-    get_moddobjlist()->
-    add_moddobj(synthmodnames::MOD_DYNAMIC, dobjnames::LIN_DYNAMICS);
-    dobj::get_dobjdobjlist()->add_dobjdobj(
-     dobjnames::LIN_DYNAMICS, dobjnames::SIN_DVERTEX);
+    moddobj* mdbj;
+    mdbj = get_moddobjlist()->add_moddobj(
+        synthmodnames::MOD_DYNAMIC, dobjnames::LST_DYNAMICS);
+    mdbj->get_dobjdobjlist()->add_dobjdobj(
+        dobjnames::LST_DYNAMICS, dobjnames::SIN_DVERTEX);
     done_dobj = true;
 }
-#endif
 #endif

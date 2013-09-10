@@ -1,8 +1,6 @@
 #ifndef MODOBJLIST_H
 #include "../include/moddobjlist.h"
 
-#ifndef BARE_MODULES
-
 moddobjlist::moddobjlist() :
  moddobj_list(0), moddobj_item(0), mod_dobj(0)
 {
@@ -12,8 +10,8 @@ moddobjlist::moddobjlist() :
 
 moddobjlist::~moddobjlist()
 {
-    // delete mod_dobj items in list,
-    // leave deletion of list to the list destructor
+    // delete moddobj data in list,
+    // leave deletion of list items to list destructor
     goto_first();
     while (mod_dobj) {
         delete mod_dobj;
@@ -22,34 +20,27 @@ moddobjlist::~moddobjlist()
     delete moddobj_list;
 }
 
-moddobj* moddobjlist::add_moddobj(moddobj* mo)
+moddobj* moddobjlist::add_moddobj(synthmodnames::SYNTH_MOD_TYPE smt,
+    dobjnames::DOBJ_TYPE fc)
 {
-    return (moddobj*)
-     (moddobj_item = moddobj_list->add_at_tail(mo))->get_data();
-}
-
-moddobj* moddobjlist::add_moddobj(
- synthmodnames::SYNTH_MOD_TYPE smt, dobjnames::DOBJ_TYPE dt)
-{
-    moddobj* mo = new moddobj(smt, dt);
-    ll_item* ll;
-    if (!(ll = moddobj_list->add_at_tail(mo))) {
-        delete mo;
+    if (smt <= synthmodnames::MOD_FIRST || smt >= synthmodnames::MOD_LAST)
         return 0;
-    }
-    return (mod_dobj = (moddobj*)(moddobj_item = ll)->get_data());
+    moddobj* mo = new moddobj(smt, fc);
+    moddobj_item = moddobj_list->add_at_tail(mo);
+    return mod_dobj = (moddobj*)moddobj_item->get_data();
 }
 
+/*
 moddobjlist* moddobjlist::get_moddobjlist_for_moduletype(
- synthmodnames::SYNTH_MOD_TYPE smt)
+                                synthmodnames::SYNTH_MOD_TYPE smt)
 {
     if (smt <= synthmodnames::MOD_FIRST || smt >= synthmodnames::MOD_LAST)
         return 0;
     moddobjlist* mdl = new moddobjlist();
     goto_first();
-    while(mod_dobj != 0) {
+    while(mod_dobj) {
         if (mod_dobj->get_moduletype() == smt) {
-            if (!mdl->add_moddobj(smt, mod_dobj->get_dobj_type())) {
+            if (!mdl->add_moddobj(smt, mod_dobj->get_first_child())) {
                 delete mdl;
                 return 0;
             }
@@ -58,26 +49,38 @@ moddobjlist* moddobjlist::get_moddobjlist_for_moduletype(
     }
     return mdl;
 }
+*/
 
-moddobjlist* moddobjlist::get_moddobjlist_of_dobjtype(
- dobjnames::DOBJ_TYPE dt)
+moddobj* moddobjlist::get_first_of_type(synthmodnames::SYNTH_MOD_TYPE smt)
 {
-    if (dobj::get_dobjnames()->check_type(dt) == dobjnames::DOBJ_FIRST)
-    // check_type returns DOBJ_FIRST if dt not user type-------
-        return 0; 
-    moddobjlist* mdl = new moddobjlist();
+    search_type = smt;
+    search_result = 0;
+    if (smt <= synthmodnames::MOD_FIRST || smt >= synthmodnames::MOD_LAST)
+        return 0;
     goto_first();
-    while(mod_dobj != 0) {
-        if (mod_dobj->get_dobj_type() == dt) {
-            if (!mdl->add_moddobj(mod_dobj->get_moduletype(), dt)) {
-                delete mdl;
-                return 0;
-            }
+    while (mod_dobj) {
+        if (mod_dobj->get_moduletype() == search_type)
+            return mod_dobj = (moddobj*)
+                (search_result = moddobj_item)->get_data();
+        goto_next();
+    }
+    return 0;
+}
+
+moddobj* moddobjlist::get_next_of_type()
+{
+    if (search_result == 0)
+        return 0;
+    mod_dobj = (moddobj*)(search_result->get_data());
+    goto_next(); // !otherwise it get's stuck..
+    while(mod_dobj) {
+        if (mod_dobj->get_moduletype() == search_type) {
+            return mod_dobj = (moddobj*)
+                (search_result = moddobj_item)->get_data();
         }
         goto_next();
     }
-    return mdl;
+    search_result = 0;
+    return 0;
 }
-
-#endif
 #endif

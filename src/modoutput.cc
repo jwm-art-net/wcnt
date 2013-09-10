@@ -1,8 +1,6 @@
 #ifndef MODOUTPUT_H
 #include "../include/modoutput.h"
 
-#ifndef BARE_MODULES
-
 modoutput::modoutput(synthmod * sm, outputnames::OUT_TYPE ot) :
  synthmodule(sm), output_type(ot)
 {
@@ -30,5 +28,4 @@ IOCAT modoutput::get_outputcategory()
      : CAT_FIRST;
 }
 
-#endif
 #endif

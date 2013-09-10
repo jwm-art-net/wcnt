@@ -2,14 +2,12 @@
 #include "../include/riffdata.h"
 
 riffdata::riffdata() :
- dobj(dobjnames::LDEF_RIFF),
+ dobj(dobjnames::DEF_RIFF),
  quarter_val(0), note(0), notelist(0), note_item(0)
 {
     notelist = 
      new linkedlist(linkedlist::MULTIREF_OFF,linkedlist::NO_NULLDATA);
-#ifndef BARE_MODULES
-    create_dparams();
-#endif
+    create_params();
 }
 
 riffdata::~riffdata()
@@ -59,14 +57,12 @@ double riffdata::calc_riff_length(char beats_per_bar, char beat_value)
     return rifflen;
 }
 
-#ifndef BARE_MODULES
-
-bool riffdata::set_dparam(dparamnames::DPAR_TYPE dt, void* data)
+bool riffdata::set_param(paramnames::PAR_TYPE dt, void* data)
 {
     bool retv = false;
     switch(dt)
     {
-    case dparamnames::DPAR_QUARTERVAL:
+    case paramnames::PAR_QUARTER_VAL:
         set_quartervalue(*(short*)data);
         retv = true;
         break;
@@ -77,12 +73,12 @@ bool riffdata::set_dparam(dparamnames::DPAR_TYPE dt, void* data)
     return retv;
 }
 
-void* riffdata::get_dparam(dparamnames::DPAR_TYPE dt)
+void const* riffdata::get_param(paramnames::PAR_TYPE dt)
 {
     void* retv = 0;
     switch(dt)
     {
-    case dparamnames::DPAR_QUARTERVAL:
+    case paramnames::PAR_QUARTER_VAL:
         retv = &quarter_val;
         break;
     default:
@@ -91,7 +87,7 @@ void* riffdata::get_dparam(dparamnames::DPAR_TYPE dt)
     return retv;
 }
 
-dobj* riffdata::add_dobj(dobj* dbj)
+dobj const* riffdata::add_dobj(dobj* dbj)
 {
     dobj* retv = 0;
     dobjnames::DOBJ_TYPE dbjtype = dbj->get_object_type();
@@ -114,27 +110,28 @@ dobj* riffdata::add_dobj(dobj* dbj)
 stockerrs::ERR_TYPE riffdata::validate()
 {
     if (!get_dparlist()->validate(
-        this, dparamnames::DPAR_QUARTERVAL, stockerrs::ERR_NEGATIVE))
+        this, paramnames::PAR_QUARTER_VAL, stockerrs::ERR_NEGATIVE))
     {
         *err_msg =
-         get_dparnames()->get_name(dparamnames::DPAR_QUARTERVAL);
+         get_paramnames()->get_name(paramnames::PAR_QUARTER_VAL);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     return stockerrs::ERR_NO_ERROR;
 }
 
-void riffdata::create_dparams()
+void riffdata::create_params()
 {
-    if (riffdata::done_dparams == true)	return;
+    if (riffdata::done_params == true)
+        return;
     get_dparlist()->add_dobjparam(
-     dobjnames::LDEF_RIFF, dparamnames::DPAR_QUARTERVAL);
-    get_dobjdobjlist()->add_dobjdobj(
-     dobjnames::LDEF_RIFF, dobjnames::SIN_NOTE);
-    riffdata::done_dparams = true;
+     dobjnames::DEF_RIFF, paramnames::PAR_QUARTER_VAL);
+    dobjdobjlist* dbjlist = get_topdobjlist()->create_dobjdobjlist(
+        dobjnames::DEF_RIFF, dobjnames::LST_NOTES);
+    dbjlist->add_dobjdobj(dobjnames::LST_NOTES, dobjnames::SIN_NOTE);
+    riffdata::done_params = true;
 }
 
-bool riffdata::done_dparams = false;
+bool riffdata::done_params = false;
 
-#endif
 #endif

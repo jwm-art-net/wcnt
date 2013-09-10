@@ -9,12 +9,10 @@ class adsr_coord : public dobj
 public:
     enum SECT
     {
-        ADSR_FIRST,
         ADSR_ATTACK,
         ADSR_DECAY,
         ADSR_SUSTAIN,
-        ADSR_RELEASE,
-        ADSR_LAST
+        ADSR_RELEASE
     };
     adsr_coord();
     adsr_coord(SECT s, double ut, double ul, double lt, double ll);
@@ -33,21 +31,18 @@ public:
     double output_time;
     double output_level;
     // virtuals from dobj
-#ifndef BARE_MODULES
-    virtual stockerrs::ERR_TYPE validate();
-    bool set_dparam(dparamnames::DPAR_TYPE, void*);
-    void* get_dparam(dparamnames::DPAR_TYPE pt);
-#endif
+    stockerrs::ERR_TYPE validate();
+    bool set_param(paramnames::PAR_TYPE, void*);
+    void const* get_param(paramnames::PAR_TYPE pt);
+
 private:
     SECT sect;
     double upper_time;
     double upper_level;
     double lower_time;
     double lower_level;
-#ifndef BARE_MODULES
-    void create_dparams();
-    static bool done_dparams;
-#endif
+    void create_params();
+    static bool done_params;
 };
 
 #endif

@@ -5,13 +5,11 @@
 #include "conversions.h"
 #include "linkedlist.h"
 
-#ifndef BARE_MODULES
 #include "modoutputslist.h"
 #include "modinputslist.h"
 #include "modparamlist.h"
 #include "dobjparamlist.h"
-#include "dobjdobjlist.h"
-#endif
+#include "moddobjlist.h"
 
 #include "timing.h"
 
@@ -58,10 +56,8 @@ public:
     // virtual methods
     void run();
     void init();
-#ifndef BARE_MODULES
     void const* get_out(outputnames::OUT_TYPE);
     dobj* add_dobj(dobj*);
-#endif
 private:
     // outputs
     short out_count;
@@ -74,10 +70,8 @@ private:
     unsigned long samples;
     // synthmod stuff for keeping things cushdy.
     static short timer_count;
-#ifndef BARE_MODULES
     static bool done_moddobj;
     void create_moddobj();
-#endif
 };
 
 #endif

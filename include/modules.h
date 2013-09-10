@@ -54,4 +54,11 @@
 #include "stategatetrig.h"
 #include "invert.h"
 #include "timer.h"
+// version 1.128
+#include "syncclock.h"
+// version 1.2
+#include "wcnttrigger.h"
+#include "trigswitcher.h"
+#include "onofftrig.h"
+
 #endif

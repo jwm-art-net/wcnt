@@ -1,16 +1,17 @@
 #ifndef JWMSYNTH_H
 #include "../include/jwmsynth.h"
 
-#ifndef BARE_MODULES
 jwmsynth::jwmsynth(int const argc, char **const argv) :
- version(0), path(0),iocatnames(0), modnames(0), innames(0), outnames(0),
- parnames(0), synthmodslist(0), inputlist(0), outputlist(0), paramlist(0),
- connectlist(0), synthfile(0), mdobjlist(0), dobj_names(0), dobj_list(0),
- dobjparam_list(0), dpar_names(0), exit_bar(0), in_bar_trig(0), in_bar(0),
- opts_count(argc), opts(argv)
+ version(0), path(0),synthmod_err_msg(0), dobj_err_msg(0), iocatnames(0),
+ modnames(0), innames(0), outnames(0), parnames(0), synthmodslist(0),
+ inputlist(0), outputlist(0), paramlist(0), connectlist(0), synthfile(0),
+ mdobjlist(0), dobj_names(0), dobj_list(0), dobjparam_list(0), 
+ top_dobjlist(0), fxsparlist(0), valid(false), stock_errs(0), 
+ exit_bar(0), in_bar_trig(0), in_bar(0), opts_count(argc), opts(argv),
+ wcfile_opt(0)
 {
     version = new char[6];
-    strcpy(version, "1.127");
+    strcpy(version, "1.2");
     wcnt_id = "wcnt-";
     wcnt_id += version;
     wcnt_id += "/jwmsynth";
@@ -22,23 +23,25 @@ jwmsynth::jwmsynth(int const argc, char **const argv) :
     synthmod::register_inputlist(inputlist = new modinputlist);
     synthmod::register_outputlist(outputlist = new modoutputlist);
     synthmod::register_paramlist(paramlist = new modparamlist);
+    synthmod::register_fxsparamlist(fxsparlist = new fxsparamlist);
     dobj::register_iocatnames(iocatnames); // usefull.
-    dobj::register_dparnames(dpar_names = new dparamnames);
+    dobj::register_paramnames(parnames); // again
     dobj::register_dparlist(dobjparam_list = new dobjparamlist);
     dobj::register_dobjnames(dobj_names = new dobjnames);
-    dobj::register_err_msg(dobj_err_msg = new string);
+    dobj::register_error_msg(dobj_err_msg = new string);
     dobj::register_dobjlist(dobj_list = new dobjlist);
-    dobj::register_dobjdobjlist(dobj_dobjlist = new dobjdobjlist);
+    dobj::register_topdobjlist(top_dobjlist = new topdobjlist);
+    dobj::register_fxsparamlist(fxsparlist);
     synthmod::register_moddobjlist(mdobjlist = new moddobjlist);
-    synthmod::register_err_msg(synthmod_err_msg = new string);
+    synthmod::register_error_msg(synthmod_err_msg = new string);
     // must register the various things above before creating
     // synthmodlist as it creates a nonezero module which
     // must have access to the lists - or it will cause seg fault.
     synthmod::register_modlist(synthmodslist = new synthmodlist);
     synthmod::register_connectlist(connectlist = new connectorlist);
-    synthfile = new synthfilereader;
+    synthfile = new synthfilereader(synthfilereader::WC_MAIN_FILE);
     stock_errs = new stockerrs;
-    synthfile->set_stockerrs(stock_errs);
+    synthfile->register_stockerrs(stock_errs);
     valid = true;
 }
 
@@ -49,11 +52,11 @@ jwmsynth::~jwmsynth()
     delete connectlist;
     delete synthmodslist;
     delete mdobjlist;
-    delete dobj_dobjlist;
+    delete top_dobjlist;
     delete dobj_list;
     delete dobj_names;
     delete dobjparam_list;
-    delete dpar_names;
+    delete fxsparlist;
     delete paramlist;
     delete outputlist;
     delete inputlist;
@@ -70,105 +73,65 @@ jwmsynth::~jwmsynth()
 
 bool jwmsynth::generate_synth()
 {
-    if (!open_synthfile())
-        return false;
+    synthfile->set_wcnt_id(wcnt_id.c_str());
+    char* filename = opts[wcfile_opt];
+    char* ptr = filename;
+    char* fnptr = ptr;
+    while (*ptr != '\0') {
+        if (*ptr == '/') fnptr = ptr + 1;
+        ptr++;
+    }
+    if (fnptr != filename) {
+        char c = *fnptr;
+        *fnptr = '\0';
+        path = new char[strlen(filename) + 1];
+        strcpy(path, filename);
+        *fnptr = c;
+    }
     synthmod::register_path(path);
-    if (!synthfile->read_header(&audio_samplerate, &sm_beats_per_minute,
-                                &sm_beats_per_measure, &sm_beat_value)) {
-        err_msg = synthfile->get_error_msg();
+    dobj::register_path(path);
+    synthfile->set_wc_filename(filename);
+    // nowt else in synthfile needs set.
+    if (!synthfile->read_and_create()) {
+        err_msg = synthfile->get_wc_error_msg();
         return false;
     }
-    cout << "\nProccessing ";
-    cout << opts[wcfile_opt];
-    string const *com = synthfile->read_command();
-    while (*com != wcnt_id)
-    {
-        if (!com) {
-            err_msg = synthfile->get_error_msg();
+    if (synthfile->is_verbose())
+        cout << "\nValidating modules...";
+    stockerrs::ERR_TYPE et;
+    synthmod* sm;
+    sm = synthmodslist->goto_first();
+    while(sm) {
+        if ((et = sm->validate()) != stockerrs::ERR_NO_ERROR) {
+            err_msg = "\nModule ";
+            err_msg += sm->get_username();
+            if (strlen(sm->get_username()) >= 5)
+                err_msg += " is a bit";
+            else
+                err_msg += " is slightly";
+            if (sm->get_number_id() % 2 == 0)
+                err_msg += " weird, ";
+            else
+                err_msg += " dubious, ";
+            err_msg += *synthmod::get_error_msg();
+            err_msg += stock_errs->get_prefix_err(et);
+            err_msg += stock_errs->get_err(et);
             return false;
         }
-        if (dobj_names->get_type(com->c_str()) != dobjnames::DOBJ_FIRST){
-            if (!read_and_create_dobj(com))
-                return false;
-        }
-        else { // create synth module
-            if (!read_and_create_synthmod(com))
-                return false;
-        }
-        com = synthfile->read_command();
+        sm = synthmodslist->goto_next();
     }
-    if (synthmodslist->get_first_of_type(synthmodnames::MOD_WCNT) == 0){
-        err_msg = "\nfile ";
-        err_msg += opts[wcfile_opt];
-        err_msg += "does not contain wcnt_exit module.";
+    if (synthmodslist->get_first_of_type(synthmodnames::MOD_WCNT) == 0)
+    {
+        err_msg += "\nNo wcnt_exit module created.";
         err_msg += "\nWithout this module I don't know when to stop.";
         return false;
     }
     return true;
 }
 
-bool jwmsynth::read_and_create_synthmod(string const* com)
-{
-    synthmod *mod = synthfile->read_synthmodule(com);
-    if (!mod) {
-        err_msg = synthfile->get_error_msg();
-        return false;
-    }
-    *synthmod_err_msg = "";
-    stockerrs::ERR_TYPE et = mod->validate();
-    if (et != stockerrs::ERR_NO_ERROR) {
-        err_msg = "\nModule ";
-        err_msg += mod->get_username();
-        if (strlen(mod->get_username()) >= 5)
-            err_msg += " is a bit";
-        else
-            err_msg += " is slightly";
-        if (mod->get_number_id() % 2 == 0)
-            err_msg += " weird, ";
-        else
-            err_msg += " dubious, ";
-        err_msg += *synthmod_err_msg;
-        err_msg += stock_errs->get_prefix_err(et);
-        err_msg += stock_errs->get_err(et);
-        delete mod;
-        return false;
-    }
-    if (!synthmodslist->add_module(mod)) {
-        err_msg = "\ncould not add module ";
-        err_msg += mod->get_username();
-        err_msg += " to list.";
-        delete mod;
-        return false;
-    }
-    if (synthfile->is_verbose())
-        cout << "\nend " << mod->get_username();
-    return true;
-}
-
-bool jwmsynth::read_and_create_dobj(string const* com)
-{
-    dobj* dbj = synthfile->read_dobj(com);
-    if (!dbj) {
-        err_msg = synthfile->get_error_msg();
-        return false;
-    }
-    if (!dbj->validate()) {
-        err_msg = *dbj->get_error_msg();
-        return false;
-    }
-    if (!dobj_list->add_dobj(dbj)) {
-        err_msg = "\ncould not add data object to list.";
-        return false;
-    }
-    if (synthfile->is_verbose())
-        cout << "\nend " << dbj->get_username();
-    return true;
-}
-
 bool jwmsynth::connect_synth()
 {
     if (synthfile->is_verbose()) {
-        cout << "\n\nEnd wcnt/jwmsynth: " << opts[wcfile_opt];
         cout << "\n\nWill now attempt to connect inputs and outputs";
         cout << ", hold your horses:\n";
         connectlist->set_verbose();
@@ -195,6 +158,11 @@ bool jwmsynth::execute_synth()
      synthmodslist->get_first_of_type(synthmodnames::MOD_WCNT);
     const short* bar = wcnt->get_input_bar();
     short exit_bar = wcnt->get_exit_bar();
+    // unlink any constant modules from list as it's pointless
+    // calling run() on them...
+    if (synthfile->is_verbose())
+        cout << "\nunlinking constant modules from run list:";
+    synthmodslist->remove_constants(synthfile->is_verbose());
     unsigned long sample = 0;
     char bigcount = '@';
     char littlecount = '~';
@@ -203,8 +171,10 @@ bool jwmsynth::execute_synth()
     int samplespersmall = samplesperbig / divisions;
     int counter = 0;
     int divcounter = 0;
-    cout << "\tone '";
-    cout << bigcount << "' per second done\n";
+    if (synthfile->is_verbose())
+        cout << "\n";
+    cout << "Running synth (one '";
+    cout << bigcount << "' per second done)\n";
     while (*bar < exit_bar)
     {
         sm = synthmodslist->goto_first();
@@ -345,48 +315,6 @@ jwmsynth::scan_cl_options()
     return false;
 }
 
-bool jwmsynth::open_synthfile()
-{
-    bool rtval = false;
-    // get path part of filename, with trailing '/'
-    char* filename = opts[wcfile_opt];
-    char* ptr = filename;
-    char* fnptr = ptr;
-    while (*ptr != '\0') {
-        if (*ptr == '/') fnptr = ptr + 1;
-        ptr++;
-    }
-    if (fnptr != filename) {
-        char c = *fnptr;
-        *fnptr = '\0';
-        path = new char[strlen(filename) + 1];
-        strcpy(path, filename);
-        *fnptr = c;
-    }
-    synthmod::register_path(path);
-    switch (synthfile->open_file(filename, wcnt_id)) {
-    case synthfilereader::NOT_FOUND:
-        err_msg = "\nfile ";
-        err_msg += filename;
-        err_msg += " not found.\n";
-        break;
-    case synthfilereader::INVALID_HEADER:
-        err_msg = "\nfile ";
-        err_msg += filename;
-        err_msg += " does not contain a valid header.\n";
-        break;
-    case synthfilereader::FILE_OPEN:
-        rtval = true;
-        break;
-    case synthfilereader::FILE_READY:
-        err_msg = "\nfile ";
-        err_msg += filename;
-        err_msg += " inspires premature optimism.\n";
-        break;
-    }
-    return rtval;
-}
-
 void jwmsynth::module_help()
 {
     char spaces[20];
@@ -485,7 +413,14 @@ void jwmsynth::module_help()
             pn = paramnames->get_name(pt);
             err_msg += "\n    " + pn;
             err_msg.append(spaces, mxl - pn.length());
-            err_msg += iocatnames->get_name(paramnames->get_category(pt));
+            IOCAT iocat = paramnames->get_category(pt);
+            if (iocat == CAT_FIX_STR) {
+                fixstrparam* fsp;
+                fsp = synthmod::get_fxsparamlist()->get_fix_str_param(pt);
+                err_msg += fsp->get_string_list();
+            }
+            else
+                err_msg += iocatnames->get_name(iocat);
             param = parlist->goto_next();
         }
     }
@@ -513,21 +448,21 @@ void jwmsynth::module_help()
 
 void jwmsynth::dobj_help(synthmodnames::SYNTH_MOD_TYPE smt)
 {
-    moddobjlist* mdlist = mdobjlist->get_moddobjlist_for_moduletype(smt);
-    moddobj* mdbj = mdlist->goto_first();
-    if (!mdbj) {
-        delete mdlist;
+    moddobj* mdbj = mdobjlist->get_first_of_type(smt);
+    // forgot that some modules have more than one list.... so we do want
+    // to get a moddobjlist and not just a moddobj from moddobjlist.
+    if (!mdbj)
         return;
-    }
     err_msg += "\n// data objects for ";
     err_msg += modnames->get_name(smt);
     while(mdbj) {
-        dobjnames::DOBJ_TYPE dt = mdbj->get_dobj_type();
+        dobjdobjlist* mod_ddlist = mdbj->get_dobjdobjlist();
+        dobjnames::DOBJ_TYPE dt = mdbj->get_first_child();
+        dobjdobjlist* ddlist =
+            mod_ddlist->get_dobjdobjlist_for_dobjtype(dt);
+        dobjdobj* dd = ddlist->goto_first();
         err_msg += "\n    ";
         err_msg += dobj_names->get_name(dt);
-        dobjdobjlist* ddlist =
-         dobj_dobjlist->get_dobjdobjlist_for_dobjtype(dt);
-        dobjdobj* dd = ddlist->goto_first();
         while(dd) {
             dobjnames::DOBJ_TYPE sprogtype = dd->get_dobj_sprog();
             err_msg += "\n        ";
@@ -539,10 +474,9 @@ void jwmsynth::dobj_help(synthmodnames::SYNTH_MOD_TYPE smt)
         err_msg += "\n    ";
         err_msg += dobj_names->get_name(dt);
         delete ddlist;
-        mdbj = mdlist->goto_next();
+        mdbj = mdobjlist->get_next_of_type();
     }
     err_msg += "\n";
-    delete mdlist;
     return;
 }
 
@@ -560,7 +494,7 @@ void jwmsynth::dobj_help()
         int i, ip = 0; // display data objects not defined within modules
         string dn;
         int mxl = 0, l;
-        for (i = dobjnames::DOBJ_DEFLISTS + 1;
+        for (i = dobjnames::DOBJ_DEFS + 1;
          i < dobjnames::DOBJ_SYNTHMOD;i++) 
         {
             if (dobj_names->check_type((dobjnames::DOBJ_TYPE)i) == i) {
@@ -570,7 +504,7 @@ void jwmsynth::dobj_help()
             }
         }
         mxl += 2;
-        for (i = dobjnames::DOBJ_DEFLISTS + 1;
+        for (i = dobjnames::DOBJ_DEFS + 1;
          i < dobjnames::DOBJ_SYNTHMOD;i++)
         {
             if (dobj_names->check_type((dobjnames::DOBJ_TYPE)i) == i) {
@@ -587,20 +521,35 @@ void jwmsynth::dobj_help()
         return;
     }
     delete dobj_list->create_dobj(dt);
-    dobjdobjlist* ddlist =
-     dobj_dobjlist->get_dobjdobjlist_for_dobjtype(dt);
-    dobjdobj* dd = ddlist->goto_first();
+    dobjdobjlist* ddlist = top_dobjlist->get_first_of_type(dt);
     err_msg += "\n";
     err_msg += dobj_names->get_name(dt);
     err_msg += "\nusername";
     dobj_help_params(dt);
-    while(dd) {
-        dobjnames::DOBJ_TYPE sprogtype = dd->get_dobj_sprog();
-        err_msg += "\n    ";
-        err_msg += dobj_names->get_name(sprogtype);
-        delete dobj_list->create_dobj(sprogtype);
-        dobj_help_params(sprogtype);
-        dd = ddlist->goto_next();
+    while(ddlist) {
+        dobjdobj* dd = ddlist->goto_first();
+        while(dd) {
+            dobjnames::DOBJ_TYPE sprogtype = dd->get_dobj_sprog();
+            err_msg += "\n    ";
+            err_msg += dobj_names->get_name(sprogtype);
+            dobjdobjlist* sddlist;
+            sddlist = ddlist->get_dobjdobjlist_for_dobjtype(sprogtype);
+            dobjdobj* sdd = sddlist->goto_first();
+            while(sdd) {
+                dobjnames::DOBJ_TYPE ssprogtype = sdd->get_dobj_sprog();
+                err_msg += "\n        ";
+                err_msg += dobj_names->get_name(ssprogtype);
+                delete dobj_list->create_dobj(ssprogtype);
+                dobj_help_params(ssprogtype);
+                sdd = sddlist->goto_next();
+            }
+            err_msg += "\n    ";
+            err_msg += dobj_names->get_name(sprogtype);
+            delete dobj_list->create_dobj(sprogtype);
+            dobj_help_params(sprogtype);
+            dd = ddlist->goto_next();
+        }
+        ddlist = top_dobjlist->get_next_of_type();
     }
     err_msg += "\nusername";
     delete ddlist;
@@ -617,19 +566,26 @@ void jwmsynth::dobj_help_params(dobjnames::DOBJ_TYPE dt)
     string dn;
     int mxl = 0, l;
     while(dparam) {
-        dn = dpar_names->get_name(dparam->get_dpartype());
+        dn = parnames->get_name(dparam->get_partype());
         l = dn.length();
         if (l > mxl) mxl = l;
         dparam = dparlist->goto_next();
     }
     dparam = dparlist->goto_first();
     while(dparam) {
-        IOCAT iocat = dpar_names->get_category(dparam->get_dpartype());
+        IOCAT iocat = parnames->get_category(dparam->get_partype());
         err_msg += "\n            ";
-        dn = dpar_names->get_name(dparam->get_dpartype());
+        paramnames::PAR_TYPE pt = dparam->get_partype();
+        dn = parnames->get_name(pt);
         err_msg += dn;
         err_msg.append(spaces, mxl - dn.length() + 2);
-        err_msg += iocatnames->get_name(iocat);
+        if (iocat == CAT_FIX_STR) {
+            fixstrparam* fsp;
+            fsp = dobj::get_fxsparamlist()->get_fix_str_param(pt);
+            err_msg += fsp->get_string_list();
+        }
+        else
+            err_msg += iocatnames->get_name(iocat);
         dparam = dparlist->goto_next();
     }
     delete dparlist;
@@ -806,5 +762,4 @@ void jwmsynth::freq_help()
     return;
 }
 
-#endif // ifndef BARE_MODULES
 #endif

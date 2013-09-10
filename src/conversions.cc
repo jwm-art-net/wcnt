@@ -80,7 +80,7 @@ const char* transpose_notename(const char* note_name, char semitones)
     char sub_oct = 0;
     if (semitones < 0) {
         sub_oct = semitones / 12 - 1;
-        semitones = semitones - (sub_oct ) * 12  ;
+        semitones -= (sub_oct ) * 12;
     }
     char note_no = note_to_noteno(note_name) + semitones - 1;
     char oct = extract_octave(note_name) + sub_oct + note_no / 12;

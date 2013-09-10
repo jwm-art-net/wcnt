@@ -1,17 +1,16 @@
 #ifndef DOBJPARAM_H
 #include "../include/dobjparam.h"
 
-#ifndef BARE_MODULES
-dobjparam::dobjparam(dobjnames::DOBJ_TYPE dt, dparamnames::DPAR_TYPE dpt):
- dobjtype(dt), dpartype(dpt)
+dobjparam::dobjparam(dobjnames::DOBJ_TYPE dt, paramnames::PAR_TYPE pt):
+ dobjtype(dt), partype(pt)
 {
 }
 
 bool dobjparam::validate(dobj* d, stockerrs::ERR_TYPE et)
 {
-    void const* data = d->get_dparam(dpartype);
+    void const* data = d->get_param(partype);
     if (!data) return false;
-    switch(dobj::get_dparnames()->get_category(dpartype))
+    switch(dobj::get_paramnames()->get_category(partype))
     {
         case CAT_DOUBLE:
             return check_value(*(double const*)data, et);
@@ -22,8 +21,6 @@ bool dobjparam::validate(dobj* d, stockerrs::ERR_TYPE et)
         default:
             return false;
     }
-
 }
 
-#endif
 #endif

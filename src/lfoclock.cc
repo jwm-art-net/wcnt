@@ -9,29 +9,22 @@ lfo_clock::lfo_clock(char const* uname) :
  degs(360.00), degsize1(0.00), degsize2(0.00)
 {
 // degs initialised at 360 so immediately triggers if in_phase_trig is off
-#ifndef BARE_MODULES
     get_outputlist()->add_output(this, outputnames::OUT_PHASE_TRIG);
     get_outputlist()->add_output(this, outputnames::OUT_PREMOD_DEG_SIZE);
     get_outputlist()->add_output(this, outputnames::OUT_DEG_SIZE);
     get_inputlist()->add_input(this, inputnames::IN_PHASE_TRIG);
     get_inputlist()->add_input(this, inputnames::IN_FREQ_MOD1);
     get_inputlist()->add_input(this, inputnames::IN_FREQ_MOD2);
-#endif // BARE_MODULES
     lfo_clock_count++;
-#ifndef BARE_MODULES
     create_params();
-#endif
 }
 
 lfo_clock::~lfo_clock()
 {
-#ifndef BARE_MODULES
     get_outputlist()->delete_module_outputs(this);
     get_inputlist()->delete_module_inputs(this);
-#endif
 }
 
-#ifndef BARE_MODULES
 void const* lfo_clock::get_out(outputnames::OUT_TYPE ot)
 {
     void const* o = 0;
@@ -137,8 +130,6 @@ stockerrs::ERR_TYPE lfo_clock::validate()
     return stockerrs::ERR_NO_ERROR;
 }
 
-#endif
-
 void lfo_clock::init()
 {
     mod1size = freq_mod1size - 1;
@@ -187,7 +178,6 @@ void lfo_clock::run()
 
 int lfo_clock::lfo_clock_count = 0;
 
-#ifndef BARE_MODULES
 bool lfo_clock::done_params = false;
 
 void lfo_clock::create_params()
@@ -202,5 +192,5 @@ void lfo_clock::create_params()
      synthmodnames::MOD_LFOCLOCK, paramnames::PAR_FREQ_MOD2SIZE);
     done_params = true;
 }
-#endif
+
 #endif

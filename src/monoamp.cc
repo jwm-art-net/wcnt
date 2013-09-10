@@ -6,28 +6,21 @@ mono_amp::mono_amp(char const* uname) :
  in_signal(0), in_amp_eg(0), in_amp_mod(0), out_mono(0), out_m(0),
  amplitude(0), amp_modsize(0), clip_level(0), amp_level(0), ampsig(0)
 {
-#ifndef BARE_MODULES
     get_outputlist()->add_output(this, outputnames::OUT_MONO);
     get_outputlist()->add_output(this, outputnames::OUT_M);
     get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
     get_inputlist()->add_input(this, inputnames::IN_EG);
     get_inputlist()->add_input(this, inputnames::IN_AMP_MOD);
-#endif
     monoamp_count++;
-#ifndef BARE_MODULES
     create_params();
-#endif
 }
 
 mono_amp::~mono_amp()
 {
-#ifndef BARE_MODULES
     get_outputlist()->delete_module_outputs(this);
     get_inputlist()->delete_module_inputs(this);
-#endif
 }
 
-#ifndef BARE_MODULES
 void const* mono_amp::get_out(outputnames::OUT_TYPE ot)
 {
     void const* o = 0;
@@ -133,7 +126,6 @@ stockerrs::ERR_TYPE mono_amp::validate()
     }
     return stockerrs::ERR_NO_ERROR;
 }
-#endif
 
 void mono_amp::run()
 {
@@ -149,7 +141,6 @@ void mono_amp::run()
 
 int mono_amp::monoamp_count = 0;
 
-#ifndef BARE_MODULES
 bool mono_amp::done_params = false;
 
 void mono_amp::create_params()
@@ -164,5 +155,5 @@ void mono_amp::create_params()
      synthmodnames::MOD_MONOAMP, paramnames::PAR_CLIP_LEVEL);
     done_params = true;
 }
-#endif
+
 #endif

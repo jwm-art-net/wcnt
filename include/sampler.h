@@ -1,55 +1,12 @@
 #ifndef SAMPLER_H
 #define SAMPLER_H
 
-#ifndef BARE_MODULES
 #include "modoutputslist.h"
 #include "modinputslist.h"
 #include "modparamlist.h"
-#endif
-
 #include "samplercommon.h"
 
-// I don't think this could get any sillier ;)
-// but saying that......of course it could, I could
-// have loop points which as well as being offsets
-// from a modulatable start position could be modulatable
-// aswell.....
-
-// it just keeps growing and growing like I've opened
-// pandoras box in an effort to not be satisfied with
-// things that only half work, to get them working
-// fully as I'd like them to. implimenting reverse
-// and bi-directional looping with the existing
-// modulatable startpoints opened up all sorts of
-// problems, so I added to it by having relative loop
-// points, which in turn created other problems....
-// .. such as playback away from loop points and how
-// to deal with that (see play_modes - not to be
-// confused with play_dir)...... causing .... more
-// changes to the loop code....
-
-// .... now it's the turn of the anti clip code.
-// anti clip - when jumping from end of loop to the
-// begining, the waveform gets cut - causing a nasty
-// popping sound.  Anti clip smooths the transission
-// by fading out the portion of sound just after the
-// loop, while simultaneously fading in the beginning of
-// the loop.  Unfortunately in wcnt-1.001c it had a
-// slight problem that if it was activated while already
-// active, it lost what it was currently doing to do the
-// new ac clip - causing a nasty popping sound, so now
-// I'm trying to fix that by copying existing AC buf
-// into a tempory buffer while fading it and then mixing
-// it with the new AC clip buffer. it's not much fun to
-// do and i don't like it but if it works it should be
-// worth it for the end results.
-
-// now the sampler module is probably the most complex of
-// all of them, and before I started revamping it I'd intended
-// to create a sampler with two loops, and inputs for handling
-// sample positions and loop points etc, from next gen note data
-// via next gen sequencer..... am I looking forward to that or
-// what!?!?!  -- guess what, it never materialised.
+/* removed all sorts of guff I'd written in 70 lines of comment */
 
 class sampler : public synthmod
 {
@@ -93,12 +50,11 @@ public:
     void run();
     void init();
     stockerrs::ERR_TYPE validate();
-#ifndef BARE_MODULES
     void const* get_out(outputnames::OUT_TYPE);
     void const* set_in(inputnames::IN_TYPE, void const*);
     bool set_param(paramnames::PAR_TYPE, void const*);
     void const* get_param(paramnames::PAR_TYPE);
-#endif
+
 private:
     // inputs
     const STATUS* in_play_trig;
@@ -188,10 +144,8 @@ private:
     void ac_mix_rev_stereo(stereodata*);
     // synthmod stuff
     static int sampler_count;
-#ifndef BARE_MODULES
     static void create_params();
     static bool done_params;
-#endif
 };
 
 #endif

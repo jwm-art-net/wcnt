@@ -5,15 +5,12 @@
 #include "conversions.h"
 #include "linkedlist.h"
 
-#ifndef BARE_MODULES
 #include "modoutputslist.h"
 #include "modinputslist.h"
 #include "modparamlist.h"
 #include "dobjparamlist.h"
-#include "dobjdobjlist.h"
-#include "dobjmod.h"
+#include "moddobjlist.h"
 #include "dobjlist.h"
-#endif
 
 class switcher: public synthmod
 {
@@ -49,7 +46,6 @@ public:
     void run();
     void init();
     stockerrs::ERR_TYPE validate();
-#ifndef BARE_MODULES
     void const* get_out(outputnames::OUT_TYPE);
     void const* set_in(inputnames::IN_TYPE, void const*);
     bool set_param(paramnames::PAR_TYPE, void const*);
@@ -57,7 +53,6 @@ public:
 // wcnt_signal is not a dobj, but a synthmod, so a dobj wrapper class
 // - dobjmod, is passed which contains a pointer to the wcnt_signal
     dobj* add_dobj(dobj*);
-#endif
 private:
     STATUS const* in_trig;
     double xfadetime;
@@ -73,12 +68,10 @@ private:
     double const* prevsig;
     double zero;// for initial stuff
     static int switcher_count;
-#ifndef BARE_MODULES
     static bool done_params;
     void create_params();
     static bool done_moddobj;
     void create_moddobj();
-#endif
 };
 
 #endif

@@ -7,23 +7,17 @@ delay::delay(char const* uname) :
  gain_modsize(0), wetdry(0), output(0), filter(0), filterarraymax(0),
  fpos(0), filtertotal(0), gainamount(0)
 {
-#ifndef BARE_MODULES
     get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
     get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
     get_inputlist()->add_input(this, inputnames::IN_GAIN_MOD);
-#endif
     delay_count++;
-#ifndef BARE_MODULES
     create_params();
-#endif
 }
 
 delay::~delay()
 {
-#ifndef BARE_MODULES
     get_outputlist()->delete_module_outputs(this);
     get_inputlist()->delete_module_inputs(this);
-#endif
     if (filter)
         delete [] filter;
 }
@@ -36,7 +30,6 @@ void delay::init()
     fpos = filterarraymax - 1;
 }
 
-#ifndef BARE_MODULES
 void const* delay::get_out(outputnames::OUT_TYPE ot)
 {
     void const* o = 0;
@@ -148,8 +141,6 @@ stockerrs::ERR_TYPE delay::validate()
     return stockerrs::ERR_NO_ERROR;
 }
 
-#endif // BARE_MODULES
-
 void delay::run()
 {
     if (*in_gainmod >= 0)
@@ -167,7 +158,6 @@ void delay::run()
 
 int delay::delay_count = 0;
 
-#ifndef BARE_MODULES
 bool delay::done_params = false;
 
 void delay::create_params()
@@ -184,5 +174,5 @@ void delay::create_params()
      synthmodnames::MOD_DELAY, paramnames::PAR_WETDRY);
     done_params = true;
 }
-#endif
+
 #endif

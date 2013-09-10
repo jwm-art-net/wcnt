@@ -1,9 +1,8 @@
 #ifndef MODOUTPUTSLIST_H
 #include "../include/modoutputslist.h"
 
-#ifndef BARE_MODULES
-
-modoutputlist::modoutputlist() : outlist(0), output(0)
+modoutputlist::modoutputlist() : 
+ outlist(0), output_item(0), output(0)
 {
     outlist = 
      new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
@@ -35,14 +34,16 @@ void modoutputlist::delete_module_outputs(synthmod* sm)
 {
     if (outlist->is_empty()) return;
     output = goto_first();
-    while(output != 0)
+    while(output)
     {
-        if (output->get_synthmodule() == sm)
-        {
-            delete_output(output);
+        if (output->get_synthmodule() == sm) {
+            outlist->unlink_item(output_item);
+            delete output;
+            delete output_item;
             output = goto_first();
         }
-        output = goto_next();
+        else
+            output = goto_next();
     }
 }
 
@@ -196,5 +197,4 @@ bool modoutputlist::is_registered(synthmod* mod)
     return false;
 }
 
-#endif
 #endif

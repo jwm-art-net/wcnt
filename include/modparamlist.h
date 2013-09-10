@@ -1,13 +1,10 @@
 #ifndef MODPARAMLIST_H
 #define MODPARAMLIST_H
 
-#ifndef BARE_MODULES
-
 #include "linkedlist.h"
 #include "modparam.h"
 
-/*
-modparamlist is slightly different to modinputlist or modoutputlist
+/* modparamlist is slightly different to modinputlist or modoutputlist
 instead of taking a synthmod* arguement it takes 
 synthmodnames::SYNTH_MOD_TYPE.  The list also differs in the way it is
 called, ie the params should be added only once for each module type,
@@ -22,11 +19,10 @@ modinputlist etc have been removed as there is no need to use them.
 
 All of this is because the params are used in a completely different way
 to the inputs and outputs.
-*/
-/*
+
     added bool validate(..) func.  called by synthmod::validate().
-     works out modparam from PAR_TYPE and calls its bool validate(..)
-*/
+     works out modparam from PAR_TYPE and calls its bool validate(..) */
+
 class modparamlist
 {
 public:
@@ -55,6 +51,7 @@ public:
     modparamlist* 
         get_paramlist_for_moduletype(synthmodnames::SYNTH_MOD_TYPE);
     bool validate(synthmod*, paramnames::PAR_TYPE, stockerrs::ERR_TYPE);
+
 private:
     bool delete_param(modparam*);
     linkedlist* parlist;
@@ -62,5 +59,4 @@ private:
     modparam* param;
 };
 
-#endif
 #endif

@@ -8,7 +8,6 @@ serialwavfileout::serialwavfileout(char const* uname) :
  wav_basename(NULL), fileout(0), wavcount(0), header(0),
  status(WAV_STATUS_INIT), st_buffer(NULL), sample_total(0), buff_pos(0)
 {
-#ifndef BARE_MODULES
     get_inputlist()->add_input(this, inputnames::IN_LEFT);
     get_inputlist()->add_input(this, inputnames::IN_RIGHT);
     get_inputlist()->add_input(this, inputnames::IN_BAR);
@@ -16,7 +15,6 @@ serialwavfileout::serialwavfileout(char const* uname) :
     get_inputlist()->add_input(this, inputnames::IN_WRITE_TRIG);
     get_inputlist()->add_input(this, inputnames::IN_STOP_TRIG);
     get_outputlist()->add_output(this, outputnames::OUT_WRITE_STATE);
-#endif
     st_buffer = new stereodata[WAV_BUFFER_SIZE];
     for(short i = 0; i < WAV_BUFFER_SIZE; i++){
         st_buffer[i].left = 0;
@@ -25,9 +23,7 @@ serialwavfileout::serialwavfileout(char const* uname) :
     header = 
      new wavheader(audio_channels, audio_samplerate, audio_bitrate);
     serialwavfileout_count++;
-#ifndef BARE_MODULES
     create_params();
-#endif
 }
 
 serialwavfileout::~serialwavfileout()
@@ -42,14 +38,10 @@ serialwavfileout::~serialwavfileout()
     delete [] st_buffer;
     delete header;
     if (wav_basename) delete [] wav_basename;
-#ifndef BARE_MODULES
     get_outputlist()->delete_module_outputs(this);
     get_inputlist()->delete_module_inputs(this);
-#endif
 }
 
-
-#ifndef BARE_MODULES
 void const* serialwavfileout::get_out(outputnames::OUT_TYPE ot)
 {
     void const* o = 0;
@@ -154,8 +146,6 @@ stockerrs::ERR_TYPE serialwavfileout::validate()
     }
     return stockerrs::ERR_NO_ERROR;
 }
-
-#endif // BARE_MODULES
 
 void serialwavfileout::set_wav_basename(char * fname)
 {
@@ -276,7 +266,6 @@ void serialwavfileout::write_wav_header(unsigned long length)
 
 short serialwavfileout::serialwavfileout_count = 0;
 
-#ifndef BARE_MODULES
 bool serialwavfileout::done_params = false;
 
 void serialwavfileout::create_params()
@@ -291,5 +280,5 @@ void serialwavfileout::create_params()
      synthmodnames::MOD_SERIALWAVFILEOUT, paramnames::PAR_END_BAR);
     done_params = true;
 }
-#endif
+
 #endif

@@ -2,13 +2,11 @@
 #include "../include/wavfilein.h"
 
 wavfilein::wavfilein() :
- dobj(dobjnames::SDEF_WAVFILEIN), fname(0), rootnote(0), filein(0),
+ dobj(dobjnames::DEF_WAVFILEIN), fname(0), rootnote(0), filein(0),
  header(0), status(WAV_STATUS_INIT)
 {
     header = new wavheader;
-#ifndef BARE_MODULES
-    create_dparams();
-#endif
+    create_params();
 }
 
 wavfilein::~wavfilein()
@@ -128,18 +126,16 @@ void wavfilein::read_wav_chunk(void * buf, unsigned long smp, int bsize)
     }
 }
 
-#ifndef BARE_MODULES
-
-bool wavfilein::set_dparam(dparamnames::DPAR_TYPE dt, void* data)
+bool wavfilein::set_param(paramnames::PAR_TYPE dt, void* data)
 {
     bool retv = false;
     switch(dt)
     {
-    case dparamnames::DPAR_FILENAME:
+    case paramnames::PAR_FILENAME:
         set_wav_filename((char*)data);
         retv = true;
         break;
-    case dparamnames::DPAR_ROOTNOTE:
+    case paramnames::PAR_ROOT_NOTE:
         set_root_note((char*)data);
         retv = true;
         break;
@@ -150,15 +146,15 @@ bool wavfilein::set_dparam(dparamnames::DPAR_TYPE dt, void* data)
     return retv;
 }
 
-void* wavfilein::get_dparam(dparamnames::DPAR_TYPE dt)
+void const* wavfilein::get_param(paramnames::PAR_TYPE dt)
 {
     void* retv = 0;
     switch(dt)
     {
-    case dparamnames::DPAR_FILENAME:
+    case paramnames::PAR_FILENAME:
         retv = fname;
         break;
-    case dparamnames::DPAR_ROOTNOTE:
+    case paramnames::PAR_ROOT_NOTE:
         retv = rootnote;
         break;
     default:
@@ -171,7 +167,7 @@ stockerrs::ERR_TYPE wavfilein::validate()
 {
     open_wav();
     if (status == WAV_STATUS_NOT_FOUND) {
-        *err_msg = get_dparnames()->get_name(dparamnames::DPAR_FILENAME);
+        *err_msg = get_paramnames()->get_name(paramnames::PAR_FILENAME);
         *err_msg += ", ";
         *err_msg += fname;
         *err_msg += " was not found.";
@@ -179,7 +175,7 @@ stockerrs::ERR_TYPE wavfilein::validate()
         return stockerrs::ERR_ERROR;
     }
     if (status == WAV_STATUS_WAVERR) {
-        *err_msg = get_dparnames()->get_name(dparamnames::DPAR_FILENAME);
+        *err_msg = get_paramnames()->get_name(paramnames::PAR_FILENAME);
         *err_msg += ", ";
         *err_msg += fname;
         *err_msg += " is not a wav file.";
@@ -187,14 +183,14 @@ stockerrs::ERR_TYPE wavfilein::validate()
         return stockerrs::ERR_ERROR;
     }
     if (status != WAV_STATUS_OPEN) {
-        *err_msg = get_dparnames()->get_name(dparamnames::DPAR_FILENAME);
+        *err_msg = get_paramnames()->get_name(paramnames::PAR_FILENAME);
         *err_msg = ", an unspecified error occurred trying to open ";
         *err_msg += fname;
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (!check_notename(rootnote)) {
-        *err_msg = get_dparnames()->get_name(dparamnames::DPAR_ROOTNOTE);
+        *err_msg = get_paramnames()->get_name(paramnames::PAR_ROOT_NOTE);
         *err_msg += ", ";
         *err_msg += rootnote;
         invalidate();
@@ -203,18 +199,16 @@ stockerrs::ERR_TYPE wavfilein::validate()
     return stockerrs::ERR_NO_ERROR;
 }
 
-void wavfilein::create_dparams()
+void wavfilein::create_params()
 {
-    if (done_dparams == true)	return;
+    if (done_params == true)	return;
     get_dparlist()->add_dobjparam(
-     dobjnames::SDEF_WAVFILEIN, dparamnames::DPAR_FILENAME);
+     dobjnames::DEF_WAVFILEIN, paramnames::PAR_FILENAME);
     get_dparlist()->add_dobjparam(
-     dobjnames::SDEF_WAVFILEIN, dparamnames::DPAR_ROOTNOTE);
-    done_dparams = true;
+     dobjnames::DEF_WAVFILEIN, paramnames::PAR_ROOT_NOTE);
+    done_params = true;
 }
 
-bool wavfilein::done_dparams = false;
-
-#endif
+bool wavfilein::done_params = false;
 
 #endif

@@ -6,25 +6,19 @@ patterntrig::patterntrig(char const* uname) :
  in_trig(0), out_trig(OFF), out_start_trig(OFF), 
  out_end_trig(OFF), pattern(0), ptr(0)
 {
-#ifndef BARE_MODULES
     get_outputlist()->add_output(this, outputnames::OUT_TRIG);
     get_outputlist()->add_output(this, outputnames::OUT_START_TRIG);
     get_outputlist()->add_output(this, outputnames::OUT_END_TRIG);
     get_inputlist()->add_input(this, inputnames::IN_TRIG);
-#endif
     patterntrig_count++;
-#ifndef BARE_MODULES
     create_params();
-#endif
 }
 
 patterntrig::~patterntrig()
 {
     if (pattern) delete [] pattern;
-#ifndef BARE_MODULES
     get_outputlist()->delete_module_outputs(this);
     get_inputlist()->delete_module_inputs(this);
-#endif
 }
 
 void patterntrig::set_pattern_string(char* pat)
@@ -79,7 +73,6 @@ stockerrs::ERR_TYPE patterntrig::validate()
     return (is_valid()) ? stockerrs::ERR_NO_ERROR : stockerrs::ERR_ERROR;
 }
 
-#ifndef BARE_MODULES
 void const* patterntrig::get_out(outputnames::OUT_TYPE ot)
 {
     void const* o = 0;
@@ -141,8 +134,6 @@ void const* patterntrig::get_param(paramnames::PAR_TYPE pt)
     }
 }
 
-#endif // BARE_MODULES
-
 void patterntrig::run()
 {
     if (*in_trig == ON) {
@@ -167,7 +158,6 @@ void patterntrig::run()
 
 int patterntrig::patterntrig_count = 0;
 
-#ifndef BARE_MODULES
 bool patterntrig::done_params = false;
 
 void patterntrig::create_params()
@@ -178,5 +168,5 @@ void patterntrig::create_params()
      synthmodnames::MOD_PATTERNTRIG, paramnames::PAR_TRIG_STRING);
     done_params = true;
 }
-#endif
+
 #endif

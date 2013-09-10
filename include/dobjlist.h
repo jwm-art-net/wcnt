@@ -5,8 +5,6 @@
 #include "linkedlist.h"
 #include "dataobjects.h"
 
-#ifndef BARE_MODULES
-
 class dobjlist
 {
 public:
@@ -42,5 +40,5 @@ private:
     dobjnames::DOBJ_TYPE search_dobj_type;
     ll_item* dobj_search;
 };
-#endif
+
 #endif

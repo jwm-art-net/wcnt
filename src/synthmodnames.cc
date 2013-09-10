@@ -56,6 +56,10 @@ synthmodnames::synthmodnames()
     mod_name[MOD_STATEGATETRIG] = "state_gate_trig";
     mod_name[MOD_INVERT] = "invert";
     mod_name[MOD_TIMER] = "timer";
+    mod_name[MOD_SYNCCLOCK] = "sync_clock";
+    mod_name[MOD_WCNTTRIGGER] = "wcnt_trigger";
+    mod_name[MOD_TRIGSWITCHER] = "trig_switcher";
+    mod_name[MOD_ONOFFTRIG] = "on_off_trig";
 }
 
 synthmodnames::~synthmodnames()

@@ -4,15 +4,13 @@
 #include "stereochannel.h"
 #include "linkedlist.h"
 
-#ifndef BARE_MODULES
 #include "modoutputslist.h"
 #include "modinputslist.h"
 #include "modparamlist.h"
 #include "dobjparamlist.h"
-#include "dobjdobjlist.h"
+#include "moddobjlist.h"
 #include "dobjmod.h"
 #include "dobjlist.h"
-#endif
 
 class stereomixer: public synthmod
 {
@@ -40,14 +38,12 @@ public:
     // virtual funcs
     void run();
     stockerrs::ERR_TYPE validate();
-#ifndef BARE_MODULES
     void const* get_out(outputnames::OUT_TYPE);
     bool set_param(paramnames::PAR_TYPE, void const*);
     void const* get_param(paramnames::PAR_TYPE);
 // stereo_channel is not a dobj, but a synthmod, so a dobj wrapper class
 // - dobjmod, is passed which contains a pointer to the stereo_channel
     dobj* add_dobj(dobj*);
-#endif
 private:
     short out_left;
     short out_right;
@@ -58,12 +54,10 @@ private:
     ll_item* chitem;
     stereo_channel* chan;
     static int stereomixer_count;
-#ifndef BARE_MODULES
     static bool done_params;
     void create_params();
     static bool done_moddobj;
     void create_moddobj();
-#endif
 };
 
 #endif

@@ -3,8 +3,9 @@
 
 #include "dobjparamlist.h"
 
-// by the time <atbar> is reached bpm will be <tobpm>
-// (sigh of relief) this one's nice and easy......(adding dobj)
+// tempo changes are now relative.
+// so when tobpm is 10, the tempo will increase by 10 bpm.
+// obvious: negative tempo decrease speed
 
 class bpmchange : public dobj
 {
@@ -15,18 +16,15 @@ public:
     void set_bpm(double bpm){tobpm = bpm;}
     short get_bar(){ return atbar;}
     double get_bpm(){ return tobpm;}
-#ifndef BARE_MODULES
     stockerrs::ERR_TYPE validate();
-    bool set_dparam(dparamnames::DPAR_TYPE, void*);
-    void* get_dparam(dparamnames::DPAR_TYPE pt);
-#endif
+    bool set_param(paramnames::PAR_TYPE, void*);
+    void const* get_param(paramnames::PAR_TYPE pt);
+
 private:
     short atbar;
     double tobpm;
-#ifndef BARE_MODULES
-    void create_dparams();
-    static bool done_dparams;
-#endif
+    void create_params();
+    static bool done_params;
 };
 
 #endif

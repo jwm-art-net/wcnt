@@ -1,8 +1,6 @@
 #ifndef MODINPUTSLIST_H
 #include "../include/modinputslist.h"
 
-#ifndef BARE_MODULES
-
 modinputlist::modinputlist() : inlist(0), input(0)
 {
     inlist = 
@@ -38,13 +36,14 @@ bool modinputlist::delete_module_inputs(synthmod* sm)
     input = goto_first();
     while(input)
     {
-        if (input->get_synthmodule() == sm)
-        {
-            if (!delete_input(input))
-                return false;
+        if (input->get_synthmodule() == sm) {
+            inlist->unlink_item(input_item);
+            delete input;
+            delete input_item;
             input = goto_first();
         }
-        input = goto_next();
+        else
+            input = goto_next();
     }
     return true;
 }
@@ -195,5 +194,4 @@ modinputlist* modinputlist::get_inputlist_for_module(synthmod* sm)
     return mil;
 }
 
-#endif
 #endif

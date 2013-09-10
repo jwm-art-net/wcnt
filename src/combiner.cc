@@ -6,31 +6,24 @@ combiner::combiner(char const* uname) :
  out_output(0), sigcount(0), meantotal(ON), wcntsiglist(0),
  wcntsig_item(0), wcntsig(0)
 {
-#ifndef BARE_MODULES
     get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
-#endif
     wcntsiglist = 
      new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
     combiner_count++;
-#ifndef BARE_MODULES
     create_params();
     create_moddobj();
-#endif
 }
 
 combiner::~combiner()
 {
-#ifndef BARE_MODULES
     get_outputlist()->delete_module_outputs(this);
     get_inputlist()->delete_module_inputs(this);
-#endif
 /*
     wcntsig is a synthmodule which would have been created
     before this module.  don't need to delete here. */
     delete wcntsiglist;
 }
 
-#ifndef BARE_MODULES
 void const* combiner::get_out(outputnames::OUT_TYPE ot)
 {
     void const* o = 0;
@@ -122,8 +115,6 @@ dobj* combiner::add_dobj(dobj* dbj)
     return 0;
 }
 
-#endif // BARE_MODULES
-
 void combiner::init()
 {
     goto_first();
@@ -146,7 +137,6 @@ void combiner::run()
 
 int combiner::combiner_count = 0;
 
-#ifndef BARE_MODULES
 bool combiner::done_params = false;
 void combiner::create_params()
 {
@@ -162,23 +152,12 @@ void combiner::create_moddobj()
 {
     if (done_moddobj == true)
         return;
-    get_moddobjlist()->
-    add_moddobj(synthmodnames::MOD_COMBINER, dobjnames::LIN_SIGNALS);
-    // several modules use LIN_SIGNALS, if they all add a dobjdobj to
-    // it, then wcnt will want to read as many as has been added, if there
-    // are more to be read after, then it will want to read that many
-    // again.  glamorous eh?  WTF?
-    dobjdobjlist* ddl
-     = dobj::get_dobjdobjlist()->get_dobjdobjlist_for_dobjtype(
-        dobjnames::LIN_SIGNALS);
-    if (!ddl->goto_first())
-    {
-        dobj::get_dobjdobjlist()->add_dobjdobj(
-         dobjnames::LIN_SIGNALS, dobjnames::DOBJ_SYNTHMOD);
-    }
-    if (ddl) delete ddl;
+    moddobj* mdbj;
+    mdbj = get_moddobjlist()->add_moddobj(
+        synthmodnames::MOD_COMBINER, dobjnames::LST_SIGNALS);
+    mdbj->get_dobjdobjlist()->add_dobjdobj(
+        dobjnames::LST_SIGNALS, dobjnames::DOBJ_SYNTHMOD);
     done_moddobj = true;
 }
 
-#endif
 #endif

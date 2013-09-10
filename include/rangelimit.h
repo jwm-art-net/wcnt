@@ -2,16 +2,13 @@
 #define RANGELIMIT_H
 
 #include "synthmodule.h"
-
-#ifndef BARE_MODULES
 #include "modoutputslist.h"
 #include "modinputslist.h"
 #include "modparamlist.h"
-#endif
 
 class range_limit : public synthmod
 {
-public:
+ public:
     range_limit(char const*);
     ~range_limit();
     // input
@@ -27,13 +24,12 @@ public:
     // virtual funcs
     void run();
     void init();
-#ifndef BARE_MODULES
     void const* get_out(outputnames::OUT_TYPE);
     void const* set_in(inputnames::IN_TYPE, void const*);
     bool set_param(paramnames::PAR_TYPE, void const*);
     void const* get_param(paramnames::PAR_TYPE);
-#endif	
-private:
+
+ private:
     // inputs
     const double* in_signal;
     // outputs
@@ -42,9 +38,7 @@ private:
     double sigrangehi;
     double sigrangelo;
     static int range_limit_count;
-#ifndef BARE_MODULES
     static void create_params();
     static bool done_params;
-#endif
 };
 #endif

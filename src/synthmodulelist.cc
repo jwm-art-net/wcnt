@@ -1,10 +1,8 @@
 #ifndef SYNTHMODULELIST_H
 #include "../include/synthmodulelist.h"
 
-#ifndef BARE_MODULES
-
 synthmodlist::synthmodlist() :
- smodlist(0), smod_item(0), smod(0),
+ smodlist(0), constlist(0), smod_item(0), smod(0),
  search_modtype(synthmodnames::MOD_FIRST), search_result(0)
 {
     smodlist =
@@ -23,6 +21,15 @@ synthmodlist::~synthmodlist()
         goto_next();
     }
     delete smodlist;
+    if (constlist) {
+        smodlist = constlist;
+        goto_first();
+        while (smod) {
+            delete smod;
+            goto_next();
+        }
+        delete constlist;
+    }
 }
 
 synthmod *
@@ -187,6 +194,18 @@ synthmod * synthmodlist::create_module(
     case synthmodnames::MOD_TIMER:
         sm = new timer(uname);
         break;
+    case synthmodnames::MOD_SYNCCLOCK:
+        sm = new sync_clock(uname);
+        break;
+    case synthmodnames::MOD_WCNTTRIGGER:
+        sm = new wcnt_trigger(uname);
+        break;
+    case synthmodnames::MOD_TRIGSWITCHER:
+        sm = new trigswitcher(uname);
+        break;
+    case synthmodnames::MOD_ONOFFTRIG:
+        sm = new onofftrig(uname);
+        break;
     default:
         sm = 0;
     }
@@ -246,5 +265,33 @@ synthmod* synthmodlist::get_next_of_type()
     return 0;
 }
 
-#endif
+void synthmodlist::remove_constants(bool verbose)
+{
+    if (constlist)
+        return;
+    constlist =
+     new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
+    get_first_of_type(synthmodnames::MOD_CONSTMOD);
+    while (smod) {
+        if (verbose)
+            cout << "\nunlinking " << smod->get_username();
+        smodlist->unlink_item(search_result);
+        constlist->add_at_tail(search_result->get_data());
+        delete search_result;
+        search_result = 0;
+        get_first_of_type(synthmodnames::MOD_CONSTMOD);
+    }
+    // and wcnt_triggers!
+    get_first_of_type(synthmodnames::MOD_WCNTTRIGGER);
+    while (smod) {
+        if (verbose)
+            cout << "\nunlinking " << smod->get_username();
+        smodlist->unlink_item(search_result);
+        constlist->add_at_tail(search_result->get_data());
+        delete search_result;
+        search_result = 0;
+        get_first_of_type(synthmodnames::MOD_WCNTTRIGGER);
+    }
+}
+
 #endif

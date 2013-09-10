@@ -7,9 +7,7 @@ meterchange::meterchange() :
 {
     time_sig.beatsperbar = 0;
     time_sig.beatvalue = 0;
-#ifndef BARE_MODULES
-    create_dparams();
-#endif
+    create_params();
 }
 
 meterchange::meterchange(short br, char btpb, char btval) :
@@ -17,24 +15,20 @@ meterchange::meterchange(short br, char btpb, char btval) :
 {
     time_sig.beatsperbar = btpb;
     time_sig.beatvalue = btval;
-#ifndef BARE_MODULES
-    create_dparams();
-#endif
+    create_params();
 }
 
-#ifndef BARE_MODULES
-
-bool meterchange::set_dparam(dparamnames::DPAR_TYPE pt, void* data)
+bool meterchange::set_param(paramnames::PAR_TYPE pt, void* data)
 {
     bool retv = false;
     switch(pt)
     {
-    case dparamnames::DPAR_METER:
+    case paramnames::PAR_METER:
         set_beatsperbar(((timesig*)data)->beatsperbar);
         set_beatvalue(((timesig*)data)->beatvalue);
         retv = true;
         break;
-    case dparamnames::DPAR_BAR:
+    case paramnames::PAR_BAR:
         set_bar(*(short*)data);
         retv = true;
         break;
@@ -45,15 +39,15 @@ bool meterchange::set_dparam(dparamnames::DPAR_TYPE pt, void* data)
     return retv;
 }
 
-void* meterchange::get_dparam(dparamnames::DPAR_TYPE pt)
+void const* meterchange::get_param(paramnames::PAR_TYPE pt)
 {
     void* retv = 0;
     switch(pt)
     {
-    case dparamnames::DPAR_METER:
+    case paramnames::PAR_METER:
         retv = &time_sig;
         break;
-    case dparamnames::DPAR_BAR:
+    case paramnames::PAR_BAR:
         retv = &bar;
         break;
     default:
@@ -66,36 +60,35 @@ void* meterchange::get_dparam(dparamnames::DPAR_TYPE pt)
 stockerrs::ERR_TYPE meterchange::validate()
 {
     if (time_sig.beatsperbar <= 2 || time_sig.beatsperbar > 32) {
-        *err_msg = get_dparnames()->get_name(dparamnames::DPAR_METER);
+        *err_msg = get_paramnames()->get_name(paramnames::PAR_METER);
         invalidate();
         return stockerrs::ERR_RANGE_BEAT;
     }
     if (time_sig.beatvalue <= 2 || time_sig.beatvalue > 32) {
-        *err_msg = get_dparnames()->get_name(dparamnames::DPAR_METER);
+        *err_msg = get_paramnames()->get_name(paramnames::PAR_METER);
         invalidate();
         return stockerrs::ERR_RANGE_BEAT;
     }
     if (!get_dparlist()->validate(
-        this, dparamnames::DPAR_BAR, stockerrs::ERR_NEGATIVE))
+        this, paramnames::PAR_BAR, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = get_dparnames()->get_name(dparamnames::DPAR_BAR);
+        *err_msg = get_paramnames()->get_name(paramnames::PAR_BAR);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     return stockerrs::ERR_NO_ERROR;
 }
 
-bool meterchange::done_dparams = false;
+bool meterchange::done_params = false;
 
-void meterchange::create_dparams()
+void meterchange::create_params()
 {
-    if (done_dparams == true) return;
+    if (done_params == true) return;
     get_dparlist()->add_dobjparam(
-     dobjnames::SIN_METER, dparamnames::DPAR_METER);
+     dobjnames::SIN_METER, paramnames::PAR_METER);
     get_dparlist()->add_dobjparam(
-     dobjnames::SIN_METER, dparamnames::DPAR_BAR);
-    done_dparams = true;
+     dobjnames::SIN_METER, paramnames::PAR_BAR);
+    done_params = true;
 }
 
-#endif // BARE_MODULES
 #endif

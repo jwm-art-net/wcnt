@@ -7,27 +7,20 @@ contraster::contraster(char const* uname) :
  power_min(1.0), power_max(2.0), rude_mode(OFF),
  power(0.0), powerrad(0.0)
 {
-#ifndef BARE_MODULES
     get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
     get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
     get_inputlist()->add_input(this, inputnames::IN_POWER_MOD);
     get_inputlist()->add_input(this, inputnames::IN_RUDE_SWITCH_TRIG);
-#endif
     contraster_count++;
-#ifndef BARE_MODULES
     create_params();
-#endif
 }
 
 contraster::~contraster()
 {
-#ifndef BARE_MODULES
     get_outputlist()->delete_module_outputs(this);
     get_inputlist()->delete_module_inputs(this);
-#endif
 }
 
-#ifndef BARE_MODULES
 void const* contraster::get_out(outputnames::OUT_TYPE ot)
 {
     void const* o = 0;
@@ -119,8 +112,6 @@ stockerrs::ERR_TYPE contraster::validate()
     return stockerrs::ERR_NO_ERROR;
 }
 
-#endif
-
 void contraster::init()
 {
     powerrad = (power_max - power_min) / 2;
@@ -158,7 +149,6 @@ void contraster::run()
 
 int contraster::contraster_count = 0;
 
-#ifndef BARE_MODULES
 bool contraster::done_params = false;
 
 void contraster::create_params()
@@ -175,5 +165,5 @@ void contraster::create_params()
      synthmodnames::MOD_CONTRASTER, paramnames::PAR_WETDRY);
     done_params = true;
 }
-#endif
+
 #endif

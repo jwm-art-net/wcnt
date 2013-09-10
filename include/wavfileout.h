@@ -6,11 +6,9 @@
 #include "wavfileheader.h"
 #include "conversions.h"
 
-#ifndef BARE_MODULES
 #include "modoutputslist.h"
 #include "modinputslist.h"
 #include "modparamlist.h"
-#endif
 
 class wavfileout: public synthmod
 {
@@ -43,7 +41,8 @@ public:
     // params
     void set_start_bar(short sb) { start_bar = sb;}
     void set_end_bar(short eb) { end_bar = eb;}
-    WAV_STATUS open_wav(char * fname);
+    void set_wav_filename(char* fname);
+    WAV_STATUS open_wav();
     short get_start_bar() { return start_bar; }
     short get_end_bar() { return end_bar; }
     char * get_wav_filename() { return filename; }
@@ -53,13 +52,11 @@ public:
     void write_wav_header(unsigned long length);
     // virtual funcs
     void run();
-    stockerrs::ERR_TYPE validate();
-#ifndef BARE_MODULES
+    stockerrs::ERR_TYPE validate(); // opens the wav
     void const* get_out(outputnames::OUT_TYPE);
     void const* set_in(inputnames::IN_TYPE, void const*);
     bool set_param(paramnames::PAR_TYPE, void const*);
     void const* get_param(paramnames::PAR_TYPE);
-#endif
 private:
     // inputs
     const short* in_left_channel;
@@ -85,10 +82,8 @@ private:
     void write_wav_chunk(stereodata * buf, unsigned long smp, int bsize);
     // synthmod stuff
     static short wavfileout_count;
-#ifndef BARE_MODULES
     void create_params();
     static bool done_params;
-#endif
 };
 
 #endif

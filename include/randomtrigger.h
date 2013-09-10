@@ -3,13 +3,11 @@
 
 #include <stdlib.h>
 #include <time.h>
-#include "synthmodule.h"
 
-#ifndef BARE_MODULES
+#include "synthmodule.h"
 #include "modoutputslist.h"
 #include "modinputslist.h"
 #include "modparamlist.h"
-#endif
 
 class randomtrigger: public synthmod
 {
@@ -27,12 +25,11 @@ public:
     // virtual funcs
     void run();
     stockerrs::ERR_TYPE validate();
-#ifndef BARE_MODULES
     void const* get_out(outputnames::OUT_TYPE);
     void const* set_in(inputnames::IN_TYPE, void const*);
     bool set_param(paramnames::PAR_TYPE, void const*);
     void const* get_param(paramnames::PAR_TYPE);
-#endif
+
 private:
     STATUS const* in_trig;
     STATUS out_trig;
@@ -40,10 +37,8 @@ private:
     double probability;
     double not_probability;
     static int randomtrigger_count;
-#ifndef BARE_MODULES
     void create_params();
     static bool done_params;
-#endif
 };
 
 #endif

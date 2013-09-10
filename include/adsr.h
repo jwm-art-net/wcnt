@@ -4,13 +4,11 @@
 #include "adsrcoord.h"
 #include "linkedlist.h"
 
-#ifndef BARE_MODULES
 #include "modoutputslist.h"
 #include "modinputslist.h"
 #include "modparamlist.h"
 #include "dobjparamlist.h"
-#include "dobjdobjlist.h"
-#endif
+#include "moddobjlist.h"
 
 
 /*
@@ -24,12 +22,20 @@ two adsrs. The value of the velocity input is only checked at the
 begining of each section or sub section not constantly. You can also
 turn OFF zero re-triggering and the sustain section if you wish.
 
-whats new in wcnt-1.1001+ ?
+what's new in wcnt-1.1001?
 
 upper_thresh and lower_thresh which are threshholds by the sound of it.
 all values above upper_thresh use the upper envelope, while all values
 below lower_thresh use the lower envelope. simple, but nice.
 
+what's new in wcnt-1.128?
+    new parameters:
+      release_is_ratio
+        sets levels in release section to ratios when ON
+      min_time
+        minimum amount of time before note_off can occur.
+      max_sus_time
+        maximum execution time of sustain
 */
 
 class adsr : public synthmod
@@ -77,24 +83,28 @@ public:
     void set_upper_thresh(double ut){ up_thresh = ut;}
     void set_lower_thresh(double lt){ lo_thresh = lt;}
     void set_start_level(double sl){ start_level = sl;}
+    void set_min_time(double mt){ min_time = mt;}
+    void set_max_sustain_time(double mt){ max_sus_time = mt;}
     void set_sustain_status(STATUS s){ sustain_status = s;}
+    void set_release_ratio(STATUS r){ release_ratio = r;}
     void set_zero_retrigger_mode(STATUS zrm) { zero_retrigger = zrm; }
     double get_upper_thresh(){ return up_thresh;}
     double get_lower_thresh(){ return lo_thresh;}
     double get_start_level(){ return start_level;}
+    double get_min_time(){ return min_time;}
+    double get_max_sustain_time(){ return max_sus_time;}
     STATUS get_sustain_status() { return sustain_status; }
+    STATUS get_release_ratio(){return release_ratio;}
     STATUS get_zero_retrigger_mode() { return zero_retrigger; }
     // virtual funcs
     void run();
     void init();
     stockerrs::ERR_TYPE validate();
-#ifndef BARE_MODULES
     void const* get_out(outputnames::OUT_TYPE);
     void const* set_in(inputnames::IN_TYPE, void const*);
     bool set_param(paramnames::PAR_TYPE, void const*);
     void const* get_param(paramnames::PAR_TYPE);
     dobj* add_dobj(dobj*);
-#endif
 
 private:
     // inputs
@@ -109,11 +119,19 @@ private:
     double up_thresh;
     double lo_thresh;
     double start_level;
+    double min_time;
+    double max_sus_time;
     STATUS sustain_status;
+    STATUS release_ratio;
     STATUS zero_retrigger;
     // working
     double thresh_range;
     double end_level;
+    STATUS released;
+    unsigned long tsamps;
+    unsigned long min_samps;
+    unsigned long max_samps;
+    unsigned long max_sus_samps;
     linkedlist* env;
     short sect;
     unsigned long sectsample;
@@ -121,13 +139,12 @@ private:
     double levelsize;
     ll_item* coord_item;
     adsr_coord* coord;
+    void ready_section();
     static short adsr_count;
-#ifndef BARE_MODULES
     static bool done_params;
     void create_params();
     static bool done_moddobj;
     void create_moddobj();
-#endif
 };
 
 #endif

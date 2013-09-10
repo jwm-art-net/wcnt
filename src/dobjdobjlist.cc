@@ -1,7 +1,5 @@
-#ifndef MODOBJLIST_H
+#ifndef DOBJDOBJLIST_H
 #include "../include/dobjdobjlist.h"
-
-#ifndef BARE_MODULES
 
 dobjdobjlist::dobjdobjlist() :
  dobjdobj_list(0), dobjdobj_item(0), dobj_dobj(0)
@@ -51,7 +49,7 @@ dobjdobjlist * dobjdobjlist::get_dobjdobjlist_for_dobjtype(
         return 0;
     dobjdobjlist* mdl = new dobjdobjlist();
     goto_first();
-    while(dobj_dobj != 0) {
+    while(dobj_dobj) {
         if (dobj_dobj->get_dobj_type() == dt) {
             if (!mdl->add_dobjdobj(dt, dobj_dobj->get_dobj_sprog())) {
                 delete mdl;
@@ -82,5 +80,4 @@ dobjdobjlist * dobjdobjlist::get_dobjdobjlist_of_sprogs(
     return mdl;
 }
 
-#endif
 #endif

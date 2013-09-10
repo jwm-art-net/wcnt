@@ -4,12 +4,32 @@
 #include "riffnode.h"
 #include "timemap.h" 
 
-#ifndef BARE_MODULES
 #include "dobjlist.h"
 #include "modoutputslist.h"
 #include "modinputslist.h"
 #include "modparamlist.h"
-#endif
+#include "moddobjlist.h"
+
+/*
+    wcnt-1.128
+    ----------
+
+    enhanced note slide implimentation.
+
+    (a note slide occurrs when two or more notes overlap. instead of
+    triggering note on, note slide is triggered for the second note.)
+
+    previously, if the first note ended after the second note,
+    the rest of the first note would be lost. now, the rest
+    of the note is played.  every note in a riff is placed at the
+    end of a list (play_list), once the note has finished it is
+    removed from the list. this allows the sequencer to find out
+    if, when a note ends, it should switch back to a previous note,
+    or to wait until the next note should be played.
+
+    BTW: just because the sequencer now has a play list don't think
+         it has become anything more than monophonic.
+*/
 
 class sequencer : public synthmod
 {
@@ -65,26 +85,23 @@ public:
     const char ** get_output_notename(){ return &out_notename;}
     // params
     void set_velocity_response_time(double ms){vel_response = ms;}
-    void set_hold_notename(STATUS hn){hold_notename = hn;}
     // virtual funcs
     void run();
     void init();
     stockerrs::ERR_TYPE validate();
-#ifndef BARE_MODULES
     void const* get_out(outputnames::OUT_TYPE);
     void const* set_in(inputnames::IN_TYPE, void const*);
     bool set_param(paramnames::PAR_TYPE, void const*);
     void const* get_param(paramnames::PAR_TYPE);
     dobj* add_dobj(dobj*);
-#endif
 private:
-    //inputs
+    // ***** inputs *****
     const STATUS* in_bar_trig;
     const short* in_bar;
     const double* in_pos_step_size;
     const short* in_beats_per_bar;
     const short* in_beat_value;
-    /*outpduts*/
+    // ***** outpduts ******
     STATUS out_note_on_trig;
     STATUS out_note_slide_trig;
     STATUS out_note_off_trig;
@@ -99,43 +116,44 @@ private:
     short out_transpose;
     STATUS riff_play_state;
     STATUS note_play_state;
-    // params
+    // ***** params *****
     double vel_response;
-    STATUS hold_notename;
-    /* the riff node list */
+    // ***** the riff node list *****
     linkedlist* riffnodelist;
-    /* working data */
+    // ***** working data *****
     riff_node* cur_node;
     riff_node* riff_node_ptr;
     riffdata* riff_ptr;
     ll_item* riffnodeitem;
-    note_data* note_ptr;
-    ll_item* noteitem;
-    char zero; // out_note points to this when no note playing.
     short riff_start_bar;
-    double barpos;
-    long note_on_pos; 	// i did use shorts, but with each riff specifying
-    double note_on_ratio; // note_on_pos / riff_length
-    double len_offset;	// adds to note length
-    long note_off_pos;	// 1/4 value, if it's large like 768 or something
-    double posconv;    	// notes in riffs > 16 bars long may get lost...
+    double riff_pos;
+    double riff_len;
+    double posconv;
     unsigned long velrsp_max_samps;
     unsigned long velrsp_samp;
     double vel_stpsize;
     STATUS start_pending;
     STATUS end_pending;
-    /* helper functions */
-    riff_node* remove(riff_node * rn);
-    void calc_riff_sample_positions();
-    void calc_note_sample_positions();
+    // ***** new play_list and note stuff *****
+    linkedlist* play_list;
+    ll_item* play_item;
+    ll_item* next_in_riff;
+    note_data* play_note;
+    note_data* next_note;
+    note_data* note_ptr;
+    double next_note_on_pos;
+    double play_note_off_pos;
+    // ***** helper methods *****
+    // position conversion to that used by time_map, transpose etc.
+    note_data* posconv_note(note_data* riff_note);
+    void init_next_note(ll_item* riff_note_item);
+    void output_note(note_data* note);
     // synthmod stuff
     static int sequencer_count;
-#ifndef BARE_MODULES
     static bool done_params;
     void create_params();
     static bool done_moddobj;
     void create_moddobj();
-#endif
 };
 
 #endif

@@ -1,8 +1,6 @@
 #ifndef DOBJLIST_H
 #include "../include/dobjlist.h"
 
-#ifndef BARE_MODULES
-
 dobjlist::dobjlist() :
  dobj_list(0), dobj_item(0), d_obj(0),
  search_dobj_type(dobjnames::DOBJ_FIRST), dobj_search(0)
@@ -33,9 +31,6 @@ dobj* dobjlist::create_dobj(dobjnames::DOBJ_TYPE dt)
         return 0;
     dobj* dobjy = 0;
     switch(dt) {
-        // note: LIN_xxx types are not created here as they are
-        // encapsulated by the synth module, ie cannot be created
-        // seperately from it.
     case dobjnames::SIN_NOTE:
         dobjy = new note_data;
         break;
@@ -60,23 +55,32 @@ dobj* dobjlist::create_dobj(dobjnames::DOBJ_TYPE dt)
     case dobjnames::SIN_TIME:
         dobjy = new timing;
         break;
-    case dobjnames::LDEF_RIFF:
-        dobjy = new riffdata;
+    case dobjnames::SIN_MODNAME:
+        dobjy = new modnamedobj;
         break;
-    case dobjnames::LDEF_SAMPLESET:
-        // dobjy = new sampleset(*uname);
+    case dobjnames::SIN_DOBJNAME:
+        dobjy = new dobjnamedobj;
         break;
-    case dobjnames::LDEF_RULESET:
-        // dobjy = new ruleset(*uname);
+    case dobjnames::SIN_EDIT_PARAM:
+        dobjy = new paramedit;
         break;
-    case dobjnames::SDEF_WAVFILEIN:
+    case dobjnames::SIN_EDIT_INPUT:
+        dobjy = new inputedit;
+        break;
+    case dobjnames::DEF_WAVFILEIN:
         dobjy = new wavfilein;
         break;
-    case dobjnames::SDEF_SAMPLEDATA:
-        dobjy = new sample_data;
+    case dobjnames::DEF_RIFF:
+        dobjy = new riffdata;
         break;
-    case dobjnames::SDEF_MAPRULE:
-        //			dobjy = new maprule;
+    case dobjnames::DEF_WCFILE:
+        dobjy = new synthfilereader;
+        break;
+    case dobjnames::DEF_PARAMEDITOR:
+        dobjy = new parameditor;
+        break;
+    case dobjnames::DEF_INPUTEDITOR:
+        dobjy = new inputeditor;
         break;
     case dobjnames::DOBJ_SYNTHMOD:
         dobjy = new dobjmod;
@@ -140,5 +144,4 @@ dobj* dobjlist::get_next_of_dobj_type()
     return 0;
 }
 
-#endif
 #endif

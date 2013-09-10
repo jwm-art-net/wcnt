@@ -1,0 +1,59 @@
+wcnt-1.2/jwmsynth
+//-----------------------------------------------------------------------
+//
+// variation of jankymiptsh01.wc
+// parameter changing is the theme here..
+//
+//-----------------------------------------------------------------------
+
+header header.wch
+
+// riffnx is defined in jankymiptsh01.wc, but we want a shorter note
+// length so the sound fades out before the .wav ends. (cannot edit
+// parameters of data objects such as a note, inside a list).
+// the riffnx defined in jankymiptsh01.wc is discarded when it is read.
+// the sequencer requires riffs to exist prior to its definition.
+
+riff
+riffnx 
+    quarter_value 1 
+    notelist
+        note name c0 pos 0 len 16 vel 1.0
+    notelist
+riffnx
+
+synth_file_reader
+original_janky_file
+    filename jankymiptsh01.wc
+    mod_action  exclude
+    dobj_action exclude
+    modules
+    modules
+    data_objects
+        dobj name riffnx
+    data_objects
+original_janky_file
+
+param_editor
+par1
+    editlist
+        edit osc1
+            octave_offset  2
+            freq_mod2_size 2.0
+        edit osc2
+            octave_offset -2
+            freq_mod2_size 2.0
+        edit osc3
+            octave_offset    -8
+            freq_mod1_size 1.0
+        edit msc1
+            delay_time 431.13
+        edit wav1
+            filename jankymiptsh02.wav
+            end_bar  6
+        edit wcnt_exit_module
+            exit_bar 6
+    editlist
+par1
+
+wcnt-1.2/jwmsynth

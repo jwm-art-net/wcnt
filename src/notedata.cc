@@ -4,9 +4,10 @@
 note_data::note_data() :
  dobj(dobjnames::SIN_NOTE), length(0), position(0), velocity(0)
 {
-#ifndef BARE_MODULES
-    create_dparams();
-#endif
+    create_params();
+    #ifdef SEQ_NOTE_DEBUG
+    cout << "\nnote_data(default) this:" << this;
+    #endif
 }
 
 note_data::note_data(const char *name, double len, double pos, double vel)
@@ -14,13 +15,19 @@ note_data::note_data(const char *name, double len, double pos, double vel)
  dobj(dobjnames::SIN_NOTE), length(len), position(pos), velocity(vel)
 {
     set_name(name);
-#ifndef BARE_MODULES
-    create_dparams();
-#endif
+    create_params();
+    #ifdef SEQ_NOTE_DEBUG
+    cout << "\nnote_data(name,len,pos,vel) this:" << this;
+    display_note();
+    #endif
 }
 
 note_data::~note_data()
 {
+    #ifdef SEQ_NOTE_DEBUG
+    cout << "\n~note_data() this:" << this;
+    display_note();
+    #endif
 }
 
 void note_data::set_name(const char *name)
@@ -29,26 +36,24 @@ void note_data::set_name(const char *name)
     notename[NOTE_NAME_LEN] = '\0'; // incase len > 4 chars 
 }
 
-#ifndef BARE_MODULES
-
-bool note_data::set_dparam(dparamnames::DPAR_TYPE dt, void* data)
+bool note_data::set_param(paramnames::PAR_TYPE dt, void* data)
 {
     bool retv = false;
     switch(dt)
     {
-    case dparamnames::DPAR_NOTENAME:
+    case paramnames::PAR_NAME:
         set_name((char*)data); // pass pointer
         retv = true;
         break;
-    case dparamnames::DPAR_NOTEPOS:
+    case paramnames::PAR_NOTE_POS:
         set_position(*(double*)data);
         retv = true;
         break;
-    case dparamnames::DPAR_NOTELEN:
+    case paramnames::PAR_NOTE_LEN:
         set_length(*(double*)data);
         retv = true;
         break;
-    case dparamnames::DPAR_NOTEVEL:
+    case paramnames::PAR_NOTE_VEL:
         set_velocity(*(double*)data);
         retv = true;
         break;
@@ -59,21 +64,21 @@ bool note_data::set_dparam(dparamnames::DPAR_TYPE dt, void* data)
     return retv;
 }
 
-void* note_data::get_dparam(dparamnames::DPAR_TYPE dt)
+void const* note_data::get_param(paramnames::PAR_TYPE dt)
 {
     void* retv = 0;
     switch(dt)
     {
-    case dparamnames::DPAR_NOTENAME:
+    case paramnames::PAR_NAME:
         retv = notename;
         break;
-    case dparamnames::DPAR_NOTEPOS:
+    case paramnames::PAR_NOTE_POS:
         retv = &position;
         break;
-    case dparamnames::DPAR_NOTELEN:
+    case paramnames::PAR_NOTE_LEN:
         retv = &length;
         break;
-    case dparamnames::DPAR_NOTEVEL:
+    case paramnames::PAR_NOTE_VEL:
         retv = &velocity;
         break;
     default:
@@ -86,7 +91,7 @@ void* note_data::get_dparam(dparamnames::DPAR_TYPE dt)
 stockerrs::ERR_TYPE note_data::validate()
 {
     if (!check_notename(notename)) {
-        *err_msg = get_dparnames()->get_name(dparamnames::DPAR_NOTENAME);
+        *err_msg = get_paramnames()->get_name(paramnames::PAR_NAME);
         *err_msg += " ";
         *err_msg += notename;
         invalidate();
@@ -94,37 +99,48 @@ stockerrs::ERR_TYPE note_data::validate()
     }
     dobjparamlist* dpl = get_dparlist();
     if (!dpl->validate(
-        this, dparamnames::DPAR_NOTEPOS, stockerrs::ERR_NEGATIVE))
+        this, paramnames::PAR_NOTE_POS, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = get_dparnames()->get_name(dparamnames::DPAR_NOTEPOS);
+        *err_msg = get_paramnames()->get_name(paramnames::PAR_NOTE_POS);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (!dpl->validate(
-        this, dparamnames::DPAR_NOTELEN, stockerrs::ERR_NEGATIVE))
+        this, paramnames::PAR_NOTE_LEN, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = get_dparnames()->get_name(dparamnames::DPAR_NOTELEN);
+        *err_msg = get_paramnames()->get_name(paramnames::PAR_NOTE_LEN);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     return stockerrs::ERR_NO_ERROR;
 }
 
-void note_data::create_dparams()
+void note_data::create_params()
 {
-    if (note_data::done_dparams == true) return;
+    if (note_data::done_params == true) return;
     get_dparlist()->add_dobjparam(
-     dobjnames::SIN_NOTE, dparamnames::DPAR_NOTENAME);
+     dobjnames::SIN_NOTE, paramnames::PAR_NAME);
     get_dparlist()->add_dobjparam(
-     dobjnames::SIN_NOTE, dparamnames::DPAR_NOTEPOS);
+     dobjnames::SIN_NOTE, paramnames::PAR_NOTE_POS);
     get_dparlist()->add_dobjparam(
-     dobjnames::SIN_NOTE, dparamnames::DPAR_NOTELEN);
+     dobjnames::SIN_NOTE, paramnames::PAR_NOTE_LEN);
     get_dparlist()->add_dobjparam(
-     dobjnames::SIN_NOTE, dparamnames::DPAR_NOTEVEL);
-    note_data::done_dparams = true;
+     dobjnames::SIN_NOTE, paramnames::PAR_NOTE_VEL);
+    note_data::done_params = true;
 }
 
-bool note_data::done_dparams = false;
+bool note_data::done_params = false;
 
+#ifdef SEQ_NOTE_DEBUG
+#include <iostream>
+using namespace std;
+void note_data::display_note()
+{
+    cout << "\tname: " << notename;
+    cout << " pos: " << position;
+    cout << " len: " << length;
+    cout << " vel: " << velocity;
+}
 #endif
+
 #endif

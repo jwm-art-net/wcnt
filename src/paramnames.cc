@@ -1,20 +1,21 @@
 #ifndef paramnames_H
 #include "../include/paramnames.h"
 
-#ifndef BARE_MODULES
+#include "../include/dobj.h"
 
 paramnames::paramnames() : parname(0), parcat(0)
 {
-    parname = new char*[PAR_LAST + 1];
-    parcat = new IOCAT[PAR_LAST + 1];
+    parname = new char*[(short)PAR_LAST + 1];
+    parcat = new IOCAT[(short)PAR_LAST + 1];
+    for (int i = PAR_FIRST + 1; i < PAR_LAST; i++) {
+        parname[i] = 0;
+    }
     parname[PAR_FIRST] = "BAD_PARAM_TYPE";
     parcat[PAR_FIRST] = CAT_FIRST;
     parname[PAR_SUSTAIN_STATUS] = "sustain_state"; 
     parcat[PAR_SUSTAIN_STATUS] = CAT_STATE;
     parname[PAR_ZERO_RETRIGGER] = "zero_retrigger";
     parcat[PAR_ZERO_RETRIGGER] = CAT_STATE;
-    parname[PAR_NOTELEN_FREQ] = "notelen_freq";
-    parcat[PAR_NOTELEN_FREQ] = CAT_SHORT;
     parname[PAR_FREQ] = "freq"; 
     parcat[PAR_FREQ] = CAT_DOUBLE;
     parname[PAR_FREQ_MOD1SIZE] = "freq_mod1_size";
@@ -44,7 +45,7 @@ paramnames::paramnames() : parname(0), parcat(0)
     parname[PAR_AMP_MODSIZE] = "amp_mod_size";
     parcat[PAR_AMP_MODSIZE] = CAT_DOUBLE;
     parname[PAR_MODIFIER_FUNC] = "modifier_func";
-    parcat[PAR_MODIFIER_FUNC] = CAT_MOD_FUNC;// modifier::MOD_FUNC
+    parcat[PAR_MODIFIER_FUNC] = CAT_FIX_STR;
     parname[PAR_MODIFIER_SIZE] = "modifier_size";
     parcat[PAR_MODIFIER_SIZE] = CAT_DOUBLE;
     parname[PAR_MIN_OUT] = "min_out";
@@ -76,7 +77,7 @@ paramnames::paramnames() : parname(0), parcat(0)
     parname[PAR_LOOP_END] = "loop_end_pos";
     parcat[PAR_LOOP_END] = CAT_ULONG;
     parname[PAR_LOOP_MODE] = "loop_mode";
-    parcat[PAR_LOOP_MODE] = CAT_LOOP_MODE;
+    parcat[PAR_LOOP_MODE] = CAT_FIX_STR;
     parname[PAR_ANTI_CLIP] = "anti_clip_samples";
     parcat[PAR_ANTI_CLIP] = CAT_SHORT;
     parname[PAR_DEGSIZE_AMOUNT] = "degsize_amount";
@@ -118,7 +119,7 @@ paramnames::paramnames() : parname(0), parcat(0)
     parname[PAR_NOTPROBABILITY] = "not_probability";
     parcat[PAR_NOTPROBABILITY] = CAT_DOUBLE;
     parname[PAR_LOGICFUNC] = "function";
-    parcat[PAR_LOGICFUNC] = CAT_LOGIC;
+    parcat[PAR_LOGICFUNC] = CAT_FIX_STR;
     parname[PAR_XFADE_TIME] = "xfade_time";
     parcat[PAR_XFADE_TIME] = CAT_DOUBLE;
     parname[PAR_TUNING_SEMITONES] = "tuning_semitones";
@@ -128,19 +129,17 @@ paramnames::paramnames() : parname(0), parcat(0)
     parname[PAR_WAV_BASENAME] = "basename"; 
     parcat[PAR_WAV_BASENAME] = CAT_STRING;
     parname[PAR_PLAY_DIR] = "play_dir"; 
-    parcat[PAR_PLAY_DIR] = CAT_PLAY_DIR;
+    parcat[PAR_PLAY_DIR] = CAT_FIX_STR;
     parname[PAR_PLAY_MODE] = "play_mode";
-    parcat[PAR_PLAY_MODE] = CAT_PLAY_MODE;
+    parcat[PAR_PLAY_MODE] = CAT_FIX_STR;
     parname[PAR_JUMP_MODE] = "jump_mode";
-    parcat[PAR_JUMP_MODE] = CAT_JUMP_DIR;
+    parcat[PAR_JUMP_MODE] = CAT_FIX_STR;
     parname[PAR_LOOP_IS_OFFSET] = "loop_is_offset";
     parcat[PAR_LOOP_IS_OFFSET] = CAT_STATE;
     parname[PAR_LOOP_BI_OFFSET]="bi-directional_offset";
     parcat[PAR_LOOP_BI_OFFSET] = CAT_SHORT;
     parname[PAR_AC_EACH_END] = "anti_clip_each_end";
     parcat[PAR_AC_EACH_END] = CAT_STATE;
-    parname[PAR_HOLD_NOTENAME] = "hold_notename";
-    parcat[PAR_HOLD_NOTENAME] = CAT_STATE;
     parname[PAR_POWER_MIN] = "power_min";
     parcat[PAR_POWER_MIN] = CAT_DOUBLE;
     parname[PAR_POWER_MAX] = "power_max"; 
@@ -223,6 +222,96 @@ paramnames::paramnames() : parname(0), parcat(0)
     parcat[PAR_MAX_WAIT] = CAT_DOUBLE;
     parname[PAR_TRIG_STRING] = "pattern";
     parcat[PAR_TRIG_STRING] = CAT_STRING;
+    parname[PAR_QUARTER_VAL] = "quarter_value";
+    parcat[PAR_QUARTER_VAL] = CAT_SHORT;
+    parname[PAR_RELEASE_RATIO] = "release_is_ratio";
+    parcat[PAR_RELEASE_RATIO] = CAT_STATE;
+    parname[PAR_MIN_TIME] = "min_time";
+    parcat[PAR_MIN_TIME] = CAT_DOUBLE;
+    parname[PAR_MAX_SUSTAIN_TIME] = "max_sustain_time";
+    parcat[PAR_MAX_SUSTAIN_TIME] = CAT_DOUBLE;
+    parname[PAR_PRECISION] = "precision";
+    parcat[PAR_PRECISION] = CAT_SHORT;
+    parname[PAR_NAME] = "name";
+    parcat[PAR_NAME] = CAT_STRING;
+    parname[PAR_NOTE_POS] = "pos";
+    parcat[PAR_NOTE_POS] = CAT_DOUBLE;
+    parname[PAR_NOTE_LEN] = "len";
+    parcat[PAR_NOTE_LEN] = CAT_DOUBLE;
+    parname[PAR_NOTE_VEL] = "vel";
+    parcat[PAR_NOTE_VEL] = CAT_DOUBLE;
+    parname[PAR_ADSRSECT] = "name";
+    parcat[PAR_ADSRSECT] = CAT_FIX_STR;
+    parname[PAR_UPTIME] = "ut";
+    parcat[PAR_UPTIME] = CAT_DOUBLE;
+    parname[PAR_LOTIME] = "lt";
+    parcat[PAR_LOTIME] = CAT_DOUBLE;
+    parname[PAR_UPLEVEL] = "ul";
+    parcat[PAR_UPLEVEL] = CAT_DOUBLE;
+    parname[PAR_LOLEVEL] = "ll";
+    parcat[PAR_LOLEVEL] = CAT_DOUBLE;
+    parname[PAR_UPDEG] = "ud";
+    parcat[PAR_UPDEG] = CAT_DOUBLE;
+    parname[PAR_LODEG] = "ld";
+    parcat[PAR_LODEG] = CAT_DOUBLE;
+    parname[PAR_METER] = "tsig";
+    parcat[PAR_METER] = CAT_METER;
+    parname[PAR_BAR] = "bar";
+    parcat[PAR_BAR] = CAT_SHORT;
+    parname[PAR_BPM] = "bpm";
+    parcat[PAR_BPM] = CAT_DOUBLE;
+    parname[PAR_RIFFNAME] = "riff";
+    parcat[PAR_RIFFNAME] = CAT_DOBJ;
+    parname[PAR_MODNAME] = "name";
+    parcat[PAR_MODNAME] = CAT_SYNTHMOD;
+    parname[PAR_ROOT_NOTE] = "root_note";
+    parcat[PAR_ROOT_NOTE] = CAT_STRING;
+    parname[PAR_TRANSPOSE] = "transpose";
+    parcat[PAR_TRANSPOSE] = CAT_SHORT;
+    parname[PAR_STARTLEN] = "start_len";
+    parcat[PAR_STARTLEN] = CAT_DOUBLE;
+    parname[PAR_ENDLEN] = "end_len";
+    parcat[PAR_ENDLEN] = CAT_DOUBLE;
+    parname[PAR_VALUE] = "value";
+    parcat[PAR_VALUE] = CAT_DOUBLE;
+    parname[PAR_SIGIN_LEVEL] = "sigin_level";
+    parcat[PAR_SIGIN_LEVEL] = CAT_DOUBLE;
+    parname[PAR_SIGOUT_UPLEVEL] = "so_ul";
+    parcat[PAR_SIGOUT_UPLEVEL] = CAT_DOUBLE;
+    parname[PAR_SIGOUT_LOLEVEL] = "so_ll";
+    parcat[PAR_SIGOUT_LOLEVEL] = CAT_DOUBLE;
+    parname[PAR_SECONDS] = "seconds";
+    parcat[PAR_SECONDS] = CAT_DOUBLE;
+    parname[PAR_MOD_ACTION] = "mod_action";
+    parcat[PAR_MOD_ACTION] = CAT_FIX_STR;
+    parname[PAR_DOBJ_ACTION] = "dobj_action";
+    parcat[PAR_DOBJ_ACTION] = CAT_FIX_STR;
+    parname[PAR_NAME_EXT] = "name_extension";
+    parcat[PAR_NAME_EXT] = CAT_STRING;
+    parname[PAR_PARAMETER] = "param";
+    parcat[PAR_PARAMETER] = CAT_STRING;
+    parname[PAR_VALUESTR] = "value";
+    parcat[PAR_VALUESTR] = CAT_STRING;
+    parname[PAR_DOBJNAME] = "name";
+    parcat[PAR_DOBJNAME] = CAT_DOBJ;
+    parname[PAR_INMODULE] = "in_module";
+    parcat[PAR_INMODULE] = CAT_STRING;
+    parname[PAR_INPUT] = "input";
+    parcat[PAR_INPUT] = CAT_STRING;
+    parname[PAR_OUTMODULE] = "out_module";
+    parcat[PAR_OUTMODULE] = CAT_STRING;
+    parname[PAR_OUTPUT] = "output";
+    parcat[PAR_OUTPUT] = CAT_STRING;
+    parname[PAR_STR_UNNAMED] = "<unnamed>";
+    parcat[PAR_STR_UNNAMED] = CAT_STRING;
+    parname[PAR_STR_LIST] = "<unnamed>";
+    parcat[PAR_STR_LIST] = CAT_STRING;
+    parname[PAR_SNAP_TO] = "snap_to";
+    parcat[PAR_SNAP_TO] = CAT_DOUBLE;
+    parname[PAR_COUNT] = "count";
+    parcat[PAR_COUNT] = CAT_SHORT;
+    parname[PAR_CHECK_LEVELS] = "check_levels";
+    parcat[PAR_CHECK_LEVELS] = CAT_STATE;
 }
 
 paramnames::~paramnames()
@@ -251,12 +340,11 @@ IOCAT paramnames::get_category(PAR_TYPE id)
 
 paramnames::PAR_TYPE paramnames::get_type(char const* pname)
 {
-    int i;
-    for (i = PAR_FIRST + 1; i < PAR_LAST; i++)
+    for (int i = PAR_FIRST + 1; i < PAR_LAST; i++) {
         if (strcmp(parname[i], pname) == 0)
             return (PAR_TYPE)i;
+    }
     return PAR_FIRST;
 }
 
-#endif
 #endif

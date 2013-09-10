@@ -1,8 +1,6 @@
 #ifndef WCNTMODULE_H
 #include "../include/wcntmodule.h"
 
-#ifndef BARE_MODULES
-
 wcnt_module::wcnt_module(char const* uname) :
  synthmod(synthmodnames::MOD_WCNT, wcnt_module_count, uname),
  in_bar(0), exit_bar(0)
@@ -83,5 +81,4 @@ void wcnt_module::create_params()
     done_params = true;
 }
 
-#endif // BARE_MODULES
 #endif

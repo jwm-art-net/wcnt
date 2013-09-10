@@ -1,13 +1,11 @@
 #ifndef MODPARAM_H
 #define MODPARAM_H
 
-#ifndef BARE_MODULES
-
 #include "checkvalue.h"
 
 class modparam
 {
-public:
+ public:
     modparam(synthmodnames::SYNTH_MOD_TYPE, paramnames::PAR_TYPE);
     ~modparam(){};
     synthmodnames::SYNTH_MOD_TYPE get_moduletype() { 
@@ -22,10 +20,10 @@ public:
          : CAT_FIRST;
     }
     bool validate(synthmod* sm, stockerrs::ERR_TYPE et);
-private:
+
+ private:
     synthmodnames::SYNTH_MOD_TYPE synthmodule_type;
     paramnames::PAR_TYPE param_type;
 };
 
-#endif
 #endif

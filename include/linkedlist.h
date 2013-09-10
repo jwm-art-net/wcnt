@@ -42,7 +42,7 @@
     DESTRUCTOR
     ----------
     ll_item destructor does not delete the object pointed to by its data 
-    member.  linkedlist, likewise does not delete this either.
+    member.  linkedlist, likewise does not delete data either.
 
     GENERAL DESIGN
     --------------

@@ -1,8 +1,6 @@
 #ifndef DOBJNAMES_H
 #define DOBJNAMES_H
 
-#ifndef BARE_MODULES
-
 #include <string.h>
 
 using namespace std;
@@ -27,55 +25,65 @@ public:
         //---------------------------------------------
         DOBJ_NONE,      // hmmm, no dobj inserted?
         //---------------------------------------------
-        DOBJ_INLISTS,   // seperator
+        DOBJ_LISTS,   // seperator
         //---------------------------------------------
         // lists to be defined within the module
-        // only used in moddobj - no dobj created
-        LIN_ENVELOPE,   // contains SIN_COORD
-        LIN_WAVEFORM,   // contains SIN_VERTEX
-        LIN_METER,      // contains SIN_METER
-        LIN_BPM,        // contains SIN_BPM
-        LIN_TRACK,      // contains SIN_RIFFNODE
-        LIN_MIX,        // contains SMOD_CHANNEL
-        LIN_SIGNALS,    // contains SMOD_SIGNAL
-        LIN_DYNAMICS,   // contains SIN_DVERTEX
-        LIN_TIMINGS,    // contains SIN_TIME
+        // or data object
         //---------------------------------------------
-        DOBJ_INSINGLES, // seperator
+        LST_ENVELOPE,
+        LST_WAVEFORM,
+        LST_METER,
+        LST_BPM,
+        LST_TRACK,
+        LST_MIX,
+        LST_SIGNALS,
+        LST_DYNAMICS,
+        LST_TIMINGS,
+        LST_MODULES,
+        LST_DOBJS,
+        LST_NOTES,
+        LST_EDITS,
+        LST_TRIGGERS,
+        //---------------------------------------------
+        DOBJ_SINGLES, // seperator
         //---------------------------------------------
         // single objects to be inserted in lists
         // dobj inherited
-        SIN_NOTE,       // dobj
-        SIN_COORD,      // dobj
-        SIN_VERTEX,     // dobj
-        SIN_METER,      // dobj
-        SIN_BPM,        // dobj
-        SIN_RIFFNODE,   // dobj
+        SIN_NOTE,
+        SIN_COORD,
+        SIN_VERTEX,
+        SIN_METER,
+        SIN_BPM,
+        SIN_RIFFNODE,
         SIN_DVERTEX,
         SIN_TIME,
+        SIN_MODNAME,
+        SIN_DOBJNAME,
         //---------------------------------------------
-        DOBJ_DEFLISTS,  // seperator.
-        // *** none within module defined here after **
+        DOBJ_EDITS,
         //---------------------------------------------
-        // lists to be defined outside the module,
-        // and inserted by name
-        // ie the list is a stand alone dobj
-        LDEF_RIFF,      // contains SIN_NOTE's
-        LDEF_SAMPLESET, // contains SDEF_SAMPLEDATA's
-        LDEF_RULESET,   // contains SDEF_MAPRULE's
+        // dobjs defined in a list of edits - which 
+        // interpret a list of commands contained in a
+        // string (paramnames::PAR_STR_LIST)
         //---------------------------------------------
-        DOBJ_DEFSINGLES,// seperator
+        SIN_EDIT_PARAM,
+        SIN_EDIT_INPUT,
         //---------------------------------------------
-        // single stand alone dobj's defined outside of
-        // a module or list, and inserted by name, as
-        // a parameter into either dobj or module. ??
-        SDEF_WAVFILEIN,
-        SDEF_SAMPLEDATA,
-        SDEF_MAPRULE,
+        DOBJ_DEFS,      // seperator
+        //---------------------------------------------
+        // stand alone dobj's defined outside of
+        // a module, and inserted by name, as
+        // a parameter into either dobj or module.
+        //---------------------------------------------
+        DEF_WAVFILEIN,
+        DEF_RIFF,
+        DEF_WCFILE,
+        DEF_PARAMEDITOR,
+        DEF_INPUTEDITOR,
         //---------------------------------------------
         // special dobj for inserting synthmodules into
-        // list unbeknown to user. see dobjmod.h for
-        // more info.
+        // list see dobjmod.h for more info.
+        //---------------------------------------------
         DOBJ_SYNTHMOD,
         //---------------------------------------------
         DOBJ_LAST       // keep last
@@ -88,8 +96,8 @@ public:
     DOBJ_TYPE check_type(DOBJ_TYPE);
     DOBJ_TYPE get_sub_type(DOBJ_TYPE);
     char const* get_sub_name(DOBJ_TYPE);
+
 private:
     char** dobj_name;
 };
-#endif
 #endif

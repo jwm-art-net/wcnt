@@ -2,10 +2,9 @@
 #define RIFFDATA_HH
 
 #include "notedata.h"
-#ifndef BARE_MODULES
 #include "dobjparamlist.h"
-#include "dobjdobjlist.h"
-#endif
+#include "topdobjlist.h"
+
 /*
 RIFFDATA
 --------
@@ -43,7 +42,7 @@ What's new in wcnt1.1001?
 
 i've removed riff length calculation code as it is no longer needed.
 i've added 1/4 note value so user can specify a value which suits
-thier requirements...constructor default is 12.
+their requirements...constructor default is 12.
 
 ------------------
 *** ammendment ***
@@ -105,22 +104,19 @@ public:
     // beats per bar grabbed from output of
     // time map module, input into sequencer.
     double calc_riff_length(char beats_per_bar, char beat_value);
-#ifndef BARE_MODULES
     // virtuals from dobj
     stockerrs::ERR_TYPE validate();
-    bool set_dparam(dparamnames::DPAR_TYPE, void*);
-    void* get_dparam(dparamnames::DPAR_TYPE);
-    dobj* add_dobj(dobj*);
-#endif
+    bool set_param(paramnames::PAR_TYPE, void*);
+    void const* get_param(paramnames::PAR_TYPE);
+    dobj const* add_dobj(dobj*);
+
 private:
     short quarter_val;
     note_data* note;
     linkedlist* notelist;
     ll_item* note_item;
-#ifndef BARE_MODULES
-    void create_dparams();
-    static bool done_dparams;
-#endif
+    void create_params();
+    static bool done_params;
 };
 
 #endif // RIFF_H

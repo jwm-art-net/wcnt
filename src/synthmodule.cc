@@ -8,7 +8,7 @@ short audio_bitrate = 16;
 short audio_ysize = 32767;
 
 /* Default settings for music tempo */
-short sm_beats_per_minute = 160;
+double sm_beats_per_minute = 160;
 short sm_beats_per_measure = 4;
 short sm_beat_value = 4;
 
@@ -25,8 +25,6 @@ synthmod::~synthmod()
     delete [] username;
 }
 
-
-#ifndef BARE_MODULES
 void const* synthmod::set_in(inputnames::IN_TYPE, void const*)
 {
     *err_msg = 
@@ -63,9 +61,6 @@ dobj* synthmod::add_dobj(dobj*)
     return 0;
 }
 
-#endif
-
-#ifndef BARE_MODULES
 string* synthmod::err_msg = 0;
 char* synthmod::path = 0;
 synthmodnames* synthmod::modnames = 0;
@@ -79,5 +74,6 @@ modoutputlist* synthmod::outputslist = 0;
 modparamlist* synthmod::paramlist = 0;
 connectorlist* synthmod::connectlist = 0;
 moddobjlist* synthmod::mdobjlist = 0;
-#endif
+fxsparamlist* synthmod::fxsparlist = 0;
+
 #endif

@@ -7,14 +7,12 @@ hpfilter::hpfilter(char const* uname) :
  wet_output(0), feed_level(0), feed_modsize(0), wetdry(0), filter(0),
  source(0), filterarraymax(0), fpos(0), filtertotal(0)
 {
-#ifndef BARE_MODULES
     get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
     get_outputlist()->add_output(this, outputnames::OUT_WET_OUTPUT);
     get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
     get_inputlist()->add_input(this, inputnames::IN_CUTOFF_DEG_SIZE);
     get_inputlist()->add_input(this, inputnames::IN_FEEDBACK);
     get_inputlist()->add_input(this, inputnames::IN_FB_MOD);
-#endif
     filter = new double[FILTERARRAYSIZE];
     source = new double[FILTERARRAYSIZE];
     for (int i = 0; i < FILTERARRAYSIZE; i++) {
@@ -23,22 +21,17 @@ hpfilter::hpfilter(char const* uname) :
     }
     fpos = FILTERARRAYSIZE - 1;
     hpfilter_count++;
-#ifndef BARE_MODULES
     create_params();
-#endif
 }
 
 hpfilter::~hpfilter()
 {
-#ifndef BARE_MODULES
     get_outputlist()->delete_module_outputs(this);
     get_inputlist()->delete_module_inputs(this);
-#endif
     delete [] filter;
     delete [] source;
 }
 
-#ifndef BARE_MODULES
 void const* hpfilter::get_out(outputnames::OUT_TYPE ot)
 {
     void const* o = 0;
@@ -143,8 +136,6 @@ stockerrs::ERR_TYPE hpfilter::validate()
     return stockerrs::ERR_NO_ERROR;
 }
 
-#endif // BARE_MODULES
-
 void hpfilter::run()
 {
     filterarraymax = (short)(180 / *in_deg_size);
@@ -167,7 +158,6 @@ void hpfilter::run()
 
 int hpfilter::hpfilter_count = 0;
 
-#ifndef BARE_MODULES
 bool hpfilter::done_params = false;
 
 void hpfilter::create_params()
@@ -182,5 +172,5 @@ void hpfilter::create_params()
      synthmodnames::MOD_HPFILTER, paramnames::PAR_WETDRY);
     done_params = true;
 }
-#endif
+
 #endif

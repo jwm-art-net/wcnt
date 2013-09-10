@@ -7,29 +7,22 @@ square_wave::square_wave(char const* uname) :
  in_deg_size(NULL), in_pwm(NULL), degs(0.00), pulse_width(0.50),
  pwm_size(0.00), poff_deg(0.00), pulse(OFF), recycle(OFF), cycle(0)
 {
-#ifndef BARE_MODULES
     get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
     get_outputlist()->add_output(this, outputnames::OUT_OFF_PULSE);
     get_outputlist()->add_output(this, outputnames::OUT_PLAY_STATE);
     get_inputlist()->add_input(this, inputnames::IN_PHASE_TRIG);
     get_inputlist()->add_input(this, inputnames::IN_DEG_SIZE);
     get_inputlist()->add_input(this, inputnames::IN_PWM);
-#endif
     square_wave_count++;
-#ifndef BARE_MODULES
     create_params();
-#endif
 }
 
 square_wave::~square_wave()
 {
-#ifndef BARE_MODULES
     get_outputlist()->delete_module_outputs(this);
     get_inputlist()->delete_module_inputs(this);
-#endif
 }
 
-#ifndef BARE_MODULES
 void const* square_wave::get_out(outputnames::OUT_TYPE ot)
 {
     void const* o = 0;
@@ -131,8 +124,6 @@ stockerrs::ERR_TYPE square_wave::validate()
     return stockerrs::ERR_NO_ERROR;
 }
 
-#endif // BARE_MODULES
-
 void square_wave::init()
 {
     podeg = pulse_width * 360;
@@ -185,7 +176,6 @@ void square_wave::run()
                 pulse = OFF;
                 out_offpulse = ON;
             }
-
         }
         else if (out_offpulse == ON)
             out_offpulse = OFF;
@@ -194,7 +184,6 @@ void square_wave::run()
 
 int square_wave::square_wave_count = 0;
 
-#ifndef BARE_MODULES
 bool square_wave::done_params = false;
 
 void square_wave::create_params()
@@ -209,5 +198,5 @@ void square_wave::create_params()
      synthmodnames::MOD_SQUAREWAVE, paramnames::PAR_RECYCLE_MODE);
     done_params = true;
 }
-#endif
+
 #endif

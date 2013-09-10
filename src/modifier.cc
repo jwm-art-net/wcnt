@@ -7,26 +7,19 @@ modifier::modifier(char const* uname) :
  mod_size(1.00), min_out_val(0.00), max_out_val(1.00), posnegmirror(OFF),
  type_func(0)
 {
-#ifndef BARE_MODULES
     get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
     get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
     get_inputlist()->add_input(this, inputnames::IN_MODIFIER);
-#endif
     modifier_count++;
-#ifndef BARE_MODULES
     create_params();
-#endif
 }
 
 modifier::~modifier()
 {
-#ifndef BARE_MODULES
     get_outputlist()->delete_module_outputs(this);
     get_inputlist()->delete_module_inputs(this);
-#endif
 }
 
-#ifndef BARE_MODULES
 void const* modifier::get_out(outputnames::OUT_TYPE ot)
 {
     void const* o = 0;
@@ -64,7 +57,7 @@ bool modifier::set_param(paramnames::PAR_TYPE pt, void const* data)
     switch(pt)
     {
     case paramnames::PAR_MODIFIER_FUNC:
-        set_modifier_func(*(MOD_FUNC*)data);
+        set_modifier_func((MOD_FUNC)(*(int*)data));
         retv = true;
         break;
     case paramnames::PAR_MODIFIER_SIZE:
@@ -114,8 +107,6 @@ stockerrs::ERR_TYPE modifier::validate()
     // ...to be decided...
     return stockerrs::ERR_NO_ERROR;
 }
-
-#endif
 
 void modifier::init()
 {
@@ -200,7 +191,6 @@ void modifier::run()
 
 int modifier::modifier_count = 0;
 
-#ifndef BARE_MODULES
 bool modifier::done_params = false;
 
 void modifier::create_params()
@@ -209,6 +199,9 @@ void modifier::create_params()
         return;
     get_paramlist()->add_param(
      synthmodnames::MOD_MODIFIER, paramnames::PAR_MODIFIER_FUNC);
+    get_fxsparamlist()->add_param(
+     "add/sub/mul/div/mod/sin/cos/tan/and/or/xor", 
+     paramnames::PAR_MODIFIER_FUNC);
     get_paramlist()->add_param(
      synthmodnames::MOD_MODIFIER, paramnames::PAR_MODIFIER_SIZE);
     get_paramlist()->add_param(
@@ -219,5 +212,5 @@ void modifier::create_params()
      synthmodnames::MOD_MODIFIER, paramnames::PAR_POSNEG_MIRROR);
     done_params = true;
 }
-#endif
+
 #endif

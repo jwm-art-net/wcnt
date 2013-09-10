@@ -2,12 +2,9 @@
 #define PAN_H
 
 #include "synthmodule.h"
-
-#ifndef BARE_MODULES
 #include "modoutputslist.h"
 #include "modinputslist.h"
 #include "modparamlist.h"
-#endif
 
 class pan : public synthmod
 {
@@ -27,12 +24,11 @@ public:
     // virtual funcs
     void run();
     stockerrs::ERR_TYPE validate();
-#ifndef BARE_MODULES
     void const* get_out(outputnames::OUT_TYPE);
     void const* set_in(inputnames::IN_TYPE, void const*);
     bool set_param(paramnames::PAR_TYPE, void const*);
     void const* get_param(paramnames::PAR_TYPE);
-#endif
+
 private:
     // inputs
     const double* in_signal;
@@ -47,10 +43,8 @@ private:
     double pan_mod;
     double pan_pos;
     static int pan_count;
-#ifndef BARE_MODULES
     void create_params();
     static bool done_params;
-#endif
 };
 
 #endif

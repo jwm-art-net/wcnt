@@ -2,16 +2,11 @@
 #define NOTETRAN_H
 
 #include "conversions.h"
-
-#ifndef BARE_MODULES
 #include "modoutputslist.h"
 #include "modinputslist.h"
 #include "modparamlist.h"
-#endif
 
-//
 // class notetran
-//
 
 // allows note names, in notedata, in riffs, in sequencer, to be put to
 // a different use.
@@ -19,7 +14,7 @@
 // As note on, and note_slide are two different events, but come
 // from the same data, ie note_data in a riff, it provides two channels
 // to set data for output at different times in the one riff.
-//
+
 // providing of course you follow the rules, which are quite simple:
 
 // the note on stream arises when a new note is encountered, and no
@@ -28,12 +23,11 @@
 // the note slide stream arises when a new note is encountered, and there
 // is a note currently playing.
 
-//
 // note:
-//
+
 // when the sequencer encounters a note slide event, note_off is then
 // triggered when the note which caused a note_slide, stops.
-// (the original note's end is then ignored.)
+// (the original note's end is then ignored - unless it's still playing.)
 
 // the note name is then interpreted, and, provided it is in the range
 // specified in the notetran parameters, it is translated to a value
@@ -86,12 +80,11 @@ public:
     void run();
     void init();
     stockerrs::ERR_TYPE validate();
-#ifndef BARE_MODULES
     void const* get_out(outputnames::OUT_TYPE);
     void const* set_in(inputnames::IN_TYPE, void const*);
     bool set_param(paramnames::PAR_TYPE, void const*);
     void const* get_param(paramnames::PAR_TYPE);
-#endif
+
 private:
     // inputs
     char const ** in_notename;
@@ -128,10 +121,8 @@ private:
     double no_respsize;
     double ns_respsize;
     static int notetran_count;
-#ifndef BARE_MODULES
     void create_params();
     static bool done_params;
-#endif
 };
 
 #endif

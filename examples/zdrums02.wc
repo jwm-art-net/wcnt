@@ -1,0 +1,189 @@
+wcnt-1.2/jwmsynth
+//------------------------------------------------------------------------
+//
+//  uses parts of zdrums_base.wch, rejecting amplification and mixing
+//  elements. uses the patterns from zdrums01.wc for rhythm. creates
+//  two combiner modules for left+right and then uses the dynamic
+//  module to dynamicise the signals before amplification.
+//
+//  the mixer module outputs integer values and the dynamic module
+//  only accepts floating point values which is why...
+//
+//------------------------------------------------------------------------
+
+header header.wch
+
+//------------------------------------------------------------------------
+
+synth_file_reader
+zdrums_base
+    filename    zdrums_base.wch
+    mod_action  exclude
+    dobj_action exclude
+    modules
+        mod name kik-amp
+        mod name snr-amp
+        mod name hat-amp
+        mod name kik-ch
+        mod name snr-ch
+        mod name hat-ch
+        mod name zdrums-mix
+    modules
+    data_objects
+    data_objects
+zdrums_base
+
+synth_file_reader
+zdrums01
+    filename    zdrums01.wc
+    mod_action  include
+    dobj_action include
+    modules
+    modules
+    data_objects
+        dobj name drum_params_01
+    data_objects
+zdrums01
+
+param_editor
+master_01
+    editlist
+        edit zdrums-wav
+            filename zdrums02.wav
+            end_bar  4
+        edit zdrums_exit exit_bar 4
+    editlist
+master_01
+
+// create wcnt_signals to replace amplified signals
+wcnt_signal kik_l in_signal kik-pan out_l level 1.0 kik_l
+wcnt_signal kik_r in_signal kik-pan out_r level 1.0 kik_r
+wcnt_signal snr_l in_signal snr-pan out_l level 1.0 snr_l
+wcnt_signal snr_r in_signal snr-pan out_r level 1.0 snr_r
+wcnt_signal hat_l in_signal hat-pan out_l level 1.0 hat_l
+wcnt_signal hat_r in_signal hat-pan out_r level 1.0 hat_r
+
+// combiners to replace mixer
+combiner
+drums-mx-l
+    signals
+        synthmod name kik_l
+        synthmod name snr_l
+        synthmod name hat_l
+    signals
+    mean_total off
+drums-mx-l
+
+combiner
+drums-mx-r
+    signals
+        synthmod name kik_r
+        synthmod name snr_r
+        synthmod name hat_r
+    signals
+    mean_total off
+drums-mx-r
+
+dynamic
+mix-dyn_l
+    amp_map
+        dvertex
+            sigin_level 0.0
+                so_ul 1.0
+                so_ll 1.0
+        dvertex
+             sigin_level 0.25
+                so_ul 1.25
+                so_ll 1.25
+        dvertex
+             sigin_level 0.5
+                so_ul 1.5
+                so_ll 1.5
+        dvertex
+             sigin_level 0.75
+                so_ul 1.25
+                so_ll 1.25
+        dvertex
+             sigin_level 1.0
+                so_ul 0.95
+                so_ll 0.95
+        dvertex
+             sigin_level 2.0
+                so_ul 0.148
+                so_ll 0.148
+        dvertex
+             sigin_level 3.0
+                so_ul 0.033
+                so_ll 0.033
+    amp_map
+    in_signal       drums-mx-l out_output
+    in_modulation   off
+    up_thresh       1.0
+    lo_thresh       0.0
+    posneg_mirror   on
+    use_ratios      on
+mix-dyn_l
+
+dynamic
+mix-dyn_r
+    amp_map
+        dvertex
+            sigin_level 0.0
+                so_ul 1.0
+                so_ll 1.0
+        dvertex
+             sigin_level 0.25
+                so_ul 1.5
+                so_ll 1.5
+        dvertex
+             sigin_level 0.5
+                so_ul 1.75
+                so_ll 1.75
+        dvertex
+             sigin_level 0.75
+                so_ul 1.25
+                so_ll 1.25
+        dvertex
+             sigin_level 1.0
+                so_ul 0.95
+                so_ll 0.95
+        dvertex
+             sigin_level 2.0
+                so_ul 0.148
+                so_ll 0.148
+        dvertex
+             sigin_level 3.0
+                so_ul 0.033
+                so_ll 0.033
+    amp_map
+    in_signal       drums-mx-r out_output
+    in_modulation   off
+    up_thresh       1.0
+    lo_thresh       0.0
+    posneg_mirror   on
+    use_ratios      on
+mix-dyn_r
+
+stereo_amp
+master-amp
+    in_l       mix-dyn_l out_output
+    in_r       mix-dyn_r out_output
+    in_amp_eg  one out_output
+    in_amp_mod off
+    left_amplitude   32000
+    right_amplitude  32000
+    amp_mod_size     0.0
+    clip_level       32767
+master-amp
+
+input_editor
+inputs_01
+    editlist
+        connect zdrums-wav
+            in_left  master-amp out_left
+            in_right master-amp out_right
+    editlist
+inputs_01
+
+//------------------------------------------------------------------------
+wcnt-1.2/jwmsynth

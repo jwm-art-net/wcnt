@@ -1,0 +1,202 @@
+wcnt-1.2/jwmsynth
+//------------------------------------------------------------------------
+//
+// sync2test02.wc
+//  uses sync2test01.wc, alters the pattern and pitch, and adds some
+//  effects, with the end result sounding very bleepish.
+//
+//------------------------------------------------------------------------
+
+header header.wch
+
+//------------------------------------------------------------------------
+
+synth_file_reader
+sync2file
+    filename sync2test01.wc
+    mod_action  exclude
+    dobj_action exclude
+    modules // empty list so nothing's excluded
+    modules
+    data_objects // ditto above
+    data_objects
+sync2file
+
+param_editor
+master_01
+    editlist
+        edit wav1
+            filename sync2test02.wav
+            end_bar 16
+        edit wcnt_exit_module
+            exit_bar 16
+    editlist
+master_01
+
+//------------------------------------------------------------------------
+// totally change the pattern...
+
+param_editor
+params_01
+    editlist
+        edit sclock  len 6  // see sclock def for quarter value as these
+        edit sclock2 len 24 // values are note length values. 
+        edit adsr1   min_time 200.0 // (milliseconds)
+        edit adsr2   min_time 200.0
+        edit osc1    octave_offset 1
+        edit osc2    tuning_semitones 11
+    editlist
+params_01
+
+//------------------------------------------------------------------------
+// the rest produces a reverbish-filtery type effect by filtering and
+// hard-limiting the output, adding echo, limiting that, more filtering
+// and limiting, and finally feeding back into the first filter.
+
+wcnt_signal wc1 in_signal sine1 out_output level 0.75 wc1
+wcnt_signal wc2 in_signal sine2 out_output level 0.75 wc2
+
+multiplier
+ms1
+    in_signal   wc1   out_output
+    in_modifier adsr1 out_output
+ms1
+
+multiplier
+ms2
+    in_signal   wc2   out_output
+    in_modifier adsr2 out_output
+ms2
+
+clock
+lpfclk
+    in_freq_mod1 off
+    freq        1000.0
+    freq_mod1_size 1.0
+lpfclk
+
+clock
+lpfclk2
+    in_freq_mod1 off
+    freq        763.0
+    freq_mod1_size 1.0
+lpfclk2
+
+lp_filter
+lpf1
+    in_signal         ms1    out_output
+    in_cutoff_degsize lpfclk out_deg_size
+    in_feedback       rl3    out_output
+    in_feedback_mod   off
+    feedback         0.65
+    feedback_modsize 0.0
+    wet/dry          1.0
+lpf1
+
+range_limit
+rl1
+    in_signal lpf1 out_wet_output
+    sig_range_hi  0.75
+    sig_range_lo -0.75
+rl1
+
+lp_filter
+lpf3
+    in_signal         rl1     out_output
+    in_cutoff_degsize lpfclk2 out_deg_size
+    in_feedback       lpf3    out_wet_output
+    in_feedback_mod   off
+    feedback         -0.65
+    feedback_modsize 0.0
+    wet/dry          1.0
+lpf3
+
+echo
+echo3
+    in_signal        lpf3 out_wet_output
+    in_gain_mod      off
+    in_feedback      echo4 out_wet_output
+    in_feedback_mod  off
+    delay_time        125
+    gain              1.0
+    gain_modsize      0.0
+    feedback          -0.6
+    feedback_modsize  0.0
+    wet/dry           0.6
+echo3
+
+range_limit
+rl3
+    in_signal echo3 out_output
+    sig_range_hi  0.75
+    sig_range_lo -0.75
+rl3
+
+lp_filter
+lpf2
+    in_signal         ms2    out_output
+    in_cutoff_degsize lpfclk out_deg_size
+    in_feedback       rl4    out_output
+    in_feedback_mod   off
+    feedback         0.65
+    feedback_modsize 0.0
+    wet/dry          1.0
+lpf2
+
+range_limit
+rl2
+    in_signal lpf2 out_wet_output
+    sig_range_hi  0.75
+    sig_range_lo -0.75
+rl2
+
+lp_filter
+lpf4
+    in_signal         rl2     out_output
+    in_cutoff_degsize lpfclk2 out_deg_size
+    in_feedback       lpf4    out_wet_output
+    in_feedback_mod   off
+    feedback        -0.65
+    feedback_modsize 0.0
+    wet/dry          1.0
+lpf4
+
+echo
+echo4
+    in_signal        lpf4 out_wet_output
+    in_gain_mod      off
+    in_feedback      echo3 out_wet_output
+    in_feedback_mod  off
+    delay_time        120.0
+    gain              1.0
+    gain_modsize      0.0
+    feedback          -0.6
+    feedback_modsize  0.0
+    wet/dry           0.6
+echo4
+
+range_limit
+rl4
+    in_signal echo4 out_output
+    sig_range_hi  0.75
+    sig_range_lo -0.75
+rl4
+
+// re-route
+
+input_editor
+inputs
+    editlist
+        connect amp1
+            in_signal lpf1 out_output
+            in_amp_eg one out_output
+        connect amp2
+            in_signal lpf2 out_output
+            in_amp_eg one out_output
+    editlist
+inputs
+
+//------------------------------------------------------------------------
+// End Of File _jwm 2005.
+//------------------------------------------------------------------------
+wcnt-1.2/jwmsynth

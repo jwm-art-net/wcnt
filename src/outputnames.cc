@@ -1,8 +1,6 @@
 #ifndef OUTPUTNAMES_H
 #include "../include/outputnames.h"
 
-#ifndef BARE_MODULES
-
 outputnames::outputnames() : outname(NULL), outcat(NULL)
 {
     outname = new char*[OUT_LAST + 1];
@@ -132,6 +130,12 @@ outputnames::outputnames() : outname(NULL), outcat(NULL)
     outcat[OUT_NOT_NS_TRIG] = CAT_TRIG;
     outname[OUT_COUNT] = "out_count";
     outcat[OUT_COUNT] = CAT_SHORT;
+    outname[OUT_WAIT_STATE] = "out_wait_state";
+    outcat[OUT_WAIT_STATE] = CAT_STATE;
+    outname[OUT_ATTACK_STATE] = "out_attack_state";
+    outcat[OUT_ATTACK_STATE] = CAT_STATE;
+    outname[OUT_RELEASE_STATE] = "out_release_state";
+    outcat[OUT_RELEASE_STATE] = CAT_STATE;
 /* These were intended for sampler2 module which uses inputs/outputs
    instead of parameters, but it has not sprouted into existence yet.
    still, look at all the new ones instead...burp.
@@ -217,5 +221,4 @@ outputnames::OUT_TYPE outputnames::get_nonezerotype(IOCAT iocat){
     return ot;
 }
 
-#endif
 #endif

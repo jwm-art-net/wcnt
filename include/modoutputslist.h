@@ -1,15 +1,13 @@
 #ifndef MODOUTPUTSLIST_H
 #define MODOUTPUTSLIST_H
 
-#ifndef BARE_MODULES
-
 #include "linkedlist.h"
 #include "outputnames.h"
 #include "modoutput.h"
 
 class modoutputlist
 {
-public:
+ public:
     modoutputlist();
     ~modoutputlist();
     modoutput* add_output(synthmod *, outputnames::OUT_TYPE);
@@ -38,12 +36,12 @@ public:
         outputnames::OUT_TYPE* not_out_prefs);
     modoutputlist* get_outputlist_for_module(synthmod*);
     bool is_registered(synthmod *);
-private:
+
+ private:
     void delete_output(modoutput *);
     linkedlist *outlist;
     ll_item* output_item;
     modoutput *output;
 };
 
-#endif
 #endif

@@ -6,23 +6,17 @@ timer::timer(char const* uname) :
  out_count(0), out_trig(OFF), t_item(0), t_list(0), current(0),
  samples(0)
 {
-#ifndef BARE_MODULES
     get_outputlist()->add_output(this,outputnames::OUT_TRIG);
     get_outputlist()->add_output(this,outputnames::OUT_COUNT);
-#endif
     t_list =
         new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
     timer_count++;
-#ifndef BARE_MODULES
     create_moddobj();
-#endif
 }
 
 timer::~timer()
 {
-#ifndef BARE_MODULES
     get_outputlist()->delete_module_outputs(this);
-#endif
     goto_first();
     while(current) {
         delete current;
@@ -74,7 +68,6 @@ void timer::run()
     }
 }
 
-#ifndef BARE_MODULES
 void const* timer::get_out(outputnames::OUT_TYPE ot)
 {
     void const *o = 0;
@@ -116,14 +109,13 @@ void timer::create_moddobj()
 {
     if (done_moddobj == true)
         return;
-    get_moddobjlist()->add_moddobj(
-        synthmodnames::MOD_TIMER, dobjnames::LIN_TIMINGS);
-    dobj::get_dobjdobjlist()->add_dobjdobj(
-        dobjnames::LIN_TIMINGS, dobjnames::SIN_TIME);
+    moddobj* mdbj;
+    mdbj = get_moddobjlist()->add_moddobj(
+        synthmodnames::MOD_TIMER, dobjnames::LST_TIMINGS);
+    mdbj->get_dobjdobjlist()->add_dobjdobj(
+        dobjnames::LST_TIMINGS, dobjnames::SIN_TIME);
     done_moddobj = true;
 }
-
-#endif
 
 short timer::timer_count = 0;
 

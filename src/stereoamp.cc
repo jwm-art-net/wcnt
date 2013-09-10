@@ -7,29 +7,22 @@ stereo_amp::stereo_amp(char const* uname) :
  out_left(0), out_right(0), left_amplitude(0), right_amplitude(0),
  amp_modsize(0), clip_level(0), left(0), right(0)
 {
-#ifndef BARE_MODULES
     get_outputlist()->add_output(this, outputnames::OUT_LEFT);
     get_outputlist()->add_output(this, outputnames::OUT_RIGHT);
     get_inputlist()->add_input(this, inputnames::IN_L);
     get_inputlist()->add_input(this, inputnames::IN_R);
     get_inputlist()->add_input(this, inputnames::IN_EG);
     get_inputlist()->add_input(this, inputnames::IN_AMP_MOD);
-#endif
     stereoamp_count++;
-#ifndef BARE_MODULES
     create_params();
-#endif
 }
 
 stereo_amp::~stereo_amp()
 {
-#ifndef BARE_MODULES
     get_outputlist()->delete_module_outputs(this);
     get_inputlist()->delete_module_inputs(this);
-#endif
 }
 
-#ifndef BARE_MODULES
 void const* stereo_amp::get_out(outputnames::OUT_TYPE ot)
 {
     void const* o = 0;
@@ -153,8 +146,6 @@ stockerrs::ERR_TYPE stereo_amp::validate()
     return stockerrs::ERR_NO_ERROR;
 }
 
-#endif
-
 void stereo_amp::run()
 {
     left = *in_left * ((left_amplitude * (1 - amp_modsize)
@@ -175,7 +166,6 @@ void stereo_amp::run()
 
 int stereo_amp::stereoamp_count = 0;
 
-#ifndef BARE_MODULES
 bool stereo_amp::done_params = false;
 
 void stereo_amp::create_params()
@@ -192,5 +182,5 @@ void stereo_amp::create_params()
      synthmodnames::MOD_STEREOAMP, paramnames::PAR_CLIP_LEVEL);
     done_params = true;
 }
-#endif
+
 #endif

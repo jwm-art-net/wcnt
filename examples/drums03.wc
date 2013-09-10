@@ -1,0 +1,55 @@
+wcnt-1.2/jwmsynth
+//------------------------------------------------------------------------
+//
+//  drums03.wc:  
+//      uses drums02.wc and simply edits it's parameters to
+//      create a completely different drum pattern
+//
+//------------------------------------------------------------------------
+
+header header.wch
+
+synth_file_reader
+wc1
+    filename       drums02.wc
+    mod_action     exclude
+    dobj_action    exclude
+    modules
+    modules
+    data_objects
+    data_objects
+wc1
+
+param_editor
+par-pattern
+    editlist
+        edit drum_trig1 freq 14.0
+        edit drum_trig2 freq 6.0
+        edit drum_trig
+            min_wait_time 0.0
+            max_wait_time 0.0
+            count 16
+        edit drum_trigb
+            min_wait_time 250.0
+            max_wait_time 0.0
+            count 1
+        edit drum_next function xor
+        edit osc1b
+            octave_offset 0
+            tuning_semitones 2
+        edit lecho
+            delay_time 8.0
+        edit recho
+            delay_time 8.1
+    editlist
+par-pattern
+
+param_editor
+par-master
+    editlist
+        edit wav1 filename drums03.wav
+    editlist
+par-master
+
+//------------------------------------------------------------------------
+wcnt-1.2/jwmsynth

@@ -4,11 +4,9 @@
 #include "synthmodule.h"
 #include "conversions.h"
 
-#ifndef BARE_MODULES
 #include "modoutputslist.h"
 #include "modinputslist.h"
 #include "modparamlist.h"
-#endif
 
 /*
     only outputs trigger one, when it is triggered, but not
@@ -38,32 +36,32 @@ public:
     STATUS const* get_output_trig(){ return &out_trig;}
     void set_min_time(double);
     void set_max_time(double);
+    void set_count(short n){ count = n;}
     // virtual funcs
     void run();
+    void init();
     stockerrs::ERR_TYPE validate();
-#ifndef BARE_MODULES
     void const* get_out(outputnames::OUT_TYPE);
     void const* set_in(inputnames::IN_TYPE, void const*);
     bool set_param(paramnames::PAR_TYPE, void const*);
     void const* get_param(paramnames::PAR_TYPE);
-#endif
 
 private:
     STATUS const* in_trig1;
     STATUS const* in_trig2;
     STATUS out_trig;
+    STATUS out_wait_state;
     double min_time;
     double max_time;
+    short count;
     long min_samples;
     long max_samples;
     long mins;
     long maxs;
-    STATUS trig_pending;
+    short counter;
     static int waittrig_count;
-#ifndef BARE_MODULES
     void create_params();
     static bool done_params;
-#endif
 };
 
 #endif

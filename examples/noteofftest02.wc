@@ -1,0 +1,81 @@
+wcnt-1.2/jwmsynth
+//------------------------------------------------------------------------
+//
+// test sequencer's note off and note slide logic.
+//
+// create a riff of notes which rise up through the c scale.
+// by using overlapping notes which gradually get shorter,
+// the scale is reversed in the second bar without creating
+// extra notes to do so.
+//
+//------------------------------------------------------------------------
+
+samplerate  44100
+bpm         160
+signature   4/4
+
+//------------------------------------------------------------------------
+
+riff
+riff1
+    quarter_value   4
+    notelist
+        note name c0  pos 0  len 32 vel 1.0
+        note name d0  pos 2  len 28 vel 1.0
+        note name e0  pos 4  len 24 vel 1.0
+        note name f0  pos 6  len 20 vel 1.0
+        note name g0  pos 8  len 16 vel 1.0
+        note name a0  pos 10 len 12 vel 1.0
+        note name b0  pos 12 len 8  vel 1.0
+        note name c1  pos 14 len 4  vel 1.0
+    notelist
+riff1
+
+sequencer
+seq1
+    track 
+        riff_node
+            riff riff1  bar 0   transpose 0
+            start_len 0 end_len 0
+        riff_node
+            riff riff1  bar 2   transpose 0
+            start_len 0 end_len 0
+        riff_node
+            riff riff1  bar 3   transpose 0
+            start_len 0 end_len 0
+    track
+    in_bar              time1 out_bar
+    in_bar_trig         time1 out_bar_trig
+    in_pos_step_size    time1 out_pos_step_size
+    in_beats_per_bar    time1 out_beats_per_bar
+    in_beat_value       time1 out_beat_value
+    velocity_response_time 5
+seq1
+
+synth_file_reader
+wcfile
+    filename noteofftest01.wc
+    mod_action  exclude
+    dobj_action exclude
+    modules
+        mod name seq1
+    modules
+    data_objects
+        dobj name riff1
+    data_objects
+wcfile
+
+param_editor
+par1
+    editlist
+        edit wav1
+            filename noteofftest02.wav
+            end_bar  6
+        edit wcnt_exit_module
+            exit_bar 6
+    editlist
+par1
+//------------------------------------------------------------------------
+// End Of File _jwm 2005.
+//------------------------------------------------------------------------
+wcnt-1.2/jwmsynth

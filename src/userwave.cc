@@ -9,23 +9,19 @@ user_wave::user_wave(char const* uname) :
  counter_ratio(0), sectdegs(0), degs(360), recycle(OFF),
  zero_retrigger_mode(OFF)
 {
-#ifndef BARE_MODULES
     get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
     get_outputlist()->add_output(this, outputnames::OUT_PLAY_STATE);
     get_inputlist()->add_input(this, inputnames::IN_PHASE_TRIG);
     get_inputlist()->add_input(this, inputnames::IN_DEG_SIZE);
     get_inputlist()->add_input(this, inputnames::IN_V_MOD);
     get_inputlist()->add_input(this, inputnames::IN_H_MOD);
-#endif
     env = 
      new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
     add_vertex(0.0, 0.0, 0.0, 0.0);
     add_vertex(360.0, 0.0, 360.0, 0.0);
     user_wave_count++;
-#ifndef BARE_MODULES
     create_params();
     create_dobj();
-#endif
 }
 
 user_wave::~user_wave()
@@ -38,13 +34,10 @@ user_wave::~user_wave()
         delete tmp;
     }
     delete env;
-#ifndef BARE_MODULES
     get_outputlist()->delete_module_outputs(this);
     get_inputlist()->delete_module_inputs(this);
-#endif
 }
 
-#ifndef BARE_MODULES
 void const* user_wave::get_out(outputnames::OUT_TYPE ot)
 {
     void const* o = 0;
@@ -138,11 +131,9 @@ dobj* user_wave::add_dobj(dobj* dbj)
 
 stockerrs::ERR_TYPE user_wave::validate()
 {
-    // still can't be bothered!
+    // still can't be bothered! (1.2)
     return stockerrs::ERR_NO_ERROR;
 }
-
-#endif // BARE_MODULES
 
 wave_vertex* user_wave::add_vertex(wave_vertex* wv)
 {
@@ -197,7 +188,6 @@ void user_wave::init()
     }
 
 }
-
 
 void user_wave::run()
 {
@@ -259,7 +249,6 @@ void user_wave::run()
 
 int user_wave::user_wave_count = 0;
 
-#ifndef BARE_MODULES
 bool user_wave::done_params = false;
 bool user_wave::done_dobj = false;
 
@@ -278,11 +267,12 @@ void user_wave::create_dobj()
 {
     if (done_dobj == true)
         return;
-    get_moddobjlist()->add_moddobj(
-     synthmodnames::MOD_USERWAVE, dobjnames::LIN_WAVEFORM);
-    dobj::get_dobjdobjlist()->add_dobjdobj(
-     dobjnames::LIN_WAVEFORM, dobjnames::SIN_VERTEX);
+    moddobj* mdbj;
+    mdbj = get_moddobjlist()->add_moddobj(
+        synthmodnames::MOD_USERWAVE, dobjnames::LST_WAVEFORM);
+    mdbj->get_dobjdobjlist()->add_dobjdobj(
+        dobjnames::LST_WAVEFORM, dobjnames::SIN_VERTEX);
     done_dobj = true;
 }
-#endif
+
 #endif

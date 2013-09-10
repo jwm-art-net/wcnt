@@ -9,7 +9,6 @@ timemap::timemap(char const* uname) :
  bpmchange_pos(0), bpmrampsize(0), bpmchange_ratio(0), targbpm(0),
  pos_in_bar(0), bpmchange_notelen(0), bpmchangebar(0)
 {
-#ifndef BARE_MODULES
     get_outputlist()->add_output(this,outputnames::OUT_BPM);
     get_outputlist()->add_output(this,outputnames::OUT_BAR);
     get_outputlist()->add_output(this,outputnames::OUT_BAR_TRIG);
@@ -22,24 +21,21 @@ timemap::timemap(char const* uname) :
     get_outputlist()->add_output(this,outputnames::OUT_BPM_CHANGE_TRIG);
     get_outputlist()->add_output(this,outputnames::OUT_METER_CHANGE_TRIG);
     get_outputlist()->add_output(this,outputnames::OUT_BPM_CHANGE_STATE);
-#endif
     bpm_map =
         new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
-    add_bpm_change(0, sm_beats_per_minute);
+// *** relative bpm changes ***
+// add_bpm_change(0, sm_beats_per_minute);
+    add_bpm_change(0, 0);
     meter_map =
         new linkedlist(linkedlist::MULTIREF_OFF,linkedlist::NO_NULLDATA);
     add_meter_change(0, sm_beats_per_measure, sm_beat_value);
     timemap_count++;
-#ifndef BARE_MODULES
     create_moddobj();
-#endif
 }
 
 timemap::~timemap()
 {
-#ifndef BARE_MODULES
     get_outputlist()->delete_module_outputs(this);
-#endif
     goto_first_bpm();
     while(currentbpm) {
         delete currentbpm;
@@ -223,15 +219,16 @@ void timemap::init()
     out_beat_value = currentmeter->get_beatvalue();
     beatlength = (short)(QUARTER_VALUE * (4.0 / (float)out_beat_value));
     barlength = out_beats_per_bar * beatlength;
-    pos_in_bar = barlength; // trig first bar - not favorite sollution ;)
+    pos_in_bar = barlength; // trig first bar - not favorite sollution
     out_bar = -1;           // ...it just gets worse!
+    p_bpm = sm_beats_per_minute;
 }
 
 void timemap::run()
 {
-    if (pos_in_bar >= barlength) { // hits on very first sample see above
+    if (pos_in_bar >= barlength) {
         out_bar++;
-        pos_in_bar = 0;
+        pos_in_bar -= barlength;
         out_bar_trig = ON;
     }
     else if (out_bar_trig == ON) out_bar_trig = OFF;
@@ -241,23 +238,24 @@ void timemap::run()
             out_beats_per_bar = currentmeter->get_beatsperbar();
             out_beat_value = currentmeter->get_beatvalue();
             beatlength = (short)(QUARTER_VALUE *
-                                 (4.0 / (float)out_beat_value));
+                                 (4.0 / (double)out_beat_value));
             barlength = out_beats_per_bar * beatlength;
             out_meter_change_trig = ON;
             goto_next_meter();
             if (!currentmeter) meterchangebar = -1;
             else meterchangebar = currentmeter->get_bar();
-        } // nice and simple :)
+        }
     }
     else if (out_meter_change_trig == ON) out_meter_change_trig = OFF;
     if (out_bar == bpmchangebar) {
         currentbpm = targetbpm;
-        out_bpm = currentbpm->get_bpm();
+        out_bpm = p_bpm + currentbpm->get_bpm();
+        p_bpm = out_bpm;
         bpm_item = bpm_item->get_next();
         targetbpm = (bpmchange*)bpm_item->get_data();
         out_bpm_change_trig = ON;
         if (!targetbpm) {
-            bpmchangebar = -1; // prevent unwanted repetition
+            bpmchangebar = -1;
             bpmrampsize = 0;
         }
         else {
@@ -265,46 +263,42 @@ void timemap::run()
             if (bpmchangebar == out_bar) {
                 //immediate change -- not ramped.
                 currentbpm = targetbpm;
-                out_bpm = currentbpm->get_bpm();
+                out_bpm += currentbpm->get_bpm();
+                p_bpm = out_bpm; // make it so.
                 bpm_item = bpm_item->get_next();
                 targetbpm = (bpmchange*)bpm_item->get_data();
                 out_bpm_change_state = ON;
             }
-     // this if below could be placed within if above but then I'd need
-     // to add yet another check for targetbpm == null to prevent what
-            // has now become the else after this if below.  yeah?
             if (!targetbpm) {
                 bpmchangebar = -1; // prevent unwanted repetition
                 bpmrampsize = 0;
             }
             else {
-         // bpmchange = targetbpm->get_bar() is not always needed here.
-         // but it has to be here for when it is needed (see above) :/
                 bpmchangebar = targetbpm->get_bar();
-                bpmchange_notelen =
-                    (bpmchangebar - currentbpm->get_bar()) * barlength;
-                targbpm = targetbpm->get_bpm();
+                bpmchange_notelen = (unsigned long)
+                    ((bpmchangebar - currentbpm->get_bar()) * barlength);
+                targbpm = p_bpm + targetbpm->get_bpm();
                 // these will change during bpm ramp
                 bpmchange_pos = 0;
                 bpmsampletot = notelen_to_samples(bpmchange_notelen);
                 bpmrampsize = (targbpm - out_bpm) / (double) bpmsampletot;
                 out_bpm_change_state = ON;
             }
-        } // important one here: ie don't forget and remove it you dimwit.
-        out_pos_step_size = barlength /
-                            (double)notelen_to_samples(barlength);
+        }
+        out_pos_step_size = barlength / (audio_samplerate *
+         (60.0 / out_bpm) * out_beats_per_bar);
     }
     else {
         if (out_bpm_change_trig == ON) out_bpm_change_trig = OFF;
         if (bpmrampsize != 0) {
             if (out_meter_change_trig == ON) {// there's always one!
-                bpmchange_notelen =
-                    (bpmchangebar - out_bar) * barlength;
+                bpmchange_notelen = (unsigned long)
+                    ((bpmchangebar - out_bar) * barlength);
                 bpmchange_pos = 0;
                 bpmsampletot = notelen_to_samples(bpmchange_notelen);
                 bpmrampsize = (targbpm - out_bpm) / (double) bpmsampletot;
-                out_pos_step_size = barlength /
-                                    (double)notelen_to_samples(barlength);
+                out_pos_step_size = barlength / (audio_samplerate *
+                 (60.0 / out_bpm) * out_beats_per_bar);
             }
             out_bpm += bpmrampsize;
             bpmchange_ratio = (double) bpmchange_pos / bpmchange_notelen;
@@ -347,7 +341,6 @@ unsigned long timemap::ms_to_samples(double ms)
     return (unsigned long)(audio_samplerate * (ms / 1000));
 }
 
-#ifndef BARE_MODULES
 void const* timemap::get_out(outputnames::OUT_TYPE ot)
 {
     void const *o = 0;
@@ -424,23 +417,17 @@ void timemap::create_moddobj()
 {
     if (done_moddobj == true)
         return;
-
-    get_moddobjlist()->add_moddobj(
-        synthmodnames::MOD_TIMEMAP, dobjnames::LIN_METER);
-
-    get_moddobjlist()->add_moddobj(
-        synthmodnames::MOD_TIMEMAP, dobjnames::LIN_BPM);
-
-    dobj::get_dobjdobjlist()->add_dobjdobj(
-        dobjnames::LIN_METER, dobjnames::SIN_METER);
-
-    dobj::get_dobjdobjlist()->add_dobjdobj(
-        dobjnames::LIN_BPM, dobjnames::SIN_BPM);
-
+    moddobj* mdbj;
+    mdbj = get_moddobjlist()->add_moddobj(
+        synthmodnames::MOD_TIMEMAP, dobjnames::LST_METER);
+    mdbj->get_dobjdobjlist()->add_dobjdobj(
+        dobjnames::LST_METER, dobjnames::SIN_METER);
+    mdbj = get_moddobjlist()->add_moddobj(
+        synthmodnames::MOD_TIMEMAP, dobjnames::LST_BPM);
+    mdbj->get_dobjdobjlist()->add_dobjdobj(
+        dobjnames::LST_BPM, dobjnames::SIN_BPM);
     done_moddobj = true;
 }
-
-#endif
 
 short timemap::timemap_count = 0;
 

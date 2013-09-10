@@ -1,7 +1,6 @@
 #ifndef WCNTMODULE_H
 #define WCNTMODULE_H
 
-#ifndef BARE_MODULES
 #include "modoutputslist.h"
 #include "modinputslist.h"
 #include "modparamlist.h"
@@ -49,12 +48,10 @@ public:
     // virtual funcs
     void run(){};
     stockerrs::ERR_TYPE validate();
-#ifndef BARE_MODULES
     void const* get_out(outputnames::OUT_TYPE) { return 0; }
     void const* set_in(inputnames::IN_TYPE, void const*);
     bool set_param(paramnames::PAR_TYPE, void const*);
     void const* get_param(paramnames::PAR_TYPE);
-#endif
 private:
     // inputs
     const short* in_bar;
@@ -67,5 +64,4 @@ private:
     static bool done_params;
 };
 
-#endif // BARE_MODULES
 #endif

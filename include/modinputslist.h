@@ -1,8 +1,6 @@
 #ifndef MODINPUTSLIST_H
 #define MODINPUTSLIST_H
 
-#ifndef BARE_MODULES
-
 #include "synthmodule.h"
 #include "linkedlist.h"
 #include "inputnames.h"
@@ -12,9 +10,12 @@
 // NULL terminated array of input types to list first
 // NULL terminated array of input types to exclude
 
+// sometime later I wonder what all that NULL terminated array
+// business is all about.
+
 class modinputlist
 {
-public:
+ public:
     modinputlist();
     ~modinputlist();
     modinput* add_input(synthmod*, inputnames::IN_TYPE);
@@ -42,12 +43,12 @@ public:
         inputnames::IN_TYPE* in_prefs, 
         inputnames::IN_TYPE* not_in_prefs);
     modinputlist* get_inputlist_for_module(synthmod*);
-private:
+
+ private:
     bool delete_input(modinput*);
     linkedlist* inlist;
     ll_item* input_item;
     modinput* input;
 };
 
-#endif
 #endif

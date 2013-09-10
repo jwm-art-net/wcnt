@@ -6,47 +6,41 @@ riff_node::riff_node() :
  transpose(0), startlen(0), endlen(0)
 
 {
-#ifndef BARE_MODULES
-    create_dparams();
-#endif
+    create_params();
 }
 
 riff_node::riff_node(riffdata* rd, short barpos) :
  dobj(dobjnames::SIN_RIFFNODE), start_bar(barpos), riff_source(rd)
 {
-#ifndef BARE_MODULES
-    create_dparams();
-#endif
+    create_params();
 }
 
 riff_node::~riff_node()
 {
 }
 
-#ifndef BARE_MODULES
-
-bool riff_node::set_dparam(dparamnames::DPAR_TYPE pt, void* data)
+bool riff_node::set_param(paramnames::PAR_TYPE pt, void* data)
 {
     bool retv = false;
     switch(pt)
     {
-    case dparamnames::DPAR_RIFFNAME:
+    case paramnames::PAR_RIFFNAME:
         set_riff_source((riffdata*)data);// pass pointer
         retv = true;
         break;
-    case dparamnames::DPAR_BAR:
+    case paramnames::PAR_BAR:
         set_start_bar(*(short*)data);
         retv = true;
         break;
-    case dparamnames::DPAR_TRANSPOSE:
+    case paramnames::PAR_TRANSPOSE:
         set_transpose(*(short*)data);
         retv = true;
         break;
-    case dparamnames::DPAR_STARTLEN:
+    case paramnames::PAR_STARTLEN:
         set_start_length(*(double*)data);
         retv = true;
         break;
-    case dparamnames::DPAR_ENDLEN:
+    case paramnames::PAR_ENDLEN:
         set_end_length(*(double*)data);
         retv = true;
         break;
@@ -57,24 +51,24 @@ bool riff_node::set_dparam(dparamnames::DPAR_TYPE pt, void* data)
     return retv;
 }
 
-void* riff_node::get_dparam(dparamnames::DPAR_TYPE pt)
+void const* riff_node::get_param(paramnames::PAR_TYPE pt)
 {
     void* retv = 0;
     switch(pt)
     {
-    case dparamnames::DPAR_RIFFNAME:
+    case paramnames::PAR_RIFFNAME:
         retv = riff_source;
         break;
-    case dparamnames::DPAR_BAR:
+    case paramnames::PAR_BAR:
         retv = &start_bar;
         break;
-    case dparamnames::DPAR_TRANSPOSE:
+    case paramnames::PAR_TRANSPOSE:
         retv = &transpose;
         break;
-    case dparamnames::DPAR_STARTLEN:
+    case paramnames::PAR_STARTLEN:
         retv = &startlen;
         break;
-    case dparamnames::DPAR_ENDLEN:
+    case paramnames::PAR_ENDLEN:
         retv = &endlen;
         break;
     default:
@@ -87,33 +81,32 @@ void* riff_node::get_dparam(dparamnames::DPAR_TYPE pt)
 stockerrs::ERR_TYPE riff_node::validate()
 {
     if (!get_dparlist()->validate(
-        this, dparamnames::DPAR_BAR, stockerrs::ERR_NEGATIVE))
+        this, paramnames::PAR_BAR, stockerrs::ERR_NEGATIVE))
     {
         *err_msg =
-         get_dparnames()->get_name(dparamnames::DPAR_BAR);
+         get_paramnames()->get_name(paramnames::PAR_BAR);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     return stockerrs::ERR_NO_ERROR;
 }
 
-bool riff_node::done_dparams = false;
+bool riff_node::done_params = false;
 
-void riff_node::create_dparams()
+void riff_node::create_params()
 {
-    if (done_dparams == true) return;
+    if (done_params == true) return;
     get_dparlist()->
-    add_dobjparam(dobjnames::SIN_RIFFNODE, dparamnames::DPAR_RIFFNAME);
+    add_dobjparam(dobjnames::SIN_RIFFNODE, paramnames::PAR_RIFFNAME);
     get_dparlist()->
-    add_dobjparam(dobjnames::SIN_RIFFNODE, dparamnames::DPAR_BAR);
+    add_dobjparam(dobjnames::SIN_RIFFNODE, paramnames::PAR_BAR);
     get_dparlist()->
-    add_dobjparam(dobjnames::SIN_RIFFNODE, dparamnames::DPAR_TRANSPOSE);
+    add_dobjparam(dobjnames::SIN_RIFFNODE, paramnames::PAR_TRANSPOSE);
     get_dparlist()->
-    add_dobjparam(dobjnames::SIN_RIFFNODE, dparamnames::DPAR_STARTLEN);
+    add_dobjparam(dobjnames::SIN_RIFFNODE, paramnames::PAR_STARTLEN);
     get_dparlist()->
-    add_dobjparam(dobjnames::SIN_RIFFNODE, dparamnames::DPAR_ENDLEN);
-    done_dparams = true;
+    add_dobjparam(dobjnames::SIN_RIFFNODE, paramnames::PAR_ENDLEN);
+    done_params = true;
 }
 
-#endif // BARE_MODULES
 #endif

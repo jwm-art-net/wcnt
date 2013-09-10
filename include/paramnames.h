@@ -1,7 +1,5 @@
-#ifndef paramnames_H
-#define paramnames_H
-
-#ifndef BARE_MODULES
+#ifndef PARAMNAMES_H
+#define PARAMNAMES_H
 
 #include <string.h>
 #include "iocat.h"
@@ -14,7 +12,6 @@ public:
         PAR_FIRST = 0,
         PAR_SUSTAIN_STATUS,
         PAR_ZERO_RETRIGGER,
-        PAR_NOTELEN_FREQ,
         PAR_FREQ,
         PAR_FREQ_MOD1SIZE,
         PAR_FREQ_MOD2SIZE,
@@ -78,7 +75,6 @@ public:
         PAR_LOOP_IS_OFFSET,
         PAR_LOOP_BI_OFFSET,
         PAR_AC_EACH_END,
-        PAR_HOLD_NOTENAME,
         PAR_POWER_MIN,
         PAR_POWER_MAX,
         PAR_RUDE_MODE,
@@ -120,6 +116,52 @@ public:
         PAR_MIN_WAIT,
         PAR_MAX_WAIT,
         PAR_TRIG_STRING,
+        // wcnt-1.128
+        PAR_QUARTER_VAL,
+        PAR_RELEASE_RATIO,
+        PAR_MIN_TIME,
+        PAR_MAX_SUSTAIN_TIME,
+        PAR_PRECISION,
+        // wcnt-1.2 - mostly from old dparamnames class
+        PAR_NAME, // PAR_NOTE_NAME replaced with PAR_NAME
+        PAR_NOTE_POS,
+        PAR_NOTE_LEN,
+        PAR_NOTE_VEL,
+        PAR_ADSRSECT,
+        PAR_UPTIME,
+        PAR_LOTIME,
+        PAR_UPLEVEL,
+        PAR_LOLEVEL,
+        PAR_UPDEG,
+        PAR_LODEG,
+        PAR_METER,
+        PAR_BAR,
+        PAR_BPM,
+        PAR_RIFFNAME,
+        PAR_MODNAME,
+        PAR_ROOT_NOTE,
+        PAR_TRANSPOSE,
+        PAR_STARTLEN,
+        PAR_ENDLEN,
+        PAR_SIGIN_LEVEL,
+        PAR_SIGOUT_UPLEVEL,
+        PAR_SIGOUT_LOLEVEL,
+        PAR_SECONDS,
+        PAR_MOD_ACTION,
+        PAR_DOBJ_ACTION,
+        PAR_NAME_EXT,
+        PAR_PARAMETER,
+        PAR_VALUESTR,
+        PAR_DOBJNAME,
+        PAR_INMODULE,
+        PAR_INPUT,
+        PAR_OUTMODULE,
+        PAR_OUTPUT,
+        PAR_STR_UNNAMED, // special handling required
+        PAR_STR_LIST,    // for these two
+        PAR_SNAP_TO,
+        PAR_COUNT,
+        PAR_CHECK_LEVELS,
         PAR_LAST
     };
 
@@ -134,5 +176,4 @@ private:
 
 };
 
-#endif
 #endif

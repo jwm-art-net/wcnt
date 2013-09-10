@@ -2,12 +2,10 @@
 #include "../include/adsrcoord.h"
 
 adsr_coord::adsr_coord() :
-        dobj(dobjnames::SIN_COORD), sect(ADSR_FIRST),
+        dobj(dobjnames::SIN_COORD), sect(ADSR_ATTACK),
         upper_time(0), upper_level(0), lower_time(0), lower_level(0)
 {
-#ifndef BARE_MODULES
-    create_dparams();
-#endif
+    create_params();
 }
 
 adsr_coord::adsr_coord
@@ -16,9 +14,7 @@ adsr_coord::adsr_coord
  upper_time(ut), upper_level(ul),
  lower_time(lt), lower_level(ll)
 {
-#ifndef BARE_MODULES
-    create_dparams();
-#endif
+    create_params();
 }
 
 adsr_coord::~adsr_coord()
@@ -34,31 +30,30 @@ void adsr_coord::run(double velocity)
     output_time = lower_time + (upper_time - lower_time) * velocity;
     output_level = lower_level + (upper_level - lower_level) * velocity;
 }
-
-#ifndef BARE_MODULES
-
-bool adsr_coord::set_dparam(dparamnames::DPAR_TYPE pt, void* data)
+#include <iostream>
+using namespace std;
+bool adsr_coord::set_param(paramnames::PAR_TYPE pt, void* data)
 {
     bool retv = false;
     switch(pt)
-    {
-    case dparamnames::DPAR_ADSRSECT:
-        set_adsr_section(*(SECT*)data);
+    { // PAR_ADSRSECT is iocat::CAT_FIX_STR.
+    case paramnames::PAR_ADSRSECT:
+        set_adsr_section((SECT)(*(int*)data));
         retv = true;
         break;
-    case dparamnames::DPAR_UPTIME:
+    case paramnames::PAR_UPTIME:
         set_upper_time(*(double*)data);
         retv = true;
         break;
-    case dparamnames::DPAR_UPLEVEL:
+    case paramnames::PAR_UPLEVEL:
         set_upper_level(*(double*)data);
         retv = true;
         break;
-    case dparamnames::DPAR_LOTIME:
+    case paramnames::PAR_LOTIME:
         set_lower_time(*(double*)data);
         retv = true;
         break;
-    case dparamnames::DPAR_LOLEVEL:
+    case paramnames::PAR_LOLEVEL:
         set_lower_level(*(double*)data);
         retv = true;
         break;
@@ -69,19 +64,19 @@ bool adsr_coord::set_dparam(dparamnames::DPAR_TYPE pt, void* data)
     return retv;
 }
 
-void* adsr_coord::get_dparam(dparamnames::DPAR_TYPE pt)
+void const* adsr_coord::get_param(paramnames::PAR_TYPE pt)
 {
     switch(pt)
     {
-    case dparamnames::DPAR_ADSRSECT:
+    case paramnames::PAR_ADSRSECT:
         return &sect;
-    case dparamnames::DPAR_UPTIME:
+    case paramnames::PAR_UPTIME:
         return &upper_time;
-    case dparamnames::DPAR_UPLEVEL:
+    case paramnames::PAR_UPLEVEL:
         return &upper_level;
-    case dparamnames::DPAR_LOTIME:
+    case paramnames::PAR_LOTIME:
         return &lower_time;
-    case dparamnames::DPAR_LOLEVEL:
+    case paramnames::PAR_LOLEVEL:
         return &lower_level;
     default:
         return 0;
@@ -92,38 +87,39 @@ stockerrs::ERR_TYPE adsr_coord::validate()
 {
     dobjparamlist* dpl = get_dparlist();
     if (!dpl->validate(
-        this, dparamnames::DPAR_UPTIME, stockerrs::ERR_NEGATIVE))
+        this, paramnames::PAR_UPTIME, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = get_dparnames()->get_name(dparamnames::DPAR_UPTIME);
+        *err_msg = get_paramnames()->get_name(paramnames::PAR_UPTIME);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (!dpl->validate(
-        this, dparamnames::DPAR_LOTIME, stockerrs::ERR_NEGATIVE))
+        this, paramnames::PAR_LOTIME, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = get_dparnames()->get_name(dparamnames::DPAR_LOTIME);
+        *err_msg = get_paramnames()->get_name(paramnames::PAR_LOTIME);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     return stockerrs::ERR_NO_ERROR;
 }
 
-void adsr_coord::create_dparams()
+void adsr_coord::create_params()
 {
-    if (adsr_coord::done_dparams == true) return;
+    if (adsr_coord::done_params == true) return;
     get_dparlist()->add_dobjparam(
-     dobjnames::SIN_COORD, dparamnames::DPAR_ADSRSECT);
+     dobjnames::SIN_COORD, paramnames::PAR_ADSRSECT);
+    get_fxsparamlist()->add_param("attack/decay/sustain/release",
+     paramnames::PAR_ADSRSECT);
     get_dparlist()->add_dobjparam(
-     dobjnames::SIN_COORD, dparamnames::DPAR_UPTIME);
+     dobjnames::SIN_COORD, paramnames::PAR_UPTIME);
     get_dparlist()->add_dobjparam(
-     dobjnames::SIN_COORD, dparamnames::DPAR_UPLEVEL);
+     dobjnames::SIN_COORD, paramnames::PAR_UPLEVEL);
     get_dparlist()->add_dobjparam(
-     dobjnames::SIN_COORD, dparamnames::DPAR_LOTIME);
+     dobjnames::SIN_COORD, paramnames::PAR_LOTIME);
     get_dparlist()->add_dobjparam(
-     dobjnames::SIN_COORD, dparamnames::DPAR_LOLEVEL);
-    done_dparams = true;
+     dobjnames::SIN_COORD, paramnames::PAR_LOLEVEL);
+    done_params = true;
 }
 
-bool adsr_coord::done_dparams = false;
-#endif
+bool adsr_coord::done_params = false;
 #endif

@@ -2,12 +2,9 @@
 #define SAMPLEHOLD_H
 
 #include "conversions.h"
-
-#ifndef BARE_MODULES
 #include "modoutputslist.h"
 #include "modinputslist.h"
 #include "modparamlist.h"
-#endif
 
 // decay time of 0 means do not decay to zero
 
@@ -27,12 +24,11 @@ public:
     void run();
     void init();
     stockerrs::ERR_TYPE validate();
-#ifndef BARE_MODULES
     void const* get_out(outputnames::OUT_TYPE);
     void const* set_in(inputnames::IN_TYPE, void const*);
     bool set_param(paramnames::PAR_TYPE, void const*);
     void const* get_param(paramnames::PAR_TYPE);
-#endif
+
 private:
     const STATUS* in_trig;
     const double* in_signal;
@@ -42,10 +38,8 @@ private:
     unsigned long ds;
     double decay_size;
     static int sample_hold_count;
-#ifndef BARE_MODULES
     void create_params();
     static bool done_params;
-#endif
 };
 
 #endif

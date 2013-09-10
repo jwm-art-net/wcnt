@@ -3,26 +3,22 @@
 
 waittrig::waittrig(char const* uname) :
  synthmod(synthmodnames::MOD_WAITTRIG, waittrig_count, uname),
- in_trig1(0), in_trig2(0), out_trig(OFF), min_time(0), max_time(0),
- min_samples(0), max_samples(0), mins(0), maxs(0), trig_pending(OFF)
+ in_trig1(0), in_trig2(0), out_trig(OFF), out_wait_state(ON),
+ min_time(0), max_time(0), count(1), min_samples(0), max_samples(0),
+ mins(0), maxs(0), counter(0)
 {
-#ifndef BARE_MODULES
     get_outputlist()->add_output(this, outputnames::OUT_TRIG);
+    get_outputlist()->add_output(this, outputnames::OUT_WAIT_STATE);
     get_inputlist()->add_input(this, inputnames::IN_TRIG1);
     get_inputlist()->add_input(this, inputnames::IN_TRIG2);
-#endif
     waittrig_count++;
-#ifndef BARE_MODULES
     create_params();
-#endif
 }
 
 waittrig::~waittrig()
 {
-#ifndef BARE_MODULES
     get_outputlist()->delete_module_outputs(this);
     get_inputlist()->delete_module_inputs(this);
-#endif
 }
 
 void waittrig::set_min_time(double t)
@@ -37,8 +33,6 @@ void waittrig::set_max_time(double t)
     maxs = max_samples = ms_to_samples(max_time);
 }
 
-
-#ifndef BARE_MODULES
 void const* waittrig::get_out(outputnames::OUT_TYPE ot)
 {
     void const* o = 0;
@@ -46,6 +40,9 @@ void const* waittrig::get_out(outputnames::OUT_TYPE ot)
     {
     case outputnames::OUT_TRIG:
         o = &out_trig;
+        break;
+    case outputnames::OUT_WAIT_STATE:
+        o = &out_wait_state;
         break;
     default:
         o = 0;
@@ -83,6 +80,10 @@ bool waittrig::set_param(paramnames::PAR_TYPE pt, void const* data)
         set_max_time(*(double*)data);
         retv = true;
         break;
+    case paramnames::PAR_COUNT:
+        set_count(*(short*)data);
+        retv = true;
+        break;
     default:
         retv = false;
         break;
@@ -98,6 +99,8 @@ void const* waittrig::get_param(paramnames::PAR_TYPE pt)
         return &min_time;
     case paramnames::PAR_MAX_WAIT:
         return &max_time;
+    case paramnames::PAR_COUNT:
+        return &count;
     default:
         return 0;
     }
@@ -120,41 +123,57 @@ stockerrs::ERR_TYPE waittrig::validate()
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
+    if (!pl->validate(this, paramnames::PAR_COUNT,
+            stockerrs::ERR_NEG_ZERO))
+    {
+        *err_msg = get_paramnames()->get_name(paramnames::PAR_COUNT);
+        invalidate();
+        return stockerrs::ERR_NEG_ZERO;
+    }
     return stockerrs::ERR_NO_ERROR;
 }
 
-#endif // BARE_MODULES
+void waittrig::init()
+{
+    mins = min_samples;
+    maxs = max_samples;
+    out_wait_state = ON;
+}
 
 void waittrig::run()
 {
-    if (trig_pending == OFF) {
+    if (out_wait_state == ON) {
         if (mins == 0) {
-            if (*in_trig2 == ON) {
-                trig_pending = ON;
-                mins = min_samples;
-                maxs = max_samples;
+            if (*in_trig2 == ON || (maxs == 0 && max_samples > 0))
+            {
+                out_wait_state = OFF;
+                counter = count;
             }
-            if (maxs == 0 && max_samples > 0) {
-                trig_pending = ON;
-                mins = min_samples;
-                maxs = max_samples;
-            }
-            else if (maxs > 0) maxs--;
         }
-        else mins--;
-        if (out_trig == ON) out_trig = OFF;
+        else if (min_samples > 0)
+            mins--;
+        if (max_samples > 0)
+            maxs--;
     }
-    else {
+    if (out_wait_state == OFF) {
         if (*in_trig1 == ON) {
             out_trig = ON;
-            trig_pending = OFF;
+            counter--;
+            if (counter == 0) {
+                mins = min_samples;
+                maxs = max_samples;
+                out_wait_state = ON;
+            }
         }
+        else if (out_trig == ON)
+            out_trig = OFF;
     }
+    else if (out_trig == ON)
+        out_trig = OFF;
 }
 
 int waittrig::waittrig_count = 0;
 
-#ifndef BARE_MODULES
 bool waittrig::done_params = false;
 
 void waittrig::create_params()
@@ -165,7 +184,9 @@ void waittrig::create_params()
      synthmodnames::MOD_WAITTRIG, paramnames::PAR_MIN_WAIT);
     get_paramlist()->add_param(
      synthmodnames::MOD_WAITTRIG, paramnames::PAR_MAX_WAIT);
+    get_paramlist()->add_param(
+     synthmodnames::MOD_WAITTRIG, paramnames::PAR_COUNT);
     done_params = true;
 }
-#endif
+
 #endif

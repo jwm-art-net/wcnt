@@ -8,26 +8,20 @@ echo::echo(char const* uname) :
  feed_modsize(0), wetdry(0), filter(0), filterarraymax(0), fpos(0),
  filtertotal(0), gainamount(0), feedamount(0)
 {
-#ifndef BARE_MODULES
     get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
     get_inputlist()->add_input(this, inputnames::IN_GAIN_MOD);
     get_inputlist()->add_input(this, inputnames::IN_FEEDBACK);
     get_inputlist()->add_input(this, inputnames::IN_FB_MOD);
     get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
     get_outputlist()->add_output(this, outputnames::OUT_WET_OUTPUT);
-#endif
     echo_count++;
-#ifndef BARE_MODULES
     create_params();
-#endif
 }
 
 echo::~echo()
 {
-#ifndef BARE_MODULES
     get_outputlist()->delete_module_outputs(this);
     get_inputlist()->delete_module_inputs(this);
-#endif
     delete [] filter;
 }
 
@@ -38,8 +32,6 @@ void echo::init()
     for (long i = 0; i < filterarraymax; i++) filter[i] = 0;
     fpos = filterarraymax - 1;
 }
-
-#ifndef BARE_MODULES
 
 void const* echo::get_out(outputnames::OUT_TYPE ot)
 {
@@ -187,7 +179,6 @@ stockerrs::ERR_TYPE echo::validate()
     }
     return stockerrs::ERR_NO_ERROR;
 }
-#endif // BARE_MODULES
 
 void echo::run()
 {
@@ -204,7 +195,6 @@ void echo::run()
 
 int echo::echo_count = 0;
 
-#ifndef BARE_MODULES
 bool echo::done_params = false;
 
 void echo::create_params()
@@ -225,5 +215,5 @@ void echo::create_params()
      synthmodnames::MOD_ECHO, paramnames::PAR_WETDRY);
     done_params = true;
 }
-#endif
+
 #endif

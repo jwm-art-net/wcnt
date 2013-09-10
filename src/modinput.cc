@@ -1,8 +1,6 @@
 #ifndef MODINPUT_H
 #include "../include/modinput.h"
 
-#ifndef BARE_MODULES
-
 modinput::modinput(synthmod * sm, inputnames::IN_TYPE it) :
  synthmodule(sm), input_type(it)
 {
@@ -29,5 +27,4 @@ IOCAT modinput::get_inputcategory()
      : CAT_FIRST;
 }
 
-#endif
 #endif

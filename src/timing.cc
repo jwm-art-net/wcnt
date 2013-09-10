@@ -4,28 +4,22 @@
 timing::timing():
  dobj(dobjnames::SIN_TIME), seconds(0.0)
 {
-#ifndef BARE_MODULES
-    create_dparams();
-#endif
+    create_params();
 }
 
 timing::timing(double s):
  dobj(dobjnames::SIN_BPM),
  seconds(s)
 {
-#ifndef BARE_MODULES
-    create_dparams();
-#endif
+    create_params();
 }
 
-#ifndef BARE_MODULES
-
-bool timing::set_dparam(dparamnames::DPAR_TYPE pt, void* data)
+bool timing::set_param(paramnames::PAR_TYPE pt, void* data)
 {
     bool retv = false;
     switch(pt)
     {
-    case dparamnames::DPAR_SECONDS:
+    case paramnames::PAR_SECONDS:
         set_time(*(double*)data);
         retv = true;
         break;
@@ -36,11 +30,11 @@ bool timing::set_dparam(dparamnames::DPAR_TYPE pt, void* data)
     return retv;
 }
 
-void* timing::get_dparam(dparamnames::DPAR_TYPE pt)
+void const* timing::get_param(paramnames::PAR_TYPE pt)
 {
     switch(pt)
     {
-    case dparamnames::DPAR_SECONDS:
+    case paramnames::PAR_SECONDS:
         return &seconds;
     default:
         return 0;
@@ -50,24 +44,23 @@ void* timing::get_dparam(dparamnames::DPAR_TYPE pt)
 stockerrs::ERR_TYPE timing::validate()
 {
     if (!get_dparlist()->validate(
-        this, dparamnames::DPAR_SECONDS, stockerrs::ERR_NEGATIVE))
+        this, paramnames::PAR_SECONDS, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = get_dparnames()->get_name(dparamnames::DPAR_BAR);
+        *err_msg = get_paramnames()->get_name(paramnames::PAR_BAR);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     return stockerrs::ERR_NO_ERROR;
 }
 
-bool timing::done_dparams = false;
+bool timing::done_params = false;
 
-void timing::create_dparams()
+void timing::create_params()
 {
-    if (done_dparams == true) return;
+    if (done_params == true) return;
     get_dparlist()->add_dobjparam(
-     dobjnames::SIN_TIME, dparamnames::DPAR_SECONDS);
-    done_dparams = true;
+     dobjnames::SIN_TIME, paramnames::PAR_SECONDS);
+    done_params = true;
 }
 
-#endif // BARE_MODULES
 #endif

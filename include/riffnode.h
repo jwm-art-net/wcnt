@@ -62,21 +62,18 @@ public:
     short get_transpose(){ return transpose; }
     double get_start_length(){ return startlen;}
     double get_end_length(){ return endlen;}
-#ifndef BARE_MODULES
     virtual stockerrs::ERR_TYPE validate();
-    bool set_dparam(dparamnames::DPAR_TYPE, void*);
-    void* get_dparam(dparamnames::DPAR_TYPE pt);
-#endif
+    bool set_param(paramnames::PAR_TYPE, void*);
+    void const* get_param(paramnames::PAR_TYPE pt);
+
 private:
     short start_bar;
     riffdata* riff_source;
     short transpose;
     double startlen;
     double endlen;
-#ifndef BARE_MODULES
-    void create_dparams();
-    static bool done_dparams;
-#endif
+    void create_params();
+    static bool done_params;
 };
 
 #endif

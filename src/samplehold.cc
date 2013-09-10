@@ -6,26 +6,19 @@ sample_hold::sample_hold(char const* uname) :
  in_trig(0), in_signal(0), output(0.00), decay_time(0.00), 
  decay_samps(0), ds(0), decay_size(0.00)
 {
-#ifndef BARE_MODULES
     get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
     get_inputlist()->add_input(this, inputnames::IN_TRIG);
     get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
-#endif
     sample_hold_count++;
-#ifndef BARE_MODULES
     create_params();
-#endif
 }
 
 sample_hold::~sample_hold()
 {
-#ifndef BARE_MODULES
     get_outputlist()->delete_module_outputs(this);
     get_inputlist()->delete_module_inputs(this);
-#endif
 }
 
-#ifndef BARE_MODULES
 void const* sample_hold::get_out(outputnames::OUT_TYPE ot)
 {
     void const* o = 0;
@@ -96,12 +89,9 @@ stockerrs::ERR_TYPE sample_hold::validate()
     return stockerrs::ERR_NO_ERROR;
 }
 
-#endif // BARE_MODULES
-
 void sample_hold::init()
 {
     decay_samps = ms_to_samples(decay_time);
-    decay_size = output / decay_samps;
     ds = 0;
 }
 
@@ -110,19 +100,22 @@ void sample_hold::run()
     if (*in_trig == ON)
     {
         output = *in_signal;
-        if (decay_time > 0)
+        if (decay_time > 0) {
+            decay_size = output / decay_samps;
             ds = decay_samps;
+        }
     }
     else if (ds > 0)
     {
         output -= decay_size;
         ds--;
+        if (ds == 0)
+            output = 0;
     }
 }
 
 int sample_hold::sample_hold_count = 0;
 
-#ifndef BARE_MODULES
 bool sample_hold::done_params = false;
 
 void sample_hold::create_params()
@@ -133,5 +126,5 @@ void sample_hold::create_params()
      synthmodnames::MOD_SAMPLEHOLD, paramnames::PAR_DECAY_TIME);
     done_params = true;
 }
-#endif
+
 #endif

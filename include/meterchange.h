@@ -25,18 +25,15 @@ public:
     char get_beatsperbar(){return time_sig.beatsperbar;}
     char get_beatvalue(){return time_sig.beatvalue;}
     // virtuals from dobj
-#ifndef BARE_MODULES
     stockerrs::ERR_TYPE validate();
-    bool set_dparam(dparamnames::DPAR_TYPE, void*);
-    void* get_dparam(dparamnames::DPAR_TYPE pt);
-#endif
+    bool set_param(paramnames::PAR_TYPE, void*);
+    void const* get_param(paramnames::PAR_TYPE pt);
+
 private:
     short bar;
     timesig time_sig;
-#ifndef BARE_MODULES
-    void create_dparams();
-    static bool done_dparams;
-#endif
+    void create_params();
+    static bool done_params;
 };
 
 #endif

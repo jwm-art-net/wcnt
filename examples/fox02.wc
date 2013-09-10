@@ -1,4 +1,4 @@
-wcnt-1.127/jwmsynth
+wcnt-1.2/jwmsynth
 //------------------------------------------------------------------------
 //
 //  drums01.wc:  
@@ -18,61 +18,65 @@ time1
     meter_map
     meter_map
     bpm_map
-        tempo   bpm 40 bar 1
-        tempo   bpm 60 bar 2
-        tempo   bpm 80 bar 3
-        tempo   bpm 100 bar 4
-        tempo   bpm 100 bar 17
-        tempo   bpm 125 bar 18
-        tempo   bpm 150 bar 19
-        tempo   bpm 175 bar 20
-        tempo   bpm 200 bar 21
-        tempo   bpm 225 bar 22
-        tempo   bpm 250 bar 23
-        tempo   bpm 275 bar 24
-        tempo   bpm 300 bar 25
-        tempo   bpm 325 bar 26
-        tempo   bpm 350 bar 27
-        tempo   bpm 375 bar 28
-        tempo   bpm 400 bar 29
-        tempo   bpm 425 bar 30
-        tempo   bpm 450 bar 31
+        tempo   bpm 20 bar 1
+        tempo   bpm 20 bar 2
+        tempo   bpm 20 bar 3
+        tempo   bpm 20 bar 4
+        tempo   bpm 0 bar 17
+        tempo   bpm 25 bar 18
+        tempo   bpm 25 bar 19
+        tempo   bpm 25 bar 20
+        tempo   bpm 25 bar 21
+        tempo   bpm 25 bar 22
+        tempo   bpm 25 bar 23
+        tempo   bpm 25 bar 24
+        tempo   bpm 25 bar 25
+        tempo   bpm 25 bar 26
+        tempo   bpm 25 bar 27
+        tempo   bpm 25 bar 28
+        tempo   bpm 25 bar 29
+        tempo   bpm 25 bar 30
+        tempo   bpm 25 bar 31
     bpm_map
 time1
 
 riff
 riff1z
     quarter_value   64
-    note name c0  pos 0    len 28  vel 1.0
-    note name d0  pos 32   len 12  vel 1.0
-    note name d0  pos 48   len 32  vel 1.0
-    note name c0  pos 84   len 21  vel 1.0
-    note name e0  pos 112  len 12  vel 1.0
-    note name c0  pos 128  len 42  vel 1.0
-    note name e0  pos 176  len 12  vel 1.0
-    note name c0  pos 192  len 12  vel 1.0
-    note name e0  pos 224  len 12  vel 1.0
+    notelist
+        note name c0  pos 0    len 28  vel 1.0
+        note name d0  pos 32   len 12  vel 1.0
+        note name d0  pos 48   len 32  vel 1.0
+        note name c0  pos 84   len 21  vel 1.0
+        note name e0  pos 112  len 12  vel 1.0
+        note name c0  pos 128  len 42  vel 1.0
+        note name e0  pos 176  len 12  vel 1.0
+        note name c0  pos 192  len 12  vel 1.0
+        note name e0  pos 224  len 12  vel 1.0
+    notelist
 riff1z
 
 riff
 riff1
     quarter_value   64
-    note name c0  pos 0    len 11  vel 1.0
-    note name c0  pos 12   len 11  vel 1.0
-    note name d0  pos 32   len 11  vel 1.0
-    note name d0  pos 48   len 11  vel 1.0
-    note name c0  pos 64   len 11  vel 1.0
-    note name c0  pos 84   len 11  vel 1.0
-    note name e0  pos 96   len 11  vel 1.0
-    note name e0  pos 112  len 11  vel 1.0
-    note name c0  pos 128  len 11  vel 1.0
-    note name c0  pos 144  len 11  vel 1.0
-    note name d0  pos 160  len 11  vel 1.0
-    note name e0  pos 176  len 11  vel 1.0
-    note name c0  pos 192  len 11  vel 1.0
-    note name c0  pos 208  len 11  vel 1.0
-    note name e0  pos 224  len 11  vel 1.0
-    note name d0  pos 240  len 11  vel 1.0
+    notelist
+        note name c0  pos 0    len 11  vel 1.0
+        note name c0  pos 12   len 11  vel 1.0
+        note name d0  pos 32   len 11  vel 1.0
+        note name d0  pos 48   len 11  vel 1.0
+        note name c0  pos 64   len 11  vel 1.0
+        note name c0  pos 84   len 11  vel 1.0
+        note name e0  pos 96   len 11  vel 1.0
+        note name e0  pos 112  len 11  vel 1.0
+        note name c0  pos 128  len 11  vel 1.0
+        note name c0  pos 144  len 11  vel 1.0
+        note name d0  pos 160  len 11  vel 1.0
+        note name e0  pos 176  len 11  vel 1.0
+        note name c0  pos 192  len 11  vel 1.0
+        note name c0  pos 208  len 11  vel 1.0
+        note name e0  pos 224  len 11  vel 1.0
+        note name d0  pos 240  len 11  vel 1.0
+    notelist
 riff1
 
 
@@ -177,14 +181,12 @@ seq1
             riff riff1  bar 31  transpose 0
             start_len -8 end_len -10
     track
-
     in_bar              time1 out_bar
     in_bar_trig         time1 out_bar_trig
     in_pos_step_size    time1 out_pos_step_size
     in_beats_per_bar    time1 out_beats_per_bar
     in_beat_value       time1 out_beat_value
     velocity_response_time 5
-    hold_notename off
 seq1
 
 //---------------------------------------------------------
@@ -302,6 +304,7 @@ constant one value 1.0 one
 riff 
 riff2
     quarter_value 1
+    notelist
     note name c0 pos 0 len 8 vel 1.0
     note name c0 pos 8 len 7 vel 1.0
     note name c0 pos 16 len 8 vel 1.0
@@ -313,11 +316,13 @@ riff2
     note name a-1 pos 58 len 2 vel 1.0
     note name g-1 pos 60 len 2 vel 1.0
     note name f-1 pos 62 len 2 vel 1.0
+    notelist
 riff2
 
 riff 
 riff2b
     quarter_value 1
+    notelist
     note name c0 pos 0 len 8 vel 1.0
     note name c0 pos 8 len 7 vel 1.0
     note name c0 pos 16 len 8 vel 1.0
@@ -329,6 +334,7 @@ riff2b
     note name a-1 pos 58 len 2 vel 1.0
     note name g-1 pos 60 len 2 vel 1.0
     note name f-1 pos 62 len 2 vel 1.0
+    notelist
 riff2b
 
 sequencer
@@ -347,7 +353,6 @@ seq2
         in_beats_per_bar    time1   out_beats_per_bar
         in_beat_value       time1   out_beat_value
         velocity_response_time  5
-        hold_notename           off
 seq2
 
 // the single note is to trigger this adsr, which sets the overall
@@ -355,7 +360,7 @@ seq2
 
 adsr
 adsr1
-        envelope
+    envelope
         section name attack
             ut  2.0    ul  1.0
             lt  5000.0    ll  1.0
@@ -365,15 +370,18 @@ adsr1
         section name release
             ut  500.0    ul  0.0
             lt  500.0    ll  0.0
-        envelope
-        in_note_on_trig     seq2    out_note_on_trig
-        in_note_off_trig    seq2    out_note_off_trig
-        in_velocity         seq2    out_velocity
-        up_thresh       0.9
-        lo_thresh       0.5
-        start_level     0.0
-        sustain_state   on
-        zero_retrigger  off
+    envelope
+    in_note_on_trig     seq2    out_note_on_trig
+    in_note_off_trig    seq2    out_note_off_trig
+    in_velocity         seq2    out_velocity
+    up_thresh        0.9
+    lo_thresh        0.5
+    start_level      0.0
+    min_time         0.0
+    max_sustain_time 0.0
+    release_is_ratio off
+    sustain_state    on
+    zero_retrigger   off
 adsr1
 
 // don't always jump to next drum for new position
@@ -469,12 +477,14 @@ osc_clock
 osc1
         in_note_on_trig     seq1    out_note_on_trig
         in_note_slide_trig  seq1    out_note_slide_trig
+        in_play_state       off
         in_frequency        seq1    out_frequency
         in_freq_mod1        off
         in_freq_mod2        off
         octave_offset       0
         tuning_semitones    3
         portamento_time     150.0
+        response_time       25.0
         freq_mod1_size      1
         freq_mod2_size      1
 osc1
@@ -483,12 +493,14 @@ osc_clock
 osc2
         in_note_on_trig     seq1    out_note_on_trig
         in_note_slide_trig  seq1    out_note_slide_trig
+        in_play_state       off
         in_frequency        seq1    out_frequency
         in_freq_mod1        off
         in_freq_mod2        off
         octave_offset       0
         tuning_semitones    6
         portamento_time     150.0
+        response_time       25.0
         freq_mod1_size      1
         freq_mod2_size      1
 osc2
@@ -498,6 +510,7 @@ drum_kill
         in_trig1    seq1        out_note_off_trig
         in_trig2    sampler1    out_loop_trig
         function    or
+        precision   0
 drum_kill
 
 // envelope for individual drums
@@ -521,6 +534,9 @@ adsr3
         up_thresh       1.0
         lo_thresh       0.0
         start_level     0.0
+    min_time         0.0
+    max_sustain_time 0.0
+    release_is_ratio off
         sustain_state   on
         zero_retrigger  off
 adsr3
@@ -562,6 +578,9 @@ adsr41
     up_thresh       1.0
     lo_thresh       0.0
     start_level     0.0
+    min_time         0.0
+    max_sustain_time 0.0
+    release_is_ratio off
     sustain_state   off
     zero_retrigger  off
 adsr41
@@ -588,6 +607,9 @@ adsr42
     up_thresh       1.0
     lo_thresh       0.0
     start_level     0.0
+    min_time         0.0
+    max_sustain_time 0.0
+    release_is_ratio off
     sustain_state   off
     zero_retrigger  off
 adsr42
@@ -614,6 +636,9 @@ adsr43
     up_thresh       1.0
     lo_thresh       0.0
     start_level     0.0
+    min_time         0.0
+    max_sustain_time 0.0
+    release_is_ratio off
     sustain_state   off
     zero_retrigger  off
 adsr43
@@ -640,6 +665,9 @@ adsr44
     up_thresh       1.0
     lo_thresh       0.0
     start_level     0.0
+    min_time         0.0
+    max_sustain_time 0.0
+    release_is_ratio off
     sustain_state   off
     zero_retrigger  off
 adsr44
@@ -973,4 +1001,4 @@ wcnt_exit_module
 //------------------------------------------------------------------------
 // End Of File _jwm 2005.
 //------------------------------------------------------------------------
-wcnt-1.127/jwmsynth
+wcnt-1.2/jwmsynth

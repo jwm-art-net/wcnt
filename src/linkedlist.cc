@@ -145,26 +145,28 @@ ll_item * linkedlist::unlink_item(ll_item * llitem)
     ll_item *i;
     for (i = head->get_next(); i != 0; i = i->get_next()) {
         if (i == llitem) {
-            if (i == head->get_next()) {
-                ll_item *tmp = i->get_next();
-                if (tmp == 0) {
+            if (i == head->get_next()) { // i is first in list
+                ll_item *tmp = i->get_next(); // tmp is 2nd
+                if (tmp == 0) { // only 1 item, remove..
                     head->set_next(0);
                     tail->set_prev(0);
                     current = 0;
-                } else {
+                } else { // 2nd item becomes 1st.
                     head->set_next(tmp);
                     tmp->set_prev(0);
                 }
-            } else if (i == tail->get_prev()) {
-                ll_item *tmp = i->get_prev();
-                tmp->set_next(0);
+            } else if (i == tail->get_prev()) { // > 1 item in list.
+                ll_item *tmp = i->get_prev(); // and is last
+                tmp->set_next(0); // penultimate becomes last
                 tail->set_prev(tmp);
-            } else {
+            } else { // not first or last
                 llitem = i->get_next();
                 llitem->set_prev(i->get_prev());
                 llitem = i->get_prev();
                 llitem->set_next(i->get_next());
             }
+            // if we've just removed item that current is (which goto_
+            // funcs use), reset current to first (if any).
             if (current == i)
                 current = head->get_next();
             return i;

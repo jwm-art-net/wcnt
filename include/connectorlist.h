@@ -1,8 +1,6 @@
 #ifndef CONNECTORLIST_H
 #define CONNECTORLIST_H
 
-#ifndef BARE_MODULES
-
 #include <iostream>
 
 #include "linkedlist.h"
@@ -38,6 +36,7 @@ public:
         return connect = (connector*)
          (connect_item = connectlist->find_data(rd))->get_data();
     }
+    connector* get_connector_by_input(synthmod*, inputnames::IN_TYPE);
     connector* add_connector(connector* rd);
     bool delete_connector(connector*);
     bool make_connections();
@@ -51,5 +50,4 @@ private:
     bool verbose;
 };
 
-#endif
 #endif

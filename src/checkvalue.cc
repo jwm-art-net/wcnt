@@ -42,7 +42,7 @@ bool check_value(long double n, stockerrs::ERR_TYPE et)
                 retv = true;
             break;
         case stockerrs::ERR_RANGE_BPM:
-            if (n >= 10 && n <= 1000)
+            if (n >= -500 && n <= 500)
                 retv = true;
             break;
         case stockerrs::ERR_RANGE_BEAT:

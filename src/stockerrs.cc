@@ -18,7 +18,7 @@ stockerrs::stockerrs() : errmsg(0)
     errmsg[ERR_RANGE_DEGS] = "0.0 ~ 360.0";
     errmsg[ERR_RANGE_SEMI] = "-12.0 ~ 12.0";
     errmsg[ERR_RANGE_OCT] = "-24.0 ~ 8.0";
-    errmsg[ERR_RANGE_BPM] = "10 ~ 1000";
+    errmsg[ERR_RANGE_BPM] = "-500 ~ 500";
     errmsg[ERR_RANGE_BEAT] = "2 ~ 32";
 
     errmsg[ERR_RANGE_TYPE2] = errmsg[ERR_FIRST];

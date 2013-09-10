@@ -1,0 +1,33 @@
+wcnt-1.2/jwmsynth
+//------------------------------------------------------------------------
+//
+//  time.wch
+//      this file contains the time_map module which is used by
+//      most of the .wc files in the examples directory.
+//
+//------------------------------------------------------------------------
+
+// header info:
+
+header header.wch
+
+//------------------------------------------------------------------------
+
+// the time_map's main job is to provides a clock source for the
+// sequencer which will not work without it. that the time_map
+// can alter the time signature and tempo is just a bonus.
+
+time_map
+time1
+    meter_map
+    meter_map
+    bpm_map
+    bpm_map
+time1
+
+constant one value 1.0 one
+
+//------------------------------------------------------------------------
+// End Of File _jwm 2005.
+//------------------------------------------------------------------------
+wcnt-1.2/jwmsynth

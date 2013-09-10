@@ -5,9 +5,7 @@ wave_vertex::wave_vertex() :
  dobj(dobjnames::SIN_VERTEX), out_deg(0), out_pos(0),
  up_deg(0), up_pos(0), lo_deg(0), lo_pos(0)
 {
-#ifndef BARE_MODULES
-    create_dparams();
-#endif
+    create_params();
 }
 
 wave_vertex::wave_vertex(
@@ -15,9 +13,7 @@ wave_vertex::wave_vertex(
  dobj(dobjnames::SIN_VERTEX), out_deg(0), out_pos(0),
  up_deg(udeg), up_pos(upos), lo_deg(ldeg), lo_pos(lpos)
 {
-#ifndef BARE_MODULES
-    create_dparams();
-#endif
+    create_params();
 }
 
 void wave_vertex::modulate(double vmod, double hmod)
@@ -26,26 +22,24 @@ void wave_vertex::modulate(double vmod, double hmod)
     out_pos = lo_pos + (up_pos - lo_pos) * (( vmod < 0) ? -vmod : vmod);
 }
 
-#ifndef BARE_MODULES
-
-bool wave_vertex::set_dparam(dparamnames::DPAR_TYPE pt, void* data)
+bool wave_vertex::set_param(paramnames::PAR_TYPE pt, void* data)
 {
     bool retv = false;
     switch(pt)
     {
-    case dparamnames::DPAR_UPDEG:
+    case paramnames::PAR_UPDEG:
         set_updeg(*(double*)data);
         retv = true;
         break;
-    case dparamnames::DPAR_UPLEVEL:
+    case paramnames::PAR_UPLEVEL:
         set_uppos(*(double*)data);
         retv = true;
         break;
-    case dparamnames::DPAR_LODEG:
+    case paramnames::PAR_LODEG:
         set_lodeg(*(double*)data);
         retv = true;
         break;
-    case dparamnames::DPAR_LOLEVEL:
+    case paramnames::PAR_LOLEVEL:
         set_lopos(*(double*)data);
         retv = true;
         break;
@@ -56,21 +50,21 @@ bool wave_vertex::set_dparam(dparamnames::DPAR_TYPE pt, void* data)
     return retv;
 }
 
-void* wave_vertex::get_dparam(dparamnames::DPAR_TYPE pt)
+void const* wave_vertex::get_param(paramnames::PAR_TYPE pt)
 {
     void* retv = 0;
     switch(pt)
     {
-    case dparamnames::DPAR_UPDEG:
+    case paramnames::PAR_UPDEG:
         retv = &up_deg;
         break;
-    case dparamnames::DPAR_UPLEVEL:
+    case paramnames::PAR_UPLEVEL:
         retv = &up_pos;
         break;
-    case dparamnames::DPAR_LODEG:
+    case paramnames::PAR_LODEG:
         retv = &lo_deg;
         break;
-    case dparamnames::DPAR_LOLEVEL:
+    case paramnames::PAR_LOLEVEL:
         retv = &lo_pos;
         break;
     default:
@@ -84,38 +78,36 @@ stockerrs::ERR_TYPE wave_vertex::validate()
 {
     dobjparamlist* dpl = get_dparlist();
     if (!dpl->validate(
-        this, dparamnames::DPAR_UPDEG, stockerrs::ERR_RANGE_DEGS))
+        this, paramnames::PAR_UPDEG, stockerrs::ERR_RANGE_DEGS))
     {
-        *err_msg = get_dparnames()->get_name(dparamnames::DPAR_UPDEG);
+        *err_msg = get_paramnames()->get_name(paramnames::PAR_UPDEG);
         invalidate();
         return stockerrs::ERR_RANGE_DEGS;
     }
     if (!dpl->validate(
-        this, dparamnames::DPAR_LODEG, stockerrs::ERR_RANGE_DEGS))
+        this, paramnames::PAR_LODEG, stockerrs::ERR_RANGE_DEGS))
     {
-        *err_msg = get_dparnames()->get_name(dparamnames::DPAR_LODEG);
+        *err_msg = get_paramnames()->get_name(paramnames::PAR_LODEG);
         invalidate();
         return stockerrs::ERR_RANGE_DEGS;
     }
     return stockerrs::ERR_NO_ERROR;
 }
 
-void wave_vertex::create_dparams()
+void wave_vertex::create_params()
 {
-    if (done_dparams == true) return;
+    if (done_params == true) return;
     get_dparlist()->add_dobjparam(
-     dobjnames::SIN_VERTEX, dparamnames::DPAR_UPDEG);
+     dobjnames::SIN_VERTEX, paramnames::PAR_UPDEG);
     get_dparlist()->add_dobjparam(
-     dobjnames::SIN_VERTEX, dparamnames::DPAR_UPLEVEL);
+     dobjnames::SIN_VERTEX, paramnames::PAR_UPLEVEL);
     get_dparlist()->add_dobjparam(
-     dobjnames::SIN_VERTEX, dparamnames::DPAR_LODEG);
+     dobjnames::SIN_VERTEX, paramnames::PAR_LODEG);
     get_dparlist()->add_dobjparam(
-     dobjnames::SIN_VERTEX, dparamnames::DPAR_LOLEVEL);
-    done_dparams = true;
+     dobjnames::SIN_VERTEX, paramnames::PAR_LOLEVEL);
+    done_params = true;
 }
 
-bool wave_vertex::done_dparams = false;
-#endif
-
+bool wave_vertex::done_params = false;
 
 #endif

@@ -19,7 +19,6 @@ sampler::sampler(char const* uname) :
  ac_buf_pos(0), ac_buf_start_pos(0), ac_step(0), ac_size(0),
  ac_out_left(0), ac_out_right(0), ch(WAV_CH_UNKNOWN)
 {
-#ifndef BARE_MODULES
     get_outputlist()->add_output(this, outputnames::OUT_LEFT);
     get_outputlist()->add_output(this, outputnames::OUT_RIGHT);
     get_outputlist()->add_output(this, outputnames::OUT_L);
@@ -30,11 +29,8 @@ sampler::sampler(char const* uname) :
     get_inputlist()->add_input(this, inputnames::IN_STOP_TRIG);
     get_inputlist()->add_input(this, inputnames::IN_START_POS_MOD);
     get_inputlist()->add_input(this, inputnames::IN_DEG_SIZE);
-#endif // BARE_MODULES
     sampler_count++;
-#ifndef BARE_MODULES
     create_params();
-#endif
     sampletot = 0;
 }
 
@@ -48,13 +44,10 @@ sampler::~sampler()
         delete [] ac_m_buf;
     if (ac_st_buf)
         delete [] ac_st_buf;
-#ifndef BARE_MODULES
     get_outputlist()->delete_module_outputs(this);
     get_inputlist()->delete_module_inputs(this);
-#endif
 }
 
-#ifndef BARE_MODULES
 void const* sampler::get_out(outputnames::OUT_TYPE ot)
 {
     void const* o = 0;
@@ -113,7 +106,7 @@ bool sampler::set_param(paramnames::PAR_TYPE pt, void const* data)
     switch(pt)
     {
     case paramnames::PAR_WAVFILEIN:
-        if (((dobj*)data)->get_object_type() != dobjnames::SDEF_WAVFILEIN)
+        if (((dobj*)data)->get_object_type() != dobjnames::DEF_WAVFILEIN)
         {
             *err_msg = "\n" + *((dobj*)data)->get_username();
             *err_msg += " is not a wavfilein";
@@ -125,15 +118,15 @@ bool sampler::set_param(paramnames::PAR_TYPE pt, void const* data)
         }
         break;
     case paramnames::PAR_PLAY_DIR:
-        set_play_dir(*(PLAY_DIR*)data);
+        set_play_dir((PLAY_DIR)(*(int*)data));
         retv = true;
         break;
     case paramnames::PAR_PLAY_MODE:
-        set_play_mode(*(PLAY_MODE*)data);
+        set_play_mode((PLAY_MODE)(*(int*)data));
         retv = true;
         break;
     case paramnames::PAR_JUMP_MODE:
-        set_jump_mode(*(JUMP_DIR*)data);
+        set_jump_mode((JUMP_DIR)(*(int*)data));
         retv = true;
         break;
     case paramnames::PAR_START_POS_MIN:
@@ -153,7 +146,7 @@ bool sampler::set_param(paramnames::PAR_TYPE pt, void const* data)
         retv = true;
         break;
     case paramnames::PAR_LOOP_MODE:
-        set_loop_mode(*(LOOP_MODE*)data);
+        set_loop_mode((LOOP_MODE)(*(int*)data));
         retv = true;
         break;
     case paramnames::PAR_LOOP_IS_OFFSET:
@@ -225,8 +218,6 @@ void const* sampler::get_param(paramnames::PAR_TYPE pt)
         return 0;
     }
 }
-
-#endif // BARE_MODULES
 
 void sampler::set_wavfilein(wavfilein * wi)
 {
@@ -1066,7 +1057,6 @@ void sampler::ac_mix_rev_stereo(stereodata* ac_st_tmp)
 
 int sampler::sampler_count = 0;
 
-#ifndef BARE_MODULES
 bool sampler::done_params = false;
 
 void sampler::create_params()
@@ -1077,16 +1067,22 @@ void sampler::create_params()
      synthmodnames::MOD_SAMPLER, paramnames::PAR_WAVFILEIN);
     get_paramlist()->add_param(
      synthmodnames::MOD_SAMPLER, paramnames::PAR_PLAY_DIR);
+    get_fxsparamlist()->add_param("fwd/rev", paramnames::PAR_PLAY_DIR);
     get_paramlist()->add_param(
      synthmodnames::MOD_SAMPLER, paramnames::PAR_PLAY_MODE);
+    get_fxsparamlist()->add_param("stop/wrap/bounce/jump",
+     paramnames::PAR_PLAY_MODE);
     get_paramlist()->add_param(
      synthmodnames::MOD_SAMPLER, paramnames::PAR_JUMP_MODE);
+    get_fxsparamlist()->add_param("play/loop", paramnames::PAR_JUMP_MODE);
     get_paramlist()->add_param(
      synthmodnames::MOD_SAMPLER, paramnames::PAR_START_POS_MIN);
     get_paramlist()->add_param(
      synthmodnames::MOD_SAMPLER, paramnames::PAR_START_POS_MAX);
     get_paramlist()->add_param(
      synthmodnames::MOD_SAMPLER, paramnames::PAR_LOOP_MODE);
+    get_fxsparamlist()->add_param("off/fwd/rev/bi",
+     paramnames::PAR_LOOP_MODE);
     get_paramlist()->add_param(
      synthmodnames::MOD_SAMPLER, paramnames::PAR_LOOP_BEGIN);
     get_paramlist()->add_param(
@@ -1105,5 +1101,4 @@ void sampler::create_params()
     add_param(synthmodnames::MOD_SAMPLER, paramnames::PAR_DEGSIZE_AMOUNT);
     done_params = true;
 }
-#endif
 #endif

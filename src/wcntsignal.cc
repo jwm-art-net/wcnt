@@ -5,23 +5,18 @@ wcnt_signal::wcnt_signal(char const* uname) :
  synthmod(synthmodnames::MOD_WCNTSIGNAL, wcnt_signal_count, uname),
  in_signal(0), out_output(0.0), level(0.0)
 {
-#ifndef BARE_MODULES
     get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
     get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
     create_params();
-#endif
     wcnt_signal_count++;
 }
 
 wcnt_signal::~wcnt_signal()
 {
-#ifndef BARE_MODULES
     get_outputlist()->delete_module_outputs(this);
     get_inputlist()->delete_module_inputs(this);
-#endif
 }
 
-#ifndef BARE_MODULES
 void const* wcnt_signal::get_out(outputnames::OUT_TYPE ot)
 {
     void const* o = 0;
@@ -87,7 +82,6 @@ void wcnt_signal::create_params()
      synthmodnames::MOD_WCNTSIGNAL, paramnames::PAR_LEVEL);
     done_params = true;
 }
-#endif
 
 int wcnt_signal::wcnt_signal_count = 0;
 

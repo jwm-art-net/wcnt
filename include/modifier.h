@@ -2,14 +2,9 @@
 #define MODIFIER_H
 
 #include "dtr.h"
-
-#ifdef BARE_MODULES
-#include "synthmodule.h"
-#else
 #include "modoutputslist.h"
 #include "modinputslist.h"
 #include "modparamlist.h"
-#endif
 
 class modifier : public synthmod
 {
@@ -40,12 +35,11 @@ public:
     void run();
     void init();
     stockerrs::ERR_TYPE validate();
-#ifndef BARE_MODULES
     void const* get_out(outputnames::OUT_TYPE);
     void const* set_in(inputnames::IN_TYPE, void const*);
     bool set_param(paramnames::PAR_TYPE, void const*);
     void const* get_param(paramnames::PAR_TYPE);
-#endif
+
 private:
     const double* in_signal;
     const double* in_mod;
@@ -122,10 +116,8 @@ private:
          ((insig ^ msig) / func_val) * mod_size;
     }
     static int modifier_count;
-#ifndef BARE_MODULES
     void create_params();
     static bool done_params;
-#endif
 };
 
 #endif

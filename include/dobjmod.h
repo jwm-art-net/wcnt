@@ -74,8 +74,6 @@ the user and will be deleted when wcnt exits.
      ***************** ---------- hope that's clear for you.
 */
 
-#ifndef BARE_MODULES
-
 #include "synthmodule.h"
 #include "dobjparamlist.h"
 #include "dobjdobjlist.h"
@@ -90,13 +88,13 @@ public:
     virtual stockerrs::ERR_TYPE validate(){ 
         return stockerrs::ERR_NO_ERROR; 
     }
-    bool set_dparam(dparamnames::DPAR_TYPE, void*);
-    void* get_dparam(dparamnames::DPAR_TYPE pt);
+    bool set_param(paramnames::PAR_TYPE, void*);
+    void const* get_param(paramnames::PAR_TYPE pt);
+
 private:
     synthmod* synth_mod;
-    void create_dparams();
-    static bool done_dparams;
+    void create_params();
+    static bool done_params;
 };
 
-#endif
 #endif

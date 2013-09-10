@@ -5,25 +5,18 @@ range_limit::range_limit(char const* uname) :
  synthmod(synthmodnames::MOD_RANGELIMIT, range_limit_count, uname),
  in_signal(0), out_output(0), sigrangehi(0), sigrangelo(0)
 {
-#ifndef BARE_MODULES
     get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
     get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
-#endif
     range_limit_count++;
-#ifndef BARE_MODULES
     create_params();
-#endif
 }
 
 range_limit::~range_limit()
 {
-#ifndef BARE_MODULES
     get_outputlist()->delete_module_outputs(this);
     get_inputlist()->delete_module_inputs(this);
-#endif
 }
 
-#ifndef BARE_MODULES
 void const* range_limit::get_out(outputnames::OUT_TYPE ot)
 {
     void const* o = 0;
@@ -85,8 +78,6 @@ void const* range_limit::get_param(paramnames::PAR_TYPE pt)
     }
 }
 
-#endif // BARE_MODULES
-
 void range_limit::init()
 {
     if (sigrangelo > sigrangehi) {
@@ -106,7 +97,6 @@ void range_limit::run()
 
 int range_limit::range_limit_count = 0;
 
-#ifndef BARE_MODULES
 bool range_limit::done_params = false;
 
 void range_limit::create_params()
@@ -119,5 +109,5 @@ void range_limit::create_params()
      synthmodnames::MOD_RANGELIMIT, paramnames::PAR_SIG_RANGE_LO);
     done_params = true;
 }
-#endif
+
 #endif

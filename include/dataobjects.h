@@ -7,12 +7,15 @@
 #include "bpmchange.h"
 #include "riffnode.h"
 #include "wavfilein.h"
-#include "sampledata.h"
 #include "dobjmod.h"
 #include "dynvertex.h"
 #include "timing.h"
+#include "dobjnamedobj.h"
+#include "modnamedobj.h"
+#include "synthfilereader.h"
+#include "paramedit.h"
+#include "parameditor.h"
+#include "inputedit.h"
+#include "inputeditor.h"
 
 #endif
-
-// #include "sampleset.h"
-// #include "ruleset.h"

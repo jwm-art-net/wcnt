@@ -59,6 +59,10 @@ public:
         MOD_STATEGATETRIG,
         MOD_INVERT,
         MOD_TIMER,
+        MOD_SYNCCLOCK,
+        MOD_WCNTTRIGGER,
+        MOD_TRIGSWITCHER,
+        MOD_ONOFFTRIG,
         MOD_LAST
     };
     synthmodnames();

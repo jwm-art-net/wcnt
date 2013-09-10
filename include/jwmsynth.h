@@ -1,8 +1,6 @@
 #ifndef JWMSYNTH
 #define JWMSYNTH
 
-#ifndef BARE_MODULES
-
 #include <iostream>
 
 #include "synthmodulelist.h"
@@ -11,18 +9,7 @@
 #include "connectorlist.h"
 #include "synthfilereader.h"
 #include "dobjlist.h"
-
-// jwmsynth - the class to tie everything together.
-// processes command line, initiates synth generation and file reading
-// then connects, and executes.  also creates lists and names.
-// knows when to stop!
-
-
-// in the something_help() methods you'll see code like this:-
-// delete something_list->create_something(something_type);
-// this is because in order to find out what parts make up that
-// something, that something has to be created so that it creates
-// the parts of the ui which correspond to them.  it's ok. alright?
+#include "topdobjlist.h"
 
 class jwmsynth
 {
@@ -38,12 +25,12 @@ public:
     bool execute_synth();           // 5
     string get_error_msg(){ return err_msg;}
 private:
-    // data for creating modules, and making connections etc
     char* version;
-    char* path; // path of .wc filename specified on cmdline if any.
+    char* path;
+    string wcnt_id;
+//--- dobj and synthmod static member variables ---//
     string* synthmod_err_msg;
     string* dobj_err_msg;
-    string wcnt_id;
     iocat_names* iocatnames;
     synthmodnames* modnames;
     inputnames* innames;
@@ -55,30 +42,25 @@ private:
     modparamlist* paramlist;
     connectorlist* connectlist;
     synthfilereader* synthfile;
-    // dobj data object stuff
     moddobjlist* mdobjlist;
     dobjnames* dobj_names;
     dobjlist* dobj_list;
     dobjparamlist* dobjparam_list;
-    dparamnames* dpar_names;
-    dobjdobjlist* dobj_dobjlist;
-    // validation and error message
+    topdobjlist* top_dobjlist;
+    fxsparamlist* fxsparlist;
+//--- validation and error messages ---//
     bool valid;
     string err_msg;
     stockerrs* stock_errs;
-    // these are used to figure out when to stop
+//--- when to stop ---//
     short exit_bar;
-    const STATUS* in_bar_trig;  // taken from the only wcnt_exit module
-    const short* in_bar;        // the user is allowed to create
-    // command line processing
+    const STATUS* in_bar_trig;
+    const short* in_bar;
+//--- command line processing ---//
     int const opts_count;
     char** const opts;
     int wcfile_opt;
-    // file reading
-    bool open_synthfile();
-    bool read_and_create_synthmod(string const* com);
-    bool read_and_create_dobj(string const* com);
-    // command line help
+//--- private methods ---//
     void module_help();
     void dobj_help();
     void dobj_help(synthmodnames::SYNTH_MOD_TYPE);
@@ -90,5 +72,4 @@ private:
     void freq_help();
 };
 
-#endif
 #endif

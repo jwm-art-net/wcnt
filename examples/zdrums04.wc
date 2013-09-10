@@ -1,0 +1,119 @@
+wcnt-1.2/jwmsynth
+//------------------------------------------------------------------------
+//
+//  zdrums03.wc
+//
+//  lifts zdrums02.wc, and introduces pattern changes
+//  by way of the brand spankin' new trig_switcher.
+//
+//------------------------------------------------------------------------
+
+header header.wch
+
+synth_file_reader
+zdrums02
+    filename    zdrums02.wc
+    mod_action  exclude
+    dobj_action exclude
+    modules
+    modules
+    data_objects
+        dobj name master_01
+    data_objects
+zdrums02
+
+param_editor
+master_01
+    editlist
+        edit zdrums-wav
+            filename zdrums04.wav
+            end_bar  16
+        edit zdrums_exit exit_bar 16
+    editlist
+master_01
+
+// the new patterns which will alternate with the existing patterns
+pattern_trig
+kik-pat2
+    in_trig sync_kik out_phase_trig
+    pattern 10010100-00100110
+kik-pat2
+
+pattern_trig
+snr-pat2
+    in_trig sync_snr out_phase_trig
+    pattern 00100011-00001111
+snr-pat2
+
+pattern_trig
+hat-pat2
+    in_trig sync_hat out_phase_trig
+    pattern 10010001-10010010
+hat-pat2
+
+// sync_clock to trigger a pattern change
+sync_clock
+two-bar
+    in_bpm            time1 out_bpm
+    in_pos_step_size  time1 out_pos_step_size
+    in_beats_per_bar  time1 out_beats_per_bar
+    in_beat_value     time1 out_beat_value
+    in_phase_trig     off
+    in_freq_mod1        off
+    in_freq_mod2        off
+    freq_mod1_size  1.0
+    freq_mod2_size  1.0
+    quarter_value  1
+    len            8
+    snap_to         1
+two-bar
+
+// wcnt_trigger modules to insert into trig_switcher modules
+wcnt_trigger hp1 in_trig hat-pat  out_trig hp1
+wcnt_trigger hp2 in_trig hat-pat2 out_trig hp2
+wcnt_trigger sp1 in_trig snr-pat  out_trig sp1
+wcnt_trigger sp2 in_trig snr-pat2 out_trig sp2
+wcnt_trigger kp1 in_trig kik-pat  out_trig kp1
+wcnt_trigger kp2 in_trig kik-pat2 out_trig kp2
+
+trig_switcher
+hat_trig
+    triggers
+        synthmod name hp2
+        synthmod name hp1
+    triggers
+    in_trig two-bar out_phase_trig
+hat_trig
+
+trig_switcher
+snr_trig
+    triggers
+        synthmod name sp2
+        synthmod name sp1
+    triggers
+    in_trig two-bar out_phase_trig
+snr_trig
+
+trig_switcher
+kik_trig
+    triggers
+        synthmod name kp2
+        synthmod name kp1
+    triggers
+    in_trig two-bar out_phase_trig
+kik_trig
+
+input_editor
+inputs_02
+    editlist
+        connect kik-smplr in_play_trig kik_trig out_trig
+        connect snr-smplr in_play_trig snr_trig out_trig
+        connect hat-smplr in_play_trig hat_trig out_trig
+        connect kik-adsr in_note_on_trig kik_trig out_trig
+        connect snr-adsr in_note_on_trig snr_trig out_trig
+        connect hat-adsr in_note_on_trig hat_trig out_trig
+    editlist
+inputs_02
+
+//------------------------------------------------------------------------
+wcnt-1.2/jwmsynth

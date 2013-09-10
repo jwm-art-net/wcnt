@@ -7,30 +7,23 @@ stereomixer::stereomixer(char const* uname) :
  chlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA),
  chitem(0), chan(0)
 {
-#ifndef BARE_MODULES
     get_outputlist()->add_output(this, outputnames::OUT_LEFT);
     get_outputlist()->add_output(this, outputnames::OUT_RIGHT);
-#endif
 /* cannot register  inputs with modinputslist because they are part of
    list - don't know how many there will be. */
     stereomixer_count++;
-#ifndef BARE_MODULES
     create_params();
     create_moddobj();
-#endif
 }
 
 stereomixer::~stereomixer()
 {
-#ifndef BARE_MODULES
     get_outputlist()->delete_module_outputs(this);
     /*no module inputs to delete*/
     /*no need to delete items in channellist as they are just pointers*/
     // to items in another list I think you/I 'll find.
-#endif
 }
 
-#ifndef BARE_MODULES
 void const* stereomixer::get_out(outputnames::OUT_TYPE ot)
 {
     void const* o = 0;
@@ -113,8 +106,6 @@ dobj* stereomixer::add_dobj(dobj* dbj)
     return 0;
 }
 
-#endif // BARE_MODULES
-
 stereo_channel* stereomixer::add_channel(stereo_channel* ch)
 {
     if	(ch == 0)
@@ -160,7 +151,6 @@ void stereomixer::run()
 
 int stereomixer::stereomixer_count = 0;
 
-#ifndef BARE_MODULES
 bool stereomixer::done_params = false;
 
 void stereomixer::create_params()
@@ -178,12 +168,12 @@ void stereomixer::create_moddobj()
 {
     if (done_moddobj == true)
         return;
-    get_moddobjlist()->add_moddobj(
-     synthmodnames::MOD_STEREOMIXER, dobjnames::LIN_MIX);
-    dobj::get_dobjdobjlist()->add_dobjdobj(
-     dobjnames::LIN_MIX, dobjnames::DOBJ_SYNTHMOD);
+    moddobj* mdbj;
+    mdbj = get_moddobjlist()->add_moddobj(
+        synthmodnames::MOD_STEREOMIXER, dobjnames::LST_MIX);
+    mdbj->get_dobjdobjlist()->add_dobjdobj(
+        dobjnames::LST_MIX, dobjnames::DOBJ_SYNTHMOD);
     done_moddobj = true;
 }
 
-#endif
 #endif

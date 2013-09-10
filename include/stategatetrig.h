@@ -3,16 +3,13 @@
 
 #include "synthmodule.h"
 #include "conversions.h"
-
-#ifndef BARE_MODULES
 #include "modoutputslist.h"
 #include "modinputslist.h"
 #include "modparamlist.h"
-#endif
 
-/*
-    only outputs the input trigger when the input state is ON
-*/
+
+/*    only outputs the input trigger when the input state is ON */
+
 
 class stategatetrig: public synthmod
 {
@@ -26,10 +23,8 @@ public:
     STATUS const* get_output_trig(){ return &out_trig;}
     // virtual funcs
     void run();
-#ifndef BARE_MODULES
     void const* get_out(outputnames::OUT_TYPE);
     void const* set_in(inputnames::IN_TYPE, void const*);
-#endif
 
 private:
     STATUS const* in_trig;

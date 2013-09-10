@@ -5,14 +5,11 @@
 
 #include "wavfileheader.h"
 #include "conversions.h"
-
-#ifndef BARE_MODULES
 #include "modoutputslist.h"
 #include "modinputslist.h"
 #include "modparamlist.h"
-#endif
-/*
-writes multiple wav files.
+
+/*  writes multiple wav files.
 
 starts writing in between start bar and end bar.
 each time write_trig is ON it starts writing a new wav file.
@@ -22,8 +19,7 @@ recieves another write_trig, or the program exits.
 the name of the output files will be basenamennn where nnn is
 a number between 1 and 9999.  No, surely not, you want to 
 automatically write more wavs than that? are you mad?  Go change 
-the code yourself then!
-*/
+the code yourself then!                             */
 
 class serialwavfileout: public synthmod
 {
@@ -59,12 +55,11 @@ public:
     // virtual funcs
     void run();
     stockerrs::ERR_TYPE validate();
-#ifndef BARE_MODULES
     void const* get_out(outputnames::OUT_TYPE);
     void const* set_in(inputnames::IN_TYPE, void const*);
     bool set_param(paramnames::PAR_TYPE, void const*);
     void const* get_param(paramnames::PAR_TYPE);
-#endif
+
 private:
     // inputs
     const short* in_left_channel;
@@ -97,10 +92,8 @@ private:
     void write_wav_header(unsigned long length);
     // synthmod stuff
     static short serialwavfileout_count;
-#ifndef BARE_MODULES
     void create_params();
     static bool done_params;
-#endif
 };
 
 #endif

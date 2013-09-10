@@ -1,0 +1,198 @@
+wcnt-1.2/jwmsynth
+//------------------------------------------------------------------------
+//
+//  zdrums05.wc
+//
+//  lifts zdrums04.wc, and does things to it.
+//
+//------------------------------------------------------------------------
+
+header header.wch
+
+synth_file_reader
+zdrums04
+    filename    zdrums04.wc
+    mod_action  exclude
+    dobj_action exclude
+    modules
+    modules
+    data_objects
+        dobj name master_01
+    data_objects
+zdrums04
+
+param_editor
+master_01
+    editlist
+        edit zdrums-wav
+            filename zdrums05.wav
+            end_bar  16
+        edit zdrums_exit exit_bar 16
+    editlist
+master_01
+
+// alter pitch of kick drum, increase length, 
+// and add audible sample loop...
+// ... and change patterns again...
+
+param_editor
+drumparams_05
+    editlist
+        edit kik-freq freq 190
+        edit kik-adsr min_time 200
+        edit kik-smplr
+            loop_start_pos 3200
+            loop_end_pos   4700
+        edit hat-freq freq 140
+        edit kik-pat  pattern 10010100-00001010-10010100-00001111-10010100-00001010-10010100-00001111
+        edit kik-pat2 pattern 10010100-00001010-10010100-00001111-10010100-00001010-10010101-00101011
+        edit snr-pat  pattern 00101000-00100010-00101000-00100101
+        edit snr-pat2 pattern 00101000-00100010-00101000-00101001-00101000-00100010-00101000-00101111
+        edit hat-pat  pattern 10111011
+        edit hat-pat2 pattern 10111010
+        edit two-bar  len 16 // make two-bar four bars for pattern switch.
+        edit sync_kik
+            quarter_value 64
+            len           16
+        edit sync_snr
+            quarter_value 64
+            len           16
+        edit sync_hat
+            quarter_value 64
+            len           32
+    editlist
+drumparams_05
+
+// add echo to the snare with some ring modulation...
+
+clock
+ring-freq-l
+    in_freq_mod1 kik-adsr out_output
+    freq        200
+    freq_mod1_size 2.0
+ring-freq-l
+
+sine_wave
+ring-l
+    in_phase_trig  ring-freq-l out_phase_trig
+    in_deg_size    ring-freq-l out_deg_size
+    recycle_mode         off
+    on_trig_reset_phase  off
+    phase_cycles         1.0
+ring-l
+
+clock
+ring-freq-r
+    in_freq_mod1 kik-adsr out_output
+    freq        250
+    freq_mod1_size 2.0
+ring-freq-r
+
+sine_wave
+ring-r
+    in_phase_trig  ring-freq-r out_phase_trig
+    in_deg_size    ring-freq-r out_deg_size
+    recycle_mode         off
+    on_trig_reset_phase  off
+    phase_cycles         1.0
+ring-r
+
+echo
+snr-echo-l
+    in_signal        snr-pan out_l
+    in_gain_mod      off
+    in_feedback      snr-echo-r2 out_wet_output
+    in_feedback_mod  ring-l out_output
+    delay_time        12
+    gain              1.0
+    gain_modsize      0.0
+    feedback          0.735
+    feedback_modsize  1.0
+    wet/dry           0.25
+snr-echo-l
+
+echo
+snr-echo-r
+    in_signal        snr-pan out_r
+    in_gain_mod      off
+    in_feedback      snr-echo-l2 out_wet_output
+    in_feedback_mod  ring-r out_output
+    delay_time        14
+    gain              1.0
+    gain_modsize      0.0
+    feedback          0.735
+    feedback_modsize  1.0
+    wet/dry           0.25
+snr-echo-r
+
+echo
+snr-echo-l2
+    in_signal        snr-echo-r out_wet_output
+    in_gain_mod      off
+    in_feedback      snr-echo-r2 out_wet_output
+    in_feedback_mod  ring-l out_output
+    delay_time        104
+    gain              1.0
+    gain_modsize      0.0
+    feedback          0.35
+    feedback_modsize  0.25
+    wet/dry           0.25
+snr-echo-l2
+
+echo
+snr-echo-r2
+    in_signal        snr-echo-l out_wet_output
+    in_gain_mod      off
+    in_feedback      snr-echo-l2 out_wet_output
+    in_feedback_mod  ring-r out_output
+    delay_time        152
+    gain              1.0
+    gain_modsize      0.0
+    feedback          0.35
+    feedback_modsize  0.25
+    wet/dry           0.25
+snr-echo-r2
+
+// add echo to hats...
+
+echo
+hat-echo-l
+    in_signal        hat-pan out_l
+    in_gain_mod      off
+    in_feedback      hat-echo-r out_wet_output
+    in_feedback_mod  off
+    delay_time        124
+    gain              1.0
+    gain_modsize      0.0
+    feedback          0.635
+    feedback_modsize  0.0
+    wet/dry           0.45
+hat-echo-l
+
+echo
+hat-echo-r
+    in_signal        hat-pan out_r
+    in_gain_mod      off
+    in_feedback      hat-echo-l out_wet_output
+    in_feedback_mod  off
+    delay_time        142
+    gain              1.0
+    gain_modsize      0.0
+    feedback          0.635
+    feedback_modsize  0.0
+    wet/dry           0.45
+hat-echo-r
+
+// connect echo output instead of pan output
+input_editor
+inputs_05
+    editlist
+        connect snr_l in_signal snr-echo-l out_output
+        connect snr_r in_signal snr-echo-r out_output
+        connect hat_l in_signal hat-echo-l out_output
+        connect hat_r in_signal hat-echo-r out_output
+    editlist
+inputs_05
+
+//------------------------------------------------------------------------
+wcnt-1.2/jwmsynth

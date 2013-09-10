@@ -1,9 +1,8 @@
 #ifndef INPUTNAMES_H
 #define INPUTNAMES_H
 
-#ifndef BARE_MODULES
-
 #include <string.h>
+
 #include "iocat.h"
 
 class inputnames
@@ -60,6 +59,7 @@ public:
         IN_MODULATION,
         IN_DETRANSPOSE,
         IN_STATE,
+        IN_PLAY_STATE,
         // used for array to know how many:
         IN_LAST
     };
@@ -74,5 +74,4 @@ private:
     IOCAT* incat;
 };
 
-#endif
 #endif

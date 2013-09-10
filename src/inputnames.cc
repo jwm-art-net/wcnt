@@ -1,8 +1,6 @@
 #ifndef INPUTNAMES_H
 #include "../include/inputnames.h"
 
-#ifndef BARE_MODULES
-
 inputnames::inputnames() : inname(NULL), incat(NULL)
 {
     inname = new char*[IN_LAST + 1];
@@ -102,7 +100,8 @@ inputnames::inputnames() : inname(NULL), incat(NULL)
     incat[IN_DETRANSPOSE] = CAT_SHORT;
     inname[IN_STATE] = "in_state";
     incat[IN_STATE] = CAT_STATE;
-    
+    inname[IN_PLAY_STATE] = "in_play_state";
+    incat[IN_PLAY_STATE] = CAT_STATE;
 }
 
 inputnames::~inputnames()
@@ -138,5 +137,4 @@ inputnames::IN_TYPE inputnames::get_type(char const* iname)
     return IN_FIRST;
 }
 
-#endif
 #endif

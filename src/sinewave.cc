@@ -6,26 +6,19 @@ sine_wave::sine_wave(char const* uname) :
  output(0.00), play_state(OFF), in_phase_trig(NULL), in_deg_size(NULL),
  degs(360.00), recycle(OFF), zero_deg(OFF), cycles(1.00), maxdegs(360)
 {
-#ifndef BARE_MODULES
     get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
     get_outputlist()->add_output(this, outputnames::OUT_PLAY_STATE);
     get_inputlist()->add_input(this, inputnames::IN_PHASE_TRIG);
     get_inputlist()->add_input(this, inputnames::IN_DEG_SIZE);
-#endif
     sine_wave_count++;
-#ifndef BARE_MODULES
     create_params();
-#endif
 }
 sine_wave::~sine_wave()
 {
-#ifndef BARE_MODULES
     get_outputlist()->delete_module_outputs(this);
     get_inputlist()->delete_module_inputs(this);
-#endif
 }
 
-#ifndef BARE_MODULES
 void const* sine_wave::get_out(outputnames::OUT_TYPE ot)
 {
     void const* o = 0;
@@ -112,8 +105,6 @@ stockerrs::ERR_TYPE sine_wave::validate()
     return stockerrs::ERR_NO_ERROR;
 }
 
-#endif // BARE_MODULES
-
 void sine_wave::init()
 {
     maxdegs = cycles * 360.00;
@@ -136,7 +127,6 @@ void sine_wave::run()
 
 int sine_wave::sine_wave_count = 0;
 
-#ifndef BARE_MODULES
 bool sine_wave::done_params = false;
 
 void sine_wave::create_params()
@@ -151,5 +141,5 @@ void sine_wave::create_params()
      synthmodnames::MOD_SINEWAVE, paramnames::PAR_CYCLES);
     done_params = true;
 }
-#endif
+
 #endif

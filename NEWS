@@ -1,0 +1,42 @@
+new features in wcnt-1.128
+
+* time_map
+    * tempo changes have been changed so that you add or
+      subtract from the existing tempo, instead of specifiying
+      an absolute value to set the bpm at.
+
+* sequencer
+    * new implimentation of note slide handling.  It now remembers
+      notes to slide back to.
+    * slight improvements made to time keeping code.
+    * no longer provides out_end_trig when out_start_trig requested
+    * removed a redundant parameter hold_notename
+
+* adsr
+    * release section can now only be triggered once. subsequent
+      note_off triggers which occurr before a note_on have no effect.
+    * min_time parameter, specifies minimum time adsr can run before
+      note_off.
+    * max_sustain_time, specifies maximum time sustain section can hold.
+    * release_is_ratio (on/off) turns levels in release section to
+      ratios.
+
+* osc_clock
+    * response_time parameter added.
+    * in_play_state input added.  used in combination with response_time
+      parameter. when in_play_state input is on, take n milliseconds to
+      change frequency.  when in_play_state is off, ignore response_time.
+
+* logic_trigger
+    * new function - xornot. only trigger if trigger1 triggers, but not
+      if trigger2 triggers simultaneously.
+    * precision parameter added. tells the logic_trigger how many samples
+      may elaspe between in_trig1 and in_trig2 triggering and still treat
+      them as occurring simultaneously.
+
+* sync_clock - new module
+    * a LFO-like clock module which keeps in time with tempo via inputs
+      connected to a time_map module.
+    * quarter_value and note_length parameters specify how fast to tick.
+    * phase can be reset.
+    * can be connected to sine_wave module etc.

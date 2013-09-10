@@ -56,7 +56,7 @@ public:
         ERR_RANGE_DEGS,     // outside 0.0 ~ 360.0
         ERR_RANGE_SEMI,     // outside -12.0 ~ 12.0
         ERR_RANGE_OCT,      // outside -24.0 ~ 8.0 - overly generous.
-        ERR_RANGE_BPM,      // outside 10 ~ 1000
+        ERR_RANGE_BPM,      // outside -500 ~ 500 (now relative)
         ERR_RANGE_BEAT,     // outside 2 ~ 32
         
 // should be inside range errmsgs:

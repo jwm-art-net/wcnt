@@ -1,0 +1,64 @@
+wcnt-1.2/jwmsynth
+//------------------------------------------------------------------------
+//
+//  zdrums03.wc
+//
+//  lifts zdrums02.wc, and alters pattern by changing frequencies of
+//  sync_clock modules. results in a pattern which takes 16 bars before
+//  repeating again.
+//
+//------------------------------------------------------------------------
+
+header header.wch
+
+synth_file_reader
+zdrums02
+    filename    zdrums02.wc
+    mod_action  exclude
+    dobj_action exclude
+    modules
+    modules
+    data_objects
+        dobj name master_01
+    data_objects
+zdrums02
+
+param_editor
+master_01
+    editlist
+        edit zdrums-wav
+            filename zdrums03.wav
+            end_bar  16
+        edit zdrums_exit exit_bar 16
+    editlist
+master_01
+
+param_editor
+drum_params_02
+    editlist
+        edit sync_kik
+            quarter_value 64
+            len           24
+        edit sync_snr
+            quarter_value 64
+            len           32
+        edit sync_hat
+            quarter_value 64
+            len           16
+    editlist
+drum_params_02
+
+input_editor
+inputs_02
+    editlist
+        connect sync_kik
+            in_phase_trig time1 out_bar_trig
+        connect sync_snr
+            in_phase_trig time1 out_bar_trig
+        connect sync_hat
+            in_phase_trig time1 out_bar_trig
+    editlist
+inputs_02
+
+//------------------------------------------------------------------------
+wcnt-1.2/jwmsynth

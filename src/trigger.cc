@@ -3,30 +3,22 @@
 
 trigger::trigger(char const* uname) :
  synthmod(synthmodnames::MOD_TRIGGER, trigger_count, uname),
- in_signal(0), out_trig(OFF), out_not_trig(OFF),
- attack_time(0.0), release_time(0.0), attack_level(0.0),
- release_level(0.0), ind_mode(OFF), attack_samps(0), release_samps(0)
+ in_signal(0), out_trig(OFF), out_not_trig(OFF), out_wait_state(OFF),
+ delay_time(0.0), trigger_level(0.0), delay_samps(0)
 {
-#ifndef BARE_MODULES
     get_outputlist()->add_output(this, outputnames::OUT_TRIG);
-    get_outputlist()->add_output(this, outputnames::OUT_NOT_TRIG);
+    get_outputlist()->add_output(this, outputnames::OUT_WAIT_STATE);
     get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
-#endif
     trigger_count++;
-#ifndef BARE_MODULES
     create_params();
-#endif
 }
 
 trigger::~trigger()
 {
-#ifndef BARE_MODULES
     get_outputlist()->delete_module_outputs(this);
     get_inputlist()->delete_module_inputs(this);
-#endif
 }
 
-#ifndef BARE_MODULES
 void const* trigger::get_out(outputnames::OUT_TYPE ot)
 {
     void const* o = 0;
@@ -37,6 +29,9 @@ void const* trigger::get_out(outputnames::OUT_TYPE ot)
         break;
     case outputnames::OUT_NOT_TRIG:
         o = &out_not_trig;
+        break;
+    case outputnames::OUT_WAIT_STATE:
+        o = &out_wait_state;
         break;
     default:
         o = 0;
@@ -63,24 +58,12 @@ bool trigger::set_param(paramnames::PAR_TYPE pt, void const* data)
     bool retv = false;
     switch(pt)
     {
-    case paramnames::PAR_ATTACK_TIME:
-        set_attack_time(*(double*)data);
+    case paramnames::PAR_DELAY_TIME:
+        set_delay_time(*(double*)data);
         retv = true;
         break;
-    case paramnames::PAR_RELEASE_TIME:
-        set_release_time(*(double*)data);
-        retv = true;
-        break;
-    case paramnames::PAR_ATTACK_LEVEL:
-        set_attack_level(*(double*)data);
-        retv = true;
-        break;
-    case paramnames::PAR_RELEASE_LEVEL:
-        set_release_level(*(double*)data);
-        retv = true;
-        break;
-    case paramnames::PAR_INDEPENDANT:
-        set_independant_mode(*(STATUS*)data);
+    case paramnames::PAR_TRIGGER_LEVEL:
+        set_trigger_level(*(double*)data);
         retv = true;
         break;
     default:
@@ -94,16 +77,10 @@ void const* trigger::get_param(paramnames::PAR_TYPE pt)
 {
     switch(pt)
     {
-    case paramnames::PAR_ATTACK_TIME:
-        return &attack_time;
-    case paramnames::PAR_RELEASE_TIME:
-        return &release_time;
-    case paramnames::PAR_ATTACK_LEVEL:
-        return &attack_level;
-    case paramnames::PAR_RELEASE_LEVEL:
-        return &release_level;
-    case paramnames::PAR_INDEPENDANT:
-        return &ind_mode;
+    case paramnames::PAR_DELAY_TIME:
+        return &delay_time;
+    case paramnames::PAR_TRIGGER_LEVEL:
+        return &trigger_level;
     default:
         return 0;
     }
@@ -112,74 +89,55 @@ void const* trigger::get_param(paramnames::PAR_TYPE pt)
 stockerrs::ERR_TYPE trigger::validate()
 {
     modparamlist* pl = get_paramlist();
-    if (!pl->validate(this, paramnames::PAR_ATTACK_TIME,
+    if (!pl->validate(this, paramnames::PAR_DELAY_TIME,
             stockerrs::ERR_NEGATIVE))
     {
         *err_msg =
-         get_paramnames()->get_name(paramnames::PAR_ATTACK_TIME);
+         get_paramnames()->get_name(paramnames::PAR_DELAY_TIME);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
-    if (!pl->validate(this, paramnames::PAR_ATTACK_LEVEL,
-            stockerrs::ERR_NEGATIVE))
+    if (!pl->validate(this, paramnames::PAR_TRIGGER_LEVEL,
+            stockerrs::ERR_NEG_ZERO))
     {
         *err_msg =
-         get_paramnames()->get_name(paramnames::PAR_ATTACK_LEVEL);
+         get_paramnames()->get_name(paramnames::PAR_TRIGGER_LEVEL);
         invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    if (!pl->validate(this, paramnames::PAR_RELEASE_TIME,
-            stockerrs::ERR_NEGATIVE))
-    {
-        *err_msg =
-         get_paramnames()->get_name(paramnames::PAR_RELEASE_TIME);
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    if (!pl->validate(this, paramnames::PAR_RELEASE_LEVEL,
-            stockerrs::ERR_NEGATIVE))
-    {
-        *err_msg =
-         get_paramnames()->get_name(paramnames::PAR_RELEASE_LEVEL);
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
+        return stockerrs::ERR_NEG_ZERO;
     }
     return stockerrs::ERR_NO_ERROR;
 }
 
-#endif
-
 void trigger::run()
 {
     double fs = fabs(*in_signal);
-    if (attack_samps == 0) {
-        if (fs >= attack_level) {
-            attack_samps = ms_to_samples(attack_time);
+    if (out_wait_state == OFF) {
+        if (fs > trigger_level) {
             out_trig = ON;
+            out_wait_state = ON;
+            delay_samps = ms_to_samples(delay_time);
         }
+        if (out_not_trig == ON)
+            out_not_trig = OFF;
     }
     else {
-        if (out_trig == ON) out_trig = OFF;
-        attack_samps--;
-    }
-    if (release_samps == 0) {
-        if (fs < release_level) {
-            if ((ind_mode == OFF && attack_samps == 0) || ind_mode == ON)
-            {
-                release_samps = ms_to_samples(release_time);
+        if (delay_samps == 0) {
+            if (fs < trigger_level) {
                 out_not_trig = ON;
+                out_wait_state = OFF;
             }
         }
-    }
-    else {
-        if (out_not_trig == ON) out_not_trig = OFF;
-        release_samps--;
+        else
+            delay_samps--;
+        if (delay_samps < 0)
+            cout << "fucking shit on me fokker!";
+        if (out_trig == ON)
+            out_trig = OFF;
     }
 }
 
 int trigger::trigger_count = 0;
 
-#ifndef BARE_MODULES
 bool trigger::done_params = false;
 
 void trigger::create_params()
@@ -187,16 +145,9 @@ void trigger::create_params()
     if (done_params == true)
         return;
     get_paramlist()->add_param(
-     synthmodnames::MOD_TRIGGER, paramnames::PAR_ATTACK_TIME);
+     synthmodnames::MOD_TRIGGER, paramnames::PAR_DELAY_TIME);
     get_paramlist()->add_param(
-     synthmodnames::MOD_TRIGGER, paramnames::PAR_ATTACK_LEVEL);
-    get_paramlist()->add_param(
-     synthmodnames::MOD_TRIGGER, paramnames::PAR_RELEASE_TIME);
-    get_paramlist()->add_param(
-     synthmodnames::MOD_TRIGGER, paramnames::PAR_RELEASE_LEVEL);
-    get_paramlist()->add_param(
-     synthmodnames::MOD_TRIGGER, paramnames::PAR_INDEPENDANT);
+     synthmodnames::MOD_TRIGGER, paramnames::PAR_TRIGGER_LEVEL);
     done_params = true;
 }
-#endif
 #endif

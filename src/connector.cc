@@ -1,8 +1,6 @@
 #ifndef CONNECTOR_H
 #include "../include/connector.h"
 
-#ifndef BARE_MODULES
-
 connector::connector(
  synthmod* input_module, inputnames::IN_TYPE input_type,
  char const* output_module_name, outputnames::OUT_TYPE output_type) : 
@@ -79,5 +77,4 @@ bool connector::connect()
 
 string connector::connect_err_msg;
 
-#endif
 #endif

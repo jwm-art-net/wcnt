@@ -5,24 +5,19 @@ multiplier::multiplier(char const* uname) :
  synthmod(synthmodnames::MOD_MULTIPLIER, multiplier_count, uname),
  in_signal(0), in_mod(0), out_output(0.00)
 {
-#ifndef BARE_MODULES
     get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
     get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
     get_inputlist()->add_input(this, inputnames::IN_MODIFIER);
-#endif
     multiplier_count++;
     // no params, no bother
 }
 
 multiplier::~multiplier()
 {
-#ifndef BARE_MODULES
     get_outputlist()->delete_module_outputs(this);
     get_inputlist()->delete_module_inputs(this);
-#endif
 }
 
-#ifndef BARE_MODULES
 void const* multiplier::get_out(outputnames::OUT_TYPE ot)
 {
     void const* o = 0;
@@ -53,7 +48,6 @@ void const* multiplier::set_in(inputnames::IN_TYPE it, void const* o)
     }
     return i;
 }
-#endif
 
 int multiplier::multiplier_count = 0;
 // go on, give us a snare rush rush rush rush.

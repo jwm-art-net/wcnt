@@ -2,12 +2,9 @@
 #define NONEZERO_H
 
 #include "synthmodule.h"
-
-#ifndef BARE_MODULES
 #include "modoutputslist.h"
-#endif
-/*
-There should be only one..........'cos there's no point 'aving two or
+
+/* There should be only one..........'cos there's no point 'aving two or
 more.  the plan is that it should not be an option for the user to create
 them,  infact the user should not be aware that there is such a module.
 
@@ -19,8 +16,7 @@ plugin, there is the option to have none, or zero, same difference.
 when I programmed in TURBO_C++_v3.00 I found no problem with using NULLL
 instead of a pointer to a var whose value was 0 - zero. Using GNU C++
 v2.95 using NULL creates seg faults.  But I was vaguely aware that I
-needed a better solution so created the nonezero module.......
-*/
+needed a better solution so created the nonezero module.......*/
 
 class nonezero: public synthmod
 {
@@ -36,9 +32,8 @@ public:
     const STATUS* get_output_none_state(){ return &out_none_STATUS; }
     // virtual funcs
     void run(){};
-#ifndef BARE_MODULES
     void const* get_out(outputnames::OUT_TYPE);
-#endif
+
 private:
     const double out_none_double;
     const short out_none_short;

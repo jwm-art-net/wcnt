@@ -1,0 +1,59 @@
+wcnt-1.2/jwmsynth
+//------------------------------------------------------------------------
+//
+//  creates a drum loop using zdrums_base.wch
+//
+//------------------------------------------------------------------------
+
+header header.wch
+
+synth_file_reader
+zdrums_base
+    filename zdrums_base.wch
+    mod_action  exclude
+    dobj_action exclude
+    modules // empty list so nothing's excluded
+    modules
+    data_objects // ditto above
+    data_objects
+zdrums_base
+
+// in modules named ???-pat, a 1 triggers the drum.
+// in modules named ???-sw, a 1 alternates drum sounds.
+// the hyphen is used as a separator and is ignored.
+
+param_editor
+drum_params_01
+    editlist
+        edit kik-pat pattern 10010000-00100010
+        edit kik-sw  pattern 10010000-00100010
+        edit snr-pat pattern 00101001-00001000
+        edit snr-sw  pattern 00001001-00100000
+        edit hat-pat pattern 10111011-10111011
+        edit hat-sw  pattern 11001100-11001100
+        // pan positions
+        edit kik1-pan level -0.2
+        edit kik2-pan level  0.0
+        edit snr1-pan level -0.6
+        edit snr2-pan level  0.2
+        edit hat1-pan level  0.28
+        edit hat2-pan level  0.32
+    editlist
+drum_params_01
+
+// two param editors so that zdrums02.wc works...
+// ... plus it's a good idea :)
+
+param_editor
+master_01
+    editlist
+        edit zdrums-mix master_level 0.9
+        edit zdrums-wav
+            filename zdrums01.wav
+            end_bar  4
+        edit zdrums_exit exit_bar 4
+    editlist
+master_01
+
+//------------------------------------------------------------------------
+wcnt-1.2/jwmsynth
