@@ -1,0 +1,86 @@
+wcnt-1.25/jwmsynth
+//=====================================================
+
+header header.wch
+
+synth_file_reader
+timefile
+    filename time.wch
+    mod_action  exclude
+    dobj_action exclude
+    modules
+    modules
+    data_objects
+    data_objects
+timefile
+
+//------------------------------------------------------
+
+synth_file_reader
+testfile
+    filename    error.wch
+    mod_action  exclude
+    dobj_action exclude
+    modules
+    modules
+    data_objects
+        dobj name drloop
+        dobj name riff1
+    data_objects
+testfile
+
+// can't use editlist as a name:
+// 1)   copier cx1 from sine1 to editlist cx1
+// 2)   copier editlist from sine1 to sine2 editlist
+// 3)   clock
+//      editlist
+//          in_freq_mod1    off
+//          freq            440
+//          freq_mod1_size  1.0
+//      editlist
+
+input_editor
+ie1
+    editlist
+        connect sine1
+            in_phase_trig   clock2  out_phase_trig
+            in_deg_size     clock2  out_deg_size
+    editlist
+ie1
+
+param_editor
+pe1
+    editlist
+        edit clock1
+            freq 440
+    editlist
+pe1
+
+mono_amp
+amp1
+    in_signal   sine1   out_output
+    in_amp_eg   one     out_output
+    in_amp_mod  off
+    amplitude   32000
+    amp_mod_size  0.0
+    clip_level    32000
+amp1
+
+wavfile_out
+wav1
+    in_left     amp1    out_mono
+    in_right    amp1    out_mono
+    in_bar      time1   out_bar
+    in_bar_trig time1   out_bar_trig
+    filename    errortest.wav
+    start_bar   0
+    end_bar     1
+wav1
+
+wcnt_exit
+wcnt_exit_module
+    in_bar  time1   out_bar
+    exit_bar    1
+wcnt_exit_module
+
+wcnt-1.25/jwmsynth

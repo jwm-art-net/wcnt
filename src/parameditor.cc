@@ -37,6 +37,13 @@ bool parameditor::do_param_edits()
             cout << par_edit->get_name();
         }
         if (!par_edit->do_param_edits(verbose)) {
+            string errmsg = *err_msg;
+            *err_msg = "\nIn ";
+            *err_msg += get_dobjnames()->get_name(get_object_type());
+            *err_msg += " ";
+            *err_msg += get_username();
+            *err_msg += ", set parameter attempt failed, ";
+            *err_msg += errmsg;
             invalidate();
             return false;
         }

@@ -70,18 +70,21 @@ void timer::run()
 
 void const* timer::get_out(outputnames::OUT_TYPE ot)
 {
-    void const *o = 0;
-    switch (ot) {
+    switch (ot)
+    {
     case outputnames::OUT_TRIG:
-        o = &out_trig;
-        break;
+        return &out_trig;
     case outputnames::OUT_COUNT:
-        o = &out_count;
-        break;
+        return &out_count;
     default:
-        o = 0;
+        return 0;
     }
-    return o;
+}
+
+synthmod* timer::duplicate_module(const char* uname, DUP_IO dupio)
+{
+    *err_msg = "timer module does not allow copies of it to be made.";
+    return 0;
 }
 
 dobj* timer::add_dobj(dobj* dbj)

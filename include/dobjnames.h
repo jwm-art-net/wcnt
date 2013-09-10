@@ -44,6 +44,7 @@ public:
         LST_NOTES,
         LST_EDITS,
         LST_TRIGGERS,
+        LST_STEPS,
         //---------------------------------------------
         DOBJ_SINGLES, // seperator
         //---------------------------------------------
@@ -59,6 +60,7 @@ public:
         SIN_TIME,
         SIN_MODNAME,
         SIN_DOBJNAME,
+        SIN_STEP,
         //---------------------------------------------
         DOBJ_EDITS,
         //---------------------------------------------
@@ -80,6 +82,10 @@ public:
         DEF_WCFILE,
         DEF_PARAMEDITOR,
         DEF_INPUTEDITOR,
+        DEF_RIFFEDITOR,
+        DEF_COPIER,
+        DEF_GROUP,
+        DEF_GROUPCLONE,
         //---------------------------------------------
         // special dobj for inserting synthmodules into
         // list see dobjmod.h for more info.

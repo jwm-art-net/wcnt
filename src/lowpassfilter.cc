@@ -46,25 +46,36 @@ void const* lpfilter::get_out(outputnames::OUT_TYPE ot)
 
 void const* lpfilter::set_in(inputnames::IN_TYPE it, void const* o)
 {
-    void const* i = 0;
     switch(it)
     {
     case inputnames::IN_SIGNAL:
-        i = in_signal = (double*)o;
-        break;
+        return in_signal = (double*)o;
     case inputnames::IN_CUTOFF_DEG_SIZE:
-        i = in_deg_size = (double*)o;
-        break;
+        return in_deg_size = (double*)o;
     case inputnames::IN_FEEDBACK:
-        i = in_feedback = (double*)o;
-        break;
+        return in_feedback = (double*)o;
     case inputnames::IN_FB_MOD:
-        i = in_feed_mod = (double*)o;
-        break;
+        return in_feed_mod = (double*)o;
     default:
-        i = 0;
+        return 0;
     }
-    return i;
+}
+
+void const* lpfilter::get_in(inputnames::IN_TYPE it)
+{
+    switch(it)
+    {
+    case inputnames::IN_SIGNAL:
+        return in_signal;
+    case inputnames::IN_CUTOFF_DEG_SIZE:
+        return in_deg_size;
+    case inputnames::IN_FEEDBACK:
+        return in_feedback;
+    case inputnames::IN_FB_MOD:
+        return in_feed_mod;
+    default:
+        return 0;
+    }
 }
 
 bool lpfilter::set_param(paramnames::PAR_TYPE pt, void const* data)

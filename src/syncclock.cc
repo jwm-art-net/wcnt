@@ -31,49 +31,58 @@ sync_clock::~sync_clock()
 
 void const* sync_clock::get_out(outputnames::OUT_TYPE ot)
 {
-    void const* o = 0;
     switch(ot) {
     case outputnames::OUT_PHASE_TRIG:
-        o = &out_phase_trig;
-        break;
+        return &out_phase_trig;
     case outputnames::OUT_DEG_SIZE:
-        o = &out_deg_size;
-        break;
+        return &out_deg_size;
     default:
-        o = 0;
+        return 0;
     }
-    return o;
 }
 
 void const* sync_clock::set_in(inputnames::IN_TYPE it, void const* o)
 {
-    void const* i = 0;
     switch(it) {
     case inputnames::IN_BPM:
-        i = in_bpm = (double*)o;
-        break;
+        return in_bpm = (double*)o;
     case inputnames::IN_POS_STEP_SIZE:
-        i = in_pos_stepsz = (double*)o;
-        break;
+        return in_pos_stepsz = (double*)o;
     case inputnames::IN_BEATS_PER_BAR:
-        i = in_beats_per_bar = (short*)o;
-        break;
+        return in_beats_per_bar = (short*)o;
     case inputnames::IN_BEAT_VALUE:
-        i = in_beat_value = (short*)o;
-        break;
+        return in_beat_value = (short*)o;
     case inputnames::IN_PHASE_TRIG:
-        i = in_phase_trig = (STATUS*)o;
-        break;
+        return in_phase_trig = (STATUS*)o;
     case inputnames::IN_FREQ_MOD1:
-        i = in_freq_mod1 = (double*)o;
-        break;
+        return in_freq_mod1 = (double*)o;
     case inputnames::IN_FREQ_MOD2:
-        i = in_freq_mod2 = (double*)o;
-        break;
+        return in_freq_mod2 = (double*)o;
     default:
-        i = 0;
+        return 0;
     }
-    return i;
+}
+
+void const* sync_clock::get_in(inputnames::IN_TYPE it)
+{
+    switch(it) {
+    case inputnames::IN_BPM:
+        return in_bpm;
+    case inputnames::IN_POS_STEP_SIZE:
+        return in_pos_stepsz;
+    case inputnames::IN_BEATS_PER_BAR:
+        return in_beats_per_bar;
+    case inputnames::IN_BEAT_VALUE:
+        return in_beat_value;
+    case inputnames::IN_PHASE_TRIG:
+        return in_phase_trig;
+    case inputnames::IN_FREQ_MOD1:
+        return in_freq_mod1;
+    case inputnames::IN_FREQ_MOD2:
+        return in_freq_mod2;
+    default:
+        return 0;
+    }
 }
 
 bool sync_clock::set_param(paramnames::PAR_TYPE pt, void const* data)
@@ -174,7 +183,7 @@ void sync_clock::run()
             if (*in_freq_mod1 < 0)
                 nlen1 = premod_nlen / (1 + mod1size * -*in_freq_mod1);
             else
-                nlen1 = premod_nlen / (1 + mod1size * *in_freq_mod1);
+                nlen1 = premod_nlen * (1 + mod1size * *in_freq_mod1);
         }
         if (mod2size == 0)
             nlen2 = nlen1;

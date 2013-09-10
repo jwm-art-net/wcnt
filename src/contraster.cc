@@ -37,22 +37,32 @@ void const* contraster::get_out(outputnames::OUT_TYPE ot)
 
 void const* contraster::set_in(inputnames::IN_TYPE it, void const* o)
 {
-    void const* i = 0;
     switch(it)
     {
     case inputnames::IN_SIGNAL:
-        i = in_signal = (double*)o;
-        break;
+        return in_signal = (double*)o;
     case inputnames::IN_POWER_MOD:
-        i = in_power_mod = (double*)o;
-        break;
+        return in_power_mod = (double*)o;
     case inputnames::IN_RUDE_SWITCH_TRIG:
-        i = in_rude_switch_trig = (STATUS*)o;
-        break;
+        return in_rude_switch_trig = (STATUS*)o;
     default:
-        i = 0;
+        return 0;
     }
-    return i;
+}
+
+void const* contraster::get_in(inputnames::IN_TYPE it)
+{
+    switch(it)
+    {
+    case inputnames::IN_SIGNAL:
+        return in_signal;
+    case inputnames::IN_POWER_MOD:
+        return in_power_mod;
+    case inputnames::IN_RUDE_SWITCH_TRIG:
+        return in_rude_switch_trig;
+    default:
+        return 0;
+    }
 }
 
 bool contraster::set_param(paramnames::PAR_TYPE pt, void const* data)

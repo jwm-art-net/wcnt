@@ -1,4 +1,4 @@
-wcnt-1.2/jwmsynth
+wcnt-1.25/jwmsynth
 
 header header.wch
 
@@ -17,88 +17,37 @@ riff
 riff1
     quarter_value 16 
     notelist
-    note name c0
-        pos 0   len 7  vel 1.0
-    note name d0
-        pos 8   len 7   vel 1.0
-    note name c1
-        pos 16   len 7  vel 1.0
-    note name f0
-        pos 32   len 7  vel 1.0
-    note name f0
-        pos 48   len 7  vel 1.0
+    note name c0    pos 0   len 7  vel 1.0
+    note name d0    pos 8   len 7  vel 1.0
+    note name c1    pos 16  len 7  vel 1.0
+    note name f0    pos 32  len 7  vel 1.0
+    note name g0    pos 48  len 7  vel 1.0
     notelist
 riff1
 
-riff 
-riff2
-    quarter_value 16 
+copier rc1 from riff1 to riff2 rc1
+
+riff_editor
+re12
+    riff riff1
     notelist
-    note name c0
-        pos 0   len 63  vel 1.0
-    note name d0
-        pos 8   len 7   vel 1.0
-    note name c1
-        pos 16   len 7  vel 1.0
-    note name f0
-        pos 32   len 7  vel 1.0
-    note name f0
-        pos 48   len 7  vel 1.0
+        note name c0
+            pos 0 len 63 vel 1.0
     notelist
-riff2
+re12
 
 
 sequencer
 seq1
-    track 
+    track
         riff_node
-            riff      riff1
-            bar       0
-            transpose 0
-            start_len 0
-            end_len   0
-        riff_node
-            riff      riff1
-            bar       1
-            transpose 0
-            start_len 0
-            end_len   0
-        riff_node
-            riff      riff1
-            bar       2
-            transpose 0
-            start_len 0
-            end_len   0
+            riff riff1
+            bar 0       transpose 0
+            repeat 7    repeat_stripe   1
         riff_node
             riff      riff2
-            bar       3
-            transpose 0
-            start_len 0
-            end_len   0
-        riff_node
-            riff      riff1
-            bar       4
-            transpose 0
-            start_len 0
-            end_len   0
-        riff_node
-            riff      riff1
-            bar       5
-            transpose 0
-            start_len 0
-            end_len   0
-        riff_node
-            riff      riff1
-            bar       6
-            transpose 0
-            start_len 0
-            end_len   0
-        riff_node
-            riff      riff2
-            bar       7
-            transpose 0
-            start_len 0
-            end_len   0
+            bar 3       transpose 0
+            repeat 1    repeat_stripe   4
     track
     in_bar time1 out_bar
     in_bar_trig time1 out_bar_trig
@@ -113,7 +62,7 @@ seq1
 timer t1
     timings
         time seconds 0.0
-        time seconds 25.4
+        time seconds 19.0
     timings
 t1
 
@@ -125,7 +74,7 @@ t2a
 
 timer t2b
     timings
-        time seconds 24.0
+        time seconds 18.0
     timings
 t2b
 
@@ -144,7 +93,7 @@ fmclockb
 sine_wave fmsinewave
     in_phase_trig  fmclock out_phase_trig
     in_deg_size    fmclock out_deg_size
-    recycle_mode         off
+    recycle_mode         on
     on_trig_reset_phase  off
     phase_cycles         1.0
 fmsinewave
@@ -152,7 +101,7 @@ fmsinewave
 sine_wave fmsinewaveb
     in_phase_trig  fmclockb out_phase_trig
     in_deg_size    fmclockb out_deg_size
-    recycle_mode         off
+    recycle_mode         on
     on_trig_reset_phase  off
     phase_cycles         1.0
 fmsinewaveb
@@ -215,7 +164,7 @@ osc_clock osc1
     in_frequency        seq1 out_frequency
     in_freq_mod1        fmlpf out_output
     in_freq_mod2        off
-    octave_offset    -1
+    octave_offset    0
     tuning_semitones 0.0
     portamento_time 25.0
     response_time    5.0
@@ -244,7 +193,7 @@ osc2
 sine_wave sinewave
     in_phase_trig  osc1 out_phase_trig
     in_deg_size    osc1 out_deg_size
-    recycle_mode         off
+    recycle_mode         on
     on_trig_reset_phase  off
     phase_cycles         1.0
 sinewave
@@ -252,7 +201,7 @@ sinewave
 sine_wave sinewave2
     in_phase_trig  osc2 out_phase_trig
     in_deg_size    osc2 out_deg_size
-    recycle_mode         off
+    recycle_mode         on
     on_trig_reset_phase  off
     phase_cycles         1.0
 sinewave2
@@ -319,20 +268,20 @@ adsr
 adsr2
     envelope
         section name attack
-            ut 5.0  ul 0.1
-            lt 6.0  ll 0.0
+            ut 1500.0  ul 0.25
+            lt 1600.0  ll 0.0
         section name attack
-            ut 6.0  ul 0.4
-            lt 7.0  ll 0.0
-        section name attack
-            ut 40.0  ul 1.0
-            lt 30.0  ll 0.0
+            ut 2700.0  ul 0.5
+            lt 2700.0  ll 0.0
         section name decay
-            ut 250.0 ul 0.63
-            lt 250.0  ll 0.0
+            ut 2500.0 ul 0.65
+            lt 2500.0  ll 0.0
         section name release
-            ut 1295.0 ul 0.0
-            lt 1250.0  ll 0.0
+            ut 1000.0 ul 0.4
+            lt 1000.0  ll 0.0
+        section name release
+            ut 1000.0 ul 0.0
+            lt 1000.0  ll 0.0
     envelope
         in_note_on_trig  t2a out_trig
         in_note_off_trig t2b out_trig
@@ -405,4 +354,4 @@ wcnt_exit wcnt_exit_module
     exit_bar 1
 wcnt_exit_module
 
-wcnt-1.2/jwmsynth
+wcnt-1.25/jwmsynth

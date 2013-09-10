@@ -22,7 +22,8 @@ public:
     bool scan_cl_options();         // 2
     bool generate_synth();          // 3
     bool connect_synth();           // 4
-    bool execute_synth();           // 5
+    bool validate_synth();          // 5
+    bool execute_synth();           // 6
     string get_error_msg(){ return err_msg;}
 private:
     char* version;
@@ -41,7 +42,7 @@ private:
     modoutputlist* outputlist;
     modparamlist* paramlist;
     connectorlist* connectlist;
-    synthfilereader* synthfile;
+    synthfilereader* synthfile_reader;
     moddobjlist* mdobjlist;
     dobjnames* dobj_names;
     dobjlist* dobj_list;

@@ -15,7 +15,7 @@
 
     To allow multiple references to the same data item use MULTIREF_ON
     in the linkedlist constructor.  You cannot change this behaviour
-    once the linkedlist is constructed.  
+    once the linkedlist is constructed.
 
     NULLDATA
     --------
@@ -134,14 +134,26 @@ public:
         return false;
     }
     void* set_data(void * d) { return (this) ? (data = d) : 0;}
-void* get_data() { return (this) ? data : 0; }
-ll_item *get_prev() { return (this) ? prev : 0; }
-ll_item *get_next() { return (this) ? next : 0; }
+    void* get_data() { return (this) ? data : 0; }
+    ll_item *get_prev() { return (this) ? prev : 0; }
+    ll_item *get_next() { return (this) ? next : 0; }
+
+    #ifdef SHOW_LL_ITEM_COUNT
+    static long get_created_count() { return ll_items_created;}
+    static long get_destroyed_count() { return ll_items_destroyed;}
+    static long get_max_count() { return ll_items_max_count;}
+    #endif
 
 private:
     void *data;
     ll_item *prev;
     ll_item *next;
+    #ifdef SHOW_LL_ITEM_COUNT
+    static long ll_items_created;
+    static long ll_items_destroyed;
+    static long ll_items_count;
+    static long ll_items_max_count;
+    #endif
 };
 
 class linkedlist
@@ -221,7 +233,8 @@ T * ordered_insert(linkedlist * thelist, T * data, R(T::*order_func) ())
             if (!ptmp)
                 return (T *) thelist->add_at_head(data)->get_data();
             else
-                return (T *) thelist->insert_after(ptmp, data);
+                return (T *) thelist->insert_after(
+                                            ptmp, data)->get_data();
         }
         tdata = (T *) (tmp = thelist->goto_next())->get_data();
     }

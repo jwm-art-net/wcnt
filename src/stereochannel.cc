@@ -3,7 +3,7 @@
 
 stereo_channel::stereo_channel(char const* uname) :
  synthmod(synthmodnames::MOD_STEREOCHANNEL, stereochannel_count, uname),
- io_left(NULL), io_right(NULL)
+ out_left(0), out_right(0), in_left(0), in_right(0)
 {
     get_outputlist()->add_output(this, outputnames::OUT_LEFT);
     get_outputlist()->add_output(this, outputnames::OUT_RIGHT);
@@ -20,36 +20,41 @@ stereo_channel::~stereo_channel()
 
 void const* stereo_channel::get_out(outputnames::OUT_TYPE ot)
 {
-    void const* o = 0;
     switch(ot)
     {
     case outputnames::OUT_LEFT:
-        o = &io_left;
-        break;
+        return &out_left;
     case outputnames::OUT_RIGHT:
-        o = &io_right;
-        break;
+        return &out_right;
     default:
-        o = 0;
+        return 0;
     }
-    return o;
 }
 
 void const* stereo_channel::set_in(inputnames::IN_TYPE it, void const* o)
 {
-    void const* i = 0;
     switch(it)
     {
     case inputnames::IN_LEFT:
-        i = io_left = (short*)o;
-        break;
+        return in_left = (short*)o;
     case inputnames::IN_RIGHT:
-        i = io_right = (short*)o;
-        break;
+        return in_right = (short*)o;
     default:
-        i = 0;
+        return 0;
     }
-    return i;
+}
+
+void const* stereo_channel::get_in(inputnames::IN_TYPE it)
+{
+    switch(it)
+    {
+    case inputnames::IN_LEFT:
+        return in_left;
+    case inputnames::IN_RIGHT:
+        return in_right;
+    default:
+        return 0;
+    }
 }
 
 int stereo_channel::stereochannel_count = 0;

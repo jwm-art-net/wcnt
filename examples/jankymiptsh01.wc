@@ -1,4 +1,4 @@
-wcnt-1.2/jwmsynth
+wcnt-1.25/jwmsynth
 //-----------------------------------------------------------------------
 //
 // examples/jankymiptsh01.wc
@@ -34,8 +34,8 @@ seq1
             riff riffnx
             bar       0
             transpose 0
-            start_len 0
-            end_len   0
+            repeat  0
+            repeat_stripe 1
     track
 
     in_bar           time1 out_bar
@@ -92,8 +92,8 @@ sine_wave
 lfow1
     in_phase_trig       lfoc1 out_phase_trig
     in_deg_size         lfoc1 out_deg_size
-    recycle_mode        off
-    on_trig_reset_phase off 
+    recycle_mode        on
+    on_trig_reset_phase off
     phase_cycles 1.0
 lfow1
 
@@ -167,7 +167,7 @@ sine_wave
 swave
     in_phase_trig       osc1 out_phase_trig
     in_deg_size         osc1 out_deg_size
-    recycle_mode        off
+    recycle_mode        on
     on_trig_reset_phase off
     phase_cycles        1.0
 swave
@@ -402,7 +402,7 @@ sine_wave
 panctrl
     in_phase_trig       pclock1 out_phase_trig
     in_deg_size         pclock1 out_deg_size
-    recycle_mode        off
+    recycle_mode        on
     on_trig_reset_phase off
     phase_cycles        1.0
 panctrl
@@ -434,7 +434,7 @@ sine_wave
 modsin1
     in_phase_trig clock1 out_phase_trig
     in_deg_size   clock1 out_deg_size
-    recycle_mode        off
+    recycle_mode        on
     on_trig_reset_phase off
     phase_cycles        1.0
 modsin1
@@ -450,7 +450,7 @@ sine_wave
 modsin2
     in_phase_trig clock2 out_phase_trig
     in_deg_size   clock2 out_deg_size
-    recycle_mode        off
+    recycle_mode        on
     on_trig_reset_phase off
     phase_cycles        1.0
 modsin2
@@ -466,7 +466,7 @@ sine_wave
 modsin3
     in_phase_trig clock2 out_phase_trig
     in_deg_size   clock2 out_deg_size
-    recycle_mode        off
+    recycle_mode        on
     on_trig_reset_phase off
     phase_cycles        1.0
 modsin3
@@ -946,4 +946,4 @@ wcnt_exit_module
     exit_bar 14
 wcnt_exit_module
 
-wcnt-1.2/jwmsynth
+wcnt-1.25/jwmsynth

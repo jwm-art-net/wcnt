@@ -19,33 +19,39 @@ stategatetrig::~stategatetrig()
 
 void const* stategatetrig::get_out(outputnames::OUT_TYPE ot)
 {
-    void const* o = 0;
     switch(ot)
     {
     case outputnames::OUT_TRIG:
-        o = &out_trig;
-        break;
+        return &out_trig;
     default:
-        o = 0;
+        return 0;
     }
-    return o;
 }
 
 void const* stategatetrig::set_in(inputnames::IN_TYPE it, void const* o)
 {
-    void const* i = 0;
     switch(it)
     {
     case inputnames::IN_TRIG:
-        i = in_trig = (STATUS*)o;
-        break;
+        return in_trig = (STATUS*)o;
     case inputnames::IN_STATE:
-        i = in_state = (STATUS*)o;
-        break;
+        return in_state = (STATUS*)o;
     default:
-        i = 0;
+        return 0;
     }
-    return i;
+}
+
+void const* stategatetrig::get_in(inputnames::IN_TYPE it)
+{
+    switch(it)
+    {
+    case inputnames::IN_TRIG:
+        return in_trig;
+    case inputnames::IN_STATE:
+        return in_state;
+    default:
+        return 0;
+    }
 }
 
 void stategatetrig::run()

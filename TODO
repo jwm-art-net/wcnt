@@ -1,4 +1,5 @@
 TODO:
+    * Test it fully.
 
     * although parameters of modules and data objects can be edited, it
       is not currently possible to edit the parameters of data objects

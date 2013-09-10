@@ -20,7 +20,7 @@ class paramedit : public dobj
 public:
     paramedit();
     ~paramedit();
-    void set_name(const char*);
+    bool set_name(const char*);
     void set_parstr(const char*);
     const char* get_name() { return name; }
     const char* get_parstr() { return parstr;}

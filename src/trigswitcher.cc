@@ -1,5 +1,6 @@
 #ifndef TRIGSWITCHER_H
 #include "../include/trigswitcher.h"
+#include "../include/groupnames.h"
 
 trigswitcher::trigswitcher(char const* uname) :
  synthmod(synthmodnames::MOD_TRIGSWITCHER, trigswitcher_count, uname),
@@ -23,30 +24,87 @@ trigswitcher::~trigswitcher()
 
 void const* trigswitcher::get_out(outputnames::OUT_TYPE ot)
 {
-    void const* o = 0;
     switch(ot)
     {
     case outputnames::OUT_TRIG:
-        o = &out_trig;
+        return &out_trig;
         break;
     default:
-        o = 0;
+        return 0;
     }
-    return o;
 }
 
 void const* trigswitcher::set_in(inputnames::IN_TYPE it, void const* o)
 {
-    void const* i = 0;
     switch(it)
     {
     case inputnames::IN_TRIG:
-        i = in_trig = (STATUS*)o;
-        break;
+        return in_trig = (STATUS*)o;
     default:
-        i = 0;
+        return 0;
     }
-    return i;
+}
+
+void const* trigswitcher::get_in(inputnames::IN_TYPE it)
+{
+    switch(it)
+    {
+    case inputnames::IN_TRIG:
+        return in_trig;
+    default:
+        return 0;
+    }
+}
+
+synthmod* trigswitcher::duplicate_module(const char* uname, DUP_IO dupio)
+{
+    trigswitcher* dup = new trigswitcher(uname);
+    if (dupio == AUTO_CONNECT)
+        duplicate_inputs_to(dup);
+    duplicate_params_to(dup);
+
+    char* current_grp = get_groupname(get_username());
+    char* new_grp = get_groupname(uname);
+    bool regroup_wcnt_trigs = false;
+    if (current_grp && new_grp) {
+        if (strcmp(current_grp, new_grp) != 0) {
+            regroup_wcnt_trigs = true;
+        }
+    }
+    synthmodlist* modlist = get_modlist();
+    if (get_verbose())
+        cout << "\n----------\nadding to duplicated trig_switcher "
+                                                                << uname;
+    goto_first();
+    while (wcnttrig) {
+        char* trig_grp = get_groupname(wcnttrig->get_username());
+        synthmod* trig_to_add = wcnttrig;
+        if (trig_grp && regroup_wcnt_trigs == true) {
+            if (strcmp(trig_grp, current_grp) == 0) {
+                char* grptrigname =
+                        set_groupname(new_grp, wcnttrig->get_username());
+                synthmod* grptrig =
+                            modlist->get_synthmod_by_name(grptrigname);
+                if (grptrig->get_module_type() ==
+                                        synthmodnames::MOD_WCNTTRIGGER)
+                    trig_to_add = grptrig;
+                else {
+                    cout << "\nin switcher::duplicate, an attempt to ";
+                    cout << "fetch a wcnt_trigger named " << grptrigname;
+                    cout << "resulted in finding ";
+                    cout << grptrig->get_username();
+                    cout << " which is not a wcnt_trigger.";
+                }
+                delete [] grptrigname;
+            }
+            delete [] trig_grp;
+        }
+        dup->add_trigger((wcnt_trigger*)trig_to_add);
+        if (get_verbose())
+            cout << "\nadded " << trig_to_add->get_username();
+        goto_next();
+    }
+    return dup;
 }
 
 stockerrs::ERR_TYPE trigswitcher::validate()

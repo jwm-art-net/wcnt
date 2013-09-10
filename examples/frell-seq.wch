@@ -1,0 +1,70 @@
+wcnt-1.25/jwmsynth
+
+header header.wch
+
+riff
+1note_riff // ok so it's got more, so what.
+    quarter_value 1
+    notelist
+    note name c-2    pos 0   len 24 vel 1.0
+    note name e-1    pos 32   len 26 vel 1.0
+    note name g0    pos 64   len 28 vel 1.0
+    note name b1    pos 96   len 28 vel 1.0
+    notelist
+1note_riff
+
+riff
+riff1
+    quarter_value 16
+    notelist
+    note name c0    pos 0   len 7  vel 1.0
+    note name d0    pos 8   len 7  vel 1.0
+    note name c1    pos 16  len 7  vel 1.0
+    note name f0    pos 32  len 7  vel 1.0
+    note name f0    pos 48  len 7  vel 1.0
+    notelist
+riff1
+
+riff 
+riff2
+    quarter_value 16
+    notelist
+    note name c0    pos 0   len 63 vel 1.0
+    note name d0    pos 8   len 7  vel 1.0
+    note name c1    pos 16  len 7  vel 1.0
+    note name f0    pos 32  len 7  vel 1.0
+    note name f0    pos 48  len 7  vel 1.0
+    notelist
+riff2
+
+
+sequencer
+seq1
+    track
+        riff_node
+            riff      riff1
+            bar       0
+            transpose 0
+            repeat  31 repeat_stripe 1
+        riff_node
+            riff      riff2
+            bar       3
+            transpose 2
+            repeat  8 repeat_stripe 4
+    track
+    in_bar              time1 out_bar
+    in_bar_trig         time1 out_bar_trig
+    in_pos_step_size    time1 out_pos_step_size
+    in_beats_per_bar    time1 out_beats_per_bar
+    in_beat_value       time1 out_beat_value
+    velocity_response_time  5.0
+seq1
+
+
+wcnt-1.25/jwmsynth
+
+        riff_node
+            riff      1note_riff
+            bar       0
+            transpose 0
+            repeat  0 repeat_stripe 1

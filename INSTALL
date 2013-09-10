@@ -29,5 +29,8 @@ Finally, you can also:
 make clean
 make clean_examples
 
-Email james@jwm-art.net if you have difficulties building wcnt, or with
-questions about using it, etc.
+Please do email me at james@jwm-art.net if you have difficulties getting
+wcnt to compile. If it crashes then please send me the .wc file(s) which
+it happened to be processing at the time of the crash.
+
+I have only tested it within Debian Sarge on a 1.6Ghz AMD Duron blah.

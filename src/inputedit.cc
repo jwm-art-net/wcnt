@@ -17,13 +17,17 @@ inputedit::~inputedit()
         delete [] iostr;
 }
 
-void inputedit::set_modname(const char* n)
+bool inputedit::set_modname(const char* n)
 {
+    synthmod* sm =
+                synthmod::get_modlist()->get_synthmod_by_name(n);
+    if (!sm)
+        return false;
     if (modname)
         delete [] modname;
     modname = new char[strlen(n) + 1];
     strcpy(modname, n);
-    return;
+    return true;
 }
 
 void inputedit::set_iostr(const char* n)
@@ -55,8 +59,10 @@ bool inputedit::create_connectors(bool verbose)
         inputnames::IN_TYPE in_type;
         in_type = innames->get_type(input_name.c_str());
         if (in_type == inputnames::IN_FIRST) {
-            *err_msg = "unrecognised input type ";
+            *err_msg = "\nunrecognised input type ";
             *err_msg += input_name;
+            *err_msg += ", in connection for ";
+            *err_msg += modname;
             invalidate();
             return false;
         }
@@ -71,7 +77,9 @@ bool inputedit::create_connectors(bool verbose)
         }
         else {
             if (!smlist->get_synthmod_by_name(out_modname.c_str())) {
-                *err_msg = "output module ";
+                *err_msg = "in connection for ";
+                *err_msg += modname;
+                *err_msg += " output module ";
                 *err_msg += out_modname;
                 *err_msg += " does not exist.";
                 invalidate();
@@ -82,13 +90,17 @@ bool inputedit::create_connectors(bool verbose)
             if (out_type == outputnames::OUT_FIRST) {
                 *err_msg = "unrecognised output type ";
                 *err_msg += output_name;
+                *err_msg += " in connection for ";
+                *err_msg += modname;
                 invalidate();
                 return false;
             }
             if (innames->get_category(in_type)
                 != outnames->get_category(out_type))
             {
-                *err_msg = "output ";
+                *err_msg = "in connection for ";
+                *err_msg += modname;
+                *err_msg += " output ";
                 *err_msg += output_name;
                 *err_msg += " does not match category of input ";
                 *err_msg += input_name;
@@ -142,8 +154,14 @@ bool inputedit::set_param(paramnames::PAR_TYPE dt, void* data)
     switch(dt)
     {
     case paramnames::PAR_STR_UNNAMED:
-        set_modname((char*)data);
-        retv = true;
+        if (!set_modname((char*)data)) {
+            *err_msg = "input module ";
+            *err_msg += (char*)data;
+            *err_msg += " does not exist.";
+            invalidate();
+            retv = false;
+        }
+        else retv = true;
         break;
     case paramnames::PAR_STR_LIST:
         set_iostr((char*)data);

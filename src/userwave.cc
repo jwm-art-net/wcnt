@@ -15,9 +15,14 @@ user_wave::user_wave(char const* uname) :
     get_inputlist()->add_input(this, inputnames::IN_DEG_SIZE);
     get_inputlist()->add_input(this, inputnames::IN_V_MOD);
     get_inputlist()->add_input(this, inputnames::IN_H_MOD);
-    env = 
-     new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
-    add_vertex(0.0, 0.0, 0.0, 0.0);
+    env =
+        new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
+    // wcnt-1.25
+    // been having problems here, need to add this middle vertex in order
+    // for the user to be able to add them, or something. I'd changed
+    // the insert code slightly, due to duplicate_module in synthmod.
+    add_vertex(  0.0, 0.0,   0.0, 0.0);
+    add_vertex(180.0, 0.0, 180.0, 0.0);
     add_vertex(360.0, 0.0, 360.0, 0.0);
     user_wave_count++;
     create_params();
@@ -40,62 +45,64 @@ user_wave::~user_wave()
 
 void const* user_wave::get_out(outputnames::OUT_TYPE ot)
 {
-    void const* o = 0;
     switch(ot)
     {
     case outputnames::OUT_OUTPUT:
-        o = &output;
-        break;
+        return &output;
     case outputnames::OUT_PLAY_STATE:
-        o = &play_state;
-        break;
+        return &play_state;
     default:
-        o = 0;
+        return 0;
     }
-    return o;
 }
 
 void const* user_wave::set_in(inputnames::IN_TYPE it, void const* o)
 {
-    void const* i = 0;
     switch(it)
     {
     case inputnames::IN_PHASE_TRIG:
-        i = in_phase_trig = (STATUS*)o;
-        break;
+        return in_phase_trig = (STATUS*)o;
     case inputnames::IN_DEG_SIZE:
-        i = in_deg_size = (double*)o;
-        break;
+        return in_deg_size = (double*)o;
     case inputnames::IN_V_MOD:
-        i = in_v_mod = (double*)o;
-        break;
+        return in_v_mod = (double*)o;
     case inputnames::IN_H_MOD:
-        i = in_h_mod = (double*)o;
-        break;
+        return in_h_mod = (double*)o;
     default:
-        i = 0;
+        return 0;
     }
-    return i;
+}
+
+void const* user_wave::get_in(inputnames::IN_TYPE it)
+{
+    switch(it)
+    {
+    case inputnames::IN_PHASE_TRIG:
+        return in_phase_trig;
+    case inputnames::IN_DEG_SIZE:
+        return in_deg_size;
+    case inputnames::IN_V_MOD:
+        return in_v_mod;
+    case inputnames::IN_H_MOD:
+        return in_h_mod;
+    default:
+        return 0;
+    }
 }
 
 bool user_wave::set_param(paramnames::PAR_TYPE pt, void const* data)
 {
-    bool retv = false;
     switch(pt)
     {
     case paramnames::PAR_RECYCLE_MODE:
         set_recycle_mode(*(STATUS*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_ZERO_RETRIGGER:
         set_zero_retrigger_mode(*(STATUS*)data);
-        retv = true;
-        break;
+        return true;
     default:
-        retv = false;
-        break;
+        return false;
     }
-    return retv;
 }
 
 void const* user_wave::get_param(paramnames::PAR_TYPE pt)
@@ -129,6 +136,29 @@ dobj* user_wave::add_dobj(dobj* dbj)
     return retv;
 }
 
+synthmod* user_wave::duplicate_module(const char* uname, DUP_IO dupio)
+{
+    user_wave* dup = new user_wave(uname);
+    if (dupio == AUTO_CONNECT)
+        duplicate_inputs_to(dup);
+    duplicate_params_to(dup);
+    goto_first();
+    while (vertex) {
+        wave_vertex* tmp;
+        tmp = new wave_vertex(vertex->get_updeg(), vertex->get_uppos(),
+                              vertex->get_lodeg(), vertex->get_lopos());
+        if (!dup->add_vertex(tmp))
+        {
+            cout << "\ncould not duplicate vertices for copied user_wave";
+            cout << " " << uname;
+            delete dup;
+            return 0;
+        }
+        goto_next();
+    }
+    return dup;
+}
+
 stockerrs::ERR_TYPE user_wave::validate()
 {
     // still can't be bothered! (1.2)
@@ -144,25 +174,28 @@ wave_vertex* user_wave::add_vertex(wave_vertex* wv)
         goto_first();
         delete env->unlink_item(vertex_item);
         delete vertex;
+        env->add_at_head(wv);
+        return wv;
     } else if (ldeg == 360) {
         goto_last();
         delete env->unlink_item(vertex_item);
         delete vertex;
+        env->add_at_tail(wv);
+        return wv;
     }
-    if (!ordered_insert(env, wv, &wave_vertex::get_lodeg))
+    wave_vertex* added = ordered_insert(env, wv, &wave_vertex::get_lodeg);
+    if (!added) {
+        cout << "\nfailed to add vertex to envelope....!?!?!?";
         return 0;
-    return wv;
+    }
+    return added;
 }
 
 wave_vertex* user_wave::add_vertex(
- double udp, double ul, double ldp, double ll)
+                        double ud, double up, double ld, double lp)
 {
-    wave_vertex* tmp = new wave_vertex(udp, ul, ldp, ll);
-    if (!ordered_insert(env, tmp, &wave_vertex::get_lodeg)){
-        delete tmp;
-        return 0;
-    }
-    return tmp;
+    wave_vertex* tmp = new wave_vertex(ud, up, ld, lp);
+    return add_vertex(tmp);
 }
 
 bool user_wave::delete_vertex(wave_vertex* wv)
@@ -212,15 +245,17 @@ void user_wave::run()
     if (play_state == ON) {
         counter_ratio = (degs - pdegs) / (sectdegs - pdegs);
         output = sect_startlvl + sect_spanlvl * counter_ratio;
-        if (degs >= sectdegs) {
+        if (degs > sectdegs) {
             tmp = vertex;
             goto_next();
-            if (vertex) 	{
+            if (vertex) {
                 sect_startlvl = output;
                 sect_spanlvl = vertex->out_pos - sect_startlvl;
                 pdegs = tmp->out_deg;
                 sectdegs = vertex->out_deg;
             } else {
+                if (*in_phase_trig == ON)
+                    cout << "userwave at end of waveform & in_phase_trig";
                 if (recycle == ON) {
                     play_state = ON;
                     goto_first();

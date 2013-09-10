@@ -1,13 +1,33 @@
 #ifndef LINKEDLIST_H
 #include "../include/linkedlist.h"
 
+#ifdef SHOW_LL_ITEM_COUNT
+#include <iostream>
+using namespace std;
+long ll_item::ll_items_created   = 0;
+long ll_item::ll_items_destroyed = 0;
+long ll_item::ll_items_count     = 0;
+long ll_item::ll_items_max_count = 0;
+#endif
+
+
 ll_item::ll_item(void *d) :
  data(d), prev(0), next(0)
 {
+    #ifdef SHOW_LL_ITEM_COUNT
+    ll_items_created++;
+    ll_items_count++;
+    ll_items_max_count = (ll_items_count > ll_items_max_count)
+            ? ll_items_count : ll_items_max_count;
+    #endif
 }
 
 ll_item::~ll_item() 
 {
+    #ifdef SHOW_LL_ITEM_COUNT
+    ll_items_destroyed++;
+    ll_items_count--;
+    #endif
 }
 
 linkedlist::linkedlist() :  
@@ -45,6 +65,10 @@ ll_item * linkedlist::add_at_head(void *data)
         return 0;
     if (!data && nulldata == NO_NULLDATA)
         return 0;
+    if (multiref == MULTIREF_OFF) {
+        if (find_data(data))
+            return 0;
+    }
     ll_item *newitem;
     if (!head->get_next()) {    /* is_empty() */
         newitem = new ll_item(data);
@@ -74,6 +98,10 @@ ll_item * linkedlist::add_at_tail(void *data)
         return 0;
     if (!data && nulldata == NO_NULLDATA)
         return 0;
+    if (multiref == MULTIREF_OFF) {
+        if (find_data(data))
+            return 0;
+    }
     ll_item *newitem;
     if (!head->get_next()) {    /* is_empty() */
         newitem = new ll_item(data);

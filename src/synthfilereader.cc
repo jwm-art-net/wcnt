@@ -1,5 +1,6 @@
 #ifndef SYNTHFILEREADER_H
 #include "../include/synthfilereader.h"
+#include "../include/groupnames.h"
 
 // don't put this #include back in this file's header
 #include "../include/connectorlist.h"
@@ -40,15 +41,17 @@ synthfilereader::synthfilereader(WC_FILE_TYPE ft) :
     // don't create conv here.
     create_params();
     dobjnamelist =
-     new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
+        new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
     modnamelist =
-     new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
+        new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
 }
 
 synthfilereader::~synthfilereader()
 {
+    if (wc_filename) {
+        delete [] wc_filename;
+    }
     synthfile->close();
-    delete [] wc_filename;
     delete synthfile;
     delete buff;
     if (command)
@@ -72,8 +75,10 @@ synthfilereader::~synthfilereader()
 
 void synthfilereader::set_wc_filename(char const* filename)
 {
-    if (wc_filename)
+    if (wc_filename) {
         delete [] wc_filename;
+        wc_filename = 0;
+    }
     const char* path = synthmod::get_path();
     if (wc_file_type == WC_MAIN_FILE
         || *filename == '/' || path == NULL)
@@ -189,11 +194,10 @@ bool synthfilereader::read_and_create()
             || bp_msr != sm_beats_per_measure
             || b_val != sm_beat_value) 
         {
-            *wc_err_msg = "\nfile ";
-            *wc_err_msg += wc_filename;
-            *wc_err_msg += " has conflicting header information ";
-            *wc_err_msg += "with that already in use.";
-            return false;
+            *wc_err_msg = "\nWarning!\nFile ";
+            *wc_err_msg+= wc_filename;
+            *wc_err_msg+= " has conflicting header information";
+            *wc_err_msg+= " with that already in use.";
         }
     }
     string const *com = read_command();
@@ -202,7 +206,7 @@ bool synthfilereader::read_and_create()
         if (!com) {
             return false;
         }
-        if (dobj::get_dobjnames()->get_type(com->c_str()) 
+        if (dobj::get_dobjnames()->get_type(com->c_str())
             != dobjnames::DOBJ_FIRST)
         {
             if (!read_and_create_dobj(com))
@@ -251,9 +255,11 @@ bool synthfilereader::read_and_create_dobj(string const* com)
     dobj* dbj = read_dobj(com);
     if (!dbj)
         return false;
-    if (!dbj->validate()) {
+    if (include_dbj(dbj->get_username())){
+        if (!dbj->validate()) {
         *wc_err_msg = *dbj->get_error_msg();
         return false;
+        }
     }
     string dbjuname = dbj->get_username();
     if (include_dbj(dbj->get_username())) {
@@ -346,49 +352,19 @@ bool synthfilereader::include_dbj(const char* name)
     return (dobj_action == WC_INCLUDE) ? false : true;
 }
 
-/*
-bool synthfilereader::transmit_excluded(synthfilereader* sfr)
-{
-    if (mod_action == WC_EXCLUDE) {
-        goto_first_modname();
-        while (modname) {
-            if (sfr->get_module_action() == WC_EXCLUDE) {
-                modnamedobj* mnd = new modnamedobj;
-                mnd->set_modname(modname->get_modname());
-                sfr->add_modname(mnd);
-            }
-            else
-                sfr->delete_modname(modname->get_modname());
-        }
-    }
-    if (dobj_action == WC_EXCLUDE) {
-        goto_first_dobjname();
-        while (dobjname) {
-            if (sfr->get_dobj_action() == WC_EXCLUDE) {
-                dobjnamedobj* dnd = new dobjnamedobj;
-                dnd->set_dobjname(dobjname->get_dobjname());
-                sfr->add_dobjname(dnd);
-            }
-            else
-                sfr->delete_dobjname(dobjname->get_dobjname());
-        }
-    }
-}
-*/
-
 synthmod *const synthfilereader::read_synthmodule(string const *com)
 {
     synthmodnames::SYNTH_MOD_TYPE
-    smt = synthmod::get_modnames()->get_type(com->c_str());
+                smt = synthmod::get_modnames()->get_type(com->c_str());
     if (smt == synthmodnames::MOD_FIRST 
         || smt == synthmodnames::MOD_NONEZERO)
     {
         *wc_err_msg = "\nUnrecognised wcnt/jwmsynth module: " + *com;
         return 0;
     }
-    if (smt == synthmodnames::MOD_WCNT) {
+    if (smt == synthmodnames::MOD_WCNTEXIT) {
         if (synthmod::get_modlist()->
-            get_first_of_type(synthmodnames::MOD_WCNT))
+            get_first_of_type(synthmodnames::MOD_WCNTEXIT))
         {
             *wc_err_msg
                = "\nCannot create more than one wcnt_exit module ";
@@ -399,20 +375,41 @@ synthmod *const synthfilereader::read_synthmodule(string const *com)
     string modname;
     *synthfile >> modname;
     if (strcmp(modname.c_str(), "off") == 0) {
-        *wc_err_msg = "\ncannot use reserved word off to name ";
+        *wc_err_msg = "\ncannot use reserved word off to name module ";
         *wc_err_msg += *com;
+        return 0;
+    }
+    if (strcmp(modname.c_str(),
+                get_dobjnames()->get_name(dobjnames::LST_EDITS)) == 0)
+    {
+        *wc_err_msg = "\ncannot use reserved word ";
+        *wc_err_msg += get_dobjnames()->get_name(dobjnames::LST_EDITS);
+        *wc_err_msg += " to name module ";
+        *wc_err_msg += *com;
+        return 0;
+    }
+    char* grpname = get_groupname(modname.c_str());
+    if (grpname) {
+        delete [] grpname;
+        *wc_err_msg = "\nthe ";
+        *wc_err_msg += synthmod::get_modnames()->get_name(smt);
+        *wc_err_msg += " name ";
+        *wc_err_msg += modname;
+        *wc_err_msg += " uses the . character which is reserved for ";
+        *wc_err_msg += "grouped modules only. use the group data object";
+        *wc_err_msg += " to add a module to a group.";
         return 0;
     }
     if (include_mod(modname.c_str())) {
         if (synthmod::get_modlist()->
-            get_synthmod_by_name(modname.c_str()))
+                                get_synthmod_by_name(modname.c_str()))
         {
             *wc_err_msg = "\nsynth module already exists named ";
             *wc_err_msg += modname;
             return 0;
         }
         dobj* dbj =
-            dobj::get_dobjlist()->get_dobj_by_name(modname.c_str());
+                dobj::get_dobjlist()->get_dobj_by_name(modname.c_str());
         if (dbj){ // formality because of parameditor.cc workings.
             *wc_err_msg = "\nwill not name ";
             *wc_err_msg += *com;
@@ -498,6 +495,26 @@ dobj* const synthfilereader::read_dobj(string const* com)
         *wc_err_msg += *com;
         return 0;
     }
+    if (strcmp(dobjname.c_str(),
+        get_dobjnames()->get_name(dobjnames::LST_EDITS)) == 0)
+    {
+        *wc_err_msg = "\ncannot use reserved word ";
+        *wc_err_msg += get_dobjnames()->get_name(dobjnames::LST_EDITS);
+        *wc_err_msg += " to name data object ";
+        *wc_err_msg += *com;
+        return 0;
+    }
+    char* grpname = get_groupname(dobjname.c_str());
+    if (grpname) {
+        delete [] grpname;
+        *wc_err_msg = "\nthe ";
+        *wc_err_msg += dbjnames->get_name(dobjtype);
+        *wc_err_msg += " name ";
+        *wc_err_msg += dobjname;
+        *wc_err_msg += " uses the . character which is reserved for";
+        *wc_err_msg += "grouped modules only.";
+        return 0;
+    }
     if (include_dbj(dobjname.c_str())) {
         if (dobj::get_dobjlist()->get_dobj_by_name(dobjname.c_str())) {
             *wc_err_msg = "\ndata object " + *com
@@ -544,6 +561,7 @@ dobj* const synthfilereader::read_dobj(string const* com)
         return 0;
     }
     if (include_dbj(dbj->get_username())) {
+        if (verbose) cout << "\n----\nvalidating...";
         stockerrs::ERR_TYPE et = dbj->validate();
         if (et != stockerrs::ERR_NO_ERROR) {
             *wc_err_msg = "\nIn data object ";
@@ -556,6 +574,7 @@ dobj* const synthfilereader::read_dobj(string const* com)
             delete dbj;
             return 0;
         }
+        if (verbose) cout << "Ok.";
     }
     com = read_command();
     if (*com != dobjname) {
@@ -663,11 +682,14 @@ bool synthfilereader::read_dobjs(dobj* dbj)
                     }
                     // add sprog to dbj, not dobjlist  . . .
                     if (!dbj->add_dobj(sprog)) {
+/*
                         *wc_err_msg = "\n***major error***";
                         *wc_err_msg += "\ncould not add data object ";
                         *wc_err_msg += sprogname;
                         *wc_err_msg += " to data object ";
                         *wc_err_msg += dbj->get_username();
+*/
+                        *wc_err_msg = *get_error_msg();
                         delete sprog;
                         delete dd_list;
                         return false;
@@ -760,17 +782,19 @@ bool synthfilereader::read_dobjs(synthmod* sm)
                     delete dbj;
                     return false;
                 }
-                stockerrs::ERR_TYPE et = dbj->validate();
-                if (et!= stockerrs::ERR_NO_ERROR) {
-                    *wc_err_msg = ", data object ";
-                    *wc_err_msg += xdbjname;
-                    *wc_err_msg += ", ";
-                    *wc_err_msg += *dbj->get_error_msg();
-                    *wc_err_msg += " ";
-                    *wc_err_msg += stock_errs->get_prefix_err(et);
-                    *wc_err_msg += stock_errs->get_err(et);
-                    delete dbj;
-                    return false;
+                if (inc_current) {
+                    stockerrs::ERR_TYPE et = dbj->validate();
+                    if (et!= stockerrs::ERR_NO_ERROR) {
+                        *wc_err_msg = ", data object ";
+                        *wc_err_msg += xdbjname;
+                        *wc_err_msg += ", ";
+                        *wc_err_msg += *dbj->get_error_msg();
+                        *wc_err_msg += " ";
+                        *wc_err_msg += stock_errs->get_prefix_err(et);
+                        *wc_err_msg += stock_errs->get_err(et);
+                        delete dbj;
+                        return false;
+                    }
                 }
                 if (inc_current) {
                     // add to synthmodule, not dobjlist  . . .
@@ -864,6 +888,11 @@ const string*
 synthfilereader::read_string_list_param
     (const char* enda, const char* endb)
 {
+    #ifdef DEBUG_STRLIST_PAR
+    cout << "\nread_string_list_param:";
+    if (enda) cout << " enda = " << enda;
+    if (endb) cout << " endb = " << endb;
+    #endif
     if (enda == 0 && endb == 0) {
         *wc_err_msg = "\nread_string_list_param(char*, char*)";
         *wc_err_msg += " called with NULL arguements. error in";
@@ -873,25 +902,52 @@ synthfilereader::read_string_list_param
     }
     string strlist;
     const string* com;
+    bool ready_to_finish = false;
     while(true) {
         if (!(com = read_command()))
             return 0;
+        #ifdef DEBUG_STRLIST_PAR
+        cout << "\nread_string_list_param got " << *com;
+        #endif
         if (enda) {
             if (strcmp(com->c_str(), enda) == 0) {
+                if (!ready_to_finish) {
+                    *wc_err_msg = "\nmalformed ";
+                    *wc_err_msg += enda;
+                    *wc_err_msg += " in ";
+                    *wc_err_msg += endb;
+                    invalidate();
+                    return 0;
+                }
                 // tell read_command() the next command it should
                 // return has already been read and it is enda:
                 command = new string(enda);
+                #ifdef DEBUG_STRLIST_PAR
+                cout << "\ncommand set to " << enda;
+                cout << "\nreturning : " << strlist;
+                #endif
                 return new string(strlist);
             }
         }
         if (endb) {
             if (strcmp(com->c_str(), endb) == 0) {
+                if (!ready_to_finish) {
+                    *wc_err_msg = "\nunexpected termination of ";
+                    *wc_err_msg += endb;
+                    invalidate();
+                    return 0;
+                }
                 command = new string(endb);
+                #ifdef DEBUG_STRLIST_PAR
+                cout << "\ncommand set to " << endb;
+                cout << "\nreturning : " << strlist;
+                #endif
                 return new string(strlist);
             }
         }
         strlist += *com;
         strlist += " ";
+        ready_to_finish = true;
     }
     return 0;
 }
@@ -1053,7 +1109,8 @@ bool synthfilereader::read_header(
     if (conv) delete conv;
     conv = new ostringstream;
     if (filestatus != FILE_OPEN) {
-        *wc_err_msg = "\nArrrp! Programmer Error! Shpoooochuuha...\n";
+        *wc_err_msg = "\nProgrammer Error! Attempted read of header";
+        *wc_err_msg += " when file not open.";
         return 0;
     }
     if (!skip_remarks()) {

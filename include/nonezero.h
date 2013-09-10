@@ -33,6 +33,7 @@ public:
     // virtual funcs
     void run(){};
     void const* get_out(outputnames::OUT_TYPE);
+    synthmod* duplicate_module(const char* uname, DUP_IO);
 
 private:
     const double out_none_double;

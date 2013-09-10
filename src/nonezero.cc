@@ -18,6 +18,14 @@ nonezero::~nonezero()
     get_outputlist()->delete_module_outputs(this);
 }
 
+synthmod* nonezero::duplicate_module(const char* uname, DUP_IO dupio)
+{
+    *err_msg = "\nYou are trying to duplicate 'off', ";
+    *err_msg += "you can put a stop to that right now.";
+    return 0;
+}
+
+
 void const* nonezero::get_out(outputnames::OUT_TYPE ot)
 {
     void const* o = 0;

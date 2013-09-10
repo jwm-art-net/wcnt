@@ -1,4 +1,4 @@
-wcnt-1.2/jwmsynth
+wcnt-1.25/jwmsynth
 
 // examples/sinewave2.wc
 // creates an irregular sinewave
@@ -56,4 +56,4 @@ params
 
 // all done...
 
-wcnt-1.2/jwmsynth
+wcnt-1.25/jwmsynth

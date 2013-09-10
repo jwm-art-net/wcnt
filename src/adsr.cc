@@ -20,7 +20,7 @@ adsr::adsr(char const* uname) :
     env = new 
      linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
 
-    coord = new adsr_coord(adsr_coord::ADSR_SUSTAIN,0 ,0 ,0 ,0);
+    coord = new adsr_coord(adsr_coord::ADSR_SUSTAIN, 0 ,0 ,0 ,0);
     env->add_at_head(coord);
     adsr_count++;
     create_params();
@@ -41,88 +41,84 @@ adsr::~adsr()
     }
 }
 
-void const *
+const void *
 adsr::get_out(outputnames::OUT_TYPE ot)
 {
-    void const *o = 0;
     switch (ot) {
     case outputnames::OUT_OUTPUT:
-        o = &output;
-        break;
+        return &output;
     case outputnames::OUT_OFF_TRIG:
-        o = &out_off_trig;
-        break;
+        return &out_off_trig;
     case outputnames::OUT_PLAY_STATE:
-        o = &play_state;
-        break;
+        return &play_state;
     default:
-        o = 0;
+        return 0;
     }
-    return o;
 }
 
-void const *
+const void *
 adsr::set_in(inputnames::IN_TYPE it, void const *o)
 {
-    void const *i = 0;
-    switch (it) {
+    switch (it)
+    {
     case inputnames::IN_VELOCITY:
-        i = in_velocity = (double *) o;
-        break;
+        return in_velocity = (double *) o;
     case inputnames::IN_NOTE_ON_TRIG:
-        i = in_note_on_trig = (STATUS *) o;
-        break;
+        return in_note_on_trig = (STATUS *) o;
     case inputnames::IN_NOTE_OFF_TRIG:
-        i = in_note_off_trig = (STATUS *) o;
-        break;
+        return in_note_off_trig = (STATUS *) o;
     default:
-        i = 0;
+        return 0;
     }
-    return i;
+}
+
+const void *
+adsr::get_in(inputnames::IN_TYPE it)
+{
+    switch (it)
+    {
+    case inputnames::IN_VELOCITY:
+        return in_velocity;
+    case inputnames::IN_NOTE_ON_TRIG:
+        return in_note_on_trig;
+    case inputnames::IN_NOTE_OFF_TRIG:
+        return in_note_off_trig;
+    default:
+        return 0;
+    }
 }
 
 bool adsr::set_param(paramnames::PAR_TYPE pt, void const* data)
 {
-    bool retv = false;
     switch(pt)
     {
     case paramnames::PAR_START_LEVEL:
         set_start_level(*(double*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_SUSTAIN_STATUS:
         set_sustain_status(*(STATUS*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_RELEASE_RATIO:
         set_release_ratio(*(STATUS*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_ZERO_RETRIGGER:
         set_zero_retrigger_mode(*(STATUS*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_UP_THRESH:
         set_upper_thresh(*(double*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_LO_THRESH:
         set_lower_thresh(*(double*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_MIN_TIME:
         set_min_time(*(double*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_MAX_SUSTAIN_TIME:
         set_max_sustain_time(*(double*)data);
-        retv = true;
-        break;
+        return true;
     default:
-        retv = false;
-        break;
+        return false;
     }
-    return retv;
 }
 
 void const* adsr::get_param(paramnames::PAR_TYPE pt)
@@ -235,32 +231,12 @@ adsr_coord* adsr::insert_coord(adsr_coord* ac)
 adsr_coord* adsr::insert_coord(
  adsr_coord::SECT adsrsect, double ut, double ul, double lt, double ll)
 {
-    if (adsrsect == adsr_coord::ADSR_SUSTAIN)
-        return 0; // don't let user try it on.
-    goto_first();
-    if (coord->get_adsr_section() > adsrsect)
-        return (adsr_coord*)env->add_at_head(
-                   new adsr_coord(adsrsect, ut, ul, lt, ll))->get_data();
-    while (coord) {
-        if (coord->get_adsr_section() == adsrsect) {
-            ll_item* tmp = coord_item;
-            while(coord) {
-                goto_next();
-                if (coord) 
-                {
-                    if (coord->get_adsr_section() > adsrsect)
-                    {
-                return (adsr_coord*)env->insert_after(tmp, 
-                 new adsr_coord(adsrsect, ut, ul, lt, ll))->get_data();
-                    tmp = coord_item;
-                    }
-                }
-            }
-        }
-        goto_next();
+    adsr_coord* nc = new adsr_coord(adsrsect, ut, ul, lt, ll);
+    if (!insert_coord(nc)) {
+        delete nc;
+        nc = 0;
     }
-    return (adsr_coord*)env->add_at_tail(
-               new adsr_coord(adsrsect, ut, ul, lt, ll))->get_data();
+    return nc;
 }
 
 adsr_coord * adsr::insert_coord_after(adsr_coord * ac)
@@ -369,6 +345,7 @@ void adsr::init()
     thresh_range = up_thresh - lo_thresh;
     min_samps = ms_to_samples(min_time);
     max_sus_samps = ms_to_samples(max_sus_time);
+    output = start_level;
 }
 
 void adsr::run()
@@ -469,6 +446,28 @@ void adsr::ready_section()
             levelsize = (coord->output_level - output) / sectmaxsamples;
     }
 }
+
+synthmod* adsr::duplicate_module(const char* uname, DUP_IO dupio)
+{
+    adsr* dupadsr = new adsr(uname);
+    if (dupio == AUTO_CONNECT)
+        duplicate_inputs_to(dupadsr);
+    duplicate_params_to(dupadsr);
+    goto_first();
+    while (coord) {
+        if (coord->get_adsr_section() != adsr_coord::ADSR_SUSTAIN)
+        {
+            dupadsr->insert_coord(  coord->get_adsr_section(),
+                                    coord->get_upper_time(),
+                                    coord->get_upper_level(),
+                                    coord->get_lower_time(),
+                                    coord->get_lower_level());
+        }
+        goto_next();
+    }
+    return dupadsr;
+}
+
 
 short adsr::adsr_count = 0;
 

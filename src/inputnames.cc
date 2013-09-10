@@ -102,6 +102,8 @@ inputnames::inputnames() : inname(NULL), incat(NULL)
     incat[IN_STATE] = CAT_STATE;
     inname[IN_PLAY_STATE] = "in_play_state";
     incat[IN_PLAY_STATE] = CAT_STATE;
+    inname[IN_RESTART_TRIG] = "in_restart_trig";
+    incat[IN_RESTART_TRIG] = CAT_TRIG;
 }
 
 inputnames::~inputnames()
@@ -112,7 +114,7 @@ inputnames::~inputnames()
         delete[] incat;
 }
 
-char const* inputnames::get_name(IN_TYPE id)
+const char* inputnames::get_name(IN_TYPE id)
 {
     if (id >= IN_FIRST && id < IN_LAST)
         return inname[id];
@@ -128,7 +130,7 @@ IOCAT inputnames::get_category(IN_TYPE id)
         return incat[IN_FIRST];
 }
 
-inputnames::IN_TYPE inputnames::get_type(char const* iname)
+inputnames::IN_TYPE inputnames::get_type(const char* iname)
 {
     int i;
     for (i = IN_FIRST + 1; i < IN_LAST; i++)

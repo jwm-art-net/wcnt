@@ -1,4 +1,4 @@
-wcnt-1.2/jwmsynth
+wcnt-1.25/jwmsynth
 //------------------------------------------------------------------------
 //
 //  uses parts of zdrums_base.wch, rejecting amplification and mixing
@@ -186,4 +186,4 @@ inputs_01
 inputs_01
 
 //------------------------------------------------------------------------
-wcnt-1.2/jwmsynth
+wcnt-1.25/jwmsynth

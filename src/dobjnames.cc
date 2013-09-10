@@ -23,6 +23,7 @@ dobjnames::dobjnames()
     dobj_name[LST_NOTES] = "notelist";
     dobj_name[LST_EDITS] = "editlist";
     dobj_name[LST_TRIGGERS] = "triggers";
+    dobj_name[LST_STEPS] = "step_shape";
 //------------------------------------------------------
     dobj_name[DOBJ_SINGLES] = "objects_defined_in_lists";
 //------------------------------------------------------
@@ -36,6 +37,7 @@ dobjnames::dobjnames()
     dobj_name[SIN_TIME] = "time";
     dobj_name[SIN_MODNAME] = "mod";
     dobj_name[SIN_DOBJNAME] = "dobj";
+    dobj_name[SIN_STEP] = "stepvx";
 //------------------------------------------------------
     dobj_name[DOBJ_EDITS] = "edit_objects_defined_in_lists";
 //------------------------------------------------------
@@ -49,6 +51,10 @@ dobjnames::dobjnames()
     dobj_name[DEF_WCFILE] = "synth_file_reader";
     dobj_name[DEF_PARAMEDITOR] = "param_editor";
     dobj_name[DEF_INPUTEDITOR] = "input_editor";
+    dobj_name[DEF_RIFFEDITOR] = "riff_editor";
+    dobj_name[DEF_COPIER] = "copier";
+    dobj_name[DEF_GROUP] = "group";
+    dobj_name[DEF_GROUPCLONE] = "group_clone";
 //------------------------------------------------------
     dobj_name[DOBJ_SYNTHMOD] = "synthmod";
 //------------------------------------------------------

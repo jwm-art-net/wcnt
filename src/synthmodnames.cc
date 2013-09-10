@@ -42,7 +42,7 @@ synthmodnames::synthmodnames()
     mod_name[MOD_DELAY] = "delay";
     mod_name[MOD_ECHO] = "echo";
     mod_name[MOD_MONOAMP] = "mono_amp";
-    mod_name[MOD_WCNT] = "wcnt_exit";
+    mod_name[MOD_WCNTEXIT] = "wcnt_exit";
     mod_name[MOD_MULTIPLIER] = "multiplier";
     mod_name[MOD_RANGELIMIT] = "range_limit";
     mod_name[MOD_PAN] = "panner";
@@ -60,6 +60,12 @@ synthmodnames::synthmodnames()
     mod_name[MOD_WCNTTRIGGER] = "wcnt_trigger";
     mod_name[MOD_TRIGSWITCHER] = "trig_switcher";
     mod_name[MOD_ONOFFTRIG] = "on_off_trig";
+    mod_name[MOD_PEAKDETECTOR] = "peak_detector";
+    mod_name[MOD_STEPPER] = "stepper";
+    mod_name[MOD_ADDER] = "adder";
+    mod_name[MOD_SUBTRACTER] = "subtracter";
+    mod_name[MOD_TRIGDELAY] = "trig_delay";
+    mod_name[MOD_SIMPLEDELAY] = "simple_delay";
 }
 
 synthmodnames::~synthmodnames()

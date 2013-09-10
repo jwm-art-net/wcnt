@@ -45,6 +45,8 @@ public:
     stockerrs::ERR_TYPE validate();
     void const* get_out(outputnames::OUT_TYPE);
     void const* set_in(inputnames::IN_TYPE, void const*);
+    const void* get_in(inputnames::IN_TYPE it);
+    synthmod* duplicate_module(const char* uname, DUP_IO);
     dobj* add_dobj(dobj*);
 
 private:

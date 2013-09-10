@@ -45,7 +45,7 @@ public:
         MOD_DELAY,
         MOD_ECHO,
         MOD_MONOAMP,
-        MOD_WCNT,
+        MOD_WCNTEXIT,
         MOD_MULTIPLIER,
         MOD_RANGELIMIT,
         MOD_PAN,
@@ -63,6 +63,12 @@ public:
         MOD_WCNTTRIGGER,
         MOD_TRIGSWITCHER,
         MOD_ONOFFTRIG,
+        MOD_PEAKDETECTOR,
+        MOD_STEPPER,
+        MOD_ADDER,
+        MOD_SUBTRACTER,
+        MOD_TRIGDELAY,
+        MOD_SIMPLEDELAY,
         MOD_LAST
     };
     synthmodnames();

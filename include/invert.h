@@ -21,6 +21,7 @@ public:
     void run() { out_output = -*in_signal; }
     void const* get_out(outputnames::OUT_TYPE);
     void const* set_in(inputnames::IN_TYPE, void const*);
+    const void* get_in(inputnames::IN_TYPE it);
 
 private:
     const double* in_signal;

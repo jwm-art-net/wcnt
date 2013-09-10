@@ -48,21 +48,30 @@ void const* lfo_controller::get_out(outputnames::OUT_TYPE ot)
 
 void const* lfo_controller::set_in(inputnames::IN_TYPE it, void const* o)
 {
-    void const* i = 0;
     switch(it) {
     case inputnames::IN_TRIG:
-        i = in_trig = (STATUS*)o;
-        break;
+        return in_trig = (STATUS*)o;
     case inputnames::IN_WAVE:
-        i = in_wave = (double*)o;
-        break;
+        return in_wave = (double*)o;
     case inputnames::IN_AMP_MOD:
-        i = in_amp_mod = (double*)o;
-        break;
+        return in_amp_mod = (double*)o;
     default:
-        i = 0;
+        return 0;
     }
-    return i;
+}
+
+void const* lfo_controller::get_in(inputnames::IN_TYPE it)
+{
+    switch(it) {
+    case inputnames::IN_TRIG:
+        return in_trig;
+    case inputnames::IN_WAVE:
+        return in_wave;
+    case inputnames::IN_AMP_MOD:
+        return in_amp_mod;
+    default:
+        return 0;
+    }
 }
 
 bool lfo_controller::set_param(paramnames::PAR_TYPE pt, void const* data)

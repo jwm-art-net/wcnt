@@ -46,7 +46,7 @@ public:
     void set_freq_mod1size(double fms){ freq_mod1size = fms; }
     void set_freq_mod2size(double fms){ freq_mod2size = fms; }
     void set_octave(short o){ octave_offset = o; }
-    void set_tuning_semitones(double s);
+    void set_tuning_semitones(double s){ semitones = s; }
     void set_portamento(double f){ portamento = f; }
     void set_response_time(double rt){ response_time = rt;}
     double get_freq_mod1size(){ return freq_mod1size; }
@@ -61,6 +61,7 @@ public:
     stockerrs::ERR_TYPE validate();
     void const* get_out(outputnames::OUT_TYPE);
     void const* set_in(inputnames::IN_TYPE, void const*);
+    const void* get_in(inputnames::IN_TYPE it);
     bool set_param(paramnames::PAR_TYPE, void const*);
     void const* get_param(paramnames::PAR_TYPE);
 

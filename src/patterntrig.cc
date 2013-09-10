@@ -36,7 +36,7 @@ stockerrs::ERR_TYPE patterntrig::validate()
         invalidate();
         return stockerrs::ERR_ERROR;
     }
-    else if (strlen(pattern) < 2) {
+    else if (strlen(pattern) < 1) {
         *err_msg = "\nNon pattern - oops.";
         invalidate();
         return stockerrs::ERR_ERROR;
@@ -95,16 +95,24 @@ void const* patterntrig::get_out(outputnames::OUT_TYPE ot)
 
 void const* patterntrig::set_in(inputnames::IN_TYPE it, void const* o)
 {
-    void const* i = 0;
     switch(it)
     {
     case inputnames::IN_TRIG:
-        i = in_trig = (STATUS*)o;
-        break;
+        return in_trig = (STATUS*)o;
     default:
-        i = 0;
+        return 0;
     }
-    return i;
+}
+
+void const* patterntrig::get_in(inputnames::IN_TYPE it)
+{
+    switch(it)
+    {
+    case inputnames::IN_TRIG:
+        return in_trig;
+    default:
+        return 0;
+    }
 }
 
 bool patterntrig::set_param(paramnames::PAR_TYPE pt, void const* data)

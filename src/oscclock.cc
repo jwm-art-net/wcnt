@@ -33,11 +33,6 @@ osc_clock::~osc_clock()
     get_inputlist()->delete_module_inputs(this);
 }
 
-void osc_clock::set_tuning_semitones(double s)
-{
-    semitones = s;
-}
-
 void const* osc_clock::get_out(outputnames::OUT_TYPE ot)
 {
     void const* o = 0;
@@ -60,67 +55,71 @@ void const* osc_clock::get_out(outputnames::OUT_TYPE ot)
 
 void const* osc_clock::set_in(inputnames::IN_TYPE it, void const* o)
 {
-    void const* i = 0;
     switch(it)
     {
     case inputnames::IN_NOTE_ON_TRIG:
-        i = in_note_on_trig = (STATUS*)o;
-        break;
+        return in_note_on_trig = (STATUS*)o;
     case inputnames::IN_NOTE_SLIDE_TRIG:
-        i = in_note_slide_trig = (STATUS*)o;
-        break;
+        return in_note_slide_trig = (STATUS*)o;
     case inputnames::IN_PLAY_STATE:
-        i = in_play_state = (STATUS*)o;
-        break;
+        return in_play_state = (STATUS*)o;
     case inputnames::IN_FREQ:
-        i = in_freq = (double*)o;
-        break;
+        return in_freq = (double*)o;
     case inputnames::IN_FREQ_MOD1:
-        i = in_freq_mod1 = (double*)o;
-        break;
+        return in_freq_mod1 = (double*)o;
     case inputnames::IN_FREQ_MOD2:
-        i = in_freq_mod2 = (double*)o;
-        break;
+        return in_freq_mod2 = (double*)o;
     default:
-        i = 0;
+        return 0;
     }
-    return i;
+}
+
+void const* osc_clock::get_in(inputnames::IN_TYPE it)
+{
+    switch(it)
+    {
+    case inputnames::IN_NOTE_ON_TRIG:
+        return in_note_on_trig;
+    case inputnames::IN_NOTE_SLIDE_TRIG:
+        return in_note_slide_trig;
+    case inputnames::IN_PLAY_STATE:
+        return in_play_state;
+    case inputnames::IN_FREQ:
+        return in_freq;
+    case inputnames::IN_FREQ_MOD1:
+        return in_freq_mod1;
+    case inputnames::IN_FREQ_MOD2:
+        return in_freq_mod2;
+    default:
+        return 0;
+    }
 }
 
 bool osc_clock::set_param(paramnames::PAR_TYPE pt, void const* data)
 {
-    bool retv = false;
     switch(pt)
     {
     case paramnames::PAR_OCTAVE:
         set_octave(*(short*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_TUNING_SEMITONES:
         set_tuning_semitones(*(double*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_FREQ_MOD1SIZE:
         set_freq_mod1size(*(double*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_FREQ_MOD2SIZE:
         set_freq_mod2size(*(double*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_PORTAMENTO:
         set_portamento(*(double*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_RESPONSE_TIME:
         set_response_time(*(double*)data);
-        retv = true;
-        break;
+        return true;
     default:
-        retv = false;
-        break;
+        return false;
     }
-    return retv;
 }
 
 void const* osc_clock::get_param(paramnames::PAR_TYPE pt)

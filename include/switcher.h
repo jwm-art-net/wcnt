@@ -48,8 +48,10 @@ public:
     stockerrs::ERR_TYPE validate();
     void const* get_out(outputnames::OUT_TYPE);
     void const* set_in(inputnames::IN_TYPE, void const*);
+    const void* get_in(inputnames::IN_TYPE it);
     bool set_param(paramnames::PAR_TYPE, void const*);
     void const* get_param(paramnames::PAR_TYPE);
+    synthmod* duplicate_module(const char* uname, DUP_IO);
 // wcnt_signal is not a dobj, but a synthmod, so a dobj wrapper class
 // - dobjmod, is passed which contains a pointer to the wcnt_signal
     dobj* add_dobj(dobj*);

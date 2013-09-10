@@ -52,19 +52,28 @@ void const* dynamic::get_out(outputnames::OUT_TYPE ot)
 
 void const* dynamic::set_in(inputnames::IN_TYPE it, void const* o)
 {
-    void const* i = 0;
     switch(it)
     {
     case inputnames::IN_SIGNAL:
-        i = in_signal = (double*)o;
-        break;
+        return in_signal = (double*)o;
     case inputnames::IN_MODULATION:
-        i = in_mod = (double*)o;
-        break;
+        return in_mod = (double*)o;
     default:
-        i = 0;
+        return 0;
     }
-    return i;
+}
+
+void const* dynamic::get_in(inputnames::IN_TYPE it)
+{
+    switch(it)
+    {
+    case inputnames::IN_SIGNAL:
+        return in_signal;
+    case inputnames::IN_MODULATION:
+        return in_mod;
+    default:
+        return 0;
+    }
 }
 
 bool dynamic::set_param(paramnames::PAR_TYPE pt, void const* data)
@@ -128,6 +137,22 @@ dobj* dynamic::add_dobj(dobj* dbj)
         retv = 0;
     }
     return retv;
+}
+
+synthmod* dynamic::duplicate_module(const char* uname, DUP_IO dupio)
+{
+    dynamic* dup = new dynamic(uname);
+    if (dupio == AUTO_CONNECT)
+        duplicate_inputs_to(dup);
+    duplicate_params_to(dup);
+    goto_first();
+    while(dvtx) {
+        dup->add_dvertex(dvtx->get_signal_in_level(),
+                            dvtx->get_upper_signal_out_level(),
+                            dvtx->get_lower_signal_out_level());
+        goto_next();
+    }
+    return dup;
 }
 
 stockerrs::ERR_TYPE dynamic::validate()

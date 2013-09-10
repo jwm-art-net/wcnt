@@ -45,22 +45,32 @@ void const* square_wave::get_out(outputnames::OUT_TYPE ot)
 
 void const* square_wave::set_in(inputnames::IN_TYPE it, void const* o)
 {
-    void const* i = 0;
     switch(it)
     {
     case inputnames::IN_PHASE_TRIG:
-        i = in_phase_trig = (STATUS*)o;
-        break;
+        return in_phase_trig = (STATUS*)o;
     case inputnames::IN_DEG_SIZE:
-        i = in_deg_size = (double*)o;
-        break;
+        return in_deg_size = (double*)o;
     case inputnames::IN_PWM:
-        i = in_pwm =  (double*)o;
-        break;
+        return in_pwm =  (double*)o;
     default:
-        i = 0;
+        return 0;
     }
-    return i;
+}
+
+void const* square_wave::get_in(inputnames::IN_TYPE it)
+{
+    switch(it)
+    {
+    case inputnames::IN_PHASE_TRIG:
+        return in_phase_trig;
+    case inputnames::IN_DEG_SIZE:
+        return in_deg_size;
+    case inputnames::IN_PWM:
+        return in_pwm;
+    default:
+        return 0;
+    }
 }
 
 bool square_wave::set_param(paramnames::PAR_TYPE pt, void const* data)

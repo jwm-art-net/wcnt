@@ -31,10 +31,6 @@ public:
         PAR_MIN_OUT,
         PAR_MAX_OUT,
         PAR_POSNEG_MIRROR,
-        PAR_FREQ_MOD1_LO,
-        PAR_FREQ_MOD1_HI,
-        PAR_FREQ_MOD2_LO,
-        PAR_FREQ_MOD2_HI,
         PAR_OCTAVE,
         PAR_PORTAMENTO,
         PAR_DECAY_TIME,
@@ -138,7 +134,7 @@ public:
         PAR_BAR,
         PAR_BPM,
         PAR_RIFFNAME,
-        PAR_MODNAME,
+        PAR_MODNAME,            // synth module name
         PAR_ROOT_NOTE,
         PAR_TRANSPOSE,
         PAR_STARTLEN,
@@ -152,7 +148,7 @@ public:
         PAR_NAME_EXT,
         PAR_PARAMETER,
         PAR_VALUESTR,
-        PAR_DOBJNAME,
+        PAR_DOBJNAME,           // data object name
         PAR_INMODULE,
         PAR_INPUT,
         PAR_OUTMODULE,
@@ -162,6 +158,16 @@ public:
         PAR_SNAP_TO,
         PAR_COUNT,
         PAR_CHECK_LEVELS,
+        // wcnt-1.25
+        PAR_MSG,
+        PAR_FORCE_ABORT,
+        PAR_MAXPEAKS,
+        PAR_REPEAT,
+        PAR_REPEAT_STRIPE,
+        PAR_COPYFROM,
+        PAR_COPYTO,
+        PAR_POS,
+        PAR_BIAS,
         PAR_LAST
     };
 

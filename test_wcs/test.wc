@@ -1,0 +1,41 @@
+wcnt-1.25/jwmsynth
+
+header header.wch
+
+synth_file_reader
+timefile
+    filename time.wch
+    mod_action  exclude
+    dobj_action exclude
+    modules
+    modules
+    data_objects
+    data_objects
+timefile
+
+//------------------------------------------------------------------------
+
+synth_file_reader
+testfile
+    filename    error.wc
+    mod_action  exclude
+    dobj_action exclude
+    modules
+    modules
+    data_objects
+        dobj name riff1
+        dobj name drloop
+    data_objects
+testfile
+
+
+wcnt_exit
+wcnt_exit_module
+    in_bar  time1   out_bar
+    exit_bar    1
+wcnt_exit_module
+
+
+
+
+wcnt-1.25/jwmsynth

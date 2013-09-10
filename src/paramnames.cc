@@ -44,7 +44,7 @@ paramnames::paramnames() : parname(0), parcat(0)
     parcat[PAR_END_LEVEL] = CAT_DOUBLE;
     parname[PAR_AMP_MODSIZE] = "amp_mod_size";
     parcat[PAR_AMP_MODSIZE] = CAT_DOUBLE;
-    parname[PAR_MODIFIER_FUNC] = "modifier_func";
+    parname[PAR_MODIFIER_FUNC] = "function";
     parcat[PAR_MODIFIER_FUNC] = CAT_FIX_STR;
     parname[PAR_MODIFIER_SIZE] = "modifier_size";
     parcat[PAR_MODIFIER_SIZE] = CAT_DOUBLE;
@@ -54,14 +54,6 @@ paramnames::paramnames() : parname(0), parcat(0)
     parcat[PAR_MAX_OUT] = CAT_DOUBLE;
     parname[PAR_POSNEG_MIRROR] = "posneg_mirror";
     parcat[PAR_POSNEG_MIRROR] = CAT_STATE;
-    parname[PAR_FREQ_MOD1_LO] = "freq_mod1_lo";
-    parcat[PAR_FREQ_MOD1_LO] = CAT_DOUBLE;
-    parname[PAR_FREQ_MOD1_HI] = "freq_mod1_hi";
-    parcat[PAR_FREQ_MOD1_HI] = CAT_DOUBLE;
-    parname[PAR_FREQ_MOD2_LO] = "freq_mod2_lo";
-    parcat[PAR_FREQ_MOD2_LO] = CAT_DOUBLE;
-    parname[PAR_FREQ_MOD2_HI] = "freq_mod2_hi";
-    parcat[PAR_FREQ_MOD2_HI] = CAT_DOUBLE;
     parname[PAR_OCTAVE] = "octave_offset";
     parcat[PAR_OCTAVE] = CAT_SHORT;
     parname[PAR_PORTAMENTO] = "portamento_time";
@@ -312,6 +304,24 @@ paramnames::paramnames() : parname(0), parcat(0)
     parcat[PAR_COUNT] = CAT_SHORT;
     parname[PAR_CHECK_LEVELS] = "check_levels";
     parcat[PAR_CHECK_LEVELS] = CAT_STATE;
+    parname[PAR_MSG] = "message";
+    parcat[PAR_MSG] = CAT_STRING;
+    parname[PAR_FORCE_ABORT] = "force_abort";
+    parcat[PAR_FORCE_ABORT] = CAT_STATE;
+    parname[PAR_MAXPEAKS] = "max_peaks";
+    parcat[PAR_MAXPEAKS] = CAT_SHORT;
+    parname[PAR_REPEAT] = "repeat";
+    parcat[PAR_REPEAT] = CAT_SHORT;
+    parname[PAR_REPEAT_STRIPE] = "repeat_stripe";
+    parcat[PAR_REPEAT_STRIPE] = CAT_SHORT;
+    parname[PAR_COPYFROM] = "from";
+    parcat[PAR_COPYFROM] = CAT_STRING;
+    parname[PAR_COPYTO] = "to";
+    parcat[PAR_COPYTO] = CAT_STRING;
+    parname[PAR_POS] = "pos";
+    parcat[PAR_POS] = CAT_DOUBLE;
+    parname[PAR_BIAS] = "bias";
+    parcat[PAR_BIAS] = CAT_DOUBLE;
 }
 
 paramnames::~paramnames()

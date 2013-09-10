@@ -19,46 +19,47 @@ wcnt_signal::~wcnt_signal()
 
 void const* wcnt_signal::get_out(outputnames::OUT_TYPE ot)
 {
-    void const* o = 0;
     switch(ot)
     {
     case outputnames::OUT_OUTPUT:
-        o = &out_output;
-        break;
+        return &out_output;
     default:
-        o = 0;
+        return 0;
     }
-    return o;
 }
 
 void const* wcnt_signal::set_in(inputnames::IN_TYPE it, void const* o)
 {
-    void const* i = 0;
     switch(it)
     {
     case inputnames::IN_SIGNAL:
-        i = in_signal = (double*)o;
-        break;
+        return in_signal = (double*)o;
     default:
-        i = 0;
+        return 0;
     }
-    return i;
+}
+
+void const* wcnt_signal::get_in(inputnames::IN_TYPE it)
+{
+    switch(it)
+    {
+    case inputnames::IN_SIGNAL:
+        return in_signal;
+    default:
+        return 0;
+    }
 }
 
 bool wcnt_signal::set_param(paramnames::PAR_TYPE pt, void const* data)
 {
-    bool retv = false;
     switch(pt)
     {
     case paramnames::PAR_LEVEL:
         set_level(*(double*)data);
-        retv = true;
-        break;
+        return true;
     default:
-        retv = false;
-        break;
+        return false;
     }
-    return retv;
 }
 
 void const* wcnt_signal::get_param(paramnames::PAR_TYPE pt)

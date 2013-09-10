@@ -35,19 +35,28 @@ void const* logictrigger::get_out(outputnames::OUT_TYPE ot)
 
 void const* logictrigger::set_in(inputnames::IN_TYPE it, void const* o)
 {
-    void const* i = 0;
     switch(it)
     {
     case inputnames::IN_TRIG1:
-        i = in_trig1 = (STATUS*)o;
-        break;
+        return in_trig1 = (STATUS*)o;
     case inputnames::IN_TRIG2:
-        i = in_trig2 = (STATUS*)o;
-        break;
+        return in_trig2 = (STATUS*)o;
     default:
-        i = 0;
+        return 0;
     }
-    return i;
+}
+
+void const* logictrigger::get_in(inputnames::IN_TYPE it)
+{
+    switch(it)
+    {
+    case inputnames::IN_TRIG1:
+        return in_trig1;
+    case inputnames::IN_TRIG2:
+        return in_trig2;
+    default:
+        return 0;
+    }
 }
 
 bool logictrigger::set_param(paramnames::PAR_TYPE pt, void const* data)

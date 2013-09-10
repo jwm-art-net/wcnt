@@ -4,14 +4,17 @@
 sequencer::sequencer(char const* uname) :
  synthmod(synthmodnames::MOD_SEQUENCER, sequencer_count, uname),
  in_bar_trig(0), in_bar(0), in_pos_step_size(0), in_beats_per_bar(0),
- in_beat_value(0), out_note_on_trig(OFF), out_note_slide_trig(OFF),
+ in_beat_value(0),
+ out_note_on_trig(OFF), out_note_slide_trig(OFF),
  out_note_off_trig(OFF), out_riff_start_trig(OFF), out_riff_end_trig(OFF),
- out_start_trig(OFF), out_end_trig(OFF), out_notename(0), out_freq(0),
- out_velocity(0), out_velocity_ramp(0), out_transpose(0),
- riff_play_state(OFF), note_play_state(OFF), vel_response(0),
+ out_start_trig(OFF), out_end_trig(OFF),
+ out_notename(0), out_freq(0), out_velocity(0), out_velocity_ramp(0),
+ out_transpose(0),
+ riff_play_state(OFF), note_play_state(OFF),
+ freq_mod1size(0), vel_response(0), 
  riffnodelist(0), cur_node(0), riff_node_ptr(0), riff_ptr(0),
- riffnodeitem(0), riff_start_bar(0), riff_pos(0), riff_len(0),
- posconv(0), velrsp_max_samps(0), velrsp_samp(0),
+ riffnodeitem(0), riff_start_bar(0), riff_pos(0),
+ riff_len(0), posconv(0), velrsp_max_samps(0), velrsp_samp(0),
  vel_stpsize(0), start_pending(ON), end_pending(OFF), play_list(0),
  play_item(0), next_in_riff(0), play_note(0), next_note(0), note_ptr(0),
  next_note_on_pos(-1), play_note_off_pos(-1)
@@ -58,12 +61,19 @@ sequencer::~sequencer()
         note_data* tn = (note_data*)tmp->get_data();
         if (tn == next_note)
             del_next = false;
+        #ifdef NOTE_EDIT_DEBUG
+        cout << "\nSequencer destructor destroying note:";
+        #endif
         delete tn;
         tmp = play_list->goto_next();
     }
     delete play_list;
-    if (del_next)
+    if (del_next) {
+        #ifdef NOTE_EDIT_DEBUG
+        cout << "\nSequencer destructor destroying note:";
+        #endif
         delete next_note;
+    }
     if (out_notename) delete [] out_notename;
     get_outputlist()->delete_module_outputs(this);
     get_inputlist()->delete_module_inputs(this);
@@ -71,81 +81,77 @@ sequencer::~sequencer()
 
 void const* sequencer::get_out(outputnames::OUT_TYPE ot)
 {
-    void const* o = 0;
     switch(ot)
     {
     case outputnames::OUT_NOTE_ON_TRIG:
-        o = &out_note_on_trig;
-        break;
+        return &out_note_on_trig;
     case outputnames::OUT_NOTE_SLIDE_TRIG:
-        o = &out_note_slide_trig;
-        break;
+        return &out_note_slide_trig;
     case outputnames::OUT_NOTE_OFF_TRIG:
-        o = &out_note_off_trig;
-        break;
+        return &out_note_off_trig;
     case outputnames::OUT_RIFF_START_TRIG:
-        o = &out_riff_start_trig;
-        break;
+        return &out_riff_start_trig;
     case outputnames::OUT_RIFF_END_TRIG:
-        o = &out_riff_end_trig;
-        break;
+        return &out_riff_end_trig;
     case outputnames::OUT_START_TRIG:
-        o = &out_start_trig;
-        break;
+        return &out_start_trig;
     case outputnames::OUT_END_TRIG:
-        o = &out_end_trig;
-        break;
+        return &out_end_trig;
     case outputnames::OUT_NOTENAME:
-        o = &out_notename;
-        break;
+        return &out_notename;
     case outputnames::OUT_FREQ:
-        o = &out_freq;
-        break;
+        return &out_freq;
     case outputnames::OUT_VELOCITY:
-        o = &out_velocity;
-        break;
+        return &out_velocity;
     case outputnames::OUT_VELOCITY_RAMP:
-        o = &out_velocity_ramp;
-        break;
+        return &out_velocity_ramp;
     case outputnames::OUT_TRANSPOSE:
-        o = &out_transpose;
-        break;
+        return &out_transpose;
     case outputnames::OUT_RIFF_PLAY_STATE:
-        o = &riff_play_state;
-        break;
+        return &riff_play_state;
     case outputnames::OUT_NOTE_PLAY_STATE:
-        o = &note_play_state;
-        break;
+        return &note_play_state;
     default:
-        o = 0;
+        return 0;
     }
-    return o;
 }
 
 void const* sequencer::set_in(inputnames::IN_TYPE it, void const* o)
 {
-    void const* i = 0;
     switch(it)
     {
     case inputnames::IN_BAR_TRIG:
-        i = in_bar_trig = (STATUS*)o;
-        break;
+        return in_bar_trig = (STATUS*)o;
     case inputnames::IN_BAR:
-        i = in_bar = (short*)o;
-        break;
+        return in_bar = (short*)o;
     case inputnames::IN_POS_STEP_SIZE:
-        i = in_pos_step_size = (double*)o;
-        break;
+        return in_pos_step_size = (double*)o;
     case inputnames::IN_BEATS_PER_BAR:
-        i = in_beats_per_bar = (short*)o;
-        break;
+        return in_beats_per_bar = (short*)o;
     case inputnames::IN_BEAT_VALUE:
-        i = in_beat_value = (short*)o;
-        break;
+        return in_beat_value = (short*)o;
     default:
-        i = 0;
+        return 0;
     }
-    return i;
+}
+
+void const* sequencer::get_in(inputnames::IN_TYPE it)
+{
+    switch(it)
+    {
+    case inputnames::IN_BAR_TRIG:
+        return in_bar_trig;
+    case inputnames::IN_BAR:
+        return in_bar;
+    case inputnames::IN_POS_STEP_SIZE:
+        return in_pos_step_size;
+    case inputnames::IN_BEATS_PER_BAR:
+        return in_beats_per_bar;
+    case inputnames::IN_BEAT_VALUE:
+        return in_beat_value;
+    default:
+        return 0;
+    }
 }
 
 bool sequencer::set_param(paramnames::PAR_TYPE pt, void const* data)
@@ -183,15 +189,21 @@ dobj* sequencer::add_dobj(dobj* dbj)
     case dobjnames::SIN_RIFFNODE:
         if (!(retv = add_riff_node((riff_node*)dbj)))
             *err_msg="\ncould not add riff node to ";
-            *err_msg += *get_username();
+            *err_msg += get_username();
         break;
     default:
         *err_msg = "\n***major error*** attempt made to add an ";
         *err_msg += "\ninvalid object type to ";
-        *err_msg += *get_username();
+        *err_msg += get_username();
         retv = 0;
     }
     return retv;
+}
+
+synthmod* sequencer::duplicate_module(const char* uname, DUP_IO dupio)
+{
+    *err_msg += "sequencer does not allow copies of it to be made.";
+    return 0;
 }
 
 stockerrs::ERR_TYPE sequencer::validate()
@@ -211,13 +223,35 @@ stockerrs::ERR_TYPE sequencer::validate()
 // add_riff_node(riff_node*) is used exclusively by add_dobj(dobj*)
 // add_dobj(dobj*) cannot be passed a riff, because it lacks the
 // information of which bar to place it in.
+// -- wcnt 1.25 --
+// Previously, adding a riff to a bar which already contained a riff
+// resulted in an error message and wcnt aborting, now, the old riff
+// is replaced.
+
 riff_node* sequencer::add_riff_node(riff_node* rn)
 {
+    riff_node* oldrn = 0;
+    riff_node* insrn = 0;
     if (rn == NULL)
         return NULL;
-    if (lookup_data_match(riffnodelist, rn, &riff_node::get_start_bar))
-        return 0; // no more than one riff at any single bar position.
-    return ordered_insert(riffnodelist,rn,&riff_node::get_start_bar);
+    short rep = rn->get_repeat();
+    short repstr = rn->get_repeat_stripe();
+    do{
+        oldrn = lookup_data_match(
+                riffnodelist, rn, &riff_node::get_start_bar);
+        if (oldrn)
+            delete_riff_node(oldrn);
+        insrn = ordered_insert(
+                riffnodelist, rn, &riff_node::get_start_bar);
+        if (!insrn) {
+            return 0;
+        }
+        if (rep > 0)
+            rn = insrn->duplicate_for_bar(
+                                        insrn->get_start_bar() + repstr);
+        rep--;
+    }while (rep >= 0);
+    return insrn;
 }
 
 riff_node* sequencer::add_riff(riffdata* rd, short barpos)
@@ -263,31 +297,32 @@ void sequencer::init()
 // (time_map is initialised with out_bar = -1 before first run().)
         riff_start_bar = -2;
 // sensible people would define it before the sequencer in a .wc file!
+    freq_mod1size -= 1;
 }
 
 note_data* sequencer::posconv_note(note_data* rn)
 {
-    // assumes member variables are set correctly...
-    // calc amount to adjust length by...
-    double note_on_ratio = rn->get_position()
-     / riff_ptr->calc_riff_length(*in_beats_per_bar, *in_beat_value);
-    double len_offset = cur_node->get_start_length()
-     * (1 - note_on_ratio) + cur_node->get_end_length() * note_on_ratio;
-    double nofflen = rn->get_length() + len_offset;
-    if (nofflen < 1) nofflen = 1;
-    // create new note using length to store note off position,
+    // create new note using its length to store note off position,
     // convert to time_map quarter_value, and transpose.
     const char* tr_notename =
         transpose_notename(rn->get_name(), out_transpose);
-    note_data* newnote = new note_data(tr_notename,
-        (rn->get_position() + nofflen) * posconv,
-        rn->get_position() * posconv, rn->get_velocity());
+    #ifdef NOTE_EDIT_DEBUG
+    cout << "\nSequencer creating new note:";
+    #endif
+    note_data* newnote = new note_data(
+                        tr_notename,
+                        rn->get_position() * posconv,
+                        (rn->get_position() + rn->get_length()) * posconv,
+                        rn->get_velocity());
     delete [] tr_notename;
     return newnote;
 }
 
 void sequencer::init_next_note(ll_item* riff_note_item)
 {
+    if (next_note != 0) {
+        cout << "\nProgrammer Error! next_note is not NULL";
+    }
     if (riff_note_item) {
         next_in_riff = riff_note_item;
         next_note = posconv_note((note_data*)next_in_riff->get_data());
@@ -340,7 +375,10 @@ void sequencer::run()
             out_transpose = cur_node->get_transpose();
             posconv = (double)timemap::QUARTER_VALUE
                 / riff_ptr->get_quartervalue();
-            // riff's should contain atleast one note
+            if (next_note) {        // no dangling allowed
+                delete next_note;
+                next_note = 0;
+            }
             init_next_note(riff_ptr->sneak_first());
             riff_node_ptr = (riff_node*)
              (riffnodeitem = riffnodelist->goto_next())->get_data();
@@ -358,7 +396,7 @@ void sequencer::run()
         riff_len += (*in_beats_per_bar * bl);
     }
     else if (out_riff_start_trig == ON) {
-        out_riff_start_trig = OFF; // braces just to look nice
+        out_riff_start_trig = OFF;  // braces just to look nice
     }
     if (riff_play_state == ON) {
         if (riff_pos >= next_note_on_pos) {
@@ -371,6 +409,7 @@ void sequencer::run()
             else 
                 out_note_slide_trig = ON;
             play_note = next_note;
+            next_note = 0;
             output_note(play_note);
             play_list->add_at_tail(play_note);
             play_note_off_pos = play_note->get_length(); // (remember?)
@@ -390,6 +429,9 @@ void sequencer::run()
                     if (riff_pos >= note_ptr->get_length()) {
                         ll_item* n = play_item->get_next();
                         play_list->unlink_item(play_item);
+                        #ifdef NOTE_EDIT_DEBUG
+                        cout << "\nSequencer destroying note:";
+                        #endif
                         delete note_ptr;
                         delete play_item;
                         play_item = n;

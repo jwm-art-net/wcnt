@@ -48,11 +48,9 @@ public:
     // - dobjmod, is passed which contains a pointer to the wcnt_signal
     dobj* add_dobj(dobj*);
     void const* get_out(outputnames::OUT_TYPE);
-    void const* set_in(inputnames::IN_TYPE, void const*);
     bool set_param(paramnames::PAR_TYPE, void const*);
     void const* get_param(paramnames::PAR_TYPE);
-    // combiner does not use add_dobj() because wcnt_signal is a
-    // synthmod not a dobj - but still uses create_moddobj()...
+    synthmod* duplicate_module(const char* uname, DUP_IO);
 
 private:
     double out_output;

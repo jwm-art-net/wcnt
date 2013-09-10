@@ -1,4 +1,403 @@
 --------------------------------------------------------------
+Thursday 5th October 2006
+
+Changes:
+    * added duplication code to combiner module. the combiner
+      when duplicated as part of a group, and when the
+      wcnt_signals it combines are part of the same group, now
+      handles the group process correctly and inserts the
+      new groups wcnt_signals into the combiner copy instead of
+      the existing groups wcnt_signals. if the combiner is part
+      of a group but the wcnt_signals are not, the original
+      wcnt_signals are added to the copy.
+
+    * added duplication code, to switcher, spreader, stereo_mixer,
+      trig_switcher, etc. code to prevent wcnt_exit from being
+      duplicated, and time_map, and timer.
+
+    * that which the user knows as wcnt_exit, has had its source
+      and include files, its class name, and associated references
+      renamed to reflect its usage, instead of the misleading
+      name of wcntmodule.
+
+--------------------------------------------------------------
+Wednesday 4th October 2006
+
+FIXES:
+    * jwmsynth, taken the calls to synthmod::init out of the
+      connection routine and added them to the validate
+      routine, they're called once each module has been
+      validated.
+      
+ADDITIONS:
+    * adder, adds two signals together. it's taken me how many
+      years to come up with?
+
+    * subtracter, another big one, subtracts one signal from
+      another.
+
+    * trig_delay, a module to delay a trigger by a specified
+      number of milliseconds.
+
+    * simple_delay, the delay module without the trimmings or
+      cruftless as some might put it.
+
+--------------------------------------------------------------
+Tuesday 3rd October 2006
+
+CHANGES:
+    * synthmod base class has several new methods, amongst
+      them, a virtual, get_in to pair with set_in. check_inputs
+      to check that the inputs are actually set for a module
+      (called by jwmsynth during validation) independantly from 
+      functioning of the connectionlist and co. some new
+      methods for setting and getting group names.
+      duplicate_inputs_and_params has been split in two.
+      duplicate_module has a new parameter to specify if the
+      new module is to be reconnected or not.
+
+    * synthmod derived class have had a minor switch statement
+      tidy up in their virtual set and get methods.
+
+    * jwmsynth has new method, jwmsynth::validate_synth,
+      which contains the validating code previously contained
+      within generate_synth. As input checking is performed
+      during the validation, validate_synth should be called
+      after connect_synth.
+
+    * condensed main.
+
+    * synthfilereader no longer allows module or data object
+      names to be defined which contain a dot, the dot
+      signifies a grouped module. the group data object must
+      be used to add a module to a group.
+
+    * copier no longer allows a copy to a group type name.
+
+ADDITIONS:
+    * group is a new data object which groups together a bunch
+      of modules by prepending the name of the group to each of
+      the modules usernames. it then proceeds to reform all the
+      connections for that modules inputs to the new name.
+      the group will be able to be used by the copier to copy
+      the group and all its modules to a new group. having
+      spent most of the day, and evening, and with what i'd
+      done last night, it finally works, the group can be
+      copied sucessfully maintaining the input/output
+      relationship of the grouped modules.
+
+--------------------------------------------------------------
+Monday 2nd October 2006
+
+CHANGES:
+    * sine_wave has minor modification so that if both
+      recycle_mode and on_trig_reset_phase are both turned off
+      the sine_wave no longer ceases output. fixed for the 
+      degs > max_degs check to consider in_phase_trig before
+      turning the play_state to off, because in_phase_trig 
+      sometimes occurrs simultaneously with degs > max_degs.
+
+    * synthmod::duplicate now works the other way around, it
+      is no longer down to the derived classes to impliment
+      duplication, if they do not allow duplication then they
+      must impliment duplicate to prevent it. some modules will
+      require their own duplication method to copy their data
+      objects anyway, but can still use synthmod::duplicate to
+      do the basic stuff (copy inputs and params).
+
+FIXES:
+    * linkedlist add_at_head and add_at_tail ignored 
+      MULTIREF_OFF, now they don't.
+
+--------------------------------------------------------------
+Sunday 1st October 2006
+
+NOTES:
+    * I thought everything was going really well, until that is
+      I "make examples". drx01.wc causes errors in sampler::run
+      which I had catered for with error msgs which I had never
+      witnessed in action before. I am seriously perplexed by
+      it, I have adapted the sampler code slightly, but nothing
+      which should have that effect, which is only with
+      drx01.wc. A "diff -u" of wcnt-1.2/src/sampler.cc with
+      wcnt-1.25/src/sampler.cc shows that there is nothing
+      changed which should have this effect. valgrind reports
+      only on while processing drx01.wc, of invalid read sizes,
+      and the msgs by the sampler mentioned are of the AC buf 
+      pos which is vastly out of range, as is the normal buf_pos.
+      I've only changed drx01.wc enough for wcnt-1.25 to process
+      it. valgrind is giving me the hump about set_wc_filename
+      also, and again I can see absolutely nothing there, the
+      char* wc_filename gets [] deleted.
+
+    * I guess that will teach me to make token tweaks in code
+      because it's more or less the same as something new I've
+      written. Ie, the above problems have occuppied me for
+      several hours, namely the sampler. I've put in *lots* of
+      messages in sampler to try and track down the origin of
+      the problem, but try as I might it was not to be found
+      there. Eventually started whittling down the sampler
+      definitions in drx01.wc to find it was todo with the
+      start position modulation. Or so I thought, then the
+      only other difference between sampler1 and sampler2 was
+      their in_deg_size inputs, sampler 1 had osc1. Looked at
+      osc1, fiddled about, removed _its_ frequency modulation
+      and what do you know? Looked at what was modulating osc1
+      the switcher module, hmmm, lets remove it's xfade time,
+      and what do you know? did a diff betweenn the wcnt-1.2
+      and wcnt-1.25 switcher.cc files, and what do you know?
+      a silly tiny little tweek one line of code difference
+      caused me all this ****. bastard. "If it ain't wrong,
+      don't fix it." correctomundo.
+
+CHANGES:
+    * wavfilein no longer calls wavfilein::open_wav() in
+      wavfilein::validate().
+
+    * sampler now calls wavfilein::open_wav() and emits error
+      messages if it failed.
+
+    * updated error messages for param_editor and input_editor
+      to be a little more helpfull when param/input setting
+      failed.
+
+FIXES:
+    * stereo_channel previously used the same pointer variable
+      for each input and output, but if the input was not set
+      then attempting to get the output would result in an error
+      message saying the output did not exist. now they're
+      seperated, the output is not a pointer and consequently
+      stereo_channel::run() is no longer empty.
+
+    * the infinite loop reared it's ugly head again in
+      synthfilereader::read_string_list_param() when a module
+      or dataobject was named editlist and the editlist was
+      improperly formed. added if statements to prevent modules
+      and data object from being named editlist. Should perhaps
+      investigate a better method for preventing reserved words
+      from being used as names. (there's only two reserved
+      names so far, off and editlist.)
+
+    * using the param_editor to edit the filename parameter of
+      a wavfilein now has the intended effect.
+
+    * sync_clock frequency modulation needed a division
+      replaced with a multiplication.
+
+--------------------------------------------------------------
+Saturday 30th September 2006
+
+CHANGES:
+    * various DEFS now available to be defined in Makefile to
+      show a count of various classes being created, destroyed,
+      and the max number of that class type at any one time.
+      helps in detecting memory leaks. classes: ll_item, dobj,
+      note_data.
+
+FIXES:
+    * fixed memory leak in riffdata::edit_notes() which occurred
+      when using editnotes to change notes positions.
+
+    * fixed memory leak in sequencer::run() caused by a riff
+      starting and overwriting the note pointed at by next_note.
+      the note is deleted.
+
+    * fixed segfault which occurred when reading using the 
+      synth_file_reader told to exclude reading a wavfilein.
+      have prevented data objects which are not to be included
+      from being validated.
+
+    * infinite loop is now avoided by 
+      synthfilereader::read_string_list_param() which was caused
+      by malformed editlists in definitions of input_editor and
+      param_editor. added existence checking in set_param
+      methods of both to help correct it, along with some minor
+      extra logic in read_string_list_param.
+
+BUGS:
+    * when using synth_file_reader to read a wavfilein and a 
+      sampler from another .wc file, using the param_editor to
+      edit the filename parameter of the wavfilein will have
+      no effect, you need to create a new wavfilein and edit
+      the sampler wavfile parameter.
+
+--------------------------------------------------------------
+Friday 29th September 2006
+
+CHANGES:
+    * Removed all four FREQ_MOD?_HI and FREQ_MOD?_LO param
+      names from paramnames class as they were not in use and
+      are redundant.
+
+FIXES:
+    * riff_data::edit_notes had its function pointers mixed up
+      and consequently was a little confused over what it
+      was  supposed to  be doing.
+
+ADDITIONS:
+    * stepper module, it was going to be an automated switcher
+      module populator, but decided that might be too silly
+      and came up with this instead, can't be bothered to say
+      much more, I'm going to bed right now.
+
+--------------------------------------------------------------
+Thursday 28th September 2006
+
+NOTES:
+    * in the duplication code for each specific module type, I
+      had been adding a line of code to copy each input, and a
+      line of code to copy each parameter. That is, until I
+      wondered if I could not make it more automated, and hey
+      presto I could. Now I need only to create the module to
+      copy the stuff to and with a single call to 
+      synthmod::duplicate_inputs_and_params_to(synthmod*) it's
+      all done. Ahhh! The beauty of virtual methods!
+
+    * slowly adding duplication code to the synthmodules.
+      only one dobj can be duplicated and that is riffdata,
+      all the others are either too simple to be worthwhile
+      or too complex and impracticable. some synthmodules 
+      will also suffer from impracticability, such as the
+      switcher, combiner, and mixer which have lists of
+      modules inside of them. the most popular modules, such
+      as the clock based and waveform based should present no
+      serious problems, though other modules such as the adsr,
+      userwave, and dynamics contain data objects inside lists
+      and these present a problem in that nothing can be done
+      about editing them, other than taking the same path as
+      note_data, but unless there is a name element within the
+      dobj parameter (such as notename) there will be no easy
+      way about it.
+
+    * maybe the switcher modules could have an edit command
+      which reorganises the order of the modules it switches
+      between, that would be ok. a replace command might be
+      usefull too.
+
+CHANGES:
+    * connectorlist has a new method to create a connectorlist
+      containing only the connections for a specific module.
+
+    * synthmod has new virtual method duplicate_mod. any
+      synthmod derived classes which do not allow duplication
+      should leave it to synthmod to emit an error message. 
+      otherwise, make it copy stuff over to the new module.
+
+    * dobj has new virtual method duplicate_dobj. same working
+      as synthmod::duplicate_mod
+
+    * note_data has further complexified in a more useful way
+      for riff_data. get_note_number now returns 60 for middle
+      C (c0 in wcnt, c4 elsewhere). added enum for choosing
+      note editing operator types, add, subtract etc. changed
+      enum values from the character that symbolises them, to
+      an integer number. switch statements determine from
+      notename which enum value to return from the
+      corresponding methods, taking the onus off riffdata.
+      reorganised order of command characters to be more
+      sensible.
+
+    * riffdata::edit_notes reorganised, operating in a vaguely
+      more sophisticated fashion. (ie an index of function
+      pointers accessed by determination of the note_data
+      enum values (why did I not think of that earlier?).)
+
+ADDITIONS:
+    * copier data object. the copier copies a data object or
+      a synthmod. specify from and to as text names.
+
+--------------------------------------------------------------
+Wednesday 27th September 2006
+
+wcnt-1.25
+
+CHANGES:
+    * note_data has added to it three enum types for various
+      note editing commands specified in the note name. three
+      coresponding methods for getting the three portions of
+      a note editing command. certain note edit commands have
+      a notename appended to them, get_note_number and
+      get_frequency take this into account.
+
+    * riff_data no longer recognises an asterisk (*) starting
+      a note name as a signifier of a note editing command.
+      this is because other commands beside delete have been
+      added such as - (delete) N (name) P (position) 
+      L (length) and V (velocity). These same symbols are used
+      (except -) for selecting which notes to operate on.
+     
+
+    * riff_node now gracefully handles data objects other than
+      riffs passed to it, instead of ignoring them and causing
+      a segfault.  removed the start_len and end_len which the
+      sequencer used for adjusting note lengths...
+
+    * ...sequencer no longer adjusts note lengths.
+
+ADDITIONS:
+    * riff_editor data object edits riffs. it contains a
+      parameter for specifying the riff to edit, and then a
+      notelist in which notes are inserted exactly the same
+      way as they are in a riff. It offers no extended
+      functionality over riff_data other than being able to
+      operate on already defined riffs (such as those read
+      from some other .wc file, or those duplicated in the
+      soon to be created duplicate/copy data objects).
+
+--------------------------------------------------------------
+Tuesday 26th September 2006
+
+wcnt-1.25
+
+CHANGES:
+    * note_data has two new member methods, namely, 
+      get_frequency, and get_note_number. the first is and
+      shall probably remain redundant since the second was
+      introduced as to help the changes in riff_data make more
+      sense....and can accept certain note names which are not
+      names of notes at all...
+
+    * riff_data has new member method, edit_notes(note_data*).
+      when insert_and_position_note comes across a note name
+      beginning with a * (asterisk) 
+      
+--------------------------------------------------------------
+Tuesday 26th September 2006
+
+wcnt-1.25
+
+FIXES:
+    * fixed linked list ordered insert template-function so
+      that the correct return type (ie the list items data) is
+      returned when inserting between two existing items.
+
+ADDITIONS:
+    * peak_detector module. this module outputs a user 
+      specified message to stdout when the input signal falls
+      outside a specified range. it can do this as many times
+      as you like, or, unlimited times. it can also abort wcnt
+      processing if you want it too.
+
+CHANGES:
+    * riff_node has two new parameters (riff_nodes are inside
+      the sequencer module). they are repeat, to repeat the
+      riff n times, and repeat_stripe, so the repetition is
+      every n bars. (insert the riff, and then repeat it n
+      times.)
+
+    * sequencer::add_riff_node has been adapted to handle the
+      riff_node changes. a by product of this is that
+      riff_nodes are deleted when a new riff_node is inserted
+      at the same bar position, instead of emmitting an error
+      message and wcnt quitting out, allowing the  user to
+      repeat riffs and then break up the repetition by adding
+      further riffs.
+
+    * riff_data::insert_and_position_note now deletes any
+      notes in the same position as the new note to be
+      inserted, as it should have done in the past.
+
+--------------------------------------------------------------
 Tuesday 28th June 2005
 
 wcnt-1.2
@@ -181,7 +580,7 @@ NOTES:
       the new implimentation of dobj classes paramedit and inputedit
       have two string type parameters.  the first is the module name,
       and the second is a string containing a list of paramter names
-      and thier values for paramedit, and a list of input names and
+      and their values for paramedit, and a list of input names and
       output module names and output names for inputedit.
 
       thus the above example becomes:
@@ -203,7 +602,7 @@ NOTES:
       handling by synthfilereader (class). normally osc1 would be next
       to a parameter name but here no parameter name is mentioned, and
       the same for the string list parameter (which contains the list of
-      param names and thier values). the string list itself requires a
+      param names and their values). the string list itself requires a
       different handling as parameters cannot normally read a string
       which contain spaces.
 

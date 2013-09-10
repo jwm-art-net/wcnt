@@ -7,8 +7,8 @@
 // to get sample rate
 #include "synthmodule.h"
 
-#define NOTE_ARRAY_SIZE 5
-#define NOTE_NAME_LEN 4
+#define NOTE_ARRAY_SIZE 10
+#define NOTE_NAME_LEN 9
 
 
 /*----------------------------------------------------------------
@@ -40,6 +40,7 @@ const char* transpose_notename(const char* note_name, char semitones);
 // (check_notename no longer accepts e# and b#)
 bool check_notename(const char *n);
 // note name should be checked before calling these two
+// note that note_to_noteno does not consider octaves.
 char note_to_noteno(const char* note_name);
 char extract_octave(const char* note_name);
 

@@ -21,58 +21,45 @@ triangle_wave::~triangle_wave()
     get_inputlist()->delete_module_inputs(this);
 }
 
-void const* triangle_wave::get_out(outputnames::OUT_TYPE ot)
-{
-    void const* o = 0;
-    switch(ot)
-    {
-    case outputnames::OUT_OUTPUT:
-        o = &output;
-        break;
-    case outputnames::OUT_PLAY_STATE:
-        o = &play_state;
-        break;
-    default:
-        o = 0;
-    }
-    return o;
-}
-
 void const* triangle_wave::set_in(inputnames::IN_TYPE it, void const* o)
 {
-    void const* i = 0;
     switch(it)
     {
     case inputnames::IN_PHASE_TRIG:
-        i = in_phase_trig = (STATUS*)o;
-        break;
+        return in_phase_trig = (STATUS*)o;
     case inputnames::IN_DEG_SIZE:
-        i = in_deg_size = (double*)o;
-        break;
+        return in_deg_size = (double*)o;
     default:
-        i = 0;
+        return 0;
     }
-    return i;
+}
+
+void const* triangle_wave::get_in(inputnames::IN_TYPE it)
+{
+    switch(it)
+    {
+    case inputnames::IN_PHASE_TRIG:
+        return in_phase_trig;
+    case inputnames::IN_DEG_SIZE:
+        return in_deg_size;
+    default:
+        return 0;
+    }
 }
 
 bool triangle_wave::set_param(paramnames::PAR_TYPE pt, void const* data)
 {
-    bool retv = false;
     switch(pt)
     {
     case paramnames::PAR_RECYCLE_MODE:
         set_recycle_mode(*(STATUS*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_ZERO_RETRIGGER:
         set_zero_retrigger_mode(*(STATUS*)data);
-        retv = true;
-        break;
+        return true;
     default:
-        retv = false;
-        break;
+        return false;
     }
-    return retv;
 }
 
 void const* triangle_wave::get_param(paramnames::PAR_TYPE pt)
@@ -93,10 +80,10 @@ void triangle_wave::run()
     if (*in_phase_trig == ON)
     {
         play_state = ON;
-        sect = 0;
-        sectsample = 0;
         if (zero_retrigger_mode == ON)
             output = 0;
+        sect = 0;
+        sectsample = 0;
         sect_startlvl = output;
         sect_spanlvl = 1 - sect_startlvl;
     }
@@ -140,6 +127,24 @@ void triangle_wave::run()
         }
     }
 }
+
+void const* triangle_wave::get_out(outputnames::OUT_TYPE ot)
+{
+    void const* o = 0;
+    switch(ot)
+    {
+    case outputnames::OUT_OUTPUT:
+        o = &output;
+        break;
+    case outputnames::OUT_PLAY_STATE:
+        o = &play_state;
+        break;
+    default:
+        o = 0;
+    }
+    return o;
+}
+
 
 short triangle_wave::triangle_wave_count = 0;
 

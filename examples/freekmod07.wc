@@ -1,4 +1,4 @@
-wcnt-1.2/jwmsynth
+wcnt-1.25/jwmsynth
 
 header header.wch
 
@@ -16,7 +16,7 @@ freekmod06
 param_editor
 freekparams
     editlist
-        edit osc1 octave_offset    1
+        edit osc1 octave_offset   -1
         edit osc2 tuning_semitones 0.0
         edit echo1
             gain      0.75
@@ -30,4 +30,4 @@ freekparams
     editlist
 freekparams
 
-wcnt-1.2/jwmsynth
+wcnt-1.25/jwmsynth

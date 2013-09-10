@@ -5,10 +5,29 @@ dobj::dobj(dobjnames::DOBJ_TYPE dt) :
  object_type(dt), username(0), valid(true)
 {
     *err_msg = ""; // hmmm
+    #ifdef SHOW_DOBJ_COUNT
+    dobjs_created_count++;
+    dobjs_count++;
+    dobjs_max_count = (dobjs_count > dobjs_max_count)
+                        ? dobjs_count : dobjs_max_count;
+    #endif
+    #ifdef SHOW_DOBJ_NAMES
+    cout << "\nCreating object of type " << dobj_names->get_name(dt);
+    #endif
 }
 
 dobj::~dobj()
 {
+    #ifdef SHOW_DOBJ_COUNT
+    dobjs_destroyed_count++;
+    dobjs_count--;
+    #endif
+    #ifdef SHOW_DOBJ_NAMES
+    cout << "\nDestroying object of type ";
+    cout << dobj_names->get_name(object_type);
+    if (object_type > dobjnames::DOBJ_DEFS && username)
+        cout << " (" << username << ")";
+    #endif
     if (username)
         delete [] username;
 }
@@ -18,7 +37,7 @@ bool dobj::is_named_by_user()
     if (get_dobjnames()->check_type(object_type) == dobjnames::DOBJ_FIRST)
     {
         *err_msg = "\nError in object ";
-        if (username) *err_msg += *username;
+        if (username) *err_msg += username;
         *err_msg += " type ";
         *err_msg += dobj_names->get_name(object_type);
         return (valid = false);
@@ -47,6 +66,7 @@ bool dobj::set_username(const char* un)
         *err_msg += dobj_names->get_name(object_type);
         return (valid = false);
     }
+    if (username) delete [] username;
     username = new char[strlen(un) + 1];
     strcpy(username, un);
     return true;
@@ -83,6 +103,16 @@ dobj const* dobj::add_dobj(dobj*)
     return 0;
 }
 
+dobj* dobj::duplicate_dobj(const char* uname)
+{
+    *err_msg = "from:\ndata object ";
+    if (username) *err_msg += username;
+    *err_msg += " of data type ";
+    *err_msg += dobj_names->get_name(object_type);
+    *err_msg += " does not allow copies to be made of it.";
+    return 0;
+}
+
 char* dobj::path = 0;
 string*  dobj::err_msg = 0;
 iocat_names* dobj::iocatnames = 0;
@@ -92,4 +122,11 @@ dobjparamlist* dobj::dobjpar_list = 0;
 paramnames* dobj::par_names = 0;
 topdobjlist* dobj::top_dobjlist = 0;
 fxsparamlist* dobj::fxsparlist = 0;
+#ifdef SHOW_DOBJ_COUNT
+long dobj::dobjs_created_count = 0;
+long dobj::dobjs_destroyed_count = 0;
+long dobj::dobjs_count = 0;
+long dobj::dobjs_max_count = 0;
+#endif
+
 #endif

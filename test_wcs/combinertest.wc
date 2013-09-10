@@ -1,0 +1,105 @@
+wcnt-1.25/jwmsynth
+
+// testing combiner with copyier and group.
+
+// run this with -v to see where the outputs go..
+
+header header.wch
+
+constant one value 1.0 one
+
+timer t1
+    timings
+        time seconds 0.0
+        time seconds 1.0
+    timings
+t1
+
+constant p1 value 0.25 p1
+constant p2 value 0.25 p2
+constant p3 value 0.25 p3
+
+wcnt_signal ws1  in_signal p1  out_output level 1.0 ws1
+wcnt_signal ws2  in_signal p2  out_output level 1.0 ws2
+wcnt_signal ws3  in_signal p3  out_output level 1.0 ws3
+
+wcnt_signal
+iotest
+    in_signal g1.cmb1 out_output
+    level 1.0
+iotest
+
+combiner
+cmb1
+    signals
+        synthmod name ws1
+        synthmod name ws2
+        synthmod name ws3
+    signals
+    mean_total off
+cmb1
+
+// combiner duplicate woks correctly as called by copier.
+// copier cc1 from cmb1 to cmb2 cc1
+
+mono_amp
+amp1
+    in_signal   cmb1 out_output
+    in_amp_eg   one out_output
+    in_amp_mod  off
+    amplitude       32767
+    amp_mod_size    0.0
+    clip_level      32767
+amp1
+
+wavfile_out wav1
+    in_left     g1.amp1 out_mono
+    in_right    g2.amp1 out_mono
+    in_bar      t1 out_count
+    in_bar_trig t1 out_trig
+    filename    combinertest.wav
+    start_bar   0
+    end_bar     1
+wav1
+
+wcnt_exit
+wcnt_exit_module
+    in_bar      t1  out_count
+    exit_bar    1
+wcnt_exit_module
+
+// grouping combiner seems to work correctly also.
+// with or without the wcnt_signals grouped or not.
+group
+g1
+    modules
+        synthmod name ws1
+        synthmod name ws2
+        synthmod name ws3
+        synthmod name cmb1
+        synthmod name amp1
+//        synthmod name off
+    modules
+g1
+
+
+copier grpc1 from g1 to g2 grpc1
+
+param_editor
+pe1
+    editlist
+        edit g2.ws1
+            level 0.5
+        edit g2.ws2
+            level 0.5
+        edit g2.ws3
+            level 0.5
+//        edit off
+//            aka nonezero
+//        edit pe1 // highly interesting error message I'm sure
+//            poopah
+    editlist
+pe1
+
+
+wcnt-1.25/jwmsynth

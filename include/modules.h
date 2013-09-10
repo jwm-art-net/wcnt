@@ -38,7 +38,7 @@
 #include "delay.h"
 #include "echo.h"
 #include "monoamp.h"
-#include "wcntmodule.h"
+#include "wcntexit.h"
 #include "multiplier.h"
 #include "rangelimit.h"
 #include "pan.h"
@@ -60,5 +60,12 @@
 #include "wcnttrigger.h"
 #include "trigswitcher.h"
 #include "onofftrig.h"
+// version 1.25
+#include "peakdetector.h"
+#include "stepper.h"
+#include "adder.h"
+#include "subtracter.h"
+#include "trigdelay.h"
+#include "simpledelay.h"
 
 #endif

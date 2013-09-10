@@ -1,10 +1,22 @@
 #optimised defs
 DEFS=-O2 -fomit-frame-pointer -ffast-math
 
-#debugging defs
-# add -DSEQ_NOTE_DEBUG to DEFS to display note_data
-# info whenever one is created/deleted.
-#DEFS=-g3 -fno-inline
+# development&debugging DEFS:
+# add -DSEQ_NOTE_DEBUG and/or -DNOTE_EDIT_DEBUG to DEFS to display
+#			note_data info whenever one is created/deleted.
+# add -DSHOW_LL_ITEM_COUNT to show counts of ll_item (linkedlist items)
+# 						created and destroyed.
+# add -DSHOW_DOBJ_COUNT to show counts of dobj (data objects) created
+#							and destroyed.
+# add -DSHOW_DOBJ_NAMES to show names of data objects created/destroyed.
+#					(a lot less verbose than wcnt -v)
+# add -DSHOW_NOTE_COUNT to show a count of notes created/destroyed
+# add -DDEBUG_STRLIST_PAR to show what synthfileread::read_string_list_param
+#						has encountered.
+# add -DCRAZY_SAMPLER if you want to see far too much information.
+
+# general debugging defs
+# DEFS=-g3 -fno-inline -DSHOW_LL_ITEM_COUNT -DSHOW_DOBJ_COUNT
 
 # the rest:
 PROG=wcnt
@@ -13,8 +25,7 @@ CFLAGS=$(DEFS) $(WARNS)
 SRC=$(wildcard src/*.cc)
 OBJS=$(SRC:.cc=.o)
 HEADERS=$(wildcard include/*.h)
-EXDIR=examples
-EXAMPLES=$(wildcard $(EXDIR)/*.wc)
+EXAMPLES=$(wildcard examples/*.wc)
 WAVS=$(EXAMPLES:.wc=.wav)
 
 $(PROG) : $(OBJS)
@@ -36,14 +47,6 @@ examples: $(WAVS)
 
 %.wav :  %.wc $(PROG)
 	@./$(PROG) $<
-
-# uncommenting this causes make examples to use valgrind too.
-# (be warned, it takes hours...)
-# valgrind: $(WAVS)
-#
-# %.wav :  %.wc $(PROG)
-#	valgrind --leak-check=yes --log-file=wcnt-valgrind $(PROG) $<
-#
 
 clean:
 	@rm -vf $(OBJS) $(PROG)

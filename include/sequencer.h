@@ -28,7 +28,12 @@
     or to wait until the next note should be played.
 
     BTW: just because the sequencer now has a play list don't think
-         it has become anything more than monophonic.
+         it has become anything other than monophonic.
+
+    wcnt-1.25
+    ---------
+    have removed the length changing stuff from here and riff_node
+
 */
 
 class sequencer : public synthmod
@@ -91,8 +96,10 @@ public:
     stockerrs::ERR_TYPE validate();
     void const* get_out(outputnames::OUT_TYPE);
     void const* set_in(inputnames::IN_TYPE, void const*);
+    const void* get_in(inputnames::IN_TYPE it);
     bool set_param(paramnames::PAR_TYPE, void const*);
     void const* get_param(paramnames::PAR_TYPE);
+    synthmod* duplicate_module(const char* uname, DUP_IO dupio);
     dobj* add_dobj(dobj*);
 private:
     // ***** inputs *****
@@ -117,6 +124,7 @@ private:
     STATUS riff_play_state;
     STATUS note_play_state;
     // ***** params *****
+    double freq_mod1size;
     double vel_response;
     // ***** the riff node list *****
     linkedlist* riffnodelist;

@@ -153,7 +153,6 @@ private:
     dobj* const read_dobj(string const* command);
     bool include_mod(const char* name);
     bool include_dbj(const char* name);
-/*  bool transmit_excluded(synthfilereader*); */
     bool read_and_create_synthmod(string const* com);
     bool read_and_create_dobj(string const* com);
     bool skip_remarks();

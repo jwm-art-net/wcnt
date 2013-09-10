@@ -40,17 +40,34 @@ class connectorlist;
 // synthmod anyhow.  it makes life easier for passing stuff around the
 // user interface code.
 
+// =--=--=--=
+//  wcnt-1.25
+// =--=--=--=
+// added get_group_name() method to return the name of the group, or null,
+// if it is not part of a group. the group name is part of the username,
+// seperated by a dot '.'. set_group_name will change the group name if
+// one is already set, or will add a group name if not. the group name
+// must be delete[]ed after you're done with it.
+
+// new method bool check_inputs() checks that inputs are set. that is, it
+// checks that the _actual_ inputs of a module are set, without relying on // information contained in connectlist. only problem is I've now got
+// to create the virtual function get_in in every module which is a
+// minor nuisance no brainer copy and paste and edit affair.
+
 class synthmod
 {
 public:
+    enum DUP_IO{AUTO_CONNECT, NO_CONNECT};
     synthmod(synthmodnames::SYNTH_MOD_TYPE, short id, char const* uname);
     virtual ~synthmod();
     synthmodnames::SYNTH_MOD_TYPE get_module_type(){ return module_type;}
     short get_number_id() { return number_id;}
     char const* get_username(){ return username;}
+    void set_group_name(const char*);
+    char* get_group_name();
     // virtuals
     virtual void run() = 0;// 1st choice method for pure abstract virtual.
-    virtual void init(){}; // run() is 96% always needed...
+    virtual void init(){}; // run() is 99.99999% always needed...
     // validation
     virtual stockerrs::ERR_TYPE validate(){
         return stockerrs::ERR_NO_ERROR;
@@ -59,11 +76,18 @@ public:
     bool is_valid() { return valid;}
     // more virtuals
     virtual void const* set_in(inputnames::IN_TYPE, void const*);
+    virtual void const* get_in(inputnames::IN_TYPE);
     virtual void const* get_out(outputnames::OUT_TYPE);
     virtual bool set_param(paramnames::PAR_TYPE, void const*);
     virtual void const* get_param(paramnames::PAR_TYPE);
+    virtual synthmod* duplicate_module(const char* uname, DUP_IO);
+// definition just to trip up old style functions still kicking about:
+    virtual void* duplicate_module(const char* uname){return 0;}
     virtual dobj* add_dobj(dobj*);
+    bool check_inputs();
     // statics - created and registered from jwmsynth constructor
+    static void set_verbose(){verbose = true;}
+    static bool get_verbose(){return verbose;}
     static void clear_error_msg(){ *err_msg = "";}
     static void register_error_msg(string* e){ err_msg = e;}
     static void register_path(char* p){ path = p;}
@@ -93,8 +117,12 @@ public:
     static connectorlist* get_connectlist(){ return connectlist;}
     static moddobjlist* get_moddobjlist(){ return mdobjlist;}
     static fxsparamlist* get_fxsparamlist(){ return fxsparlist;}
+    static STATUS const* get_abort_status(){ return &abort_status;}
 protected:
     static string* err_msg;
+    void force_abort(){ abort_status = ON; } // abort now!
+    void duplicate_inputs_to(synthmod*);
+    void duplicate_params_to(synthmod*);
 private:
     synthmodnames::SYNTH_MOD_TYPE module_type;
     short number_id;
@@ -113,6 +141,8 @@ private:
     static connectorlist* connectlist;
     static moddobjlist* mdobjlist;
     static fxsparamlist* fxsparlist;
+    static bool verbose;
+    static STATUS abort_status;
 };
 
 #endif

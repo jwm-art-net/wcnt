@@ -24,54 +24,40 @@ void wave_vertex::modulate(double vmod, double hmod)
 
 bool wave_vertex::set_param(paramnames::PAR_TYPE pt, void* data)
 {
-    bool retv = false;
     switch(pt)
     {
     case paramnames::PAR_UPDEG:
         set_updeg(*(double*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_UPLEVEL:
         set_uppos(*(double*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_LODEG:
         set_lodeg(*(double*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_LOLEVEL:
         set_lopos(*(double*)data);
-        retv = true;
-        break;
+        return true;
     default:
-        retv = false;
-        break;
+        return false;
     }
-    return retv;
 }
 
 void const* wave_vertex::get_param(paramnames::PAR_TYPE pt)
 {
-    void* retv = 0;
     switch(pt)
     {
     case paramnames::PAR_UPDEG:
-        retv = &up_deg;
-        break;
+        return &up_deg;
     case paramnames::PAR_UPLEVEL:
-        retv = &up_pos;
-        break;
+        return &up_pos;
     case paramnames::PAR_LODEG:
-        retv = &lo_deg;
-        break;
+        return &lo_deg;
     case paramnames::PAR_LOLEVEL:
-        retv = &lo_pos;
-        break;
+        return &lo_pos;
     default:
-        retv = 0;
-        break;
+        return 0;
     }
-    return retv;
 }
 
 stockerrs::ERR_TYPE wave_vertex::validate()

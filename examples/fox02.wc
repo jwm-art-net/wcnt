@@ -1,4 +1,4 @@
-wcnt-1.2/jwmsynth
+wcnt-1.25/jwmsynth
 //------------------------------------------------------------------------
 //
 //  drums01.wc:  
@@ -86,100 +86,7 @@ seq1
     track 
         riff_node
             riff riff1  bar 0   transpose 0
-            start_len 0 end_len 0
-        riff_node
-            riff riff1  bar 1   transpose 0
-            start_len 0 end_len 0
-        riff_node
-            riff riff1  bar 2   transpose 0
-            start_len 0 end_len 0
-        riff_node
-            riff riff1  bar 3   transpose 0
-            start_len 0 end_len -2
-        riff_node
-            riff riff1  bar 4   transpose 0
-            start_len 0 end_len 0
-        riff_node
-            riff riff1  bar 5   transpose 0
-            start_len 0 end_len 0
-        riff_node
-            riff riff1  bar 6   transpose 0
-            start_len 0 end_len 0
-        riff_node
-            riff riff1  bar 7   transpose 0
-            start_len -2 end_len -4
-        riff_node
-            riff riff1  bar 8   transpose 0
-            start_len 0 end_len 0
-        riff_node
-            riff riff1  bar 9   transpose 0
-            start_len 0 end_len 0
-        riff_node
-            riff riff1  bar 10   transpose 0
-            start_len 0 end_len 0
-        riff_node
-            riff riff1  bar 11   transpose 0
-            start_len -2 end_len -6
-        riff_node
-            riff riff1  bar 12   transpose 0
-            start_len 0 end_len 0
-        riff_node
-            riff riff1  bar 13   transpose 0
-            start_len 0 end_len 0
-        riff_node
-            riff riff1  bar 14   transpose 0
-            start_len 0 end_len 0
-        riff_node
-            riff riff1  bar 15  transpose 0
-            start_len -2 end_len -8
-        riff_node
-            riff riff1  bar 16   transpose 0
-            start_len 0 end_len 0
-        riff_node
-            riff riff1  bar 17   transpose 0
-            start_len 0 end_len 0
-        riff_node
-            riff riff1  bar 18   transpose 0
-            start_len 0 end_len 0
-        riff_node
-            riff riff1  bar 19   transpose 0
-            start_len -2 end_len -9
-        riff_node
-            riff riff1  bar 20   transpose 0
-            start_len 0 end_len 0
-        riff_node
-            riff riff1  bar 21   transpose 0
-            start_len 0 end_len 0
-        riff_node
-            riff riff1  bar 22   transpose 0
-            start_len 0 end_len 0
-        riff_node
-            riff riff1  bar 23   transpose 0
-            start_len -2 end_len -9
-        riff_node
-            riff riff1  bar 24   transpose 0
-            start_len 0 end_len 0
-        riff_node
-            riff riff1  bar 25   transpose 0
-            start_len 0 end_len 0
-        riff_node
-            riff riff1  bar 26   transpose 0
-            start_len 0 end_len 0
-        riff_node
-            riff riff1  bar 27   transpose 0
-            start_len -4 end_len -9
-        riff_node
-            riff riff1  bar 28   transpose 0
-            start_len 0 end_len 0
-        riff_node
-            riff riff1  bar 29   transpose 0
-            start_len 0 end_len 0
-        riff_node
-            riff riff1  bar 30   transpose 0
-            start_len 0 end_len 0
-        riff_node
-            riff riff1  bar 31  transpose 0
-            start_len -8 end_len -10
+            repeat  31  repeat_stripe   1
     track
     in_bar              time1 out_bar
     in_bar_trig         time1 out_bar_trig
@@ -341,12 +248,12 @@ sequencer
 seq2
     track
         riff_node
-            riff riff2 bar 0
-            transpose 0 start_len 0 end_len 0
+            riff riff2
+                bar 0 transpose 0 repeat 0 repeat_stripe 1
         riff_node
-            riff riff2b bar 16
-            transpose 0 start_len 0 end_len 0
-        track
+            riff riff2b
+                bar 16 transpose 0 repeat 0 repeat_stripe 1
+    track
         in_bar              time1   out_bar
         in_bar_trig         time1   out_bar_trig
         in_pos_step_size    time1   out_pos_step_size
@@ -460,15 +367,10 @@ drumpos1
 
 constant posdif value 0.0001 posdif
 
-modifier
+adder
 drumpos2
     in_signal   drumpos1    out_output
     in_modifier posdif      out_output
-    modifier_func   add
-    modifier_size   1.0
-    min_out         0.0
-    max_out         1.0
-    posneg_mirror   off
 drumpos2
 
 // set frequency for sample to playback at:
@@ -1001,4 +903,4 @@ wcnt_exit_module
 //------------------------------------------------------------------------
 // End Of File _jwm 2005.
 //------------------------------------------------------------------------
-wcnt-1.2/jwmsynth
+wcnt-1.25/jwmsynth

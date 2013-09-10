@@ -43,114 +43,102 @@ notetran::~notetran()
 
 void const* notetran::get_out(outputnames::OUT_TYPE ot)
 {
-    void const* o = 0;
     switch(ot)
     {
     case outputnames::OUT_NOVALUE:
-        o = &out_no_value;
-        break;
+        return &out_no_value;
     case outputnames::OUT_NSVALUE:
-        o = &out_ns_value;
-        break;
+        return &out_ns_value;
     case outputnames::OUT_NOTE_ON_TRIG:
-        o = &out_note_on_trig;
-        break;
+        return &out_note_on_trig;
     case outputnames::OUT_NOT_NO_TRIG:
-        o = &out_not_no_trig;
-        break;
+        return &out_not_no_trig;
     case outputnames::OUT_NOTE_SLIDE_TRIG:
-        o = &out_note_slide_trig;
-        break;
+        return &out_note_slide_trig;
     case outputnames::OUT_NOT_NS_TRIG:
-        o = &out_not_ns_trig;
-        break;
+        return &out_not_ns_trig;
     default:
-        o = 0;
+        return 0;
     }
-    return o;
 }
 
 void const* notetran::set_in(inputnames::IN_TYPE it, void const* o)
 {
-    void const* i = 0;
     switch(it)
     {
     case inputnames::IN_NOTENAME:
-        i = in_notename = (char const**)o;
-        break;
+        return in_notename = (char const**)o;
     case inputnames::IN_DETRANSPOSE:
-        i = in_detranspose = (short*)o;
-        break;
+        return in_detranspose = (short*)o;
     case inputnames::IN_NOTE_ON_TRIG:
-        i = in_note_on_trig = (STATUS*)o;
-        break;
+        return in_note_on_trig = (STATUS*)o;
     case inputnames::IN_NOTE_SLIDE_TRIG:
-        i = in_note_slide_trig = (STATUS*)o;
-        break;
+        return in_note_slide_trig = (STATUS*)o;
     default:
-        i = 0;
+        return 0;
     }
-    return i;
+}
+
+void const* notetran::get_in(inputnames::IN_TYPE it)
+{
+    switch(it)
+    {
+    case inputnames::IN_NOTENAME:
+        return in_notename;
+    case inputnames::IN_DETRANSPOSE:
+        return in_detranspose;
+    case inputnames::IN_NOTE_ON_TRIG:
+        return in_note_on_trig;
+    case inputnames::IN_NOTE_SLIDE_TRIG:
+        return in_note_slide_trig;
+    default:
+        return 0;
+    }
 }
 
 bool notetran::set_param(paramnames::PAR_TYPE pt, void const* data)
 {
-    bool retv = false;
     switch(pt)
     {
     case paramnames::PAR_NO_LONOTE:
         set_no_lo_notename((char*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_NO_HINOTE:
         set_no_hi_notename((char*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_NS_LONOTE:
         set_ns_lo_notename((char*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_NS_HINOTE:
         set_ns_hi_notename((char*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_MINNO_OUT:
         set_min_no_out(*(double*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_MAXNO_OUT:
         set_max_no_out(*(double*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_MINNS_OUT:
         set_min_ns_out(*(double*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_MAXNS_OUT:
         set_max_ns_out(*(double*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_DETRAN_NO:
         set_detranspose_no(*(STATUS*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_DETRAN_NS:
         set_detranspose_ns(*(STATUS*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_NO_RESPTIME:
         set_no_response_time(*(double*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_NS_RESPTIME:
         set_ns_response_time(*(double*)data);
-        retv = true;
-        break;
+        return true;
     default:
-        retv = false;
-        break;
+        return false;
     }
-    return retv;
 }
 
 void const* notetran::get_param(paramnames::PAR_TYPE pt)

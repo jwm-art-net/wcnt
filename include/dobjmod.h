@@ -44,7 +44,7 @@ interface can be erradicated.
 
 dobjmod
 -------
-when a synthmod contains a list of other synthmods for example, the
+when a synthmod contains a list of other synthmods, for example, the
 stereo_mixer module contains a list of stereo_channel modules, the parent
 synthmod adds a moddobj to link the synthmod type with a dobj type and
 then adds dobjdobj which links the dobj type in the moddobj, to the (ha!)

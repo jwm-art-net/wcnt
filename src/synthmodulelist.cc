@@ -45,171 +45,128 @@ synthmodlist::add_module(synthmod * sm)
 synthmod * synthmodlist::create_module(
  synthmodnames::SYNTH_MOD_TYPE smt, char const* uname)
 {
-    synthmod *sm;
     switch (smt) {
-    case synthmodnames::MOD_WCNT:
-        sm = new wcnt_module(uname);
-        break;
+    case synthmodnames::MOD_WCNTEXIT:
+        return new wcnt_exit(uname);
     case synthmodnames::MOD_ADSR:
-        sm = new adsr(uname);
-        break;
+        return new adsr(uname);
     case synthmodnames::MOD_STEREOAMP:
-        sm = new stereo_amp(uname);
-        break;
+        return new stereo_amp(uname);
     case synthmodnames::MOD_CLOCK:
-        sm = new clockclock(uname);
-        break;
+        return new clockclock(uname);
     case synthmodnames::MOD_CONSTMOD:
-        sm = new constmod(uname);
-        break;
+        return new constmod(uname);
     case synthmodnames::MOD_FREQGEN:
-        sm = new freq_generator(uname);
-        break;
+        return new freq_generator(uname);
     case synthmodnames::MOD_LFOCLOCK:
-        sm = new lfo_clock(uname);
-        break;
+        return new lfo_clock(uname);
     case synthmodnames::MOD_LFOCONTROL:
-        sm = new lfo_controller(uname);
-        break;
+        return new lfo_controller(uname);
     case synthmodnames::MOD_LPFILTER:
-        sm = new lpfilter(uname);
-        break;
+        return new lpfilter(uname);
     case synthmodnames::MOD_MODIFIER:
-        sm = new modifier(uname);
-        break;
+        return new modifier(uname);
     case synthmodnames::MOD_NOISEGEN:
-        sm = new noise_generator(uname);
-        break;
+        return new noise_generator(uname);
     case synthmodnames::MOD_OSCCLOCK:
-        sm = new osc_clock(uname);
-        break;
+        return new osc_clock(uname);
     case synthmodnames::MOD_SAMPLEHOLD:
-        sm = new sample_hold(uname);
-        break;
+        return new sample_hold(uname);
     case synthmodnames::MOD_SEQUENCER:
-        sm = new sequencer(uname);
-        break;
+        return new sequencer(uname);
     case synthmodnames::MOD_SINEWAVE:
-        sm = new sine_wave(uname);
-        break;
+        return new sine_wave(uname);
     case synthmodnames::MOD_SQUAREWAVE:
-        sm = new square_wave(uname);
-        break;
+        return new square_wave(uname);
     case synthmodnames::MOD_TRIGGER:
-        sm = new trigger(uname);
-        break;
+        return new trigger(uname);
     case synthmodnames::MOD_TRIWAVE:
-        sm = new triangle_wave(uname);
-        break;
+        return new triangle_wave(uname);
     case synthmodnames::MOD_TRIWAVE2:
-        sm = new triangle_wave2(uname);
-        break;
+        return new triangle_wave2(uname);
     case synthmodnames::MOD_USERWAVE:
-        sm = new user_wave(uname);
-        break;
+        return new user_wave(uname);
     case synthmodnames::MOD_SAMPLER:
-        sm = new sampler(uname);
-        break;
+        return new sampler(uname);
     case synthmodnames::MOD_WAVFILEOUT:
-        sm = new wavfileout(uname);
-        break;
+        return new wavfileout(uname);
     case synthmodnames::MOD_STEREOCHANNEL:
-        sm = new stereo_channel(uname);
-        break;
+        return new stereo_channel(uname);
     case synthmodnames::MOD_STEREOMIXER:
-        sm = new stereomixer(uname);
-        break;
+        return new stereomixer(uname);
     case synthmodnames::MOD_RANDTRIGGER:
-        sm = new randomtrigger(uname);
-        break;
+        return new randomtrigger(uname);
     case synthmodnames::MOD_LOGICTRIGGER:
-        sm = new logictrigger(uname);
-        break;
+        return new logictrigger(uname);
     case synthmodnames::MOD_SWITCHER:
-        sm = new switcher(uname);
-        break;
+        return new switcher(uname);
     case synthmodnames::MOD_WCNTSIGNAL:
-        sm = new wcnt_signal(uname);
-        break;
+        return new wcnt_signal(uname);
     case synthmodnames::MOD_HPFILTER:
-        sm = new hpfilter(uname);
-        break;
+        return new hpfilter(uname);
     case synthmodnames::MOD_COMBINER:
-        sm = new combiner(uname);
-        break;
+        return new combiner(uname);
     case synthmodnames::MOD_TIMEMAP:
-        sm = new timemap(uname);
-        break;
+        return new timemap(uname);
     case synthmodnames::MOD_SERIALWAVFILEOUT:
-        sm = new serialwavfileout(uname);
-        break;
+        return new serialwavfileout(uname);
     case synthmodnames::MOD_CONTRASTER:
-        sm = new contraster(uname);
-        break;
+        return new contraster(uname);
     case synthmodnames::MOD_DELAY:
-        sm = new delay(uname);
-        break;
+        return new delay(uname);
     case synthmodnames::MOD_ECHO:
-        sm = new echo(uname);
-        break;
+        return new echo(uname);
     case synthmodnames::MOD_MONOAMP:
-        sm = new mono_amp(uname);
-        break;
+        return new mono_amp(uname);
     case synthmodnames::MOD_MULTIPLIER:
-        sm = new multiplier(uname);
-        break;
+        return new multiplier(uname);
     case synthmodnames::MOD_RANGELIMIT:
-        sm = new range_limit(uname);
-        break;
+        return new range_limit(uname);
     case synthmodnames::MOD_PAN:
-        sm = new pan(uname);
-        break;
+        return new pan(uname);
     case synthmodnames::MOD_RMS:
-        sm = new rms(uname);
-        break;
+        return new rms(uname);
     case synthmodnames::MOD_DCFILTER:
-        sm = new dc_filter(uname);
-        break;
+        return new dc_filter(uname);
     case synthmodnames::MOD_DYNAMIC:
-        sm = new dynamic(uname);
-        break;
+        return new dynamic(uname);
     case synthmodnames::MOD_SPREADER:
-        sm = new spreader(uname);
-        break;
+        return new spreader(uname);
     case synthmodnames::MOD_NOTETRAN:
-        sm = new notetran(uname);
-        break;
+        return new notetran(uname);
     case synthmodnames::MOD_WAITTRIG:
-        sm = new waittrig(uname);
-        break;
+        return new waittrig(uname);
     case synthmodnames::MOD_PATTERNTRIG:
-        sm = new patterntrig(uname);
-        break;
+        return new patterntrig(uname);
     case synthmodnames::MOD_STATEGATETRIG:
-        sm = new stategatetrig(uname);
-        break;
+        return new stategatetrig(uname);
     case synthmodnames::MOD_INVERT:
-        sm = new invert(uname);
-        break;
+        return new invert(uname);
     case synthmodnames::MOD_TIMER:
-        sm = new timer(uname);
-        break;
+        return new timer(uname);
     case synthmodnames::MOD_SYNCCLOCK:
-        sm = new sync_clock(uname);
-        break;
+        return new sync_clock(uname);
     case synthmodnames::MOD_WCNTTRIGGER:
-        sm = new wcnt_trigger(uname);
-        break;
+        return new wcnt_trigger(uname);
     case synthmodnames::MOD_TRIGSWITCHER:
-        sm = new trigswitcher(uname);
-        break;
+        return new trigswitcher(uname);
     case synthmodnames::MOD_ONOFFTRIG:
-        sm = new onofftrig(uname);
-        break;
+        return new onofftrig(uname);
+    case synthmodnames::MOD_PEAKDETECTOR:
+        return new peak_detector(uname);
+    case synthmodnames::MOD_STEPPER:
+        return new stepper(uname);
+    case synthmodnames::MOD_ADDER:
+        return new adder(uname);
+    case synthmodnames::MOD_SUBTRACTER:
+        return new subtracter(uname);
+    case synthmodnames::MOD_TRIGDELAY:
+        return new trigdelay(uname);
+    case synthmodnames::MOD_SIMPLEDELAY:
+        return new simple_delay(uname);
     default:
-        sm = 0;
+        return 0;
     }
-    return sm;
 }
 
 bool

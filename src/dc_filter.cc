@@ -43,16 +43,24 @@ void const* dc_filter::get_out(outputnames::OUT_TYPE ot)
 
 void const* dc_filter::set_in(inputnames::IN_TYPE it, void const* o)
 {
-    void const* i = 0;
     switch(it)
     {
     case inputnames::IN_SIGNAL:
-        i = in_signal = (double*)o;
-        break;
+        return in_signal = (double*)o;
     default:
-        i = 0;
+        return 0;
     }
-    return i;
+}
+
+void const* dc_filter::get_in(inputnames::IN_TYPE it)
+{
+    switch(it)
+    {
+    case inputnames::IN_SIGNAL:
+        return in_signal;
+    default:
+        return 0;
+    }
 }
 
 bool dc_filter::set_param(paramnames::PAR_TYPE pt, void const* data)

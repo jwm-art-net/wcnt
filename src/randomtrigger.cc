@@ -39,16 +39,24 @@ void const* randomtrigger::get_out(outputnames::OUT_TYPE ot)
 
 void const* randomtrigger::set_in(inputnames::IN_TYPE it, void const* o)
 {
-    void const* i = 0;
     switch(it)
     {
     case inputnames::IN_TRIG:
-        i = in_trig = (STATUS*)o;
-        break;
+        return in_trig = (STATUS*)o;
     default:
-        i = 0;
+        return 0;
     }
-    return i;
+}
+
+void const* randomtrigger::get_in(inputnames::IN_TYPE it)
+{
+    switch(it)
+    {
+    case inputnames::IN_TRIG:
+        return in_trig;
+    default:
+        return 0;
+    }
 }
 
 bool randomtrigger::set_param(paramnames::PAR_TYPE pt, void const* data)

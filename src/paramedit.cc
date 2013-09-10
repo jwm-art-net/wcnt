@@ -16,13 +16,17 @@ paramedit::~paramedit()
         delete [] parstr;
 }
 
-void paramedit::set_name(const char* n)
+bool paramedit::set_name(const char* n)
 {
+    synthmod* sm = synthmod::get_modlist()->get_synthmod_by_name(n);
+    dobj* dbj = dobj::get_dobjlist()->get_dobj_by_name(n);
+    if (!sm && !dbj)
+        return false;
     if (name)
         delete [] name;
     name = new char[strlen(n) + 1];
     strcpy(name, n);
-    return;
+    return true;
 }
 
 void paramedit::set_parstr(const char* n)
@@ -62,13 +66,11 @@ bool paramedit::do_param_edits(bool verbose)
         strm >> valstr;
         if (sm) {
             if (!mod_param_edit(sm, parname.c_str(), valstr.c_str())) {
-                *err_msg += "...modshit happens in userland...";
                 return false;
             }
         }
         else {
             if (!dobj_param_edit(dbj, parname.c_str(), valstr.c_str())) {
-                *err_msg += "...dobjshit happens in userland...";
                 return false;
             }
         }
@@ -179,8 +181,15 @@ bool paramedit::set_param(paramnames::PAR_TYPE dt, void* data)
     switch(dt)
     {
     case paramnames::PAR_STR_UNNAMED:
-        set_name((char*)data);
-        retv = true;
+        if (!set_name((char*)data)) {
+            *err_msg = "\nthere are no data objects or modules named ";
+            *err_msg += (char*)data;
+            *err_msg +=
+                ". cannot edit parameters of non-existant entity.";
+            invalidate();
+            retv = false;
+        }
+        else retv = true;
         break;
     case paramnames::PAR_STR_LIST:
         set_parstr((char*)data);

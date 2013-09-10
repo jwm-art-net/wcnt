@@ -21,56 +21,55 @@ trigger::~trigger()
 
 void const* trigger::get_out(outputnames::OUT_TYPE ot)
 {
-    void const* o = 0;
     switch(ot)
     {
     case outputnames::OUT_TRIG:
-        o = &out_trig;
-        break;
+        return &out_trig;
     case outputnames::OUT_NOT_TRIG:
-        o = &out_not_trig;
-        break;
+        return &out_not_trig;
     case outputnames::OUT_WAIT_STATE:
-        o = &out_wait_state;
-        break;
+        return &out_wait_state;
     default:
-        o = 0;
+        return 0;
     }
-    return o;
 }
 
 void const* trigger::set_in(inputnames::IN_TYPE it, void const* o)
 {
-    void const* i = 0;
     switch(it)
     {
     case inputnames::IN_SIGNAL:
-        i = in_signal = (double*)o;
+        return in_signal = (double*)o;
         break;
     default:
-        i = 0;
+        return 0;
     }
-    return i;
+}
+
+void const* trigger::get_in(inputnames::IN_TYPE it)
+{
+    switch(it)
+    {
+    case inputnames::IN_SIGNAL:
+        return in_signal;
+    default:
+        return 0;
+    }
 }
 
 bool trigger::set_param(paramnames::PAR_TYPE pt, void const* data)
 {
-    bool retv = false;
     switch(pt)
     {
     case paramnames::PAR_DELAY_TIME:
         set_delay_time(*(double*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_TRIGGER_LEVEL:
         set_trigger_level(*(double*)data);
-        retv = true;
-        break;
+        return true;
     default:
-        retv = false;
-        break;
+        return false;
     }
-    return retv;
 }
 
 void const* trigger::get_param(paramnames::PAR_TYPE pt)

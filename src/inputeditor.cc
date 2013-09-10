@@ -36,7 +36,13 @@ bool inputeditor::create_connectors()
             cout << "\nsetting inputs for " << input_edit->get_modname();
         }
         if (!input_edit->create_connectors(verbose)) {
-            *err_msg = "\nhave problemmo, " + *err_msg;
+            string errmsg = *err_msg;
+            *err_msg = "\nIn ";
+            *err_msg += get_dobjnames()->get_name(get_object_type());
+            *err_msg += " ";
+            *err_msg += get_username();
+            *err_msg += ", connection attempt failed, ";
+            *err_msg += errmsg;
             return false;
         }
         goto_next_inputedit();

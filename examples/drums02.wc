@@ -1,4 +1,4 @@
-wcnt-1.2/jwmsynth
+wcnt-1.25/jwmsynth
 //------------------------------------------------------------------------
 //
 //  drums02.wc:  
@@ -22,7 +22,7 @@ header header.wch
 
 wavfilein
 drumloop
-    filename    samples/drumloop01.wav
+    filename    samples/drumloop01-2b.wav
     root_note   c0
 drumloop
 
@@ -30,7 +30,7 @@ sampler
 sampler1
         in_play_trig        drum_trig   out_trig
         in_stop_trig        off
-        in_start_pos_mod    drumpos1    out_output
+        in_start_pos_mod    stepper1    out_output
         in_deg_size         osc1b       out_deg_size
         wavfile     drumloop
         play_dir                fwd
@@ -53,7 +53,7 @@ sampler
 sampler1b
         in_play_trig        drum_trigb  out_trig
         in_stop_trig        off
-        in_start_pos_mod    drumpos1    out_output
+        in_start_pos_mod    stepper1    out_output
         in_deg_size         osc1        out_deg_size
         wavfile     drumloop
         play_dir                fwd
@@ -98,7 +98,7 @@ seq1
     track
         riff_node
             riff riff1 bar 0
-            transpose 0 start_len 0 end_len 0
+            transpose 0 repeat  0   repeat_stripe 1
         track
         in_bar              time1   out_bar
         in_bar_trig         time1   out_bar_trig
@@ -307,63 +307,22 @@ drum_next
 
 // positions in drumloop to trigger from, converted to range 0. ~ 1.0 :
 
-constant p0  value 0.0    p0
-constant p1  value 0.0625 p1
-constant p2  value 0.125  p2
-constant p3  value 0.1875 p3
-constant p4  value 0.25   p4
-constant p5  value 0.3125 p5
-constant p6  value 0.375  p6
-constant p7  value 0.4375 p7
-constant p8  value 0.5    p8
-constant p9  value 0.5625 p9
-constant p10 value 0.625  p10
-constant p11 value 0.6875 p11
-constant p12 value 0.75   p12
-constant p13 value 0.8125 p13
-constant p14 value 0.875  p14
-constant p15 value 0.9375 p15
-
-wcnt_signal wsp0  in_signal p0  out_output level 1.0 wsp0
-wcnt_signal wsp1  in_signal p1  out_output level 1.0 wsp1
-wcnt_signal wsp2  in_signal p2  out_output level 1.0 wsp2
-wcnt_signal wsp3  in_signal p3  out_output level 1.0 wsp3
-wcnt_signal wsp4  in_signal p4  out_output level 1.0 wsp4
-wcnt_signal wsp5  in_signal p5  out_output level 1.0 wsp5
-wcnt_signal wsp6  in_signal p6  out_output level 1.0 wsp6
-wcnt_signal wsp7  in_signal p7  out_output level 1.0 wsp7
-wcnt_signal wsp8  in_signal p8  out_output level 1.0 wsp8
-wcnt_signal wsp9  in_signal p9  out_output level 1.0 wsp9
-wcnt_signal wsp10 in_signal p10 out_output level 1.0 wsp10
-wcnt_signal wsp11 in_signal p11 out_output level 1.0 wsp11
-wcnt_signal wsp12 in_signal p12 out_output level 1.0 wsp12
-wcnt_signal wsp13 in_signal p13 out_output level 1.0 wsp13
-wcnt_signal wsp14 in_signal p14 out_output level 1.0 wsp14
-wcnt_signal wsp15 in_signal p15 out_output level 1.0 wsp15
-
-switcher
-drumpos1
-    signals
-        synthmod name wsp0
-        synthmod name wsp1
-        synthmod name wsp2
-        synthmod name wsp3
-        synthmod name wsp4
-        synthmod name wsp5
-        synthmod name wsp6
-        synthmod name wsp7
-        synthmod name wsp8
-        synthmod name wsp9
-        synthmod name wsp10
-        synthmod name wsp11
-        synthmod name wsp12
-        synthmod name wsp13
-        synthmod name wsp14
-        synthmod name wsp15
-    signals
-    in_trig     drum_next   out_trig
-    xfade_time  0.0
-drumpos1
+stepper
+stepper1
+    step_shape
+        stepvx  pos 0.25    ul 0.25  ll 0.25
+        stepvx  pos 0.50    ul 0.50  ll 0.50
+        stepvx  pos 0.75    ul 0.75  ll 0.75
+    step_shape
+    in_trig          drum_next   out_trig
+    in_restart_trig  off
+    in_modulation    off
+    step_count      16
+    up_thresh       1.0
+    lo_thresh       0.0
+    response_time   0.0
+    recycle_mode    on
+stepper1
 
 // set frequency for sample to playback at:
 osc_clock
@@ -651,4 +610,4 @@ wcnt_exit_module
 //------------------------------------------------------------------------
 // End Of File _jwm 2005.
 //------------------------------------------------------------------------
-wcnt-1.2/jwmsynth
+wcnt-1.25/jwmsynth

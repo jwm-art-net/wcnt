@@ -1,0 +1,123 @@
+wcnt-1.25/jwmsynth
+//------------------------------------------------------------------------
+//
+//  produces a bass line
+//
+//------------------------------------------------------------------------
+
+header header.wch
+
+//------------------------------------------------------------------------
+
+synth_file_reader
+bass01_wc
+    filename bass01.wc
+    mod_action  exclude
+    dobj_action exclude
+    modules
+        mod name wav1
+        mod name wcnt_exit_module
+    modules
+    data_objects
+    data_objects
+bass01_wc
+
+group
+g1
+    modules
+        synthmod name clock1
+        synthmod name clock2
+        synthmod name clock3
+        synthmod name sinetime
+        synthmod name adsr1
+        synthmod name adsr2
+        synthmod name osc1
+        synthmod name osc2
+        synthmod name sine
+        synthmod name m1
+        synthmod name con1
+        synthmod name con2
+        synthmod name sh1
+        synthmod name dynsine
+        synthmod name amp1
+    modules
+g1
+
+copier grp1cp from g1 to g2 grp1cp
+copier grp2cp from g2 to g3 grp2cp
+
+param_editor
+bass02_pe
+    editlist
+        edit g2.clock2
+            freq            0.975
+        edit g2.clock3
+            freq            2.076
+        edit g2.con2
+            power_max       12.0
+        edit g2.osc1
+            tuning_semitones    1
+
+        edit g3.clock2
+            freq            3.975
+        edit g3.clock3
+            freq            9.076
+        edit g3.con2
+            power_max       24.0
+        edit g3.osc1
+            tuning_semitones  2
+
+    editlist
+bass02_pe
+
+mix_chan
+ch1
+    in_left   g1.amp1   out_mono
+    in_right  g1.amp1   out_mono
+ch1
+
+mix_chan
+ch2
+    in_left   g2.amp1   out_mono
+    in_right  g2.amp1   out_mono
+ch2
+
+mix_chan
+ch3
+    in_left   g3.amp1   out_mono
+    in_right  g3.amp1   out_mono
+ch3
+
+mixer
+mix1
+    mix
+        synthmod name ch1
+        synthmod name ch2
+        synthmod name ch3
+    mix
+    master_level  0.37
+mix1
+
+wavfile_out
+wav1
+    in_left     mix1    out_left
+    in_right    mix1    out_right
+    in_bar      time1   out_bar
+    in_bar_trig time1   out_bar_trig
+    filename    bass02.wav
+    start_bar   0
+    end_bar     8
+wav1
+
+// setup how long to process:
+
+wcnt_exit
+wcnt_exit_module
+    in_bar  time1   out_bar
+    exit_bar    8
+wcnt_exit_module
+
+//------------------------------------------------------------------------
+// End Of File _jwm 2005.
+//------------------------------------------------------------------------
+wcnt-1.25/jwmsynth

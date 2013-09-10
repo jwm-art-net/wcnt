@@ -20,6 +20,7 @@ public:
     void run(){};
     void const* get_out(outputnames::OUT_TYPE);
     void const* set_in(inputnames::IN_TYPE, void const*);
+    const void* get_in(inputnames::IN_TYPE it);
 private:
     const STATUS* in_trig;
     static int wcnt_trigger_count;

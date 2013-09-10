@@ -35,60 +35,59 @@ void waittrig::set_max_time(double t)
 
 void const* waittrig::get_out(outputnames::OUT_TYPE ot)
 {
-    void const* o = 0;
     switch(ot)
     {
     case outputnames::OUT_TRIG:
-        o = &out_trig;
-        break;
+        return &out_trig;
     case outputnames::OUT_WAIT_STATE:
-        o = &out_wait_state;
-        break;
+        return &out_wait_state;
     default:
-        o = 0;
+        return 0;
     }
-    return o;
 }
 
 void const* waittrig::set_in(inputnames::IN_TYPE it, void const* o)
 {
-    void const* i = 0;
     switch(it)
     {
     case inputnames::IN_TRIG1:
-        i = in_trig1 = (STATUS*)o;
-        break;
+        return in_trig1 = (STATUS*)o;
     case inputnames::IN_TRIG2:
-        i = in_trig2 = (STATUS*)o;
-        break;
+        return in_trig2 = (STATUS*)o;
     default:
-        i = 0;
+        return 0;
     }
-    return i;
+}
+
+void const* waittrig::get_in(inputnames::IN_TYPE it)
+{
+    switch(it)
+    {
+    case inputnames::IN_TRIG1:
+        return in_trig1;
+    case inputnames::IN_TRIG2:
+        return in_trig2;
+    default:
+        return 0;
+    }
 }
 
 bool waittrig::set_param(paramnames::PAR_TYPE pt, void const* data)
 {
-    bool retv = false;
     switch(pt)
     {
     case paramnames::PAR_MIN_WAIT:
         set_min_time(*(double*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_MAX_WAIT:
         set_max_time(*(double*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_COUNT:
         set_count(*(short*)data);
-        retv = true;
-        break;
+        return true;
     default:
-        retv = false;
-        break;
+        return false;
     }
-    return retv;
 }
 
 void const* waittrig::get_param(paramnames::PAR_TYPE pt)

@@ -1,0 +1,177 @@
+wcnt-1.25/jwmsynth
+//
+// wcnt - Wav Composer Not Toilet 1.25 is now released.......
+//
+// wcnt.sf.net
+//
+//-------------------------------------
+
+header header.wch
+
+// read and create totallity of sinewave.wc
+
+synth_file_reader
+sinwvfile
+    filename    sinewave.wc
+    mod_action  exclude // use include with an empty list
+    dobj_action exclude // to include nothing.
+    modules
+        // empty list 1
+    modules
+    data_objects
+        // empty list 2
+    data_objects
+sinwvfile
+
+peak_detector
+pkdt1
+    in_signal       sinewave    out_output
+    sig_range_hi    0.99999
+    sig_range_lo    -0.99999
+    message       wcnt_-_Wav_Composer_Not_Toilet-1.25_is_now_released!
+    force_abort   off
+    max_peaks     5
+pkdt1
+
+square_wave
+squarewave
+    in_phase_trig  clock1 out_phase_trig
+    in_deg_size    clock1 out_deg_size
+    in_pwm         off
+    pulse_width   0.75
+    pwm_size      0.0
+    recycle_mode  off
+squarewave
+
+clock
+clock2
+    in_freq_mod1    off
+    freq            0.12345
+    freq_mod1_size  1.0
+clock2
+
+sine_wave
+sine2
+    in_phase_trig  clock2 out_phase_trig
+    in_deg_size    clock2 out_deg_size
+    recycle_mode        on
+    on_trig_reset_phase off
+    phase_cycles        1.0
+sine2
+
+multiplier mm1
+    in_signal   squarewave  out_output
+    in_modifier sine2       out_output
+mm1
+
+input_editor
+inputs1
+    editlist
+        connect clock1 in_freq_mod1 mm1 out_output
+    editlist
+inputs1
+
+param_editor
+params11
+    editlist
+        edit clock1
+            freq_mod1_size  1.1250 // change me
+        edit wav1
+            filename        wcnt-1.25.wav
+    editlist
+params11
+
+mix_chan ch_out in_left amp1 out_mono in_right amp1 out_mono ch_out
+
+group
+g1
+    modules
+        synthmod name clock1
+        synthmod name sinewave
+        synthmod name squarewave
+        synthmod name mm1
+        synthmod name pkdt1
+        synthmod name amp1
+        synthmod name ch_out
+    modules
+g1
+
+copier grpcp1 from g1 to g2  grpcp1
+copier grpcp2 from g1 to g3  grpcp2
+copier grpcp3 from g1 to g4  grpcp3
+copier grpcp4 from g1 to g5  grpcp4
+copier grpcp5 from g1 to g6  grpcp5
+copier grpcp6 from g1 to g7  grpcp6
+copier grpcp7 from g1 to g8  grpcp7
+copier grpcp8 from g1 to g9  grpcp8
+copier grpcp9 from g1 to g10 grpcp9
+
+param_editor
+params1
+    editlist
+        edit g2.clock1  freq 221
+        edit g3.clock1  freq 222
+        edit g4.clock1  freq 224
+        edit g5.clock1  freq 228
+        edit g6.clock1  freq 236
+        edit g7.clock1  freq 252
+        edit g8.clock1  freq 284
+        edit g9.clock1  freq 348
+        edit g10.clock1 freq 476
+        edit g2.pkdt1
+            message _its_ready_to_download_from_wcnt.sourceforge.net
+        edit g3.pkdt1
+            message A_C++_cmdline_program_FOR_LINUX_
+        edit g4.pkdt1
+            message /wcnt's/"near-english/synth/definition/language
+        edit g5.pkdt1
+            message New^Features^Include^The^Ability^To^Group^Modules_
+        edit g6.pkdt1
+            message _The`grouped`modules`can`then`be`copied`as`a`group
+        edit g7.pkdt1
+            message you£can£now£use£edit£notes£in£a£riff£or£riff_editor£
+        edit g8.pkdt1
+            message £to£edit£the£notes£
+        edit g9.pkdt1
+            message e:ae:peak_detectore:modulee:detectse:peakse:
+        edit g10.pkdt1
+            message +plus+some+other+stuff+I+forget+about+now+try+it+!+
+//      ******************----------------------------+
+        edit wav1   filename    wcnt-1.25.wav
+                    end_bar     2
+        edit wcnt_exit_module
+                    exit_bar    2
+        
+//      ******************----------------------------+
+    editlist
+params1
+
+mixer
+mix1
+    mix
+        synthmod name g1.ch_out
+        synthmod name g2.ch_out
+        synthmod name g3.ch_out
+        synthmod name g4.ch_out
+        synthmod name g5.ch_out
+        synthmod name g6.ch_out
+        synthmod name g7.ch_out
+        synthmod name g8.ch_out
+        synthmod name g9.ch_out
+        synthmod name g10.ch_out
+    mix
+    master_level  0.125
+mix1
+
+input_editor
+inputs11
+    editlist
+        connect wav1
+            in_left     mix1    out_left
+            in_right    mix1    out_right
+    editlist
+inputs11
+
+// all done...
+
+wcnt-1.25/jwmsynth

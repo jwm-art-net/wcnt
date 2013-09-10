@@ -1,0 +1,500 @@
+wcnt-1.25/jwmsynth
+//------------------------------------------------------------------------
+// ressoffulate01.wc experimenting with pairs of resonating frequencies
+//------------------------------------------------------------------------
+
+header header.wch
+
+synth_file_reader
+timefile
+    filename time.wch
+    mod_action  exclude
+    dobj_action exclude
+    modules
+    modules
+    data_objects
+    data_objects
+timefile
+
+riff
+riff1
+    quarter_value   64
+    notelist
+        note name c0    pos 0   len 80      vel 1.0
+        note name f0    pos 64  len 20      vel 1.0
+        note name e0    pos 96  len 8       vel 1.0
+        note name c0    pos 128 len 80      vel 1.0
+        note name e0    pos 160 len 16      vel 1.0
+        note name g0    pos 208 len 12      vel 1.0
+        note name =P+N  pos 208 len 6       vel 0.0
+//        note name >P*P  pos 0   len 2       vel 1.0
+//        note name >P*L  pos 0   len 1.25    vel 1.0
+        note name IP+N  pos 90  len 90      vel 5.0
+        note name >P+Q  pos -1  len 256      vel 5.0
+    notelist
+riff1
+
+copier rc1 from riff1 to riff2 rc1
+
+riff_editor
+re1
+    riff riff2
+    notelist
+        note name >P+Q  pos 0   len 32      vel 0.0
+    notelist
+re1
+
+sequencer
+seq1
+    track
+        riff_node
+            riff riff1  bar 0   transpose 0
+            repeat 15 repeat_stripe 4
+        riff_node
+            riff riff1  bar 2   transpose 3
+            repeat 15 repeat_stripe 4
+        riff_node
+            riff riff2  bar 4   transpose 0
+            repeat 1 repeat_stripe 2
+        riff_node
+            riff riff2  bar 14   transpose 0
+            repeat 3 repeat_stripe 2
+    track
+
+    in_bar              time1 out_bar
+    in_bar_trig         time1 out_bar_trig
+    in_pos_step_size    time1 out_pos_step_size
+    in_beats_per_bar    time1 out_beats_per_bar
+    in_beat_value       time1 out_beat_value
+    velocity_response_time 0
+seq1
+
+
+trig_delay
+delayed_note_on
+    in_trig     seq1    out_note_on_trig
+    delay_time  2
+delayed_note_on
+
+trig_delay
+delayed_note_off
+    in_trig     seq1    out_note_off_trig
+    delay_time  2
+delayed_note_off
+
+trig_delay
+delayed_note_slide
+    in_trig     seq1    out_note_slide_trig
+    delay_time  2
+delayed_note_slide
+
+simple_delay
+delayed_vel
+    in_signal   seq1    out_velocity
+    delay_time  2
+delayed_vel
+
+simple_delay
+delayed_freq
+    in_signal   seq1    out_frequency
+    delay_time  2
+delayed_freq
+
+
+
+// clock and sinewave to add a little frequency modulation
+
+clock
+plclock
+    in_freq_mod1    off
+    freq            7.0
+    freq_mod1_size  1.125
+plclock
+
+sine_wave
+plswave
+    in_phase_trig  plclock out_phase_trig
+    in_deg_size    plclock out_deg_size
+    recycle_mode         off
+    on_trig_reset_phase  off
+    phase_cycles         1.0
+plswave
+
+
+
+// grouped modules 
+
+constant Xf1 value 3.00125   Xf1
+constant Xf2 value 5.001     Xf2
+
+multiplier
+Xfreq1
+    in_signal   delayed_freq    out_output
+    in_modifier Xf1  out_output
+Xfreq1
+
+multiplier
+Xfreq2
+    in_signal   delayed_freq    out_output
+    in_modifier Xf2  out_output
+Xfreq2
+
+osc_clock
+osc1
+        in_note_on_trig     delayed_note_on     out_trig
+        in_note_slide_trig  delayed_note_slide  out_trig
+        in_play_state       adsr1           out_play_state
+        in_frequency        delayed_freq    out_output
+        in_freq_mod1        xm2     out_output
+        in_freq_mod2        plswave out_output
+        octave_offset       -1
+        tuning_semitones    0
+        portamento_time     5.0
+        response_time       1.0
+        freq_mod1_size      1.5
+        freq_mod2_size      1.0125
+osc1
+
+copier oscC1 from osc1 to osc2 oscC1
+copier oscC2 from osc1 to osc3 oscC2
+
+user_wave
+shave
+    waveform
+        vertex  ud 0    ul  1.0         ld 0    ll  1.0
+        vertex  ud 90   ul  -0.5         ld 270  ll  0.5
+        vertex  ud 360  ul  -1.0        ld 360  ll  -1.0
+    waveform
+    in_phase_trig   osc1      out_phase_trig
+    in_deg_size     osc1      out_deg_size
+    in_level_mod    adsr1   out_output
+    in_time_mod     adsr1   out_output
+    recycle_mode    off
+    zero_retrigger  on
+shave
+
+invert
+ishave
+    in_signal   shave out_output
+ishave
+
+sine_wave
+sine1
+    in_phase_trig   osc1    out_phase_trig
+    in_deg_size     osc2    out_deg_size
+    recycle_mode         on
+    on_trig_reset_phase  off
+    phase_cycles         1.5
+sine1
+
+sine_wave
+sine2
+    in_phase_trig   osc1    out_phase_trig
+    in_deg_size     osc3    out_deg_size
+    recycle_mode         on
+    on_trig_reset_phase  off
+    phase_cycles         2.5
+sine2
+
+sine_wave
+bsine
+    in_phase_trig   osc1    out_phase_trig
+    in_deg_size     osc1    out_deg_size
+    recycle_mode         off
+    on_trig_reset_phase  off
+    phase_cycles         1.0
+bsine
+
+multiplier xm1
+    in_signal bsine out_output in_modifier shave out_output
+xm1
+
+multiplier xm2
+    in_signal bsine out_output in_modifier ishave out_output
+xm2
+
+multiplier m1 in_signal sine1 out_output in_modifier xm1 out_output m1
+multiplier m2 in_signal sine2 out_output in_modifier xm2 out_output m2
+
+modifier
+md0
+    in_signal   m1  out_output
+    in_modifier m2  out_output
+    function    add
+    bias        0.5
+md0
+
+modifier
+md1
+    in_signal   bsine   out_output
+    in_modifier md0     out_output
+    function    add
+    bias        0.5
+md1
+
+adsr
+adsr1
+        envelope
+        section name attack
+            ut  20.0    ul  1.0
+            lt  15.0    ll  0.25
+        section name decay
+            ut  50.0    ul  0.9
+            lt  25.0    ll  0.2
+        section name decay
+            ut  150.0    ul  0.8
+            lt  75.0    ll  0.1
+        section name release
+            ut  25.0    ul  0.23
+            lt  15.0    ll  0.025
+        section name release
+            ut  155.0    ul  0.0
+            lt  135.0    ll  0.0
+        envelope
+        in_note_on_trig     delayed_note_on     out_trig
+        in_note_off_trig    delayed_note_off    out_trig
+        in_velocity         delayed_vel         out_output
+        up_thresh        1.0
+        lo_thresh        0.0
+        start_level      0.0
+        min_time         10.0
+        max_sustain_time 0.0 // 0 = sustain forever until note off
+        release_is_ratio off
+        sustain_state    on
+        zero_retrigger   off
+adsr1
+
+multiplier
+shp1
+    in_signal   md1     out_output
+    in_modifier adsr1   out_output
+shp1
+
+panner
+pan1
+    in_signal   shp1    out_output
+    in_pan_mod  off
+    pan           1.0
+    pan_mod_size  0.0
+pan1
+
+input_editor
+ressoff_ie1
+    editlist
+        connect osc2
+            in_frequency    Xfreq1  out_output
+        connect osc3
+            in_frequency    Xfreq2  out_output
+    editlist
+ressoff_ie1
+
+group
+g1
+    modules
+        synthmod name Xf1
+        synthmod name Xf2
+        synthmod name Xfreq1
+        synthmod name Xfreq2
+        synthmod name osc1
+        synthmod name osc2
+        synthmod name osc3
+        synthmod name shave
+        synthmod name ishave
+        synthmod name sine1
+        synthmod name sine2
+        synthmod name bsine
+        synthmod name xm1
+        synthmod name xm2
+        synthmod name m1
+        synthmod name m2
+        synthmod name md0
+        synthmod name md1
+        synthmod name delayed_note_on
+        synthmod name delayed_note_slide
+        synthmod name delayed_note_off
+        synthmod name delayed_vel
+        synthmod name delayed_freq
+        synthmod name adsr1
+        synthmod name shp1
+        synthmod name pan1
+    modules
+g1
+
+copier g1cp1 from g1 to g2 g1cp1
+copier g1cp2 from g1 to g3 g1cp2
+copier g1cp3 from g1 to g4 g1cp3
+
+param_editor
+ressoff_pe1
+    editlist
+        edit g2.osc2
+            tuning_semitones    0.0125
+        edit g2.osc3
+            tuning_semitones    -0.0125
+        edit g3.osc2
+            octave_offset       1
+            tuning_semitones    0.025
+        edit g3.osc1
+            octave_offset       -2
+        edit g3.osc3
+            octave_offset       -1
+            tuning_semitones    -0.025
+        edit g3.osc1
+            octave_offset       -2
+        edit g4.osc2
+            octave_offset       2
+            tuning_semitones    0.05
+        edit g4.osc3
+            octave_offset       -2
+            tuning_semitones    -0.05
+        edit g2.pan1
+            pan     -0.25
+        edit g3.pan1
+            pan     0.25
+        edit g4.pan1
+            pan     -0.3
+//
+        edit g2.delayed_note_on
+            delay_time  5.0
+        edit g2.delayed_note_slide
+            delay_time  5.0
+        edit g2.delayed_note_off
+            delay_time  15.0
+        edit g2.delayed_vel
+            delay_time  5.0
+        edit g2.delayed_freq
+            delay_time  5.0
+//
+        edit g3.delayed_note_on
+            delay_time  10.0
+        edit g3.delayed_note_slide
+            delay_time  10.0
+        edit g3.delayed_note_off
+            delay_time  5.0
+        edit g3.delayed_vel
+            delay_time  10.0
+        edit g3.delayed_freq
+            delay_time  10.0
+// 
+        edit g4.delayed_note_on
+            delay_time  15.0
+        edit g4.delayed_note_slide
+            delay_time  15.0
+        edit g4.delayed_note_off
+            delay_time  25.0
+        edit g4.delayed_vel
+            delay_time  15.0
+        edit g4.delayed_freq
+            delay_time  15.0
+//
+    editlist
+ressoff_pe1
+
+modifier
+g1g2_l
+    in_signal   g1.pan1 out_l
+    in_modifier g2.pan1 out_l
+    function   add
+    bias 0.5
+g1g2_l
+
+modifier
+g1g2_r
+    in_signal   g1.pan1 out_r
+    in_modifier g2.pan1 out_r
+    function   add
+    bias 0.5
+g1g2_r
+
+modifier
+g3g4_l
+    in_signal   g3.pan1 out_l
+    in_modifier g4.pan1 out_l
+    function   add
+    bias 0.5
+g3g4_l
+
+modifier
+g3g4_r
+    in_signal   g3.pan1 out_r
+    in_modifier g4.pan1 out_r
+    function   add
+    bias 0.5
+g3g4_r
+
+modifier
+g1g2g3g4_l
+    in_signal   g1g2_l  out_output
+    in_modifier g3g4_l  out_output
+    function   add
+    bias 0.5
+g1g2g3g4_l
+
+modifier
+g1g2g3g4_r
+    in_signal   g1g2_r  out_output
+    in_modifier g3g4_r  out_output
+    function   add
+    bias 0.5
+g1g2g3g4_r
+
+echo
+ec_l
+    in_signal   g1g2g3g4_l  out_output
+    in_gain_mod      off
+    in_feedback      ec_r   out_wet_output
+    in_feedback_mod  off
+    delay_time        37.5
+    gain              1.0
+    gain_modsize      0.0
+    feedback          -0.75
+    feedback_modsize  0.0
+    wet/dry           0.175
+ec_l
+
+echo
+ec_r
+    in_signal   g1g2g3g4_r  out_output
+    in_gain_mod      off
+    in_feedback      ec_l   out_wet_output
+    in_feedback_mod  off
+    delay_time        15.8
+    gain              1.0
+    gain_modsize      0.0
+    feedback          -0.75
+    feedback_modsize  0.0
+    wet/dry           0.175
+ec_r
+
+constant boost value 2.2 boost
+
+stereo_amp
+amp1
+    in_l        ec_l    out_output
+    in_r        ec_r    out_output
+    in_amp_eg   boost   out_output
+    in_amp_mod  off
+    left_amplitude   32767
+    right_amplitude  32767
+    amp_mod_size     0.0
+    clip_level       32767
+amp1
+
+wavfile_out wav1
+    in_left     amp1  out_left
+    in_right    amp1  out_right
+    in_bar      time1 out_bar
+    in_bar_trig time1 out_bar_trig
+    filename    ressoffulate01.wav
+    start_bar   0
+    end_bar     16
+wav1
+
+wcnt_exit
+wcnt_exit_module
+    in_bar      time1  out_bar
+    exit_bar    16
+wcnt_exit_module
+
+//------------------------------------------------------------------------
+wcnt-1.25/jwmsynth

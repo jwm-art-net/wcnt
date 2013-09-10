@@ -30,7 +30,6 @@ public:
         IN_WAVE,
         IN_PWM,
         IN_CUTOFF_DEG_SIZE,
-        // IN_RES_AMP_MOD,  ***removed***
         IN_PLAY_TRIG,
         IN_START_POS_MOD,
         IN_MODIFIER,
@@ -60,14 +59,15 @@ public:
         IN_DETRANSPOSE,
         IN_STATE,
         IN_PLAY_STATE,
+        IN_RESTART_TRIG,
         // used for array to know how many:
         IN_LAST
     };
     inputnames();
     ~inputnames();
-    char const* get_name(IN_TYPE);
+    const char* get_name(IN_TYPE);
     IOCAT get_category(IN_TYPE);
-    IN_TYPE get_type(char const*);
+    IN_TYPE get_type(const char*);
 
 private:
     char** inname;

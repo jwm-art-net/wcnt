@@ -28,15 +28,15 @@ stockerrs::stockerrs() : errmsg(0)
     errmsg[ERR_RANGE_FREQ] ="0.0 ~ 1/4 sample rate";
 
     errmsg[ERR_TYPE3] = errmsg[ERR_FIRST];
-    errmsg[ERR_NEGATIVE] = "is negative";
-    errmsg[ERR_NEG_ZERO] = "above zero";
-    errmsg[ERR_ABOVE1] = "above 1.0";
+    errmsg[ERR_NEGATIVE] = "is negative";// must not be
+    errmsg[ERR_NEG_ZERO] = "above zero"; // must be
+    errmsg[ERR_ABOVE1] = "above 1.0";    //  "   "
 
     errmsg[ERR_TYPE4] = errmsg[ERR_FIRST];
-    errmsg[ERR_LESS_THAN] = "more than";
-    errmsg[ERR_ATLEAST2] = "atleast two";
-    errmsg[ERR_NO_OPEN] = "opened";
-    errmsg[ERR_NO_ADD] = "added";
+    errmsg[ERR_LESS_THAN] = "more than"; // must be
+    errmsg[ERR_ATLEAST2] = "atleast two";//  "   "
+    errmsg[ERR_NO_OPEN] = "opened"; // could not be
+    errmsg[ERR_NO_ADD] = "added";   //   "    "  "
     errmsg[ERR_ISNOT] = " ";
     errmsg[ERR_NOTENAME] = "note name";
     errmsg[ERR_INVALID_OBJECT] = "invalid object type";

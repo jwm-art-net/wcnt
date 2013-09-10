@@ -44,69 +44,69 @@ wavfileout::~wavfileout()
 
 void const* wavfileout::get_out(outputnames::OUT_TYPE ot)
 {
-    void const* o = 0;
     switch(ot)
     {
     case outputnames::OUT_WRITE_START_TRIG:
-        o = &out_write_start_trig;
-        break;
+        return &out_write_start_trig;
     case outputnames::OUT_WRITE_END_TRIG:
-        o = &out_write_end_trig;
-        break;
+        return &out_write_end_trig;
     case outputnames::OUT_WRITE_STATE:
-        o = &write_status;
-        break;
+        return &write_status;
     default:
-        o = 0;
+        return 0;
     }
-    return o;
 }
 
 void const* wavfileout::set_in(inputnames::IN_TYPE it, void const* o)
 {
-    void const* i = 0;
     switch(it)
     {
     case inputnames::IN_LEFT:
-        i = in_left_channel = (short*)o;
-        break;
+        return in_left_channel = (short*)o;
     case inputnames::IN_RIGHT:
-        i = in_right_channel = (short*)o;
-        break;
+        return in_right_channel = (short*)o;
     case inputnames::IN_BAR:
-        i = in_bar = (short*)o;
-        break;
+        return in_bar = (short*)o;
     case inputnames::IN_BAR_TRIG:
-        i = in_bar_trig = (STATUS*)o;
-        break;
+        return in_bar_trig = (STATUS*)o;
     default:
-        i = 0;
+        return 0;
     }
-    return i;
+}
+
+void const* wavfileout::get_in(inputnames::IN_TYPE it)
+{
+    switch(it)
+    {
+    case inputnames::IN_LEFT:
+        return in_left_channel;
+    case inputnames::IN_RIGHT:
+        return in_right_channel;
+    case inputnames::IN_BAR:
+        return in_bar;
+    case inputnames::IN_BAR_TRIG:
+        return in_bar_trig;
+    default:
+        return 0;
+    }
 }
 
 bool wavfileout::set_param(paramnames::PAR_TYPE pt, void const* data)
 {
-    bool retv = false;
     switch(pt)
     {
     case paramnames::PAR_FILENAME:
         set_wav_filename((char*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_START_BAR:
         set_start_bar(*(short*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_END_BAR:
         set_end_bar(*(short*)data);
-        retv = true;
-        break;
+        return true;
     default:
-        retv = false;
-        break;
+        return false;
     }
-    return retv;
 }
 
 void const* wavfileout::get_param(paramnames::PAR_TYPE pt)
@@ -180,8 +180,10 @@ WAV_STATUS wavfileout::open_wav()
 void wavfileout::close_wav()
 {
     write_wav_header(sample_total - 1);
-    if (status == WAV_STATUS_OPEN)
+    if (status == WAV_STATUS_OPEN) {
+        cout << "\nFinished writing to " << filename;
         fclose(fileout);
+    }
     status = WAV_STATUS_OK;
 }
 

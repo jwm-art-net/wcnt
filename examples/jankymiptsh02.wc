@@ -1,4 +1,4 @@
-wcnt-1.2/jwmsynth
+wcnt-1.25/jwmsynth
 //-----------------------------------------------------------------------
 //
 // variation of jankymiptsh01.wc
@@ -10,9 +10,11 @@ header header.wch
 
 // riffnx is defined in jankymiptsh01.wc, but we want a shorter note
 // length so the sound fades out before the .wav ends. (cannot edit
-// parameters of data objects such as a note, inside a list).
+// parameters of data objects such as a note, inside a list - note:
+// yes we can since wcnt-1.25)
 // the riffnx defined in jankymiptsh01.wc is discarded when it is read.
-// the sequencer requires riffs to exist prior to its definition.
+// the sequencer requires riffs to exist prior to its definition, hence
+// the replacement riff is defined before the file is read.
 
 riff
 riffnx 
@@ -56,4 +58,4 @@ par1
     editlist
 par1
 
-wcnt-1.2/jwmsynth
+wcnt-1.25/jwmsynth

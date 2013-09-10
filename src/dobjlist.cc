@@ -67,6 +67,9 @@ dobj* dobjlist::create_dobj(dobjnames::DOBJ_TYPE dt)
     case dobjnames::SIN_EDIT_INPUT:
         dobjy = new inputedit;
         break;
+    case dobjnames::SIN_STEP:
+        dobjy = new step_data;
+        break;
     case dobjnames::DEF_WAVFILEIN:
         dobjy = new wavfilein;
         break;
@@ -81,6 +84,15 @@ dobj* dobjlist::create_dobj(dobjnames::DOBJ_TYPE dt)
         break;
     case dobjnames::DEF_INPUTEDITOR:
         dobjy = new inputeditor;
+        break;
+    case dobjnames::DEF_RIFFEDITOR:
+        dobjy = new riff_editor;
+        break;
+    case dobjnames::DEF_COPIER:
+        dobjy = new copier;
+        break;
+    case dobjnames::DEF_GROUP:
+        dobjy = new group;
         break;
     case dobjnames::DOBJ_SYNTHMOD:
         dobjy = new dobjmod;

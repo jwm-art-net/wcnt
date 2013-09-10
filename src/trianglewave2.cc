@@ -27,67 +27,66 @@ triangle_wave2::~triangle_wave2()
 
 void const* triangle_wave2::get_out(outputnames::OUT_TYPE ot)
 {
-    void const* o = 0;
     switch(ot)
     {
     case outputnames::OUT_OUTPUT:
-        o = &output;
-        break;
+        return &output;
     case outputnames::OUT_PLAY_STATE:
-        o = &play_state;
-        break;
+        return &play_state;
     default:
-        o = 0;
+        return 0;
     }
-    return o;
 }
 
 void const* triangle_wave2::set_in(inputnames::IN_TYPE it, void const* o)
 {
-    void const* i = 0;
     switch(it)
     {
     case inputnames::IN_PHASE_TRIG:
-        i = in_phase_trig = (STATUS*)o;
-        break;
+        return in_phase_trig = (STATUS*)o;
     case inputnames::IN_DEG_SIZE:
-        i = in_deg_size = (double*)o;
-        break;
+        return in_deg_size = (double*)o;
     case inputnames::IN_NORM_MOD:
-        i = in_normal_mod = (double*)o;
-        break;
+        return in_normal_mod = (double*)o;
     default:
-        i = 0;
+        return 0;
     }
-    return i;
+}
+
+void const* triangle_wave2::get_in(inputnames::IN_TYPE it)
+{
+    switch(it)
+    {
+    case inputnames::IN_PHASE_TRIG:
+        return in_phase_trig;
+    case inputnames::IN_DEG_SIZE:
+        return in_deg_size;
+    case inputnames::IN_NORM_MOD:
+        return in_normal_mod;
+    default:
+        return 0;
+    }
 }
 
 bool triangle_wave2::set_param(paramnames::PAR_TYPE pt, void const* data)
 {
-    bool retv = false;
     switch(pt)
     {
     case paramnames::PAR_NORM_FREQ:
         set_normal_frequency(*(double*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_NORM_MODSIZE:
         set_normal_modsize(*(double*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_RECYCLE_MODE:
         set_recycle_mode(*(STATUS*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_ZERO_RETRIGGER:
         set_zero_retrigger_mode(*(STATUS*)data);
-        retv = true;
-        break;
+        return true;
     default:
-        retv = false;
-        break;
+        return false;
     }
-    return retv;
 }
 
 void const* triangle_wave2::get_param(paramnames::PAR_TYPE pt)

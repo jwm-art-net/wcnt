@@ -12,12 +12,81 @@
 // and position values, but since quarter_value is no longer hard coded,
 // and now defined by the user for each riff, it seemed pointless.
 
+/*
+    whoah! what's all this then?
+    ============================
+
+    the name of a note can be used not only as the name of a note, but
+    also as an riff editing command.
+
+    examples of normal note names:
+        c0
+        e#-1
+        g2
+
+    examples of edit commands:
+        =P-N    select note at editnote pos and subtract editnote len
+                from its name. (ie negative transpose)
+        <L*P    select notes with lengths less than editnote len and
+                multiply the pos of each by editnote vel.
+        >N-Ve0  select notes higher than name and subtract pos from
+                their vel.
+        IV/L    select notes with vel inside range of editnote pos and
+                editnote len, and divide their len by editnote vel.
+        OP*N    select notes with pos outside range of editnote pos
+                and editnote len and multiply their name by editnote vel.
+*/
+
 class note_data : public dobj
 {
 public:
+    enum NOTE_TYPE {
+        NOTE_TYPE_ERR = -1,
+        NOTE_TYPE_NORMAL = 0,
+        NOTE_TYPE_EDIT
+    };
+    enum EDIT_NOTE_CHR {
+        NOTE_CHR_SEL_OP = 0,
+        NOTE_CHR_SEL,
+        NOTE_CHR_OP,
+        NOTE_CHR_PAR,
+        NOTE_CHR_NAME
+    };
+    enum NOTE_SEL_OP {
+        NOTE_SEL_OP_ERR = -1,
+        NOTE_SEL_OP_EQU = 0,
+        NOTE_SEL_OP_LESS,
+        NOTE_SEL_OP_MORE,
+        NOTE_SEL_OP_IN,
+        NOTE_SEL_OP_OUT
+    };
+    enum NOTE_SEL {
+        NOTE_SEL_ERR = -1,
+        NOTE_SEL_NAME = 0,
+        NOTE_SEL_POS,
+        NOTE_SEL_LEN,
+        NOTE_SEL_VEL
+    };
+    enum NOTE_OP {
+        NOTE_OP_ERR = -1,
+        NOTE_OP_ADD = 0,
+        NOTE_OP_SUB,
+        NOTE_OP_MUL,
+        NOTE_OP_DIV
+    };
+    enum NOTE_PAR {
+        NOTE_PAR_ERR = -1,
+        NOTE_PAR_DEL = 0,
+        NOTE_PAR_NAME,
+        NOTE_PAR_POS,
+        NOTE_PAR_LEN,
+        NOTE_PAR_VEL,
+        NOTE_PAR_QOPY // like POS but does not delete the old notes.
+    };
     note_data();
-    note_data(const char* name, double len, double pos, double vel);
+    note_data(const char* name, double pos, double len, double vel);
     ~note_data();
+    // set_name and get_name set and return the entire notename string
     void set_name(const char * n);
     void set_length(double l) { length = l; }
     void set_position(double p) { position = p; }
@@ -26,22 +95,46 @@ public:
     double get_length() { return (this == NULL) ? 0 : length; }
     double get_position() { return (this == NULL) ? 0 : position; }
     double get_velocity() { return (this == NULL) ? 0.00 : velocity; }
+    // the following only used with edit notes...
+    NOTE_SEL_OP get_note_sel_op();
+    NOTE_SEL get_note_sel();
+    NOTE_OP get_note_op();
+    NOTE_PAR get_note_par();
+    // helpful functions...
+    NOTE_TYPE get_note_type();
+    NOTE_TYPE get_note_type(const char* notename);
+    // get_note_name only returns, if applicable, the note portion.
+    const char* get_note_name();
+    double get_note_frequency();
+    double get_note_number();
     // virtuals from dobj
     char const* get_username(){ return notename;}
     // virtuals from dobj
     bool set_param(paramnames::PAR_TYPE, void*);
     void const* get_param(paramnames::PAR_TYPE);
     stockerrs::ERR_TYPE validate();
+    #ifdef SHOW_NOTE_COUNT
+    static long get_created_count(){ return notes_created_count;}
+    static long get_destroyed_count(){ return notes_destroyed_count;}
+    static long get_max_count(){ return notes_max_count;}
+    #endif
 
 private:
+    NOTE_TYPE note_type;
     char notename[NOTE_ARRAY_SIZE];
-    double length;
     double position;
+    double length;
     double velocity;
     void create_params();
     static bool done_params;
     #ifdef SEQ_NOTE_DEBUG
     void display_note();
+    #endif
+    #ifdef SHOW_NOTE_COUNT
+    static long notes_created_count;
+    static long notes_destroyed_count;
+    static long notes_count;
+    static long notes_max_count;
     #endif
 };
 

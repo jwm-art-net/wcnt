@@ -2,7 +2,16 @@
 #include "../include/connectorlist.h"
 
 connectorlist::connectorlist() :
- connectlist(0), connect_item(0), connect(0), verbose(false)
+ connectlist(0), connect_item(0), connect(0),
+ delete_connections(true), verbose(false)
+{
+    connectlist = 
+     new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
+}
+
+connectorlist::connectorlist(DELCON) :
+ connectlist(0), connect_item(0), connect(0),
+ delete_connections(false), verbose(false)
 {
     connectlist = 
      new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
@@ -11,9 +20,11 @@ connectorlist::connectorlist() :
 connectorlist::~connectorlist()
 {
     goto_first();
-    while(connect) {
-        delete connect;
+    if (delete_connections) {
+        while(connect) {
+            delete connect;
         goto_next();
+        }
     }
     delete connectlist;
 }
@@ -55,12 +66,54 @@ bool connectorlist::delete_connector(connector* c)
     return true;
 }
 
+connectorlist* connectorlist::duplicate_connections_for_module(
+                synthmod* from_mod, synthmod* to_mod)
+{
+    connectorlist* conlist = new connectorlist(NO_DELETE_CONNECTIONS);
+    if (from_mod->get_module_type() != to_mod->get_module_type())
+        return conlist; // don't bother and return it empty.
+    goto_first();
+    while(connect) {
+        if (connect->get_input_module() == from_mod)
+            conlist->add_connector(connect->duplicate(to_mod));
+        goto_next();
+    }
+    return conlist;
+}
+
+void connectorlist::reconnect_output_module_by_name(
+                                        const char* from, const char* to)
+{
+    char spaces[50];
+    for (int i = 0; i < 50; spaces[i] = ' ', i++);
+    string cmsg;
+    outputnames* outnames = synthmod::get_outputnames();
+    inputnames* innames = synthmod::get_inputnames();
+    goto_first();
+    while(connect) {
+        if (strcmp(connect->get_output_module_name(), from) == 0) {
+            connect->set_output_module_name(to);
+            if (verbose) {
+                cmsg = "\nreforming connection: ";
+                cmsg += connect->get_input_module()->get_username();
+                cmsg += " ";
+                cmsg += innames->get_name(connect->get_input_type());
+                int i = cmsg.length();
+                if (i > 40) i = 40;
+                cmsg.append(spaces, 40 - i);
+                cout << cmsg << "<-- ";
+                cout << "from " << from << " to " << to << " ";
+                cout << outnames->get_name(connect->get_output_type());
+            }
+        }
+        goto_next();
+    }
+}
+
 bool connectorlist::make_connections()
 {
     char spaces[40];
-    int i;
-    for (i = 0; i < 40; i++) 
-        spaces[i] = ' ';
+    for (int i = 0; i < 40; spaces[i] = ' ', i++);
     string cmsg;
     outputnames* outnames = synthmod::get_outputnames();
     inputnames* innames = synthmod::get_inputnames();
@@ -73,7 +126,8 @@ bool connectorlist::make_connections()
             cmsg = connect->get_output_module_name();
             cmsg += " ";
             cmsg += outnames->get_name(connect->get_output_type());
-            i = cmsg.length();
+            int i = cmsg.length();
+            if (i > 30) i = 30;
             cmsg.append(spaces, 30 - i);
             cout << "\n" << cmsg << "-->  ";
             cout << connect->get_input_module()->get_username();

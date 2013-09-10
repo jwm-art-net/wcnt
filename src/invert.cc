@@ -34,7 +34,17 @@ void const* invert::set_in(inputnames::IN_TYPE it, void const* o)
     {
     case inputnames::IN_SIGNAL:
         return in_signal = (double*)o;
-        break;
+    default:
+        return 0;
+    }
+}
+
+void const* invert::get_in(inputnames::IN_TYPE it)
+{
+    switch(it)
+    {
+    case inputnames::IN_SIGNAL:
+        return in_signal;
     default:
         return 0;
     }

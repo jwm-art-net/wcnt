@@ -1,16 +1,17 @@
 #ifndef STEREOMIXER_H
 #include "../include/stereomixer.h"
+#include "../include/groupnames.h"
 
 stereomixer::stereomixer(char const* uname) :
  synthmod(synthmodnames::MOD_STEREOMIXER, stereomixer_count, uname),
  out_left(0), out_right(0), master_level(0.75), o_l(0.00), o_r(0.00),
- chlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA),
- chitem(0), chan(0)
+ chlist(0), chitem(0), chan(0)
 {
     get_outputlist()->add_output(this, outputnames::OUT_LEFT);
     get_outputlist()->add_output(this, outputnames::OUT_RIGHT);
-/* cannot register  inputs with modinputslist because they are part of
-   list - don't know how many there will be. */
+    /* the actual stereomixer module has no inputs */
+    chlist =
+        new linkedlist(linkedlist::MULTIREF_ON, linkedlist::NO_NULLDATA);
     stereomixer_count++;
     create_params();
     create_moddobj();
@@ -19,42 +20,32 @@ stereomixer::stereomixer(char const* uname) :
 stereomixer::~stereomixer()
 {
     get_outputlist()->delete_module_outputs(this);
-    /*no module inputs to delete*/
-    /*no need to delete items in channellist as they are just pointers*/
-    // to items in another list I think you/I 'll find.
+    delete chlist;
 }
 
 void const* stereomixer::get_out(outputnames::OUT_TYPE ot)
 {
-    void const* o = 0;
     switch(ot)
     {
     case outputnames::OUT_LEFT:
-        o = &out_left;
-        break;
+        return &out_left;
     case outputnames::OUT_RIGHT:
-        o = &out_right;
-        break;
+        return &out_right;
     default:
-        o = 0;
+        return 0;
     }
-    return o;
 }
 
 bool stereomixer::set_param(paramnames::PAR_TYPE pt, void const* data)
 {
-    bool retv = false;
     switch(pt)
     {
     case paramnames::PAR_MASTER_LEVEL:
         set_master_level(*(double*)data);
-        retv = true;
-        break;
+        return true;
     default:
-        retv = false;
-        break;
+        return false;
     }
-    return retv;
 }
 
 void const* stereomixer::get_param(paramnames::PAR_TYPE pt)
@@ -66,6 +57,73 @@ void const* stereomixer::get_param(paramnames::PAR_TYPE pt)
     default:
         return 0;
     }
+}
+
+synthmod* stereomixer::duplicate_module(const char* uname, DUP_IO dupio)
+{
+    stereomixer* dup = new stereomixer(uname);
+    if (dupio == AUTO_CONNECT)
+        duplicate_inputs_to(dup);
+    duplicate_params_to(dup);
+
+    char* current_grp = get_groupname(get_username());
+    char* new_grp = get_groupname(uname);
+    bool regroup_channels = false;
+    if (current_grp && new_grp) {
+        if (strcmp(current_grp, new_grp) == 0) {
+            regroup_channels = true;
+        }
+    }
+    synthmodlist* modlist = get_modlist();
+    if (get_verbose())
+        cout << "\n----------\nadding to duplicated mixer " << uname;
+    goto_first();
+    while (chan) {
+        char* chan_grp = get_groupname(chan->get_username());
+        synthmod* chan_to_add = chan;
+        if (chan_grp && regroup_channels == true) {
+            if (strcmp(chan_grp, current_grp) == 0) {
+                char* grpchanname =
+                        set_groupname(new_grp, chan->get_username());
+                synthmod* grpchan =
+                            modlist->get_synthmod_by_name(grpchanname);
+                if (!grpchan) {
+                    *err_msg = "\nwhile duplicating the mixer ";
+                    *err_msg += "named ";
+                    *err_msg += get_username();
+                    *err_msg += " it attempted to find the grouped ";
+                    *err_msg += "mix_chan named ";
+                    *err_msg += grpchanname;
+                    *err_msg += " but it does not seem to exist. Please";
+                    *err_msg+=" check the placement of your definitions.";
+                    delete [] grpchanname;
+                    delete [] chan_grp;
+                    delete [] new_grp;
+                    delete [] current_grp;
+                    delete dup;
+                    return 0;
+                }
+                if (grpchan->get_module_type() ==
+                                        synthmodnames::MOD_STEREOCHANNEL)
+                    chan_to_add = grpchan;
+                else {
+                    cout << "\nin stereomixer::duplicate, an attempt to ";
+                    cout << "fetch a mix_chan named " << grpchanname;
+                    cout << "resulted in finding ";
+                    cout << grpchan->get_username();
+                    cout << " which is not a mix_chan. this is an";
+                    cout << " error of some sort...Please report it.";
+                }
+                delete [] grpchanname;
+            }
+            delete [] chan_grp;
+        }
+        dup->add_channel((stereo_channel*)chan_to_add);
+        if (get_verbose())
+            cout << "\nadded " << chan_to_add->get_username();
+        goto_next();
+    }
+    return dup;
 }
 
 stockerrs::ERR_TYPE stereomixer::validate()
@@ -110,7 +168,7 @@ stereo_channel* stereomixer::add_channel(stereo_channel* ch)
 {
     if	(ch == 0)
         return 0;
-    if (chlist.add_at_tail(ch) == 0)
+    if (chlist->add_at_tail(ch) == 0)
     {
         delete chitem;
         return 0;
@@ -120,10 +178,10 @@ stereo_channel* stereomixer::add_channel(stereo_channel* ch)
 
 stereo_channel* stereomixer::remove_channel(stereo_channel* ch)
 {
-    chitem = chlist.find_data(ch);
+    chitem = chlist->find_data(ch);
     if (chitem == 0)
         return 0;
-    chan = (stereo_channel*)chlist.unlink_item(chitem)->get_data();
+    chan = (stereo_channel*)chlist->unlink_item(chitem)->get_data();
     delete chitem;
     return chan;
 }
@@ -132,12 +190,12 @@ void stereomixer::run()
 {
     o_l = 0.00;
     o_r = 0.00;
-    chan = (stereo_channel*)(chitem = chlist.goto_first())->get_data();
-    while(chan != 0)
+    goto_first();
+    while(chan)
     {
         o_l += *chan->get_output_left();
         o_r += *chan->get_output_right();
-        chan = (stereo_channel*)(chitem = chitem->get_next())->get_data();
+        goto_next();
     }
     o_l *= master_level;
     o_r *= master_level;

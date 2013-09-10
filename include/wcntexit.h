@@ -1,12 +1,12 @@
-#ifndef WCNTMODULE_H
-#define WCNTMODULE_H
+#ifndef WCNTEXIT_H
+#define WCNTEXIT_H
 
 #include "modoutputslist.h"
 #include "modinputslist.h"
 #include "modparamlist.h"
 
 /*
-wcnt_module
+wcnt_exit
 
 this module is purely in existance for jwmsynth::execute() to
 grab a out_bar from a single instance of the time_map synthmod 
@@ -16,7 +16,7 @@ it does not serve any other purpose, which is why it does
 absolutely nothing.
 
 because: some wierdo might create more than one time_map module
-in thier wcnt file, that same wierdo must also specify which one
+in their wcnt file, that same wierdo must also specify which one
 to use.  
 
 Discounted option: unless of course, jwmsynth searched through the 
@@ -28,16 +28,16 @@ user to decide.
 Talking shite as usual are n't you james, eh?  You did not do either
 of those choices, in the end.  The user is not allowed to create more
 than one of these with wcnt complaining like the old wind/winge bag
-it is.
+it is. (hmmm, talking to yourself again - yes i am).
 
 */
 
 
-class wcnt_module: public synthmod
+class wcnt_exit: public synthmod
 {
 public:
-    wcnt_module(char const*);
-    ~wcnt_module();
+    wcnt_exit(char const*);
+    ~wcnt_exit();
     // inputs
     void set_input_bar(const short* b){ in_bar = b;}
     const short* get_input_bar(){ return in_bar;}
@@ -50,8 +50,10 @@ public:
     stockerrs::ERR_TYPE validate();
     void const* get_out(outputnames::OUT_TYPE) { return 0; }
     void const* set_in(inputnames::IN_TYPE, void const*);
+    const void* get_in(inputnames::IN_TYPE it);
     bool set_param(paramnames::PAR_TYPE, void const*);
     void const* get_param(paramnames::PAR_TYPE);
+    synthmod* duplicate_module(const char* uname, DUP_IO);
 private:
     // inputs
     const short* in_bar;
@@ -59,7 +61,7 @@ private:
     // params
     short exit_bar;
     // synthmod stuff
-    static short wcnt_module_count;
+    static short wcnt_exit_count;
     void create_params();
     static bool done_params;
 };

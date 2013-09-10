@@ -17,5 +17,8 @@
 #include "parameditor.h"
 #include "inputedit.h"
 #include "inputeditor.h"
+#include "riffeditor.h"
+#include "copier.h"
+#include "group.h"
 
 #endif

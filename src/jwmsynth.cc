@@ -1,17 +1,17 @@
 #ifndef JWMSYNTH_H
 #include "../include/jwmsynth.h"
-
+#include <stdlib.h> // qsort
 jwmsynth::jwmsynth(int const argc, char **const argv) :
  version(0), path(0),synthmod_err_msg(0), dobj_err_msg(0), iocatnames(0),
  modnames(0), innames(0), outnames(0), parnames(0), synthmodslist(0),
- inputlist(0), outputlist(0), paramlist(0), connectlist(0), synthfile(0),
- mdobjlist(0), dobj_names(0), dobj_list(0), dobjparam_list(0), 
- top_dobjlist(0), fxsparlist(0), valid(false), stock_errs(0), 
- exit_bar(0), in_bar_trig(0), in_bar(0), opts_count(argc), opts(argv),
- wcfile_opt(0)
+ inputlist(0), outputlist(0), paramlist(0), connectlist(0),
+ synthfile_reader(0), mdobjlist(0), dobj_names(0), dobj_list(0),
+ dobjparam_list(0), top_dobjlist(0), fxsparlist(0), valid(false),
+ stock_errs(0), exit_bar(0), in_bar_trig(0), in_bar(0), opts_count(argc),
+ opts(argv), wcfile_opt(0)
 {
     version = new char[6];
-    strcpy(version, "1.2");
+    strcpy(version, "1.25");
     wcnt_id = "wcnt-";
     wcnt_id += version;
     wcnt_id += "/jwmsynth";
@@ -39,16 +39,16 @@ jwmsynth::jwmsynth(int const argc, char **const argv) :
     // must have access to the lists - or it will cause seg fault.
     synthmod::register_modlist(synthmodslist = new synthmodlist);
     synthmod::register_connectlist(connectlist = new connectorlist);
-    synthfile = new synthfilereader(synthfilereader::WC_MAIN_FILE);
+    synthfile_reader = new synthfilereader(synthfilereader::WC_MAIN_FILE);
     stock_errs = new stockerrs;
-    synthfile->register_stockerrs(stock_errs);
+    synthfile_reader->register_stockerrs(stock_errs);
     valid = true;
 }
 
 jwmsynth::~jwmsynth()
 {
     delete stock_errs;
-    delete synthfile;
+    delete synthfile_reader;
     delete connectlist;
     delete synthmodslist;
     delete mdobjlist;
@@ -73,7 +73,7 @@ jwmsynth::~jwmsynth()
 
 bool jwmsynth::generate_synth()
 {
-    synthfile->set_wcnt_id(wcnt_id.c_str());
+    synthfile_reader->set_wcnt_id(wcnt_id.c_str());
     char* filename = opts[wcfile_opt];
     char* ptr = filename;
     char* fnptr = ptr;
@@ -90,13 +90,31 @@ bool jwmsynth::generate_synth()
     }
     synthmod::register_path(path);
     dobj::register_path(path);
-    synthfile->set_wc_filename(filename);
-    // nowt else in synthfile needs set.
-    if (!synthfile->read_and_create()) {
-        err_msg = synthfile->get_wc_error_msg();
+    synthfile_reader->set_wc_filename(filename);
+    // ready to roll...
+    if (!synthfile_reader->read_and_create()) {
+        err_msg = synthfile_reader->get_wc_error_msg();
         return false;
     }
-    if (synthfile->is_verbose())
+    return true;
+}
+
+bool jwmsynth::connect_synth()
+{
+    if (synthfile_reader->is_verbose()) {
+        cout << "\n\nWill now attempt to connect inputs and outputs";
+        cout << ", hold your horses:\n";
+    }
+    if (!connectlist->make_connections()) {
+        err_msg = *connector::get_connect_err_msg();
+        return false;
+    }
+    return true;
+}
+
+bool jwmsynth::validate_synth()
+{
+    if (synthfile_reader->is_verbose())
         cout << "\nValidating modules...";
     stockerrs::ERR_TYPE et;
     synthmod* sm;
@@ -118,33 +136,18 @@ bool jwmsynth::generate_synth()
             err_msg += stock_errs->get_err(et);
             return false;
         }
+        if (!sm->check_inputs()) {
+            err_msg = *synthmod::get_error_msg();
+            return false;
+        }
+        sm->init();
         sm = synthmodslist->goto_next();
     }
-    if (synthmodslist->get_first_of_type(synthmodnames::MOD_WCNT) == 0)
+    if (synthmodslist->get_first_of_type(synthmodnames::MOD_WCNTEXIT)==0)
     {
         err_msg += "\nNo wcnt_exit module created.";
         err_msg += "\nWithout this module I don't know when to stop.";
         return false;
-    }
-    return true;
-}
-
-bool jwmsynth::connect_synth()
-{
-    if (synthfile->is_verbose()) {
-        cout << "\n\nWill now attempt to connect inputs and outputs";
-        cout << ", hold your horses:\n";
-        connectlist->set_verbose();
-    }
-    if (!connectlist->make_connections()) {
-        err_msg = *connector::get_connect_err_msg();
-        return false;
-    }
-    // might aswell sneak this in here
-    synthmod* sm = synthmodslist->goto_first();
-    while(sm) {
-        sm->init();
-        sm = synthmodslist->goto_next();
     }
     return true;
 }
@@ -154,28 +157,29 @@ bool jwmsynth::execute_synth()
     synthmod* sm;
     // only use first wcnt module created, don't bother with any others
     // although user should not have been allowed to create > 1
-    wcnt_module* wcnt = (wcnt_module*) 
-     synthmodslist->get_first_of_type(synthmodnames::MOD_WCNT);
-    const short* bar = wcnt->get_input_bar();
-    short exit_bar = wcnt->get_exit_bar();
+    wcnt_exit* wcntexit = (wcnt_exit*) 
+     synthmodslist->get_first_of_type(synthmodnames::MOD_WCNTEXIT);
+    const short* bar = wcntexit->get_input_bar();
+    short exit_bar = wcntexit->get_exit_bar();
     // unlink any constant modules from list as it's pointless
     // calling run() on them...
-    if (synthfile->is_verbose())
+    if (synthfile_reader->is_verbose())
         cout << "\nunlinking constant modules from run list:";
-    synthmodslist->remove_constants(synthfile->is_verbose());
+    synthmodslist->remove_constants(synthfile_reader->is_verbose());
     unsigned long sample = 0;
     char bigcount = '@';
-    char littlecount = '~';
+    char littlecount = '-';
     int samplesperbig = audio_samplerate;
     int divisions = 10;
     int samplespersmall = samplesperbig / divisions;
     int counter = 0;
     int divcounter = 0;
-    if (synthfile->is_verbose())
+    if (synthfile_reader->is_verbose())
         cout << "\n";
     cout << "Running synth (one '";
     cout << bigcount << "' per second done)\n";
-    while (*bar < exit_bar)
+    const STATUS* force_abort = synthmod::get_abort_status();
+    while (*bar < exit_bar && *force_abort == OFF)
     {
         sm = synthmodslist->goto_first();
         while(sm) {
@@ -221,8 +225,7 @@ jwmsynth::scan_cl_options()
     char const* fi = "-fi";
     char const* ors = " or ";
     if (opts_count == 1) {
-        err_msg ="\n     e:james@jwm-art.net";
-        err_msg+="\n       Made In England\n";
+        err_msg="\n";
         err_msg+=wcnt;err_msg+=fname;
         err_msg+=wcnt;err_msg+=vrbl;err_msg+=ors;err_msg+=v;
             err_msg+=fname;
@@ -243,7 +246,8 @@ jwmsynth::scan_cl_options()
             err_msg+=" note name";
         err_msg+=wcnt;err_msg+=freq;err_msg+=ors;err_msg+=fi;
             err_msg+=" frequency  samplerate";
-        err_msg += "\n";
+        err_msg+= "\n";
+        err_msg+="\nBugs etc contact e:james@jwm-art.net";
         return false;
     }
     else if (opts_count == 2) {
@@ -282,12 +286,16 @@ jwmsynth::scan_cl_options()
             return false;
         }
         if (strcmp(vrbl, opts[1]) == 0 || strcmp(v, opts[1]) == 0) {
-            synthfile->set_verbose();
+            synthmod::set_verbose();
+            synthfile_reader->set_verbose();
+            connectlist->set_verbose();
             wcfile_opt = 2;
             return true;
         }
         if (strcmp(vrbl, opts[2]) == 0 || strcmp(v, opts[2]) == 0) {
-            synthfile->set_verbose();
+            synthmod::set_verbose();
+            synthfile_reader->set_verbose();
+            connectlist->set_verbose();
             wcfile_opt = 1;
             return true;
         }
@@ -320,8 +328,8 @@ void jwmsynth::module_help()
     char spaces[20];
     for (int i = 0; i < 20; i++) spaces[i] = ' ';
     string smname = (opts_count == 3) ? opts[2] : "";
-    synthmodnames::SYNTH_MOD_TYPE smt 
-     = modnames->get_type(smname.c_str());
+    synthmodnames::SYNTH_MOD_TYPE smt =
+                                    modnames->get_type(smname.c_str());
     if (smt == synthmodnames::MOD_FIRST) {
         if (opts_count == 3)
             err_msg = "\nUnknown synth module: " + smname + "\n";
@@ -329,23 +337,25 @@ void jwmsynth::module_help()
             err_msg = "";
         err_msg += "\navailable module types are:\n\n";
         int i, ip = 0, l, mxl = 0;
-        string mn;
-        for (i = synthmodnames::MOD_FIRST + 1;
-         i < synthmodnames::MOD_LAST; i++)
-        { // find longest module name.
-            mn = modnames->get_name(
-             (synthmodnames::SYNTH_MOD_TYPE)i);
-            l = mn.length();
+        for (i = synthmodnames::MOD_FIRST + 2;
+                                        i < synthmodnames::MOD_LAST; i++)
+        {
+            l = strlen(modnames->get_name(
+                                    (synthmodnames::SYNTH_MOD_TYPE)i));
+            ip++;
             if (l > mxl) mxl = l;
         }
+        string mn;
         mxl += 2;
-        for (i = synthmodnames::MOD_FIRST + 1;
-         i < synthmodnames::MOD_LAST; i++)
+        ip = 0;
+        for (i = synthmodnames::MOD_FIRST + 2;
+                                        i < synthmodnames::MOD_LAST; i++)
         {
             if (i != synthmodnames::MOD_NONEZERO) {
-                ip++;
-                mn = modnames->get_name((synthmodnames::SYNTH_MOD_TYPE)i);
+                mn = modnames->get_name(
+                                    (synthmodnames::SYNTH_MOD_TYPE)i);
                 err_msg += mn;
+                ip++;
                 if (ip % 4 == 0) err_msg += "\n";
                 else err_msg.append(spaces, mxl - mn.length());
             }

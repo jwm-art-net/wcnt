@@ -66,7 +66,7 @@ WAV_STATUS wavfilein::open_wav()
     if (status == WAV_STATUS_MEMERR)
         return status;
     if (status == WAV_STATUS_OPEN)
-        fclose(filein);
+        return status;
     if ((filein = fopen(fname, "rb")) == NULL)
         return status = WAV_STATUS_NOT_FOUND;
     fseek(filein, 0, SEEK_SET);
@@ -165,6 +165,7 @@ void const* wavfilein::get_param(paramnames::PAR_TYPE dt)
 
 stockerrs::ERR_TYPE wavfilein::validate()
 {
+/*  the sampler calls open_wav these days...
     open_wav();
     if (status == WAV_STATUS_NOT_FOUND) {
         *err_msg = get_paramnames()->get_name(paramnames::PAR_FILENAME);
@@ -189,6 +190,7 @@ stockerrs::ERR_TYPE wavfilein::validate()
         invalidate();
         return stockerrs::ERR_ERROR;
     }
+*/
     if (!check_notename(rootnote)) {
         *err_msg = get_paramnames()->get_name(paramnames::PAR_ROOT_NOTE);
         *err_msg += ", ";

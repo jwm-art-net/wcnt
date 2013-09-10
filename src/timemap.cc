@@ -129,12 +129,6 @@ bpmchange* timemap::add_bpm_change(bpmchange * bch)
     return 0;  // should not ever get here..
 }
 
-/*
-bool timemap::delete_bpm_change(bpmchange*)
-{
-}
-*/
-
 meterchange* timemap::add_meter_change(short atbar, char btpb, char btval)
 {
     if (!goto_first_meter()) { // create very first meter
@@ -203,11 +197,7 @@ meterchange* timemap::add_meter_change(meterchange* mch)
     }
     return 0;
 }
-/*
-bool timemap::check_position(short bar, double pos, short quarter_val)
-{
-}
-*/
+
 void timemap::init()
 {
     goto_first_bpm();
@@ -343,48 +333,34 @@ unsigned long timemap::ms_to_samples(double ms)
 
 void const* timemap::get_out(outputnames::OUT_TYPE ot)
 {
-    void const *o = 0;
     switch (ot) {
     case outputnames::OUT_BPM:
-        o = &out_bpm;
-        break;
+        return &out_bpm;
     case outputnames::OUT_BAR:
-        o = &out_bar;
-        break;
+        return &out_bar;
     case outputnames::OUT_BAR_TRIG:
-        o = &out_bar_trig;
-        break;
+        return &out_bar_trig;
     case outputnames::OUT_POS_IN_BAR:
-        o = &out_pos_in_bar;
-        break;
+        return &out_pos_in_bar;
     case outputnames::OUT_POS_STEP_SIZE:
-        o = &out_pos_step_size;
-        break;
+        return &out_pos_step_size;
     case outputnames::OUT_SAMPLE_TOTAL:
-        o = &out_sample_total;
-        break;
+        return &out_sample_total;
     case outputnames::OUT_SAMPLE_IN_BAR:
-        o = &out_sample_in_bar;
-        break;
+        return &out_sample_in_bar;
     case outputnames::OUT_BEATS_PER_BAR:
-        o = &out_beats_per_bar;
-        break;
+        return &out_beats_per_bar;
     case outputnames::OUT_BEAT_VALUE:
-        o = &out_beat_value;
-        break;
+        return &out_beat_value;
     case outputnames::OUT_BPM_CHANGE_TRIG:
-        o = &out_bpm_change_trig;
-        break;
+        return &out_bpm_change_trig;
     case outputnames::OUT_METER_CHANGE_TRIG:
-        o = &out_meter_change_trig;
-        break;
+        return &out_meter_change_trig;
     case outputnames::OUT_BPM_CHANGE_STATE:
-        o = &out_bpm_change_state;
-        break;
+        return &out_bpm_change_state;
     default:
-        o = 0;
+        return 0;
     }
-    return o;
 }
 
 dobj* timemap::add_dobj(dobj* dbj)
@@ -411,6 +387,11 @@ dobj* timemap::add_dobj(dobj* dbj)
     return retv;
 }
 
+synthmod* timemap::duplicate_module(const char* uname, DUP_IO dupio)
+{
+    *err_msg = "time_map module does not allow copies of it to be made.";
+    return 0;
+}
 
 bool timemap::done_moddobj = false;
 void timemap::create_moddobj()

@@ -79,25 +79,36 @@ void const* sampler::get_out(outputnames::OUT_TYPE ot)
 
 void const* sampler::set_in(inputnames::IN_TYPE it, void const* o)
 {
-    void const* i = 0;
     switch(it)
     {
     case inputnames::IN_PLAY_TRIG:
-        i = in_play_trig = (STATUS*)o;
-        break;
+        return in_play_trig = (STATUS*)o;
     case inputnames::IN_STOP_TRIG:
-        i = in_stop_trig = (STATUS*)o;
-        break;
+        return in_stop_trig = (STATUS*)o;
     case inputnames::IN_DEG_SIZE:
-        i = in_deg_size = (double*)o;
-        break;
+        return in_deg_size = (double*)o;
     case inputnames::IN_START_POS_MOD:
-        i = in_start_pos_mod = (double*)o;
-        break;
+        return in_start_pos_mod = (double*)o;
     default:
-        i = 0;
+        return 0;
     }
-    return i;
+}
+
+void const* sampler::get_in(inputnames::IN_TYPE it)
+{
+    switch(it)
+    {
+    case inputnames::IN_PLAY_TRIG:
+        return in_play_trig;
+    case inputnames::IN_STOP_TRIG:
+        return in_stop_trig;
+    case inputnames::IN_DEG_SIZE:
+        return in_deg_size;
+    case inputnames::IN_START_POS_MOD:
+        return in_start_pos_mod;
+    default:
+        return 0;
+    }
 }
 
 bool sampler::set_param(paramnames::PAR_TYPE pt, void const* data)
@@ -221,34 +232,8 @@ void const* sampler::get_param(paramnames::PAR_TYPE pt)
 
 void sampler::set_wavfilein(wavfilein * wi)
 {
-    if (wi->get_status() == WAV_STATUS_OPEN)
-    {
-        wavfile = wi;
-        ch = wavfile->get_channel_status();
-        wavlength = wavfile->get_length() - 2;
-        sr_ratio = (double)wavfile->get_sample_rate() / audio_samplerate;
-        if (ch == WAV_CH_MONO) {
-            mono_buffer = new short[WAV_BUFFER_SIZE];
-            for (int i = 0; i < WAV_BUFFER_SIZE; i++)
-                mono_buffer[i] = 0;
-            ac_m_buf = new short[MAX_ANTI_CLIP_SIZE];
-            for (int i = 0; i < MAX_ANTI_CLIP_SIZE; i++)
-                ac_m_buf[i] = 0;
-        }
-        else {
-            st_buffer = new stereodata[WAV_BUFFER_SIZE];
-            for (int i = 0; i < WAV_BUFFER_SIZE; i++) {
-                st_buffer[i].left = 0;
-                st_buffer[i].right = 0;
-            }
-            ac_st_buf = new stereodata[MAX_ANTI_CLIP_SIZE];
-            for (int i = 0; i < MAX_ANTI_CLIP_SIZE; i++) {
-                ac_st_buf[i].left = 0;
-                ac_st_buf[i].right = 0;
-            }
-        }
-    }
-    root_deg_size = wavfile->get_root_deg_size();
+    wavfile = wi;
+    // moved a lot of stuff to sampler::init 
 }
 
 void sampler::set_anti_clip_samples(short acs)
@@ -258,6 +243,36 @@ void sampler::set_anti_clip_samples(short acs)
 
 stockerrs::ERR_TYPE sampler::validate()
 {
+    WAV_STATUS wavstatus = wavfile->open_wav();
+    if (wavstatus == WAV_STATUS_NOT_FOUND) {
+        *err_msg = get_paramnames()->get_name(paramnames::PAR_FILENAME);
+        *err_msg += ", using wavfilein ";
+        *err_msg += wavfile->get_username();
+        *err_msg += " the file ";
+        *err_msg += wavfile->get_filename();
+        *err_msg += " was not found.";
+        invalidate();
+        return stockerrs::ERR_ERROR;
+    }
+    if (wavstatus == WAV_STATUS_WAVERR) {
+        *err_msg = get_paramnames()->get_name(paramnames::PAR_FILENAME);
+        *err_msg += ", using wavfilein ";
+        *err_msg += wavfile->get_username();
+        *err_msg += " the file ";
+        *err_msg += wavfile->get_filename();
+        *err_msg += " is not a wav file.";
+        invalidate();
+        return stockerrs::ERR_ERROR;
+    }
+    if (wavstatus != WAV_STATUS_OPEN) {
+        *err_msg = get_paramnames()->get_name(paramnames::PAR_FILENAME);
+        *err_msg += ", using wavfilein ";
+        *err_msg += wavfile->get_username();
+        *err_msg = ", an unspecified error occurred trying to open ";
+        *err_msg += wavfile->get_filename();
+        invalidate();
+        return stockerrs::ERR_ERROR;
+    }
     modparamlist* pl = get_paramlist();
     if (!pl->validate(this, paramnames::PAR_START_POS_MIN,
             stockerrs::ERR_NEGATIVE))
@@ -330,7 +345,42 @@ stockerrs::ERR_TYPE sampler::validate()
 }
 
 void sampler::init()
-{ // do a whole load of checks on the users input.
+{
+    if (wavfile->get_status() == WAV_STATUS_OPEN)
+    {
+        #ifdef CRAZY_SAMPLER
+        cout << "\n" << get_username() << "::init() WAV_STATUS_OPEN";
+        #endif
+        ch = wavfile->get_channel_status();
+        wavlength = wavfile->get_length() - 2;
+        sr_ratio = (double)wavfile->get_sample_rate() / audio_samplerate;
+        if (ch == WAV_CH_MONO) {
+            mono_buffer = new short[WAV_BUFFER_SIZE];
+            for (int i = 0; i < WAV_BUFFER_SIZE; i++)
+                mono_buffer[i] = 0;
+            ac_m_buf = new short[MAX_ANTI_CLIP_SIZE];
+            for (int i = 0; i < MAX_ANTI_CLIP_SIZE; i++)
+                ac_m_buf[i] = 0;
+        }
+        else {
+            st_buffer = new stereodata[WAV_BUFFER_SIZE];
+            for (int i = 0; i < WAV_BUFFER_SIZE; i++) {
+                st_buffer[i].left = 0;
+                st_buffer[i].right = 0;
+            }
+            ac_st_buf = new stereodata[MAX_ANTI_CLIP_SIZE];
+            for (int i = 0; i < MAX_ANTI_CLIP_SIZE; i++) {
+                ac_st_buf[i].left = 0;
+                ac_st_buf[i].right = 0;
+            }
+        }
+    } 
+    else {
+        cout << "\nsampler "<< get_username();
+        cout << " has not got an open wav. expect a sigsegv!";
+    }
+    root_deg_size = wavfile->get_root_deg_size();
+ // do a whole load of checks on the users input.
     int halfsr = search_range / 2;
     if (ac_each_end == ON) {
         wavstart = zero_search(anti_clip_size + halfsr, search_range);
@@ -395,8 +445,12 @@ void sampler::run()
         play_state = OFF;
         do_ac = OFF;
     }
-    if (*in_play_trig == ON)
+    if (*in_play_trig == ON) {
+        #ifdef CRAZY_SAMPLER
+        cout << "\n" << get_username() << "::run *in_play_trig == ON";
+        #endif
         trigger_playback();
+    }
     if (play_state == ON) {
         if (do_ac == OFF) oldcpstp = cp_step;
         if (out_loop_trig == ON) out_loop_trig = OFF;
@@ -404,14 +458,40 @@ void sampler::run()
         //sample rate ratio is sr_ratio
         cp_step = (1 + (cp_ratio - 1) * deg_size_amount) * sr_ratio;
         buff_pos = (unsigned int)cur_pos - buffer_start_pos;
+        #ifdef CRAZY_SAMPLER
+        if (buff_pos < 0 || buff_pos >= WAV_BUFFER_SIZE) {
+            cout << "\n" << get_username() << "::run buff_pos = cur_pos(";
+            cout << (double)cur_pos << ") - ";
+            cout << "buffer_start_pos(" << buffer_start_pos << ")";
+            cout << " = " << buff_pos;
+        }
+        #endif
         if (playdir == PLAY_FWD) {
             if (cur_pos >= wavlength) {
                 pos_wavlen();
                 buff_pos = (unsigned int)cur_pos - buffer_start_pos;
+                #ifdef CRAZY_SAMPLER
+                if (buff_pos < 0 || buff_pos >= WAV_BUFFER_SIZE) {
+                    cout << "\n" << get_username() << "::run ";
+                    cout << "(playdir==PLAY_FWD && cur_pos>=wavlength";
+                    cout << " buff_pos = cur_pos(" << cur_pos << ") - ";
+                    cout << "buffer_start_pos(" << buffer_start_pos;
+                    cout << ")";
+                    cout << " = " << buff_pos;
+                }
+                #endif
             }
             else if (loop_yet && cur_pos > loopfinish) {
                 pos_loopend();
                 buff_pos = (unsigned int)cur_pos - buffer_start_pos;
+                #ifdef CRAZY_SAMPLER
+                cout << "\n" << get_username() << "::run ";
+                cout << "(playdir == PLAY_FWD && loopyet && cur_pos";
+                cout << " > loopfinish >";
+                cout << "buff_pos = cur_pos(" << cur_pos << ") - ";
+                cout << "buffer_start_pos(" << buffer_start_pos << ")";
+                cout << " = " << buff_pos;
+                #endif
             }
             if (buff_pos >= WAV_BUFFER_SIZE - 1) {
                 buffer_start_pos = (unsigned long)cur_pos;
@@ -446,12 +526,17 @@ void sampler::run()
             if (ac_size > 1) do_ac = OFF;
             ac_midpoint 
              = (double)((ac_cur_pos-ac_buf_start_pos)-ac_buf_pos);
+            #ifdef CRAZY_SAMPLER
             if ((ac_buf_pos > MAX_ANTI_CLIP_SIZE - 1 
                 || ac_buf_pos < 0) && do_ac == ON)
             {
-                cout << "\nanti_clipping out of bounds of AC buffer ";
+                cout << "\n" << get_username() << "::run ";
+                cout << "anti_clipping out of bounds of AC buffer ";
                 cout << ac_buf_pos;
-                cout << "\nmodule responsible " << *get_username();
+                cout << "\n(unsigned long)-1 = " << (unsigned long)-1;
+                cout << "\n(unsigned long)ac_buf_pos = ";
+                cout << (unsigned long)ac_buf_pos;
+                cout << "\nmodule responsible " << get_username();
                 cout << "\nPlease report this to james@jwm-art.net";
                 cout << " specifying";
                 cout << "\nlength, format, samplerate of wavfile, or";
@@ -460,10 +545,19 @@ void sampler::run()
                 cout << "Thanks.";
                 do_ac = OFF;
             }
+            #endif
         }
         if (ch == WAV_CH_MONO) {
+            #ifdef CRAZY_SAMPLER
+            if (buff_pos + 1 >= WAV_BUFFER_SIZE || buff_pos < 0) {
+                cout << "\n" << get_username() << "::run ";
+                cout << " detected invalid read in mono_buffer of ";
+                cout << "index " << buff_pos << ".";
+                buff_pos = 0;
+            }
+            #endif
             out_left = calc_midpoint(mono_buffer[buff_pos],
-             mono_buffer[buff_pos + 1], bp_midpoint);
+                            mono_buffer[buff_pos + 1], bp_midpoint);
             if (do_ac == ON)  {
                 ac_out_left = calc_midpoint(ac_m_buf[ac_buf_pos],
                  ac_m_buf[ac_buf_pos + 1], ac_midpoint);
@@ -480,9 +574,9 @@ void sampler::run()
              st_buffer[buff_pos + 1].right, bp_midpoint);
             if (do_ac == ON) {
                 ac_out_left = calc_midpoint(ac_st_buf[ac_buf_pos].left,
-                 ac_st_buf[ac_buf_pos + 1].left, ac_midpoint);
+                        ac_st_buf[ac_buf_pos + 1].left, ac_midpoint);
                 ac_out_right = calc_midpoint(ac_st_buf[ac_buf_pos].right,
-                 ac_st_buf[ac_buf_pos + 1].right, ac_midpoint);
+                        ac_st_buf[ac_buf_pos + 1].right, ac_midpoint);
                 out_left = (short)(out_left * ac_size +
                                    ac_out_left * (1 - ac_size));
                 out_right = (short)(out_right * ac_size +
@@ -506,14 +600,21 @@ void sampler::run()
                           / anti_clip_size;
             }
         }
-        if (playdir == PLAY_FWD) cur_pos += cp_step;
-        else cur_pos -= cp_step;
+        if (playdir == PLAY_FWD) {
+            cur_pos += cp_step;
+        }
+        else {
+            cur_pos -= cp_step;
+        }
     }
     sampletot ++;
 }
 
 void sampler::trigger_playback()
 {
+    #ifdef CRAZY_SAMPLER
+    cout << "\n" << get_username() << "::trigger_playback()";
+    #endif
     if (play_state == ON && anti_clip_size > 0) {
         if (playdir == PLAY_FWD) anti_clip_fwd();
         else anti_clip_rev();
@@ -526,12 +627,20 @@ void sampler::trigger_playback()
         if (start_pos < wavstart) start_pos = wavstart;
         else if (start_pos > wavlength) start_pos = wavlength;
         cur_pos = start_pos = zero_search(start_pos, search_range);
+        #ifdef CRAZY_SAMPLER
+        cout << "\n" << get_username();
+        cout << "(PLAY_FWD) cur_pos = " << cur_pos;
+        #endif
         buffer_start_pos = (unsigned long)cur_pos;
     } else {
         start_pos=(unsigned long)(max_start_pos - startpos_span * spm);
         if (start_pos < wavstart) start_pos = wavstart;
         else if (start_pos > wavlength) start_pos = wavlength;
         cur_pos = start_pos = zero_search(start_pos, search_range);
+        #ifdef CRAZY_SAMPLER
+        cout << "\n" << get_username();
+        cout << "(PLAY_REV) cur_pos = " << cur_pos;
+        #endif
         if (cur_pos - (WAV_BUFFER_SIZE - 2) < 0) buffer_start_pos = 0;
         else buffer_start_pos 
           = (unsigned long)(cur_pos - (WAV_BUFFER_SIZE -2));
@@ -625,6 +734,9 @@ unsigned long sampler::zero_search(unsigned long pos, short range)
 
 void sampler::pos_wavlen()
 {// playdir = PLAY_FWD
+    #ifdef CRAZY_SAMPLER
+    cout << "\n" << get_username() << "::pos_wavlen";
+    #endif
     if (play_mode == PLAY_STOP || loop_mode == LOOP_OFF) {
         out_left = out_right = 0;
         out_l = out_r = 0;
@@ -644,10 +756,20 @@ void sampler::pos_wavlen()
             (play_mode == PLAY_JUMP && jumpdir == PLAY_FWD)
             || (loopfinish == wavlength && loop_mode == LOOP_FWD))
     {
-        if (play_mode == PLAY_WRAP)	cur_pos = wavstart;
+        if (play_mode == PLAY_WRAP)	{
+            cur_pos = wavstart;
+            #ifdef CRAZY_SAMPLER
+            cout << "\n" << get_username();
+            cout << "(PLAY_WRAP) cur_pos = " << cur_pos;
+            #endif
+        }
         else {
             out_loop_trig = ON;
             cur_pos = loopstart;
+            #ifdef CRAZY_SAMPLER
+            cout << "\n" << get_username();
+            cout << "(!PLAY_JUMP && jdPLAY_FWD) cur_pos = " << cur_pos;
+            #endif
             if (loop_fits_in_buffer) loop_loaded = 1;
         }
         buffer_start_pos = (unsigned long)cur_pos;
@@ -655,11 +777,20 @@ void sampler::pos_wavlen()
         return;
     } // play_bounce/loop_rev/loop_bi/(play_jump && jump_loop_dir):
     playdir = PLAY_REV;
-    if (play_mode == PLAY_BOUNCE)
+    if (play_mode == PLAY_BOUNCE) {
         cur_pos= wavlenbi;
+        #ifdef CRAZY_SAMPLER
+        cout << "\n" << get_username();
+        cout << "(PLAY_BOUNCE) cur_pos = " << cur_pos;
+        #endif
+    }
     else {
         out_loop_trig = ON;
         cur_pos = loopstart;
+        #ifdef CRAZY_SAMPLER
+        cout << "\n" << get_username();
+        cout << "(!PLAY_BOUNCE) cur_pos = " << cur_pos;
+        #endif
         if (loop_fits_in_buffer) loop_loaded = 1;
     }
     if (cur_pos - (WAV_BUFFER_SIZE - 2) < 0) buffer_start_pos = 0;
@@ -670,11 +801,18 @@ void sampler::pos_wavlen()
 
 void sampler::pos_loopend()
 {// playdir = PLAY_FWD
+    #ifdef CRAZY_SAMPLER
+    cout << "\n" << get_username() << "::pos_loopend";
+    #endif
     out_loop_trig = ON;
     if (anti_clip_size > 0)
         anti_clip_fwd();
     if (loop_mode == LOOP_FWD) {
         cur_pos = loopstart;
+        #ifdef CRAZY_SAMPLER
+        cout << "\n" << get_username();
+        cout << "(LOOP_FWD)cur_pos = " << cur_pos;
+        #endif
         if (loop_fits_in_buffer && loop_loaded) return;
         else loop_loaded = 1;
         buffer_start_pos = (unsigned long)cur_pos;
@@ -685,14 +823,29 @@ void sampler::pos_loopend()
     int bisr = search_range / SR_DIV_BI;
     if (search_range > 0 && bisr < 2) bisr = 2;
     cur_pos = loopfinish - loop_bi_offset;
+    #ifdef CRAZY_SAMPLER
+    cout << "\n" << get_username();
+    cout << "(PLAY_REV)cur_pos = " << cur_pos;
+    #endif
     if (cur_pos < wavstart) cur_pos = wavstart;
     else if (cur_pos < loopstart) {
         loop_yet = 0; // suspend looping for the mo.
-        if (cur_pos < wavstart) cur_pos = wavstart;
+        if (cur_pos < wavstart) {
+            cur_pos = wavstart;
+            #ifdef CRAZY_SAMPLER
+            cout << "\n" << get_username();
+            cout << "(cur_pos < wavstart)cur_pos = " << cur_pos;
+            #endif
+        }
         loop_loaded = 0; // no longer in loop
     }
-    if (cur_pos != wavstart) 
+    if (cur_pos != wavstart) {
         cur_pos = zero_search((unsigned long)cur_pos, bisr);
+        #ifdef CRAZY_SAMPLER
+        cout << "\n" << get_username();
+        cout << "(cur_pos != wavstart)cur_pos = " << cur_pos;
+        #endif
+    }
     if (loop_fits_in_buffer && loop_loaded)	return;
     else loop_loaded = 1;
     if (cur_pos - (WAV_BUFFER_SIZE -2) < 0) buffer_start_pos = 0;
@@ -704,6 +857,9 @@ void sampler::pos_loopend()
 
 void sampler::pos_wavstart()
 {// playdir == PLAY_REV
+    #ifdef CRAZY_SAMPLER
+    cout << "\n" << get_username() << "::pos_wavstart";
+    #endif
     if (play_mode == PLAY_STOP || loop_mode == LOOP_OFF) {
         out_left = out_right = 0;
         out_l = out_r = 0;
@@ -723,9 +879,19 @@ void sampler::pos_wavstart()
             (play_mode == PLAY_JUMP && jumpdir == PLAY_REV) ||
             (loopstart = 0 && loop_mode == LOOP_REV))
     {
-        if (play_mode == PLAY_WRAP) cur_pos = wavlength;
+        if (play_mode == PLAY_WRAP) {
+            cur_pos = wavlength;
+            #ifdef CRAZY_SAMPLER
+            cout << "\n" << get_username();
+            cout << "(PLAY_WRAP)cur_pos = " << cur_pos;
+            #endif
+        }
         else {
             cur_pos = loopfinish;
+            #ifdef CRAZY_SAMPLER
+            cout << "\n" << get_username();
+            cout << "(!PLAY_WRAP)cur_pos = " << cur_pos;
+            #endif
             out_loop_trig = ON;
             if (loop_fits_in_buffer) loop_loaded = 1;
         }
@@ -736,10 +902,19 @@ void sampler::pos_wavstart()
         return;
     }
     playdir = PLAY_FWD;
-    if (play_mode == PLAY_BOUNCE)
+    if (play_mode == PLAY_BOUNCE) {
         cur_pos = wavstbi;
+        #ifdef CRAZY_SAMPLER
+        cout << "\n" << get_username();
+        cout << "(PLAY_BOUNCE)cur_pos = " << cur_pos;
+        #endif
+    }
     else { // must be PLAY_JUMP then.
         cur_pos = loopstart;
+        #ifdef CRAZY_SAMPLER
+        cout << "\n" << get_username();
+        cout << "(PLAY_JUMP)cur_pos = " << cur_pos;
+        #endif
         out_loop_trig = ON;
         if (loop_fits_in_buffer) loop_loaded = 1;
     }
@@ -749,11 +924,18 @@ void sampler::pos_wavstart()
 
 void sampler::pos_loopbegin()
 {// playdir == PLAY_REV
+    #ifdef CRAZY_SAMPLER
+    cout << "\n" << get_username() << "::pos_loopbegin";
+    #endif
     out_loop_trig = ON;
     if (anti_clip_size > 0)
         anti_clip_rev();
     if (loop_mode == LOOP_REV) {
         cur_pos = loopfinish;
+        #ifdef CRAZY_SAMPLER
+        cout << "\n" << get_username();
+        cout << "(LOOP_REV)cur_pos = " << cur_pos;
+        #endif
         if (loop_fits_in_buffer && loop_loaded) return;
         else loop_loaded = 1;
         if (cur_pos - (WAV_BUFFER_SIZE - 2) < 0) buffer_start_pos = 0;
@@ -766,14 +948,29 @@ void sampler::pos_loopbegin()
     int bisr = search_range / SR_DIV_BI;
     if (search_range > 0 && bisr < 2) bisr = 2;
     cur_pos = loopstart + loop_bi_offset;
+    #ifdef CRAZY_SAMPLER
+    cout << "\n" << get_username();
+    cout << "(PLAY_FWD)cur_pos = " << cur_pos;
+    #endif
     if (cur_pos < wavstart) cur_pos = wavstart;
     else if (cur_pos > loopfinish) {
         loop_yet = 0; // suspend looping until back inside loop.
-        if (cur_pos > wavlength) cur_pos = wavlength;
+        if (cur_pos > wavlength) {
+            cur_pos = wavlength;
+            #ifdef CRAZY_SAMPLER
+            cout << "\n" << get_username();
+            cout << "(cur_pos > wavlength)cur_pos = " << cur_pos;
+            #endif
+        }
         loop_loaded = 0; // no longer in loop.
     }
-    if (cur_pos != wavlength)
+    if (cur_pos != wavlength) {
         cur_pos = zero_search((unsigned long)cur_pos, bisr);
+        #ifdef CRAZY_SAMPLER
+        cout << "\n" << get_username();
+        cout << "(cur_pos != wavlength)cur_pos = " << cur_pos;
+        #endif
+    }
     if (loop_fits_in_buffer && loop_loaded) return;
     else loop_loaded = 1;
     buffer_start_pos = (unsigned long)cur_pos;

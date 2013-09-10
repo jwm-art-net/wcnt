@@ -1,5 +1,37 @@
-new features in wcnt-1.128
+-------------------------
+New features in wcnt-1.25
+-------------------------
 
+* group
+    * group modules together then the whole group can be copied.
+
+* copier
+    * copy single data objects and modules.
+
+* peak_detector
+    * output a message when the input signal falls outside a
+      specified range.
+
+* adder
+    * add two signals together.
+
+* subtracter
+    * subtract a signal from another.
+
+* simple_delay
+    * a simple delay.
+
+* trig_delay
+    * delay a trigger.
+
+* stepper
+    * takes a step through a shape of values each time it 
+      is triggered.
+
+
+--------------------------
+new features in wcnt-1.128
+--------------------------
 * time_map
     * tempo changes have been changed so that you add or
       subtract from the existing tempo, instead of specifiying

@@ -72,9 +72,9 @@ bool set_mod_param(synthmod* module, const char* param,
         err_msg += param;
         err_msg += " with value ";
         err_msg += value;
-        err_msg += ". Probability that it does not have a ";
+        err_msg += ". Either ";
         err_msg += param;
-        err_msg += " parameter is looming way above your head.";
+        err_msg += " is the wrong type of thing expected, or...";
         return false;
     }
     if (iocat == CAT_FIX_STR) {
@@ -114,6 +114,7 @@ bool set_dobj_param(dobj* dbj, const char* param,
         err_msg += " to an acceptable form for parameter ";
         err_msg += param;
         err_msg += iocatconv::err_msg;
+        err_msg += ".";
         return false;
     }
     void* datatmp = data;
@@ -124,7 +125,7 @@ bool set_dobj_param(dobj* dbj, const char* param,
             iocatconv::destroy_iocat_data(iocat, data);
             err_msg = ", no registered fixed string for ";
             err_msg += param;
-            err_msg += " parameter";
+            err_msg += " parameter.";
             return false;
         }
         int n = fsp->get_substring_index((char const*)data);
@@ -135,7 +136,7 @@ bool set_dobj_param(dobj* dbj, const char* param,
             err_msg += ((char const*)data);
             err_msg += ". try one of '";
             err_msg += fsp->get_string_list();
-            err_msg += "' instead";
+            err_msg += "' instead.";
             iocatconv::destroy_iocat_data(iocat, data);
             return false;
         }
@@ -155,9 +156,12 @@ bool set_dobj_param(dobj* dbj, const char* param,
         err_msg += param;
         err_msg += " with value ";
         err_msg += value;
-        err_msg += ". Probability that it does not have a ";
+        err_msg += ". I suspect that ";
+        err_msg += value;
+        err_msg += " is probably not compatible with parameter ";
         err_msg += param;
-        err_msg += " parameter is looming way above your head.";
+        err_msg += ".";
+        err_msg += *dobj::get_error_msg();
         return false;
     }
     if (iocat == CAT_FIX_STR) {

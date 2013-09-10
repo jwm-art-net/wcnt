@@ -1,4 +1,4 @@
-     wcnt-1.2/jwmsynth
+     wcnt-1.25/jwmsynth
 
     // examples/sinewave.wc
 
@@ -12,6 +12,7 @@
         timings
             time seconds 0.0
             time seconds 1.0
+            time seconds 25.0
         timings
     t1
 
@@ -65,5 +66,5 @@
         exit_bar 1
     wcnt_exit_module
 
-    wcnt-1.2/jwmsynth 
+    wcnt-1.25/jwmsynth 
 

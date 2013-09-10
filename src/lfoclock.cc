@@ -27,63 +27,64 @@ lfo_clock::~lfo_clock()
 
 void const* lfo_clock::get_out(outputnames::OUT_TYPE ot)
 {
-    void const* o = 0;
     switch(ot) {
     case outputnames::OUT_PHASE_TRIG:
-        o = &out_phase_trig;
+        return &out_phase_trig;
         break;
     case outputnames::OUT_PREMOD_DEG_SIZE:
-        o = &out_premod_deg_size;
+        return &out_premod_deg_size;
         break;
     case outputnames::OUT_DEG_SIZE:
-        o = &out_deg_size;
+        return &out_deg_size;
         break;
     default:
-        o = 0;
+        return 0;
     }
-    return o;
 }
 
 void const* lfo_clock::set_in(inputnames::IN_TYPE it, void const* o)
 {
-    void const* i = 0;
     switch(it) {
     case inputnames::IN_PHASE_TRIG:
-        i = in_phase_trig = (STATUS*)o;
-        break;
+        return in_phase_trig = (STATUS*)o;
     case inputnames::IN_FREQ_MOD1:
-        i = in_freq_mod1 = (double*)o;
-        break;
+        return in_freq_mod1 = (double*)o;
     case inputnames::IN_FREQ_MOD2:
-        i = in_freq_mod2 = (double*)o;
-        break;
+        return in_freq_mod2 = (double*)o;
     default:
-        i = 0;
+        return 0;
     }
-    return i;
+}
+
+void const* lfo_clock::get_in(inputnames::IN_TYPE it)
+{
+    switch(it) {
+    case inputnames::IN_PHASE_TRIG:
+        return in_phase_trig;
+    case inputnames::IN_FREQ_MOD1:
+        return in_freq_mod1;
+    case inputnames::IN_FREQ_MOD2:
+        return in_freq_mod2;
+    default:
+        return 0;
+    }
 }
 
 bool lfo_clock::set_param(paramnames::PAR_TYPE pt, void const* data)
 {
-    bool retv = false;
     switch(pt) {
     case paramnames::PAR_FREQ_MOD1SIZE:
         set_freq_mod1size(*(double*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_FREQ_MOD2SIZE:
         set_freq_mod2size(*(double*)data);
-        retv = true;
-        break;
+        return true;
     case paramnames::PAR_FREQ:
         set_frequency(*(double*)data);
-        retv = true;
-        break;
+        return true;
     default:
-        retv = false;
-        break;
+        return false;
     }
-    return retv;
 }
 
 void const* lfo_clock::get_param(paramnames::PAR_TYPE pt)

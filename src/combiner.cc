@@ -1,5 +1,6 @@
 #ifndef COMBINER_H
 #include "../include/combiner.h"
+#include "../include/groupnames.h"
 
 combiner::combiner(char const* uname) :
  synthmod(synthmodnames::MOD_COMBINER, combiner_count, uname),
@@ -38,17 +39,6 @@ void const* combiner::get_out(outputnames::OUT_TYPE ot)
     return o;
 }
 
-void const* combiner::set_in(inputnames::IN_TYPE it, void const* o)
-{
-    void const* i = 0;
-    switch(it)
-    {
-    default:
-        i = 0;
-    }
-    return i;
-}
-
 bool combiner::set_param(paramnames::PAR_TYPE pt, void const* data)
 {
     bool retv = false;
@@ -74,6 +64,56 @@ void const* combiner::get_param(paramnames::PAR_TYPE pt)
     default:
         return 0;
     }
+}
+
+synthmod* combiner::duplicate_module(const char* uname, DUP_IO dupio)
+{
+    combiner* dup = new combiner(uname);
+    if (dupio == AUTO_CONNECT)
+        duplicate_inputs_to(dup);
+    duplicate_params_to(dup);
+    char* current_grp = get_groupname(get_username());
+    char* new_grp = get_groupname(uname);
+    bool regroup_wcnt_sigs = false;
+    if (current_grp && new_grp) {
+        if (strcmp(current_grp, new_grp) != 0) {
+            regroup_wcnt_sigs = true;
+        }
+    }
+    synthmodlist* modlist = get_modlist();
+    if (get_verbose())
+        cout << "\n----------\nadding to duplicated combiner " << uname;
+    goto_first();
+    while (wcntsig) {
+        char* sig_grp = get_groupname(wcntsig->get_username());
+        synthmod* sig_to_add = wcntsig;
+        if (sig_grp && regroup_wcnt_sigs == true) {
+            if (strcmp(sig_grp, current_grp) == 0) {
+                char* grpsigname =
+                        set_groupname(new_grp, wcntsig->get_username());
+                synthmod* grpsig =
+                            modlist->get_synthmod_by_name(grpsigname);
+                if (grpsig->get_module_type() ==
+                    synthmodnames::MOD_WCNTSIGNAL) sig_to_add = grpsig;
+                else {
+                    cout << "\nin combiner::duplicate, an attempt to ";
+                    cout << "fetch a wcnt_signal named " << grpsigname;
+                    cout << "resulted in finding ";
+                    cout << grpsig->get_username();
+                    cout << " which is not a wcnt_signal!?!?";
+                }
+                delete [] grpsigname;
+            }
+            delete [] sig_grp;
+        }
+        dup->add_signal((wcnt_signal*)sig_to_add);
+        if (get_verbose())
+            cout << "\nadded " << sig_to_add->get_username();
+        goto_next();
+    }
+    if (get_verbose())
+        cout << "\n----------";
+    return dup;
 }
 
 stockerrs::ERR_TYPE combiner::validate()

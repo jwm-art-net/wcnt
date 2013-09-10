@@ -59,33 +59,46 @@ void const* serialwavfileout::get_out(outputnames::OUT_TYPE ot)
 }
 
 void const* serialwavfileout::set_in(
- inputnames::IN_TYPE it, void const* o)
+                                    inputnames::IN_TYPE it, void const* o)
 {
-    void const* i = 0;
     switch(it)
     {
     case inputnames::IN_LEFT:
-        i = in_left_channel = (short*)o;
-        break;
+        return in_left_channel = (short*)o;
     case inputnames::IN_RIGHT:
-        i = in_right_channel = (short*)o;
-        break;
+        return in_right_channel = (short*)o;
     case inputnames::IN_BAR:
-        i = in_bar = (short*)o;
-        break;
+        return in_bar = (short*)o;
     case inputnames::IN_BAR_TRIG:
-        i = in_bar_trig = (STATUS*)o;
-        break;
+        return in_bar_trig = (STATUS*)o;
     case inputnames::IN_WRITE_TRIG:
-        i = in_write_trig = (STATUS*)o;
-        break;
+        return in_write_trig = (STATUS*)o;
     case inputnames::IN_STOP_TRIG:
-        i = in_stop_trig = (STATUS*)o;
-        break;
+        return in_stop_trig = (STATUS*)o;
     default:
-        i = 0;
+        return 0;
     }
-    return i;
+}
+
+void const* serialwavfileout::get_in(inputnames::IN_TYPE it)
+{
+    switch(it)
+    {
+    case inputnames::IN_LEFT:
+        return in_left_channel;
+    case inputnames::IN_RIGHT:
+        return in_right_channel;
+    case inputnames::IN_BAR:
+        return in_bar;
+    case inputnames::IN_BAR_TRIG:
+        return in_bar_trig;
+    case inputnames::IN_WRITE_TRIG:
+        return in_write_trig;
+    case inputnames::IN_STOP_TRIG:
+        return in_stop_trig;
+    default:
+        return 0;
+    }
 }
 
 bool serialwavfileout::set_param(

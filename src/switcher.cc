@@ -1,5 +1,6 @@
 #ifndef SWITCHER_H
 #include "../include/switcher.h"
+#include "../include/groupnames.h"
 
 switcher::switcher(char const* uname) :
  synthmod(synthmodnames::MOD_SWITCHER, switcher_count, uname),
@@ -29,46 +30,47 @@ switcher::~switcher()
 
 void const* switcher::get_out(outputnames::OUT_TYPE ot)
 {
-    void const* o = 0;
     switch(ot)
     {
     case outputnames::OUT_OUTPUT:
-        o = &out_output;
-        break;
+        return &out_output;
     default:
-        o = 0;
+        return 0;
     }
-    return o;
 }
 
 void const* switcher::set_in(inputnames::IN_TYPE it, void const* o)
 {
-    void const* i = 0;
     switch(it)
     {
     case inputnames::IN_TRIG:
-        i = in_trig = (STATUS*)o;
-        break;
+        return in_trig = (STATUS*)o;
     default:
-        i = 0;
+        return 0;
     }
-    return i;
+}
+
+void const* switcher::get_in(inputnames::IN_TYPE it)
+{
+    switch(it)
+    {
+    case inputnames::IN_TRIG:
+        return in_trig;
+    default:
+        return 0;
+    }
 }
 
 bool switcher::set_param(paramnames::PAR_TYPE pt, void const* data)
 {
-    bool retv = false;
     switch(pt)
     {
     case paramnames::PAR_XFADE_TIME:
         xfadetime = *(double*)data;
-        retv = true;
-        break;
+        return true;
     default:
-        retv = false;
-        break;
+        return false;
     }
-    return retv;
 }
 
 void const* switcher::get_param(paramnames::PAR_TYPE pt)
@@ -80,6 +82,57 @@ void const* switcher::get_param(paramnames::PAR_TYPE pt)
     default:
         return 0;
     }
+}
+
+synthmod* switcher::duplicate_module(const char* uname, DUP_IO dupio)
+{
+    switcher* dup = new switcher(uname);
+    if (dupio == AUTO_CONNECT)
+        duplicate_inputs_to(dup);
+    duplicate_params_to(dup);
+
+    char* current_grp = get_groupname(get_username());
+    char* new_grp = get_groupname(uname);
+    bool regroup_wcnt_sigs = false;
+    if (current_grp && new_grp) {
+        if (strcmp(current_grp, new_grp) != 0) {
+            regroup_wcnt_sigs = true;
+        }
+    }
+    synthmodlist* modlist = get_modlist();
+    if (get_verbose())
+        cout << "\n----------\nadding to duplicated switcher " << uname;
+    goto_first();
+    while (wcntsig) {
+        char* sig_grp = get_groupname(wcntsig->get_username());
+        synthmod* sig_to_add = wcntsig;
+        if (sig_grp && regroup_wcnt_sigs == true) {
+            if (strcmp(sig_grp, current_grp) == 0) {
+                char* grpsigname =
+                        set_groupname(new_grp, wcntsig->get_username());
+                synthmod* grpsig =
+                            modlist->get_synthmod_by_name(grpsigname);
+                if (grpsig->get_module_type() ==
+                    synthmodnames::MOD_WCNTSIGNAL) sig_to_add = grpsig;
+                else {
+                    cout << "\nin switcher::duplicate, an attempt to ";
+                    cout << "fetch a wcnt_signal named " << grpsigname;
+                    cout << "resulted in finding ";
+                    cout << grpsig->get_username();
+                    cout << " which is not a wcnt_signal.";
+                }
+                delete [] grpsigname;
+            }
+            delete [] sig_grp;
+        }
+        dup->add_signal((wcnt_signal*)sig_to_add);
+        if (get_verbose())
+            cout << "\nadded " << sig_to_add->get_username();
+        goto_next();
+    }
+    if (get_verbose())
+        cout << "\n----------";
+    return dup;
 }
 
 stockerrs::ERR_TYPE switcher::validate()

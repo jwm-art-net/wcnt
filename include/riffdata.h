@@ -54,6 +54,17 @@ occupies. ie it does not return how many bars the riff occupies, but
 the note length of those bars.
 
 the method requires both elements of the time signature to be passed.
+
+***************
+   wcnt-1.25
+***************
+
+    the note_data* edit_notes(note_data* editnote) method is called
+    by insert_and_position_note whenever the note to be inserted and
+    positioned is an edit note. editnotes still use note_data but are
+    not notes which can be played. They are not stored along with normal
+    notes, but instead have their own seperate linkedlist, editlist.
+
 */
 
 class riffdata : public dobj
@@ -65,6 +76,7 @@ public:
     short get_quartervalue(){ return quarter_val;}
     note_data* insert_and_position_note(note_data*);
     bool delete_note(note_data*);
+    note_data* edit_notes(note_data* editnote);
     note_data* goto_first() {
         return note = (note_data*)
          (note_item = notelist->goto_first())->get_data();
@@ -109,12 +121,17 @@ public:
     bool set_param(paramnames::PAR_TYPE, void*);
     void const* get_param(paramnames::PAR_TYPE);
     dobj const* add_dobj(dobj*);
+    dobj* duplicate_dobj(const char*);
 
 private:
     short quarter_val;
     note_data* note;
     linkedlist* notelist;
+    linkedlist* editlist;
     ll_item* note_item;
+
+    double calc_note_param(note_data::NOTE_OP, double, double);
+
     void create_params();
     static bool done_params;
 };

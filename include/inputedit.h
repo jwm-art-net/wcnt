@@ -22,7 +22,7 @@ class inputedit : public dobj
 public:
     inputedit();
     ~inputedit();
-    void set_modname(const char*);
+    bool set_modname(const char*);
     void set_iostr(const char*);
     const char* get_modname() { return modname; }
     const char* get_iostr() { return iostr;}

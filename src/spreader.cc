@@ -1,5 +1,6 @@
 #ifndef SPREADER_H
 #include "../include/spreader.h"
+#include "../include/groupnames.h"
 
 spreader::spreader(char const* uname) :
  synthmod(synthmodnames::MOD_SPREADER, spreader_count, uname),
@@ -43,16 +44,24 @@ void const* spreader::get_out(outputnames::OUT_TYPE ot)
 
 void const* spreader::set_in(inputnames::IN_TYPE it, void const* o)
 {
-    void const* i = 0;
     switch(it)
     {
     case inputnames::IN_MODULATION:
-        i = in_mod = (double*)o;
-        break;
+        return in_mod = (double*)o;
     default:
-        i = 0;
+        return 0;
     }
-    return i;
+}
+
+void const* spreader::get_in(inputnames::IN_TYPE it)
+{
+    switch(it)
+    {
+    case inputnames::IN_MODULATION:
+        return in_mod;
+    default:
+        return 0;
+    }
 }
 
 bool spreader::set_param(paramnames::PAR_TYPE pt, void const* data)
@@ -86,6 +95,57 @@ void const* spreader::get_param(paramnames::PAR_TYPE pt)
     default:
         return 0;
     }
+}
+
+synthmod* spreader::duplicate_module(const char* uname, DUP_IO dupio)
+{
+    spreader* dup = new spreader(uname);
+    if (dupio == AUTO_CONNECT)
+        duplicate_inputs_to(dup);
+    duplicate_params_to(dup);
+
+    char* current_grp = get_groupname(get_username());
+    char* new_grp = get_groupname(uname);
+    bool regroup_wcnt_sigs = false;
+    if (current_grp && new_grp) {
+        if (strcmp(current_grp, new_grp) != 0) {
+            regroup_wcnt_sigs = true;
+        }
+    }
+    synthmodlist* modlist = get_modlist();
+    if (get_verbose())
+        cout << "\n----------\nadding to duplicated spreader " << uname;
+    goto_first();
+    while (wcntsig) {
+        char* sig_grp = get_groupname(wcntsig->get_username());
+        synthmod* sig_to_add = wcntsig;
+        if (sig_grp && regroup_wcnt_sigs == true) {
+            if (strcmp(sig_grp, current_grp) == 0) {
+                char* grpsigname =
+                        set_groupname(new_grp, wcntsig->get_username());
+                synthmod* grpsig =
+                            modlist->get_synthmod_by_name(grpsigname);
+                if (grpsig->get_module_type() ==
+                    synthmodnames::MOD_WCNTSIGNAL) sig_to_add = grpsig;
+                else {
+                    cout << "\nin spreader::duplicate, an attempt to ";
+                    cout << "fetch a wcnt_signal named " << grpsigname;
+                    cout << "resulted in finding ";
+                    cout << grpsig->get_username();
+                    cout << " which is not a wcnt_signal.";
+                }
+                delete [] grpsigname;
+            }
+            delete [] sig_grp;
+        }
+        dup->add_signal((wcnt_signal*)sig_to_add);
+        if (get_verbose())
+            cout << "\nadded " << sig_to_add->get_username();
+        goto_next();
+    }
+    if (get_verbose())
+        cout << "\n----------";
+    return dup;
 }
 
 stockerrs::ERR_TYPE spreader::validate()
