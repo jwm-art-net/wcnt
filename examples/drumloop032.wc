@@ -1,4 +1,4 @@
-wcnt-1.1z/jwmsynth  // <-- wcnt file identifier
+wcnt-1.1za/jwmsynth  // <-- wcnt file identifier
 //----------------------------------------------------------------------------
 
 header time.wc  // loader header from time.wc and not here.
@@ -29,12 +29,7 @@ time1
 //----------------------------------------------------------------------------
 // first, create some riffs.  riffs are inserted into the sequencer, and 
 // contain note patterns.  riffs are not modules.  The first job of a riff
-// is to define the value you will use for a crotchet, or quarter note in 
-// that riff, the value you use will determine what values you use for the 
-// note lengths and note positions for all notes in the riff.
-
-// currently the wcnt sequencer module is monophonic, one sequencer can play
-// only one note at a time.  And a riff can only handle one note at a time.
+// is to ...blah blah blah.
 
 riff 
 riff1
@@ -1096,4 +1091,4 @@ wcnt_exit_module
 	exit_bar	8
 wcnt_exit_module
 
-wcnt-1.1z/jwmsynth
+wcnt-1.1za/jwmsynth

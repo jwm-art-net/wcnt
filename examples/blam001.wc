@@ -1,4 +1,4 @@
-wcnt-1.1z/jwmsynth
+wcnt-1.1za/jwmsynth
 //----------------------------------------------------------------------------
 
 samplerate 	44100
@@ -642,4 +642,4 @@ wcnt_exit_module
 	exit_bar 17
 wcnt_exit_module
 
-wcnt-1.1z/jwmsynth
+wcnt-1.1za/jwmsynth

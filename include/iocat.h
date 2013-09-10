@@ -5,6 +5,8 @@
 
 #include <string>
 
+using namespace std;
+
 // Used by triggers and switches and states 
 enum STATUS { OFF, ON };
 

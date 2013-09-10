@@ -1,4 +1,4 @@
-wcnt-1.1z/jwmsynth  // <-- wcnt file identifier
+wcnt-1.1za/jwmsynth  // <-- wcnt file identifier
 //----------------------------------------------------------------------------
 
 header time.wc  // loader header from time.wc and not here.
@@ -930,4 +930,4 @@ wcnt_exit_module
 	exit_bar	8
 wcnt_exit_module
 
-wcnt-1.1z/jwmsynth
+wcnt-1.1za/jwmsynth

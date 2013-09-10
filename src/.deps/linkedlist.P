@@ -1,0 +1,3 @@
+linkedlist.o: linkedlist.cc ../include/linkedlist.h
+linkedlist.cc :
+../include/linkedlist.h :

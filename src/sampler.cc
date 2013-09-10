@@ -600,7 +600,7 @@ void sampler::pos_loopend()
 		if (cur_pos < wavstart) cur_pos = wavstart;
 		loop_loaded = 0; // no longer in loop
 	}
-	if (cur_pos != wavstart) cur_pos = zero_search(cur_pos, bisr);
+	if (cur_pos != wavstart) cur_pos = zero_search((unsigned long)cur_pos, bisr);
 	if (loop_fits_in_buffer && loop_loaded)	return;
 	else loop_loaded = 1;
 	if (cur_pos - (WAV_BUFFER_SIZE -2) < 0) buffer_start_pos = 0;
@@ -677,7 +677,7 @@ void sampler::pos_loopbegin()
 		if (cur_pos > wavlength) cur_pos = wavlength;
 		loop_loaded = 0; // no longer in loop.
 	}
-	if (cur_pos != wavlength) cur_pos = zero_search(cur_pos, bisr);
+	if (cur_pos != wavlength) cur_pos = zero_search((unsigned long)cur_pos, bisr);
 	if (loop_fits_in_buffer && loop_loaded) return;
 	else loop_loaded = 1;
 	buffer_start_pos = (unsigned long)cur_pos;
@@ -700,9 +700,9 @@ void sampler::anti_clip_fwd()
 	int abp = (unsigned long)(cur_pos - buffer_start_pos);
 	if (abp + anti_clip_size > WAV_BUFFER_SIZE - 1) { 
 		if (ch == WAV_CH_MONO)
-			wavfile->read_wav_chunk(ac_m_buf, cur_pos, anti_clip_size + 1);
+			wavfile->read_wav_chunk(ac_m_buf, (unsigned long)cur_pos, anti_clip_size + 1);
 		else 
-			wavfile->read_wav_chunk(ac_st_buf, cur_pos, anti_clip_size + 1);
+			wavfile->read_wav_chunk(ac_st_buf,(unsigned long) cur_pos, anti_clip_size + 1);
 	}
 	else {   // get from wav buffer
 		if (ch == WAV_CH_MONO) {

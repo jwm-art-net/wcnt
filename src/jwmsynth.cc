@@ -10,7 +10,7 @@ jwmsynth::jwmsynth(int const argc, char **const argv) :
 	options_count(argc), options(argv)
 {
 	version = new char[5];
-	strcpy(version, "1.1z");
+	strcpy(version, "1.1za");
 	wcnt_id = "wcnt-";
 	wcnt_id += version;
 	wcnt_id += "/jwmsynth";
@@ -234,19 +234,19 @@ jwmsynth::scan_cl_options()
 		string ni = "-ni";
 	string freq = "--freq-info";
 		string fi = "-fi";
-	string or = " or ";
+	string eever = " or ";
 	string commandoptions = author + wcnt + filename;
-	commandoptions += wcnt + verbal + or + v + filename;
+	commandoptions += wcnt + verbal + eever + v + filename;
 	commandoptions += wcnt + header;
-	commandoptions += wcnt + modhelp + or + mh;
-	commandoptions += wcnt + modhelp + or + mh + " modulename";
-	commandoptions += wcnt + dobjhelp + or + dh;
-	commandoptions += wcnt + dobjhelp + or + dh + " dataobjectname";
-	commandoptions += wcnt + inputhelp + or + ih + " inputname"; 
-	commandoptions += wcnt + filename + inputhelp + or + ih + " inputname";
-	commandoptions += wcnt + sampleinfo + or + si + " audiosample.wav";
-	commandoptions += wcnt + note + or + ni + " note name";
-	commandoptions += wcnt + freq + or + fi + " frequency  samplerate";
+	commandoptions += wcnt + modhelp + eever + mh;
+	commandoptions += wcnt + modhelp + eever + mh + " modulename";
+	commandoptions += wcnt + dobjhelp + eever + dh;
+	commandoptions += wcnt + dobjhelp + eever + dh + " dataobjectname";
+	commandoptions += wcnt + inputhelp + eever + ih + " inputname"; 
+	commandoptions += wcnt + filename + inputhelp + eever + ih + " inputname";
+	commandoptions += wcnt + sampleinfo + eever + si + " audiosample.wav";
+	commandoptions += wcnt + note + eever + ni + " note name";
+	commandoptions += wcnt + freq + eever + fi + " frequency  samplerate";
     if (options_count == 1) {
         err_msg = commandoptions + "\n";
         return false;

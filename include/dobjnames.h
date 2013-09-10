@@ -5,6 +5,8 @@
 
 #include <string>
 
+using namespace std;
+
 // if you want to add new dobj types then MAKE SURE you add them 
 // to the CORRECT part of the enum.... and be prepared for hassle!
 

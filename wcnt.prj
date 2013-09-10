@@ -28,7 +28,7 @@ anjuta.compatibility.level=1
 project.name=wcnt
 project.type=GENERIC
 project.target.type=EXECUTABLE
-project.version=1.0001
+project.version=1.1za
 project.author=James W. Morris
 project.source.target=wcnt
 project.has.gettext=0
@@ -41,9 +41,9 @@ project.config.extra.modules.after=
 project.config.blocked=1
 project.config.disable.overwriting=1 1 1 1 1 1 1 1 1 
 
-project.menu.entry=wcnt Version 1.0001
+project.menu.entry=wcnt Version 1.1za
 project.menu.group=Application
-project.menu.comment=wcnt Version 1.0001
+project.menu.comment=wcnt Version 1.1za
 project.menu.icon=
 project.menu.need.terminal=0
 

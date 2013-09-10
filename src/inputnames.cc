@@ -3,6 +3,8 @@
 
 #ifndef BARE_MODULES
 
+using namespace std;
+
 inputnames::inputnames()
 : inname(NULL), incat(NULL)
 {

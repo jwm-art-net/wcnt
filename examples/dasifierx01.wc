@@ -1,0 +1,579 @@
+wcnt-1.1za/jwmsynth
+//----------------------------------------------------------------------------
+
+header time.wc  // loader header from time.wc and not here.
+
+//-----------------------------------------------------------------------------
+// setup the time_map
+time_map
+time1  
+        meter_map
+        meter_map
+	bpm_map	
+	bpm_map	
+time1
+
+//-----------------------------------------------------------------------------
+// first, create some riffs.  riffs are inserted into the sequencer, and 
+// contain note patterns.  riffs are not modules.  The first job of a riff
+// is to define the value you will use for a crotchet, or quarter note in 
+// that riff, the value you use will determine what values you use for the 
+// note lengths and note positions for all notes in the riff.
+
+// currently the wcnt sequencer module is monophonic, one sequencer can play
+// only one note at a time.  
+
+riff 
+riff1
+	quarter_value	16
+	note	name	e0	pos	0	len	7.5	vel	1.0
+	note	name	f0	pos	8	len	2.5	vel	0.8
+//	note	name	c0	pos	12	len	3.5	vel	0.25
+	note	name	f0	pos	16	len	7.5	vel	0.4
+	note	name	c0	pos	24	len	6.5	vel	0.25
+//	note	name	f0	pos	28	len	2.5	vel	0.8
+	note	name	g0	pos	32	len	4.5	vel	0.4
+//	note	name	c0	pos	40	len	2.7	vel	0.35
+	note 	name	d0	pos	44	len	2.5	vel	0.5
+	note	name	f0	pos	48	len	3.5	vel	0.4
+	note	name	g0	pos	52	len	4.5	vel	0.4
+riff1
+
+riff 
+riff2
+	quarter_value	16
+	note	name	e0	pos	0	len	7.5	vel	1.0
+	note	name	c0	pos	8	len	2.5	vel	0.8
+	note	name	f0	pos	12	len	3.5	vel	0.25
+	note	name	g0	pos	16	len	7.5	vel	0.4
+	note	name	g0	pos	24	len	6.5	vel	0.25
+	note	name	f0	pos	28	len	2.5	vel	0.8
+	note	name	g0	pos	32	len	4.5	vel	0.4
+	note	name	d0	pos	40	len	2.7	vel	0.35
+	note 	name	c0	pos	44	len	2.5	vel	0.5
+	note	name	g0	pos	48	len	3.5	vel	0.4
+	note	name	f0	pos	52	len	4.5	vel	0.4
+riff2
+
+sequencer
+seq1
+        track
+		riff_node	
+			riff	riff1	
+			bar	0	transpose	0	start_len	0	end_len	0
+		riff_node	
+			riff	riff1	
+			bar	1	transpose	0	start_len	0	end_len	0
+		riff_node	
+			riff	riff1	
+			bar	2	transpose	0	start_len	0	end_len	0
+		riff_node	
+			riff	riff1	
+			bar	3	transpose	0	start_len	0	end_len	2
+		riff_node	
+			riff	riff1	
+			bar	4	transpose	0	start_len	0	end_len	0
+		riff_node	
+			riff	riff1	
+			bar	5	transpose	0	start_len	0	end_len	0
+		riff_node	
+			riff	riff1	
+			bar	6	transpose	0	start_len	0	end_len	0
+		riff_node	
+			riff	riff2	
+			bar	7	transpose	0	start_len	0	end_len	2
+		riff_node	
+			riff	riff1	
+			bar	8	transpose	0	start_len	0	end_len	0
+		riff_node	
+			riff	riff1	
+			bar	9	transpose	0	start_len	0	end_len	0
+		riff_node	
+			riff	riff1	
+			bar	10	transpose	0	start_len	0	end_len	0
+		riff_node	
+			riff	riff1	
+			bar	11	transpose	0	start_len	0	end_len	2
+		riff_node	
+			riff	riff1	
+			bar	12	transpose	0	start_len	0	end_len	0
+		riff_node	
+			riff	riff1	
+			bar	13	transpose	0	start_len	0	end_len	0
+		riff_node	
+			riff	riff1	
+			bar	14	transpose	0	start_len	0	end_len	0
+		riff_node	
+			riff	riff1	
+			bar	15	transpose	1	start_len	0	end_len	2
+		riff_node	
+			riff	riff1	
+			bar	16	transpose	1	start_len	2	end_len	2
+		riff_node	
+			riff	riff1	
+			bar	17	transpose	1	start_len	2	end_len	2
+		riff_node	
+			riff	riff1	
+			bar	18	transpose	1	start_len	2	end_len	0
+		riff_node	
+			riff	riff1	
+			bar	19	transpose	2	start_len	0	end_len	2
+		riff_node	
+			riff	riff1	
+			bar	20	transpose	2	start_len	2	end_len	2
+		riff_node	
+			riff	riff2	
+			bar	21	transpose	0	start_len	2	end_len	2
+		riff_node	
+			riff	riff1	
+			bar	22	transpose	0	start_len	2	end_len	0
+		riff_node	
+			riff	riff1	
+			bar	23	transpose	1	start_len	0	end_len	0
+		riff_node	
+			riff	riff1	
+			bar	24	transpose	1	start_len	0	end_len	0
+		riff_node	
+			riff	riff1	
+			bar	25	transpose	-1	start_len	0	end_len	0
+		riff_node	
+			riff	riff1	
+			bar	26	transpose	-1	start_len	0	end_len	0
+		riff_node	
+			riff	riff1	
+			bar	27	transpose	2	start_len	0	end_len	0
+		riff_node	
+			riff	riff1	
+			bar	28	transpose	2	start_len	0	end_len	0
+		riff_node	
+			riff	riff2
+			bar	29	transpose	2	start_len	0	end_len	2
+		riff_node	
+			riff	riff1	
+			bar	30	transpose	2	start_len	2	end_len	2
+		riff_node	
+			riff	riff1	
+			bar	31	transpose	-1	start_len	2	end_len	2
+		riff_node	
+			riff	riff1	
+			bar	32	transpose	1	start_len	2	end_len	0
+        track
+	// connect sequencer to keep in sync with time1 time_map module
+        in_bar			time1	out_bar
+        in_bar_trig     	time1	out_bar_trig
+        in_pos_step_size        time1	out_pos_step_size
+	in_beats_per_bar	time1	out_beats_per_bar
+	in_beat_value		time1	out_beat_value
+	// parameters for module: sequencer
+        velocity_response_time  5	// take 5 ms to change velocity
+        hold_notename		off	// ignore hold_notename
+seq1
+
+
+//-----------------------------------------------------------------------------
+clock
+lfoclock1
+	in_freq_mod1	off
+	freq	.2135
+	freq_mod1_size	0.0
+lfoclock1
+
+sine_wave
+lfowave1
+	in_phase_trig	lfoclock1	out_phase_trig
+	in_deg_size	lfoclock1	out_deg_size
+	recycle_mode 		off
+	on_trig_reset_phase	off
+	phase_cycles		1.0
+lfowave1
+
+adsr
+adsr1
+        envelope
+		section	name	attack	
+			ut	1	ul	1.0	
+			lt	1	ll	1.0
+                section	name	decay	
+			ut	60.0	ul	0.8
+			lt	55.0	ll	0.8
+                section	name	release		
+			ut	12.0	ul	0.2
+			lt	10.0	ll	0.2
+                section	name	release		
+			ut	212.0	ul	0.0
+			lt	210.0	ll	0.0
+        envelope
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_off_trig        seq1	out_note_off_trig
+        in_velocity     	seq1	out_velocity
+	up_thresh		1.0
+	lo_thresh		0.5
+        start_level     0.0
+        sustain_state   on
+        zero_retrigger  off
+adsr1
+
+adsr
+peg
+        envelope
+		section	name	attack	
+			ut	1	ul	-1.0	
+			lt	1	ll	-1.0
+                section	name	decay	
+			ut	60.0	ul	-0.8
+			lt	55.0	ll	-0.8
+                section	name	release		
+			ut	12.0	ul	-0.2
+			lt	10.0	ll	-0.2
+                section	name	release		
+			ut	212.0	ul	-0.0
+			lt	210.0	ll	-0.0
+        envelope
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_off_trig        seq1	out_note_off_trig
+        in_velocity     	seq1	out_velocity
+	up_thresh		1.0
+	lo_thresh		0.5
+        start_level     0.0
+        sustain_state   on
+        zero_retrigger  off
+peg
+
+//-----------------------------------------------------------------------------
+//	now the osc_clock which drives the sound heard
+
+osc_clock
+osc1
+	// connect with seq1 sequencer module.
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_slide_trig      seq1	out_note_slide_trig
+        in_frequency    	seq1	out_frequency
+        in_freq_mod1    	off
+        in_freq_mod2    	off
+        octave_offset		-2
+        tuning_semitones        0.05	
+        portamento_time 	0.0
+        freq_mod1_size  	0.0
+        freq_mod2_size  	0.0
+osc1
+
+sine_wave
+swave1										
+	in_phase_trig	osc1	out_phase_trig
+	in_deg_size	osc1	out_deg_size
+	recycle_mode		off
+	on_trig_reset_phase	off 				
+	phase_cycles 1.0					
+swave1
+
+osc_clock
+osc2
+	// connect with seq1 sequencer module.
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_slide_trig      seq1	out_note_slide_trig
+        in_frequency    	seq1	out_frequency
+        in_freq_mod1    	off
+        in_freq_mod2    	off
+        octave_offset		2
+        tuning_semitones        0.025
+        portamento_time 	0.0
+        freq_mod1_size  	0.0
+        freq_mod2_size  	0.0
+osc2
+
+sine_wave
+swave2										
+	in_phase_trig	osc2	out_phase_trig
+	in_deg_size	osc2	out_deg_size
+	recycle_mode		off
+	on_trig_reset_phase	off 				
+	phase_cycles 1.0					
+swave2
+
+osc_clock
+osc3
+	// connect with seq1 sequencer module.
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_slide_trig      seq1	out_note_slide_trig
+        in_frequency    	seq1	out_frequency
+        in_freq_mod1    	off
+        in_freq_mod2    	off
+        octave_offset		0
+        tuning_semitones        0.0
+        portamento_time 	0.0
+        freq_mod1_size  	0.0
+        freq_mod2_size  	0.0
+osc3
+
+sine_wave
+swave3
+	in_phase_trig	osc3	out_phase_trig
+	in_deg_size	osc3	out_deg_size
+	recycle_mode		off
+	on_trig_reset_phase	off 				
+	phase_cycles 1.0					
+swave3
+
+wcnt_signal
+_sw1
+	in_signal	swave1	out_output
+	level	0.25
+_sw1
+
+wcnt_signal
+_sw2
+	in_signal	swave2	out_output
+	level	-0.5
+_sw2
+
+wcnt_signal
+_sw3
+	in_signal	swave3	out_output
+	level	0.75
+_sw3
+
+combiner
+_sw
+// data objects for module combiner
+        signals
+                synthmod
+                        name    _sw1
+                synthmod
+                        name    _sw2
+                synthmod
+                        name    _sw3
+        signals
+        mean_total              off
+_sw
+
+lfo_clock
+cu
+        in_phase_trig   off
+        in_freq_mod1    peg		out_output
+        in_freq_mod2    off
+        freq    	4000.00
+        freq_mod1_size  4
+        freq_mod2_size  0.0
+cu
+
+hp_filter
+s1_step
+        in_signal       	_sw	out_output
+        in_cutoff_degsize       cu	out_deg_size
+        in_feedback     	s2_step	out_wet_output
+        in_feedback_mod 	off
+        feedback        	-0.75
+        feedback_modsize        0.0
+        wet/dry 		1.0
+s1_step
+
+lp_filter
+s2_step
+        in_signal       	s1_step	out_output
+        in_cutoff_degsize       cu	out_deg_size
+        in_feedback     	s2_step	out_wet_output
+        in_feedback_mod 	off
+        feedback        	0.5
+        feedback_modsize        0.0
+        wet/dry 		1.0
+s2_step
+
+
+
+trigger
+.xtrig
+        in_signal               s1_step	out_output
+        attack_time             20
+        attack_level            0.75
+        release_time            30
+        release_level           0.25
+	independant	off
+.xtrig
+
+dynamic
+.xdyn
+
+        amp_map
+                dvertex
+                        sigin_level     0.0	so_ul   0.0	so_ll   0.0
+                dvertex
+                        sigin_level     0.25	so_ul   0.4	so_ll   0.25
+                dvertex
+                        sigin_level     0.35	so_ul   0.5	so_ll   0.35
+                dvertex
+                        sigin_level     0.45	so_ul   0.6	so_ll   0.45
+                dvertex
+                        sigin_level     0.55	so_ul   0.7	so_ll   0.55
+                dvertex
+                        sigin_level     0.65	so_ul   0.8	so_ll   0.65
+                dvertex
+                        sigin_level     0.75	so_ul   0.9	so_ll   0.75
+                dvertex
+                        sigin_level     1.0	so_ul   1.0	so_ll   1.0
+                dvertex
+                        sigin_level     4.0	so_ul   0.2	so_ll   0.2
+        amp_map
+
+        in_signal               s1_step	out_output
+        in_modulation           adsr1	out_output
+
+        up_thresh               1.0
+        lo_thresh               0.25
+        posneg_mirror           on
+	use_ratios		off
+.xdyn
+
+mono_amp
+amp1
+	in_signal	.xdyn	out_output
+	in_amp_eg	adsr1	out_output
+	in_amp_mod	off
+	amplitude	25000	// 32767 is the maximum amplitude
+	amp_mod_size	0.0	// how much influence velocity has in this case
+	clip_level	32767	// the maximum allowed amplitude
+amp1
+
+//-----------------------------------------------------------------------------
+// time to spew it all out
+
+wavfile_out
+wav1
+	in_left		amp1	out_mono
+	in_right	amp1	out_mono
+	in_bar		time1	out_bar
+	in_bar_trig	time1	out_bar_trig
+	filename	dasifierx01.wav
+	start_bar	0
+	end_bar		32
+wav1
+
+// setup how long to process:
+wcnt_exit
+wcnt_exit_module
+        in_bar  time1 out_bar
+	exit_bar 32
+wcnt_exit_module
+
+wcnt-1.1za/jwmsynth
+
+this cak should have been deleted...
+
+dynamic
+dyn_sw1
+// data objects for module dynamic 
+////	key:
+//////		sigin_level - Signal In Level
+//////		so_ul - Signal Out Upper Level,	
+//////		so_ll - Signal Out Lower Level
+        amp_map
+                dvertex	sigin_level	0.0	so_ul   0.0	so_ll   0.0
+		dvertex	sigin_level	0.4	so_ul	0.1	so_ll	0.6
+                dvertex	sigin_level	0.5	so_ul   0.15	so_ll   0.65
+                dvertex	sigin_level	0.6	so_ul   0.25	so_ll   0.85
+                dvertex	sigin_level	0.9	so_ul   0.9	so_ll   0.9
+                dvertex	sigin_level	1.0	so_ul   1.0	so_ll   1.0
+        amp_map
+
+// inputs for dynamic
+        in_signal               s1_step		out_output
+        in_modulation           lfowave1	out_output
+// parameters for dynamic
+        up_thresh               0.333
+        lo_thresh               0.0
+        posneg_mirror           on
+	use_ratios		off
+dyn_sw1
+
+dynamic
+dyn_sw2
+// data objects for module dynamic 
+////	key:
+//////		sigin_level - Signal In Level
+//////		so_ul - Signal Out Upper Level,	
+//////		so_ll - Signal Out Lower Level
+        amp_map
+                dvertex	sigin_level	0.0	so_ul   0.0	so_ll   0.0
+		dvertex	sigin_level	0.4	so_ul	0.1	so_ll	0.75
+                dvertex	sigin_level	0.5	so_ul   0.15	so_ll   0.25
+                dvertex	sigin_level	0.6	so_ul   0.25	so_ll   0.85
+                dvertex	sigin_level	0.8	so_ul   0.8	so_ll   0.45
+                dvertex	sigin_level	0.9	so_ul   0.19	so_ll   0.95
+                dvertex	sigin_level	1.0	so_ul   1.0	so_ll   0.55
+        amp_map
+
+// inputs for dynamic
+        in_signal               s1_step		out_output
+        in_modulation           lfowave1	out_output
+// parameters for dynamic
+        up_thresh               0.666
+        lo_thresh               0.333
+        posneg_mirror           on
+	use_ratios		off
+dyn_sw2
+
+dynamic
+dyn_sw3
+// data objects for module dynamic 
+////	key:
+//////		sigin_level - Signal In Level
+//////		so_ul - Signal Out Upper Level,	
+//////		so_ll - Signal Out Lower Level
+        amp_map
+                dvertex	sigin_level	0.0	so_ul   0.0	so_ll   0.0
+		dvertex	sigin_level	0.4	so_ul	0.1	so_ll	0.75
+		dvertex	sigin_level	0.45	so_ul	0.8	so_ll	0.1
+                dvertex	sigin_level	0.5	so_ul   0.85	so_ll   0.25
+                dvertex	sigin_level	0.6	so_ul   0.25	so_ll   0.85
+                dvertex	sigin_level	0.8	so_ul   0.4	so_ll   0.45
+		dvertex	sigin_level	0.85	so_ul	0.6	so_ll	0.81
+                dvertex	sigin_level	0.9	so_ul   0.19	so_ll   0.95
+                dvertex	sigin_level	0.95	so_ul   0.0	so_ll   0.75
+                dvertex	sigin_level	1.0	so_ul   1.0	so_ll   0.55
+        amp_map
+
+// inputs for dynamic
+        in_signal               s1_step		out_output
+        in_modulation           lfowave1	out_output
+// parameters for dynamic
+        up_thresh               1.000
+        lo_thresh               0.666
+        posneg_mirror           on
+	use_ratios		off
+dyn_sw3
+
+
+wcnt_signal
+dsw1
+	in_signal	dyn_sw1	out_output
+	level	1.0
+dsw1
+
+wcnt_signal
+dsw2
+	in_signal	dyn_sw2	out_output
+	level	1.0
+dsw2
+
+wcnt_signal
+dsw3
+	in_signal	dyn_sw3	out_output
+	level	1.0
+dsw3
+
+spreader
+waveform
+        signals
+                synthmod
+                        name    dsw1
+                synthmod
+                        name    dsw2
+                synthmod
+                        name    dsw3
+        signals
+
+        in_modulation           lfowave1	out_output
+
+        start_level             0.0
+        end_level               1.0
+waveform
+

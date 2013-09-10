@@ -1,0 +1,1549 @@
+wcnt-1.1za/jwmsynth
+//----------------------------------------------------------------------------
+
+//header time.wc  // loader header from time.wc and not here.
+
+samplerate 44100
+bpm 120
+signature 4/4
+
+//----------------------------------------------------------------------------
+// constants
+
+constant	one	value	1.0	one
+
+//-----------------------------------------------------------------------------
+// setup the time_map
+time_map
+time1
+	meter_map
+	meter_map
+	bpm_map
+        bpm_map
+time1
+
+
+//-----------------------------------------------------------------------------
+
+riff 
+riff1
+	quarter_value	4
+	note	
+		name	c1	pos	0	len	5	vel	1.0
+	note	
+		name	e1	pos	6	len	1	vel	1.0
+	note	
+		name	e1	pos	8	len	3	vel	1.0
+	note	
+		name	c1	pos	12	len	1	vel	1.0
+	note	
+		name	e1	pos	14	len	1	vel	1.0
+riff1
+
+riff 
+riff2
+	quarter_value	4
+	note	
+		name	f0	pos	2	len	1	vel	1.0
+	note	
+		name	d0	pos	4	len	4	vel	1.0
+	note	
+		name	e0	pos	12	len	3	vel	1.0
+riff2
+
+
+//-----------------------------------------------------------------------------
+
+sequencer
+seq1
+        track
+		riff_node	
+			riff	riff1	
+			bar	0	transpose	0	start_len	0	end_len	0
+		riff_node	
+			riff	riff1	
+			bar	1	transpose	2	start_len	0	end_len	0
+		riff_node	
+			riff	riff1	
+			bar	2	transpose	4	start_len	0	end_len	0
+		riff_node	
+			riff	riff2	
+			bar	3	transpose	6	start_len	0	end_len	0
+		riff_node	
+			riff	riff1	
+			bar	5	transpose	8	start_len	0	end_len	0
+		riff_node	
+			riff	riff1	
+			bar	6	transpose	10	start_len	0	end_len	0
+		riff_node	
+			riff	riff1	
+			bar	7	transpose	12	start_len	0	end_len	0
+		riff_node	
+			riff	riff2	
+			bar	8	transpose	14	start_len	0	end_len	0
+		riff_node	
+			riff	riff1	
+			bar	10	transpose	16	start_len	0	end_len	0
+		riff_node	
+			riff	riff1	
+			bar	11	transpose	18	start_len	0	end_len	0
+		riff_node	
+			riff	riff1	
+			bar	12	transpose	20	start_len	0	end_len	0
+		riff_node	
+			riff	riff2	
+			bar	13	transpose	22	start_len	0	end_len	0
+		riff_node	
+			riff	riff1	
+			bar	15	transpose	24	start_len	0	end_len	0
+		riff_node	
+			riff	riff1	
+			bar	16	transpose	26	start_len	0	end_len	0
+		riff_node	
+			riff	riff1	
+			bar	17	transpose	28	start_len	0	end_len	0
+		riff_node	
+			riff	riff2	
+			bar	18	transpose	30	start_len	0	end_len	0
+        track
+
+        in_bar			time1	out_bar
+        in_bar_trig     	time1	out_bar_trig
+        in_pos_step_size        time1	out_pos_step_size
+	in_beats_per_bar	time1	out_beats_per_bar
+	in_beat_value		time1	out_beat_value
+
+        velocity_response_time  5	// take 5 ms to change velocity
+        hold_notename		off	// ignore hold_notename
+seq1
+
+//-----------------------------------------------------------------------------
+
+// clock to modulate the frequency clock
+clock
+clockzz
+        in_freq_mod1    moduw1	out_output
+        freq    	0.13216
+        freq_mod1_size  1.5
+clockzz
+
+// unbalanced/positive biased waveform for filter modulation
+
+user_wave
+modzz
+        waveform
+                vertex	ud      0	ul      0
+                        ld      0	ll	0
+                vertex	ud      90	ul      4
+                        ld      90	ll	4
+                vertex	ud      180	ul      0
+                        ld      180	ll	0
+                vertex	ud      270	ul      -0.1
+                        ld      270	ll	-0.1
+                vertex	ud      360	ul      0
+                        ld      360	ll	0
+        waveform
+
+        in_phase_trig           clockzz	out_phase_trig
+        in_deg_size             clockzz	out_deg_size
+        in_level_mod            off
+        in_time_mod             off
+
+        recycle_mode            off
+        zero_retrigger          off
+modzz
+
+user_wave
+modzy
+        waveform
+                vertex	ud      0	ul      0
+                        ld      0	ll	0
+                vertex	ud      90	ul      2.5
+                        ld      90	ll	2.5
+                vertex	ud      180	ul      0
+                        ld      180	ll	0
+                vertex	ud      270	ul      -1
+                        ld      270	ll	-1
+                vertex	ud      360	ul      0
+                        ld      360	ll	0
+        waveform
+
+        in_phase_trig           clockzz	out_phase_trig
+        in_deg_size             clockzz	out_deg_size
+        in_level_mod            off
+        in_time_mod             off
+
+        recycle_mode            off
+        zero_retrigger          off
+modzy
+
+//-----------------------------------------------------------------------------
+
+osc_clock
+osc1a
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_slide_trig      seq1	out_note_slide_trig
+        in_frequency    	seq1	out_frequency
+        in_freq_mod1    	off
+        in_freq_mod2    	swave2j		out_output
+
+        octave_offset		-2
+        tuning_semitones        0.0
+        portamento_time 	10.0
+        freq_mod1_size  	1.5
+        freq_mod2_size  	3.5
+osc1a
+
+osc_clock
+osc1b
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_slide_trig      seq1	out_note_slide_trig
+        in_frequency    	seq1	out_frequency
+        in_freq_mod1    	off
+        in_freq_mod2    	swave2a		out_output
+
+        octave_offset		-1
+        tuning_semitones        0.02
+        portamento_time 	10.0
+        freq_mod1_size  	1.5
+        freq_mod2_size  	3.5
+osc1b
+
+osc_clock
+osc1c
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_slide_trig      seq1	out_note_slide_trig
+        in_frequency    	seq1	out_frequency
+        in_freq_mod1    	off
+        in_freq_mod2    	swave2b		out_output
+
+        octave_offset		-2
+        tuning_semitones        0.01
+        portamento_time 	10.0
+        freq_mod1_size  	1.5
+        freq_mod2_size  	4.5
+osc1c
+
+osc_clock
+osc1d
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_slide_trig      seq1	out_note_slide_trig
+        in_frequency    	seq1	out_frequency
+        in_freq_mod1    	off
+        in_freq_mod2    	swave2c		out_output
+
+        octave_offset		-1
+        tuning_semitones        0.1
+        portamento_time 	10.0
+        freq_mod1_size  	1.5
+        freq_mod2_size  	3.5
+osc1d
+
+osc_clock
+osc1e
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_slide_trig      seq1	out_note_slide_trig
+        in_frequency    	seq1	out_frequency
+        in_freq_mod1    	off
+        in_freq_mod2    	swave2d		out_output
+
+        octave_offset		-2
+        tuning_semitones        0.12
+        portamento_time 	10.0
+        freq_mod1_size  	1.5
+        freq_mod2_size  	3.5
+osc1e
+
+osc_clock
+osc1f
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_slide_trig      seq1	out_note_slide_trig
+        in_frequency    	seq1	out_frequency
+        in_freq_mod1    	off
+        in_freq_mod2    	swave2e		out_output
+
+        octave_offset		-1
+        tuning_semitones        0.24
+        portamento_time 	10.0
+        freq_mod1_size  	1.5
+        freq_mod2_size  	3.5
+osc1f
+
+osc_clock
+osc1g
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_slide_trig      seq1	out_note_slide_trig
+        in_frequency    	seq1	out_frequency
+        in_freq_mod1    	off
+        in_freq_mod2    	swave2f		out_output
+
+        octave_offset		-2
+        tuning_semitones        0.07
+        portamento_time 	10.0
+        freq_mod1_size  	1.5
+        freq_mod2_size  	1.5
+osc1g
+
+osc_clock
+osc1h
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_slide_trig      seq1	out_note_slide_trig
+        in_frequency    	seq1	out_frequency
+        in_freq_mod1    	off
+        in_freq_mod2    	swave2g		out_output
+
+        octave_offset		-1
+        tuning_semitones        0.0197
+        portamento_time 	10.0
+        freq_mod1_size  	1.5
+        freq_mod2_size  	1.5
+osc1h
+
+osc_clock
+osc1i
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_slide_trig      seq1	out_note_slide_trig
+        in_frequency    	seq1	out_frequency
+        in_freq_mod1    	off
+        in_freq_mod2    	swave2h		out_output
+
+        octave_offset		-2
+        tuning_semitones        0.34
+        portamento_time 	10.0
+        freq_mod1_size  	1.5
+        freq_mod2_size  	3.5
+osc1i
+
+osc_clock
+osc1j
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_slide_trig      seq1	out_note_slide_trig
+        in_frequency    	seq1	out_frequency
+        in_freq_mod1    	off
+        in_freq_mod2    	swave2i		out_output
+
+        octave_offset		-1
+        tuning_semitones        0.1
+        portamento_time 	10.0
+        freq_mod1_size  	1.5
+        freq_mod2_size  	3.5
+osc1j
+
+osc_clock
+osc2a
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_slide_trig      seq1	out_note_slide_trig
+        in_frequency    	seq1	out_frequency
+        in_freq_mod1    	off
+        in_freq_mod2    	swave1j		out_output
+
+        octave_offset		-1
+        tuning_semitones        0.0
+        portamento_time 	10.0
+        freq_mod1_size  	1.5
+        freq_mod2_size  	1.5
+osc2a
+
+osc_clock
+osc2b
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_slide_trig      seq1	out_note_slide_trig
+        in_frequency    	seq1	out_frequency
+        in_freq_mod1    	off
+        in_freq_mod2    	swave1a		out_output
+
+        octave_offset		-2
+        tuning_semitones        0.02
+        portamento_time 	10.0
+        freq_mod1_size  	1.5
+        freq_mod2_size  	1.5
+osc2b
+
+osc_clock
+osc2c
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_slide_trig      seq1	out_note_slide_trig
+        in_frequency    	seq1	out_frequency
+        in_freq_mod1    	off
+        in_freq_mod2    	swave1b		out_output
+
+        octave_offset		-1
+        tuning_semitones        0.02
+        portamento_time 	10.0
+        freq_mod1_size  	1.5
+        freq_mod2_size  	3.5
+osc2c
+
+osc_clock
+osc2d
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_slide_trig      seq1	out_note_slide_trig
+        in_frequency    	seq1	out_frequency
+        in_freq_mod1    	off
+        in_freq_mod2    	swave1c		out_output
+
+        octave_offset		-2
+        tuning_semitones        0.0
+        portamento_time 	10.0
+        freq_mod1_size  	1.5
+        freq_mod2_size  	2.5
+osc2d
+
+osc_clock
+osc2e
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_slide_trig      seq1	out_note_slide_trig
+        in_frequency    	seq1	out_frequency
+        in_freq_mod1    	off
+        in_freq_mod2    	swave1d		out_output
+
+        octave_offset		-1
+        tuning_semitones        0.02
+        portamento_time 	10.0
+        freq_mod1_size  	1.5
+        freq_mod2_size  	1.85
+osc2e
+
+osc_clock
+osc2f
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_slide_trig      seq1	out_note_slide_trig
+        in_frequency    	seq1	out_frequency
+        in_freq_mod1    	off
+        in_freq_mod2    	swave1e		out_output
+
+        octave_offset		-2
+        tuning_semitones        0.0
+        portamento_time 	10.0
+        freq_mod1_size  	1.5
+        freq_mod2_size  	1.05
+osc2f
+
+osc_clock
+osc2g
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_slide_trig      seq1	out_note_slide_trig
+        in_frequency    	seq1	out_frequency
+        in_freq_mod1    	off
+        in_freq_mod2    	swave1f		out_output
+
+        octave_offset		-1
+        tuning_semitones        0.0
+        portamento_time 	10.0
+        freq_mod1_size  	1.5
+        freq_mod2_size  	2.55
+osc2g
+
+osc_clock
+osc2h
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_slide_trig      seq1	out_note_slide_trig
+        in_frequency    	seq1	out_frequency
+        in_freq_mod1    	off
+        in_freq_mod2    	swave1g		out_output
+
+        octave_offset		-2
+        tuning_semitones        0.01
+        portamento_time 	10.0
+        freq_mod1_size  	1.5
+        freq_mod2_size  	1.115
+osc2h
+
+osc_clock
+osc2i
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_slide_trig      seq1	out_note_slide_trig
+        in_frequency    	seq1	out_frequency
+        in_freq_mod1    	off
+        in_freq_mod2    	swave1h		out_output
+
+        octave_offset		-1
+        tuning_semitones        0.0
+        portamento_time 	10.0
+        freq_mod1_size  	1.5
+        freq_mod2_size  	1.115
+osc2i
+
+osc_clock
+osc2j
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_slide_trig      seq1	out_note_slide_trig
+        in_frequency    	seq1	out_frequency
+        in_freq_mod1    	off
+        in_freq_mod2    	swave1i		out_output
+
+        octave_offset		-2
+        tuning_semitones        0.01
+        portamento_time 	10.0
+        freq_mod1_size  	1.5
+        freq_mod2_size  	1.95
+osc2j
+
+
+sine_wave
+swave1a										
+	in_phase_trig	osc1a	out_phase_trig
+	in_deg_size	osc1a	out_deg_size
+	recycle_mode		off
+	on_trig_reset_phase	off 				
+	phase_cycles 1.0					
+swave1a
+
+sine_wave
+swave1b									
+	in_phase_trig	osc1b	out_phase_trig
+	in_deg_size	osc1b	out_deg_size
+	recycle_mode		off
+	on_trig_reset_phase	off 				
+	phase_cycles 1.0					
+swave1b
+
+sine_wave
+swave1c										
+	in_phase_trig	osc1c	out_phase_trig
+	in_deg_size	osc1c	out_deg_size
+	recycle_mode		off
+	on_trig_reset_phase	off 				
+	phase_cycles 1.0					
+swave1c
+
+sine_wave
+swave1d										
+	in_phase_trig	osc1d	out_phase_trig
+	in_deg_size	osc1d	out_deg_size
+	recycle_mode		off
+	on_trig_reset_phase	off 				
+	phase_cycles 1.0					
+swave1d
+
+sine_wave
+swave1e
+	in_phase_trig	osc1e	out_phase_trig
+	in_deg_size	osc1e	out_deg_size
+	recycle_mode		off
+	on_trig_reset_phase	off 				
+	phase_cycles 1.0					
+swave1e
+
+sine_wave
+swave1f										
+	in_phase_trig	osc1f	out_phase_trig
+	in_deg_size	osc1f	out_deg_size
+	recycle_mode		off
+	on_trig_reset_phase	off 				
+	phase_cycles 1.0					
+swave1f
+
+sine_wave
+swave1g									
+	in_phase_trig	osc1g	out_phase_trig
+	in_deg_size	osc1g	out_deg_size
+	recycle_mode		off
+	on_trig_reset_phase	off 				
+	phase_cycles 1.0					
+swave1g
+
+sine_wave
+swave1h
+	in_phase_trig	osc1h	out_phase_trig
+	in_deg_size	osc1h	out_deg_size
+	recycle_mode		off
+	on_trig_reset_phase	off 				
+	phase_cycles 1.0					
+swave1h
+
+sine_wave
+swave1i										
+	in_phase_trig	osc1i	out_phase_trig
+	in_deg_size	osc1i	out_deg_size
+	recycle_mode		off
+	on_trig_reset_phase	off 				
+	phase_cycles 1.0					
+swave1i
+
+sine_wave
+swave1j
+	in_phase_trig	osc1j	out_phase_trig
+	in_deg_size	osc1j	out_deg_size
+	recycle_mode		off
+	on_trig_reset_phase	off 				
+	phase_cycles 1.0					
+swave1j
+
+sine_wave
+swave2a										
+	in_phase_trig	osc2a	out_phase_trig
+	in_deg_size	osc2a	out_deg_size
+	recycle_mode		off
+	on_trig_reset_phase	off 				
+	phase_cycles 1.0					
+swave2a
+
+sine_wave
+swave2b									
+	in_phase_trig	osc2b	out_phase_trig
+	in_deg_size	osc2b	out_deg_size
+	recycle_mode		off
+	on_trig_reset_phase	off 				
+	phase_cycles 1.0					
+swave2b
+
+sine_wave
+swave2c										
+	in_phase_trig	osc2c	out_phase_trig
+	in_deg_size	osc2c	out_deg_size
+	recycle_mode		off
+	on_trig_reset_phase	off 				
+	phase_cycles 1.0					
+swave2c
+
+sine_wave
+swave2d										
+	in_phase_trig	osc2d	out_phase_trig
+	in_deg_size	osc2d	out_deg_size
+	recycle_mode		off
+	on_trig_reset_phase	off 				
+	phase_cycles 1.0					
+swave2d
+
+sine_wave
+swave2e
+	in_phase_trig	osc2e	out_phase_trig
+	in_deg_size	osc2e	out_deg_size
+	recycle_mode		off
+	on_trig_reset_phase	off 				
+	phase_cycles 1.0					
+swave2e
+
+sine_wave
+swave2f										
+	in_phase_trig	osc2f	out_phase_trig
+	in_deg_size	osc2f	out_deg_size
+	recycle_mode		off
+	on_trig_reset_phase	off 				
+	phase_cycles 1.0					
+swave2f
+
+sine_wave
+swave2g									
+	in_phase_trig	osc2g	out_phase_trig
+	in_deg_size	osc2g	out_deg_size
+	recycle_mode		off
+	on_trig_reset_phase	off 				
+	phase_cycles 1.0					
+swave2g
+
+sine_wave
+swave2h
+	in_phase_trig	osc2h	out_phase_trig
+	in_deg_size	osc2h	out_deg_size
+	recycle_mode		off
+	on_trig_reset_phase	off 				
+	phase_cycles 1.0					
+swave2h
+
+sine_wave
+swave2i										
+	in_phase_trig	osc2i	out_phase_trig
+	in_deg_size	osc2i	out_deg_size
+	recycle_mode		off
+	on_trig_reset_phase	off 				
+	phase_cycles 1.0					
+swave2i
+
+sine_wave
+swave2j
+	in_phase_trig	osc2j	out_phase_trig
+	in_deg_size	osc2j	out_deg_size
+	recycle_mode		off
+	on_trig_reset_phase	off 				
+	phase_cycles 1.0					
+swave2j
+
+
+adsr
+adsr1a
+        envelope
+		section	name	attack	
+			ut	15	ul	0.15
+			lt	15	ll	0.15
+
+                section	name	attack	
+			ut	15.0	ul	1.0
+			lt	20.0	ll	1.0
+
+                section	name	decay	
+			ut	12.0	ul	0.9
+			lt	12.0	ll	0.9
+
+		section	name	decay	
+			ut	15.0	ul	0.6
+			lt	15.0	ll	0.6
+
+                section	name	release	
+			ut	22.0	ul	0.25
+			lt	22.0	ll	0.25
+                section	name	release	
+			ut	113.0	ul	0.0
+			lt	113.0	ll	0.0
+        envelope
+
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_off_trig        seq1	out_note_off_trig
+        in_velocity     	seq1	out_velocity 
+
+	up_thresh	1.0	// max velocity for triggering lower envelope
+	lo_thresh	0.5	// min velocity for triggering upper envelope
+        start_level     0.0
+        sustain_state   on	// hold volume level from decay section until note_off
+        zero_retrigger  off
+adsr1a
+
+adsr
+adsr1b
+        envelope
+		section	name	attack	
+			ut	25	ul	0.1
+			lt	31	ll	0.1
+
+                section	name	attack	
+			ut	13.0	ul	1.0	
+			lt	16.0	ll	1.0
+
+                section	name	decay	
+			ut	12.0	ul	0.9
+			lt	12.0	ll	0.9
+
+		section	name	decay	
+			ut	15.0	ul	0.6
+			lt	15.0	ll	0.6
+
+                section	name	release	
+			ut	32.0	ul	0.25
+			lt	32.0	ll	0.25
+                section	name	release	
+			ut	73.0	ul	0.0
+			lt	83.0	ll	0.0
+        envelope
+
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_off_trig        seq1	out_note_off_trig
+        in_velocity     	seq1	out_velocity 
+
+	up_thresh	1.0	// max velocity for triggering lower envelope
+	lo_thresh	0.5	// min velocity for triggering upper envelope
+        start_level     0.0
+        sustain_state   on	// hold volume level from decay section until note_off
+        zero_retrigger  off
+adsr1b
+
+adsr
+adsr1c
+        envelope
+		section	name	attack	
+			ut	37	ul	0.1
+			lt	38	ll	0.1
+
+                section	name	attack	
+			ut	15.0	ul	1.0	
+			lt	16.0	ll	1.0
+
+                section	name	decay	
+			ut	12.0	ul	0.9
+			lt	12.0	ll	0.9
+
+		section	name	decay	
+			ut	11.0	ul	0.6
+			lt	11.0	ll	0.6
+
+                section	name	release	
+			ut	42.0	ul	0.25
+			lt	43.0	ll	0.25
+                section	name	release	
+			ut	53.0	ul	0.0
+			lt	58.0	ll	0.0
+        envelope
+
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_off_trig        seq1	out_note_off_trig
+        in_velocity     	seq1	out_velocity 
+
+	up_thresh	1.0	// max velocity for triggering lower envelope
+	lo_thresh	0.5	// min velocity for triggering upper envelope
+        start_level     0.0
+        sustain_state   on	// hold volume level from decay section until note_off
+        zero_retrigger  off
+adsr1c
+
+adsr
+adsr1d
+        envelope
+		section	name	attack	
+			ut	48	ul	0.1
+			lt	46	ll	0.1
+
+                section	name	attack	
+			ut	13.0	ul	1.0	
+			lt	16.0	ll	1.0
+
+                section	name	decay	
+			ut	12.0	ul	0.9
+			lt	12.0	ll	0.9
+
+		section	name	decay	
+			ut	11.0	ul	0.6
+			lt	15.0	ll	0.6
+                section	name	release	
+			ut	62.0	ul	0.25
+			lt	60.0	ll	0.25
+                section	name	release	
+			ut	33.0	ul	0.0
+			lt	37.0	ll	0.0
+        envelope
+
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_off_trig        seq1	out_note_off_trig
+        in_velocity     	seq1	out_velocity 
+
+	up_thresh	1.0	// max velocity for triggering lower envelope
+	lo_thresh	0.5	// min velocity for triggering upper envelope
+        start_level     0.0
+        sustain_state   on	// hold volume level from decay section until note_off
+        zero_retrigger  off
+adsr1d
+
+adsr
+adsr_tone
+        envelope
+		section	name	attack	
+			ut	75	ul	-0.2
+			lt	75	ll	-0.2
+
+                section	name	decay	
+			ut	90.0	ul	-0.5
+			lt	95.0	ll	-0.5
+                section	name	release	
+			ut	102.0	ul	-0.7
+			lt	121.0	ll	-0.7
+                section	name	release	
+			ut	220.0	ul	-1.0
+			lt	215.0	ll	-1.0
+        envelope
+
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_off_trig        seq1	out_note_off_trig
+        in_velocity     	seq1	out_velocity 
+
+	up_thresh	1.0	// max velocity for triggering lower envelope
+	lo_thresh	0.5	// min velocity for triggering upper envelope
+        start_level     1.0
+        sustain_state   off	// hold volume level from decay section until note_off
+        zero_retrigger  on
+adsr_tone
+
+//-----------------------------------------------------------------------------
+
+multiplier
+msc1a
+	in_signal	swave1a	out_output
+	in_modifier	adsr1a	out_output
+msc1a
+
+multiplier
+msc1b
+	in_signal	swave1b	out_output
+	in_modifier	adsr1b	out_output
+msc1b
+
+multiplier
+msc1c
+	in_signal	swave1c	out_output
+	in_modifier	adsr1c	out_output
+msc1c
+
+multiplier
+msc1d
+	in_signal	swave1d	out_output
+	in_modifier	adsr1d	out_output
+msc1d
+
+multiplier
+msc1e
+	in_signal	swave1e	out_output
+	in_modifier	adsr1a	out_output
+msc1e
+
+multiplier
+msc1f
+	in_signal	swave1f	out_output
+	in_modifier	adsr1b	out_output
+msc1f
+
+multiplier
+msc1g
+	in_signal	swave1g	out_output
+	in_modifier	adsr1c	out_output
+msc1g
+
+multiplier
+msc1h
+	in_signal	swave1h	out_output
+	in_modifier	adsr1d	out_output
+msc1h
+
+multiplier
+msc1i
+	in_signal	swave1i	out_output
+	in_modifier	adsr1a	out_output
+msc1i
+
+multiplier
+msc1j
+	in_signal	swave1j	out_output
+	in_modifier	adsr1b	out_output
+msc1j
+
+multiplier
+msc2a
+	in_signal	swave2a	out_output
+	in_modifier	adsr1b	out_output
+msc2a
+
+multiplier
+msc2b
+	in_signal	swave2b	out_output
+	in_modifier	adsr1c	out_output
+msc2b
+
+multiplier
+msc2c
+	in_signal	swave2c	out_output
+	in_modifier	adsr1d	out_output
+msc2c
+
+multiplier
+msc2d
+	in_signal	swave2d	out_output
+	in_modifier	adsr1a	out_output
+msc2d
+
+multiplier
+msc2e
+	in_signal	swave2e	out_output
+	in_modifier	adsr1b	out_output
+msc2e
+
+multiplier
+msc2f
+	in_signal	swave2f	out_output
+	in_modifier	adsr1c	out_output
+msc2f
+
+multiplier
+msc2g
+	in_signal	swave2g	out_output
+	in_modifier	adsr1d	out_output
+msc2g
+
+multiplier
+msc2h
+	in_signal	swave2h	out_output
+	in_modifier	adsr1a	out_output
+msc2h
+
+multiplier
+msc2i
+	in_signal	swave2i	out_output
+	in_modifier	adsr1b	out_output
+msc2i
+
+multiplier
+msc2j
+	in_signal	swave2j	out_output
+	in_modifier	adsr1c	out_output
+msc2j
+
+echo
+echo1a
+        in_signal       msc1a	out_output
+        in_gain_mod     off
+        in_feedback     echo2b	out_wet_output
+        in_feedback_mod off
+        delay_time      181.0
+        gain    	1.0
+        gain_modsize    0.0
+        feedback        0.75
+        feedback_modsize 0.0
+        wet/dry 	0.5
+echo1a
+
+echo
+echo1b
+        in_signal       msc1b	out_output
+        in_gain_mod     off
+        in_feedback     echo2c	out_wet_output
+        in_feedback_mod off
+        delay_time      191.0
+        gain    	1.0
+        gain_modsize    0.0
+        feedback        0.75
+        feedback_modsize 0.0
+        wet/dry 	0.5
+echo1b
+
+echo
+echo1c
+        in_signal       msc1c	out_output
+        in_gain_mod     off
+        in_feedback     echo2d	out_wet_output
+        in_feedback_mod off
+        delay_time      201.0
+        gain    	1.0
+        gain_modsize    0.0
+        feedback        0.75
+        feedback_modsize 0.0
+        wet/dry 	0.5
+echo1c
+
+echo
+echo1d
+        in_signal       msc1d	out_output
+        in_gain_mod     off
+        in_feedback     echo2e	out_wet_output
+        in_feedback_mod off
+        delay_time      241.0
+        gain    	1.0
+        gain_modsize    0.0
+        feedback        0.75
+        feedback_modsize 0.0
+        wet/dry 	0.5
+echo1d
+
+echo
+echo1e
+        in_signal       msc1e	out_output
+        in_gain_mod     off
+        in_feedback     echo2f	out_wet_output
+        in_feedback_mod off
+        delay_time      231.0
+        gain    	1.0
+        gain_modsize    0.0
+        feedback        0.75
+        feedback_modsize 0.0
+        wet/dry 	0.5
+echo1e
+
+echo
+echo1f
+        in_signal       msc1f	out_output
+        in_gain_mod     off
+        in_feedback     echo2g	out_wet_output
+        in_feedback_mod off
+        delay_time      331.0
+        gain    	1.0
+        gain_modsize    0.0
+        feedback        0.75
+        feedback_modsize 0.0
+        wet/dry 	0.5
+echo1f
+
+echo
+echo1g
+        in_signal       msc1g	out_output
+        in_gain_mod     off
+        in_feedback     echo2h	out_wet_output
+        in_feedback_mod off
+        delay_time      271.0
+        gain    	1.0
+        gain_modsize    0.0
+        feedback        0.75
+        feedback_modsize 0.0
+        wet/dry 	0.5
+echo1g
+
+echo
+echo1h
+        in_signal       msc1h	out_output
+        in_gain_mod     off
+        in_feedback     echo2i	out_wet_output
+        in_feedback_mod off
+        delay_time      421.0
+        gain    	1.0
+        gain_modsize    0.0
+        feedback        0.75
+        feedback_modsize 0.0
+        wet/dry 	0.5
+echo1h
+
+echo
+echo1i
+        in_signal       msc1i	out_output
+        in_gain_mod     off
+        in_feedback     echo2j	out_wet_output
+        in_feedback_mod off
+        delay_time      431.0
+        gain    	1.0
+        gain_modsize    0.0
+        feedback        0.75
+        feedback_modsize 0.0
+        wet/dry 	0.5
+echo1i
+
+
+echo
+echo1j
+        in_signal       msc1j	out_output
+        in_gain_mod     off
+        in_feedback     echo2a	out_wet_output
+        in_feedback_mod off
+        delay_time      571.0
+        gain    	1.0
+        gain_modsize    0.0
+        feedback        0.75
+        feedback_modsize 0.0
+        wet/dry 	0.5
+echo1j
+
+echo
+echo2a
+        in_signal       msc2a	out_output
+        in_gain_mod     off
+        in_feedback     echo1b	out_wet_output
+        in_feedback_mod off
+        delay_time      181.0
+        gain    	1.0
+        gain_modsize    0.0
+        feedback        0.75
+        feedback_modsize 0.0
+        wet/dry 	0.5
+echo2a
+
+echo
+echo2b
+        in_signal       msc2b	out_output
+        in_gain_mod     off
+        in_feedback     echo1c	out_wet_output
+        in_feedback_mod off
+        delay_time      191.0
+        gain    	1.0
+        gain_modsize    0.0
+        feedback        0.75
+        feedback_modsize 0.0
+        wet/dry 	0.5
+echo2b
+
+echo
+echo2c
+        in_signal       msc2c	out_output
+        in_gain_mod     off
+        in_feedback     echo1d	out_wet_output
+        in_feedback_mod off
+        delay_time      201.0
+        gain    	1.0
+        gain_modsize    0.0
+        feedback        0.75
+        feedback_modsize 0.0
+        wet/dry 	0.5
+echo2c
+
+echo
+echo2d
+        in_signal       msc2d	out_output
+        in_gain_mod     off
+        in_feedback     echo1e	out_wet_output
+        in_feedback_mod off
+        delay_time      241.0
+        gain    	1.0
+        gain_modsize    0.0
+        feedback        0.75
+        feedback_modsize 0.0
+        wet/dry 	0.5
+echo2d
+
+echo
+echo2e
+        in_signal       msc2e	out_output
+        in_gain_mod     off
+        in_feedback     echo1f	out_wet_output
+        in_feedback_mod off
+        delay_time      231.0
+        gain    	1.0
+        gain_modsize    0.0
+        feedback        0.75
+        feedback_modsize 0.0
+        wet/dry 	0.5
+echo2e
+
+echo
+echo2f
+        in_signal       msc2f	out_output
+        in_gain_mod     off
+        in_feedback     echo1g	out_wet_output
+        in_feedback_mod off
+        delay_time      331.0
+        gain    	1.0
+        gain_modsize    0.0
+        feedback        0.75
+        feedback_modsize 0.0
+        wet/dry 	0.5
+echo2f
+
+echo
+echo2g
+        in_signal       msc2g	out_output
+        in_gain_mod     off
+        in_feedback     echo1h	out_wet_output
+        in_feedback_mod off
+        delay_time      271.0
+        gain    	1.0
+        gain_modsize    0.0
+        feedback        0.75
+        feedback_modsize 0.0
+        wet/dry 	0.5
+echo2g
+
+echo
+echo2h
+        in_signal       msc2h	out_output
+        in_gain_mod     off
+        in_feedback     echo1i	out_wet_output
+        in_feedback_mod off
+        delay_time      421.0
+        gain    	1.0
+        gain_modsize    0.0
+        feedback        0.75
+        feedback_modsize 0.0
+        wet/dry 	0.5
+echo2h
+
+echo
+echo2i
+        in_signal       msc2i	out_output
+        in_gain_mod     off
+        in_feedback     echo1j	out_wet_output
+        in_feedback_mod off
+        delay_time      431.0
+        gain    	1.0
+        gain_modsize    0.0
+        feedback        0.75
+        feedback_modsize 0.0
+        wet/dry 	0.5
+echo2i
+
+
+echo
+echo2j
+        in_signal       msc2j	out_output
+        in_gain_mod     off
+        in_feedback     echo1a	out_wet_output
+        in_feedback_mod off
+        delay_time      571.0
+        gain    	1.0
+        gain_modsize    0.0
+        feedback        0.75
+        feedback_modsize 0.0
+        wet/dry 	0.5
+echo2j
+
+
+
+//-----------------------------------------------------------------------------
+// create clocks to run filters with
+
+clock
+clocksixy
+        in_freq_mod1    off
+        freq    	0.72216
+        freq_mod1_size  4.0
+clocksixy
+
+sine_wave
+modsixy
+        in_phase_trig   	clocksixy	out_phase_trig
+        in_deg_size     	clocksixy	out_deg_size
+        recycle_mode    	off
+        on_trig_reset_phase     off
+        phase_cycles    	1.0
+modsixy
+
+// clock to modulate the frequency clock
+clock
+clock1
+        in_freq_mod1    modsixy	out_output
+        freq    	0.873216
+        freq_mod1_size  2.0
+clock1
+
+// unbalanced/positive biased waveform for filter modulation
+
+user_wave
+moduw1
+        waveform
+                vertex	ud      0	ul      0
+                        ld      0	ll	0
+                vertex	ud      90	ul      0.25
+                        ld      90	ll	0.25
+                vertex	ud      180	ul      0
+                        ld      180	ll	0
+                vertex	ud      270	ul      -1.0
+                        ld      270	ll	-1.0
+                vertex	ud      360	ul      0
+                        ld      360	ll	0
+        waveform
+
+        in_phase_trig           clock1	out_phase_trig
+        in_deg_size             clock1	out_deg_size
+        in_level_mod            off
+        in_time_mod             off
+
+        recycle_mode            off
+        zero_retrigger          off
+moduw1
+
+sine_wave
+modsin1
+        in_phase_trig   	clock1	out_phase_trig
+        in_deg_size     	clock1	out_deg_size
+        recycle_mode    	off
+        on_trig_reset_phase     off
+        phase_cycles    	1.0
+modsin1
+
+lfo_clock
+clock2
+        in_phase_trig           off
+        in_freq_mod1		moduw1	out_output
+        in_freq_mod2            off
+
+        freq    	4000
+        freq_mod1_size  8.0
+        freq_mod2_size	0.0
+clock2
+
+sine_wave
+modsin2
+        in_phase_trig   	clock2	out_phase_trig
+        in_deg_size     	clock2	out_deg_size
+        recycle_mode    	off
+        on_trig_reset_phase     off
+        phase_cycles    	1.0
+modsin2
+
+//-----------------------------------------------------------------------------
+// amplifying time!
+
+wcnt_signal
+.ws1a
+	in_signal	echo1a	out_output
+	level	0.2
+.ws1a
+
+wcnt_signal
+.ws1b
+	in_signal	echo1b	out_output
+	level	0.2
+.ws1b
+
+wcnt_signal
+.ws1c
+	in_signal	echo1c	out_output
+	level	0.2
+.ws1c
+
+wcnt_signal
+.ws1d
+	in_signal	echo1d	out_output
+	level	0.2
+.ws1d
+
+wcnt_signal
+.ws1e
+	in_signal	echo1e	out_output
+	level	0.2
+.ws1e
+
+wcnt_signal
+.ws1f
+	in_signal	echo1f	out_output
+	level	0.2
+.ws1f
+
+wcnt_signal
+.ws1g
+	in_signal	echo1g	out_output
+	level	0.2
+.ws1g
+
+wcnt_signal
+.ws1h
+	in_signal	echo1h	out_output
+	level	0.2
+.ws1h
+
+wcnt_signal
+.ws1i
+	in_signal	echo1i	out_output
+	level	0.2
+.ws1i
+
+wcnt_signal
+.ws1j
+	in_signal	echo1j	out_output
+	level	0.2
+.ws1j
+
+wcnt_signal
+.ws2a
+	in_signal	echo2a	out_output
+	level	0.2
+.ws2a
+
+wcnt_signal
+.ws2b
+	in_signal	echo2b	out_output
+	level	0.2
+.ws2b
+
+wcnt_signal
+.ws2c
+	in_signal	echo2c	out_output
+	level	0.2
+.ws2c
+
+wcnt_signal
+.ws2d
+	in_signal	echo2d	out_output
+	level	0.2
+.ws2d
+
+wcnt_signal
+.ws2e
+	in_signal	echo2e	out_output
+	level	0.2
+.ws2e
+
+wcnt_signal
+.ws2f
+	in_signal	echo2f	out_output
+	level	0.2
+.ws2f
+
+wcnt_signal
+.ws2g
+	in_signal	echo2g	out_output
+	level	0.2
+.ws2g
+
+wcnt_signal
+.ws2h
+	in_signal	echo2h	out_output
+	level	0.2
+.ws2h
+
+wcnt_signal
+.ws2i
+	in_signal	echo2i	out_output
+	level	0.2
+.ws2i
+
+wcnt_signal
+.ws2j
+	in_signal	echo2j	out_output
+	level	0.2
+.ws2j
+
+combiner
+.xmix_l
+        signals
+                synthmod
+                        name    .ws1a
+                synthmod
+                        name    .ws1b
+                synthmod
+                        name    .ws1c
+                synthmod
+                        name    .ws1d
+                synthmod
+                        name    .ws1e
+                synthmod
+                        name    .ws1f
+                synthmod
+                        name    .ws1g
+                synthmod
+                        name    .ws1h
+                synthmod
+                        name    .ws1i
+                synthmod
+                        name    .ws1j
+        signals
+
+        mean_total              off
+.xmix_l
+
+combiner
+.xmix_r
+        signals
+                synthmod
+                        name    .ws2a
+                synthmod
+                        name    .ws2b
+                synthmod
+                        name    .ws2c
+                synthmod
+                        name    .ws2d
+                synthmod
+                        name    .ws2e
+                synthmod
+                        name    .ws2f
+                synthmod
+                        name    .ws2g
+                synthmod
+                        name    .ws2h
+                synthmod
+                        name    .ws2i
+                synthmod
+                        name    .ws2j
+        signals
+
+        mean_total              off
+.xmix_r
+
+stereo_amp
+amp1
+	in_l		.xmix_l	out_output
+	in_r		.xmix_r	out_output
+	in_amp_eg	one	out_output
+	in_amp_mod	seq1	out_velocity_ramp
+	left_amplitude	20000	// 32767 is the maximum amplitude
+	right_amplitude	20000	// 32767 is the maximum amplitude
+	amp_mod_size	0.95	// how much influence velocity has in this case
+	clip_level	32767	// the maximum allowed amplitude
+amp1
+
+//-----------------------------------------------------------------------------
+// time to spew it all out
+
+wavfile_out
+wav1
+	in_left		amp1	out_left
+	in_right	amp1	out_right
+	in_bar		time1	out_bar
+	in_bar_trig	time1	out_bar_trig
+	filename	okiyal03.wav
+	start_bar	0
+	end_bar		21
+wav1
+
+//-----------------------------------------------------------------------------
+// time to quit
+
+wcnt_exit
+wcnt_exit_module
+        in_bar  time1 out_bar
+	exit_bar 21
+wcnt_exit_module
+
+//-----------------------------------------------------------------------------
+wcnt-1.1za/jwmsynth
+
+everything past above line *is* ignored

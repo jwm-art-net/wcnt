@@ -1,4 +1,12 @@
 --------------------------------------------------------------
+Monday May 17 2004
+
+wcnt-1.1za
+
+Made changes so wcnt will compile with gcc-3.2 without errors.
+Removed -wtraditional warning message.
+
+--------------------------------------------------------------
 Monday April 05 2004
 
 wcnt-1.1z
