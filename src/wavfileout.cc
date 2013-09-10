@@ -179,12 +179,12 @@ WAV_STATUS wavfileout::open_wav()
 
 void wavfileout::close_wav()
 {
-    write_wav_header(sample_total - 1);
     if (status == WAV_STATUS_OPEN) {
+        write_wav_header(sample_total - 1);
         cout << "\nFinished writing to " << filename;
         fclose(fileout);
+        status = WAV_STATUS_OK;
     }
-    status = WAV_STATUS_OK;
 }
 
 void wavfileout::run()

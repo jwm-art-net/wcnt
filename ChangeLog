@@ -1,4 +1,13 @@
 --------------------------------------------------------------
+Saturday 7th October 2006
+
+FIXES:
+    * peak_detecter no longer has a problem when long
+      processing times cause its peak counter to wrap around 
+      and start displaying its message again, for just a few
+      more extra times.
+
+--------------------------------------------------------------
 Friday 6th October 2006
 
 FIXES:
@@ -20,11 +29,8 @@ FIXES:
       then a warning is issued. see test_wcs/combinertest.wc.
 
     * switcher fixed for combiner problem above
-
     * spreader fixed for combiner problem above
-
     * mixer fixed for combiner problem above
-
     * trig_switcher fixed for combiner problem above
 
 --------------------------------------------------------------

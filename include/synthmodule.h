@@ -118,6 +118,11 @@ public:
     static moddobjlist* get_moddobjlist(){ return mdobjlist;}
     static fxsparamlist* get_fxsparamlist(){ return fxsparlist;}
     static STATUS const* get_abort_status(){ return &abort_status;}
+    #ifdef SHOW_MOD_COUNT
+    static long get_created_count(){ return mods_created_count;}
+    static long get_destroyed_count(){ return mods_destroyed_count;}
+    static long get_max_count(){ return mods_max_count;}
+    #endif
 protected:
     static string* err_msg;
     void force_abort(){ abort_status = ON; } // abort now!
@@ -143,6 +148,13 @@ private:
     static fxsparamlist* fxsparlist;
     static bool verbose;
     static STATUS abort_status;
+    #ifdef SHOW_MOD_COUNT
+    static long mods_created_count;
+    static long mods_destroyed_count;
+    static long mods_count;
+    static long mods_max_count;
+    #endif
+
 };
 
 #endif

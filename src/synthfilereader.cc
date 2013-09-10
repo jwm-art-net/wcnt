@@ -48,9 +48,8 @@ synthfilereader::synthfilereader(WC_FILE_TYPE ft) :
 
 synthfilereader::~synthfilereader()
 {
-    if (wc_filename) {
+    if (wc_filename)
         delete [] wc_filename;
-    }
     synthfile->close();
     delete synthfile;
     delete buff;
@@ -80,6 +79,7 @@ void synthfilereader::set_wc_filename(char const* filename)
         wc_filename = 0;
     }
     const char* path = synthmod::get_path();
+    // I still have no idea about what is wrong here
     if (wc_file_type == WC_MAIN_FILE
         || *filename == '/' || path == NULL)
     {

@@ -21,11 +21,21 @@ synthmod::synthmod(
 {
     username = new char[strlen(uname) + 1];
     strcpy(username, uname);
+    #ifdef SHOW_MOD_COUNT
+    mods_created_count++;
+    mods_count++;
+    mods_max_count = (mods_count > mods_max_count)
+                        ? mods_count : mods_max_count;
+    #endif
 }
 
 synthmod::~synthmod()
 {
     delete [] username;
+    #ifdef SHOW_MOD_COUNT
+    mods_destroyed_count++;
+    mods_count--;
+    #endif
 }
 
 
@@ -184,4 +194,11 @@ connectorlist* synthmod::connectlist = 0;
 moddobjlist* synthmod::mdobjlist = 0;
 fxsparamlist* synthmod::fxsparlist = 0;
 STATUS synthmod::abort_status = OFF; // don't force an abort just yet.
+#ifdef SHOW_MOD_COUNT
+long synthmod::mods_created_count = 0;
+long synthmod::mods_destroyed_count = 0;
+long synthmod::mods_count = 0;
+long synthmod::mods_max_count = 0;
+#endif
+
 #endif

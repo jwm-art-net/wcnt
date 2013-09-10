@@ -14,9 +14,9 @@ DEFS=-O2 -fomit-frame-pointer -ffast-math
 # add -DDEBUG_STRLIST_PAR to show what synthfileread::read_string_list_param
 #						has encountered.
 # add -DCRAZY_SAMPLER if you want to see far too much information.
-
+# add -DSHOW_MOD_COUNT to show count of modules created/destroyed/max
 # general debugging defs
-#DEFS=-g3 -fno-inline -DSHOW_LL_ITEM_COUNT -DSHOW_DOBJ_COUNT
+#DEFS=-g3 -fno-inline -DSHOW_LL_ITEM_COUNT -DSHOW_DOBJ_COUNT -DSHOW_MOD_COUNT
 
 # the rest:
 PROG=wcnt

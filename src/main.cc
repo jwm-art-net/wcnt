@@ -55,6 +55,11 @@ void show_counts()
     cout << "\ndata objects destroyed:" << dobj::get_destroyed_count();
     cout << "\nmost data objects at one time:" << dobj::get_max_count();
     #endif
+    #ifdef SHOW_MOD_COUNT
+    cout << "\nsynthmods created:  " << synthmod::get_created_count();
+    cout << "\nsynthmods destroyed:" << synthmod::get_destroyed_count();
+    cout << "\nmost synthmods at one time:" << synthmod::get_max_count();
+    #endif
     #ifdef SHOW_NOTE_COUNT
     cout << "\nnotes created:  " << note_data::get_created_count();
     cout << "\nnotes destroyed:" << note_data::get_destroyed_count();

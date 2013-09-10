@@ -60,7 +60,7 @@ private:
     STATUS force_abort;
     short max_peaks;
     short peak_count;
-    double insig;
+    bool check; // prevent wrap-around of peak_count.
     static int peak_detector_count;
     void create_params();
     static bool done_params;
