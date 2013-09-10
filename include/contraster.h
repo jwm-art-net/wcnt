@@ -7,8 +7,8 @@
 // within the range (-1 ~ 1) it mirrors it until it is. 
 // something like that.
 //
-// yeah, um, right, it does n't appear to be as simple as I've made it!
-// but it does something to the sound so why not keep it?
+// yeah, um, right, my version does not do quite the same thing, but it
+// does something to the sound which is enough in my book....
 
 #include "synthmodule.h"
 
@@ -46,6 +46,7 @@ class contraster : public synthmod
 	// virtual funcs
 	void run();
 	void init();
+	bool validate();
 	#ifndef BARE_MODULES
 	void const* get_out(outputnames::OUT_TYPE);
 	void const* set_in(inputnames::IN_TYPE, void const*);
@@ -66,7 +67,7 @@ class contraster : public synthmod
  	double output;
 	static int contraster_count;
  	#ifndef BARE_MODULES
-	static void create_params();
+	void create_params();
 	static bool done_params;
 	#endif
 };

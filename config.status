@@ -274,9 +274,9 @@ CEOF
 ${ac_dA}PACKAGE_MENU_DIR${ac_dB}PACKAGE_MENU_DIR${ac_dC}"/usr/local/share/wcnt"${ac_dD}
 ${ac_uA}PACKAGE_MENU_DIR${ac_uB}PACKAGE_MENU_DIR${ac_uC}"/usr/local/share/wcnt"${ac_uD}
 ${ac_eA}PACKAGE_MENU_DIR${ac_eB}PACKAGE_MENU_DIR${ac_eC}"/usr/local/share/wcnt"${ac_eD}
-${ac_dA}PACKAGE_SOURCE_DIR${ac_dB}PACKAGE_SOURCE_DIR${ac_dC}"/home/james/Programming/wcnt-1.1001"${ac_dD}
-${ac_uA}PACKAGE_SOURCE_DIR${ac_uB}PACKAGE_SOURCE_DIR${ac_uC}"/home/james/Programming/wcnt-1.1001"${ac_uD}
-${ac_eA}PACKAGE_SOURCE_DIR${ac_eB}PACKAGE_SOURCE_DIR${ac_eC}"/home/james/Programming/wcnt-1.1001"${ac_eD}
+${ac_dA}PACKAGE_SOURCE_DIR${ac_dB}PACKAGE_SOURCE_DIR${ac_dC}"/home/james/Programming/wcnt"${ac_dD}
+${ac_uA}PACKAGE_SOURCE_DIR${ac_uB}PACKAGE_SOURCE_DIR${ac_uC}"/home/james/Programming/wcnt"${ac_uD}
+${ac_eA}PACKAGE_SOURCE_DIR${ac_eB}PACKAGE_SOURCE_DIR${ac_eC}"/home/james/Programming/wcnt"${ac_eD}
 s%^[ 	]*#[ 	]*undef[ 	][ 	]*[a-zA-Z_][a-zA-Z_0-9]*%/* & */%
 CEOF
   sed -f conftest.frag conftest.in > conftest.out

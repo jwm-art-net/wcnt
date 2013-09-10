@@ -8,6 +8,10 @@
 #include "modoutputslist.h"
 #include "modinputslist.h"
 #include "modparamlist.h"
+#include "dobjparamlist.h"
+#include "dobjdobjlist.h"
+#include "dobjmod.h"
+#include "dobjlist.h"
 #endif
 
 class stereomixer: public synthmod
@@ -31,11 +35,13 @@ class stereomixer: public synthmod
 	double get_master_level(){ return master_level;}
 	// virtual funcs
 	void run();
-	void init(){};
+	bool validate();
 	#ifndef BARE_MODULES
 	void const* get_out(outputnames::OUT_TYPE);
-	void const* set_in(inputnames::IN_TYPE, void const*);
 	bool set_param(paramnames::PAR_TYPE, void const*);
+	// stereo_channel is not a dobj, but a synthmod, so a dobj wrapper class 
+	// - dobjmod, is passed which contains a pointer to the stereo_channel
+	dobj* add_dobj(dobj*); 
 	#endif
  private:
 	short out_left;
@@ -48,8 +54,10 @@ class stereomixer: public synthmod
 	stereo_channel* chan;
 	static int stereomixer_count;
  	#ifndef BARE_MODULES
-	static void create_params();
 	static bool done_params;
+	void create_params();
+	static bool done_moddobj;
+	void create_moddobj();
  	#endif
 };
 

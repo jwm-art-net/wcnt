@@ -25,7 +25,6 @@ wavfileout::wavfileout(string uname) :
 	header = new wavheader(audio_channels, audio_samplerate, audio_bitrate);
 	status = WAV_STATUS_OK;
 	wavfileout_count++;
-	validate();
 	#ifndef BARE_MODULES
 	create_params();
 	#endif
@@ -117,6 +116,29 @@ bool wavfileout::set_param(paramnames::PAR_TYPE pt, void const* data)
 	}
 	return retv;
 }
+
+bool wavfileout::validate()
+{
+	if (start_bar < 0) {
+		*err_msg = "\n" + get_paramnames()->get_name(paramnames::PAR_START_BAR);
+		*err_msg += " must not be negative";
+		invalidate();
+	}
+	if (end_bar <= start_bar) {
+		*err_msg += "\n" + get_paramnames()->get_name(paramnames::PAR_END_BAR);
+		*err_msg += " must be more than value of " +
+			get_paramnames()->get_name(paramnames::PAR_START_BAR);
+		invalidate();
+	}
+	if (status != WAV_STATUS_OPEN) {
+		*err_msg += "\ncould not open ";
+		*err_msg += filename;
+		*err_msg += " for writing";
+		invalidate();
+	}
+	return is_valid();
+}
+
 #endif // BARE_MODULES
 
 WAV_STATUS wavfileout::open_wav(char * fname)

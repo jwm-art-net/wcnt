@@ -1,6 +1,5 @@
 #ifndef SAMPLER_H
 #include "../include/sampler.h"
-#include <iostream>
 
 sampler::sampler(string uname) : 
 	synthmod(synthmodnames::MOD_SAMPLER, sampler_count, uname),
@@ -10,11 +9,11 @@ sampler::sampler(string uname) :
 	jump_mode(JUMP_PLAY_DIR), min_start_pos(0), max_start_pos(0), 
 	loop_begin(0), loop_end(0), loop_is_offset(OFF), loop_mode(LOOP_OFF), 
 	loop_bi_offset(0), anti_clip_size(0), ac_each_end(OFF), search_range(0), 
-	root_deg_size(1), deg_size_amount(0), playdir(PLAY_FWD), 
+	deg_size_amount(0), root_deg_size(1.0), playdir(PLAY_FWD), 
 	acplaydir(PLAY_FWD), mono_buffer(0), ac_m_buf(0), st_buffer(0), 
-	ac_st_buf(0), buffer_start_pos(0), buff_pos(0), wavstart(1), 
-	wavlength(0), wavstbi(0), wavlenbi(0), cur_pos(0), cp_step(0), cp_ratio(0),
-	sr_ratio(1), bp_midpoint(0), start_pos(0), startpos_span(0), loopstart(0), 
+	ac_st_buf(0), buffer_start_pos(0), buff_pos(0), wavstart(1), wavlength(0), 
+	wavstbi(0), wavlenbi(0), cur_pos(0), cp_step(0), cp_ratio(0), sr_ratio(1), 
+	bp_midpoint(0), start_pos(0), startpos_span(0), loopstart(0), 
 	loopfinish(0), loop_fits_in_buffer(0), loop_loaded(0), do_ac(OFF),
 	ac_cur_pos(0), ac_midpoint(0), ac_buf_pos(0), ac_buf_start_pos(0),
 	ac_step(0), ac_size(0),	ac_out_left(0), ac_out_right(0), ch(WAV_CH_UNKNOWN)
@@ -31,7 +30,6 @@ sampler::sampler(string uname) :
 	get_inputlist()->add_input(this, inputnames::IN_START_POS_MOD);
 	get_inputlist()->add_input(this, inputnames::IN_DEG_SIZE);
 	#endif // BARE_MODULES
-	set_root_note("c0");
 	sampler_count++;
 	validate();
 	#ifndef BARE_MODULES
@@ -115,8 +113,16 @@ bool sampler::set_param(paramnames::PAR_TYPE pt, void const* data)
 	switch(pt)
 	{
 		case paramnames::PAR_WAVFILEIN:
-			set_wavfilein((wavfilein*)data); //note: pass pointer
-			retv = true;
+			if (((dobj*)data)->get_object_type() != dobjnames::SDEF_WAVFILEIN) 
+			{
+				*err_msg = "\n" + *((dobj*)data)->get_username();
+				*err_msg += " is not a wavfilein";
+				retv = false;
+			} 
+			else {
+				set_wavfilein((wavfilein*)data); //note: pass pointer
+				retv = true;
+			}
 			break;
 		case paramnames::PAR_PLAY_DIR:
 			set_play_dir(*(PLAY_DIR*)data);
@@ -170,18 +176,6 @@ bool sampler::set_param(paramnames::PAR_TYPE pt, void const* data)
 			set_zero_search_range(*(short*)data);
 			retv = true;
 			break;
-		case paramnames::PAR_ROOT_NOTE:
-			set_root_note((char*)data); //note: pass pointer
-			retv = true;
-			break;
-		case paramnames::PAR_ROOT_FREQ:
-			set_root_freq(*(double*)data);
-			retv = true;
-			break;
-		case paramnames::PAR_ROOT_DEGSIZE:
-			set_root_degsize(*(double*)data);
-			retv = true;
-			break;
 		case paramnames::PAR_DEGSIZE_AMOUNT:
 			set_degsize_amount(*(double*)data);
 			retv = true;
@@ -223,13 +217,7 @@ void sampler::set_wavfilein(wavfilein * wi)
 			}
 		}
 	}
-}
-
-void sampler::set_root_note(char* rn)
-{
-	double rds = note_to_step(rn, 0);
-	if (rds != 0.00)
-		root_deg_size = rds;
+	root_deg_size = wavfile->get_root_deg_size();
 }
 
 void sampler::set_anti_clip_samples(short acs)
@@ -379,11 +367,11 @@ void sampler::run()
 			if ((ac_buf_pos > MAX_ANTI_CLIP_SIZE - 1 || ac_buf_pos < 0) 
 				&& do_ac == ON) 
 			{
-				cout << "\nanti_clipping out of bounds of AC buffer:" << ac_buf_pos;
+				cout << "\nanti_clipping out of bounds of AC buffer " << ac_buf_pos;
+				cout << "\nmodule responsible " << *get_username();
 				cout << "\nPlease report this to james@jwm-art.net specifying";
-				cout << "\nlength, format, samplerate of wavfile, and copy ";
-				cout << "\nthe definition of this module '" << get_username();
-				cout << "'\ninto the report.  Thanks.";
+				cout << "\nlength, format, samplerate of wavfile, or the sample";
+				cout << "\nitself, and include the wc file responsible. Thanks.";
 				do_ac = OFF;
 			}
 		}
@@ -422,14 +410,12 @@ void sampler::run()
 				ac_cur_pos += ac_cpstep;
 				double ac_buf_posf = ac_cur_pos - ac_buf_start_pos;
 				ac_buf_pos = (int)ac_buf_posf;
-		//		cout << "\tacbp " << ac_buf_posf;
 				ac_size = ac_buf_posf / anti_clip_size;
 			}
 			else {
 				ac_cur_pos -= ac_cpstep;
 				double ac_buf_posf = ac_cur_pos - ac_buf_start_pos;
 				ac_buf_pos = (int)ac_buf_posf;
-			//	cout << "\tacsz-acbp = " << anti_clip_size-ac_buf_posf;
 				ac_size = (double)(anti_clip_size - ac_buf_posf) 
 					/ anti_clip_size;
 			}
@@ -670,7 +656,8 @@ void sampler::pos_wavstart()
 void sampler::pos_loopbegin()
 {	// playdir == PLAY_REV
 	out_loop_trig = ON;
-	if (anti_clip_size > 0) {anti_clip_rev();cout << "\nac_rev loop_begin";}
+	if (anti_clip_size > 0) 
+		anti_clip_rev();
 	if (loop_mode == LOOP_REV) {
 		cur_pos = loopfinish;
 		if (loop_fits_in_buffer && loop_loaded) return;
@@ -968,34 +955,41 @@ int sampler::sampler_count = 0;
 
 #ifndef BARE_MODULES
 bool sampler::done_params = false;
-wavfilein_list* sampler::wavfilelist = 0;
 
 void sampler::create_params()
 {
 	if (done_params == true)
 		return;
-	get_paramlist()->add_param(synthmodnames::MOD_SAMPLER, paramnames::PAR_WAVFILEIN);
-	get_paramlist()->add_param(synthmodnames::MOD_SAMPLER, paramnames::PAR_PLAY_DIR);
-	get_paramlist()->add_param(synthmodnames::MOD_SAMPLER, paramnames::PAR_PLAY_MODE);
-	get_paramlist()->add_param(synthmodnames::MOD_SAMPLER, paramnames::PAR_JUMP_MODE);
-	get_paramlist()->add_param(synthmodnames::MOD_SAMPLER, paramnames::PAR_START_POS_MIN);
-	get_paramlist()->add_param(synthmodnames::MOD_SAMPLER, paramnames::PAR_START_POS_MAX);
-	get_paramlist()->add_param(synthmodnames::MOD_SAMPLER, paramnames::PAR_LOOP_MODE);
-	get_paramlist()->add_param(synthmodnames::MOD_SAMPLER, paramnames::PAR_LOOP_BEGIN);
-	get_paramlist()->add_param(synthmodnames::MOD_SAMPLER, paramnames::PAR_LOOP_END);
-	get_paramlist()->add_param(synthmodnames::MOD_SAMPLER, paramnames::PAR_LOOP_IS_OFFSET);
-	get_paramlist()->add_param(synthmodnames::MOD_SAMPLER, paramnames::PAR_LOOP_BI_OFFSET);
-	get_paramlist()->add_param(synthmodnames::MOD_SAMPLER, paramnames::PAR_ANTI_CLIP);
-	get_paramlist()->add_param(synthmodnames::MOD_SAMPLER, paramnames::PAR_AC_EACH_END);
-	get_paramlist()->add_param(synthmodnames::MOD_SAMPLER, paramnames::PAR_ZERO_SEARCH_RANGE);
-	get_paramlist()->add_param(synthmodnames::MOD_SAMPLER, paramnames::PAR_ROOT_NOTE);
-// get_paramlist()->add_param(synthmodnames::MOD_SAMPLER, paramnames::PAR_ROOT_FREQ);
-// get_paramlist()->add_param(synthmodnames::MOD_SAMPLER, paramnames::PAR_ROOT_DEGSIZE);
-// the two parameters commented out because I've not implemented the ability
-// for the user to choose which of them to use.  If they were not commented 
-// out the user would be forced to specify root note, root frequency, and
-// root "degree step size per sample"  root note is most usefull me thinks.
-	get_paramlist()->add_param(synthmodnames::MOD_SAMPLER, paramnames::PAR_DEGSIZE_AMOUNT);
+	get_paramlist()->
+		add_param(synthmodnames::MOD_SAMPLER, paramnames::PAR_WAVFILEIN);
+	get_paramlist()->
+		add_param(synthmodnames::MOD_SAMPLER, paramnames::PAR_PLAY_DIR);
+	get_paramlist()->
+		add_param(synthmodnames::MOD_SAMPLER, paramnames::PAR_PLAY_MODE);
+	get_paramlist()->
+		add_param(synthmodnames::MOD_SAMPLER, paramnames::PAR_JUMP_MODE);
+	get_paramlist()->
+		add_param(synthmodnames::MOD_SAMPLER, paramnames::PAR_START_POS_MIN);
+	get_paramlist()->
+		add_param(synthmodnames::MOD_SAMPLER, paramnames::PAR_START_POS_MAX);
+	get_paramlist()->
+		add_param(synthmodnames::MOD_SAMPLER, paramnames::PAR_LOOP_MODE);
+	get_paramlist()->
+		add_param(synthmodnames::MOD_SAMPLER, paramnames::PAR_LOOP_BEGIN);
+	get_paramlist()->
+		add_param(synthmodnames::MOD_SAMPLER, paramnames::PAR_LOOP_END);
+	get_paramlist()->
+		add_param(synthmodnames::MOD_SAMPLER, paramnames::PAR_LOOP_IS_OFFSET);
+	get_paramlist()->
+		add_param(synthmodnames::MOD_SAMPLER, paramnames::PAR_LOOP_BI_OFFSET);
+	get_paramlist()->
+		add_param(synthmodnames::MOD_SAMPLER, paramnames::PAR_ANTI_CLIP);
+	get_paramlist()->
+		add_param(synthmodnames::MOD_SAMPLER, paramnames::PAR_AC_EACH_END);
+	get_paramlist()->
+		add_param(synthmodnames::MOD_SAMPLER, paramnames::PAR_ZERO_SEARCH_RANGE);
+	get_paramlist()->
+		add_param(synthmodnames::MOD_SAMPLER, paramnames::PAR_DEGSIZE_AMOUNT);
 	done_params = true;
 }
 #endif

@@ -11,7 +11,6 @@ randomtrigger::randomtrigger(string uname)
 	get_inputlist()->add_input(this, inputnames::IN_TRIG);
 	#endif
 	randomtrigger_count++;
-	validate();
 	#ifndef BARE_MODULES
 	create_params();
 	#endif
@@ -77,6 +76,12 @@ bool randomtrigger::set_param(paramnames::PAR_TYPE pt, void const* data)
 	}
 	return retv;
 }
+
+bool randomtrigger::validate()
+{
+	return is_valid();
+}
+
 #endif // BARE_MODULES
 
 void randomtrigger::run() 

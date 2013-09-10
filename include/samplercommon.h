@@ -2,6 +2,7 @@
 #define SAMPLERCOMMON_H
 
 #include "wavfileheader.h" // to get WAV_BUFFER_SIZE
+#include "wavfilein.h"
 
 // max size of anti clip buffer
 #define MAX_ANTI_CLIP_SIZE (WAV_BUFFER_SIZE / 2)
@@ -36,8 +37,5 @@ enum JUMP_DIR{ JUMP_PLAY_DIR, JUMP_LOOP_DIR };
 
 // loop modes:
 enum LOOP_MODE{ LOOP_OFF, LOOP_FWD, LOOP_REV, LOOP_BI };
-
-// PLAY_JUMP_PLAYDIR
-// PLAY_JUMP_LOOPDIR
 
 #endif

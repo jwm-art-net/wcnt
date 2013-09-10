@@ -13,7 +13,6 @@ delay::delay(string uname) :
 	get_inputlist()->add_input(this, inputnames::IN_GAIN_MOD);
 	#endif
 	delay_count++;
-	validate();
 	#ifndef BARE_MODULES
 	create_params();
 	#endif
@@ -31,9 +30,9 @@ delay::~delay()
 
 void delay::init()
 {
-	filterarraymax = (short)((delay_time * audio_samplerate) / 1000);
+	filterarraymax = (long)((delay_time * audio_samplerate) / 1000);
 	filter = new double[filterarraymax];
-	for (int i = 0; i < filterarraymax; i++) filter[i] = 0;
+	for (long i = 0; i < filterarraymax; i++) filter[i] = 0;
 	fpos = filterarraymax - 1;
 }
 
@@ -96,6 +95,36 @@ bool delay::set_param(paramnames::PAR_TYPE pt, void const* data)
 	}
 	return retv;
 }
+
+bool delay::validate()
+{
+	if (delay_time < 0) {
+		*err_msg = "\n" 
+			+ get_paramnames()->get_name(paramnames::PAR_DELAY_TIME) +
+			" less than zero";
+		invalidate();
+	}
+	if (gain > 1.0 || gain < -1.0) {
+		*err_msg = "\n" 
+			+ get_paramnames()->get_name(paramnames::PAR_GAIN) +
+			" out of range (-1.0 to +1.0)";
+		invalidate();
+	}
+	if (gain_modsize < 0.0 || gain_modsize > 1.0) {
+		*err_msg += "\n" +
+			get_paramnames()->get_name(paramnames::PAR_GAIN_MODSIZE) +
+			" out of range (0.0 to +1.0)";
+		invalidate();
+	}
+	if (wetdry < 0.0 || wetdry > 1.0) {
+		*err_msg += "\n" +
+			get_paramnames()->get_name(paramnames::PAR_WETDRY) +
+			" out of range (0.0 to +1.0)";
+		invalidate();
+	}
+	return is_valid();
+}
+
 #endif // BARE_MODULES
 
 void delay::run() 

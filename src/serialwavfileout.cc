@@ -1,6 +1,5 @@
 #ifndef SERIALWAVFILEOUT_H
 #include "../include/serialwavfileout.h"
-#include <iostream>
 
 serialwavfileout::serialwavfileout(string uname) :
 	synthmod(synthmodnames::MOD_SERIALWAVFILEOUT, serialwavfileout_count, uname), 
@@ -25,7 +24,6 @@ serialwavfileout::serialwavfileout(string uname) :
 	}
 	header = new wavheader(audio_channels, audio_samplerate, audio_bitrate);
 	serialwavfileout_count++;
-	validate();
 	#ifndef BARE_MODULES
 	create_params();
 	#endif
@@ -118,6 +116,25 @@ bool serialwavfileout::set_param(paramnames::PAR_TYPE pt, void const* data)
 	}
 	return retv;
 }
+
+bool serialwavfileout::validate()
+{
+	if (start_bar < 0) {
+		*err_msg = "\n" + get_paramnames()->get_name(paramnames::PAR_START_BAR);
+		*err_msg += " should be non-negative value";
+		invalidate();
+	}
+	if (end_bar <= start_bar) {
+		*err_msg += "\n" + get_paramnames()->get_name(paramnames::PAR_END_BAR);
+		*err_msg += " should be greater than value of " +
+			get_paramnames()->get_name(paramnames::PAR_START_BAR);
+		invalidate();
+	}
+	// won't bother validating basename, if blank, 
+	// output names will be 0001.wav etc
+	return is_valid();
+}
+
 #endif // BARE_MODULES
 
 void serialwavfileout::set_wav_basename(char * fname)
@@ -236,9 +253,9 @@ void serialwavfileout::create_params()
 {
 	if (done_params == true)
 		return;
-	get_paramlist()->add_param(synthmodnames::MOD_WAVFILEOUT, paramnames::PAR_WAV_BASENAME);
-	get_paramlist()->add_param(synthmodnames::MOD_WAVFILEOUT, paramnames::PAR_START_BAR);
-	get_paramlist()->add_param(synthmodnames::MOD_WAVFILEOUT, paramnames::PAR_END_BAR);
+	get_paramlist()->add_param(synthmodnames::MOD_SERIALWAVFILEOUT, paramnames::PAR_WAV_BASENAME);
+	get_paramlist()->add_param(synthmodnames::MOD_SERIALWAVFILEOUT, paramnames::PAR_START_BAR);
+	get_paramlist()->add_param(synthmodnames::MOD_SERIALWAVFILEOUT, paramnames::PAR_END_BAR);
 	done_params = true;
 }
 #endif

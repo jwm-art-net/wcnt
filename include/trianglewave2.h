@@ -23,18 +23,17 @@ class triangle_wave2 : public synthmod
 	double const* get_output(){ return &output;}
 	STATUS const* get_play_state(){ return &play_state;}
 	void set_normal_frequency(double nf){ normal_freq = nf;}
-	void set_normal_mod_range_hi(double nhi){ norm_mod_hi = nhi;}
-	void set_normal_mod_range_lo(double nlo){ norm_mod_lo = nlo;}
+	void set_normal_modsize(double nhi){ norm_modsize = nhi;}
 	void set_recycle_mode(STATUS rm){ recycle = rm;}
 	void set_zero_retrigger_mode(STATUS zrm){ zero_retrigger_mode = zrm; }
 	double get_normal_frequency(){ return normal_freq;}
-	double get_normal_mod_range_hi(){ return norm_mod_hi;}
-	double get_normal_mod_range_lo(){ return norm_mod_lo;}
+	double get_normal_modsize(){ return norm_modsize;}
 	STATUS get_recycle_mode(){ return recycle;}
 	STATUS get_zero_retrigger_mode(){ return zero_retrigger_mode; }
 	// virtual funcs
 	void run();
 	void init();
+	bool validate();
 	#ifndef BARE_MODULES
 	void const* get_out(outputnames::OUT_TYPE);
 	void const* set_in(inputnames::IN_TYPE, void const*);
@@ -47,14 +46,11 @@ class triangle_wave2 : public synthmod
 	double output;
 	STATUS play_state;
 	double normal_freq;
-	double norm_mod_hi;
-	double norm_mod_lo;
+	double norm_modsize;
 	STATUS recycle;
 	STATUS zero_retrigger_mode;
 	double nf_deg_size;
 	double nf_pre_deg_size;
-	double fmrad;
-	double fmmid;
 	double nf_sectmaxsamps;
 	double nf_sectsample;
 	double nf_counter_ratio;
@@ -67,7 +63,7 @@ class triangle_wave2 : public synthmod
 	double counter_ratio;
 	static int triangle_wave2_count;
 	#ifndef BARE_MODULES
-	static void create_params();
+	void create_params();
 	static bool done_params;
 	#endif
 };

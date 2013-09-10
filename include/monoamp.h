@@ -30,7 +30,7 @@ class mono_amp : public synthmod
 	short get_clip_level(){ return clip_level; }
 	// virtual funcs
 	void run();
-	void init(){};
+	bool validate();
 	#ifndef BARE_MODULES
 	void const* get_out(outputnames::OUT_TYPE);
 	void const* set_in(inputnames::IN_TYPE, void const*);
@@ -53,7 +53,7 @@ class mono_amp : public synthmod
 	double ampsig;
 	static int monoamp_count;
  	#ifndef BARE_MODULES
-	static void create_params();
+	void create_params();
 	static bool done_params;
 	#endif
 };

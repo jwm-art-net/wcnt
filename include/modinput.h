@@ -10,10 +10,10 @@ class modinput
  public:
 	modinput(synthmod*, inputnames::IN_TYPE);
 	~modinput(){};
-	synthmod* getsynthmodule() { return (this != NULL) ? synthmodule : NULL; }
-	synthmodnames::SYNTH_MOD_TYPE getmoduletype();
-	inputnames::IN_TYPE getinputtype();
-	IOCAT getinputcategory();
+	synthmod* get_synthmodule() { return (this != NULL) ? synthmodule : NULL; }
+	synthmodnames::SYNTH_MOD_TYPE get_moduletype();
+	inputnames::IN_TYPE get_inputtype();
+	IOCAT get_inputcategory();
 
  private:
 	synthmod* synthmodule;

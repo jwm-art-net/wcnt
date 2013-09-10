@@ -20,15 +20,14 @@ class clockclock : public synthmod
 	const STATUS* get_output_phase_trig(){ return &out_phase_trig;}
 	const double* get_output_premod_deg_size(){ return &out_premod_deg_size;}
 	const double* get_output_deg_size(){ return &out_deg_size;}
-	void set_notelength_frequency(short nl);
 	void set_frequency(double f);
 	void set_freq_mod1size(double fms){ freq_mod1size = fms; }
-	short get_notelength_frequency(){ return note_length_freq; }
 	double get_frequency(){ return hrtz_freq; }
 	double get_freq_mod1size()	{ return freq_mod1size; }
 	// virtual funcs
 	void run();
 	void init();
+	bool validate();
 	#ifndef BARE_MODULES
 	void const* get_out(outputnames::OUT_TYPE);
 	void const* set_in(inputnames::IN_TYPE, void const*);
@@ -39,14 +38,12 @@ class clockclock : public synthmod
 	double out_premod_deg_size;
 	double out_deg_size;
 	const double* in_freq_mod1;
-	short note_length_freq;
 	double hrtz_freq;
 	double freq_mod1size;
-	double mod1size;
 	double degs;
 	static int clockclock_count;
  	#ifndef BARE_MODULES
-	static void create_params();
+	void create_params();
 	static bool done_params;
  	#endif
 };

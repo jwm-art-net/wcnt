@@ -24,7 +24,6 @@ class triangle_wave : public synthmod
 	void set_zero_retrigger_mode(STATUS zrm){ zero_retrigger_mode = zrm; }
 	// virtual funcs
 	void run();
-	void init(){};
 	#ifndef BARE_MODULES
 	void const* get_out(outputnames::OUT_TYPE);
 	void const* set_in(inputnames::IN_TYPE, void const*);
@@ -45,7 +44,7 @@ class triangle_wave : public synthmod
 	STATUS zero_retrigger_mode;
 	static short triangle_wave_count;
  	#ifndef BARE_MODULES
-	static void create_params();
+	void create_params();
 	static bool done_params;
  	#endif
 };

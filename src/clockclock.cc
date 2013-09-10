@@ -4,10 +4,9 @@
 clockclock::clockclock(string uname) :
 	synthmod(synthmodnames::MOD_CLOCK, clockclock_count, uname),
 	out_phase_trig(OFF), out_premod_deg_size(0.00), out_deg_size(0.00), 
-	in_freq_mod1(0), note_length_freq(0), hrtz_freq(0.00), 
-	freq_mod1size(0.00), mod1size(0.00), degs(360.00)
+	in_freq_mod1(0), hrtz_freq(0.00), freq_mod1size(0.00), degs(360.00)
 {
-	// degs initialised to 360 so that it immediately triggers if in_phase_trig is off
+	// degs initialised to 360 so that it immediately triggers
 	#ifndef BARE_MODULES
 	get_inputlist()->add_input(this, inputnames::IN_FREQ_MOD1);
 	get_outputlist()->add_output(this, outputnames::OUT_PHASE_TRIG);
@@ -15,7 +14,6 @@ clockclock::clockclock(string uname) :
 	get_outputlist()->add_output(this, outputnames::OUT_DEG_SIZE);
 	#endif
 	clockclock_count++;
-	validate();
 	#ifndef BARE_MODULES
 	create_params();
 	#endif
@@ -69,10 +67,6 @@ bool clockclock::set_param(paramnames::PAR_TYPE pt, void const* data)
 	bool retv = false;
 	switch(pt)
 	{
-		case paramnames::PAR_NOTELEN_FREQ:
-			set_notelength_frequency(*(short*)data); 
-			retv = true;
-			break;
 		case paramnames::PAR_FREQ:
 			set_frequency(*(double*)data); 
 			retv = true;
@@ -88,32 +82,41 @@ bool clockclock::set_param(paramnames::PAR_TYPE pt, void const* data)
 	return retv;
 }
 
-#endif // BARE_MODULES
-
-void clockclock::set_notelength_frequency(short nl)
+bool clockclock::validate()
 {
-	note_length_freq = nl;
-	out_premod_deg_size = freq_to_step(notelength_to_frequency(nl), 0);
-	hrtz_freq = -1;
+	if (hrtz_freq <= 0 || hrtz_freq >= audio_samplerate / 2) {
+		*err_msg = "\n" + get_paramnames()->get_name(paramnames::PAR_FREQ);
+		*err_msg += "should be above zero and less than 1/2 samplerate";
+		invalidate();
+	}
+	if (freq_mod1size < 0 || freq_mod1size > 15) {
+		*err_msg += "\n" + 
+			get_paramnames()->get_name(paramnames::PAR_FREQ_MOD1SIZE);
+		*err_msg += " should be within 0.0 to 15.00";
+		invalidate();
+	}
+	return is_valid();
 }
+
+#endif // BARE_MODULES
 
 void clockclock::set_frequency(double f) 
 {
 	hrtz_freq = f;
 	out_premod_deg_size = freq_to_step(f, 0);
-	note_length_freq = -1;
 }
 void clockclock::init()
-{  // saves doing this for every sample
-	mod1size = freq_mod1size - 1;
+{  
 }
 
 void clockclock::run() 
 {
 	if (*in_freq_mod1 < 0) 
-		out_deg_size = out_premod_deg_size / (1 + mod1size * -*in_freq_mod1); 
+		out_deg_size = out_premod_deg_size / 
+			(1 + freq_mod1size * -*in_freq_mod1); 
 	else
-		out_deg_size = out_premod_deg_size * (1 + mod1size * *in_freq_mod1);
+		out_deg_size = out_premod_deg_size * 
+			(1 + freq_mod1size * *in_freq_mod1);
 	degs += out_deg_size;
 	if (degs >= 360) {
 		degs -= 360;

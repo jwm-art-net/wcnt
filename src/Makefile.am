@@ -6,17 +6,16 @@
 
 ## project was imported so anjuta won't actually overwrite it
 
+## add -DBARE_MODULES\ below after CXXFLAGS, when you don't 
+## wont to compile all that nasty user interface code..
+## usefull for testing modules and quickens compilation time
+
 
 INCLUDES =
 
 CXXFLAGS =\
-## define this when you don't wont to compile the user interface code
-## usefull for testing modules
-##   -DBARE_MODULES\
 	 -Wall -Wimplicit -Wreturn-type -Wunused -Wswitch -Wcomment -Wuninitialized -Wparentheses -Wtraditional -Wpointer-arith -Wmissing-prototypes\
-	 -O3\
-         -ffast-math\
-	 -g
+	 -O3
 
 bin_PROGRAMS = wcnt
 
@@ -27,6 +26,7 @@ wcnt_SOURCES = \
 	conversions.cc\
 	dtr.cc\
 	inputnames.cc\
+	iocat.cc\
 	lfoclock.cc\
 	lfocontroller.cc\
 	linkedlist.cc\
@@ -55,7 +55,6 @@ wcnt_SOURCES = \
 	wavfilein.cc\
 	wavfileout.cc\
 	synthfilereader.cc\
-	rifflist.cc\
 	constmod.cc\
 	freqgenerator.cc\
 	modifier.cc\
@@ -72,7 +71,6 @@ wcnt_SOURCES = \
 	connectorlist.cc\
 	modparam.cc\
 	modparamlist.cc\
-	wavfileinlist.cc\
 	randomtrigger.cc\
 	logictrigger.cc\
 	switcher.cc\
@@ -82,6 +80,7 @@ wcnt_SOURCES = \
 	bpmchange.cc\
 	meterchange.cc\
 	timemap.cc\
+	sampledata.cc\
 	riffnode.cc\
 	serialwavfileout.cc\
 	contraster.cc\
@@ -93,8 +92,23 @@ wcnt_SOURCES = \
 	rangelimit.cc\
 	pan.cc\
 	rms.cc\
-	dc_filter.cc
-	
+	dc_filter.cc\
+	dobj.cc\
+	dobjlist.cc\
+	dobjnames.cc\
+	dobjparam.cc\
+	dobjparamlist.cc\
+	dparnames.cc\
+	moddobj.cc\
+	moddobjlist.cc\
+	dobjdobj.cc\
+	dobjdobjlist.cc\
+	dobjmod.cc\
+	dynvertex.cc\
+	dynamic.cc\
+	spreader.cc\
+	notetran.cc
+		
 wcnt_LDFLAGS = 
 
 wcnt_LDADD =

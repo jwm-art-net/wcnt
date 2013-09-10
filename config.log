@@ -43,7 +43,7 @@ configure:2584: checking for ranlib
 configure:2651: checking for strip
 configure:2894: checking for objdir
 configure:2921: checking for gcc option to produce PIC
-configure:3073: checking if gcc PIC flag           -fPIC works
+configure:3073: checking if gcc PIC flag    -fPIC works
 configure:3139: checking if gcc static flag -static works
 configure:3181: checking if gcc supports -c -o file.o
 configure:3229: checking if gcc supports -c -o file.lo

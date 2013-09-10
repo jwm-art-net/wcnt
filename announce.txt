@@ -1,79 +1,46 @@
-wcnt-1.1001 is now released.  Unofficially code named 'Bog Brush'
+Announcing for the last time this year the new release of Wav Composer Not Toilet, or wcnt for short.  Wcnt is of course, the not-real-time modular synth, sequencer, sampler, wav file generator.
 
-download from sourceforge.net/projects/wcnt.  I have not updated the
-homepage yet so ignore wcnt.sourceforge.net documentation.  there is an
-examples directory in the release tarball this time.
+This release is wcnt-1.1z (read wcnt-1.1260) and here are the new features and changes:)
 
-*** new features/changes ***
+~~~~~~~~~~~~~~~
+BIG CHANGES:
+~~~~~~~~~~~~~~~
 
-* tempo and signature changes, tempo can be ramped.
+*** Sets of data which are not module parameters or module inputs (shape of an adsr, notes in a riff, riffs in a sequencer, etc) have now been generalised into a base class.  Specialised data reading routines have been replaced, which make it easier to create new data sets.  This also means that data definitions are now more tappy tappy on your keyboard, my justification for this extra user effort is readability.
 
-* sampler now has reverse playback,  and, reverse and bi-directional
-loop modes.  the loop points can also be set relative to the
-modulatable start point.  different play modes for when playback
-initially travels away from loop.  several other new features and
-improvements.
+*** Riffs inserted into sequencer can be transposed at point of insertion, and the note lengths can be modified.
 
-* filters have had the sine wave masquerading as resonance removed.  in
-place is an in_feedback input which ordinarily will take the filters
-own wet_output.  plus wet/dry setting.  link several together via
-feedback inputs and you'll get some resonance.
+~~~~~~~~~~~~~~~
+COMMAND LINE:
+~~~~~~~~~~~~~~~
 
-* riff_data and note_data.  note_data can now be floating point values.
-User specifies quarter note value for each riff of notes to suite
-needs.  
+*** Now has short options too.
 
-* sequencer has gone through a few changes to accommodate tempo and
-signature changes.
+*** two conversion options to convert a note name to a frequency, and a frequency to degs per sample and samples per cycle.
 
-* serialwavfileout will create a new wavfile every time it is
-triggered.  user gives it a base file name, and the module appends a
-four digit number with leading zeros.  user can specify bar to start
-writing in, and the bar to stop writing at.
+~~~~~~~~~~~~~~~
+NEW MODULES:
+~~~~~~~~~~~~~~~
 
-* stereo_amp now amplifies two signals!  has amplitude setting for both
-left and right! Wo there.  Has had panning removed.
+*** dynamic
+	Maps amplitudes of input signal to a set of output amplitudes/ratios.  Of course it has two sets of which the output can be modulated between.
 
-* mono_amp does for one signal what stereo_amp does for two.
+*** spreader
+	Spreads the output of a number of wcnt_signal modules along an imaginary line and outputs that which the modulation input lands upon.
 
-* panner will range check the pan modulating signal so it no longer
-tries to break the laws of reality by panning further left than full
-left, or further right than full right.
+*** note_tran
+	Translates notes into values.  The note range used depends on being triggered by a note_on, or note_slide.  Four output triggers so you can tell if the note was in one of the two note ranges or not.
 
-* contraster is inspired by the contrast effect in snd.  as if I need
-to say the effect amount is modulatable. Rudemode setting.
+~~~~~~~~~~~~~~~
+MINOR CHANGES:
+~~~~~~~~~~~~~~~
 
-* delay and echo.  the input signal gain can be adjusted and/or
-modulated.  wet/dry output.  for the echo, the is an in_feedback input,
-and an out_wet_output.  program may abort with delay times over 500 ms
-but I have successfully set times of 1100 ms.
+*** adsr got a couple new params regarding shape modulation
 
-* dc_filter specify filter time in ms to remove dc.  too much (or is
-it too little?) and it will remove some punch from signal.  probably
-just a high pass filter in disguise.
+*** logic trigger's xor mode definately works now (dunno if it did before)
 
-* range_limit to clip a signal.
+*** trigger now behaves in a note_on/note_off type operation gleaned from the input signal.
 
-* multiplier takes two signals.
+*** wcnt_signal has a level param
 
-* rms outputs root mean square for a signal and can get very slow.
-
-* wcnt_exit module tells wcnt when to stop.
-
-this release of wcnt is not quite all what I've claimed it would be on
-the news on sourceforge.net/projects/wcnt.  I decided to release this
-version as it works, and improves upon 1.0001c.  A lot has changed so
-wc files made for version 1.0001c will no longer work without
-substantial changes.  wc files are going to change yet again in the
-next version.
-
-some people may have problems compiling or configuring.  I
-reinstalled my system since the last release of wcnt and something
-changed....  I've installed anjuta 1.2, and for unknown reasons, my
-setup of autoconf and friends is not working properly.  The makefiles
-etc from the last release of wcnt have had to be imported to this
-release, and I've modified the makefile.am files to include new source
-files.  if you have problems let me know....but I can't promise
-anything.  Enjoy!!!!!!
-
-James.
+That's All Folks, same time next year, see ya!  see ya!  see ya.  see ya, see ya see yaseeyacyacyacycaaa...

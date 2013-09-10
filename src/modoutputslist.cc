@@ -35,7 +35,7 @@ void modoutputlist::delete_module_outputs(synthmod* sm)
 	output = goto_first();
 	while(output != 0)
 	{
-		if (output->getsynthmodule() == sm)
+		if (output->get_synthmodule() == sm)
 		{
 			delete_output(output);
 			output = goto_first();
@@ -69,9 +69,9 @@ modoutputlist* modoutputlist::list_of_category(IOCAT oc)
 	outputnames::OUT_TYPE ot;
 	while(output != 0)
 	{
-		ot = output->getoutputtype();
-		if (outnames->getcategory(ot) == oc)
-			outcatlist->add_output(output->getsynthmodule(), ot);
+		ot = output->get_outputtype();
+		if (outnames->get_category(ot) == oc)
+			outcatlist->add_output(output->get_synthmodule(), ot);
 		output = goto_next();
 	}
 	return outcatlist;
@@ -115,16 +115,19 @@ modoutputlist* modoutputlist::list_of_category_orderpref(IOCAT out_cat,
 		}
 	}
 	synthmod * sm;	/* make list of outputs from pot_outs sorted with preferences. */
-	for(a = 0; out_prefs[a] > outputnames::OUT_FIRST && out_prefs[a] < outputnames::OUT_LAST; a++)
+	for(a = 0; out_prefs[a] > outputnames::OUT_FIRST
+		&& out_prefs[a] < outputnames::OUT_LAST; a++)
 	{
-		for(c = 0; sm_prefs[c] > synthmodnames::MOD_FIRST && sm_prefs[c] < synthmodnames::MOD_LAST; c++)
+		for(c = 0; sm_prefs[c] > synthmodnames::MOD_FIRST
+			&& sm_prefs[c] < synthmodnames::MOD_LAST; c++)
 		{
 			output = pot_outs->goto_first();
 			while(output != 0) 
 			{
-				sm = output->getsynthmodule();
-				if (out_prefs[a] == output->getoutputtype()	&& sm_prefs[c] == sm->get_module_type())
-					sorted_outs->add_output(sm, output->getoutputtype());
+				sm = output->get_synthmodule();
+				if (out_prefs[a] == output->get_outputtype()
+					&& sm_prefs[c] == sm->get_module_type())
+					sorted_outs->add_output(sm, output->get_outputtype());
 				output = pot_outs->goto_next();
 			}
 		}
@@ -137,21 +140,24 @@ modoutputlist* modoutputlist::list_of_category_orderpref(IOCAT out_cat,
 		out_prefchk = 0;
 		for(a = 0; a < op_count; a++)
 		{
-			for(c = 0; sm_prefs[c] > synthmodnames::MOD_FIRST && sm_prefs[c] < synthmodnames::MOD_LAST; c++)
+			for(c = 0; sm_prefs[c] > synthmodnames::MOD_FIRST
+				&& sm_prefs[c] < synthmodnames::MOD_LAST; c++)
 			{
-				sm = output->getsynthmodule();
-				if (out_prefs[a] == output->getoutputtype() && sm_prefs[c] == sm->get_module_type()) 
+				sm = output->get_synthmodule();
+				if (out_prefs[a] == output->get_outputtype()
+					&& sm_prefs[c] == sm->get_module_type()) 
 					out_prefchk++;
 			}
 		}
 		not_prefchk = 0;
 		for (short b = 0; b < nop_count; b++)
 		{
-			if (not_out_prefs[b] == output->getoutputtype())
+			if (not_out_prefs[b] == output->get_outputtype())
 				not_prefchk++;
 		}
 		if (out_prefchk == 0 && not_prefchk == 0) 
-				sorted_outs->add_output(output->getsynthmodule(), output->getoutputtype());
+				sorted_outs->add_output(output->get_synthmodule(), 
+									output->get_outputtype());
 		output = pot_outs->goto_next();
 	}
 	delete pot_outs;
@@ -165,8 +171,9 @@ modoutputlist* modoutputlist::get_outputlist_for_module(synthmod* sm)
 	modoutputlist* mol = new modoutputlist;
 	goto_first();
 	while(output) {
-		if (output->getsynthmodule() == sm) 
-			mol->add_output(output->getsynthmodule(), output->getoutputtype());
+		if (output->get_synthmodule() == sm) 
+			mol->add_output(output->get_synthmodule(), 
+					output->get_outputtype());
 		goto_next();
 	}
 	return mol;
@@ -179,7 +186,7 @@ bool modoutputlist::is_registered(synthmod* mod)
 		return 0;
 	goto_first();
 	while(output) {
-		if (output->getsynthmodule() == mod)
+		if (output->get_synthmodule() == mod)
 			return true;
 	}
 	return false;

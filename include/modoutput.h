@@ -10,10 +10,10 @@ class modoutput
   public:
     modoutput(synthmod *, outputnames::OUT_TYPE);
     ~modoutput(){};
-    synthmod *getsynthmodule(){return (this != NULL) ? synthmodule : NULL;}
-    synthmodnames::SYNTH_MOD_TYPE getmoduletype();
-    outputnames::OUT_TYPE getoutputtype();
-    IOCAT getoutputcategory();
+    synthmod* get_synthmodule(){return (this != NULL) ? synthmodule : NULL;}
+    synthmodnames::SYNTH_MOD_TYPE get_moduletype();
+    outputnames::OUT_TYPE get_outputtype();
+    IOCAT get_outputcategory();
   private:
     synthmod * synthmodule;
     outputnames::OUT_TYPE output_type;

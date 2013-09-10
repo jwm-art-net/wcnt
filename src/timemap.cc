@@ -28,7 +28,9 @@ timemap::timemap(string uname)
 	meter_map=new linkedlist(linkedlist::MULTIREF_OFF,linkedlist::NO_NULLDATA);
 	add_meter_change(0, sm_beats_per_measure, sm_beat_value);
 	timemap_count++;
-	validate();
+	#ifndef BARE_MODULES
+	create_moddobj();
+	#endif
 }
 
 timemap::~timemap()
@@ -198,7 +200,11 @@ meterchange* timemap::add_meter_change(meterchange* mch)
 	}
 	return 0;  
 }
-
+/*
+bool timemap::check_position(short bar, double pos, short quarter_val)
+{
+}
+*/
 void timemap::init()
 {
 	goto_first_bpm(); 
@@ -373,15 +379,45 @@ void const* timemap::get_out(outputnames::OUT_TYPE ot)
     }
     return o;
 }
-#endif
-short timemap::timemap_count = 0;
-// because there are no params this is set to true
 
-#ifndef BARE_MODULES
-bool timemap::done_params = true;
-
-void timemap::create_params() {
-	return;
+dobj* timemap::add_dobj(dobj* dbj)
+{
+	dobj* retv = 0;
+	dobjnames::DOBJ_TYPE dbjtype = dbj->get_object_type();
+	switch(dbjtype)
+	{
+		case dobjnames::SIN_METER:
+			if (!(retv = add_meter_change((meterchange*)dbj)))
+				*err_msg="\ncould not add meter change to " + *get_username();
+			break;
+		case dobjnames::SIN_BPM:
+			if (!(retv = add_bpm_change((bpmchange*)dbj)))
+				*err_msg = "\ncould not add bpm change to " + *get_username();
+			break;
+		default:
+			*err_msg = "\n***major error*** attempt made to add an ";
+			*err_msg += "\ninvalid object type to " + *get_username();
+			retv = 0;
+	}
+	return retv;
 }
+
+
+bool timemap::done_moddobj = false;
+void timemap::create_moddobj()
+{
+	if (done_moddobj == true)
+		return;
+	get_moddobjlist()->add_moddobj(synthmodnames::MOD_TIMEMAP, dobjnames::LIN_METER);
+	get_moddobjlist()->add_moddobj(synthmodnames::MOD_TIMEMAP, dobjnames::LIN_BPM);
+	// also add dobjdobjs becuase there is only a dobj type and not a dobj.
+	dobj::get_dobjdobjlist()->add_dobjdobj(dobjnames::LIN_METER, dobjnames::SIN_METER);
+	dobj::get_dobjdobjlist()->add_dobjdobj(dobjnames::LIN_BPM, dobjnames::SIN_BPM);
+	done_moddobj = true; 
+}
+
 #endif
+
+short timemap::timemap_count = 0;
+
 #endif

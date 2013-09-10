@@ -27,8 +27,8 @@ class osc_clock : public synthmod
 	const STATUS* get_output_phase_trig(){ return &out_phase_trig; }
 	const double* get_output_deg_size(){ return &out_deg_size; }
 	const double* get_output_premod_deg_size(){ return &out_premod_deg_size; }
-	void set_freq_mod1size(double fms){ freq_mod1size = (fms > 1) ? fms : 1; }
-	void set_freq_mod2size(double fms){ freq_mod2size = (fms > 1) ? fms : 1; }
+	void set_freq_mod1size(double fms){ freq_mod1size = fms; }
+	void set_freq_mod2size(double fms){ freq_mod2size = fms; }
 	void set_octave(char o){ octave_offset = o; }
 	void set_tuning_semitones(double s);
 	void set_portamento(double f){ portamento = f; }
@@ -40,6 +40,7 @@ class osc_clock : public synthmod
 	// virtual funcs
 	void run();
 	void init();
+	bool validate();
 	#ifndef BARE_MODULES
 	void const* get_out(outputnames::OUT_TYPE);
 	void const* set_in(inputnames::IN_TYPE, void const*);
@@ -69,7 +70,7 @@ class osc_clock : public synthmod
 	unsigned long slidesamples;
 	static int osc_clock_count;
 	#ifndef BARE_MODULES
-	static void create_params();
+	void create_params();
 	static bool done_params;
 	#endif
 };

@@ -17,7 +17,6 @@ echo::echo(string uname) :
 	get_outputlist()->add_output(this, outputnames::OUT_WET_OUTPUT);
 	#endif
 	echo_count++;
-	validate();
 	#ifndef BARE_MODULES
 	create_params();
 	#endif
@@ -34,13 +33,14 @@ echo::~echo()
 
 void echo::init()
 {
-	filterarraymax = (short)((delay_time * audio_samplerate) / 1000);
+	filterarraymax = (long)((delay_time * audio_samplerate) / 1000);
 	filter = new double[filterarraymax];
-	for (int i = 0; i < filterarraymax; i++) filter[i] = 0;
+	for (long i = 0; i < filterarraymax; i++) filter[i] = 0;
 	fpos = filterarraymax - 1;
 }
 
 #ifndef BARE_MODULES
+
 void const* echo::get_out(outputnames::OUT_TYPE ot)
 {
 	void const* o = 0;
@@ -115,6 +115,47 @@ bool echo::set_param(paramnames::PAR_TYPE pt, void const* data)
 			break;
 	}
 	return retv;
+}
+
+bool echo::validate()
+{
+	if (delay_time < 0) {
+		*err_msg = "\n" 
+			+ get_paramnames()->get_name(paramnames::PAR_DELAY_TIME) +
+			" less than zero";
+		invalidate();
+	}
+	if (gain > 1.0 || gain < -1.0) {
+		*err_msg = "\n" 
+			+ get_paramnames()->get_name(paramnames::PAR_GAIN) +
+			" out of range (-1.0 to +1.0)";
+		invalidate();
+	}
+	if (gain_modsize < 0.0 || gain_modsize > 1.0) {
+		*err_msg += "\n" +
+			get_paramnames()->get_name(paramnames::PAR_GAIN_MODSIZE) +
+			" out of range (0.0 to +1.0)";
+		invalidate();
+	}
+	if (feed_level < -2.0 || feed_level > 2.0) {
+		*err_msg = "\n" +
+			get_paramnames()->get_name(paramnames::PAR_FEED_LEVEL) +
+			" out of range (-2.0 to +2.0)";
+		invalidate();
+	}
+	if (feed_modsize < 0.0 || feed_modsize > 1.0) {
+		*err_msg += "\n" + 
+			get_paramnames()->get_name(paramnames::PAR_FEED_MODSIZE) +
+			" out of range (0.0 to +1.0)";
+		invalidate();
+	}
+	if (wetdry < 0.0 || wetdry > 1.0) {
+		*err_msg += "\n" +
+			get_paramnames()->get_name(paramnames::PAR_WETDRY) +
+			" out of range (0.0 to +1.0)";
+		invalidate();
+	}
+	return is_valid();
 }
 #endif // BARE_MODULES
 

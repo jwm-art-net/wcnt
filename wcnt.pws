@@ -3,7 +3,7 @@
 RunInTerminal=true
 
 [Project State]
-clean before build=true
+clean before build=false
 
 [File View]
 filter.file.unmatch=*.so *.o *.a *.la
@@ -11,20 +11,38 @@ filter.file.ignore.hidden=0
 filter.dir.ignore.hidden=0
 
 [filenumbers]
-0=89
-1=30
-2=1
-3=1
-4=1
-5=9
-6=49
-7=1
-8=225
-9=1
-10=1
-11=1
-12=1
-13=1
+0=256
+1=133
+2=72
+3=94
+4=120
+5=115
+6=121
+7=11
+8=97
+9=113
+10=120
+11=250
+12=53
+13=174
+14=1
+15=237
+16=47
+17=1
+18=239
+19=41
+20=1
+21=102
+22=1
+23=1
+24=1
+25=1
+26=1
+27=1
+28=1
+29=1
+30=1
+31=1
 
 [filemarkers]
 0=
@@ -41,16 +59,30 @@ filter.dir.ignore.hidden=0
 11=
 12=
 13=
+14=
+15=
+16=
+17=
+18=
+19=
+20=
+21=
+22=
+23=
+24=
+25=
+26=
+27=
+28=
+29=
+30=
+31=
 
 [filelist]
-0=/home/james/Programming/wcnt/src/dc_filter.cc
-1=/home/james/Programming/wcnt/include/dc_filter.h
-2=/home/james/Programming/wcnt/include/Makefile.am
-3=/home/james/Programming/wcnt/src/Makefile.am
-4=/home/james/Programming/wcnt/src/rms.cc
-5=/home/james/Programming/wcnt/src/stereomixer.cc
-6=/home/james/Programming/wcnt/include/stereomixer.h
-7=/home/james/Programming/wcnt/src/synthfilereader.cc
+0=/home/james/Programming/wcnt/src/notetran.cc
+1=/home/james/Programming/wcnt/include/notetran.h
+2=/home/james/Programming/wcnt/src/outputnames.cc
+3=/home/james/Programming/wcnt/include/outputnames.h
 
 [Project Tree]
 0=0
@@ -60,23 +92,26 @@ filter.dir.ignore.hidden=0
 
 [Symbol Tree]
 0=1
-1=1:2
-2=1:14
-3=1:51
+1=1:24
+2=1:33
+3=1:34
 
 [File Tree]
 0=0
 
 [replace_text]
-0=pan
-1=range_limit
-2=multiplier
-3=mono_amp
-4=1
+0=notetran
+1=spreader
+2=dobj
+3=pan
+4=range_limit
 
 [find_text]
-0=mono_amp
-1=delay
-2=modifier
-3=wcnt
-4=stereo_amp
+0=trigger
+1=switcher
+2=dobjies
+3=dobj
+4=mod
+
+[find_in_files]
+0=void validate()

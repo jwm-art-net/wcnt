@@ -3,6 +3,8 @@
 
 #ifndef BARE_MODULES
 
+#include <iostream>
+
 #include "linkedlist.h"
 #include "connector.h"
 

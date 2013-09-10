@@ -18,20 +18,13 @@ class noise_generator : public synthmod
 	~noise_generator();
 	double const* get_output_signal();
 	// virtual funcs
-	void run();
-	void init(){};
+	void run() { output = (float) rand() / (RAND_MAX / 2) - 1; }
 	#ifndef BARE_MODULES
 	void const* get_out(outputnames::OUT_TYPE);
-	void const* set_in(inputnames::IN_TYPE, void const*){ return false;}
-	bool set_param(paramnames::PAR_TYPE, void const*){ return false;}
 	#endif
  private:
 	double output;
 	static int noise_generator_count;
- 	#ifndef BARE_MODULES
-	static void create_params();
-	static bool done_params;
- 	#endif
 };
 
 #endif

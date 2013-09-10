@@ -13,9 +13,9 @@ switcher::switcher(string uname)
 	wcntsiglist = 
 		new linkedlist(linkedlist::MULTIREF_ON, linkedlist::NO_NULLDATA);
 	switcher_count++;
-	validate();
 	#ifndef BARE_MODULES
 	create_params();
+	create_moddobj();
 	#endif
 	
 }
@@ -78,20 +78,68 @@ bool switcher::set_param(paramnames::PAR_TYPE pt, void const* data)
 	}
 	return retv;
 }
+
+bool switcher::validate()
+{
+	if (!goto_first()) {
+		*err_msg = "\nthere must be at least two signals to switch between";
+		invalidate();
+	} 
+	else if (!goto_next()){
+		*err_msg = "\nthere must be at least two signals to switch between";
+		invalidate();
+	}
+	else {
+		goto_first();
+		while(wcntsig) {
+			if (wcntsig->get_module_type() != synthmodnames::MOD_WCNTSIGNAL) {
+				*err_msg += "\nmodule ";
+				*err_msg += *(wcntsig->get_username());
+				*err_msg += " is not a wcnt_signal";
+				invalidate();
+			}
+			goto_next();
+		}
+	}
+	if (xfadetime < 0) {
+		*err_msg += "\n"+get_paramnames()->get_name(paramnames::PAR_XFADE_TIME);
+		*err_msg += " should be zero or more ms";
+		invalidate();
+	}
+	return is_valid();
+}
+
+dobj* switcher::add_dobj(dobj* dbj)
+{
+	if (dbj->get_object_type() == dobjnames::DOBJ_SYNTHMOD) {
+		synthmod* sm = ((dobjmod*)dbj)->get_synthmod();
+		if (sm->get_module_type() != synthmodnames::MOD_WCNTSIGNAL) {
+			*err_msg = "\n" + *sm->get_username() + 
+				" is not a wcnt_signal";
+			return 0;
+		}
+		if (!add_signal((wcnt_signal*)sm)) {
+			*err_msg = "\ncould not insert " + *sm->get_username() +
+				" into switcher";
+			return 0;
+		}
+		// add the dobj synthmod wrapper to the dobjlist 
+		// so it gets deleted in the end.
+		dobj::get_dobjlist()->add_dobj(dbj);
+		return dbj;
+	}
+	*err_msg = "\n***major error*** attempt made to add an ";
+	*err_msg += "\ninvalid object type to " + *get_username();
+	return 0;
+}
+
 #endif // BARE_MODULES
 
 void switcher::init()
 {
-	if (!goto_first()) {//check for atleast one signal
-		invalidate();// no signals abort
-		return;
-	} else if (!goto_next()){// check for second
-		invalidate();// one signal abort
-		return; 
-	} else // more than one so start at begining again
-		goto_first(); 
+	goto_first(); 
 	sig = wcntsig->get_output();
-	xfade_samp = xfade_max_samps = convert_ms_to_samples(xfadetime);
+	xfade_samp = xfade_max_samps = ms_to_samples(xfadetime);
 	xfade_stpsz = 1 / (double)xfade_samp;
 	xfade_size = 0;
 	prevsig = &zero;
@@ -127,5 +175,28 @@ void switcher::create_params()
 	get_paramlist()->add_param(synthmodnames::MOD_SWITCHER, paramnames::PAR_XFADE_TIME);
 	done_params = true;
 }
+
+bool switcher::done_moddobj = false;
+
+void switcher::create_moddobj()
+{
+	if (done_moddobj == true)
+		return;
+	get_moddobjlist()->
+		add_moddobj(synthmodnames::MOD_SWITCHER, dobjnames::LIN_SIGNALS);
+	// several modules use LIN_SIGNALS, if they all add a dobjdobj to
+	// it, then wcnt will want to read as many as has been added, if there
+	// are more to be read after, then it will want to read that many
+	// again.  glamorous eh?
+	if (!dobj::get_dobjdobjlist()->
+			get_dobjdobjlist_for_dobjtype(dobjnames::LIN_SIGNALS)->
+				goto_first()) 
+	{
+		dobj::get_dobjdobjlist()->
+			add_dobjdobj(dobjnames::LIN_SIGNALS, dobjnames::DOBJ_SYNTHMOD);
+	}	
+	done_moddobj = true; 
+}
+
 #endif
 #endif

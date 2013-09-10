@@ -17,7 +17,6 @@ lfo_controller::lfo_controller(string uname) :
 	get_inputlist()->add_input(this, inputnames::IN_AMP_MOD);
 	#endif
 	lfo_controller_count++;
-	validate();
 	#ifndef BARE_MODULES
 	create_params();
 	#endif
@@ -33,7 +32,8 @@ lfo_controller::~lfo_controller()
 
 void lfo_controller::init()
 {
-	resp_size = (double) 1 / convert_ms_to_samples(response_time);
+	resp_size = (double) 1 / ms_to_samples(response_time);
+	ams_r = 1 - amp_modsize;
 }
 
 #ifndef BARE_MODULES
@@ -106,21 +106,52 @@ bool lfo_controller::set_param(paramnames::PAR_TYPE pt, void const* data)
 	}
 	return retv;
 }
+
+bool lfo_controller::validate()
+{
+	if (delay_time < 0) {
+		*err_msg = "\n" 
+			+ get_paramnames()->get_name(paramnames::PAR_DELAY_TIME) +
+			" less than zero";
+		invalidate();
+	}
+	if (ramp_time < 0) {
+		*err_msg = "\n" 
+			+ get_paramnames()->get_name(paramnames::PAR_RAMP_TIME) +
+			" less than zero";
+		invalidate();
+	}
+	if (start_level < -1.0 || start_level > 1.0) {
+		*err_msg += "\n" +
+			get_paramnames()->get_name(paramnames::PAR_START_LEVEL) +
+			" out of range (-1.0 to +1.0)";
+		invalidate();
+	}
+	if (end_level < -1.0 || end_level > 1.0) {
+		*err_msg += "\n" +
+			get_paramnames()->get_name(paramnames::PAR_END_LEVEL) +
+			" out of range (-1.0 to +1.0)";
+		invalidate();
+	}
+	if (response_time < 0) {
+		*err_msg = "\n" 
+			+ get_paramnames()->get_name(paramnames::PAR_RESPONSE_TIME) +
+			" less than zero";
+		invalidate();
+	}
+	if (amp_modsize < 0 || amp_modsize > 1.0) {
+		*err_msg += "\n" +
+			get_paramnames()->get_name(paramnames::PAR_AMP_MODSIZE) +
+			" out of range (-1.0 to +1.0)";
+		invalidate();
+	}
+	return is_valid();
+}
 #endif // BARE_MODULES
 
 void lfo_controller::set_amp_modsize(double ams)	
 {
-		if (ams >= -1) 
-			if (ams <= 1) 
-				amp_modsize = ams;
-			else 
-				amp_modsize = 1;
-		else 
-			amp_modsize = -1;
-		if (amp_modsize >= 0) 
-			ams_r = 1 - amp_modsize;
-		else 
-			ams_r = -1 - amp_modsize;
+	amp_modsize = ams;
 }
 	
 void lfo_controller::run() 
@@ -129,8 +160,8 @@ void lfo_controller::run()
 		resp_fa_level = output;
 		resp_ac = 1;
 		current_level = start_level;
-		delay_samples = convert_ms_to_samples(delay_time);
-		ramp_samples = convert_ms_to_samples(ramp_time);
+		delay_samples = ms_to_samples(delay_time);
+		ramp_samples = ms_to_samples(ramp_time);
 		level_size = (end_level - start_level) / ramp_samples;
 	} 
 	else if (delay_samples > 0) 

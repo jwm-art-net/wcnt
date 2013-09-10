@@ -1,49 +1,30 @@
-wcnt-1.1001/jwmsynth  // <-- wcnt file identifier
-// header info:
-samplerate 	44100
-bpm		160
-signature 	4/4
-// end of header.
+wcnt-1.1z/jwmsynth  // <-- wcnt file identifier
+//----------------------------------------------------------------------------
 
-// sampler02.wc shows a variation of sampler01.wc
+header time.wc  // loader header from time.wc and not here.
 
-// it utilises several features:
-//	* reverse play direction
-//	* modulated start position when sample playback is triggered.
-//	* absolute loop points so loop is in same place each time.
-//	* bi-directional looping.
-//	* anti-clipping to fade out and fade in when sample is retriggered, 
-//	  and when loop jumps from end point to start point. 
-//	* searches around start point and loop points, for the sample
-//	  with a value closest to zero, and adjusts points to match.
-//	* play_mode jump for when playback travels away from loop.
-//	  on reaching the start or end of the wav, it will jump into the loop.
-
-// the sampler will *only* read 16 bit wav files.  it will automatically 
-// adjust samplerates of wavs which differ from the samplerate in the
-// header above, so that they sound as intended.  it will read stereo,
-// aswell as mono wavs.
-
-
+//-----------------------------------------------------------------------------
 // setup the time_map
+
 time_map
 time1  
-        time
-		// add a signature change at bar 0
-		signature	4/4	0
-		// add a bpm change at bar 0, ramp bpm from bar 3 to bar 4.
-		bpm 120	0
-		bpm 120 3
-		bpm 60 4
-        time
+        meter_map
+		meter
+			tsig	4/4	bar	0
+	meter_map
+	bpm_map
+		tempo
+			bpm	160	bar	2
+		tempo
+			bpm 	120	bar	3
+		tempo
+			bpm 	160	bar	3
+		tempo
+			bpm	160	bar	6
+		tempo
+			bpm 	120	bar	7
+	bpm_map
 time1
-
-// setup how long to process:
-wcnt_exit
-wcnt_exit_module
-        in_bar  time1 out_bar
-	exit_bar 6		// process 5 bars, stop at beginning bar 6.
-wcnt_exit_module
 
 // first, create some riffs.  riffs are inserted into the sequencer, and 
 // contain note patterns.  riffs are not modules.  The first job of a riff
@@ -52,47 +33,161 @@ wcnt_exit_module
 // note lengths and note positions for all notes in the riff.
 
 // currently the wcnt sequencer module is monophonic, one sequencer can play
-// only one note at a time.  
+// only one note at a time.  And a riff can only handle one note at a time.
 
 riff 
 riff1
-	quarter_value	16 
-	// quarter_value of 16 sets bar length to 64 when time signature is 4/4.
-	//   notename	position	length	velocity
-	note	c0	0		18.5	1.0
-	note	g0	24		7	0.75
-	note	f0	32		13.5	0.5
-	note	d0	48		3.5	1.0
-	note	d0	56		7.5	1.0
+	quarter_value	16
+	note	
+		name	c0	pos	0	len	8.5	vel	1.0
+	note	
+		name	d0	pos	16	len	6.5	vel	0.8
+	note	
+		name	g0	pos	24	len	7	vel	0.65
+	note		
+		name	f0	pos	32	len	7.5	vel	0.85
+	note		
+		name	f0	pos	40	len	7.5	vel	0.4
+	note		
+		name	d0	pos	48	len	7.5	vel	1.0
+	note		
+		name	d0	pos	56	len	7.5	vel	0.55
 riff1
 
 riff 
 riff2
 	quarter_value	16 
-	note	c0	0		32	1.0
+	note	
+		name	c0	pos	0	len	32	vel	1.0
 riff2
 
+// now insert the riffs into the sequencer.  some of the inserted riffs have 
+// been transposed and the note lengths have been modified, at some bars
 
 sequencer
 seq1
-        track // add four bars of riff1:
-		riff1	0
-		riff1	1
-		riff1	2
-		riff1	3
-		riff2	4
         track
-	// connect sequencer to keep in sync with time1 time_map module
+		riff_node
+			riff	riff1	bar	0
+			transpose	0	start_len	0	end_len	0
+		riff_node
+			riff	riff1	bar	1
+			transpose	-4	start_len	0	end_len	8
+
+		riff_node
+			riff	riff1	bar	2
+			transpose	0	start_len	0	end_len	0
+
+		riff_node
+			riff	riff1	bar	3
+			transpose	6	start_len	0	end_len	-6
+
+		riff_node
+			riff	riff1	bar	4
+			transpose	0	start_len	0	end_len	0
+
+		riff_node
+			riff	riff1	bar	5
+			transpose	-4	start_len	8	end_len	0
+
+		riff_node
+			riff	riff1	bar	6
+			transpose	0	start_len	0	end_len	0
+
+		riff_node
+			riff	riff1	bar	7
+			transpose	6	start_len	-6	end_len	0
+
+		riff_node
+			riff	riff2	bar	8
+			transpose	0	start_len	0	end_len	0
+        track
+
         in_bar			time1	out_bar
         in_bar_trig     	time1	out_bar_trig
         in_pos_step_size        time1	out_pos_step_size
-	// parameters for module: sequencer
+	in_beats_per_bar	time1	out_beats_per_bar
+	in_beat_value		time1	out_beat_value
+
         velocity_response_time  5	// take 5 ms to change velocity
         hold_notename		off	// ignore hold_notename
 seq1
 
+// adsr to shape sampler output.  the lower shape is 'slower', and is triggered
+// by velocities of 0.5 and below, the upper shape is faster and triggered by
+// high velocities of 1.0
+
+adsr
+adsr1
+        envelope
+		section	name	attack	
+			ut	15.0	ul	1.0
+			lt	150.0	ll	1.0
+
+                section	name	decay	
+			ut	20.0	ul	0.9
+			lt	165.0	ll	0.9
+
+                section	name	release	
+			ut	745.0	ul	0.0
+			lt	120.0	ll	0.0
+        envelope
+
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_off_trig        seq1	out_note_off_trig
+        in_velocity     	seq1	out_velocity 
+
+	up_thresh	0.9
+	lo_thresh	0.5
+        start_level     0.0
+        sustain_state   on
+        zero_retrigger  off
+adsr1
+
+// an adsr to modulate the dynamic module
+
+adsr
+adsr2
+        envelope
+		section	name	attack	
+			ut	1.0	ul	1.0
+			lt	1.0	ll	1.0
+
+                section	name	decay	
+			ut	120.0	ul	0.47
+			lt	65.0	ll	0.47
+
+                section	name	decay	
+			ut	120.0	ul	0.77
+			lt	125.0	ll	0.57
+
+                section	name	decay	
+			ut	120.0	ul	0.37
+			lt	125.0	ll	0.27
+
+                section	name	decay	
+			ut	120.0	ul	0.77
+			lt	125.0	ll	0.57
+
+                section	name	release	
+			ut	545.0	ul	0.0
+			lt	70.0	ll	0.0
+        envelope
+
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_off_trig        seq1	out_note_off_trig
+        in_velocity     	seq1	out_velocity 
+
+	up_thresh	0.9
+	lo_thresh	0.5
+        start_level     0.0
+        sustain_state   on
+        zero_retrigger  off
+adsr2
+
 // sampler needs a deg_size to playback the sample at different rates.
 // use an osc_clock to get it to playback at musical note frequencies.
+// there are two osc_clocks, the second being slightly detuned.
 
 osc_clock
 osc1
@@ -109,24 +204,20 @@ osc1
         freq_mod2_size  	0.0
 osc1
 
-// adsr to shape sampler output:
-
-adsr
-adsr1
-        envelope
-                attack	15.0	1.0	50.0	1.0
-                decay   20.0	0.9	65.0	0.9
-                release	345.0	0.0	420.0	0.0
-        envelope
-	// connect to sequencer triggers
+osc_clock
+osc2
+	// connect with seq1 sequencer module.
         in_note_on_trig		seq1	out_note_on_trig
-        in_note_off_trig        seq1	out_note_off_trig
-	// nb don't use out_velocity_ramped here:
-        in_velocity     	seq1	out_velocity 
-        start_level     0.0
-        sustain_state   on	// hold volume level from decay section until note_off
-        zero_retrigger  off
-adsr1
+        in_note_slide_trig      seq1	out_note_slide_trig
+        in_frequency    	seq1	out_frequency
+        in_freq_mod1    	off
+        in_freq_mod2    	off
+        octave_offset		0
+        tuning_semitones        0.05
+        portamento_time 	50.0	// duration of a note_slide event
+        freq_mod1_size  	0.0
+        freq_mod2_size  	0.0
+osc2
 
 // couple of modules to modulate start position of sampler
 
@@ -157,40 +248,63 @@ modsin1
 // need for it.
 
 // first define a wavfilein to tell the sampler what file to read.
+// korgms20.wav contains 193118 samples
 
-wavfilein ms20 file samples/korgms20.wav ms20
-
-//  korgms20.wav contains 193118 samples
-
-// whuh, sampler looks complicated:
+wavfilein 
+ms20 
+	filename	samples/korgms20.wav 
+        root_note       c0
+ms20
 
 sampler
 sampler1
-
-//inputs for module: sampler
         in_play_trig    	seq1	out_note_on_trig
         in_stop_trig    	adsr1	out_off_trig
         in_start_pos_mod	modsin1	out_output
         in_deg_size     	osc1	out_deg_size
 
-// parameters for module: sampler
-        wavfile 	ms20
-        play_dir        rev
-        play_mode       jump	// for when playback travels away from loop
-	jump_mode       play	// jump to loop and play in direction of initial play direction!
-        start_pos_min   1500	// play it safe...
-        start_pos_max   100000	// near end of file
-        loop_mode       bi	// bi-directional looping
-        loop_start_pos  50000	// compare with start_pos max
-        loop_end_pos    65000	// and start_pos min, and loop_is_offset off
-        loop_is_offset  off	// loop points are set in stone.
+        wavfile 		ms20
+        play_dir        	rev
+        play_mode       	bounce	// not relevent to this setup, but must be set.
+        jump_mode       	play	// not relevent to this setup.
+        start_pos_min   	5000	
+        start_pos_max   	80000
+        loop_mode       	fwd
+        loop_start_pos  	10000
+        loop_end_pos    	15000
+        loop_is_offset  	on	// loop points relative to start point
         bi-directional_offset   50	// used when play direction changes
-        anti_clip_samples       155	// fade out/in samples
+        anti_clip_samples       275	// fade out/in samples
         anti_clip_each_end      on	// 
         zero_search_range       150	// how many samples to search for zero X
-        root_note       c0
-        degsize_amount  1.0	// how much to follow frequencies (deg_size)
+        degsize_amount  	1.0	// how much to follow frequencies (deg_size)
 sampler1
+
+// the detuned sampler:
+
+sampler
+sampler2
+        in_play_trig    	seq1	out_note_on_trig
+        in_stop_trig    	adsr1	out_off_trig
+        in_start_pos_mod	modsin1	out_output
+        in_deg_size     	osc2	out_deg_size
+
+        wavfile 		ms20
+        play_dir        	fwd
+        play_mode       	wrap	// not relevent to this setup, but must be set.
+        jump_mode       	play	// not relevent to this setup.
+        start_pos_min   	20000	
+        start_pos_max   	80000
+        loop_mode       	rev
+        loop_start_pos  	10000
+        loop_end_pos    	15000
+        loop_is_offset  	off	// loop points relative to start point
+        bi-directional_offset   50	// used when play direction changes
+        anti_clip_samples       275	// fade out/in samples
+        anti_clip_each_end      on	// 
+        zero_search_range       150	// how many samples to search for zero X
+        degsize_amount  	1.0	// how much to follow frequencies (deg_size)
+sampler2
 
 // note:  because anti_clip_each_end is on, the sampler adjusts the 
 // minumum and maximum samples which can be played, this gives the
@@ -216,34 +330,132 @@ sampler1
 
 // for mono samples, left and right outputs are the same.
 
-mono_amp
-amp1
-	in_signal	sampler1	out_l
-	in_amp_eg	adsr1		out_output
-	in_amp_mod	seq1		out_velocity_ramp
-	amplitude	32767	// 32767 is the maximum amplitude
-	amp_mod_size	0.95	// how much influence velocity has in this case
-	clip_level	25000	// the maximum allowed amplitude
-amp1
+// use the dynamic to add a bit of punch
 
-// wavfile_out module.  a wcnt file without atleast one of these modules is 
-// as good as useless.  It has an in_bar_trig aswell as an in_bar input 
-// to stop it from thinking every sample in a bar is a new bar. 
-// And Why Not? (tm)
+constant half value 0.000015 half
+
+multiplier
+m1
+	in_signal 	sampler1	out_l
+	in_modifier	half	out_output
+m1
+
+multiplier
+m2
+	in_signal 	sampler2	out_l
+	in_modifier	half	out_output
+m2
+
+sine_wave
+swave										
+	in_phase_trig	osc1	out_phase_trig
+	in_deg_size	osc1	out_deg_size
+	recycle_mode		off
+	on_trig_reset_phase	off 				
+	phase_cycles 1.0
+swave
+
+dynamic
+dyn1
+
+        amp_map
+                dvertex
+                        sigin_level     0.0
+                        	so_ul   0.0
+                        	so_ll   0.0
+                dvertex
+                        sigin_level     0.25
+                        	so_ul   0.45
+                        	so_ll   0.05
+                dvertex
+                        sigin_level     0.5
+                        	so_ul   0.75
+                        	so_ll   0.15
+                dvertex
+                        sigin_level     0.75
+                        	so_ul   0.95
+                        	so_ll   0.25
+                dvertex
+                        sigin_level     1.0
+                        	so_ul   1.0
+                        	so_ll   1.0
+        amp_map
+
+        in_signal               sampler1	out_l
+        in_modulation           adsr2		out_output
+
+        up_thresh               1.0
+        lo_thresh               0.5
+        posneg_mirror           on
+	use_ratios		off
+dyn1
+
+dynamic
+dyn2
+
+        amp_map
+                dvertex
+                        sigin_level     0.0
+                        	so_ul   0.0
+                        	so_ll   0.0
+                dvertex
+                        sigin_level     0.25
+	                        so_ul   0.45
+        	                so_ll   0.05
+                dvertex
+                        sigin_level     0.5
+	                        so_ul   0.75
+        	                so_ll   0.15
+                dvertex
+                        sigin_level     0.75
+	                        so_ul   0.95
+	                        so_ll   0.25
+                dvertex
+                        sigin_level     1.0
+                        	so_ul   1.0
+                        	so_ll   1.0
+        amp_map
+
+        in_signal               sampler2	out_l
+        in_modulation           adsr2		out_output
+
+        up_thresh               1.0
+        lo_thresh               0.5
+        posneg_mirror           on
+	use_ratios		off
+dyn2
+
+stereo_amp
+amp1
+	in_l		dyn1	out_output
+	in_r		dyn2	out_output
+	in_amp_eg	adsr1	out_output
+	in_amp_mod	seq1	out_velocity_ramp
+
+	left_amplitude	32000		// 32767 is the maximum amplitude
+	right_amplitude	32000		// 32767 is the maximum amplitude
+	amp_mod_size	0.0	//0.95	// how much influence velocity has in this case
+	clip_level	32767		// the maximum allowed amplitude
+amp1
 
 wavfile_out
 wav1
-	in_left		amp1	out_mono
-	in_right	amp1	out_mono
+	in_left		amp1	out_left
+	in_right	amp1	out_right
 	in_bar		time1	out_bar
 	in_bar_trig	time1	out_bar_trig
+
 	filename	sampler02.wav
 	start_bar	0
-	end_bar		5 
+	end_bar		9
 wav1
 
-// Although there are only four bars in the sequencer, wav1 stops writing when
-// bar 5 is reached because the release time of the ADSR causes audible sound 
-// to last beyond the end bar 3 and into bar 4.
+// setup how long to process:
 
-wcnt-1.1001/jwmsynth
+wcnt_exit
+wcnt_exit_module
+        in_bar		time1	out_bar
+	exit_bar	9
+wcnt_exit_module
+
+wcnt-1.1z/jwmsynth

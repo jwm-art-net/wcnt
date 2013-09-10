@@ -41,11 +41,7 @@ synthmodlist::create_module(synthmodnames::SYNTH_MOD_TYPE smt, string uname)
     synthmod *sm;
     switch (smt) {
 	case synthmodnames::MOD_WCNT:
-		// error on attempt to create more than one, 
-		if (wcnt_module::get_wcnt_module_count() == 0)
-			sm = new wcnt_module(uname);
-		else return 0; 
-		// *err_msg = "wcnt module exists, will not create another.";
+		sm = new wcnt_module(uname);
 		break;
     case synthmodnames::MOD_ADSR:
         sm = new adsr(uname);
@@ -167,13 +163,18 @@ synthmodlist::create_module(synthmodnames::SYNTH_MOD_TYPE smt, string uname)
 	case synthmodnames::MOD_DCFILTER:
 		sm = new dc_filter(uname);
 		break;
+	case synthmodnames::MOD_DYNAMIC:
+		sm = new dynamic(uname);
+		break;
+	case synthmodnames::MOD_SPREADER:
+		sm = new spreader(uname);
+		break;
+	case synthmodnames::MOD_NOTETRAN:
+		sm = new notetran(uname);
+		break;
     default:
         sm = 0;
     }
-	if (!ordered_insert(smodlist, sm, &synthmod::get_module_type)) {
-		delete sm;
-		sm = 0;
-	}
     return sm;
 }
 

@@ -12,7 +12,6 @@ freq_generator::freq_generator(string uname)
 	get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
 	#endif
 	freq_generator_count++;
-	validate();
 	init();
 	#ifndef BARE_MODULES
 	create_params();
@@ -88,6 +87,18 @@ bool freq_generator::set_param(paramnames::PAR_TYPE pt, void const* data)
 	}
 	return retv;
 }
+
+bool freq_generator::validate()
+{
+	if (step_count <= 1) {
+		*err_msg = "\n" +
+			get_paramnames()->get_name(paramnames::PAR_STEP_COUNT) +
+			"less than 1";
+		invalidate();
+	}
+	return is_valid();
+}
+
 #endif // BARE_MODULES
 
 void freq_generator::init()

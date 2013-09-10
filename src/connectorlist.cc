@@ -1,6 +1,5 @@
 #ifndef CONNECTORLIST_H
 #include "../include/connectorlist.h"
-#include <iostream>
 
 #ifndef BARE_MODULES
 
@@ -54,9 +53,9 @@ bool connectorlist::make_connections()
 		if (verbose) {
 			cout << "\nmade connection: ";
 			cout << connect->get_output_module_name();
-			cout << " " << outnames->getname(connect->get_output_type());
+			cout << " " << outnames->get_name(connect->get_output_type());
 			cout << "\t-->\t" << *(connect->get_input_module()->get_username());
-			cout << " " << innames->getname(connect->get_input_type());
+			cout << " " << innames->get_name(connect->get_input_type());
 		}
 		goto_next();
 	}while(connect);

@@ -1,12 +1,14 @@
 #ifndef WAVFILEIN_H
 #include "../include/wavfilein.h"
 
-using namespace std;
-
-wavfilein::wavfilein()
-:fname(NULL), sname(NULL), filein(NULL), header(NULL), status(WAV_STATUS_INIT)
+wavfilein::wavfilein() :
+	dobj(dobjnames::SDEF_WAVFILEIN), fname(0), rootnote(0), filein(0), 
+	header(0), status(WAV_STATUS_INIT)
 {
 	header = new wavheader;
+	#ifndef BARE_MODULES
+	create_dparams();
+	#endif
 }
 
 wavfilein::~wavfilein() 
@@ -14,10 +16,10 @@ wavfilein::~wavfilein()
 	delete header;
 	if (fname)
 		delete fname;
-	if (sname)
-		delete sname;
 	if (status == WAV_STATUS_OPEN) 
 		fclose(filein);
+	if (rootnote)
+		delete [] rootnote;
 }
 
 WAV_CHANNELS wavfilein::get_channel_status() 
@@ -86,6 +88,19 @@ WAV_STATUS wavfilein::open_wav(const char * filename)
 	return status = WAV_STATUS_OPEN;
 }
 
+void wavfilein::set_root_note(char* rn)
+{
+	if (rootnote) delete rootnote;
+	rootnote = new char[NOTE_NAME_SIZE];
+	strncpy(rootnote, rn, NOTE_NAME_SIZE - 1);
+	rootnote[NOTE_NAME_SIZE - 1] = '\0';
+}
+
+double wavfilein::get_root_deg_size()
+{
+	return note_to_step(rootnote, 0);
+}
+
 void wavfilein::read_wav_at(void * buf, unsigned long smp) 
 {
 	if (status == WAV_STATUS_OPEN)
@@ -110,14 +125,70 @@ void wavfilein::read_wav_chunk(void * buf, unsigned long smp, int bsize)
 		}
 }
 
-WAV_STATUS wavfilein::set_sample_name(const char* sn)
+#ifndef BARE_MODULES
+
+bool wavfilein::set_dparam(dparnames::DPAR_TYPE dt, void* data)
 {
-	if (sname) 
-		delete sname;
-	if ((sname = new char[strlen(sn)+1]) == NULL) 
-		return status = WAV_STATUS_MEMERR;
-	strncpy(sname, sn, strlen(sn));
-	sname[strlen(sn)] = '\0';
-	return WAV_STATUS_OK;
+	bool retv = false;
+	switch(dt)
+	{
+		case dparnames::DPAR_FILENAME:
+			open_wav((char*)data); // pass pointer
+			retv = true;
+			break;
+		case dparnames::DPAR_ROOTNOTE:
+			set_root_note((char*)data);
+			retv = true;
+			break;
+		default: 
+			retv = false;
+			break;
+	}
+	return retv;
 }
+
+void* wavfilein::get_dparam(dparnames::DPAR_TYPE dt)
+{
+	void* retv = 0;
+	switch(dt)
+	{
+		case dparnames::DPAR_FILENAME:
+			retv = new char[strlen(fname) + 1];
+		    strncpy((char*)retv, fname, strlen(fname));
+    		((char*)retv)[strlen(fname) + 1] = '\0';
+			break;
+		default:
+			retv = 0;
+	}
+	return retv;
+}
+
+bool wavfilein::validate()
+{
+	if (status != WAV_STATUS_OPEN) {
+		*err_msg = "\ncould not open ";
+		*err_msg += fname;
+		*err_msg += " for reading";
+		invalidate();
+	}
+	if (!check_notename(rootnote)) {
+		*err_msg += "\ninvalid note name set for " +
+			dobj::get_dparnames()->get_name(dparnames::DPAR_ROOTNOTE);
+		invalidate();
+	}
+	return is_valid();
+}
+
+void wavfilein::create_dparams()
+{
+	if (done_dparams == true)	return;
+	get_dobjparamlist()->add_dobjparam(dobjnames::SDEF_WAVFILEIN, dparnames::DPAR_FILENAME);
+	get_dobjparamlist()->add_dobjparam(dobjnames::SDEF_WAVFILEIN, dparnames::DPAR_ROOTNOTE);
+	done_dparams = true;
+}
+
+bool wavfilein::done_dparams = false;
+
+#endif
+
 #endif

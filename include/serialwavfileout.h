@@ -53,7 +53,7 @@ class serialwavfileout: public synthmod
 	char * get_wav_basename() { return wav_basename; }
 	// virtual funcs
 	void run();
-	void init(){};
+	bool validate();
 	#ifndef BARE_MODULES
 	void const* get_out(outputnames::OUT_TYPE);
 	void const* set_in(inputnames::IN_TYPE, void const*);
@@ -92,7 +92,7 @@ class serialwavfileout: public synthmod
 	// synthmod stuff
 	static short serialwavfileout_count;
 	#ifndef BARE_MODULES
-	static void create_params();
+	void create_params();
 	static bool done_params;
 	#endif
 };

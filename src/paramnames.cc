@@ -44,9 +44,6 @@ paramnames::paramnames()
 	parname[PAR_LOOP_END] = "loop_end_pos";				parcat[PAR_LOOP_END] = CAT_ULONG;
 	parname[PAR_LOOP_MODE] = "loop_mode";				parcat[PAR_LOOP_MODE] = CAT_LOOP_MODE;
 	parname[PAR_ANTI_CLIP] = "anti_clip_samples";		parcat[PAR_ANTI_CLIP] = CAT_SHORT;
-	parname[PAR_ROOT_NOTE] = "root_note";				parcat[PAR_ROOT_NOTE] = CAT_NOTENAME;// ie C#0
-	parname[PAR_ROOT_FREQ] = "root_freq";				parcat[PAR_ROOT_FREQ] = CAT_DOUBLE;
-	parname[PAR_ROOT_DEGSIZE] = "root_degsize"; 		parcat[PAR_ROOT_DEGSIZE] = CAT_DOUBLE;
 	parname[PAR_DEGSIZE_AMOUNT] = "degsize_amount";		parcat[PAR_DEGSIZE_AMOUNT] = CAT_DOUBLE;
 	parname[PAR_RECYCLE_MODE] = "recycle_mode";			parcat[PAR_RECYCLE_MODE] = CAT_STATE;
 	parname[PAR_TRIG_ZERO_DEG] = "on_trig_reset_phase";	parcat[PAR_TRIG_ZERO_DEG] = CAT_STATE;
@@ -59,11 +56,10 @@ paramnames::paramnames()
 	parname[PAR_CLIP_LEVEL] = "clip_level";				parcat[PAR_CLIP_LEVEL] = CAT_SHORT;
 	parname[PAR_MASTER_LEVEL] = "master_level";			parcat[PAR_MASTER_LEVEL] = CAT_DOUBLE;
 	parname[PAR_NORM_FREQ] = "normal_freq";				parcat[PAR_NORM_FREQ] = CAT_DOUBLE;
-	parname[PAR_NORM_MOD_HI] = "norm_mod_hi";			parcat[PAR_NORM_MOD_HI] = CAT_DOUBLE;
-	parname[PAR_NORM_MOD_LO] = "norm_mod_lo";			parcat[PAR_NORM_MOD_LO] = CAT_DOUBLE;
+	parname[PAR_NORM_MODSIZE] = "norm_modsize";		parcat[PAR_NORM_MODSIZE] = CAT_DOUBLE;
 	parname[PAR_TRIGGER_LEVEL] = "trigger_level";		parcat[PAR_TRIGGER_LEVEL] = CAT_DOUBLE;
-	parname[PAR_FILENAME] = "filename";					parcat[PAR_FILENAME] = CAT_FILENAME;
-	parname[PAR_WAVFILEIN] = "wavfile";					parcat[PAR_WAVFILEIN] = CAT_WAVFILEIN;
+	parname[PAR_FILENAME] = "filename";					parcat[PAR_FILENAME] = CAT_STRING;
+	parname[PAR_WAVFILEIN] = "wavfile";					parcat[PAR_WAVFILEIN] = CAT_DOBJ;
 	parname[PAR_VELOCITY_RESPONSE] = "velocity_response_time"; parcat[PAR_VELOCITY_RESPONSE] = CAT_DOUBLE;
 	parname[PAR_PROBABILITY] = "probability";			parcat[PAR_PROBABILITY] = CAT_DOUBLE;
 	parname[PAR_NOTPROBABILITY] = "not_probability";	parcat[PAR_NOTPROBABILITY] = CAT_DOUBLE;
@@ -71,7 +67,7 @@ paramnames::paramnames()
 	parname[PAR_XFADE_TIME] = "xfade_time";				parcat[PAR_XFADE_TIME] = CAT_DOUBLE;
 	parname[PAR_TUNING_SEMITONES] = "tuning_semitones";	parcat[PAR_TUNING_SEMITONES] = CAT_DOUBLE;
 	parname[PAR_MEAN_TOTAL] = "mean_total";				parcat[PAR_MEAN_TOTAL] = CAT_STATE;
-	parname[PAR_WAV_BASENAME] = "basename"; 			parcat[PAR_WAV_BASENAME] = CAT_FILENAME;
+	parname[PAR_WAV_BASENAME] = "basename"; 			parcat[PAR_WAV_BASENAME] = CAT_STRING;
 	parname[PAR_PLAY_DIR] = "play_dir"; 				parcat[PAR_PLAY_DIR] = CAT_PLAY_DIR;
 	parname[PAR_PLAY_MODE] = "play_mode";				parcat[PAR_PLAY_MODE] = CAT_PLAY_MODE;
 	parname[PAR_JUMP_MODE] = "jump_mode";				parcat[PAR_JUMP_MODE] = CAT_JUMP_DIR;
@@ -79,9 +75,9 @@ paramnames::paramnames()
 	parname[PAR_LOOP_BI_OFFSET]="bi-directional_offset";parcat[PAR_LOOP_BI_OFFSET] = CAT_SHORT;
 	parname[PAR_AC_EACH_END] = "anti_clip_each_end";	parcat[PAR_AC_EACH_END] = CAT_STATE;
 	parname[PAR_HOLD_NOTENAME] = "hold_notename";		parcat[PAR_HOLD_NOTENAME] = CAT_STATE;
-	parname[PAR_POWER_MIN] = "power_min"; parcat[PAR_POWER_MIN] = CAT_DOUBLE;
-	parname[PAR_POWER_MAX] = "power_max"; parcat[PAR_POWER_MAX] = CAT_DOUBLE;
-	parname[PAR_RUDE_MODE] = "rude_mode"; parcat[PAR_RUDE_MODE] = CAT_STATE;
+	parname[PAR_POWER_MIN] = "power_min";				parcat[PAR_POWER_MIN] = CAT_DOUBLE;
+	parname[PAR_POWER_MAX] = "power_max"; 				parcat[PAR_POWER_MAX] = CAT_DOUBLE;
+	parname[PAR_RUDE_MODE] = "rude_mode"; 				parcat[PAR_RUDE_MODE] = CAT_STATE;
 	parname[PAR_WETDRY] = "wet/dry";					parcat[PAR_WETDRY] = CAT_DOUBLE;
 	parname[PAR_START_BAR] = "start_bar";				parcat[PAR_START_BAR] = CAT_SHORT;
 	parname[PAR_END_BAR] = "end_bar";					parcat[PAR_END_BAR] = CAT_SHORT;
@@ -96,6 +92,27 @@ paramnames::paramnames()
 	parname[PAR_RIGHT_AMPLITUDE] = "right_amplitude";	parcat[PAR_RIGHT_AMPLITUDE] = CAT_SHORT;
 	parname[PAR_RMS_TIME] = "rms_time";					parcat[PAR_RMS_TIME] = CAT_DOUBLE;
 	parname[PAR_DC_TIME] = "dc_time";					parcat[PAR_DC_TIME] = CAT_DOUBLE;
+	parname[PAR_UP_THRESH] = "up_thresh";				parcat[PAR_UP_THRESH] = CAT_DOUBLE;
+	parname[PAR_LO_THRESH] = "lo_thresh";				parcat[PAR_LO_THRESH] = CAT_DOUBLE;
+	parname[PAR_LEVEL] = "level";						parcat[PAR_LEVEL] = CAT_DOUBLE;
+	parname[PAR_ATTACK_TIME] = "attack_time";			parcat[PAR_ATTACK_TIME] = CAT_DOUBLE;
+	parname[PAR_ATTACK_LEVEL] = "attack_level";			parcat[PAR_ATTACK_LEVEL] = CAT_DOUBLE;
+	parname[PAR_RELEASE_TIME] = "release_time";			parcat[PAR_RELEASE_TIME] = CAT_DOUBLE;
+	parname[PAR_RELEASE_LEVEL] = "release_level";		parcat[PAR_RELEASE_LEVEL] = CAT_DOUBLE;
+	parname[PAR_INDEPENDANT] = "independant";			parcat[PAR_INDEPENDANT] = CAT_STATE;
+	parname[PAR_USE_RATIOS] = "use_ratios";				parcat[PAR_USE_RATIOS] = CAT_STATE;
+	parname[PAR_NO_LONOTE] = "no_lo_notename";			parcat[PAR_NO_LONOTE] = CAT_STRING;
+	parname[PAR_NO_HINOTE] = "no_hi_notename";			parcat[PAR_NO_HINOTE] = CAT_STRING;
+	parname[PAR_NS_LONOTE] = "ns_lo_notename";			parcat[PAR_NS_LONOTE] = CAT_STRING;
+	parname[PAR_NS_HINOTE] = "ns_hi_notename";			parcat[PAR_NS_HINOTE] = CAT_STRING;
+	parname[PAR_MINNO_OUT] = "min_no_out";				parcat[PAR_MINNO_OUT] = CAT_DOUBLE;
+	parname[PAR_MAXNO_OUT] = "max_no_out";				parcat[PAR_MAXNO_OUT] = CAT_DOUBLE;
+	parname[PAR_MINNS_OUT] = "min_ns_out";				parcat[PAR_MINNS_OUT] = CAT_DOUBLE;
+	parname[PAR_MAXNS_OUT] = "max_ns_out";				parcat[PAR_MAXNS_OUT] = CAT_DOUBLE;
+	parname[PAR_DETRAN_NO] = "detranspose_no";			parcat[PAR_DETRAN_NO] = CAT_STATE;
+	parname[PAR_DETRAN_NS] = "detranspose_ns";			parcat[PAR_DETRAN_NS] = CAT_STATE;
+	parname[PAR_NO_RESPTIME] = "no_response_time";		parcat[PAR_NO_RESPTIME] = CAT_DOUBLE;
+	parname[PAR_NS_RESPTIME] = "ns_response_time";		parcat[PAR_NS_RESPTIME] = CAT_DOUBLE;
 }
 
 paramnames::~paramnames()
@@ -106,7 +123,7 @@ paramnames::~paramnames()
 		delete[] parcat;
 }
 
-string paramnames::getname(PAR_TYPE id)
+string paramnames::get_name(PAR_TYPE id)
 {
 	if (id >= PAR_FIRST && id < PAR_LAST) 
 		return parname[id];
@@ -114,7 +131,7 @@ string paramnames::getname(PAR_TYPE id)
 		return parname[PAR_FIRST];
 }
 
-IOCAT paramnames::getcategory(PAR_TYPE id)
+IOCAT paramnames::get_category(PAR_TYPE id)
 {
 	if (id >= PAR_FIRST && id < PAR_LAST)
 		return parcat[id];

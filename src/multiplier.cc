@@ -11,7 +11,6 @@ multiplier::multiplier(string uname) :
 	get_inputlist()->add_input(this, inputnames::IN_MODIFIER);
 	#endif
 	multiplier_count++;
-	validate();
 	// no params, no bother
 }
 

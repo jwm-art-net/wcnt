@@ -14,7 +14,6 @@ mono_amp::mono_amp(string uname) :
 	get_inputlist()->add_input(this, inputnames::IN_AMP_MOD);
 	#endif
 	monoamp_count++;
-	validate();
 	#ifndef BARE_MODULES
 	create_params();
 	#endif
@@ -88,6 +87,23 @@ bool mono_amp::set_param(paramnames::PAR_TYPE pt, void const* data)
 			break;
 	}
 	return retv;
+}
+
+bool mono_amp::validate()
+{
+	if (amp_modsize < 0 || amp_modsize > 1) {
+		*err_msg = "\n" + 
+			get_paramnames()->get_name(paramnames::PAR_AMP_MODSIZE) +
+			" out of range (0.0 to 1.0)";
+		invalidate();
+	}
+	if (clip_level < 2) {
+		*err_msg+="\n" +
+			get_paramnames()->get_name(paramnames::PAR_CLIP_LEVEL) +
+			" out of range (2 to 32767)";
+		invalidate();
+	}
+	return is_valid();
 }
 #endif
 

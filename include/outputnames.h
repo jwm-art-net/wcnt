@@ -67,13 +67,20 @@ class outputnames {
 		OUT_WET_OUTPUT,
 		OUT_RMS,
 		OUT_M,
+		OUT_RISE_TRIG,
+		OUT_FALL_TRIG,
+		OUT_TRANSPOSE,
+		OUT_NOVALUE,
+		OUT_NSVALUE,
+		OUT_NOT_NO_TRIG,
+		OUT_NOT_NS_TRIG,
 		OUT_LAST // know when to stop
 	};
 	
 	outputnames();
 	~outputnames();
-	string getname(OUT_TYPE) const;
-	IOCAT getcategory(OUT_TYPE) const;
+	string get_name(OUT_TYPE) const;
+	IOCAT get_category(OUT_TYPE) const;
 	OUT_TYPE get_type(string const*) const;
 	OUT_TYPE get_nonezerotype(IOCAT);
 		

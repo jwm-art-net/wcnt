@@ -10,7 +10,6 @@ range_limit::range_limit(string uname) :
 	get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
 	#endif
 	range_limit_count++;
-	validate();
 	#ifndef BARE_MODULES
 	create_params();
 	#endif

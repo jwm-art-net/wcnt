@@ -20,9 +20,9 @@ user_wave::user_wave(string uname)
 	add_vertex(0.0, 0.0, 0.0, 0.0);
 	add_vertex(360.0, 0.0, 360.0, 0.0);
 	user_wave_count++;
-	validate();
 	#ifndef BARE_MODULES
 	create_params();
+	create_dobj();
 	#endif
 }
 
@@ -102,13 +102,50 @@ bool user_wave::set_param(paramnames::PAR_TYPE pt, void const* data)
 	}
 	return retv;
 }
+
+dobj* user_wave::add_dobj(dobj* dbj)
+{
+	dobj* retv = 0;
+	dobjnames::DOBJ_TYPE dbjtype = dbj->get_object_type();
+	switch(dbjtype)
+	{
+		case dobjnames::SIN_VERTEX:
+			if (!(retv = add_vertex((wave_vertex*)dbj)))
+				*err_msg="\ncould not add vertex to " + *get_username();
+			break;
+		default:
+			*err_msg = "\n***major error*** attempt made to add an ";
+			*err_msg += "\ninvalid object type to " + *get_username();
+			retv = 0;
+	}
+	return retv;
+}
+
+bool user_wave::validate()
+{
+	// can't be bothered!
+	return is_valid();
+}
+
 #endif // BARE_MODULES
 
 wave_vertex* user_wave::add_vertex(wave_vertex* wv)
 {
 	if (!wv)
 		return 0;
-	if (!ordered_insert(env, wv, &wave_vertex::oi_get_position))
+	double lpos = wv->get_lower_position();
+	if (lpos < 0 || lpos > 360) {
+		return 0;
+	} else if (lpos == 0) {
+		goto_first();
+		delete env->unlink_item(vertex_item);
+		delete vertex;
+	} else if (lpos == 360) {
+		goto_last();
+		delete env->unlink_item(vertex_item);
+		delete vertex;
+	}
+	if (!ordered_insert(env, wv, &wave_vertex::get_lower_position))
 		return 0;
 	return wv;
 }
@@ -116,7 +153,7 @@ wave_vertex* user_wave::add_vertex(wave_vertex* wv)
 wave_vertex* user_wave::add_vertex(double udp, double ul, double ldp, double ll)
 {
 	wave_vertex* tmp = new wave_vertex(udp, ul, ldp, ll);
-	if (!ordered_insert(env, tmp, &wave_vertex::oi_get_position)){
+	if (!ordered_insert(env, tmp, &wave_vertex::get_lower_position)){
 		delete tmp;
 		return 0;
 	}
@@ -138,14 +175,27 @@ bool user_wave::delete_vertex(wave_vertex* wv)
 	return true;
 }
 
+void user_wave::init()
+{
+	goto_first();
+	if (zero_retrigger_mode == OFF) {
+		vertex->modulate(0.5, 0.5); // just guessing!
+		output = vertex->output.get_level();
+	}
+	
+}
+
+
 void user_wave::run() 
 {
 	if (*in_phase_trig == ON) {
 		play_state = ON;
-		goto_first(); while(vertex) {
+		goto_first();
+		while(vertex) {
 			vertex->modulate(*in_v_mod, *in_h_mod);
-			goto_next(); } 
-		goto_first(); // first is (normally) zero level, zero degs
+			goto_next(); 
+		} 
+		goto_first(); 
 		if (zero_retrigger_mode == ON) output = vertex->output.get_level();
 		sect_startlvl = output;
 		goto_next(); // first off
@@ -184,7 +234,7 @@ void user_wave::run()
 					pdegs = 0;
 				} else {
 					play_state = OFF;
-					output = 0;
+					//output = 0;
 				}
 			}
 		}
@@ -196,14 +246,29 @@ int user_wave::user_wave_count = 0;
 
 #ifndef BARE_MODULES
 bool user_wave::done_params = false;
+bool user_wave::done_dobj = false;
 
 void user_wave::create_params()
 {
 	if (done_params == true)
 		return;
-	get_paramlist()->add_param(synthmodnames::MOD_USERWAVE, paramnames::PAR_RECYCLE_MODE);
-	get_paramlist()->add_param(synthmodnames::MOD_USERWAVE, paramnames::PAR_ZERO_RETRIGGER);
+	get_paramlist()->
+			add_param(synthmodnames::MOD_USERWAVE, paramnames::PAR_RECYCLE_MODE);
+	get_paramlist()->
+			add_param(synthmodnames::MOD_USERWAVE, paramnames::PAR_ZERO_RETRIGGER);
 	done_params = true;
+}
+
+void user_wave::create_dobj()
+{
+	if (done_dobj == true)
+		return;
+	get_moddobjlist()->
+		add_moddobj(synthmodnames::MOD_USERWAVE, dobjnames::LIN_WAVEFORM);
+	// also add dobjdobjs becuase there is only a dobj type and not a dobj.
+	dobj::get_dobjdobjlist()->
+		add_dobjdobj(dobjnames::LIN_WAVEFORM, dobjnames::SIN_VERTEX);
+	done_dobj = true; 
 }
 #endif
 #endif

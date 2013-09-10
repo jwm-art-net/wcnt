@@ -48,12 +48,16 @@ inputnames::inputnames()
 	inname[IN_BPM] = "in_bpm";							incat[IN_BPM] = CAT_DOUBLE;
 	inname[IN_POWER_MOD] = "in_power_mod";				incat[IN_POWER_MOD] = CAT_DOUBLE;
 	inname[IN_RUDE_SWITCH_TRIG] = "in_rude_switch_trig";incat[IN_RUDE_SWITCH_TRIG] = CAT_TRIG;
-	inname[IN_NOTENAME] = "in_notename";				incat[IN_NOTENAME] = CAT_NOTENAME;
+	inname[IN_NOTENAME] = "in_notename";				incat[IN_NOTENAME] = CAT_STRING;
 	inname[IN_L] = "in_l";								incat[IN_L] = CAT_DOUBLE;
 	inname[IN_R] = "in_r";								incat[IN_R] = CAT_DOUBLE;
 	inname[IN_GAIN_MOD] = "in_gain_mod";				incat[IN_GAIN_MOD] = CAT_DOUBLE;
 	inname[IN_FEEDBACK] = "in_feedback";				incat[IN_FEEDBACK] = CAT_DOUBLE;
 	inname[IN_FB_MOD] = "in_feedback_mod";				incat[IN_FB_MOD] = CAT_DOUBLE;
+	inname[IN_BEATS_PER_BAR] = "in_beats_per_bar";		incat[IN_BEATS_PER_BAR] = CAT_SHORT;
+	inname[IN_BEAT_VALUE] = "in_beat_value";			incat[IN_BEAT_VALUE] = CAT_SHORT;
+	inname[IN_MODULATION] = "in_modulation";			incat[IN_MODULATION] = CAT_DOUBLE;
+	inname[IN_DETRANSPOSE] = "in_detranspose";			incat[IN_DETRANSPOSE] = CAT_SHORT;
 }
 
 inputnames::~inputnames()
@@ -64,7 +68,7 @@ inputnames::~inputnames()
 		delete[] incat;
 }
 
-string inputnames::getname(IN_TYPE id)
+string inputnames::get_name(IN_TYPE id)
 {
 	if (id >= IN_FIRST && id < IN_LAST) 
 		return inname[id];
@@ -72,7 +76,7 @@ string inputnames::getname(IN_TYPE id)
 		return inname[IN_FIRST];
 }
 
-IOCAT inputnames::getcategory(IN_TYPE id)
+IOCAT inputnames::get_category(IN_TYPE id)
 {
 	if (id >= IN_FIRST && id < IN_LAST)
 		return incat[id];

@@ -1,19 +1,100 @@
 --------------------------------------------------------------
-Sunday February 22 2004
+Monday April 05 2004
 
-wcnt-1.1001 progress
+wcnt-1.1z
 
-I've decided to release wcnt-1.1001 as it is, minus the stuff mentioned
-below.  That is going to take a while yet, and I have a working version
-which improves upon the last release - wcnt-1.0001c. So here it is!
-This version is unofficially code named 'Bog Brush'.
-
-So the next version will be named something like wcnt-1.1250
+Ooops, I keep forgetting to update this file as I go, and may have 
+forgotten some of the changes made.
 
 CHANGES:
-	* removed code in development to get a working version back.
+	* dynamic
+        	Now has a parameter to so that the specified output 
+                levels can be used as ratios instead.
+        
+        * trigger
+        	Now has two output triggers with level and time settings
+                so it can generate note_on and note_off type stuff.
+                
+        * logic_trigger
+        	Modified the XOR mode algorithm to output a trigger
+                if either but not both inputs trigger.  (This may have
+                been the case previously but I'd not tested it and
+                it's now clearer code.)
+                
+        * wcnt_signal
+                Now has a level parameter.  Useful when inserting into
+        	a combiner module etc.
+                
+        * sequencer
+        	Has a new output out_transpose to let other modules
+                such as the note_tran know how many semitones a note
+                has been transposed by.  Transpose riffs at insertion
+                and modify note lengths over riff duration.
+                
+        * user_wave
+        	Made a few minor modifications so that if you define an
+                'inverted' waveform (ie |\/| not /\) then it generates
+                properly in all circumstances.
 
-BE SURE TO CHECK THE EXAMPLES DIRECTORY
+ADDITIONS:
+
+	* spreader
+        	Spreads the output of a number of wcnt_signal modules
+                along an imaginary line and outputs that which the
+                modulation input lands upon.
+
+	* note_tran
+        	Translates notes into values.  The note range used
+                depends on being triggered by a note_on, or note_slide.
+                Four output triggers so you can tell if the note was
+                in one of the two note ranges or not.
+        
+        * command line options
+        	There are now short versions of every option. Plus two
+                new options for converting a note name to a frequency,
+                and a frequency to a deg size and samples per cycle.
+                (Sample rate must be provided for latter option.)
+        	
+
+--------------------------------------------------------------
+Monday March 22 2004
+
+wcnt-1.1z
+
+I've not got round to updating this file for a while and can't remember 
+precisely what changes have been made.  I've kind of lost steam as far as
+programming is concerned for this year, and will probably give it a break
+until Winter draws up again around December or something.
+
+CHANGES:
+
+	* synthfilereader/jwmsynth/dobj classes (etc)
+        	Created method to read data such as that contained in
+                riffs, adsr's, etc to be generic similiar to inputs/outputs
+                and parameters.
+                
+        * adsr
+        	added lo_thresh, and up_thresh parameters which dictate
+                what values of the in_velocity input will decide which of
+                the the lower and upper envelopes, or a mid point envelope
+                to be output.
+        
+        * conversions
+        	tidied up conversions.h, and conversions.cc files for 
+                converting notenames, to frequencies, to samples, to step size
+                to etc.
+                
+ADDITIONS:
+
+	* dynamic
+        	This module maps amplitudes of a signal to different 
+                amplitudes.  User inserts a list of points referenced by
+                input amplitude, with two possible output amplitudes.  The
+                modulation input chooses which of the two output amplitudes
+                to use, but more than likely it will be somewhere between
+                the two.  Also has lo_thresh, and up_thresh parameters for
+                dictating the range of the upper and lower envelopes regarding
+                the modulation input.
 
 --------------------------------------------------------------
 Saturday February 21 2004

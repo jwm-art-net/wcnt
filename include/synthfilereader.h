@@ -1,24 +1,9 @@
-/*
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Library General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- */
- 
 #ifndef SYNTHFILEREADER_H
 #define SYNTHFILEREADER_H
 
 #ifndef BARE_MODULES
 
+#include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -46,12 +31,11 @@ class synthfilereader
 	
 	synthfilereader();
 	~synthfilereader();
-	FILE_STATUS open_file(char* synthfilename);
+	FILE_STATUS open_file(char* synthfilename, string wcnt_id);
 	bool read_header(unsigned long* samplerate, short* bpm, short* beatspermease, short* beatvalue);
 	string const* read_command();
 	synthmod* const read_synthmodule(string const* command);
-	riffdata* const read_riffdata(string const* command);
-	wavfilein* const read_wavfilein(string const* command);
+	dobj* const read_dobj(string const* command);
 	char* get_filename(){ return filename;}
 	GEN_STATUS get_generation_status(){ return genstatus;}
 	string get_error_msg(){ return *err_msg;}
@@ -68,22 +52,21 @@ class synthfilereader
 	ostringstream* conv;
 	GEN_STATUS genstatus;
 	bool verbose;
-	note_data* const read_notedata();
+// file reading methods
 	bool skip_remarks();
+// methods to read various parts of a module
+	bool read_dobjs(synthmod*);
 	bool read_inputs(synthmod*);
 	bool read_params(synthmod*);
-	void* read_param_value(paramnames::PAR_TYPE);
-	void destroy_tmp_param_data(paramnames::PAR_TYPE pt, void* data);
-	bool read_adsr_envelope(adsr*);
-	bool read_sequencer_riffs(sequencer*);
-	bool read_mixer_channels(stereomixer*);
-	bool read_userwave_envelope(user_wave*);
- 	bool read_timemap_changes(timemap*);
-	bool read_signals(synthmod*);
-	wave_vertex* read_wave_vertex();
-	adsr_coord* read_adsr_coord(adsr_coord::SECT);
-	bpmchange* read_bpm_change();
-	meterchange* read_meter_change();
+// method to read sub-parts of standalone dobjs
+	bool read_dobjs(dobj*);
+// method to read parameters of dobjs
+	bool read_dobj_params(dobj*);
+// method to read data for all param types
+	void* read_iocat_value(IOCAT);
+// method to delete the tempory data created by above
+	void destroy_iocat_data(IOCAT, void*);
+// method for ......
 	bool eff_ing_header_bodge(unsigned long *samplerate, short *bpm, 
 				short *beatspermeasure, short *beatvalue);
 };

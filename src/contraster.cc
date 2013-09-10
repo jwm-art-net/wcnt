@@ -14,7 +14,6 @@ contraster::contraster(string uname) :
 	get_inputlist()->add_input(this, inputnames::IN_RUDE_SWITCH_TRIG);
 	#endif
 	contraster_count++;
-	validate();
 	#ifndef BARE_MODULES
 	create_params();
 	#endif
@@ -90,6 +89,12 @@ bool contraster::set_param(paramnames::PAR_TYPE pt, void const* data)
 	}
 	return retv;
 }
+
+bool contraster::validate()
+{
+	return is_valid();
+}
+
 #endif
 
 void contraster::init()

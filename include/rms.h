@@ -21,8 +21,7 @@
 
 // why?
 // if you're a coder of audio stuff you'll know for sure....or you should.
-// but I've only found it out after oooo, a long time...
-// but then I'm ignorant.
+// not that I've known for long what rms means.
 
 class rms : public synthmod 
 {
@@ -37,6 +36,7 @@ class rms : public synthmod
 	// virtual funcs
 	void run();
 	void init();
+	bool validate();
 	#ifndef BARE_MODULES
 	void const* get_out(outputnames::OUT_TYPE);
 	void const* set_in(inputnames::IN_TYPE, void const*);
@@ -57,7 +57,7 @@ class rms : public synthmod
 	double sqrsum;
 	static int rms_count;
 	#ifndef BARE_MODULES
-	static void create_params();
+	void create_params();
 	static bool done_params;
  	#endif
 };

@@ -9,6 +9,10 @@
 #include "modoutputslist.h"
 #include "modinputslist.h"
 #include "modparamlist.h"
+#include "dobjparamlist.h"
+#include "dobjdobjlist.h"
+#include "dobjmod.h"
+#include "dobjlist.h"
 #endif
 
 
@@ -38,10 +42,16 @@ class combiner: public synthmod
 	// virtual funcs
 	void run();
 	void init();
+	bool validate();
+	// wcnt_signal is not a dobj, but a synthmod, so a dobj wrapper class 
+	// - dobjmod, is passed which contains a pointer to the wcnt_signal
+	dobj* add_dobj(dobj*); 
 	#ifndef BARE_MODULES
 	void const* get_out(outputnames::OUT_TYPE);
 	void const* set_in(inputnames::IN_TYPE, void const*);
 	bool set_param(paramnames::PAR_TYPE, void const*);
+	// combiner does not use add_dobj() because wcnt_signal is a 
+	// synthmod not a dobj - but still uses create_moddobj()...
 	#endif
 		
  private:
@@ -57,8 +67,10 @@ class combiner: public synthmod
 	double zero;// for initial stuff
 	static int combiner_count;
  	#ifndef BARE_MODULES
-	static void create_params();
 	static bool done_params;
+	void create_params();
+	static bool done_moddobj;
+	void create_moddobj();
  	#endif
 };
 

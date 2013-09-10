@@ -12,7 +12,6 @@ out_none_double(0.00), out_none_short(0), out_none_ulong(0), out_none_STATUS(OFF
 	get_outputlist()->add_output(this, outputnames::OUT_NONE_TRIG);
 	get_outputlist()->add_output(this, outputnames::OUT_NONE_STATE);
 	#endif
-	validate();
 }
 
 nonezero::~nonezero()
@@ -49,9 +48,5 @@ void const* nonezero::get_out(outputnames::OUT_TYPE ot)
 	return o;
 }
 
-void const* nonezero::set_in(inputnames::IN_TYPE it, void const* o)
-{				//															                                                 |a|
-	return 0; // no inputs mo finkuts go splankyts to fukwhitz -i fink (this == sea larky) then is gosub(getting to me [:/<-<|r|
-}				//															                                                 |h|
 #endif
 #endif

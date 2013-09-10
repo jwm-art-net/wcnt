@@ -22,7 +22,6 @@ osc_clock::osc_clock(string uname) :
 	get_inputlist()->add_input(this, inputnames::IN_FREQ_MOD2);
 	#endif
 	osc_clock_count++;
-	validate();
 	#ifndef BARE_MODULES
 	create_params();
 	#endif
@@ -38,12 +37,7 @@ osc_clock::~osc_clock()
 
 void osc_clock::set_tuning_semitones(double s)
 {
-	if (s < -12)
-		semitones = -12;
-	else if (s > 12)
-		semitones = 12;
-	else 
-		semitones = s;
+	semitones = s;
 }
 
 #ifndef BARE_MODULES
@@ -124,6 +118,42 @@ bool osc_clock::set_param(paramnames::PAR_TYPE pt, void const* data)
 	}
 	return retv;
 }
+
+bool osc_clock::validate()
+{
+	if (freq_mod1size < 0 || freq_mod1size > 15) {
+		*err_msg = "\n" +
+			get_paramnames()->get_name(paramnames::PAR_FREQ_MOD1SIZE) +
+			"out of range (0.0 to 15.0)";
+		invalidate();
+	}
+	if (freq_mod2size < 0 || freq_mod2size > 15) {
+		*err_msg = "\n" +
+			get_paramnames()->get_name(paramnames::PAR_FREQ_MOD2SIZE) +
+			"out of range (0.0 to 15.0)";
+		invalidate();
+	}
+	if (octave_offset < -10 || octave_offset > 10) {
+		*err_msg = "\n" +
+			get_paramnames()->get_name(paramnames::PAR_OCTAVE) +
+			"out of range (-10 to +10)";
+		invalidate();
+	}
+	if (semitones < -12.0 || semitones > 12.0) {
+		*err_msg = "\n" +
+			get_paramnames()->get_name(paramnames::PAR_TUNING_SEMITONES) +
+			"out of range (-12.0 to +12.0)";
+		invalidate();
+	}
+	if (portamento < 0.0) {
+		*err_msg = "\n" +
+			get_paramnames()->get_name(paramnames::PAR_PORTAMENTO) +
+			"less than zero";
+		invalidate();
+	}
+	return is_valid();
+}
+
 #endif // BARE_MODULES
 
 void osc_clock::init()
@@ -137,7 +167,7 @@ void osc_clock::run()
 	if (*in_note_slide_trig == ON)
 	{
 		target_deg_size = freq_to_step(*in_freq, octave_offset, semitones);
-		slidesamples = convert_ms_to_samples(portamento);
+		slidesamples = ms_to_samples(portamento);
 		slide_size = (double)(target_deg_size - out_premod_deg_size) / slidesamples;
 	} 
 	else if (*in_note_on_trig == ON) 

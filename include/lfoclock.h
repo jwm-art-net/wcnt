@@ -23,8 +23,8 @@ class lfo_clock : public synthmod
 	const STATUS* get_output_phase_trig(){ return &out_phase_trig; }
 	const double* get_output_deg_size(){ return &out_deg_size; }
 	const double* get_output_premod_deg_size(){ return &out_premod_deg_size; }
-	void set_freq_mod1size(double fms){ freq_mod1size = (fms > 1) ? fms : 1; }
-	void set_freq_mod2size(double fms){ freq_mod2size = (fms > 1) ? fms : 1; }
+	void set_freq_mod1size(double fms){ freq_mod1size = fms; }
+	void set_freq_mod2size(double fms){ freq_mod2size = fms; }
 	void set_notelength_frequency(int nl);
 	void set_frequency(double f);
 	double get_freq_mod1size(){ return freq_mod1size; }
@@ -34,6 +34,7 @@ class lfo_clock : public synthmod
 	// virtual funcs
 	void run();
 	void init();
+	bool validate();
 	#ifndef BARE_MODULES
 	void const* get_out(outputnames::OUT_TYPE);
 	void const* set_in(inputnames::IN_TYPE, void const*);
@@ -50,14 +51,12 @@ class lfo_clock : public synthmod
 	const double* in_freq_mod2;
 	double freq_mod1size;
 	double freq_mod2size;
-	double mod1size;
-	double mod2size;
 	double degs;
 	double degsize1;
 	double degsize2;
 	static int lfo_clock_count;
  	#ifndef BARE_MODULES
-	static void create_params();
+	void create_params();
 	static bool done_params;
  	#endif
 };

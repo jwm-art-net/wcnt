@@ -1,16 +1,17 @@
 #ifndef WCNTSIGNAL_H
 #include "../include/wcntsignal.h"
 
-wcnt_signal::wcnt_signal(string uname)
-:synthmod(synthmodnames::MOD_WCNTSIGNAL, wcnt_signal_count, uname), io_signal(0)
+wcnt_signal::wcnt_signal(string uname) :
+	synthmod(synthmodnames::MOD_WCNTSIGNAL, wcnt_signal_count, uname), 
+	in_signal(0), out_output(0.0), level(0.0)
+
 {
 	#ifndef BARE_MODULES
 	get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
 	get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
+	create_params();
 	#endif
 	wcnt_signal_count++;
-	validate();
-//	create_params(); no params to create.
 }
 
 wcnt_signal::~wcnt_signal()
@@ -28,7 +29,7 @@ void const* wcnt_signal::get_out(outputnames::OUT_TYPE ot)
 	switch(ot)
 	{
 		case outputnames::OUT_OUTPUT:
-			o = &io_signal;
+			o = &out_output;
 			break;
 		default:
 			o = 0;
@@ -42,7 +43,7 @@ void const* wcnt_signal::set_in(inputnames::IN_TYPE it, void const* o)
 	switch(it)
 	{
 		case inputnames::IN_SIGNAL:
-			i = io_signal = (double*)o;
+			i = in_signal = (double*)o;
 			break;
 		default:
 			i = 0;
@@ -52,9 +53,30 @@ void const* wcnt_signal::set_in(inputnames::IN_TYPE it, void const* o)
 
 bool wcnt_signal::set_param(paramnames::PAR_TYPE pt, void const* data)
 {
-	return false; // no parameters
+	bool retv = false;
+	switch(pt)
+	{
+		case paramnames::PAR_LEVEL:
+			set_level(*(double*)data);
+			retv = true;
+			break;
+		default: 
+			retv = false;
+			break;
+	}
+	return retv;
 }
-#endif // BARE_MODULES
+
+bool wcnt_signal::done_params = false;
+
+void wcnt_signal::create_params()
+{
+	if (done_params == true)
+		return;
+	get_paramlist()->add_param(synthmodnames::MOD_WCNTSIGNAL, paramnames::PAR_LEVEL);
+	done_params = true;
+}
+#endif
 
 int wcnt_signal::wcnt_signal_count = 0;
 

@@ -25,11 +25,9 @@ class multiplier : public synthmod
 	const double * get_output(){return &out_output;}
 	// virtual funcs - because you're worth it.
 	void run() { out_output = *in_signal * *in_mod;	}
-	void init(){};
 	#ifndef BARE_MODULES
 	void const* get_out(outputnames::OUT_TYPE);
 	void const* set_in(inputnames::IN_TYPE, void const*);
-	bool set_param(paramnames::PAR_TYPE, void const*){ return false; }
 	#endif
 	
  private:
@@ -37,6 +35,5 @@ class multiplier : public synthmod
 	const double* in_mod;
 	double out_output;
 	static int multiplier_count;
-	// no params, no bother.
 };
 #endif

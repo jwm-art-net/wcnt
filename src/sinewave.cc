@@ -13,7 +13,6 @@ sine_wave::sine_wave(string uname) :
 	get_inputlist()->add_input(this, inputnames::IN_DEG_SIZE);
 	#endif
 	sine_wave_count++;
-	validate();
 	#ifndef BARE_MODULES
 	create_params();
 	#endif
@@ -84,6 +83,17 @@ bool sine_wave::set_param(paramnames::PAR_TYPE pt, void const* data)
 	}
 	return retv;
 }
+
+bool sine_wave::validate()
+{
+	if (cycles <= 0) {
+		*err_msg = "\n" + get_paramnames()->get_name(paramnames::PAR_CYCLES) +
+			"less than zero";
+		invalidate();
+	}
+	return is_valid();
+}
+
 #endif // BARE_MODULES
 
 void sine_wave::init()

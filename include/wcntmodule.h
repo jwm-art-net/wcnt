@@ -43,9 +43,7 @@ class wcnt_module: public synthmod
 	short get_exit_bar() { return exit_bar; }
 	// virtual funcs
 	void run(){};
-	void init(){};
-	// 'ow many?
-	static short get_wcnt_module_count(){ return wcnt_module_count;}
+	bool validate();
 	#ifndef BARE_MODULES
 	void const* get_out(outputnames::OUT_TYPE) { return 0; }
 	void const* set_in(inputnames::IN_TYPE, void const*);
@@ -59,7 +57,7 @@ class wcnt_module: public synthmod
  	short exit_bar;
 	// synthmod stuff
 	static short wcnt_module_count;
-	static void create_params();
+	void create_params();
 	static bool done_params;
 };
 

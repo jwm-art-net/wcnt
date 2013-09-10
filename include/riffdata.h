@@ -2,7 +2,10 @@
 #define RIFFDATA_HH
 
 #include "notedata.h"
-#include "linkedlist.h"
+#ifndef BARE_MODULES
+#include "dobjparamlist.h"
+#include "dobjdobjlist.h"
+#endif
 /*
 	RIFFDATA
 	--------
@@ -32,40 +35,75 @@
 		do not iterate through the list, but only return current->get_next etc,
 		hope that clears things up?!
 		
-		What's new in wcnt1.0001?
+		What's new in wcnt1.1001?
 		-------------------------
 		
 		i've removed riff length calculation code as it is no longer needed.
 		i've added 1/4 note value so user can specify a value which suits
 		thier requirements...constructor default is 12.
+		
+		------------------
+		*** ammendment ***
+		------------------
+		added calc_riff_length(...) method to get the length of the riff. 
+		the value returned is in terms of a note length with a quarter value 
+		as set for the riff, giving the length of the number of bars the riff
+		occupies. ie it does not return how many bars the riff occupies, but
+		the note length of those bars.
+		the method requires both elements of the time signature to be passed.
 */
-class riffdata
+
+class riffdata : public dobj
 {
  public:
-	riffdata(string& uname);
+	riffdata();
 	~riffdata();
 	void set_quartervalue(short qv){ quarter_val = qv;}
 	short get_quartervalue(){ return quarter_val;} 
 	note_data* insert_and_position_note(note_data*);
 	bool delete_note(note_data*);
-	note_data* goto_first(){return(note_data*)notelist->goto_first()->get_data();}
-	note_data* goto_last(){return(note_data*)notelist->goto_last()->get_data();}
-	note_data* goto_prev(){return(note_data*)notelist->goto_prev()->get_data();}
-	note_data* goto_next(){return(note_data*)notelist->goto_next()->get_data();}
-	note_data* get_first(){return(note_data*)notelist->sneak_first()->get_data();}
-	note_data* get_last(){return(note_data*)notelist->sneak_last()->get_data();}
-	note_data* get_prev(){return(note_data*)notelist->sneak_prev()->get_data();}
-	note_data* get_next(){return(note_data*)notelist->sneak_next()->get_data();}
-	note_data* get_current(){return(note_data*)notelist->sneak_current()->get_data();}
-	ll_item* sneak_first(){return notelist->goto_first();}
-	ll_item* sneak_last(){return notelist->goto_last();}
-	string const* get_username(){ return username;}
+	note_data* goto_first(){ return note = (note_data*) 
+		(note_item = notelist->goto_first())->get_data();}
+	note_data* goto_last(){ return note = (note_data*)
+		(note_item = notelist->goto_last())->get_data();}
+	note_data* goto_prev(){ return note = (note_data*)
+		(note_item = notelist->goto_prev())->get_data();}
+	note_data* goto_next(){ return note = (note_data*)
+		(note_item = notelist->goto_next())->get_data();}
+	// these do not update any list pointers
+	note_data* get_first(){ return (note_data*)
+		notelist->sneak_first()->get_data();}
+	note_data* get_last(){ return (note_data*)
+		notelist->sneak_last()->get_data();}
+	note_data* get_prev(){ return (note_data*)
+		notelist->sneak_prev()->get_data();}
+	note_data* get_next(){ return (note_data*)
+		notelist->sneak_next()->get_data();}
+	// errr, umm
+	note_data* get_current(){return (note_data*)
+		notelist->sneak_current()->get_data();}
+	// these give direct access to list
+	ll_item* sneak_first(){ return notelist->sneak_first(); }
+	ll_item* sneak_last(){ return notelist->sneak_last(); }
+	// beats per bar grabbed from output of 
+	// time map module, input into sequencer.
+	double calc_riff_length(char beats_per_bar, char beat_value);
+	#ifndef BARE_MODULES
+	// virtuals from dobj
+	bool validate();
+	bool set_dparam(dparnames::DPAR_TYPE, void*);
+	void* get_dparam(dparnames::DPAR_TYPE);
+	dobj* add_dobj(dobj*);
+	#endif
 private: 
-	string* username;
 	short quarter_val;
 	note_data* note;
 	linkedlist* notelist;
-	linkedlist* poo;
+	ll_item* note_item;
+	#ifndef BARE_MODULES
+	void create_dparams();
+	static bool done_dparams;
+	#endif
 };
 
 #endif // RIFF_H

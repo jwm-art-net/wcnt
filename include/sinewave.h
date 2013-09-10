@@ -58,6 +58,7 @@ class sine_wave : public synthmod
 	// virtual funcs
 	void run();
 	void init();
+	bool validate();
 	#ifndef BARE_MODULES
 	void const* get_out(outputnames::OUT_TYPE);
 	void const* set_in(inputnames::IN_TYPE, void const*);
@@ -75,7 +76,7 @@ class sine_wave : public synthmod
 	double maxdegs;
 	static int sine_wave_count;
  	#ifndef BARE_MODULES
-	static void create_params();
+	void create_params();
 	static bool done_params;
  	#endif
 };

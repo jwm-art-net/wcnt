@@ -4,10 +4,9 @@
 lfo_clock::lfo_clock(string uname) :
 	synthmod(synthmodnames::MOD_LFOCLOCK, lfo_clock_count, uname),
 	out_phase_trig(OFF), out_deg_size(0.00), out_premod_deg_size(0.00), 
-	note_length_freq(0), hrtz_freq(0.00), in_phase_trig(NULL), 
-	in_freq_mod1(NULL), in_freq_mod2(NULL), freq_mod1size(0.00), 
-	freq_mod2size(0.00), mod1size(0.00), mod2size(0.00), degs(360.00), 
-	degsize1(0.00), degsize2(0.00)
+	hrtz_freq(0.00), in_phase_trig(NULL), in_freq_mod1(NULL), 
+	in_freq_mod2(NULL), freq_mod1size(0.00), freq_mod2size(0.00), 
+	degs(360.00), degsize1(0.00), degsize2(0.00)
 {
 	// degs initialised at 360 so immediately triggers if in_phase_trig is off
 	#ifndef BARE_MODULES
@@ -19,7 +18,6 @@ lfo_clock::lfo_clock(string uname) :
 	get_inputlist()->add_input(this, inputnames::IN_FREQ_MOD2);
 	#endif // BARE_MODULES
 	lfo_clock_count++;
-	validate();
 	#ifndef BARE_MODULES
 	create_params();
 	#endif
@@ -84,10 +82,6 @@ bool lfo_clock::set_param(paramnames::PAR_TYPE pt, void const* data)
 			set_freq_mod2size(*(double*)data); 
 			retv = true;
 			break;
-		case paramnames::PAR_NOTELEN_FREQ:
-			set_notelength_frequency(*(int*)data); 
-			retv = true;
-			break;
 		case paramnames::PAR_FREQ:
 			set_frequency(*(double*)data); 
 			retv = true;
@@ -98,18 +92,34 @@ bool lfo_clock::set_param(paramnames::PAR_TYPE pt, void const* data)
 	}
 	return retv;
 }
+
+bool lfo_clock::validate()
+{
+	if (freq_mod1size < 0 || freq_mod1size > 15) {
+		*err_msg = "\n" + 
+			get_paramnames()->get_name(paramnames::PAR_FREQ_MOD1SIZE) 
+			+ " out of range (0.0 to 15.0)";
+		invalidate();
+	}
+	if (freq_mod2size < 0 || freq_mod2size > 15) {
+		*err_msg += "\n" +
+			get_paramnames()->get_name(paramnames::PAR_FREQ_MOD2SIZE)
+			+ " out of range (0.0 to 15.0)";
+		invalidate();
+	}
+	if (hrtz_freq <= 0 || hrtz_freq >= audio_samplerate / 2) {
+		*err_msg += "\n" +
+			get_paramnames()->get_name(paramnames::PAR_FREQ) +
+			" out of range ( > 0.0 to 1/2 samplerate)";
+		invalidate();
+	}
+	return is_valid();
+}
+
 #endif
 
 void lfo_clock::init()
 {
-	mod1size = freq_mod1size - 1;
-	mod2size = freq_mod2size - 1;
-}
-
-void lfo_clock::set_notelength_frequency(int nl) 
-{
-	note_length_freq = nl;
-	out_premod_deg_size = freq_to_step(notelength_to_frequency(nl), 0);
 }
 
 void lfo_clock::set_frequency(double f) 
@@ -126,13 +136,13 @@ void lfo_clock::run()
 // 	(freq_mod1size * *in_freq_mod1 + freq_mod2size * *in_freq_mod2);
 // new way is more intensive, but returns truer results (hopefully!)
 	if (*in_freq_mod1 < 0)
-		degsize1 = out_premod_deg_size / (1 + mod1size * -*in_freq_mod1);
+		degsize1 = out_premod_deg_size / (1 + freq_mod1size * -*in_freq_mod1);
 	else
-		degsize1 = out_premod_deg_size * (1 + mod1size * *in_freq_mod1);
+		degsize1 = out_premod_deg_size * (1 + freq_mod1size * *in_freq_mod1);
 	if (*in_freq_mod2 < 0)
-		degsize2 = out_premod_deg_size / (1 + mod2size * -*in_freq_mod2);
+		degsize2 = out_premod_deg_size / (1 + freq_mod2size * -*in_freq_mod2);
 	else
-		degsize2 = out_premod_deg_size * (1 + mod2size * *in_freq_mod2);
+		degsize2 = out_premod_deg_size * (1 + freq_mod2size * *in_freq_mod2);
 	out_deg_size = (degsize1 + degsize2) / 2;
 	degs += out_deg_size;
 	if (degs >= 360) {

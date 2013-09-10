@@ -37,27 +37,27 @@ bool connector::connect()
 	if (!out_data) {
 		connect_err_msg = 
 			"\nCannot make connection for module " + *in_mod->get_username() 
-			+ ", input " + synthmod::get_inputnames()->getname(in_type)
+			+ ", input " + synthmod::get_inputnames()->get_name(in_type)
 			+ ", module " + out_mod_uname 
 			+ " does not have any output of type " 
-			+ synthmod::get_outputnames()->getname(out_type);
+			+ synthmod::get_outputnames()->get_name(out_type);
 		return false;
 	}
-	if (synthmod::get_inputnames()->getcategory(in_type) !=
-		synthmod::get_outputnames()->getcategory(out_type)) 
+	if (synthmod::get_inputnames()->get_category(in_type) !=
+		synthmod::get_outputnames()->get_category(out_type)) 
 	{
 		connect_err_msg = 
 			"\nCannot make connection, input and output categories do not match:\ninput:  "
 			+ *in_mod->get_username() + 
-			synthmod::get_inputnames()->getname(in_type)
+			synthmod::get_inputnames()->get_name(in_type)
 			+ "\noutput: " + out_mod_uname + 
-			synthmod::get_outputnames()->getname(out_type);
+			synthmod::get_outputnames()->get_name(out_type);
 		return false;
 	}
 	if (!in_mod->set_in(in_type, out_data)) {
 		connect_err_msg = 
 			"\nCannot make connection, input type " + 
-			synthmod::get_inputnames()->getname(in_type) + 
+			synthmod::get_inputnames()->get_name(in_type) + 
 			"\nnot available in module " + *in_mod->get_username();
 		return false;
 	}

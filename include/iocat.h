@@ -3,52 +3,67 @@
 
 #ifndef BARE_MODULES
 
-// Used by a huge evergrowing pulsating brain that rules the world from the 
-// center of the ultraworld, loving you mkII mix.
+#include <string>
+
+// Used by triggers and switches and states 
+enum STATUS { OFF, ON };
+
+// every input, output, and parameter, will be of a category from this list
 
 enum IOCAT 
 { 
-	// among other things, error category:
+	// keep first:
 	CAT_FIRST,
+	//----------------------------------------------------------------
 	// the following types cover all inputs and outputs:
-	CAT_DOUBLE, // signal + bpm 
-	CAT_SHORT,  // sample ysize
-	CAT_ULONG,  // sample position
-	CAT_TRIG,   // trigger ON/OFF
-	CAT_STATE,  // power/status ON/OFF
+	//----------------------------------------------------------------
+	CAT_DOUBLE, 	// signal, bpm, etc
+	CAT_SHORT,  	// amplitude, etc
+	CAT_ULONG,  	// sample positions etc
+	CAT_TRIG,   	// trigger 		- ON/OFF - on for one sample only
+	CAT_STATE,  	// power/status	- ON/OFF 
+	//----------------------------------------------------------------
 	// these have been added as extra types for parameter 
 	// names and won't be used by inputs or outputs:
-	// note:  ^ that, in future, may not be true ^
-	CAT_FILENAME,	// errm uh dunno.
-	CAT_NOTENAME,	// sea sharp naught or c#0 - will be input/output
+	// note: above statement is subject to change...
+	//----------------------------------------------------------------
+	CAT_STRING,		// notename, filename, etc
 	CAT_MOD_FUNC,	// enum modifier::MOD_FUNC
-	CAT_WAVFILEIN,	// class wavfilein
 	CAT_LOGIC,		// enum logictrigger::LOGIC_FUNC
-	CAT_LOOP_MODE,	// sampler::LOOP_MODE
-	CAT_PLAY_DIR,	// sampler::PLAY_DIR 
-	CAT_PLAY_MODE,	// sampler::PLAY_MODE
-	CAT_JUMP_DIR,	// sampler::JUMP_DIR
-	/*
-	//-----------------------------------------------------
-	CAT_DPARAM_TYPES,	// keep here, above dparnames types
-	//-----------------------------------------------------
-	DCAT_RIFFNAME,
-	DCAT_SIGNALNAME,
-	DCAT_SAMPLESETNAME,
-	*/
+	CAT_LOOP_MODE,	// enum LOOP_MODE
+	CAT_PLAY_DIR,	// enum PLAY_DIR 
+	CAT_PLAY_MODE,	// enum PLAY_MODE
+	CAT_JUMP_DIR,	// enum JUMP_DIR
+	CAT_METER,		// time signature  ie 4/4 3/4 etc
+	CAT_ADSRSECT,	// enum adsr_coord::SECT
+	// the following types are read as strings but they need to match 
+	// the name of module/object 
+	CAT_DOBJ,		// looks up data from dobjlist
+	CAT_SYNTHMOD,	// looks up data from smodlist
+	// cat dobj and cat synthmod have arisen because of new code to 
+	// read data types ie riffs, adsrs, envelopes, tracks etc rather
+	// than it being specialistically hard coded as before.
+	//----------------------------------------------------------------
 	// keep last:
 	CAT_LAST
 };
-/* 
-	CAT_TRIG and CAT_STATE both refer to enum STATUS { OFF, ON } defined in
-	synthmodule.h.  The difference being CAT_TRIG is only ON for the duration
-	of one sample  whereas CAT_STATE is ON for as long as it takes.
-	ie many samples.
-	The distinction is made because it does not make any sense for a play_state
-	output to plug into a trigger input which would cause continual retrigger on every
-	sample until playstate was turned off.
-	CAT_FILENAME, CAT_MOD_FUNC, CAT_CLIP_MODE were added for a 
-	handful of parameters which do not use the normal types.
-*/
+
+class iocat_names
+{
+ public:
+	iocat_names();
+	~iocat_names();
+	string & get_name(IOCAT);
+ private:
+	 string* ioname;
+};
+
 #endif
+
+// "My painting is based on the fact that only what can be seen there
+// is there.  It really is an object.  Any painting is an object and
+// anyone who gets involved enough in this finally has to face up to 
+// the 'object-ness' of whatever it is that he's doing." - Frank Stella
+//
+
 #endif

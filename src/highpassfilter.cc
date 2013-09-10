@@ -23,7 +23,6 @@ hpfilter::hpfilter(string uname) :
 	}
 	fpos = FILTERARRAYSIZE - 1;
 	hpfilter_count++;
-	validate();
 	#ifndef BARE_MODULES
 	create_params();
 	#endif
@@ -100,6 +99,30 @@ bool hpfilter::set_param(paramnames::PAR_TYPE pt, void const* data)
 	}
 	return retv;
 }
+
+bool hpfilter::validate()
+{
+	if (feed_level < -2.0 || feed_level > 2.0) {
+		*err_msg = "\n" +
+			get_paramnames()->get_name(paramnames::PAR_FEED_LEVEL) +
+			" out of range (-2.0 to +2.0)";
+		invalidate();
+	}
+	if (feed_modsize < 0.0 || feed_modsize > 1.0) {
+		*err_msg += "\n" + 
+			get_paramnames()->get_name(paramnames::PAR_FEED_MODSIZE) +
+			" out of range (0.0 to +1.0)";
+		invalidate();
+	}
+	if (wetdry < 0 || wetdry > 1.0) {
+		*err_msg += "\n" +
+			get_paramnames()->get_name(paramnames::PAR_WETDRY) +
+			" out of range (0.0 to +1.0)";
+		invalidate();
+	}
+	return is_valid();
+}
+
 #endif // BARE_MODULES
 
 void hpfilter::run() 

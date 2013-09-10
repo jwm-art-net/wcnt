@@ -15,7 +15,6 @@ degs(0.00), pulse_width(0.50), pwm_size(0.00), poff_deg(0.00), pulse(OFF), recyc
 	get_inputlist()->add_input(this, inputnames::IN_PWM);
 	#endif
 	square_wave_count++;
-	validate();
 	#ifndef BARE_MODULES
 	create_params();
 	#endif
@@ -93,6 +92,23 @@ bool square_wave::set_param(paramnames::PAR_TYPE pt, void const* data)
 	}
 	return retv;
 }
+
+bool square_wave::validate()
+{
+	if (pulse_width <= 0.0 || pulse_width >= 1.0) {
+		*err_msg = "\n" + 
+			get_paramnames()->get_name(paramnames::PAR_PULSE_WIDTH);
+		*err_msg += " should be above 0.0 and under 1.0";
+		invalidate();
+	}
+	if (pwm_size < 0.0 || pwm_size >= 1.0) {
+		*err_msg += "\n" +
+			get_paramnames()->get_name(paramnames::PAR_PWM_SIZE);
+		*err_msg += " should be 0.0 to less than 1.0";
+	}
+	return is_valid();
+}
+
 #endif // BARE_MODULES
 
 void square_wave::init()

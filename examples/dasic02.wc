@@ -1,0 +1,776 @@
+wcnt-1.1z/jwmsynth
+//----------------------------------------------------------------------------
+
+header time.wc  // loader header from time.wc and not here.
+
+//-----------------------------------------------------------------------------
+// setup the time_map
+time_map
+time1  
+        meter_map
+        meter_map
+	bpm_map	
+	bpm_map	
+time1
+
+//-----------------------------------------------------------------------------
+// first, create some riffs.  riffs are inserted into the sequencer, and 
+// contain note patterns.  riffs are not modules.  The first job of a riff
+// is to define the value you will use for a crotchet, or quarter note in 
+// that riff, the value you use will determine what values you use for the 
+// note lengths and note positions for all notes in the riff.
+
+// currently the wcnt sequencer module is monophonic, one sequencer can play
+// only one note at a time.  
+
+riff 
+riff1
+	quarter_value	32
+	note	name	e0	pos	0	len	37.5	vel	1.0
+	note	name	c0	pos	44	len	6.5	vel	0.25
+	note	name	f0	pos	56	len	2.5	vel	0.8
+	note	name	f0	pos	60	len	3.5	vel	0.4
+	note	name	g0	pos	64	len	21.5	vel	0.4
+	note	name	c0	pos	96	len	5.7	vel	0.35
+	note 	name	d0	pos	104	len	12.5	vel	0.5
+riff1
+
+sequencer
+seq1
+        track
+		riff_node
+		riff	riff1	bar	0
+		transpose	0	start_len	0	end_len	0
+		riff_node
+		riff	riff1	bar	1
+		transpose	0	start_len	0	end_len	0
+		riff_node
+		riff	riff1	bar	2
+		transpose	0	start_len	0	end_len	0
+		riff_node
+		riff	riff1	bar	3
+		transpose	0	start_len	0	end_len	0
+		riff_node
+		riff	riff1	bar	4
+		transpose	0	start_len	0	end_len	0
+		riff_node
+		riff	riff1	bar	5
+		transpose	0	start_len	0	end_len	0
+		riff_node
+		riff	riff1	bar	6
+		transpose	0	start_len	0	end_len	0
+		riff_node
+		riff	riff1	bar	7
+		transpose	0	start_len	0	end_len	0
+        track
+	// connect sequencer to keep in sync with time1 time_map module
+        in_bar			time1	out_bar
+        in_bar_trig     	time1	out_bar_trig
+        in_pos_step_size        time1	out_pos_step_size
+	in_beats_per_bar	time1	out_beats_per_bar
+	in_beat_value		time1	out_beat_value
+	// parameters for module: sequencer
+        velocity_response_time  5	// take 5 ms to change velocity
+        hold_notename		off	// ignore hold_notename
+seq1
+
+//-----------------------------------------------------------------------------
+// 
+// clock for modulation, and adsr for amplitude shaping
+
+clock
+lfoclock1
+	in_freq_mod1	off
+	freq	.2135
+	freq_mod1_size	0.0
+lfoclock1
+
+sine_wave
+lfowave1
+	in_phase_trig	lfoclock1	out_phase_trig
+	in_deg_size	lfoclock1	out_deg_size
+	recycle_mode 		off
+	on_trig_reset_phase	off
+	phase_cycles		1.0
+lfowave1
+
+adsr
+adsr1
+        envelope
+		section	name	attack	
+			ut	5	ul	1.0	
+			lt	6	ll	1.0
+                section	name	decay	
+			ut	60.0	ul	0.9	
+			lt	55.0	ll	0.9
+                section	name	release		
+			ut	120.0	ul	0.0
+			lt	105.0	ll	0.0
+        envelope
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_off_trig        seq1	out_note_off_trig
+        in_velocity     	seq1	out_velocity
+	up_thresh		1.0
+	lo_thresh		0.5
+        start_level     0.0
+        sustain_state   on
+        zero_retrigger  off
+adsr1
+
+//-----------------------------------------------------------------------------
+//
+// there are three osc_clocks, running at different octaves.  They each drive a
+// waveform which skips cycles every now and again, because of a rnd_trigger module.
+
+// the three sine waves are then combined into one using the combiner, whose output is
+// fed into three dynamic modules whose modulation has been set so that they each 
+// switch to the upper dynamic at different modulation levels, but each using the same
+// output with in_modulation input.
+
+osc_clock
+osc1
+	// connect with seq1 sequencer module.
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_slide_trig      seq1	out_note_slide_trig
+        in_frequency    	seq1	out_frequency
+        in_freq_mod1    	off
+        in_freq_mod2    	off
+        octave_offset		-1
+        tuning_semitones        0.05	
+        portamento_time 	0.0
+        freq_mod1_size  	0.0
+        freq_mod2_size  	0.0
+osc1
+
+sine_wave
+swave1										
+	in_phase_trig	osc1	out_phase_trig
+	in_deg_size	osc1	out_deg_size
+	recycle_mode		off
+	on_trig_reset_phase	off 				
+	phase_cycles 1.0					
+swave1
+
+osc_clock
+osc2
+	// connect with seq1 sequencer module.
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_slide_trig      seq1	out_note_slide_trig
+        in_frequency    	seq1	out_frequency
+        in_freq_mod1    	off
+        in_freq_mod2    	off
+        octave_offset		-2
+        tuning_semitones        0.025
+        portamento_time 	0.0
+        freq_mod1_size  	0.0
+        freq_mod2_size  	0.0
+osc2
+
+sine_wave
+swave2										
+	in_phase_trig	osc2	out_phase_trig
+	in_deg_size	osc2	out_deg_size
+	recycle_mode		off
+	on_trig_reset_phase	off 				
+	phase_cycles 1.0					
+swave2
+
+osc_clock
+osc3
+	// connect with seq1 sequencer module.
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_slide_trig      seq1	out_note_slide_trig
+        in_frequency    	seq1	out_frequency
+        in_freq_mod1    	off
+        in_freq_mod2    	off
+        octave_offset		-4
+        tuning_semitones        0.0
+        portamento_time 	0.0
+        freq_mod1_size  	0.0
+        freq_mod2_size  	0.0
+osc3
+
+sine_wave
+swave3
+	in_phase_trig	osc3	out_phase_trig
+	in_deg_size	osc3	out_deg_size
+	recycle_mode		off
+	on_trig_reset_phase	off 				
+	phase_cycles 1.0					
+swave3
+
+//-----------------------------------------------------------------------------
+//
+// combining the waveforms:
+
+wcnt_signal	_sw1	in_signal	swave1	out_output	level	0.25	_sw1
+
+wcnt_signal	_sw2	in_signal	swave2	out_output	level	-0.5	_sw2
+
+wcnt_signal	_sw3	in_signal	swave3	out_output	level	0.75	_sw3
+
+combiner
+_sw
+        signals
+                synthmod	name    _sw1
+                synthmod	name    _sw2
+                synthmod	name    _sw3
+        signals
+        mean_total              off
+_sw
+
+//-----------------------------------------------------------------------------
+//
+// dynamicising the waveforms:
+// 
+//	key:
+//		sigin_level - Signal In Level
+//		so_ul - Signal Out Upper Level,	
+//		so_ll - Signal Out Lower Level
+//
+// when use_ratios is off, so_ul and so_ll specify replacement
+// signal levels for in_signal
+//
+// when use_ratios is on, in_signal is multiplied by so_ul or
+// so_ll. (which is used depends on in_modulation)
+
+dynamic
+dyn_sw1
+        amp_map
+                dvertex	sigin_level	0.0	so_ul   0.0	so_ll   0.0
+		dvertex	sigin_level	0.4	so_ul	0.1	so_ll	0.6
+                dvertex	sigin_level	0.5	so_ul   0.15	so_ll   0.65
+                dvertex	sigin_level	0.6	so_ul   0.25	so_ll   0.85
+                dvertex	sigin_level	0.9	so_ul   0.9	so_ll   0.9
+                dvertex	sigin_level	1.0	so_ul   1.0	so_ll   1.0
+        amp_map
+
+
+        in_signal               _sw		out_output
+        in_modulation           lfowave1	out_output
+
+        up_thresh               0.333
+        lo_thresh               0.0
+        posneg_mirror           on
+	use_ratios		off
+dyn_sw1
+
+dynamic
+dyn_sw2
+        amp_map
+                dvertex	sigin_level	0.0	so_ul   0.0	so_ll   0.0
+		dvertex	sigin_level	0.4	so_ul	0.1	so_ll	0.75
+                dvertex	sigin_level	0.5	so_ul   0.15	so_ll   0.25
+                dvertex	sigin_level	0.6	so_ul   0.25	so_ll   0.85
+                dvertex	sigin_level	0.8	so_ul   0.8	so_ll   0.45
+                dvertex	sigin_level	0.9	so_ul   0.19	so_ll   0.95
+                dvertex	sigin_level	1.0	so_ul   1.0	so_ll   0.55
+        amp_map
+
+        in_signal               _sw		out_output
+        in_modulation           lfowave1	out_output
+
+        up_thresh               0.666
+        lo_thresh               0.333
+        posneg_mirror           on
+	use_ratios		off
+dyn_sw2
+
+dynamic
+dyn_sw3
+        amp_map
+                dvertex	sigin_level	0.0	so_ul   0.0	so_ll   0.0
+		dvertex	sigin_level	0.4	so_ul	0.1	so_ll	0.75
+		dvertex	sigin_level	0.45	so_ul	0.8	so_ll	0.1
+                dvertex	sigin_level	0.5	so_ul   0.85	so_ll   0.25
+                dvertex	sigin_level	0.6	so_ul   0.25	so_ll   0.85
+                dvertex	sigin_level	0.8	so_ul   0.4	so_ll   0.45
+		dvertex	sigin_level	0.85	so_ul	0.6	so_ll	0.81
+                dvertex	sigin_level	0.9	so_ul   0.19	so_ll   0.95
+                dvertex	sigin_level	0.95	so_ul   0.0	so_ll   0.75
+                dvertex	sigin_level	1.0	so_ul   1.0	so_ll   0.55
+        amp_map
+
+        in_signal               _sw		out_output
+        in_modulation           lfowave1	out_output
+
+        up_thresh               1.000
+        lo_thresh               0.666
+        posneg_mirror           on
+	use_ratios		off
+dyn_sw3
+
+//-----------------------------------------------------------------------------
+//
+// now the output from the dynamic modules above is placed into wcnt_signals
+// which will be used by the spreader module.  The spreader needs atleast two
+// signals to work.  It spreads the signals out in a line which starts at
+// start_level, and ends at end_level.  Then it takes the in_modulation input
+// signal and looks at where it is upon the line.  It will then choose a
+// signal to output.  The level of the output depends where on the line
+// the modulation lands.  If it is half way between two signals, then two
+// signals will be heard at half their original volume.
+
+wcnt_signal
+dsw1
+	in_signal	dyn_sw1	out_output
+	level	1.0
+dsw1
+
+wcnt_signal
+dsw2
+	in_signal	dyn_sw2	out_output
+	level	1.0
+dsw2
+
+wcnt_signal
+dsw3
+	in_signal	dyn_sw3	out_output
+	level	1.0
+dsw3
+
+spreader
+waveform
+        signals
+                synthmod
+                        name    dsw1
+                synthmod
+                        name    dsw2
+                synthmod
+                        name    dsw3
+        signals
+
+        in_modulation           lfowave1	out_output
+
+        start_level             0.0
+        end_level               1.0
+waveform
+
+//-----------------------------------------------------------------------------
+//
+// set up some clock modules for modulation - amplitude, panning, filter cut off
+//
+
+// amplitude modulation clock + waveform
+clock
+am_clock
+	in_freq_mod1	off
+	freq		14.0
+	freq_mod1_size	0.0
+	
+am_clock
+
+sine_wave
+am_swave									
+	in_phase_trig	am_clock	out_phase_trig
+	in_deg_size	am_clock	out_deg_size
+	recycle_mode		off
+	on_trig_reset_phase	off			
+	phase_cycles 1.0					
+am_swave
+
+// low frequency oscillator clock, waveform, and lfo_controller
+
+lfo_clock
+lfo_c1
+
+        in_phase_trig           off
+        in_freq_mod1            lfo_ctrl1	out_output
+        in_freq_mod2            off
+
+        freq                    0.2
+        freq_mod1_size          4.0
+        freq_mod2_size          0.0
+lfo_c1
+
+sine_wave
+swave_c1									
+	in_phase_trig	lfo_c1	out_phase_trig
+	in_deg_size	lfo_c1	out_deg_size
+	recycle_mode		off
+	on_trig_reset_phase	off
+	phase_cycles 1.0					
+swave_c1
+
+lfo_controller
+lfo_ctrl1
+
+        in_trig                 seq1		out_note_on_trig
+        in_waveform             swave_c1	out_output
+        in_amp_mod              am_swave	out_output
+
+        delay_time              37.5
+        ramp_time               65.0
+        start_level             0.0
+        end_level               1.0
+        response_time           5.0
+        amp_mod_size            0.2
+lfo_ctrl1
+
+// clock which provides the frequency cutoff for filters
+
+lfo_clock
+lfo_c2
+
+        in_phase_trig           off
+        in_freq_mod1            swave_c1	out_output
+        in_freq_mod2            off
+
+        freq                    400
+        freq_mod1_size          0.0
+        freq_mod2_size          8.0
+lfo_c2
+
+lfo_clock
+lfo_c3
+
+        in_phase_trig           off
+        in_freq_mod1            swave_c1	out_output
+        in_freq_mod2            off
+
+        freq                    1000
+        freq_mod1_size          0.0
+        freq_mod2_size          8.0
+lfo_c3
+
+lp_filter
+lpf1
+        in_signal               waveform	out_output
+        in_cutoff_degsize       lfo_c2		out_deg_size
+        in_feedback             lpf1		out_output
+        in_feedback_mod         off
+        feedback                0.25
+        feedback_modsize        0.0
+        wet/dry                 1.0
+lpf1
+
+hp_filter
+hpf1
+        in_signal               waveform	out_output
+        in_cutoff_degsize       lfo_c3		out_deg_size
+        in_feedback             hpf1		out_output
+        in_feedback_mod         off
+        feedback                -0.95
+        feedback_modsize        0.0
+        wet/dry                 1.0
+hpf1
+
+// band pass filter setup
+
+hp_filter
+hpf2
+        in_signal               waveform	out_output
+        in_cutoff_degsize       lfo_c2		out_deg_size
+        in_feedback             lpf2		out_wet_output
+        in_feedback_mod         off
+        feedback                -0.95
+        feedback_modsize        0.0
+        wet/dry                 1.0
+hpf2
+
+
+lp_filter
+lpf2
+        in_signal               hpf2	out_output
+        in_cutoff_degsize       lfo_c3	out_deg_size
+        in_feedback             hpf2	out_wet_output
+        in_feedback_mod         off
+        feedback                0.25
+        feedback_modsize        0.0
+        wet/dry                 1.0
+lpf2
+
+panner
+pan1
+	in_signal	lpf1		out_output
+        in_pan_mod	swave_c1	out_output
+        pan                     0.0
+        pan_mod_size            0.15
+pan1
+
+panner
+pan2
+	in_signal	hpf1		out_output
+        in_pan_mod	swave_c1	out_output
+        pan                     0.0
+        pan_mod_size            0.95
+pan2
+
+echo
+echo_l
+        in_signal       lpf2	out_output
+        in_gain_mod     off
+        in_feedback     echo_r	out_wet_output
+        in_feedback_mod off
+        delay_time      143.0
+        gain    	1.0
+        gain_modsize    0.0
+        feedback        0.5
+        feedback_modsize 0.0
+        wet/dry 	1.0
+echo_l
+
+echo
+echo_r
+        in_signal       echo_l	out_output
+        in_gain_mod     off
+        in_feedback     echo_l	out_wet_output
+        in_feedback_mod off
+        delay_time      133.0
+        gain    	0.65
+        gain_modsize    0.0
+        feedback        0.45
+        feedback_modsize 0.0
+        wet/dry 	1.0
+echo_r
+
+
+
+
+wcnt_signal
+_waveform
+	in_signal	waveform	out_output
+	level	1.0
+_waveform
+
+wcnt_signal
+_bpwave
+	in_signal	lpf2	out_output
+	level	1.0
+_bpwave
+
+wcnt_signal
+_pan1_l
+	in_signal	pan1	out_l
+	level	1.0
+_pan1_l
+
+wcnt_signal
+_pan1_r
+	in_signal	pan1	out_r
+	level	1.0
+_pan1_r
+
+wcnt_signal
+_pan2_l
+	in_signal	pan2	out_l
+	level	1.0
+_pan2_l
+
+wcnt_signal
+_pan2_r
+	in_signal	pan2	out_r
+	level	1.0
+_pan2_r
+
+combiner
+.xmix_l
+        signals
+                synthmod
+                        name    _waveform
+                synthmod
+                        name    _bpwave
+                synthmod
+                        name    _pan1_l
+                synthmod
+                        name    _pan2_l
+        signals
+
+        mean_total              off
+.xmix_l
+
+combiner
+.xmix_r
+        signals
+                synthmod
+                        name    _waveform
+                synthmod
+                        name    _bpwave
+                synthmod
+                        name    _pan1_r
+                synthmod
+                        name    _pan2_r
+        signals
+
+        mean_total              off
+.xmix_r
+
+
+trigger
+.xtrig_l
+        in_signal               .xmix_l	out_output
+        attack_time             20
+        attack_level            0.75
+        release_time            30
+        release_level           0.25
+	independant	off
+.xtrig_l
+
+trigger
+.xtrig_r
+        in_signal               .xmix_r	out_output
+        attack_time             20
+        attack_level            0.75
+        release_time            30
+        release_level           0.25
+	independant	off
+.xtrig_r
+
+adsr
+.xadsr_l
+        envelope
+		section	name	attack	
+			ut	15.0	ul	1.0
+			lt	15.0	ll	1.0
+
+                section	name	decay	
+			ut	35.0	ul	0.5
+			lt	30.0	ll	0.5
+                section	name	release	
+			ut	35.0	ul	0.0
+			lt	30.0	ll	0.0
+        envelope
+
+        in_note_on_trig		.xtrig_l	out_trig
+        in_note_off_trig        .xtrig_l	out_not_trig
+        in_velocity     	off
+
+	up_thresh	1.0
+	lo_thresh	0.0
+        start_level     0.0
+        sustain_state   off
+        zero_retrigger  off
+.xadsr_l
+
+adsr
+.xadsr_r
+        envelope
+		section	name	attack	
+			ut	15.0	ul	1.0
+			lt	15.0	ll	1.0
+
+                section	name	decay	
+			ut	35.0	ul	0.5
+			lt	30.0	ll	0.5
+                section	name	release	
+			ut	35.0	ul	0.0
+			lt	30.0	ll	0.0
+        envelope
+
+        in_note_on_trig		.xtrig_r	out_trig
+        in_note_off_trig        .xtrig_r	out_not_trig
+        in_velocity     	off
+
+	up_thresh	1.0
+	lo_thresh	0.0
+        start_level     0.0
+        sustain_state   off
+        zero_retrigger  off
+.xadsr_r
+
+dynamic
+.xdyn_l
+
+        amp_map
+                dvertex
+                        sigin_level     0.0	so_ul   1.0	so_ll   1.0
+                dvertex
+                        sigin_level     0.2	so_ul   1.2	so_ll   1.2
+                dvertex
+                        sigin_level     0.4	so_ul   1.0	so_ll   1.0
+                dvertex
+                        sigin_level     0.6	so_ul   0.75	so_ll   0.75
+                dvertex
+                        sigin_level     0.8	so_ul   0.625	so_ll   0.625
+                dvertex
+                        sigin_level     1.0	so_ul   0.5	so_ll   0.5
+                dvertex
+                        sigin_level     2.0	so_ul   0.35	so_ll   0.35
+        amp_map
+
+        in_signal               .xmix_l		out_output
+        in_modulation           .xadsr_l	out_output
+
+        up_thresh               1.0
+        lo_thresh               0.25
+        posneg_mirror           on
+	use_ratios		on
+.xdyn_l
+
+dynamic
+.xdyn_r
+
+        amp_map
+                dvertex
+                        sigin_level     0.0	so_ul   1.0	so_ll   1.0
+                dvertex
+                        sigin_level     0.2	so_ul   1.2	so_ll   1.2
+                dvertex
+                        sigin_level     0.4	so_ul   1.0	so_ll   1.0
+                dvertex
+                        sigin_level     0.6	so_ul   0.75	so_ll   0.75
+                dvertex
+                        sigin_level     0.8	so_ul   0.625	so_ll   0.625
+                dvertex
+                        sigin_level     1.0	so_ul   0.5	so_ll   0.5
+                dvertex
+                        sigin_level     2.0	so_ul   0.35	so_ll   0.35
+        amp_map
+
+        in_signal               .xmix_r		out_output
+        in_modulation           .xadsr_r	out_output
+
+        up_thresh               1.0
+        lo_thresh               0.25
+        posneg_mirror           on
+	use_ratios		on
+.xdyn_r
+
+constant one value 1.0 one
+
+stereo_amp
+stamp1
+	in_l		.xdyn_l	out_output
+	in_r		.xdyn_r	out_output
+	in_amp_eg	one	out_output
+	in_amp_mod	off
+	left_amplitude	20000	// 32767 is the maximum amplitude
+	right_amplitude	20000	// 32767 is the maximum amplitude
+	amp_mod_size	0.0	// how much influence velocity has in this case
+	clip_level	32767	// the maximum allowed amplitude
+stamp1
+
+mix_chan ch1	in_left		stamp1	out_left
+		in_right	stamp1	out_right	ch1
+
+mixer
+mix1
+        mix
+		synthmod	name	ch1
+        mix
+        master_level    1.0
+mix1
+
+
+//-----------------------------------------------------------------------------
+// time to spew it all out
+
+wavfile_out
+wav1
+	in_left		mix1	out_left
+	in_right	mix1	out_right
+	in_bar		time1	out_bar
+	in_bar_trig	time1	out_bar_trig
+	filename	dasic02.wav
+	start_bar	0
+	end_bar		8
+wav1
+
+// setup how long to process:
+wcnt_exit
+wcnt_exit_module
+        in_bar  time1 out_bar
+	exit_bar 8
+wcnt_exit_module
+
+wcnt-1.1z/jwmsynth

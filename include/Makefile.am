@@ -43,7 +43,6 @@ wcnt_include_DATA = \
 	wavfileout.h\
 	dtr.h\
 	synthfilereader.h\
-	rifflist.h\
 	constmod.h\
 	freqgenerator.h\
 	modifier.h\
@@ -57,11 +56,10 @@ wcnt_include_DATA = \
 	synthmodulelist.h\
 	modules.h\
 	jwmsynth.h\
-	paramnames.h\
 	connectorlist.h\
+	paramnames.h\
 	modparam.h\
 	modparamlist.h\
-	wavfileinlist.h\
 	randomtrigger.h\
 	logictrigger.h\
 	switcher.h\
@@ -71,9 +69,8 @@ wcnt_include_DATA = \
 	bpmchange.h\
         meterchange.h\
 	timemap.h\
+	sampledata.h\
 	riffnode.h\
-        serialwavfileout.h\
-        contraster.h\
 	delay.h\
 	echo.h\
 	monoamp.h\
@@ -82,6 +79,22 @@ wcnt_include_DATA = \
 	rangelimit.h\
 	pan.h\
 	rms.h\
-	dc_filter.h
+	dc_filter.h\
+	dataobjects.h\
+	dobj.h\
+	dobjlist.h\
+	dobjnames.h\
+	dobjparam.h\
+	dobjparamlist.h\
+	dparnames.h\
+	moddobj.h\
+	moddobjlist.h
+	dobjdobj.h\
+	dobjdobjlist.h\
+	dobjmod.h\
+	dynvertex.h\
+	dynamic.h\
+	spreader.h\
+	notetran.h
 	
 EXTRA_DIST = $(wcnt_include_DATA)

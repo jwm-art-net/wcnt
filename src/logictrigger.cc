@@ -11,7 +11,6 @@ logictrigger::logictrigger(string uname)
 	get_inputlist()->add_input(this, inputnames::IN_TRIG2);
 	#endif
 	logictrigger_count++;
-	validate();
 	#ifndef BARE_MODULES
 	create_params();
 	#endif
@@ -87,9 +86,9 @@ void logictrigger::run()
 		else if (out_trig == ON)
 			out_trig = OFF;
 	} else { // logicfunc == XOR
-		if ((*in_trig1 == ON || *in_trig2 == ON) 
-				&& 
-			(*in_trig1 == OFF || *in_trig2 == OFF))
+		if ((*in_trig1 == ON && *in_trig2 == OFF) 
+				|| 
+			(*in_trig1 == OFF && *in_trig2 == ON))
 			out_trig = ON;
 		else if (out_trig == ON)
 			out_trig = OFF;

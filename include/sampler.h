@@ -1,16 +1,10 @@
 #ifndef SAMPLER_H
 #define SAMPLER_H
 
-#include "conversions.h"
-
 #ifndef BARE_MODULES
-// included wavfileinlist amongst this as, um, well - because ?#@$!
-#include "wavfileinlist.h"
 #include "modoutputslist.h"
 #include "modinputslist.h"
 #include "modparamlist.h"
-#else
-#include "wavfilein.h"
 #endif
 
 #include "samplercommon.h"
@@ -89,15 +83,7 @@ class sampler : public synthmod
 	void set_anti_clip_samples(short acs);
 	void set_anti_clip_each_end(STATUS acee){ ac_each_end = acee;}
 	void set_zero_search_range(short zsr){ search_range = (zsr != 1) ? zsr : 2;}
-	void set_root_note(char * rn);
-	void set_root_freq(double rf){ root_deg_size = freq_to_step( rf, 0 );}
-	void set_root_degsize(double rds){ root_deg_size = rds;}
 	void set_degsize_amount(double css){ deg_size_amount = css;} // 0 ignore 1 western  !=1 macrotonal
-	// other
-	#ifndef BARE_MODULES
-	static void register_wavfilein_list(wavfilein_list* w) { wavfilelist = w;}
-	static wavfilein_list* get_wavfilein_list(){ return wavfilelist;}
-	#endif
 	// virtual funcs
 	void run();
 	void init();
@@ -134,9 +120,9 @@ class sampler : public synthmod
 	short anti_clip_size;
 	STATUS ac_each_end;
 	short search_range;
-	double root_deg_size; // used by root note/freq
 	double deg_size_amount;
 	// working
+	double root_deg_size;
  	PLAY_DIR playdir;
 	PLAY_DIR acplaydir;
 	bool loop_yet;
@@ -198,7 +184,6 @@ class sampler : public synthmod
 	#ifndef BARE_MODULES
 	static void create_params();
 	static bool done_params;
-	static wavfilein_list* wavfilelist;
 	#endif
 };
 

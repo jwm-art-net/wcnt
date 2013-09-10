@@ -78,6 +78,17 @@ bool rms::set_param(paramnames::PAR_TYPE pt, void const* data)
 	}
 	return retv;
 }
+
+bool rms::validate()
+{
+	if (rms_time <= 0) {
+		*err_msg = "\n" + get_paramnames()->get_name(paramnames::PAR_RMS_TIME);
+		*err_msg += " should be more than 0.0 ms";
+		invalidate();
+	}
+	return is_valid();
+}
+
 #endif // BARE_MODULES
 
 void rms::run() 

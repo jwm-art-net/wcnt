@@ -1,13 +1,14 @@
 #ifndef TRIANGLEWAVE2_H
 #include "../include/trianglewave2.h"
 
-triangle_wave2::triangle_wave2(string uname)
-: synthmod(synthmodnames::MOD_TRIWAVE2, triangle_wave2_count, uname),
-  in_phase_trig(0), in_deg_size(0), in_normal_mod(0), output(0.00), play_state(OFF),
-  normal_freq(440.00), norm_mod_hi(880), norm_mod_lo(220), recycle(OFF), zero_retrigger_mode(OFF),
-  nf_deg_size(0), nf_pre_deg_size(0), fmrad(0), fmmid(0), nf_sectmaxsamps(0), 
-  nf_sectsample(0), nf_counter_ratio(0.0), sect(0), sect_spanlvl(0), sect_startlvl(0),
-  old_maxsamps(0), sectmaxsamps(1), sectsample(0), counter_ratio(0)
+triangle_wave2::triangle_wave2(string uname) :
+	synthmod(synthmodnames::MOD_TRIWAVE2, triangle_wave2_count, uname),
+	in_phase_trig(0), in_deg_size(0), in_normal_mod(0), output(0.00), 
+	play_state(OFF), normal_freq(440.00), norm_modsize(0), recycle(OFF), 
+	zero_retrigger_mode(OFF), nf_deg_size(0), nf_pre_deg_size(0),
+	nf_sectmaxsamps(0), nf_sectsample(0), nf_counter_ratio(0.0), sect(0),
+	sect_spanlvl(0), sect_startlvl(0), old_maxsamps(0), sectmaxsamps(1), 
+	sectsample(0), counter_ratio(0)
 {
 	#ifndef BARE_MODULES
 	get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
@@ -17,7 +18,6 @@ triangle_wave2::triangle_wave2(string uname)
 	get_inputlist()->add_input(this, inputnames::IN_NORM_MOD);
 	#endif
 	triangle_wave2_count++;
-	validate();
 	#ifndef BARE_MODULES
 	create_params();
 	#endif
@@ -78,12 +78,8 @@ bool triangle_wave2::set_param(paramnames::PAR_TYPE pt, void const* data)
 			set_normal_frequency(*(double*)data);
 			retv = true;
 			break;
-		case paramnames::PAR_NORM_MOD_HI:
-			set_normal_mod_range_hi(*(double*)data);
-			retv = true;
-			break;
-		case paramnames::PAR_NORM_MOD_LO:
-			set_normal_mod_range_lo(*(double*)data);
+		case paramnames::PAR_NORM_MODSIZE:
+			set_normal_modsize(*(double*)data);
 			retv = true;
 			break;
 		case paramnames::PAR_RECYCLE_MODE:
@@ -100,15 +96,30 @@ bool triangle_wave2::set_param(paramnames::PAR_TYPE pt, void const* data)
 	}
 	return retv;
 }
+
+bool triangle_wave2::validate()
+{
+	if (normal_freq <= 0.0) {
+		*err_msg = "\n" + get_paramnames()->get_name(paramnames::PAR_NORM_FREQ);
+		*err_msg += " should be well above 0.0";
+		invalidate();
+	}
+	if (norm_modsize <0.0 || norm_modsize > 15) {
+		*err_msg += "\n" + 
+			get_paramnames()->get_name(paramnames::PAR_NORM_MODSIZE);
+		*err_msg += " should be within range 0.0 to 15.0";
+		invalidate();
+	}
+	return is_valid();
+}
+
 #endif
 
 void triangle_wave2::init()
 {
 	nf_pre_deg_size = freq_to_step(normal_freq, 0);
-	fmrad = (norm_mod_hi - norm_mod_lo) / 2; 
-	fmmid = norm_mod_lo + fmrad;
 }
-	
+
 void triangle_wave2::run()
 {
 	if (*in_phase_trig == ON)	
@@ -124,7 +135,10 @@ void triangle_wave2::run()
 	}
 	if (play_state == ON)
 	{
-		nf_deg_size = 	nf_pre_deg_size + nf_pre_deg_size * (fmmid + fmrad * *in_normal_mod);
+		if (*in_normal_mod < 0)
+			nf_deg_size=nf_pre_deg_size/(1 + norm_modsize * -*in_normal_mod); 
+		else
+			nf_deg_size=nf_pre_deg_size*(1 + norm_modsize * *in_normal_mod);
 		nf_counter_ratio = nf_sectsample / nf_sectmaxsamps;
 		nf_sectmaxsamps = 90 / nf_deg_size;
 		nf_sectsample 	= nf_sectmaxsamps 	* nf_counter_ratio;
@@ -180,8 +194,7 @@ void triangle_wave2::create_params()
 	if (done_params == true)
 		return;
 	get_paramlist()->add_param(synthmodnames::MOD_TRIWAVE2, paramnames::PAR_NORM_FREQ);
-	get_paramlist()->add_param(synthmodnames::MOD_TRIWAVE2, paramnames::PAR_NORM_MOD_HI);
-	get_paramlist()->add_param(synthmodnames::MOD_TRIWAVE2, paramnames::PAR_NORM_MOD_LO);
+	get_paramlist()->add_param(synthmodnames::MOD_TRIWAVE2, paramnames::PAR_NORM_MODSIZE);
 	get_paramlist()->add_param(synthmodnames::MOD_TRIWAVE2, paramnames::PAR_RECYCLE_MODE);
 	get_paramlist()->add_param(synthmodnames::MOD_TRIWAVE2, paramnames::PAR_ZERO_RETRIGGER);
 	done_params = true;

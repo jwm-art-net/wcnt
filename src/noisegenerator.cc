@@ -10,10 +10,6 @@ noise_generator::noise_generator(string uname)
 	get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
 	#endif
 	noise_generator_count++;
-	validate();
-	#ifndef BARE_MODULES
-	create_params();
-	#endif
 }
 
 noise_generator::~noise_generator()
@@ -24,6 +20,7 @@ noise_generator::~noise_generator()
 }
 
 #ifndef BARE_MODULES
+
 void const* noise_generator::get_out(outputnames::OUT_TYPE ot)
 {
 	void const* o = 0;
@@ -37,22 +34,9 @@ void const* noise_generator::get_out(outputnames::OUT_TYPE ot)
 	}
 	return o;
 }
-#endif
 
-void noise_generator::run() 
-{
-	output = (float) rand() / (RAND_MAX / 2) - 1;
-}
+#endif
 
 int noise_generator::noise_generator_count = 0;
 
-#ifndef BARE_MODULES
-bool noise_generator::done_params = false;
-
-void noise_generator::create_params()
-{
-	done_params = true;
-	return;
-}
-#endif
 #endif

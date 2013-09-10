@@ -9,7 +9,6 @@ wcnt_module::wcnt_module(string uname) :
 {
 	get_inputlist()->add_input(this, inputnames::IN_BAR);
 	wcnt_module_count++;
-	validate();
 	create_params();
 }
  
@@ -47,7 +46,18 @@ bool wcnt_module::set_param(paramnames::PAR_TYPE pt, void const* data)
 	return retv;
 }
 
+bool wcnt_module::validate()
+{
+	if (exit_bar <= 0) {
+		*err_msg = "\ninvalid value for "
+			+ get_paramnames()->get_name(paramnames::PAR_EXIT_BAR) + "( > 0)";
+		invalidate();
+	}
+	return is_valid();
+}
+
 short wcnt_module::wcnt_module_count = 0;
+
 bool wcnt_module::done_params = false;
 
 void wcnt_module::create_params()

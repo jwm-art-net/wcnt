@@ -21,11 +21,12 @@ class sample_hold : public synthmod
 	const STATUS* get_input_trig(){ return in_trig;}
 	const double* get_input_signal(){ return in_signal;}
 	const double* get_output(){ return &output;}
-	void set_decay_time(double ms){ decay_time = (ms > 0) ? ms : 0; init(); }
+	void set_decay_time(double ms){ decay_time = ms;}
 	double get_decay_time(){ return decay_time;}
 	// virtual funcs
 	void run();
 	void init();
+	bool validate();
 	#ifndef BARE_MODULES
 	void const* get_out(outputnames::OUT_TYPE);
 	void const* set_in(inputnames::IN_TYPE, void const*);
@@ -41,7 +42,7 @@ class sample_hold : public synthmod
 	double decay_size;
 	static int sample_hold_count;
  	#ifndef BARE_MODULES
-	static void create_params();
+	void create_params();
 	static bool done_params;
  	#endif
 };

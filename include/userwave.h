@@ -9,6 +9,8 @@
 #include "modoutputslist.h"
 #include "modinputslist.h"
 #include "modparamlist.h"
+#include "dobjparamlist.h"
+#include "dobjdobjlist.h"
 #endif
 
 class user_wave : public synthmod 
@@ -42,12 +44,14 @@ class user_wave : public synthmod
 	STATUS get_recycle_mode(){ return recycle;}
 	STATUS get_zero_retrigger_mode(){ return zero_retrigger_mode;}
 	// virtual funcs
+	void init();
 	void run();
-	void init(){};
+	bool validate();
 	#ifndef BARE_MODULES
 	void const* get_out(outputnames::OUT_TYPE);
 	void const* set_in(inputnames::IN_TYPE, void const*);
 	bool set_param(paramnames::PAR_TYPE, void const*);
+	dobj* add_dobj(dobj*);
 	#endif
  private:
 	STATUS const* in_phase_trig;
@@ -72,8 +76,10 @@ class user_wave : public synthmod
 	STATUS zero_retrigger_mode;
 	static int user_wave_count;
 	#ifndef BARE_MODULES
-	static void create_params();
+	void create_params();
+	void create_dobj();
 	static bool done_params;
+	static bool done_dobj;
 	#endif
 };
 

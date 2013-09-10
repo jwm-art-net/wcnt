@@ -11,7 +11,6 @@ dc_filter::dc_filter(string uname) :
 	get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
 	#endif
 	dc_filter_count++;
-	validate();
 	#ifndef BARE_MODULES
 	create_params();
 	#endif
@@ -78,6 +77,17 @@ bool dc_filter::set_param(paramnames::PAR_TYPE pt, void const* data)
 	}
 	return retv;
 }
+
+bool dc_filter::validate()
+{
+	if (dc_time <= 0) {
+		*err_msg = "\n" + get_paramnames()->get_name(paramnames::PAR_DC_TIME);
+		*err_msg = " should be more than 0.0 ms";
+		invalidate();
+	}
+	return is_valid();
+}
+
 #endif // BARE_MODULES
 
 void dc_filter::run() 

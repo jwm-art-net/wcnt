@@ -3,8 +3,7 @@
 
 #ifndef BARE_MODULES
 
-outputnames::outputnames()
-: outname(NULL), outcat(NULL)
+outputnames::outputnames() : outname(NULL), outcat(NULL)
 {
 	outname = new string[OUT_LAST + 1];
 	outcat = new IOCAT[OUT_LAST + 1];
@@ -56,15 +55,25 @@ outputnames::outputnames()
 	outname[OUT_METER_CHANGE_TRIG]="out_meter_change_trig";	outcat[OUT_METER_CHANGE_TRIG] = CAT_TRIG;
 	outname[OUT_BPM_CHANGE_STATE] = "out_bpm_change_state";	outcat[OUT_BPM_CHANGE_STATE] = CAT_STATE;
 	outname[OUT_LOOP_TRIG] = "out_loop_trig";				outcat[OUT_LOOP_TRIG] = CAT_TRIG;
-	outname[OUT_NOTENAME] = "out_notename";					outcat[OUT_NOTENAME] = CAT_NOTENAME;
+	outname[OUT_NOTENAME] = "out_notename";					outcat[OUT_NOTENAME] = CAT_STRING;
 	outname[OUT_VELOCITY_RAMP] = "out_velocity_ramp";		outcat[OUT_VELOCITY_RAMP] = CAT_DOUBLE;
 	outname[OUT_OFF_TRIG] = "out_off_trig";					outcat[OUT_OFF_TRIG] = CAT_TRIG;
 	outname[OUT_MONO] = "out_mono"; 						outcat[OUT_MONO] = CAT_SHORT;
 	outname[OUT_WET_OUTPUT] = "out_wet_output"; 			outcat[OUT_WET_OUTPUT] = CAT_DOUBLE;	
 	outname[OUT_RMS] = "out_rms";							outcat[OUT_RMS] = CAT_DOUBLE;
 	outname[OUT_M] = "out_m";								outcat[OUT_M] = CAT_DOUBLE;
+	outname[OUT_RISE_TRIG] = "out_rise_trig";				outcat[OUT_RISE_TRIG] = CAT_TRIG;
+	outname[OUT_FALL_TRIG] = "out_fall_trig";				outcat[OUT_FALL_TRIG] = CAT_TRIG;
+	outname[OUT_TRANSPOSE] = "out_transpose";				outcat[OUT_TRANSPOSE] = CAT_SHORT;
+//	outname[OUT_OFRANGETRIG] = "out_ofrange_trig";			outcat[OUT_OFRANGETRIG] = CAT_TRIG;
+	outname[OUT_NOVALUE] = "out_no_value";					outcat[OUT_NOVALUE] = CAT_DOUBLE;
+	outname[OUT_NSVALUE] = "out_ns_value";					outcat[OUT_NSVALUE] = CAT_DOUBLE;
+	outname[OUT_NOT_NO_TRIG] = "out_not_no_trig";			outcat[OUT_NOT_NO_TRIG] = CAT_TRIG;
+	outname[OUT_NOT_NS_TRIG] = "out_not_ns_trig";			outcat[OUT_NOT_NS_TRIG] = CAT_TRIG;
+	
 /*	These were intended for sampler2 module which uses inputs/outputs instead
-	of parameters, but it has not sprouted into existence yet.
+	of parameters, but it has not sprouted into existence yet. still, look at
+	all the new ones instead...burp.
 	outname[OUT_PLAY_DIR] = "out_play_dir";
 	outcat[OUT_PLAY_DIR] = CAT_PLAY_DIR;
 	outname[OUT_WAVFILE] = "out_wavfilein";
@@ -97,7 +106,7 @@ outputnames::~outputnames()
 		delete[] outcat;
 }
 
-string outputnames::getname(OUT_TYPE id) const
+string outputnames::get_name(OUT_TYPE id) const
 {
 	if (id >= OUT_FIRST && id < OUT_LAST) 
 		return outname[id];
@@ -105,7 +114,7 @@ string outputnames::getname(OUT_TYPE id) const
 		return outname[OUT_FIRST];
 }
 
-IOCAT outputnames::getcategory(OUT_TYPE id) const
+IOCAT outputnames::get_category(OUT_TYPE id) const
 {
 	if (id >= OUT_FIRST && id < OUT_LAST)
 		return outcat[id];

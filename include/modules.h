@@ -43,5 +43,8 @@
 #include "pan.h"
 #include "rms.h"
 #include "dc_filter.h"
+#include "dynamic.h"
+#include "spreader.h"
+#include "notetran.h"
 
 #endif

@@ -11,8 +11,6 @@ stereo_channel::stereo_channel(string uname)
 	get_inputlist()->add_input(this, inputnames::IN_RIGHT);
 	#endif
 	stereochannel_count++;
-	validate();
-//	create_params(); no params to create.
 }
 
 stereo_channel::~stereo_channel()
@@ -58,10 +56,6 @@ void const* stereo_channel::set_in(inputnames::IN_TYPE it, void const* o)
 	return i;
 }
 
-bool stereo_channel::set_param(paramnames::PAR_TYPE pt, void const* data)
-{
-	return false; // no parameters
-}
 #endif // BARE_MODULES
 
 int stereo_channel::stereochannel_count = 0;

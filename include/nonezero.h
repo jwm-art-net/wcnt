@@ -33,21 +33,14 @@ class nonezero: public synthmod
 	const STATUS* get_output_none_state(){ return &out_none_STATUS; }
 	// virtual funcs
 	void run(){};
-	void init(){};
 	#ifndef BARE_MODULES
 	void const* get_out(outputnames::OUT_TYPE);
-	void const* set_in(inputnames::IN_TYPE, void const*);
-	bool set_param(paramnames::PAR_TYPE, void const* data){ return false;}
 	#endif
  private:
 	const double out_none_double;
 	const short out_none_short;
 	const unsigned long out_none_ulong;
 	const STATUS out_none_STATUS;
- 	#ifndef BARE_MODULES
-	static void create_params();
-	static bool done_params;
- 	#endif
 };
 
 #endif

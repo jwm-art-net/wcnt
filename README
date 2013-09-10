@@ -2,11 +2,8 @@
   O---\\\\|||[:::>  <:::]|||////---O
   \ ----------   wcnt   ---------- /
        Wav Composer Not Toilet!
-  / ---------- v 1.1001 ---------- \
+  / ----------  v 1.1z  ---------- \
   O---////|||[::>    <::]|||\\\\---O
-
-This version is unofficially codenamed 
-'Bog Brush'.
 
 compile in the usual manner:
 
@@ -19,15 +16,28 @@ which will give you some limited help.
 Some of which can be copied and pasted
 into a wcnt file and edited.
 
-BE SURE TO CHECK THE EXAMPLES DIRECTORY
+there is also source code for a little
+program which supposedly is meant to
+help with finding values for note 
+positions and lengths.  It allows you
+to choose a quarter value suitable for
+the type of riff you want to create, and
+displays note positions/lengths through
+a bar, and also, values for several bars.
 
-note: wcnt.prj is  a  project file for
-the Anjuta IDE version 1.2.0.
-see anounce.txt and Changelog for
-important information.
+To compile it type:
+
+gcc lensel.cc -o lensel
+
+to execute it type (from same directory)
+
+./notesel
+
+Be warned:  It does very little checking 
+of user input.....
 
   O---\\\\|||[:::>  <:::]|||////---O
   \ ----------   wcnt   ---------- /
        Wav Composer Not Toilet!
-  / ---------- v 1.1001 ---------- \
+  / ----------  v 1.1z  ---------- \
   O---////|||[::>    <::]|||\\\\---O

@@ -9,15 +9,14 @@
 #include "modoutputslist.h"
 #include "modinputslist.h"
 #include "modparamlist.h"
+#include "dobjparamlist.h"
+#include "dobjdobjlist.h"
 #endif
 
 #include "bpmchange.h"
 #include "meterchange.h"
 
 /*
-	Thanks to Time Goetze on the Linux Audio Developers mailing list 
-	for clarifying time signature and bpm calculation.
-	
 	timemap
 	======
 
@@ -43,6 +42,11 @@
 	the above two examples illustrate the importance of adding
 	bpm tempo changes in specific order.
 	
+	-------------
+	Thanks to Tim Goetze on the LAD mailing list for clarifying time 
+	signature and bpm calculations.
+
+
 	Previously on bpmmap
 	--------------------
 	this module was previously named bpmmap at the start of the
@@ -51,7 +55,7 @@
 	previously hardcoded a value of 64 for a quarter, and 256 for 
 	bar length.  That was fine for 4/4 but bar length would be
 	wrong for other time signatures.  Now quarter value is 6720 which
-	will give 1/256 septuplets a value of 105. There gives plenty of 
+	will give 1/256 septuplets a value of 105. That gives plenty of 
 	scope for fine tuning of note positions and lengths
 
 	Previously on sequencer (prior to wcnt 1.1001):
@@ -98,12 +102,44 @@
 	it will be ON for one sample only if the bpm jumps, and it will
 	be on for the entire duration of a bpm ramp.
 
+	New Method
+	==========
+	
+	bool check_position(short bar, double pos, short quarter_val);
+	
+	returns true if the specified position within the bar does not
+	conflict with the time signature at that bar.
+	
+	returns false if the position exceeds the bar length.
+	
+	obviously, it is no use using this method until all time signature
+	changes have been created and inserted.  generally used from the
+	validate method of some other module.  (validate is called before
+	the synth begins it's run().)  it has been created because the
+	controller module needs it for creating ramps from one position in
+	one bar, to another position in some other bar.  things would get 
+	rather messy if a ctrlpoint was not at a valid position.  
+	 
+	why is it as soon as I've thought about a problem for a while and then
+	decide on the solution, and say why I've decided that is the correct
+	sollution, that I think of another, perhaps better sollution, which 
+	completely goes against what I've just claimed?
+	
+	Think of the adsr.  If on note_off the adsr has not yet reached the
+	sustain section, then the ramp is created from the current level
+	to the release level.  So, if a ctrlpoint is not reached because it's
+	position is not within a bar because the time signature creates a
+	shorter bar, then the ramp is taken from the current level to the
+	next level, and no need for a poxy check. hoorah!  which is why I've
+	not yet created the said method.
+	
+	___...---***still thinking this through***---...___	
 */
 
 class timemap : public synthmod
 {
  public:
-	 enum { QUARTER_VALUE = 6720 };
+	enum { QUARTER_VALUE = 6720 };
 	timemap(string uname);
  	~timemap();
 // list insertion and navigation methods
@@ -131,6 +167,8 @@ class timemap : public synthmod
 		(meterchange*)(meter_item = meter_map->goto_prev())->get_data();}
 	meterchange* goto_next_meter(){ return currentmeter =
 		(meterchange*)(meter_item = meter_map->goto_next())->get_data();}
+	// general purpose method used for checking by other modules,
+//	bool check_position(short bar, double pos, short quarter_val);
 // outputs access:
 	short const* get_out_bar(){return &out_bar;}
 	unsigned long const* get_out_pos_in_bar(){return &out_pos_in_bar;}
@@ -149,9 +187,7 @@ class timemap : public synthmod
 	void init(); // init will grab global bpm to start with
 	#ifndef BARE_MODULES
 	void const* get_out(outputnames::OUT_TYPE);
-	// there are no inputs or params for timemap so these just return.
-	void const* set_in(inputnames::IN_TYPE, void const*){return 0;} 
-	bool set_param(paramnames::PAR_TYPE, void const*){return false;}
+	dobj* add_dobj(dobj*);
 	#endif
  private:
 // outputs
@@ -197,8 +233,8 @@ class timemap : public synthmod
 // synthmod stuff for keeping things cushdy.
  	static short timemap_count;
 	#ifndef BARE_MODULES
-	static void create_params();
-	static bool done_params;
+	static bool done_moddobj;
+	void create_moddobj();
 	#endif
 };
 

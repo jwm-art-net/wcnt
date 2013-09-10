@@ -9,7 +9,6 @@ constmod::constmod(string uname)
 	get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
 	#endif
 	constmod_count++;
-	validate();
 	#ifndef BARE_MODULES
 	create_params();
 	#endif
@@ -23,6 +22,7 @@ constmod::~constmod()
 }
 
 #ifndef BARE_MODULES
+
 void const* constmod::get_out(outputnames::OUT_TYPE ot)
 {
 	void const* o = 0;
@@ -53,10 +53,13 @@ bool constmod::set_param(paramnames::PAR_TYPE pt, void const* data)
 	}
 	return retv;
 }
+
 #endif // BARE_MODULES
+
 int constmod::constmod_count = 0;
 
 #ifndef BARE_MODULES
+
 bool constmod::done_params = false;
 
 void constmod::create_params()
@@ -66,5 +69,6 @@ void constmod::create_params()
 	get_paramlist()->add_param(synthmodnames::MOD_CONSTMOD, paramnames::PAR_VALUE);
 	done_params = true;
 }
+
 #endif
 #endif

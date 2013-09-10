@@ -87,12 +87,12 @@ VERSION = 1.0001c
 
 INCLUDES = 
 
-CXXFLAGS =  	 -Wall -Wimplicit -Wreturn-type -Wunused -Wswitch -Wcomment -Wuninitialized -Wparentheses -Wtraditional -Wpointer-arith -Wmissing-prototypes 	 -O3          -ffast-math 	 -g
+CXXFLAGS =  	 -Wall -Wimplicit -Wreturn-type -Wunused -Wswitch -Wcomment -Wuninitialized -Wparentheses -Wtraditional -Wpointer-arith -Wmissing-prototypes 	 -O3
 
 
 bin_PROGRAMS = wcnt
 
-wcnt_SOURCES =  	adsr.cc 	adsrcoord.cc 	clockclock.cc 	conversions.cc 	dtr.cc 	inputnames.cc 	lfoclock.cc 	lfocontroller.cc 	linkedlist.cc 	lowpassfilter.cc 	main.cc 	modinput.cc 	modinputslist.cc 	modoutput.cc 	modoutputslist.cc 	noisegenerator.cc 	nonezero.cc 	notedata.cc 	oscclock.cc 	outputnames.cc 	riffdata.cc 	sampler.cc 	sequencer.cc 	sinewave.cc 	squarewave.cc 	stereoamp.cc 	stereochannel.cc 	stereomixer.cc 	synthmodnames.cc 	synthmodule.cc 	wavfileheader.cc 	wavfilein.cc 	wavfileout.cc 	synthfilereader.cc 	rifflist.cc 	constmod.cc 	freqgenerator.cc 	modifier.cc 	samplehold.cc 	trigger.cc 	trianglewave.cc 	trianglewave2.cc 	userwave.cc 	userwavevertex.cc 	connector.cc 	synthmodulelist.cc 	jwmsynth.cc 	paramnames.cc 	connectorlist.cc 	modparam.cc 	modparamlist.cc 	wavfileinlist.cc 	randomtrigger.cc 	logictrigger.cc 	switcher.cc 	wcntsignal.cc 	highpassfilter.cc 	combiner.cc 	bpmchange.cc 	meterchange.cc 	timemap.cc 	riffnode.cc 	serialwavfileout.cc 	contraster.cc 	delay.cc 	echo.cc 	monoamp.cc 	wcntmodule.cc 	multiplier.cc 	rangelimit.cc 	pan.cc 	rms.cc 	dc_filter.cc
+wcnt_SOURCES =  	adsr.cc 	adsrcoord.cc 	clockclock.cc 	conversions.cc 	dtr.cc 	inputnames.cc 	iocat.cc 	lfoclock.cc 	lfocontroller.cc 	linkedlist.cc 	lowpassfilter.cc 	main.cc 	modinput.cc 	modinputslist.cc 	modoutput.cc 	modoutputslist.cc 	noisegenerator.cc 	nonezero.cc 	notedata.cc 	oscclock.cc 	outputnames.cc 	riffdata.cc 	sampler.cc 	sequencer.cc 	sinewave.cc 	squarewave.cc 	stereoamp.cc 	stereochannel.cc 	stereomixer.cc 	synthmodnames.cc 	synthmodule.cc 	wavfileheader.cc 	wavfilein.cc 	wavfileout.cc 	synthfilereader.cc 	constmod.cc 	freqgenerator.cc 	modifier.cc 	samplehold.cc 	trigger.cc 	trianglewave.cc 	trianglewave2.cc 	userwave.cc 	userwavevertex.cc 	connector.cc 	synthmodulelist.cc 	jwmsynth.cc 	paramnames.cc 	connectorlist.cc 	modparam.cc 	modparamlist.cc 	randomtrigger.cc 	logictrigger.cc 	switcher.cc 	wcntsignal.cc 	highpassfilter.cc 	combiner.cc 	bpmchange.cc 	meterchange.cc 	timemap.cc 	sampledata.cc 	riffnode.cc 	serialwavfileout.cc 	contraster.cc 	delay.cc 	echo.cc 	monoamp.cc 	wcntmodule.cc 	multiplier.cc 	rangelimit.cc 	pan.cc 	rms.cc 	dc_filter.cc 	dobj.cc 	dobjlist.cc 	dobjnames.cc 	dobjparam.cc 	dobjparamlist.cc 	dparnames.cc 	moddobj.cc 	moddobjlist.cc 	dobjdobj.cc 	dobjdobjlist.cc 	dobjmod.cc 	dynvertex.cc 	dynamic.cc 	spreader.cc 	notetran.cc
 
 
 wcnt_LDFLAGS = 
@@ -111,28 +111,33 @@ LDFLAGS =
 LIBS = 
 wcnt_OBJECTS =  adsr.$(OBJEXT) adsrcoord.$(OBJEXT) clockclock.$(OBJEXT) \
 conversions.$(OBJEXT) dtr.$(OBJEXT) inputnames.$(OBJEXT) \
-lfoclock.$(OBJEXT) lfocontroller.$(OBJEXT) linkedlist.$(OBJEXT) \
-lowpassfilter.$(OBJEXT) main.$(OBJEXT) modinput.$(OBJEXT) \
-modinputslist.$(OBJEXT) modoutput.$(OBJEXT) modoutputslist.$(OBJEXT) \
-noisegenerator.$(OBJEXT) nonezero.$(OBJEXT) notedata.$(OBJEXT) \
-oscclock.$(OBJEXT) outputnames.$(OBJEXT) riffdata.$(OBJEXT) \
-sampler.$(OBJEXT) sequencer.$(OBJEXT) sinewave.$(OBJEXT) \
-squarewave.$(OBJEXT) stereoamp.$(OBJEXT) stereochannel.$(OBJEXT) \
-stereomixer.$(OBJEXT) synthmodnames.$(OBJEXT) synthmodule.$(OBJEXT) \
-wavfileheader.$(OBJEXT) wavfilein.$(OBJEXT) wavfileout.$(OBJEXT) \
-synthfilereader.$(OBJEXT) rifflist.$(OBJEXT) constmod.$(OBJEXT) \
+iocat.$(OBJEXT) lfoclock.$(OBJEXT) lfocontroller.$(OBJEXT) \
+linkedlist.$(OBJEXT) lowpassfilter.$(OBJEXT) main.$(OBJEXT) \
+modinput.$(OBJEXT) modinputslist.$(OBJEXT) modoutput.$(OBJEXT) \
+modoutputslist.$(OBJEXT) noisegenerator.$(OBJEXT) nonezero.$(OBJEXT) \
+notedata.$(OBJEXT) oscclock.$(OBJEXT) outputnames.$(OBJEXT) \
+riffdata.$(OBJEXT) sampler.$(OBJEXT) sequencer.$(OBJEXT) \
+sinewave.$(OBJEXT) squarewave.$(OBJEXT) stereoamp.$(OBJEXT) \
+stereochannel.$(OBJEXT) stereomixer.$(OBJEXT) synthmodnames.$(OBJEXT) \
+synthmodule.$(OBJEXT) wavfileheader.$(OBJEXT) wavfilein.$(OBJEXT) \
+wavfileout.$(OBJEXT) synthfilereader.$(OBJEXT) constmod.$(OBJEXT) \
 freqgenerator.$(OBJEXT) modifier.$(OBJEXT) samplehold.$(OBJEXT) \
 trigger.$(OBJEXT) trianglewave.$(OBJEXT) trianglewave2.$(OBJEXT) \
 userwave.$(OBJEXT) userwavevertex.$(OBJEXT) connector.$(OBJEXT) \
 synthmodulelist.$(OBJEXT) jwmsynth.$(OBJEXT) paramnames.$(OBJEXT) \
 connectorlist.$(OBJEXT) modparam.$(OBJEXT) modparamlist.$(OBJEXT) \
-wavfileinlist.$(OBJEXT) randomtrigger.$(OBJEXT) logictrigger.$(OBJEXT) \
-switcher.$(OBJEXT) wcntsignal.$(OBJEXT) highpassfilter.$(OBJEXT) \
-combiner.$(OBJEXT) bpmchange.$(OBJEXT) meterchange.$(OBJEXT) \
-timemap.$(OBJEXT) riffnode.$(OBJEXT) serialwavfileout.$(OBJEXT) \
+randomtrigger.$(OBJEXT) logictrigger.$(OBJEXT) switcher.$(OBJEXT) \
+wcntsignal.$(OBJEXT) highpassfilter.$(OBJEXT) combiner.$(OBJEXT) \
+bpmchange.$(OBJEXT) meterchange.$(OBJEXT) timemap.$(OBJEXT) \
+sampledata.$(OBJEXT) riffnode.$(OBJEXT) serialwavfileout.$(OBJEXT) \
 contraster.$(OBJEXT) delay.$(OBJEXT) echo.$(OBJEXT) monoamp.$(OBJEXT) \
 wcntmodule.$(OBJEXT) multiplier.$(OBJEXT) rangelimit.$(OBJEXT) \
-pan.$(OBJEXT) rms.$(OBJEXT) dc_filter.$(OBJEXT)
+pan.$(OBJEXT) rms.$(OBJEXT) dc_filter.$(OBJEXT) dobj.$(OBJEXT) \
+dobjlist.$(OBJEXT) dobjnames.$(OBJEXT) dobjparam.$(OBJEXT) \
+dobjparamlist.$(OBJEXT) dparnames.$(OBJEXT) moddobj.$(OBJEXT) \
+moddobjlist.$(OBJEXT) dobjdobj.$(OBJEXT) dobjdobjlist.$(OBJEXT) \
+dobjmod.$(OBJEXT) dynvertex.$(OBJEXT) dynamic.$(OBJEXT) \
+spreader.$(OBJEXT) notetran.$(OBJEXT)
 wcnt_DEPENDENCIES = 
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)

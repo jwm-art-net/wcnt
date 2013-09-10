@@ -4,7 +4,7 @@
 synthmodnames::synthmodnames()
 :mod_name(NULL)
 {
-	mod_name = new string[MOD_LAST + 1];
+	mod_name = new string[MOD_LAST];
 	mod_name[MOD_FIRST] = "BAD_MODULE_TYPE";
 	mod_name[MOD_NONEZERO] = "none";
 	mod_name[MOD_ADSR] = "adsr";
@@ -48,6 +48,9 @@ synthmodnames::synthmodnames()
 	mod_name[MOD_PAN] = "panner";
 	mod_name[MOD_RMS] = "rms";
 	mod_name[MOD_DCFILTER] = "dc_filter";
+	mod_name[MOD_DYNAMIC] = "dynamic";
+	mod_name[MOD_SPREADER] = "spreader";
+	mod_name[MOD_NOTETRAN] = "note_tran";
 }
 
 synthmodnames::~synthmodnames()

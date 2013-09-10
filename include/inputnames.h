@@ -57,13 +57,17 @@ class inputnames
 		IN_GAIN_MOD,
 		IN_FEEDBACK,
 		IN_FB_MOD,
+		IN_BEATS_PER_BAR,
+		IN_BEAT_VALUE,
+		IN_MODULATION,
+		IN_DETRANSPOSE,
 // used for array to know how many:
 		IN_LAST,  				
 	};
 	inputnames();
 	~inputnames();
-	string getname(IN_TYPE);
-	IOCAT getcategory(IN_TYPE);
+	string get_name(IN_TYPE);
+	IOCAT get_category(IN_TYPE);
 	IN_TYPE get_type(string const*);
 		
  private:

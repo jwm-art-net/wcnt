@@ -44,6 +44,7 @@ class echo : public synthmod
 	// virtual funcs
 	void run();
 	void init();
+	bool validate();
 	#ifndef BARE_MODULES
 	void const* get_out(outputnames::OUT_TYPE);
 	void const* set_in(inputnames::IN_TYPE, void const*);
@@ -67,15 +68,15 @@ class echo : public synthmod
  	double wetdry;
  	// working
 	double* filter;//array
-	short filterarraymax;
-	short fpos;
+	long filterarraymax;
+	long fpos;
 	double filtertotal;
  	double gainamount;
 	double feedamount;
  	// synthmod kind of stuff
 	static int echo_count;
 	#ifndef BARE_MODULES
-	static void create_params();
+	void create_params();
 	static bool done_params;
  	#endif
 };

@@ -87,7 +87,7 @@ VERSION = @VERSION@
 
 SUBDIRS = include src
 
-wcntdocdir = ${datadir}/doc/wcnt
+wcntdocdir = ${prefix}/doc/wcnt
 wcntdoc_DATA =  	README 	COPYING 	AUTHORS 	ChangeLog 	INSTALL 	NEWS 	TODO
 
 

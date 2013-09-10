@@ -30,10 +30,14 @@ class modparamlist
 	~modparamlist();
 	modparam* add_param(modparam*);
 	modparam* add_param(synthmodnames::SYNTH_MOD_TYPE, paramnames::PAR_TYPE);
-	modparam* goto_first(){ return param = (modparam*)(param_item = parlist->goto_first())->get_data();}
-	modparam* goto_last(){ return param = (modparam*)(param_item = parlist->goto_last())->get_data();}
-	modparam* goto_prev(){ return param = (modparam*)(param_item = parlist->goto_prev())->get_data();}
-	modparam* goto_next(){ return param = (modparam*)(param_item = parlist->goto_next())->get_data();}
+	modparam* goto_first(){ return param = (modparam*)
+			(param_item = parlist->goto_first())->get_data();}
+	modparam* goto_last(){ return param = (modparam*)
+			(param_item = parlist->goto_last())->get_data();}
+	modparam* goto_prev(){ return param = (modparam*)
+			(param_item = parlist->goto_prev())->get_data();}
+	modparam* goto_next(){ return param = (modparam*)
+			(param_item = parlist->goto_next())->get_data();}
 	modparamlist* get_paramlist_for_moduletype(synthmodnames::SYNTH_MOD_TYPE);
  private:
 	bool delete_param(modparam*);

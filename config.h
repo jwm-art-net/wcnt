@@ -16,7 +16,7 @@
 #define PACKAGE_PIXMAPS_DIR "/usr/local/share/wcnt/pixmaps"
 #define PACKAGE_HELP_DIR "/usr/local/share/wcnt/help"
 #define PACKAGE_MENU_DIR "/usr/local/share/wcnt"
-#define PACKAGE_SOURCE_DIR "/home/james/Programming/wcnt-1.1001"
+#define PACKAGE_SOURCE_DIR "/home/james/Programming/wcnt"
 
 /* Define if you have the <dlfcn.h> header file.  */
 #define HAVE_DLFCN_H 1

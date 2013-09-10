@@ -2,19 +2,46 @@
 #define CONVERSIONS_H
 
 #include <math.h>
-#include <stdlib.h>
+#include <stdio.h>
+
+// to get sample rate
 #include "synthmodule.h"
 
+// maximum length of note name string
 #define NOTE_NAME_SIZE 5
 
-unsigned long convert_freq_to_samples(double f);
-unsigned long convert_notelen_to_samples(short nl);
-unsigned long convert_ms_to_samples(double t);
-double notelength_to_frequency(short nl);
-double convert_notelength_to_ms(short nl);
+/*----------------------------------------------------------------
+	conversion of note names to frequencies have been adapted 
+ 	from code contained in a book by Ian Waugh, entitled:
+	Making Music on The Amstrad CPC 464 & 664.  with additions
+	for tuning frequencies via semitones from sources on the web
+	which I cannot now recall, sorry.
+----------------------------------------------------------------*/
+
+// note name conversions - with/without transpose
+// (transpose_notename is not used by them)
+double note_to_step(const char *note_name);
 double note_to_step(const char *note_name, char oct_offset);
+double note_to_step(const char *note_name, char oct_offset, double semitones);
+double freq_to_step(double freq);
 double freq_to_step(double freq, char oct_offset);
 double freq_to_step(double freq, char oct_offset, double semitones);
+double note_to_freq(const char *note_name);
 double note_to_freq(const char *note_name, char oct_offset);
+double note_to_freq(const char *note_name, char oct_offset, double semitones);
 
-#endif /* CONVERSIONS_H */
+// transpose one note name to another note name
+const char* transpose_notename(const char* note_name, char semitones);
+
+// helper functions used by note_to_???? functions
+// (check_notename no longer accepts e# and b#)
+bool check_notename(const char *n);
+// note name should be checked before calling these two
+char note_to_noteno(const char* note_name);
+char extract_octave(const char* note_name);
+
+// miscellaneous conversions
+unsigned long freq_to_samples(double f);
+unsigned long ms_to_samples(double t);
+
+#endif

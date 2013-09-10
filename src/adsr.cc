@@ -4,9 +4,10 @@
 adsr::adsr(string uname) :
 	synthmod(synthmodnames::MOD_ADSR, adsr_count, uname),
 	in_note_on_trig(0), in_note_off_trig(0), in_velocity(0), output(0),
-	out_off_trig(OFF), play_state(OFF), start_level(0), sustain_status(OFF),
-	zero_retrigger(OFF), env(0), sect(0), sectsample(0), sectmaxsamples(0),
-	levelsize(0), coord_item(0), coord(0)
+	out_off_trig(OFF), play_state(OFF), up_thresh(0), lo_thresh(0), 
+	start_level(0), sustain_status(OFF), zero_retrigger(OFF), thresh_range(0),
+	env(0), sect(0), sectsample(0), sectmaxsamples(0), levelsize(0), 
+	coord_item(0), coord(0)
 {
 	#ifndef BARE_MODULES
 	get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
@@ -23,9 +24,9 @@ adsr::adsr(string uname) :
 	coord = new adsr_coord(adsr_coord::ADSR_SUSTAIN,0 ,0 ,0 ,0);
 	env->add_at_head(coord);
     adsr_count++;
-	validate();
 	#ifndef BARE_MODULES
 	create_params();
+	create_moddobj();
 	#endif
 }
 
@@ -47,6 +48,12 @@ adsr::~adsr()
 
 void adsr::init()
 {
+	if (up_thresh < lo_thresh) {
+		double ut = up_thresh;
+		up_thresh = lo_thresh;
+		lo_thresh = ut;
+	}
+	thresh_range = up_thresh - lo_thresh;
 }
 
 #ifndef BARE_MODULES
@@ -107,12 +114,62 @@ bool adsr::set_param(paramnames::PAR_TYPE pt, void const* data)
 			set_zero_retrigger_mode(*(STATUS*)data);
 			retv = true;
 			break;
+		case paramnames::PAR_UP_THRESH:
+			set_upper_thresh(*(double*)data);
+			retv = true;
+			break;
+		case paramnames::PAR_LO_THRESH:
+			set_lower_thresh(*(double*)data);
+			retv = true;
+			break;
 		default: 
 			retv = false;
 			break;
 	}
 	return retv;
 }
+
+bool adsr::validate()
+{
+	if (!goto_section(adsr_coord::ADSR_ATTACK)) {
+		*err_msg = "\nadsr lacks attack section!";
+		invalidate();
+	}
+	if (!goto_section(adsr_coord::ADSR_DECAY)) {
+		*err_msg += "\nadsr lacks decay section!";
+		invalidate();
+	}
+	if (!goto_section(adsr_coord::ADSR_RELEASE)) {
+		*err_msg += "\nadsr lacks release section!";
+		invalidate();
+	}
+	if (start_level < -1.0 || start_level > 1.0) {
+		*err_msg += "\n" + 
+			get_paramnames()->get_name(paramnames::PAR_START_LEVEL);
+		*err_msg += " should be within -1.0 to +1.0";
+		invalidate();
+	}
+	return is_valid();
+}
+
+dobj* adsr::add_dobj(dobj* dbj)
+{
+	dobj* retv = 0;
+	dobjnames::DOBJ_TYPE dbjtype = dbj->get_object_type();
+	switch(dbjtype)
+	{
+		case dobjnames::SIN_COORD:
+			if (!(retv = insert_coord((adsr_coord*)dbj)))
+				*err_msg="\ncould not section to " + *get_username();
+			break;
+		default:
+			*err_msg = "\n***major error*** attempt made to add an ";
+			*err_msg += "\ninvalid object type to " + *get_username();
+			retv = 0;
+	}
+	return retv;
+}
+
 #endif
 
 adsr_coord* adsr::insert_coord(adsr_coord* ac)
@@ -134,7 +191,8 @@ adsr_coord* adsr::insert_coord(adsr_coord* ac)
 	return (adsr_coord*)(env->insert_after(lltmp, ac))->get_data();
 }
 
-adsr_coord* adsr::insert_coord(adsr_coord::SECT adsrsect, double ut, double ul, double lt, double ll)
+adsr_coord* adsr::insert_coord(	adsr_coord::SECT adsrsect, 
+								double ut, double ul, double lt, double ll)
 {
     if (adsrsect == adsr_coord::ADSR_SUSTAIN)
         return 0; // don't let user try it on.
@@ -266,7 +324,10 @@ adsr::run()
     if (*in_note_on_trig == ON) {
         play_state = ON;
         goto_first();
-        coord->run(*in_velocity);
+		double v = (*in_velocity - lo_thresh) / thresh_range;
+		if (v <= 0.0) coord->run(0.0);
+		else if (v >= up_thresh) coord->run(1.0);
+		else coord->run(v);
         sectsample = 0;
         if (coord->output_time == 0) {
             sectmaxsamples = 1;
@@ -276,14 +337,17 @@ adsr::run()
 		else {
             if (zero_retrigger == ON)
                 output = start_level;
-            sectmaxsamples = convert_ms_to_samples(coord->output_time);
+            sectmaxsamples = ms_to_samples(coord->output_time);
             levelsize = (coord->output_level - output) / sectmaxsamples;
         }
     }
     if (play_state == ON) {
         if (*in_note_off_trig == ON && sustain_status == ON) {
             goto_section(adsr_coord::ADSR_RELEASE);
-            coord->run(*in_velocity);
+			double v = (*in_velocity - lo_thresh) / thresh_range;
+			if (v <= 0.0) coord->run(0.0);
+			else if (v >= up_thresh) coord->run(1.0);
+			else coord->run(v);
             sectsample = 0;
             if (coord->output_time == 0) {
                 sectmaxsamples = 1;
@@ -291,7 +355,7 @@ adsr::run()
                 output = coord->output_level;
             } 
 			else {
-                sectmaxsamples = convert_ms_to_samples(coord->output_time);
+                sectmaxsamples = ms_to_samples(coord->output_time);
                 levelsize = (coord->output_level - output) / sectmaxsamples;
             }
         }
@@ -314,15 +378,17 @@ adsr::run()
                 if (coord->get_adsr_section() == adsr_coord::ADSR_SUSTAIN
                     && sustain_status == OFF)
                     goto_section(adsr_coord::ADSR_RELEASE);
-                coord->run(*in_velocity);
+				double v = (*in_velocity - lo_thresh) / thresh_range;
+				if (v <= 0.0) coord->run(0.0);
+				else if (v >= up_thresh) coord->run(1.0);
+				else coord->run(v);
                 if (coord->output_time == 0) {
                     sectmaxsamples = 1;
                     levelsize = 0;
                     output = coord->output_level;
                 }
 				else {
-                    sectmaxsamples =
-                        convert_ms_to_samples(coord->output_time);
+                    sectmaxsamples = ms_to_samples(coord->output_time);
                     levelsize =
                         (coord->output_level - output) / sectmaxsamples;
                 }
@@ -337,15 +403,34 @@ short adsr::adsr_count = 0;
 
 #ifndef BARE_MODULES
 bool adsr::done_params = false;
-
 void adsr::create_params()
 {
 	if (done_params == true)
 		return;
-	get_paramlist()->add_param(synthmodnames::MOD_ADSR, paramnames::PAR_START_LEVEL);
-	get_paramlist()->add_param(synthmodnames::MOD_ADSR, paramnames::PAR_SUSTAIN_STATUS);
-	get_paramlist()->add_param(synthmodnames::MOD_ADSR, paramnames::PAR_ZERO_RETRIGGER);
+	get_paramlist()->
+		add_param(synthmodnames::MOD_ADSR, paramnames::PAR_UP_THRESH);
+	get_paramlist()->
+		add_param(synthmodnames::MOD_ADSR, paramnames::PAR_LO_THRESH);
+	get_paramlist()->
+		add_param(synthmodnames::MOD_ADSR, paramnames::PAR_START_LEVEL);
+	get_paramlist()->
+		add_param(synthmodnames::MOD_ADSR, paramnames::PAR_SUSTAIN_STATUS);
+	get_paramlist()->
+		add_param(synthmodnames::MOD_ADSR, paramnames::PAR_ZERO_RETRIGGER);
 	done_params = true;
+}
+
+bool adsr::done_moddobj = false;
+void adsr::create_moddobj()
+{
+	if (done_moddobj == true)
+		return;
+	get_moddobjlist()->add_moddobj(synthmodnames::MOD_ADSR, dobjnames::LIN_ENVELOPE);
+	// also add a dobjdobj becuase there is only a dobj type and not a dobj.
+	// if the envelope was a dobj, it would do this, but then it would
+	// have to not be encapsulated by the adsr anymore.
+	dobj::get_dobjdobjlist()->add_dobjdobj(dobjnames::LIN_ENVELOPE,	dobjnames::SIN_COORD);
+	done_moddobj = true; 
 }
 #endif
 #endif

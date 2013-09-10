@@ -34,10 +34,14 @@ class synthmodlist
 	synthmod* add_module(synthmod*);
 	synthmod* create_module(synthmodnames::SYNTH_MOD_TYPE smt, string uname);
 	bool delete_module(synthmod* const sm);
-	synthmod* goto_first(){ return smod = (synthmod*)(smod_item = smodlist->goto_first())->get_data();}
-	synthmod* goto_last(){ return smod = (synthmod*)(smod_item = smodlist->goto_last())->get_data();}
-	synthmod* goto_prev(){ return smod = (synthmod*)(smod_item = smodlist->goto_prev())->get_data();}
-	synthmod* goto_next(){ return smod = (synthmod*)(smod_item = smodlist->goto_next())->get_data();}
+	synthmod* goto_first(){ return smod = (synthmod*)
+		(smod_item = smodlist->goto_first())->get_data();}
+	synthmod* goto_last(){ return smod = (synthmod*)
+		(smod_item = smodlist->goto_last())->get_data();}
+	synthmod* goto_prev(){ return smod = (synthmod*)
+		(smod_item = smodlist->goto_prev())->get_data();}
+	synthmod* goto_next(){ return smod = (synthmod*)
+		(smod_item = smodlist->goto_next())->get_data();}
 	synthmod* get_synthmod_by_name(string const*);
 	synthmod* get_first_of_type(synthmodnames::SYNTH_MOD_TYPE);
 	synthmod* get_next_of_type();

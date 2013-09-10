@@ -13,7 +13,6 @@ pan::pan(string uname) :
 	get_inputlist()->add_input(this, inputnames::IN_PAN_MOD);
 	#endif
 	pan_count++;
-	validate();
 	#ifndef BARE_MODULES
 	create_params();
 	#endif
@@ -80,6 +79,22 @@ bool pan::set_param(paramnames::PAR_TYPE pt, void const* data)
 			break;
 	}
 	return retv;
+}
+
+bool pan::validate()
+{
+	if (panpos < -1.0 || panpos > 1.0) {
+		*err_msg = "\n" + get_paramnames()->get_name(paramnames::PAR_PAN) +
+			" out of range (-1.0 to +1.0)";
+		invalidate();
+	}
+	if (pan_modsize < 0 || pan_modsize > 1.0) {
+		*err_msg = "\n" 
+			+ get_paramnames()->get_name(paramnames::PAR_PAN_MODSIZE) +
+			" out of range (0.0 to +1.0)";
+		invalidate();
+	}
+	return is_valid();
 }
 #endif
 

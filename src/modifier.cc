@@ -12,7 +12,6 @@ modifier::modifier(string uname)
 	get_inputlist()->add_input(this, inputnames::IN_MODIFIER);
 	#endif
 	modifier_count++;
-	validate();
 	#ifndef BARE_MODULES
 	create_params();
 	#endif
@@ -89,6 +88,14 @@ bool modifier::set_param(paramnames::PAR_TYPE pt, void const* data)
 	}
 	return retv;
 }
+
+bool modifier::validate()
+{
+	// not a thing in 'ere as I'll probably do be modifying this
+	// 'ere bleedin' module.....
+	return is_valid();
+}
+
 #endif
 
 void modifier::init() 

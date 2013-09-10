@@ -1,0 +1,98 @@
+-----------------------
+Wav Composer Not Toilet 
+-----------------------
+
+Questions and Answers (it would be a FAQ, but no one asks!)
+
+--------------------------------------------------------------
+Q) Why are there no straight oscillators and LFOs?
+
+	A) Because I split the oscillator up, between
+	the part which calculates the frequency modulation
+	etc, and the waveform.  This enables one osc_clock
+	to drive multiple waveforms.  The LFO has been
+	splitt as such, with a further division named
+	lfo_controller.  This takes output of a waveform
+	and then applies a ramp.
+	
+--------------------------------------------------------------
+Q) What is this deg_step_size thing all about?
+
+	A) deg_step_size is one of the outputs from osc_clock 
+	and lfo_clock amongst others.  Waveforms in wcnt use 
+	it to calculate how many degrees to step through on 
+	each sample to create the waveform at the desired 
+	frequency.
+ie:
+	frequency = 1 cycle per second
+	samplerate = 44100
+	deg_step_size = 1 / 44100 = 0.000022676
+
+	frequency = 440 hrtz
+	samplerate = 44100
+	deg_step_size = 440 / 44100 = 0.009977324
+	
+--------------------------------------------------------------
+Q) Would it not make more sense if the waveform etc took a 
+   frequency and not deg_step_size?
+   	
+	A) Probably, but when you have one osc_clock feeding
+	multiple waveforms, it's more efficient that the 
+	osc_clock does the conversion to deg_step_size,
+	rather than multiple waveforms all doing it.
+	
+--------------------------------------------------------------
+Q) What's with your ADSRs?
+
+	A) I wanted to be able to have multiple sectioned
+	ADSRs which could also be modulated.  I hoped it
+	would provide a bit of variation in the sound.  The
+	sustain section is not user modifiable because it is
+	set to the end level of the last decay section and
+	stays at that level until note_off.   The upper part
+	of the ADSR is the shape triggered by a high velocity
+	(1.0), the lower adsr shape is triggered by a low
+	velocity.  (it does not have to be a velocity though)
+	The velocity input does not effect the amplitude of
+	the adsr output.
+	
+--------------------------------------------------------------
+Q) Why did you bother to write a not-real-time modular 
+   synthesis program when there are much better ones out 
+   there?
+   
+  	A) It's something I started long before I even knew
+	of opensource etc, at a time when I was skint.  It is
+	intended for people with computers too slow to do
+	real time synthesis.  And after my turtle beach tropez+
+	cracked up, I needed a way of playing samples at 
+	different frequencies, with looping, and envelopes etc,
+	something my Soundblaster Live! Value lacked.  wcnt may
+	be lacking in many ways, but I do intend it to be
+	usable. I also hope to offer a few unsual features, but
+	don't quote me on that.
+	
+--------------------------------------------------------------
+Q) Why have you not used libraries such as LADSPA etc?
+
+	A) Because I learnt C++ off my own back to program
+	wcnt.  I've never really got the hang of using other
+	peoples code much, and besides there's still plenty
+	of things I can write myself yet.  Once I've done that
+	then maybe I'll investigate.
+	
+--------------------------------------------------------------
+Q) Where are the effects?
+
+	A) In your favorite audio editor.
+	
+--------------------------------------------------------------
+Q) Why do the low and high pass filters slow everything down
+   so much?
+   
+   A) Because I programmed them from scratch.  They use an
+   array which is filled with input signal.  For every sample
+   it tots up the values in the array and outputs the average.
+   The lower the cutoff frequency, the greater the number of 
+   samples to be averaged.  Advanced mathamatics is not my
+   strong point.

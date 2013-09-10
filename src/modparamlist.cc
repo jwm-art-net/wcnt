@@ -11,11 +11,10 @@ modparamlist::modparamlist()
 
 modparamlist::~modparamlist()
 {
-	ll_item* tmp = parlist->goto_first();
-	while(tmp != 0)
-	{
-		delete (modparam*)tmp->get_data();
-		tmp = parlist->goto_next();
+	goto_first();
+	while(param != 0) {
+		delete param;
+		goto_next();
 	}
 }
 

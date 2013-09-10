@@ -53,11 +53,14 @@ class synthmodnames
 		MOD_PAN,
 		MOD_RMS,
 		MOD_DCFILTER,
+		MOD_DYNAMIC,
+		MOD_SPREADER,
+		MOD_NOTETRAN,
 		MOD_LAST
 	};
 	synthmodnames();
 	~synthmodnames();
-	string &get_name(SYNTH_MOD_TYPE id);
+	string & get_name(SYNTH_MOD_TYPE id);
 	SYNTH_MOD_TYPE get_type(string const*);
 	
  private:

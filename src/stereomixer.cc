@@ -15,9 +15,9 @@ stereomixer::stereomixer(string uname) :
 		don't know how many there will be.
 	*/
 	stereomixer_count++;
-	validate();
 	#ifndef BARE_MODULES
 	create_params();
+	create_moddobj();
 	#endif
 }
 
@@ -49,11 +49,6 @@ void const* stereomixer::get_out(outputnames::OUT_TYPE ot)
 	return o;
 }
 
-void const* stereomixer::set_in(inputnames::IN_TYPE it, void const* o)
-{
-	return 0; // far cool 2 re-turn
-}
-
 bool stereomixer::set_param(paramnames::PAR_TYPE pt, void const* data)
 {
 	bool retv = false;
@@ -69,6 +64,42 @@ bool stereomixer::set_param(paramnames::PAR_TYPE pt, void const* data)
 	}
 	return retv;
 }
+
+bool stereomixer::validate()
+{
+	if (master_level == 0) {
+		*err_msg = "\n" 
+			+ get_paramnames()->get_name(paramnames::PAR_MASTER_LEVEL) +
+			" is zero, all will be very quiet!";
+		invalidate();
+	}
+	return is_valid();
+}
+
+dobj* stereomixer::add_dobj(dobj* dbj)
+{
+	if (dbj->get_object_type() == dobjnames::DOBJ_SYNTHMOD) {
+		synthmod* sm = ((dobjmod*)dbj)->get_synthmod();
+		if (sm->get_module_type() != synthmodnames::MOD_STEREOCHANNEL) {
+			*err_msg = "\n" + *sm->get_username() + 
+				" is not a stereo_channel";
+			return 0;
+		}
+		if (!add_channel((stereo_channel*)sm)) {
+			*err_msg = "\ncould not insert " + *sm->get_username() +
+				" into mixer";
+			return 0;
+		}
+		// add the dobj synthmod wrapper to the dobjlist 
+		// so it gets deleted in the end.
+		dobj::get_dobjlist()->add_dobj(dbj);
+		return dbj;
+	}
+	*err_msg = "\n***major error*** attempt made to add an ";
+	*err_msg += "\ninvalid object type to " + *get_username();
+	return 0;
+}
+
 #endif // BARE_MODULES
 
 stereo_channel* stereomixer::add_channel(stereo_channel* ch)
@@ -82,7 +113,6 @@ stereo_channel* stereomixer::add_channel(stereo_channel* ch)
 	}
 	return ch;
 }
-
 
 stereo_channel* stereomixer::remove_channel(stereo_channel* ch)
 {
@@ -127,5 +157,19 @@ void stereomixer::create_params()
 	get_paramlist()->add_param(synthmodnames::MOD_STEREOMIXER, paramnames::PAR_MASTER_LEVEL);
 	done_params = true;
 }
+
+bool stereomixer::done_moddobj = false;
+
+void stereomixer::create_moddobj()
+{
+	if (done_moddobj == true)
+		return;
+	get_moddobjlist()->
+		add_moddobj(synthmodnames::MOD_STEREOMIXER, dobjnames::LIN_MIX);
+	dobj::get_dobjdobjlist()->
+		add_dobjdobj(dobjnames::LIN_MIX, dobjnames::DOBJ_SYNTHMOD);
+	done_moddobj = true; 
+}
+
 #endif
 #endif

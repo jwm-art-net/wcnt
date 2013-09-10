@@ -11,7 +11,6 @@ sample_hold::sample_hold(string uname)
 	get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
 	#endif
 	sample_hold_count++;
-	validate();
 	#ifndef BARE_MODULES
 	create_params();
 	#endif
@@ -72,11 +71,23 @@ bool sample_hold::set_param(paramnames::PAR_TYPE pt, void const* data)
 	}
 	return retv;
 }
+
+bool sample_hold::validate()
+{
+	if (decay_time < 0) {
+		*err_msg = "\n" 
+			+ get_paramnames()->get_name(paramnames::PAR_DECAY_TIME) + 
+			" less than zero";
+		invalidate();
+	}
+	return is_valid();
+}
+
 #endif // BARE_MODULES
 
 void sample_hold::init()
 {
-	decay_samps = convert_ms_to_samples(decay_time);
+	decay_samps = ms_to_samples(decay_time);
 	decay_size = output / decay_samps;
 	ds = 0;
 }

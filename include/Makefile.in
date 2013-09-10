@@ -87,7 +87,7 @@ VERSION = @VERSION@
 
 wcnt_includedir = $(pkgincludedir)
 
-wcnt_include_DATA =  	adsr.h 	adsrcoord.h 	clockclock.h 	conversions.h 	inputnames.h 	iocat.h 	lfoclock.h 	lfocontroller.h 	linkedlist.h 	filtercommon.h 	lowpassfilter.h 	modinput.h 	modinputslist.h 	modoutput.h 	modoutputslist.h 	noisegenerator.h 	nonezero.h 	notedata.h 	oscclock.h 	outputnames.h 	riffdata.h 	sampler.h 	sequencer.h 	sinewave.h 	squarewave.h 	stereoamp.h 	stereochannel.h 	stereomixer.h 	synthmodnames.h 	synthmodule.h 	wavfileheader.h 	wavfilein.h 	wavfileout.h 	dtr.h 	synthfilereader.h 	rifflist.h 	constmod.h 	freqgenerator.h 	modifier.h 	samplehold.h 	trigger.h 	trianglewave.h 	trianglewave2.h 	userwave.h 	userwavevertex.h 	connector.h 	synthmodulelist.h 	modules.h 	jwmsynth.h 	paramnames.h 	connectorlist.h 	modparam.h 	modparamlist.h 	wavfileinlist.h 	randomtrigger.h 	logictrigger.h 	switcher.h 	wcntsignal.h 	highpassfilter.h 	combiner.h 	bpmchange.h         meterchange.h 	timemap.h 	riffnode.h         serialwavfileout.h         contraster.h 	delay.h 	echo.h 	monoamp.h 	wcntmodule.h 	multiplier.h 	rangelimit.h 	pan.h 	rms.h 	dc_filter.h
+wcnt_include_DATA =  	adsr.h 	adsrcoord.h 	clockclock.h 	conversions.h 	inputnames.h 	iocat.h 	lfoclock.h 	lfocontroller.h 	linkedlist.h 	filtercommon.h 	lowpassfilter.h 	modinput.h 	modinputslist.h 	modoutput.h 	modoutputslist.h 	noisegenerator.h 	nonezero.h 	notedata.h 	oscclock.h 	outputnames.h 	riffdata.h 	sampler.h 	sequencer.h 	sinewave.h 	squarewave.h 	stereoamp.h 	stereochannel.h 	stereomixer.h 	synthmodnames.h 	synthmodule.h 	wavfileheader.h 	wavfilein.h 	wavfileout.h 	dtr.h 	synthfilereader.h 	constmod.h 	freqgenerator.h 	modifier.h 	samplehold.h 	trigger.h 	trianglewave.h 	trianglewave2.h 	userwave.h 	userwavevertex.h 	connector.h 	synthmodulelist.h 	modules.h 	jwmsynth.h 	connectorlist.h 	paramnames.h 	modparam.h 	modparamlist.h 	randomtrigger.h 	logictrigger.h 	switcher.h 	wcntsignal.h 	highpassfilter.h 	combiner.h 	bpmchange.h         meterchange.h 	timemap.h 	sampledata.h 	riffnode.h 	delay.h 	echo.h 	monoamp.h 	wcntmodule.h 	multiplier.h 	rangelimit.h 	pan.h 	rms.h 	dc_filter.h 	dataobjects.h 	dobj.h 	dobjlist.h 	dobjnames.h 	dobjparam.h 	dobjparamlist.h 	dparnames.h 	moddobj.h 	moddobjlist.h
 
 
 EXTRA_DIST = $(wcnt_include_DATA)
@@ -212,6 +212,13 @@ install uninstall-am uninstall all-redirect all-am all installdirs \
 mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
+	dobjdobj.h\
+	dobjdobjlist.h\
+	dobjmod.h\
+	dynvertex.h\
+	dynamic.h\
+	spreader.h\
+	notetran.h
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

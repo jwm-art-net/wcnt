@@ -13,7 +13,6 @@ triangle_wave::triangle_wave(string uname)
 	get_inputlist()->add_input(this, inputnames::IN_DEG_SIZE);
 	#endif
 	triangle_wave_count++;
-	validate();
 	#ifndef BARE_MODULES
 	create_params();
 	#endif

@@ -14,7 +14,6 @@ class freq_generator : public synthmod
  public:
 	freq_generator(string uname);
 	~freq_generator();
-	
 	void set_signal_in(const double* insig){ in_signal = insig;}
 	const double* get_input_signal(){ return in_signal;}
 	const double* get_output_freq(){ return &out_freq;}
@@ -23,7 +22,7 @@ class freq_generator : public synthmod
 	void set_signal_range_lo(double sl){ sig_range_lo = sl;}
 	void set_freq_range_hi(double fh){ freq_range_hi = fh;}
 	void set_freq_range_lo(double fl){ freq_range_lo = fl;}
-	void set_step_count(short fs){ step_count = (fs > 1) ? fs : 2;}
+	void set_step_count(short fs){ step_count = fs;}
 	double get_signal_range_lo(){ return sig_range_hi;}
 	double get_signal_range_hi(){ return sig_range_lo;}
 	double get_freq_range_lo(){ return freq_range_hi;}
@@ -32,6 +31,7 @@ class freq_generator : public synthmod
 	// virtual funcs
 	void run();
 	void init();
+	bool validate();
 	#ifndef BARE_MODULES
 	void const* get_out(outputnames::OUT_TYPE);
 	void const* set_in(inputnames::IN_TYPE, void const*);
@@ -50,7 +50,7 @@ class freq_generator : public synthmod
 	short step_count;
 	static int freq_generator_count;
  	#ifndef BARE_MODULES
-	static void create_params();
+	void create_params();
 	static bool done_params;
  	#endif
 };
