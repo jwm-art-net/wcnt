@@ -2,9 +2,12 @@
 #define TRIGGER_H
 
 #include "conversions.h"
+
+#ifndef BARE_MODULES
 #include "modoutputslist.h"
 #include "modinputslist.h"
 #include "modparamlist.h"
+#endif
 
 class trigger: public synthmod 
 {
@@ -19,10 +22,11 @@ class trigger: public synthmod
 	// virtual funcs
 	void run();
 	void init(){};
+	#ifndef BARE_MODULES
 	void const* get_out(outputnames::OUT_TYPE);
 	void const* set_in(inputnames::IN_TYPE, void const*);
 	bool set_param(paramnames::PAR_TYPE, void const*);
-		
+	#endif
  private:
 	double const* in_signal;
 	STATUS out_trig;
@@ -30,8 +34,10 @@ class trigger: public synthmod
 	double trig_level;
 	unsigned long delay_samps;
 	static int trigger_count;
+ 	#ifndef BARE_MODULES
 	static void create_params();
 	static bool done_params;
+ 	#endif
 };
 
 #endif

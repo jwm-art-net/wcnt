@@ -17,6 +17,8 @@
 #ifndef JWMSYNTH
 #define JWMSYNTH
 
+#ifndef BARE_MODULES
+
 #include "synthmodulelist.h"
 #include "modinputslist.h"
 #include "modoutputslist.h"
@@ -43,6 +45,7 @@ class jwmsynth
 	// call this on above funtions returning false
     string get_error_msg(){ return err_msg;}
   private:
+	// data for creating modules, and making connections etc
 	synthmodnames* modnames;
 	inputnames* innames;
 	outputnames* outnames;
@@ -55,7 +58,11 @@ class jwmsynth
 	synthfilereader* synthfile;
     riff_list* rifflist;
 	wavfilein_list* wavfilelist;
+	// these are used to figure out when to stop
 	short exit_bar;
+ 	const STATUS* in_bar_trig;
+ 	const short* in_bar;
+	// command line processing etc
     int const options_count;
     char** const options;
     int option_filename_no;
@@ -72,4 +79,5 @@ class jwmsynth
 	bool sample_info();
 };
 
+#endif
 #endif

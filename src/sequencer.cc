@@ -1,84 +1,42 @@
 #ifndef SEQUENCER_H
 #include "../include/sequencer.h"
 
-riff_node::riff_node(riffdata* rd, short barpos) 
-: start_bar(barpos), riff_source(rd)
+sequencer::sequencer(string uname) : 
+	synthmod(synthmodnames::MOD_SEQUENCER, sequencer_count, uname),
+ 	in_bar_trig(0), in_bar(0), in_pos_step_size(0), out_note_on_trig(OFF),
+	out_note_slide_trig(OFF), out_note_off_trig(OFF), out_riff_start_trig(OFF),
+ 	out_riff_end_trig(OFF), out_end_trig(OFF), out_notename(0), out_freq(0),
+	out_velocity(0), out_velocity_ramp(0), riff_play_state(OFF), 
+	note_play_state(OFF), vel_response(0), hold_notename(OFF),
+	riffnodelist(0), riff_node_ptr(0), riff_ptr(0), riffnodeitem(0),
+	note_ptr(0), noteitem(0), zero(0), riff_start_bar(0), barpos(0),
+	note_on_pos(0), note_off_pos(0), posconv(0), velrsp_max_samps(0),
+	velrsp_samp(0), vel_stpsize(0)
 {
-}
-
-riff_node::~riff_node() 
-{
-}
-
-sequencer::sequencer(string uname)
-: synthmod(synthmodnames::MOD_SEQUENCER, sequencer_count, uname),
-out_note_on_trig(OFF), out_note_slide_trig(OFF), out_note_off_trig(OFF), out_riff_start_trig(OFF),
-out_riff_end_trig(OFF), out_start_trig(OFF), out_end_trig(OFF), out_freq(0), out_velocity(0),
-out_total_sample_pos(0), play_state(OFF), riff_play_state(OFF), note_play_state(OFF),
-riffnodelist(0), riff_node_ptr(NULL), riff_ptr(NULL), riffnodeitem(NULL), note_ptr(NULL), noteitem(NULL),
-note_on_sample_pos(0), note_off_sample_pos(0), next_note_sample_pos(0), riff_sample_pos(0),
-riff_start_sample(0), riff_end_sample(0), next_riff_start_sample(0), 
-vel_response(0), velrsp_max_samps(0), velrsp_samp(0), vel_stpsize(0)
-{
-	if (!get_outputlist()->add_output(this, outputnames::OUT_NOTE_ON_TRIG)){
-		invalidate();
-		return;
-	}
-	if (!get_outputlist()->add_output(this, outputnames::OUT_NOTE_SLIDE_TRIG)){
-		invalidate();
-		return;
-	}
-	if (!get_outputlist()->add_output(this, outputnames::OUT_NOTE_OFF_TRIG)){
-		invalidate();
-		return;
-	}
-	if (!get_outputlist()->add_output(this, outputnames::OUT_RIFF_START_TRIG)){
-		invalidate();
-		return;
-	}
-	if (!get_outputlist()->add_output(this, outputnames::OUT_RIFF_END_TRIG)){
-		invalidate();
-		return;
-	}
-	if (!get_outputlist()->add_output(this, outputnames::OUT_START_TRIG)){
-		invalidate();
-		return;
-	}
-	if (!get_outputlist()->add_output(this, outputnames::OUT_END_TRIG)){
-		invalidate();
-		return;
-	}
-	if (!get_outputlist()->add_output(this, outputnames::OUT_FREQ)){
-		invalidate();
-		return;
-	}
-	if (!get_outputlist()->add_output(this, outputnames::OUT_VELOCITY)){
-		invalidate();
-		return;
-	}
-	if (!get_outputlist()->add_output(this, outputnames::OUT_TOTAL_SAMPLE_POS)){
-		invalidate();
-		return;
-	}
-	if (!get_outputlist()->add_output(this, outputnames::OUT_PLAY_STATE)){
-		invalidate();
-		return;
-	}
-	if (!get_outputlist()->add_output(this, outputnames::OUT_RIFF_PLAY_STATE)){
-		invalidate();
-		return;
-	}
-	if (!get_outputlist()->add_output(this, outputnames::OUT_NOTE_PLAY_STATE)){
-		invalidate();
-		return;
-	}
-	if (!(riffnodelist = new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA))){
-		invalidate();
-		return;
-	}
+	#ifndef BARE_MODULES
+	get_inputlist()->add_input(this, inputnames::IN_BAR);
+	get_inputlist()->add_input(this, inputnames::IN_BAR_TRIG);
+	get_inputlist()->add_input(this, inputnames::IN_POS_STEP_SIZE);
+	get_outputlist()->add_output(this, outputnames::OUT_NOTE_ON_TRIG);
+	get_outputlist()->add_output(this, outputnames::OUT_NOTE_SLIDE_TRIG);
+	get_outputlist()->add_output(this, outputnames::OUT_NOTE_OFF_TRIG);
+	get_outputlist()->add_output(this, outputnames::OUT_RIFF_START_TRIG);
+	get_outputlist()->add_output(this, outputnames::OUT_RIFF_END_TRIG);
+	get_outputlist()->add_output(this, outputnames::OUT_END_TRIG);
+	get_outputlist()->add_output(this, outputnames::OUT_NOTENAME);
+	get_outputlist()->add_output(this, outputnames::OUT_FREQ);
+	get_outputlist()->add_output(this, outputnames::OUT_VELOCITY);
+	get_outputlist()->add_output(this, outputnames::OUT_VELOCITY_RAMP);
+	get_outputlist()->add_output(this, outputnames::OUT_RIFF_PLAY_STATE);
+	get_outputlist()->add_output(this, outputnames::OUT_NOTE_PLAY_STATE);
+	#endif
+	riffnodelist = new 
+		linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
 	sequencer_count++;
 	validate();
+	#ifndef BARE_MODULES
 	create_params();
+	#endif
 }
 
 sequencer::~sequencer() 
@@ -89,15 +47,22 @@ sequencer::~sequencer()
 		delete (riff_node*) tmp->get_data();
 		tmp = riffnodelist->goto_next();
 	}
+	#ifndef BARE_MODULES
 	get_outputlist()->delete_module_outputs(this);
+	#endif
 }
 
 void sequencer::init()
 { 
 	velrsp_max_samps = convert_ms_to_samples(vel_response);
+	riff_node_ptr = (riff_node*)
+		(riffnodeitem = riffnodelist->goto_first())->get_data();
+	riff_start_bar = riff_node_ptr->get_start_bar();
+//  this no longer needed as user specs 1/4 val in each riff
+//	posconv = (short)(timemap::QUARTER_VALUE / timemap::USER_QUARTER_VALUE);
 }									  
 
-
+#ifndef BARE_MODULES
 void const* sequencer::get_out(outputnames::OUT_TYPE ot)
 {
 	void const* o = 0;
@@ -118,9 +83,6 @@ void const* sequencer::get_out(outputnames::OUT_TYPE ot)
 		case outputnames::OUT_RIFF_END_TRIG:
 			o = &out_riff_end_trig;
 			break;
-		case outputnames::OUT_START_TRIG:
-			o = &out_start_trig;
-			break;
 		case outputnames::OUT_END_TRIG:
 			o = &out_end_trig;
 			break;
@@ -130,11 +92,8 @@ void const* sequencer::get_out(outputnames::OUT_TYPE ot)
 		case outputnames::OUT_VELOCITY:
 			o = &out_velocity;
 			break;
-		case outputnames::OUT_TOTAL_SAMPLE_POS:
-			o = &out_total_sample_pos;
-			break;
-		case outputnames::OUT_PLAY_STATE:
-			o = &play_state;
+		case outputnames::OUT_VELOCITY_RAMP:
+			o = &out_velocity_ramp;
 			break;
 		case outputnames::OUT_RIFF_PLAY_STATE:
 			o = &riff_play_state;
@@ -148,6 +107,26 @@ void const* sequencer::get_out(outputnames::OUT_TYPE ot)
 	return o;
 }
 
+void const* sequencer::set_in(inputnames::IN_TYPE it, void const* o)
+{
+	void const* i = 0;
+	switch(it)
+	{
+		case inputnames::IN_BAR_TRIG:
+			i = in_bar_trig = (STATUS*)o;
+			break;
+		case inputnames::IN_BAR:
+			i = in_bar = (short*)o;
+			break;
+		case inputnames::IN_POS_STEP_SIZE:
+			i = in_pos_step_size = (double*)o;
+			break;
+		default:
+			i = 0;
+	}
+	return i;
+}
+
 bool sequencer::set_param(paramnames::PAR_TYPE pt, void const* data)
 {
 	bool retv = false;
@@ -155,6 +134,10 @@ bool sequencer::set_param(paramnames::PAR_TYPE pt, void const* data)
 	{
 		case paramnames::PAR_VELOCITY_RESPONSE:
 			set_velocity_response_time(*(double*)data);
+			retv = true;
+			break;
+		case paramnames::PAR_HOLD_NOTENAME:
+			set_hold_notename(*(STATUS*)data);
 			retv = true;
 			break;
 		default: 
@@ -172,13 +155,13 @@ riff_node* sequencer::add_riff(string const* riffname, short barpos)
 	return add_riff(rd, barpos);
 }
 
+#endif // BARE_MODULES
+
 riff_node* sequencer::add_riff(riffdata* rd, short barpos)
 {
 	if (rd == NULL) 
 		return NULL;
 	riff_node* newriffnode = new riff_node(rd, barpos);
-	if (newriffnode == NULL)
-		return NULL;
 	if (lookup_data_match(riffnodelist, newriffnode, &riff_node::get_start_bar))
 	{ // cannot have more than one riff at same bar position.
 		delete newriffnode;
@@ -205,136 +188,78 @@ bool sequencer::delete_riff_node(riff_node* rn)
 	return true;
 }
 
-void sequencer::calc_riff_sample_positions() 
-{
-	if (riff_node_ptr == NULL) 
-	{
-		riff_start_sample = 4294967295ul;
-		riff_end_sample = 4294967295ul;
-		next_riff_start_sample = 4294967295ul;
-		out_end_trig = ON;
-//		play_state = OFF;
-		riff_ptr = NULL;
-	} 
-	else 
-	{
-		riff_start_sample = convert_notelen_to_samples(riff_node_ptr->get_start_bar() * beats_per_measure * (256 / beat_value));
-		riff_end_sample = riff_start_sample + convert_notelen_to_samples(riff_node_ptr->get_riff_source()->getrifflength());
-		riff_node* next_riff_node = (riff_node*)riffnodeitem->get_next()->get_data();
-		if (next_riff_node == NULL)
-			next_riff_start_sample = 4294967295ul;
-		else 
-			next_riff_start_sample = convert_notelen_to_samples(next_riff_node->get_start_bar() * beats_per_measure * (256 / beat_value));
-		riff_ptr = riff_node_ptr->get_riff_source();
-	}
-}
-
-void sequencer::calc_note_sample_positions() 
-{
-	if (note_ptr == NULL) 
-	{
-		note_on_sample_pos = 4294967295ul;
-		note_off_sample_pos = 4294967295ul;
-		next_note_sample_pos = 4294967295ul;
-	} 
-	else 
-	{
-		note_on_sample_pos = convert_notelen_to_samples(note_ptr->get_position());
-		note_off_sample_pos = note_on_sample_pos + convert_notelen_to_samples(note_ptr->get_length());
-		note_data* next_note = (note_data*)noteitem->get_next()->get_data();
-		if (next_note == NULL)
-			next_note_sample_pos = 4294967295ul;
-		else 
-			next_note_sample_pos =	convert_notelen_to_samples(next_note->get_position());
-	}
-}
-
 void sequencer::run() 
 {
-	if (play_state == OFF) {
-		out_total_sample_pos = 0;
-		riff_node_ptr = (riff_node*)(riffnodeitem = riffnodelist->goto_first())->get_data();
-		calc_riff_sample_positions();
-		out_start_trig = ON;
-		note_on_sample_pos = 4294967295ul;
-		note_off_sample_pos = 4294967295ul;
-		next_note_sample_pos = 4294967295ul;
-		play_state = ON;
-	}else if (out_start_trig == ON) out_start_trig = OFF;
-	if (out_total_sample_pos == riff_start_sample) {
-		riff_sample_pos = 0;
-		note_ptr = (note_data*)(noteitem = riff_ptr->sneak_first())->get_data(); // use sneak not goto, because there may be another sequencer using the same riff at the same time
-		calc_note_sample_positions();
-		riff_play_state = ON;
-		out_riff_start_trig = ON;
-	}else if (out_total_sample_pos == next_riff_start_sample) {
-		riff_sample_pos = 0;
-		riff_start_sample = out_total_sample_pos;
-		riff_node_ptr = (riff_node *)(riffnodeitem = riffnodelist->goto_next())->get_data();
-		calc_riff_sample_positions();
-		note_ptr = (note_data*)(noteitem = riff_ptr->sneak_first())->get_data();
-		calc_note_sample_positions();
-		riff_play_state = ON;
-		out_riff_end_trig = ON;
-		out_riff_start_trig = ON;
-	}else if (out_total_sample_pos == riff_end_sample) {
-		riff_sample_pos = 0;
-		riff_play_state = OFF;
-		out_riff_end_trig = ON;
-		note_on_sample_pos = 4294967295ul;
-		next_note_sample_pos = 4294967295ul;
-		riff_node_ptr = (riff_node *)(riffnodeitem = riffnodelist->goto_next())->get_data();
-		calc_riff_sample_positions();
-	}else {
-		if (out_riff_start_trig == ON) out_riff_start_trig = OFF;
-		if (out_riff_end_trig == ON) out_riff_end_trig = OFF;
-		if (out_note_off_trig == ON)	out_note_on_trig = OFF;
-	}
+	if (*in_bar_trig == ON) {
+		if (*in_bar == riff_start_bar) {
+			riff_play_state = ON;
+			out_riff_start_trig = ON;
+			riff_ptr = riff_node_ptr->get_riff_source();
+			posconv = (double)timemap::QUARTER_VALUE 
+				/ riff_ptr->get_quartervalue();
+			note_ptr = (note_data*)
+				(noteitem = riff_ptr->sneak_first())->get_data();
+			note_on_pos = (long)(note_ptr->get_position() * posconv);
+			// note from last riff could still be playing
+			if (note_play_state == ON) 
+				note_off_pos -= (long)barpos;
+			barpos = 0; // noteoff pos will now be relative to new bar
+			// setup riff_node & riff_start_bar for next riff
+			riff_node_ptr = (riff_node*)
+				(riffnodeitem = riffnodelist->goto_next())->get_data();
+			riff_start_bar = riff_node_ptr->get_start_bar();
+		}
+	} else if (out_riff_start_trig == ON) out_riff_start_trig = OFF;
 	if (riff_play_state == ON) {
-		if  (riff_sample_pos == note_on_sample_pos) {
-			out_note_on_trig = ON;
+		if ((long)barpos == note_on_pos) {
+			if (note_play_state == OFF) {
+				note_play_state = ON;
+				out_note_on_trig = ON;
+			}
+			else out_note_slide_trig = ON;
+			out_notename = note_ptr->get_name();
 			out_freq = note_ptr->get_frequency();
+			out_velocity = note_ptr->get_velocity();
 			if (velrsp_max_samps > 0) {
-				vel_stpsize = (double)(note_ptr->get_velocity() - out_velocity) / velrsp_max_samps;
+				vel_stpsize = (double) 
+					(out_velocity - out_velocity_ramp) / velrsp_max_samps;
 				velrsp_samp = velrsp_max_samps;
-			} else	out_velocity = note_ptr->get_velocity();
-			note_play_state = ON;
-		}else if (riff_sample_pos == next_note_sample_pos)	{
-			note_ptr = (note_data*)(noteitem = noteitem->get_next())->get_data();
-			calc_note_sample_positions();
-			out_note_slide_trig = ON;
-			out_freq = note_ptr->get_frequency();
-			if (velrsp_max_samps > 0) {
-				vel_stpsize = (double)(note_ptr->get_velocity() - out_velocity) / velrsp_max_samps;
-				velrsp_samp = velrsp_max_samps;
-			} else	out_velocity = note_ptr->get_velocity();
-			note_play_state = ON;
-		}else if (riff_sample_pos == note_off_sample_pos) {
-			note_ptr = (note_data*)(noteitem = noteitem->get_next())->get_data();
-			calc_note_sample_positions();
-			out_note_off_trig = ON;
-			note_play_state = OFF;
-		} else {
+			} else out_velocity_ramp = out_velocity;
+			note_off_pos = (long)
+				(note_on_pos + note_ptr->get_length() * posconv);
+			note_ptr = (note_data*) 
+				(noteitem = noteitem->get_next())->get_data();
+			if (!note_ptr) note_on_pos = -1;
+			else note_on_pos = (long)(note_ptr->get_position() * posconv);
+		} // endif ((short)barpos == note_on_pos)
+		else {
 			if (out_note_on_trig == ON) out_note_on_trig = OFF;
 			if (out_note_slide_trig == ON) out_note_slide_trig = OFF;
-			if (out_note_off_trig == ON) out_note_off_trig = OFF;
 		}
-		riff_sample_pos++;
-	} else if (note_play_state == ON) {//last note in riff continues past
-		if (riff_sample_pos == note_off_sample_pos)	{ // bar it started in.
-			out_note_off_trig = ON;
-			note_play_state = OFF;
+		if (note_play_state == ON) {
+			if ((long)barpos == note_off_pos) {
+				note_play_state = OFF;
+				out_note_off_trig = ON;
+				if (!note_ptr) riff_play_state = OFF;
+				else note_off_pos = (long)
+						(note_on_pos + note_ptr->get_length() * posconv);
+				if (hold_notename == OFF) out_notename = &zero;
+			}
+		} 
+		else if (out_note_off_trig == ON) out_note_off_trig = OFF;
+		if (velrsp_samp > 0) {
+			out_velocity_ramp += vel_stpsize;
+			velrsp_samp--;
 		}
-	}
-	if (velrsp_samp > 0) {
-		velrsp_samp--;
-		out_velocity += vel_stpsize;
-	}
-	out_total_sample_pos++;
+		barpos += *in_pos_step_size;
+	} // end if (riff play state == ON)
+	else if (out_note_off_trig == ON) out_note_off_trig = OFF;
 }
 
-riff_list* sequencer::rifflist = 0;
 int sequencer::sequencer_count = 0;
+
+#ifndef BARE_MODULES
+riff_list* sequencer::rifflist = 0;
 bool sequencer::done_params = false;
 
 void sequencer::create_params()
@@ -342,7 +267,8 @@ void sequencer::create_params()
 	if (done_params == true)
 		return;
 	get_paramlist()->add_param(synthmodnames::MOD_SEQUENCER, paramnames::PAR_VELOCITY_RESPONSE);
+	get_paramlist()->add_param(synthmodnames::MOD_SEQUENCER, paramnames::PAR_HOLD_NOTENAME);
 	done_params = true;
 }
-
+#endif
 #endif

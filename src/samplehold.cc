@@ -5,29 +5,27 @@ sample_hold::sample_hold(string uname)
 : synthmod(synthmodnames::MOD_SAMPLEHOLD, sample_hold_count, uname),
   in_trig(0), in_signal(0), output(0.00), decay_time(0.00), decay_samps(0), ds(0), decay_size(0.00)
 {
-	if (!get_outputlist()->add_output(this, outputnames::OUT_OUTPUT))	{
-		invalidate();
-		return;
-	}
-	if (!get_inputlist()->add_input(this, inputnames::IN_TRIG))	{
-		invalidate();
-		return;
-	}
-	if (!get_inputlist()->add_input(this, inputnames::IN_SIGNAL))	{
-		invalidate();
-		return;
-	}
+	#ifndef BARE_MODULES
+	get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
+	get_inputlist()->add_input(this, inputnames::IN_TRIG);
+	get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
+	#endif
 	sample_hold_count++;
 	validate();
+	#ifndef BARE_MODULES
 	create_params();
+	#endif
 }
 
 sample_hold::~sample_hold() 
 {
+	#ifndef BARE_MODULES
 	get_outputlist()->delete_module_outputs(this);
 	get_inputlist()->delete_module_inputs(this);
+	#endif
 }
 
+#ifndef BARE_MODULES
 void const* sample_hold::get_out(outputnames::OUT_TYPE ot)
 {
 	void const* o = 0;
@@ -74,6 +72,7 @@ bool sample_hold::set_param(paramnames::PAR_TYPE pt, void const* data)
 	}
 	return retv;
 }
+#endif // BARE_MODULES
 
 void sample_hold::init()
 {
@@ -98,6 +97,8 @@ void sample_hold::run()
 }
 
 int sample_hold::sample_hold_count = 0;
+
+#ifndef BARE_MODULES
 bool sample_hold::done_params = false;
 
 void sample_hold::create_params()
@@ -107,5 +108,5 @@ void sample_hold::create_params()
 	get_paramlist()->add_param(synthmodnames::MOD_SAMPLEHOLD, paramnames::PAR_DECAY_TIME);
 	done_params = true;
 }
-
+#endif
 #endif

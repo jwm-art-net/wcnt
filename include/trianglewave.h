@@ -1,9 +1,13 @@
 #ifndef TRIANGLEWAVE_H
 #define TRIANGLEWAVE_H
 
+#include "synthmodule.h"
+
+#ifndef BARE_MODULES
 #include "modoutputslist.h"
 #include "modinputslist.h"
 #include "modparamlist.h"
+#endif
 
 class triangle_wave : public synthmod 
 {
@@ -21,10 +25,11 @@ class triangle_wave : public synthmod
 	// virtual funcs
 	void run();
 	void init(){};
+	#ifndef BARE_MODULES
 	void const* get_out(outputnames::OUT_TYPE);
 	void const* set_in(inputnames::IN_TYPE, void const*);
 	bool set_param(paramnames::PAR_TYPE, void const*);
-		
+	#endif
  private:
 	STATUS const* in_phase_trig;
 	double const* in_deg_size;
@@ -39,8 +44,10 @@ class triangle_wave : public synthmod
 	STATUS recycle;
 	STATUS zero_retrigger_mode;
 	static short triangle_wave_count;
+ 	#ifndef BARE_MODULES
 	static void create_params();
 	static bool done_params;
+ 	#endif
 };
 
 #endif

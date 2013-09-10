@@ -2,18 +2,18 @@
 #include "../include/wavfilein.h"
 
 wavfilein::wavfilein()
-:fname(NULL), filein(NULL), header(NULL), status(WAV_STATUS_INIT)
+:fname(NULL), sname(NULL), filein(NULL), header(NULL), status(WAV_STATUS_INIT)
 {
-	if ((header = new wavheader) == NULL)
-		status = WAV_STATUS_MEMERR;
+	header = new wavheader;
 }
 
 wavfilein::~wavfilein() 
 {
-	if (header) 
-		delete header;
+	delete header;
 	if (fname)
 		delete fname;
+	if (sname)
+		delete sname;
 	if (status == WAV_STATUS_OPEN) 
 		fclose(filein);
 }
@@ -47,8 +47,7 @@ WAV_STATUS wavfilein::open_wav(const char * filename)
 		fclose(filein);
 	if (fname) 
 		delete fname;
-	if ((fname = new char[strlen(filename)+1]) == NULL) 
-		return status = WAV_STATUS_MEMERR;
+	fname = new char[strlen(filename)+1];
 	strncpy(fname, filename, strlen(filename));
 	fname[strlen(filename)] = '\0';
 	if ((filein = fopen(filename, "rb")) == NULL)
@@ -107,5 +106,16 @@ void wavfilein::read_wav_chunk(void * buf, unsigned long smp, int bsize)
 		else 
 			fread((stereodata*)buf, sizeof(stereodata), bsize, filein);
 		}
+}
+
+WAV_STATUS wavfilein::set_sample_name(const char* sn)
+{
+	if (sname) 
+		delete sname;
+	if ((sname = new char[strlen(sn)+1]) == NULL) 
+		return status = WAV_STATUS_MEMERR;
+	strncpy(sname, sn, strlen(sn));
+	sname[strlen(sn)] = '\0';
+	return WAV_STATUS_OK;
 }
 #endif

@@ -6,33 +6,28 @@ triangle_wave::triangle_wave(string uname)
   in_phase_trig(0), in_deg_size(0), output(0), play_state(OFF), sect(0), sect_spanlvl(0), sect_startlvl(0),
   sectmaxsamps(1), sectsample(0), counter_ratio(0), recycle(OFF), zero_retrigger_mode(OFF)
 {
-	if (!get_outputlist()->add_output(this, outputnames::OUT_OUTPUT)){
-		invalidate();
-		return;
-	}
-	if (!get_outputlist()->add_output(this, outputnames::OUT_PLAY_STATE)){
-		invalidate();
-		return;
-	}
-	if (!get_inputlist()->add_input(this, inputnames::IN_PHASE_TRIG)){
-		invalidate();
-		return;
-	}
-	if (!get_inputlist()->add_input(this, inputnames::IN_DEG_SIZE)){
-		invalidate();
-		return;
-	}
+	#ifndef BARE_MODULES
+	get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
+	get_outputlist()->add_output(this, outputnames::OUT_PLAY_STATE);
+	get_inputlist()->add_input(this, inputnames::IN_PHASE_TRIG);
+	get_inputlist()->add_input(this, inputnames::IN_DEG_SIZE);
+	#endif
 	triangle_wave_count++;
 	validate();
+	#ifndef BARE_MODULES
 	create_params();
+	#endif
 }
 
 triangle_wave::~triangle_wave()
 {
+	#ifndef BARE_MODULES
 	get_outputlist()->delete_module_outputs(this);
 	get_inputlist()->delete_module_inputs(this);
+	#endif
 }
 
+#ifndef BARE_MODULES
 void const* triangle_wave::get_out(outputnames::OUT_TYPE ot)
 {
 	void const* o = 0;
@@ -86,6 +81,7 @@ bool triangle_wave::set_param(paramnames::PAR_TYPE pt, void const* data)
 	}
 	return retv;
 }
+#endif
 
 void triangle_wave::run() 
 {
@@ -141,6 +137,8 @@ void triangle_wave::run()
 }
 
 short triangle_wave::triangle_wave_count = 0;
+
+#ifndef BARE_MODULES
 bool triangle_wave::done_params = false;
 
 void triangle_wave::create_params()
@@ -151,6 +149,5 @@ void triangle_wave::create_params()
 	get_paramlist()->add_param(synthmodnames::MOD_TRIWAVE, paramnames::PAR_ZERO_RETRIGGER);
 	done_params = true;
 }
-
-
+#endif
 #endif

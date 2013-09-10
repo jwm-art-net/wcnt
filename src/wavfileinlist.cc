@@ -1,10 +1,13 @@
 #ifndef WAVFILEINLIST_H
 #include "../include/wavfileinlist.h"
 
+#ifndef BARE_MODULES
+
 wavfilein_list::wavfilein_list()
 : wavfilelist(0), wavfile_item(0), wavfile(0)
 {
-	wavfilelist = new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
+	wavfilelist = new 
+		linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
 }
 
 wavfilein_list::~wavfilein_list()
@@ -43,11 +46,12 @@ wavfilein* wavfilein_list::get_wavfilein_by_name(string const* wavname)
 	goto_first();
 	while(wavfile)
 	{
-		if (*wavname == wavfile->get_name())
+		if (*wavname == wavfile->get_sample_name())
 			return wavfile;
 		goto_next();
 	}
 	return 0;
 }
 
+#endif
 #endif

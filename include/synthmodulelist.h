@@ -17,6 +17,8 @@
 #ifndef SYNTHMODULELIST_H
 #define SYNTHMODULELIST_H
 
+#ifndef BARE_MODULES
+
 #include "synthmodule.h"
 #include "synthmodnames.h"
 #include "modinputslist.h"
@@ -37,11 +39,16 @@ class synthmodlist
 	synthmod* goto_prev(){ return smod = (synthmod*)(smod_item = smodlist->goto_prev())->get_data();}
 	synthmod* goto_next(){ return smod = (synthmod*)(smod_item = smodlist->goto_next())->get_data();}
 	synthmod* get_synthmod_by_name(string const*);
+	synthmod* get_first_of_type(synthmodnames::SYNTH_MOD_TYPE);
+	synthmod* get_next_of_type();
 	
  private:
 	linkedlist* smodlist;
 	ll_item* smod_item;
 	synthmod* smod;
+	synthmodnames::SYNTH_MOD_TYPE search_modtype;
+	ll_item* search_result;
 };
 
+#endif
 #endif

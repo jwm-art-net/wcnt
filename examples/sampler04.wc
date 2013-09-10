@@ -1,0 +1,617 @@
+wcnt-1.1001/jwmsynth
+//----------------------------------------------------------------------------
+// header info:
+samplerate 	44100
+bpm		80
+signature 	4/4
+// end of header.
+
+//-----------------------------------------------------------------------------
+// well, how could I not resist putting that korg ms20 sample through that
+// feedback filter loop of sampler03.wc?? simple, I can't. Just like I
+// could n't resist making it stereo, and then adding some echo.
+
+//-----------------------------------------------------------------------------
+// setup the time_map
+time_map
+time1  
+        time
+		// add a signature change at bar 0
+		signature	4/4	0
+		// add a bpm change at bar 0, ramp bpm from bar 3 to bar 4.
+		bpm 80	0
+        time
+time1
+
+// setup how long to process:
+wcnt_exit
+wcnt_exit_module
+        in_bar  time1 out_bar
+	exit_bar 10
+wcnt_exit_module
+
+//-----------------------------------------------------------------------------
+// first, create some riffs.  riffs are inserted into the sequencer, and 
+// contain note patterns.  riffs are not modules.  The first job of a riff
+// is to define the value you will use for a crotchet, or quarter note in 
+// that riff, the value you use will determine what values you use for the 
+// note lengths and note positions for all notes in the riff.
+
+// currently the wcnt sequencer module is monophonic, one sequencer can play
+// only one note at a time.  
+
+riff 
+riff1
+	quarter_value	16 
+	// quarter_value of 16 sets bar length to 64 when time signature is 4/4.
+	//   notename	position	length	velocity
+	note	g0	0		6.5	1.0
+	note	g0	8		3.5	0.5
+	note	f0	16		6.5	0.8
+	note	c0	24		7.4	0.7
+	note	d0	32		5.5	1.0
+	note 	d0	40		2.5	0.5
+	note	f0	48		3.5	1.0
+	note	e0	56		7.5	1.0
+riff1
+
+riff 
+riff2
+	quarter_value	16 
+	note	b0	0		4.5	1.0
+	note	a0	8		4.5	0.9
+	note	g0	16		4.5	0.8
+	note	f0	24		4.5	0.7
+	note	e0	32		4.5	0.6
+	note 	d0	40		4.5	0.5
+	note	c0	48		4.5	0.4
+	note	c0	56		4.5	0.2
+riff2
+
+sequencer
+seq1
+        track // add four bars of riff1:
+		riff1	0
+		riff1	1
+		riff1	2
+		riff2	3
+		riff1	4
+		riff1	5
+		riff1	6
+		riff2	7
+        track
+	// connect sequencer to keep in sync with time1 time_map module
+        in_bar			time1	out_bar
+        in_bar_trig     	time1	out_bar_trig
+        in_pos_step_size        time1	out_pos_step_size
+	// parameters for module: sequencer
+        velocity_response_time  5	// take 5 ms to change velocity
+        hold_notename		off	// ignore hold_notename
+seq1
+
+//-----------------------------------------------------------------------------
+// sampler needs a deg_size to playback the sample at different rates.
+// use an osc_clock to get it to playback at musical note frequencies.
+
+osc_clock
+osc1
+	// connect with seq1 sequencer module.
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_slide_trig      seq1	out_note_slide_trig
+        in_frequency    	seq1	out_frequency
+        in_freq_mod1    	off
+        in_freq_mod2    	off
+        octave_offset		-1
+        tuning_semitones        0.00	
+        portamento_time 	50.0	// duration of a note_slide event
+        freq_mod1_size  	0.0
+        freq_mod2_size  	0.0
+osc1
+
+// adsr to shape sampler output:
+
+adsr
+adsr1
+        envelope
+                attack	415.0	1.0	450.0	1.0
+                decay   20.0	0.9	25.0	0.9
+		decay	15.0	0.46	15.0	0.46
+                release	220.0	0.0	215.0	0.0
+        envelope
+	// connect to sequencer triggers
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_off_trig        seq1	out_note_off_trig
+	// nb don't use out_velocity_ramped here:
+        in_velocity     	seq1	out_velocity 
+        start_level     0.0
+        sustain_state   on	// hold volume level from decay section until note_off
+        zero_retrigger  off
+adsr1
+
+//-----------------------------------------------------------------------------
+// several modules to modulate start position of sampler
+// ie 4 constants for positions in sampler, placed into
+// wcnt_signal modules which can then be inserted into
+// a switcher module, which will switch on note_on. ha.
+
+constant p1 value 0.0 	p1
+constant p2 value 0.125	p2
+constant p3 value 0.25	p3
+constant p4 value 0.5	p4
+constant p5 value 0.125	p5
+
+wcnt_signal wsp1 in_signal p1 out_output wsp1
+wcnt_signal wsp2 in_signal p2 out_output wsp2
+wcnt_signal wsp3 in_signal p3 out_output wsp3
+wcnt_signal wsp4 in_signal p4 out_output wsp4
+wcnt_signal wsp5 in_signal p5 out_output wsp5
+
+switcher
+sw1
+	signals
+		wsp1	wsp2	wsp3	wsp4	wsp5
+	signals
+	in_trig	seq1	out_note_on_trig
+	xfade_time	0.0
+sw1
+
+//-----------------------------------------------------------------------------
+// first define a wavfilein to tell the sampler what file to read.
+
+wavfilein ms20 file samples/korgms20.wav ms20
+
+sampler
+sampler1
+
+//inputs for module: sampler
+        in_play_trig    	seq1	out_note_on_trig
+        in_stop_trig    	adsr1	out_off_trig
+        in_start_pos_mod	sw1	out_output
+        in_deg_size     	osc1	out_deg_size
+
+// parameters for module: sampler
+        wavfile 	ms20
+        play_dir        fwd
+        play_mode       jump	// for when playback travels away from loop
+	jump_mode       play	// jump to loop and play in direction of initial play direction!
+        start_pos_min   0	// play it safe...  oops, I forgot to change the comments!
+        start_pos_max   193118	// near end of file
+        loop_mode       fwd	// bi-directional looping
+        loop_start_pos  17000	// compare with start_pos max
+        loop_end_pos    59000	// and start_pos min, and loop_is_offset off
+        loop_is_offset  on	// loop points are set in stone.
+        bi-directional_offset   50	// used when play direction changes
+        anti_clip_samples       150	// fade out/in samples
+        anti_clip_each_end      off	// 
+        zero_search_range       150	// how many samples to search for zero X
+        root_note       c0
+        degsize_amount  1.0	// how much to follow frequencies (deg_size)
+sampler1
+
+// note:  because anti_clip_each_end is on, the sampler adjusts the 
+// minumum and maximum samples which can be played, this gives the
+// anticlipping code something to playback, otherwise it would have
+// to read past the start when playback is reverse, and the end when
+// playback is forward.  when anti_clip_each_end is off, it does not
+// anticlip these extremes.
+
+// note:  degsize_amount
+// a value of 0.0 will always playback the sample at it's natural rate.
+// a value of 1.0 will play it back at the western equal temperment scale
+//	(providing the deg_size is of western musical notes)
+// a value of less than 1.0 will play it back at microtonal scales
+// a value greater than 1.0 will ??? (don't know what it's called!)
+
+// outputs for module: sampler
+// out_left	// output integer value, as in wav
+// out_right
+// out_l	// output converted to -1.0 to +1.0 range
+// out_r
+// out_loop_trig
+// out_play_state
+// for mono samples, left and right outputs are the same.
+
+//-----------------------------------------------------------------------------
+// apply a basic effect to sampler output
+contraster 
+sc1
+        in_signal       sampler1	out_l
+	in_power_mod	adsr1		out_output
+	in_rude_switch_trig	off
+	power_min       1.0	// a value of 0.0 will silence signal
+        power_max       4.0
+        rude_mode       off
+        wet/dry 1.0
+sc1
+
+//-----------------------------------------------------------------------------
+// shape the sound using adsr
+multiplier
+msc1
+	in_signal	sc1 	out_output
+	in_modifier	adsr1	out_output
+msc1
+
+//-----------------------------------------------------------------------------
+// lets just pan the msc1 before filtering (now for left+right)
+
+clock
+pclock1
+        in_freq_mod1    modsin1_r	out_output
+        freq    0.3333333
+        freq_mod1_size  2.0
+pclock1
+
+sine_wave
+panctrl
+        in_phase_trig   	pclock1	out_phase_trig
+        in_deg_size     	pclock1	out_deg_size
+        recycle_mode    	off
+        on_trig_reset_phase     off
+        phase_cycles    	1.0
+panctrl
+
+panner
+pan1
+        in_signal       msc1	out_output
+        in_pan_mod      panctrl	out_output
+        pan     	0.5
+        pan_mod_size    0.99
+pan1
+
+//-----------------------------------------------------------------------------
+// create clocks to run filters with
+// 2 clocks to modulate the frequency clocks, there was just one, but it caused
+// some rather large peeks....but having two has infact made it worse. I guess
+// it's just a little too much feedback....
+
+clock
+clock1_l
+        in_freq_mod1    modsin1_r	out_output
+        freq    	0.1
+        freq_mod1_size  2.0
+clock1_l
+
+sine_wave
+modsin1_l
+        in_phase_trig   	clock1_l	out_phase_trig
+        in_deg_size     	clock1_l	out_deg_size
+        recycle_mode    	off
+        on_trig_reset_phase     off
+        phase_cycles    	1.0
+modsin1_l
+
+clock
+clock1_r
+        in_freq_mod1    modsin1_l	out_output
+        freq    	0.2333
+        freq_mod1_size  2.0
+clock1_r
+
+sine_wave
+modsin1_r
+        in_phase_trig   	clock1_r	out_phase_trig
+        in_deg_size     	clock1_r	out_deg_size
+        recycle_mode    	off
+        on_trig_reset_phase     off
+        phase_cycles    	1.0
+modsin1_r
+
+// these clocks provide the modulated cutoff frequencies
+clock
+clock2_l
+        in_freq_mod1    modsin1_l	out_output
+        freq    	2000
+        freq_mod1_size  4.0 // frequency will span from 2000/4 to 2000*4
+clock2_l
+
+clock
+clock2_r
+        in_freq_mod1    modsin1_r	out_output
+        freq    	2000
+        freq_mod1_size  4.0 // frequency will span from 2000/4 to 2000*4
+clock2_r
+
+//-----------------------------------------------------------------------------
+// don't want all the filters to run at same frequency, this 
+// creates different frequencies for the left and right filters.
+
+constant i1_l value 1.15 i1_l
+
+multiplier
+m1_l
+	in_signal	clock2_l	out_deg_size
+	in_modifier	i1_l		out_output
+m1_l
+
+multiplier
+m2_l
+	in_signal	m1_l	out_output
+	in_modifier	i1_l	out_output
+m2_l
+
+constant i1_r value 1.25 i1_r
+
+multiplier
+m1_r
+	in_signal	clock2_r	out_deg_size
+	in_modifier	i1_r		out_output
+m1_r
+
+multiplier
+m2_r
+	in_signal	m1_r	out_output
+	in_modifier	i1_r	out_output
+m2_r
+
+//-----------------------------------------------------------------------------
+// there is a set of filters for the left channel, and another set for the 
+// right.  lpf2_l uses feedback from lpf2_r, and vice versa, and lpf3_l 
+// uses feedback from lpf3_r, and vice versa.
+//-----------------------------------------------------------------------------
+// left channel
+
+lp_filter
+lpf1_l
+        in_signal       	pan1		out_l
+        in_cutoff_degsize       clock2_l	out_deg_size
+        in_feedback     	lpf4_l	out_output
+        in_feedback_mod 	off
+        feedback        	-0.75
+        feedback_modsize        0.0
+        wet/dry 		1.0
+lpf1_l
+
+range_limit
+rl1_l
+        in_signal       lpf1_l	out_wet_output
+        sig_range_hi    0.5
+        sig_range_lo    -0.5
+rl1_l
+
+lp_filter
+lpf2_l
+        in_signal       	rl1_l	out_output
+        in_cutoff_degsize       m1_l	out_output
+        in_feedback     	rl2_r	out_output
+        in_feedback_mod 	off
+        feedback        	0.35
+        feedback_modsize        0.0
+        wet/dry 		1.0
+lpf2_l
+
+range_limit
+rl2_l
+        in_signal       lpf2_l	out_wet_output
+        sig_range_hi    0.45
+        sig_range_lo    -0.45
+rl2_l
+
+lp_filter
+lpf3_l
+        in_signal       	lpf2_l	out_output
+        in_cutoff_degsize       m2_l	out_output
+        in_feedback     	rl3_r	out_output
+        in_feedback_mod 	off
+        feedback        	0.25
+        feedback_modsize        0.0
+        wet/dry 		1.0
+lpf3_l
+
+range_limit
+rl3_l
+        in_signal       lpf3_l	out_wet_output
+        sig_range_hi    0.35
+        sig_range_lo    -0.35
+rl3_l
+
+lp_filter
+lpf4_l
+        in_signal       	lpf3_l	out_output
+        in_cutoff_degsize       m2_l	out_output
+        in_feedback     	off
+        in_feedback_mod 	off
+        feedback        	0.0
+        feedback_modsize        0.0
+        wet/dry 		1.0
+lpf4_l
+
+//-----------------------------------------------------------------------------
+// right channel
+
+lp_filter
+lpf1_r
+        in_signal       	pan1		out_r
+        in_cutoff_degsize       clock2_r	out_deg_size
+        in_feedback     	lpf4_r		out_output
+        in_feedback_mod 	off
+        feedback        	0.75
+        feedback_modsize        0.0
+        wet/dry 		1.0
+lpf1_r
+
+range_limit
+rl1_r
+        in_signal       lpf1_r	out_wet_output
+        sig_range_hi    0.5
+        sig_range_lo    -0.5
+rl1_r
+
+lp_filter
+lpf2_r
+        in_signal       	rl1_r	out_output
+        in_cutoff_degsize       m1_r	out_output
+        in_feedback     	rl2_l	out_output
+        in_feedback_mod 	off
+        feedback        	-0.35
+        feedback_modsize        0.0
+        wet/dry 		1.0
+lpf2_r
+
+range_limit
+rl2_r
+        in_signal       lpf2_r	out_wet_output
+        sig_range_hi    0.45
+        sig_range_lo    -0.45
+rl2_r
+
+lp_filter
+lpf3_r
+        in_signal       	lpf2_r	out_output
+        in_cutoff_degsize       m2_r	out_output
+        in_feedback     	rl3_l	out_output
+        in_feedback_mod 	off
+        feedback        	-0.25
+        feedback_modsize        0.0
+        wet/dry 		1.0
+lpf3_r
+
+range_limit
+rl3_r
+        in_signal       lpf3_r	out_wet_output
+        sig_range_hi    0.35
+        sig_range_lo    -0.35
+rl3_r
+
+lp_filter
+lpf4_r
+        in_signal       	lpf3_r	out_output
+        in_cutoff_degsize       m2_r	out_output
+        in_feedback     	off
+        in_feedback_mod 	off
+        feedback        	0.0
+        feedback_modsize        0.0
+        wet/dry 		1.0
+lpf4_r
+//-----------------------------------------------------------------------------
+// now add some echo, but without too much low frequency
+//
+// constant hp_ds has the deg_size of 1200 hrtz
+
+constant hp_ds value 9.7959184 hp_ds
+
+// to calculate: degsize = 360 / (samplerate / frequency)
+
+hp_filter
+hpf1_l
+        in_signal       	lpf1_l	out_output
+        in_cutoff_degsize       hp_ds	out_output
+        in_feedback     	off
+        in_feedback_mod 	off
+        feedback        	0.0
+        feedback_modsize        0.0
+        wet/dry 		1.0
+hpf1_l
+
+echo
+echo_l
+        in_signal       hpf1_l	out_output
+        in_gain_mod     off
+        in_feedback     echo_r	out_wet_output
+        in_feedback_mod off
+        delay_time      301.2344
+        gain    	0.5
+        gain_modsize    0
+        feedback        0.5
+        feedback_modsize 0.0
+        wet/dry 	1.0
+echo_l
+
+hp_filter
+hpf1_r
+        in_signal       	lpf1_r	out_output
+        in_cutoff_degsize       hp_ds	out_output
+        in_feedback     	off
+        in_feedback_mod 	off
+        feedback        	0.0
+        feedback_modsize        0.0
+        wet/dry 		1.0
+hpf1_r
+
+echo
+echo_r
+        in_signal       hpf1_r	out_output
+        in_gain_mod     off
+        in_feedback     echo_l	out_wet_output
+        in_feedback_mod off
+        delay_time      244.4321
+        gain    	0.5
+        gain_modsize    0
+        feedback        0.5
+        feedback_modsize 0.0
+        wet/dry 	1.0
+echo_r
+
+//-----------------------------------------------------------------------------
+// amplifying time!
+//
+// the signal was shaped before it was filtered, so 
+// applying the adsr to the amplifier now, would cut 
+// out a lot of the nice stuff that's been done...
+
+constant one value 1.0 one
+
+// if I had some compressors, it would come in handy, but some hard
+// clipping has been utilised instead within the amps.
+
+stereo_amp
+amp1
+	in_l		lpf1_l	out_output
+	in_r		lpf1_r	out_output
+	in_amp_eg	one	out_output
+	in_amp_mod	seq1	out_velocity_ramp
+	left_amplitude	20000	// 32767 is the maximum amplitude
+	right_amplitude	20000	// 32767 is the maximum amplitude
+	amp_mod_size	0.95	// how much influence velocity has in this case
+	clip_level	12000	// the maximum allowed amplitude
+amp1
+
+stereo_amp
+amp2
+	in_l		echo_l	out_output
+	in_r		echo_r	out_output
+	in_amp_eg	one	out_output
+	in_amp_mod	seq1	out_velocity_ramp
+	left_amplitude	20000	// 32767 is the maximum amplitude
+	right_amplitude	20000	// 32767 is the maximum amplitude
+	amp_mod_size	0.95	// how much influence velocity has in this case
+	clip_level	12000	// the maximum allowed amplitude
+amp2
+
+mix_chan
+ch1
+	in_left		amp1	out_left
+	in_right	amp1	out_right
+ch1
+
+mix_chan
+ch2
+	in_left		amp2	out_left
+	in_right	amp2	out_right
+ch2
+
+// 	add as many mix_chan(nels) as you like!
+
+mixer
+mix1
+        mixdesk
+                ch1	ch2
+        mixdesk
+        master_level    1.0
+mix1
+
+//-----------------------------------------------------------------------------
+// time to spew it all out
+
+wavfile_out
+wav1
+	in_left		mix1	out_left
+	in_right	mix1	out_right
+	in_bar		time1	out_bar
+	in_bar_trig	time1	out_bar_trig
+	filename	sampler04.wav
+	start_bar	0
+	end_bar		9
+wav1
+
+wcnt-1.1001/jwmsynth

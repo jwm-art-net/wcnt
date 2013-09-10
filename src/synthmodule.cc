@@ -8,9 +8,9 @@ short audio_bitrate = 16;
 short audio_ysize = 32767;
 
 /* Default settings for music tempo */
-short beats_per_minute = 160;
-short beats_per_measure = 4;
-short beat_value = 4;
+short sm_beats_per_minute = 160;
+short sm_beats_per_measure = 4;
+short sm_beat_value = 4;
 
 synthmod::synthmod(synthmodnames::SYNTH_MOD_TYPE mt, short id, string uname)
 : module_type(mt), number_id(id), valid(false)
@@ -19,6 +19,7 @@ synthmod::synthmod(synthmodnames::SYNTH_MOD_TYPE mt, short id, string uname)
 }
 
 synthmodnames* synthmod::modnames = 0;
+#ifndef BARE_MODULES
 inputnames* synthmod::innames = 0;
 outputnames* synthmod::outnames = 0;
 paramnames* synthmod::parnames = 0;
@@ -27,5 +28,6 @@ modinputlist* synthmod::inputslist = 0;
 modoutputlist* synthmod::outputslist = 0;
 modparamlist* synthmod::paramlist = 0;
 connectorlist* synthmod::connectlist = 0;
+#endif
 
 #endif

@@ -1,73 +1,28 @@
 #ifndef JWMSYNTH_H
 #include "../include/jwmsynth.h"
 
-jwmsynth::jwmsynth(int const argc, char **const argv)
-: modnames(0), innames(0), outnames(0), parnames(0), synthmodslist(0), 
-  inputlist(0), outputlist(0), paramlist(0), connectlist(0), synthfile(0), rifflist(0), 
-  exit_bar(1), options_count(argc), options(argv), option_filename_no(0),valid(false)
+#ifndef BARE_MODULES
+jwmsynth::jwmsynth(int const argc, char **const argv) : 
+	modnames(0), innames(0), outnames(0), parnames(0), synthmodslist(0), 
+  	inputlist(0), outputlist(0), paramlist(0), connectlist(0), synthfile(0),
+	rifflist(0), exit_bar(0), options_count(argc), options(argv), 
+	option_filename_no(0), valid(false)
 {
-	if (!(modnames = new synthmodnames)){
-        cerr << "\nlowest level memory error - aborting" << endl;
-		return;
-	}
-	if (!(innames = new inputnames)){
-        cerr << "\nlowest level memory error - aborting" << endl;
-		return;
-	}
-	if (!(outnames = new outputnames)){
-        cerr << "\nlowest level memory error - aborting" << endl;
-		return;
-	}
-	if (!(parnames = new paramnames)){
-        cerr << "\nlowest level memory error - aborting" << endl;
-		return;
-	}
-    if (!(inputlist = new modinputlist)) {
-        cerr << "\nlowest level memory error - aborting" << endl;
-		return;
-    }
-    if (!(outputlist = new modoutputlist)) {
-        cerr << "\nlowest level memory error - aborting" << endl;
-		return;
-    }
-	if (!(paramlist = new modparamlist)) {
-		cerr << "\nlowest level memory error - aborting" << endl;
-		return;
-	}
-	if (!(connectlist = new connectorlist())) {
-		cerr << "\nlowest level memory error - aborting" << endl;
-		return;
-	}
-    if (!(synthfile = new synthfilereader)) {
-        cerr << "\nlowest level memory error - aborting" << endl;
-		return;
-    }
-    if (!(rifflist = new riff_list())) {
-        cerr << "\nlowest level memory error - aborting" << endl;
-		return;
-    }
-	if (!(wavfilelist = new wavfilein_list())){
-        cerr << "\nlowest level memory error - aborting" << endl;
-		return;
-	}
-	synthmod::register_modnames(modnames);
-	synthmod::register_inputnames(innames);
-	synthmod::register_outputnames(outnames);
-	synthmod::register_paramnames(parnames);
-	synthmod::register_inputlist(inputlist);
-	synthmod::register_outputlist(outputlist);
-	synthmod::register_paramlist(paramlist);
+	synthmod::register_modnames(modnames = new synthmodnames);
+	synthmod::register_inputnames(innames = new inputnames);
+	synthmod::register_outputnames(outnames  = new outputnames);
+	synthmod::register_paramnames(parnames = new paramnames);
+	synthmod::register_inputlist(inputlist = new modinputlist);
+	synthmod::register_outputlist(outputlist = new modoutputlist);
+	synthmod::register_paramlist(paramlist = new modparamlist);
 	// must register the various things above before creating 
 	// synthmodlist as it creates a nonezero module which
-	// must have access to the lists - or cause a seg fault if you prefer.
-    if (!(synthmodslist = new synthmodlist)) {
-        cerr << "\nlowest level memory error - aborting" << endl;
-		return;
-    }
-	synthmod::register_modlist(synthmodslist);
-	synthmod::register_connectlist(connectlist);
-	sequencer::register_rifflist(rifflist);
-	sampler::register_wavfilein_list(wavfilelist);
+	// must have access to the lists - or cause a seg fault.
+	synthmod::register_modlist(synthmodslist = new synthmodlist);
+	synthmod::register_connectlist(connectlist = new connectorlist);
+	sequencer::register_rifflist(rifflist = new riff_list);
+	sampler::register_wavfilein_list(wavfilelist = new wavfilein_list);
+	synthfile = new synthfilereader;	
 	valid = true;
 }
 
@@ -89,20 +44,16 @@ bool jwmsynth::generate_synth()
 {
 	if (!open_synthfile())
 		return false;
-    if (!synthfile->read_header(
-			&audio_samplerate, 
-			&beats_per_minute, 
-			&beats_per_measure, 
-			&beat_value, 
-			&exit_bar)) {
+    if (!synthfile->read_header(&audio_samplerate, &sm_beats_per_minute, 
+			&sm_beats_per_measure, &sm_beat_value)) {
         err_msg = synthfile->get_error_msg();
         return false;
     }
     if (synthfile->is_verbose()) {
-        cout << "\n\nProccessing wcnt/jwmsynth: " << options[option_filename_no];
+        cout << "\n\nProccessing wcnt/jwmsynth: "<<options[option_filename_no];
 	}
     string const *com = synthfile->read_command();
-    while (*com != "wcnt/jwmsynth") 
+    while (*com != "wcnt-1.1001/jwmsynth") 
 	{
         if (!com) {
             err_msg = synthfile->get_error_msg();
@@ -122,6 +73,16 @@ bool jwmsynth::generate_synth()
 		}
         com = synthfile->read_command();
     }
+	if (synthmodslist->get_first_of_type(synthmodnames::MOD_WCNT) == 0) {
+		// wankest error message ever:)
+		err_msg = "\nAfter processing the file '";
+		err_msg += options[option_filename_no];
+		err_msg += "'\nI notice you have not created a wcnt module.";
+		err_msg += "\nWithout this module I don't know when to stop, therefore,";
+		err_msg += "\nand, only wishing to keep your best interests at heart, I ";
+		err_msg += "\nhave decided to cease operati....kerplunkshshshzzzdom.";
+		return false;
+	}
 	return true;
 }
 
@@ -133,11 +94,13 @@ bool jwmsynth::read_and_create_synthmod(string const* com)
 		return false;
 	}
 	if (!mod->is_valid()) {
-		err_msg = "\nunable to properly create synthmodule: " + *mod->get_username() + " probably lacking memory ";
+		err_msg = "\nunable to properly create synthmodule: ";
+		err_msg += (*mod->get_username() + " probably lacking memory ");
 		return false;
 	}
 	if (!(synthmodslist->add_module(mod))) {
-		err_msg = "\nproblems adding synthmodule: " + *mod->get_username() + " to list";
+		err_msg = "\nproblems adding synthmodule: " + *mod->get_username();
+		err_msg += " to list";
 		return false; 
 	}
 	if (synthfile->is_verbose())
@@ -155,12 +118,12 @@ bool jwmsynth::read_and_create_wavfilein(string const* com)
 	}
 	if (!wavfilelist->add_wavfile(wavfile)) {
 		err_msg = "\nUnable to add ";
-		err_msg += wavfile->get_name();
+		err_msg += wavfile->get_sample_name();
 		err_msg += " to list";
 		return false;
 	}
 	if (synthfile->is_verbose())
-		cout << "\nwavfilein:" << wavfile->get_name();
+		cout << "\nwavfilein:" << wavfile->get_sample_name();
 	return true;
 }
 
@@ -184,7 +147,8 @@ bool jwmsynth::connect_synth()
 {
     if (synthfile->is_verbose()) {
         cout << "\n\nEnd wcnt/jwmsynth: " << options[option_filename_no];
-		cout << "\n\nWill now attempt to set inputs and outputs, hold your horses:\n";
+		cout << "\n\nWill now attempt to connect inputs and outputs";
+		cout << ", hold your horses:\n";
 		connectlist->set_verbose();
 	}
 	if (!connectlist->make_connections()) {
@@ -207,22 +171,29 @@ bool jwmsynth::execute_synth()
 	synthmod* sm = synthmodslist->goto_first();
 	while(sm) {
 		if (!sm->is_valid()) {
-			err_msg = "\nSynth module: " + *sm->get_username() + " is not valid to run.";
+			err_msg = "\nSynth module: " + *sm->get_username();
+			err_msg += " is not valid to run.";
 			return false;
 		}
 		sm = synthmodslist->goto_next();
 	}
+	// only use first wcnt module created, don't bother with any others
+	// although user should not have been allowed to create > 1
+	wcnt_module* wcnt = (wcnt_module*) 
+		synthmodslist->get_first_of_type(synthmodnames::MOD_WCNT);
+	const short* bar = wcnt->get_input_bar();
+	short exit_bar = wcnt->get_exit_bar();
 	unsigned long sample = 0;
-	unsigned long end_sample = convert_notelen_to_samples(256) * exit_bar;
 	char bigcount = '@';
-	char littlecount = '-';
+	char littlecount = '~';
 	int samplesperbig = audio_samplerate;
 	int divisions = 10;
 	int samplespersmall = samplesperbig / divisions;
 	int counter = 0;
 	int divcounter = 0;
-	cout << "\n\nProcessing " << options[option_filename_no] << "\tone '" << bigcount << "' per second done\n";
-	while (sample <= end_sample)
+	cout << "\n\nProcessing " << options[option_filename_no] << "\tone '";
+	cout << bigcount << "' per second done\n";
+	while (*bar < exit_bar)
 	{
 		sm = synthmodslist->goto_first();
 		while(sm) {
@@ -231,16 +202,13 @@ bool jwmsynth::execute_synth()
 		}
 		sample++;
 		counter++;
-		if (counter == samplespersmall)
-		{
+		if (counter == samplespersmall)	{
 			divcounter++;
-			if (divcounter == divisions)
-			{
+			if (divcounter == divisions) {
 				cout << bigcount;
 				divcounter = 0;
 			}
-			else
-				cout << littlecount;
+			else cout << littlecount;
 			cout.flush();
 			counter = 0;
 		}
@@ -266,7 +234,7 @@ jwmsynth::scan_cl_options()
 	commandoptions += wcnt + filename + inputhelp + " inputname";
 	commandoptions += wcnt + sampleinfo + " samplename.wav";
     if (options_count == 1) {
-        err_msg = commandoptions;
+        err_msg = commandoptions + "\n";
         return false;
     } 
 	else if (options_count == 2) {
@@ -344,51 +312,78 @@ bool jwmsynth::module_help()
 	synthmodnames::SYNTH_MOD_TYPE smt = modnames->get_type(&smname);
 	if (smt == synthmodnames::MOD_FIRST) {
 		if (options_count == 3) 
-			err_msg = "\nUnknown synth module type :" + smname;
+			err_msg = "\nUnknown synth module: " + smname + "\n";
 		else
 			err_msg = "";
-		err_msg += "\navailable module types are:\n";
-		int i;
-		for (i = synthmodnames::MOD_FIRST + 1; i < synthmodnames::MOD_LAST; i++) {
-			if (i != synthmodnames::MOD_NONEZERO)
-				err_msg += (modnames->get_name((synthmodnames::SYNTH_MOD_TYPE)i) + "\n");
+		err_msg += "\navailable module types are:\n\n";
+		int i, ip = 0;
+		for (i = synthmodnames::MOD_FIRST + 1;i < synthmodnames::MOD_LAST; i++) 
+		{
+			if (i != synthmodnames::MOD_NONEZERO) {
+				ip++;
+				string modname = modnames->get_name
+					((synthmodnames::SYNTH_MOD_TYPE)i);
+				int strlen = modname.length();
+				err_msg+=modnames->get_name((synthmodnames::SYNTH_MOD_TYPE)i);
+				if (ip % 4 == 0) err_msg += "\n"; 
+				else {
+					if (strlen < 8)	err_msg += "\t\t";
+						else err_msg += "\t";
+				}
+			}
 		}
+		err_msg += "\n";
 		return false;
 	}
 	synthmod* sm = synthmod::get_modlist()->create_module(smt, "username");
 	err_msg = "\n" + modnames->get_name(smt);
+	if (sm == 0) {
+		err_msg += " module has not been fully\nincorporated into the ";
+		err_msg += "wcnt user interface.  Oops! \n Send an email to ";
+		err_msg += "james@jwm-art.net to complain.\n";
+		return false;
+	}
 	err_msg += ("\n" + *sm->get_username());
 	switch(smt)
 	{
 		case synthmodnames::MOD_ADSR:
-			err_msg += "\n\tenvelope\n\t\tattack  uptime uplevel lotime lolevel";
-			err_msg += "\n\t\tdecay   uptime uplevel lotime lolevel";
+			err_msg += "\n\tenvelope\n\t\tattack  uptime uplevel lotime ";
+			err_msg += "lolevel\n\t\tdecay   uptime uplevel lotime lolevel";
 			err_msg += "\n\t\trelease uptime uplevel lotime lolevel";
 			err_msg += "\n\t\t// nb there can be any number of each section";
 			err_msg += "\n\tenvelope";
 			break;
 		case synthmodnames::MOD_SEQUENCER:
-			err_msg += "\n\ttrack\n\t\triff username barposition // bar 0 is first bar";
-			err_msg += "\n\t\t// add as many riffs as you like.\n\ttrack";
+			err_msg += "\n\ttrack\n\t\triff username barposition ";
+			err_msg += "// bar 0 is first bar\n\t\t// add as many riffs as";
+			err_msg += " you like.\n\ttrack";
 			break;
 		case synthmodnames::MOD_STEREOMIXER:
 			err_msg += "\n\tmixdesk\n\t\tmix_chanusername\n\tmixdesk";
 			err_msg += "\n// add as many mix_chan(nels) as you like!";
 			break;
 		case synthmodnames::MOD_USERWAVE:
-			err_msg += "\n\tenvelope\n\t\tvertex updegree uplevel lodegree lolevel\n\tenvelope";
-			err_msg += "\n// you will generally want at least three sections but more is possible";
+			err_msg += "\n\tenvelope\n\t\tvertex updegree uplevel lodegree";
+			err_msg += "lolevel\n\tenvelope\n// you will generally want at ";
+			err_msg += "least three sections but more is possible";
 			break;
 		case synthmodnames::MOD_SWITCHER:
-			err_msg += "\n\tsignals\n\t\twcnt_signalusername\n\tsignals\n// you'll need atleast two signals to switch between";
+			err_msg += "\n\tsignals\n\t\twcnt_signalusername\n\tsignals\n//";
+			err_msg += " you'll need atleast two signals to switch between";
 			break;
 		case synthmodnames::MOD_COMBINER:
 			err_msg += "\n\tsignals\n\t\twcnt_signalusername\n\tsignals";
 			break;
+		case synthmodnames::MOD_TIMEMAP:
+			err_msg += "\n\ttime\n\t\tbpm bpmfloat barposinteger";
+			err_msg += "\n\t\tsignature 4/4 barposinteger // (or 3/4 etc)";
+			err_msg += "\n\ttime";
+			break;
 		default:
 			break;
 	}
-	modinputlist* inlist = synthmod::get_inputlist()->get_inputlist_for_module(sm);
+	modinputlist* inlist =
+		synthmod::get_inputlist()->get_inputlist_for_module(sm);
 	modinput* input = inlist->goto_first();
 	inputnames* innames = synthmod::get_inputnames();
 	if (!input)
@@ -396,11 +391,13 @@ bool jwmsynth::module_help()
 	else {
 		err_msg += ("\n//inputs for module: " + modnames->get_name(smt));
 		while(input) {
-			err_msg += ("\n\t" + innames->getname(input->getinputtype()) + "\toutputmodulename\toutputname");
+			err_msg += ("\n\t" + innames->getname(input->getinputtype()));
+			err_msg += "\toutputmodulename\toutputname";
 			input = inlist->goto_next();
 		}
 	}
-	modparamlist* parlist = synthmod::get_paramlist()->get_paramlist_for_moduletype(smt);
+	modparamlist* parlist = 
+		synthmod::get_paramlist()->get_paramlist_for_moduletype(smt);
 	modparam* param = parlist->goto_first();
 	paramnames* parnames = synthmod::get_paramnames();
 	if (!param)
@@ -429,13 +426,7 @@ bool jwmsynth::module_help()
 				err_msg += "\tnotename";
 				break;
 			case CAT_MOD_FUNC:
-				err_msg += "\tadd/sub/mul/div/mod/sin/cos/tan";
-				break;
-			case CAT_CLIP_MODE:
-				err_msg += "\tclip/invert_clip";
-				break;
-			case CAT_LOOP_MODE:
-				err_msg += "\ton/off/bi // bi-directional not implemented yet";
+				err_msg += "\tadd/sub/mul/div/mod/sin/cos/tan/and/or/xor";
 				break;
 			case CAT_WAVFILEIN:
 				err_msg += "\twavfileinfilename";
@@ -443,13 +434,26 @@ bool jwmsynth::module_help()
 			case CAT_LOGIC:
 				err_msg += "\tand/or/xor";
 				break;
+			case CAT_LOOP_MODE:
+				err_msg += "\toff/fwd/rev/bi";
+				break;
+			case CAT_PLAY_DIR:
+				err_msg += "\tfwd/rev";
+				break;
+			case CAT_PLAY_MODE:
+				err_msg += "\tstop/wrap/bounce/jump";
+				break;
+			case CAT_JUMP_DIR:
+				err_msg += "\tplay/loop";
+				break;
 			default:
 				err_msg +="\t ***program error***";
 			}
 			param = parlist->goto_next();
 		}
 	}
-	modoutputlist* outlist = synthmod::get_outputlist()->get_outputlist_for_module(sm);
+	modoutputlist* outlist = 
+		synthmod::get_outputlist()->get_outputlist_for_module(sm);
 	modoutput* output = outlist->goto_first();
 	outputnames* outnames = synthmod::get_outputnames();
 	if (!output)
@@ -461,22 +465,21 @@ bool jwmsynth::module_help()
 			output = outlist->goto_next();
 		}
 	}
-	err_msg += ("\n" + *sm->get_username());
+	err_msg += ("\n" + *sm->get_username() + "\n");
 	return false;
 }
 
 bool jwmsynth::riff_help()
 {
-	err_msg = "\n// note length and position translation:";
-	err_msg += "\n// note_length:  more <-- whole half quarter eigth sixteenth thirtysecond --> less";
-	err_msg += "\n// length value: more <--  256  128    64      32     16          8       --> less";
-	err_msg += "\n\nriff username\n\tnote notename noteposition notelength notevelocity\nusername";
+	err_msg += "\nriff username\n\tquarter_value int (see wcnt documentation";
+	err_msg += "in quarter.txt)\n\tnote notename noteposition notelength";
+	err_msg += "notevelocity\nusername\n";
 	return false;
 }
 
 bool jwmsynth::input_help()
-{ // decide by the number of options passed on command line whether to load a wc file
-  // or to create all possible modules in order to access outputs
+{ // decide by the number of options passed on command line whether to load a 
+  // wcnt file or to create all possible modules in order to access outputs.
 	string inpname = (options_count == 3) ? options[2] : options[3];
 	inputnames::IN_TYPE intype = innames->get_type(&inpname);
 	if (intype == inputnames::IN_FIRST) {
@@ -584,7 +587,8 @@ bool jwmsynth::sample_info()
 			err_msg += "\t8 bit";
 			// no break intended
 		default:
-			err_msg += "\nbitrate not supported.  While wcnt will let you use this sample, it will not sound as intended.";
+			err_msg += "\nbitrate not supported.  While wcnt will let you use";
+			err_msg += " this sample, the sampler output will be garbage!";
 			break;
 	}
 	if (wavfile.get_bitrate()!= WAV_BIT_16)
@@ -596,4 +600,5 @@ bool jwmsynth::sample_info()
 	err_msg += conv.str();
 	return false;
 }
+#endif // ifndef BARE_MODULES
 #endif

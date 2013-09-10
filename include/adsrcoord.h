@@ -1,7 +1,6 @@
 #ifndef ADSRCOORD_H
 #define ADSRCOORD_H
 
-#include "synthmodule.h"
 #include "conversions.h"
 
 class adsr_coord

@@ -1,6 +1,8 @@
 #ifndef MODOUTPUTSLIST_H
 #define MODOUTPUTSLIST_H
 
+#ifndef BARE_MODULES
+
 #include "linkedlist.h"
 #include "outputnames.h"
 #include "modoutput.h"
@@ -31,8 +33,6 @@ class modoutputlist
     modoutput *output;
 };
 
-#endif
-
 /* 
 modoutputlist* list_of_category_orderpref
 (
@@ -42,3 +42,5 @@ outputnames::OUT_TYPE* out_prefs, 				//NULL terminated array of output types to
 outputnames::OUT_TYPE* not_out_prefs			//NULL terminated array of output types to exclude
 );
 */
+#endif
+#endif

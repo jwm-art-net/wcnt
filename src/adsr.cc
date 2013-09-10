@@ -1,56 +1,40 @@
 #ifndef ADSR_H
 #include "../include/adsr.h"
 
-adsr::adsr(string uname)
-:  synthmod(synthmodnames::MOD_ADSR, adsr_count, uname),
-output(0), play_state(OFF), in_note_on_trig(NULL), in_note_off_trig(NULL),
-in_velocity(NULL), env(0), sectsample(0), sectmaxsamples(0), levelsize(0),
-sustain_status(ON), zero_retrigger(OFF)
+adsr::adsr(string uname) :
+	synthmod(synthmodnames::MOD_ADSR, adsr_count, uname),
+	in_note_on_trig(0), in_note_off_trig(0), in_velocity(0), output(0),
+	out_off_trig(OFF), play_state(OFF), start_level(0), sustain_status(OFF),
+	zero_retrigger(OFF), env(0), sect(0), sectsample(0), sectmaxsamples(0),
+	levelsize(0), coord_item(0), coord(0)
 {
-	if (!get_outputlist()->add_output(this, outputnames::OUT_OUTPUT)){
-		invalidate();
-		return;
-	}
-	if (!get_outputlist()->add_output(this, outputnames::OUT_PLAY_STATE)){
-		invalidate();
-		return;
-	}
-	if (!get_inputlist()->add_input(this, inputnames::IN_NOTE_ON_TRIG)){
-		invalidate();
-		return;
-	}
-	if (!get_inputlist()->add_input(this, inputnames::IN_NOTE_OFF_TRIG)){
-		invalidate();
-		return;
-	}
-	if (!get_inputlist()->add_input(this, inputnames::IN_VELOCITY)){
-		invalidate();
-		return;
-	}
-	if (!(env = new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA))) {
-        invalidate();
-        return;
-    }
+	#ifndef BARE_MODULES
+	get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
+	get_outputlist()->add_output(this, outputnames::OUT_OFF_TRIG);
+	get_outputlist()->add_output(this, outputnames::OUT_PLAY_STATE);
+	get_inputlist()->add_input(this, inputnames::IN_NOTE_ON_TRIG);
+	get_inputlist()->add_input(this, inputnames::IN_NOTE_OFF_TRIG);
+	get_inputlist()->add_input(this, inputnames::IN_VELOCITY);
+	#endif
+	env = new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
 	// sustain section is a bit wierd here: but here it is: and must remain:
 	// note: user cannot add a sustain section.  note: times and levels are 
 	// zero because these are dynamic, according to stuff like.....my code.
-	if (!(coord = new adsr_coord(adsr_coord::ADSR_SUSTAIN,0 ,0 ,0 ,0))) {
-		invalidate();
-		return;
-	}
-	if (!env->add_at_head(coord)) {
-		invalidate();
-		return;
-	}
+	coord = new adsr_coord(adsr_coord::ADSR_SUSTAIN,0 ,0 ,0 ,0);
+	env->add_at_head(coord);
     adsr_count++;
 	validate();
+	#ifndef BARE_MODULES
 	create_params();
+	#endif
 }
 
 adsr::~adsr()
 {
+	#ifndef BARE_MODULES
 	get_outputlist()->delete_module_outputs(this);
 	get_inputlist()->delete_module_inputs(this);
+	#endif
     if (env) {
 		goto_first();
 		while (coord) {
@@ -61,6 +45,11 @@ adsr::~adsr()
 	}
 }
 
+void adsr::init()
+{
+}
+
+#ifndef BARE_MODULES
 void const *
 adsr::get_out(outputnames::OUT_TYPE ot)
 {
@@ -69,6 +58,9 @@ adsr::get_out(outputnames::OUT_TYPE ot)
     case outputnames::OUT_OUTPUT:
         o = &output;
         break;
+	case outputnames::OUT_OFF_TRIG:
+		o = &out_off_trig;
+		break;
     case outputnames::OUT_PLAY_STATE:
         o = &play_state;
         break;
@@ -103,6 +95,10 @@ bool adsr::set_param(paramnames::PAR_TYPE pt, void const* data)
 	bool retv = false;
 	switch(pt)
 	{
+		case paramnames::PAR_START_LEVEL:
+			set_start_level(*(double*)data);
+			retv = true;
+			break;
 		case paramnames::PAR_SUSTAIN_STATUS:
 			set_sustain_status(*(STATUS*)data);
 			retv = true;
@@ -117,6 +113,7 @@ bool adsr::set_param(paramnames::PAR_TYPE pt, void const* data)
 	}
 	return retv;
 }
+#endif
 
 adsr_coord* adsr::insert_coord(adsr_coord* ac)
 {
@@ -142,27 +139,26 @@ adsr_coord* adsr::insert_coord(adsr_coord::SECT adsrsect, double ut, double ul, 
     if (adsrsect == adsr_coord::ADSR_SUSTAIN)
         return 0; // don't let user try it on.
     goto_first();
+	if (coord->get_adsr_section() > adsrsect)
+		return (adsr_coord*)env->add_at_head(
+			new adsr_coord(adsrsect, ut, ul, lt, ll))->get_data();
     while (coord) {
-        if (coord->get_adsr_section() == adsrsect)
-            break;
+        if (coord->get_adsr_section() == adsrsect) {
+			ll_item* tmp = coord_item;
+			while(coord) {
+				goto_next();
+				if (coord) {
+					if (coord->get_adsr_section() > adsrsect)
+						return (adsr_coord*)env->insert_after(tmp, new 
+							adsr_coord(adsrsect, ut, ul, lt, ll))->get_data();
+					tmp = coord_item;
+				}
+			}
+		}
         goto_next();
     }
-    adsr_coord *tmp = 0;
-    while (coord) {
-        if (coord->get_adsr_section() != adsrsect)
-            break;
-        tmp = coord;
-        goto_next();
-    }
-    if (tmp)
-        return insert_coord_after(tmp, ut, ul, lt, ll);
-    if (!(coord = new adsr_coord(adsrsect, ut, ul, lt, ll)))
-        return 0;
-    if (!env->add_at_tail(coord)) {
-        delete coord;
-        return 0;
-    }
-    return coord;
+	return (adsr_coord*)env->add_at_tail(
+		new adsr_coord(adsrsect, ut, ul, lt, ll))->get_data();
 }
 
 adsr_coord * adsr::insert_coord_after(adsr_coord * ac)
@@ -192,9 +188,11 @@ adsr_coord* adsr::insert_coord(adsr_coord::SECT adsrsect, double ut, double ul, 
         nll = (ac->get_lower_level() + nac->get_lower_level()) / 2;
     }
     adsr_coord* newcoord = new adsr_coord(ac->get_adsr_section(), nut, nul, nlt, nll);
-    if (newcoord == NULL)
-        return NULL;
-    return (adsr_coord *) env->insert_after(tmp, newcoord)->get_data();
+	if (!env->insert_after(tmp, newcoord)->get_data()) {
+		delete newcoord;
+		return 0;
+	}
+	return newcoord;
 }
 
 adsr_coord *
@@ -206,9 +204,11 @@ adsr::insert_coord_after(adsr_coord * ac, double ut, double ul, double lt, doubl
     if (tmp == NULL)
         return NULL;
     adsr_coord *newcoord = new adsr_coord(ac->get_adsr_section(), ut, ul, lt, ll);
-    if (newcoord == NULL)
-        return NULL;
-    return (adsr_coord *) env->insert_after(tmp, newcoord)->get_data();
+    if (!env->insert_after(tmp, newcoord)->get_data()) {
+		delete newcoord;
+		return 0;
+	}
+	return newcoord;
 }
 
 void
@@ -272,10 +272,10 @@ adsr::run()
             sectmaxsamples = 1;
             levelsize = 0;
             output = coord->output_level;
-        } else {
-            if (zero_retrigger == ON) {
-                output = 0;
-			}
+        } 
+		else {
+            if (zero_retrigger == ON)
+                output = start_level;
             sectmaxsamples = convert_ms_to_samples(coord->output_time);
             levelsize = (coord->output_level - output) / sectmaxsamples;
         }
@@ -289,7 +289,8 @@ adsr::run()
                 sectmaxsamples = 1;
                 levelsize = 0;
                 output = coord->output_level;
-            } else {
+            } 
+			else {
                 sectmaxsamples = convert_ms_to_samples(coord->output_time);
                 levelsize = (coord->output_level - output) / sectmaxsamples;
             }
@@ -297,15 +298,19 @@ adsr::run()
         sectsample++;
         output += levelsize;
         if (sectsample >= sectmaxsamples) {
+			end_level = coord->output_level;// grab it while I can, uhhm.
             goto_next();
             if (!coord) {
-                output = 0;
+                output = end_level;
                 play_state = OFF;
-            } else if (coord->get_adsr_section() == adsr_coord::ADSR_SUSTAIN
+				out_off_trig = ON;
+            } 
+			else if (coord->get_adsr_section() == adsr_coord::ADSR_SUSTAIN
                        && sustain_status == ON) {
-                sectmaxsamples = 4294967295ul;  //  sustain section can be 27 hours long (if necesary) @ 44100 samplerate (wuhey!)
+                sectmaxsamples = 4294967295ul;  
                 levelsize = 0;
-            } else {
+            }
+			else {
                 if (coord->get_adsr_section() == adsr_coord::ADSR_SUSTAIN
                     && sustain_status == OFF)
                     goto_section(adsr_coord::ADSR_RELEASE);
@@ -314,7 +319,8 @@ adsr::run()
                     sectmaxsamples = 1;
                     levelsize = 0;
                     output = coord->output_level;
-                } else {
+                }
+				else {
                     sectmaxsamples =
                         convert_ms_to_samples(coord->output_time);
                     levelsize =
@@ -324,18 +330,22 @@ adsr::run()
             sectsample = 0;
         }
     }
+	else if (out_off_trig == ON) out_off_trig = OFF;
 }
 
 short adsr::adsr_count = 0;
+
+#ifndef BARE_MODULES
 bool adsr::done_params = false;
 
 void adsr::create_params()
 {
 	if (done_params == true)
 		return;
+	get_paramlist()->add_param(synthmodnames::MOD_ADSR, paramnames::PAR_START_LEVEL);
 	get_paramlist()->add_param(synthmodnames::MOD_ADSR, paramnames::PAR_SUSTAIN_STATUS);
 	get_paramlist()->add_param(synthmodnames::MOD_ADSR, paramnames::PAR_ZERO_RETRIGGER);
 	done_params = true;
 }
-
+#endif
 #endif

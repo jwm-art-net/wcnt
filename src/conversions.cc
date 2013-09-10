@@ -44,7 +44,7 @@ unsigned long convert_ms_to_samples(double t)
 
 double convert_notelength_to_ms(short nl) 
 {
-	return ((double)60 / beats_per_minute) * ((double)nl / 64) * 1000;
+	return ((double)60 / sm_beats_per_minute) * ((double)nl / 64) * 1000;
 }
 double note_to_step(const char *note_name, char oct_offset) 
 {
@@ -137,3 +137,25 @@ double note_to_freq(const char *note_name, char oct_offset)
 }
 
 #endif /*CONVERSIONS_H */
+/*
+unsigned long bpmmap::notelen_to_samples(short nl)
+{
+	return (unsigned long) audio_samplerate * 
+		((double) 60 / out_bpm) * ((double)nl / 64);
+}
+
+double bpmmap::notelen_to_ms(short nl) 
+{
+	return ((double)60 / beats_per_minute) * ((double)nl / 64) * 1000;
+}
+
+double bpmmap::notelen_to_frequency(short nl)
+{
+	return 1000 / (((double)60 / out_bpm) * ((double)nl / 64) * 1000);
+}
+
+unsigned long bpmmap::ms_to_samples(double ms) 
+{
+	return (unsigned long)(audio_samplerate * (ms / 1000));
+}
+*/

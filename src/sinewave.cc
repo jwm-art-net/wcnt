@@ -1,37 +1,32 @@
 #ifndef SINEWAVE_H
 #include "../include/sinewave.h"
 
-sine_wave::sine_wave(string uname)
-:synthmod(synthmodnames::MOD_SINEWAVE, sine_wave_count, uname),
-output(0.00), play_state(OFF), in_phase_trig(NULL), in_deg_size(NULL), degs(0.00), recycle(OFF), zero_deg(OFF),
-cycles(1.00), maxdegs(360)
+sine_wave::sine_wave(string uname) :
+	synthmod(synthmodnames::MOD_SINEWAVE, sine_wave_count, uname),
+	output(0.00), play_state(OFF), in_phase_trig(NULL), in_deg_size(NULL), 
+	degs(360.00), recycle(OFF), zero_deg(OFF), cycles(1.00), maxdegs(360)
 {
-	if (!get_outputlist()->add_output(this, outputnames::OUT_OUTPUT)){
-		invalidate();
-		return;
-	}
-	if (!get_outputlist()->add_output(this, outputnames::OUT_PLAY_STATE)){
-		invalidate();
-		return;
-	}
-	if (!get_inputlist()->add_input(this, inputnames::IN_PHASE_TRIG)){
-		invalidate();
-		return;
-	}
-	if (!get_inputlist()->add_input(this, inputnames::IN_DEG_SIZE)){
-		invalidate();
-		return;
-	}
+	#ifndef BARE_MODULES
+	get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
+	get_outputlist()->add_output(this, outputnames::OUT_PLAY_STATE);
+	get_inputlist()->add_input(this, inputnames::IN_PHASE_TRIG);
+	get_inputlist()->add_input(this, inputnames::IN_DEG_SIZE);
+	#endif
 	sine_wave_count++;
 	validate();
+	#ifndef BARE_MODULES
 	create_params();
+	#endif
 }
 sine_wave::~sine_wave() 
 {
+	#ifndef BARE_MODULES
 	get_outputlist()->delete_module_outputs(this);
 	get_inputlist()->delete_module_inputs(this);
+	#endif
 }
 
+#ifndef BARE_MODULES
 void const* sine_wave::get_out(outputnames::OUT_TYPE ot)
 {
 	void const* o = 0;
@@ -89,6 +84,7 @@ bool sine_wave::set_param(paramnames::PAR_TYPE pt, void const* data)
 	}
 	return retv;
 }
+#endif // BARE_MODULES
 
 void sine_wave::init()
 {
@@ -97,29 +93,22 @@ void sine_wave::init()
 
 void sine_wave::run() 
 {
-	if (*in_phase_trig == ON)
-	{
+	if (*in_phase_trig == ON) {
 		play_state = ON;
-		if (zero_deg == ON)
-			degs = 0.00;
+		if (zero_deg == ON) degs = 0.00;
 	}
-	degs += *in_deg_size;
-	if (degs >= maxdegs) 
-		degs -= maxdegs;
 	if (play_state == ON)
-	{
-		if (degs + *in_deg_size >= maxdegs) 
-		{
-			if (recycle == OFF)
-			{
-				play_state = OFF;
-			}
-		}
 		output = sin(degs * DTR);
-	}
+	degs += *in_deg_size;
+	if (degs >= maxdegs) degs -= maxdegs;
+	if (play_state == ON)
+		if (degs + *in_deg_size >= maxdegs)
+			if (recycle == OFF) play_state = OFF;
 }
 
 int sine_wave::sine_wave_count = 0;
+
+#ifndef BARE_MODULES
 bool sine_wave::done_params = false;
 
 void sine_wave::create_params()
@@ -131,5 +120,5 @@ void sine_wave::create_params()
 	get_paramlist()->add_param(synthmodnames::MOD_SINEWAVE, paramnames::PAR_CYCLES);
 	done_params = true;
 }
-
+#endif
 #endif

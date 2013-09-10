@@ -1,0 +1,6 @@
+#ifndef FILTERCOMMON_H
+#define FILTERCOMMON_H
+
+#define FILTERARRAYSIZE 8192
+
+#endif

@@ -17,36 +17,18 @@
 #ifndef SEQUENCER_H
 #define SEQUENCER_H
 
+#include "riffnode.h"
+#include "timemap.h" 
+// to get enums for translating user note position
+// to internal note positions ... 
+// ...ie user quarter value 12, internal quartervalue 96.
+	
+#ifndef BARE_MODULES
 #include "rifflist.h"
 #include "modoutputslist.h"
 #include "modinputslist.h"
 #include "modparamlist.h"
-
-/* 
-	class riff_node -- 'ghost' one riff many times without duplicating riffdata.
-	I could turn on multiple referencing in the linked list to do the same thing, 
-	but then I'd need some other way of telling where to put the riff in the 
-	sequence, or make riffs of nothing to fill in the gaps.
-	I choose this way. I shall also design a global riff_list which does not
-	use the riff_node, but if you've got more than one sequencer, it can choose
-	riffs from the list ie riffs are n't tied to any particular sequencer.
-	therefore, sequencer cannot use linkedlist->get_current() of riff etc, so, 
-	sequencer will have to have it's own members to remember where in the riff 
-	it's at, which note it's at.  nb one riff can be used by multiple sequencers,
-	at the same time, or different times.
-*/	
-
-class riff_node 
-{
- public:
-	riff_node(riffdata*, short barpos);
-	~riff_node();
-	short get_start_bar() { return (this == NULL) ? 0 : start_bar; }
-	riffdata* get_riff_source() { return (this == NULL) ? NULL : riff_source; }
- private:
-	short start_bar;
-	riffdata* riff_source;
-};
+#endif
 
 class sequencer : public synthmod
 {
@@ -56,55 +38,74 @@ class sequencer : public synthmod
 	// first add_riff func I probably won't use as there is no way of knowing
 	// if it returned 0 because it could not find riff called riffname or there
 	// is a riff already at bar barpos.
+	#ifndef BARE_MODULES
 	riff_node* add_riff(string const* riffname, short barpos);
+ 	#endif
 	riff_node* add_riff(riffdata*, short barpos);
 	bool delete_riff_node(riff_node* rn);
-	riff_node* goto_first() { return (riff_node*)riffnodelist->goto_first()->get_data(); }
-	riff_node* goto_last() { return (riff_node*)riffnodelist->goto_last()->get_data(); }
-	riff_node* goto_prev() { return (riff_node*)riffnodelist->goto_prev()->get_data(); }
-	riff_node* goto_next() { return (riff_node*)riffnodelist->goto_next()->get_data(); }
+	riff_node* goto_first() 
+ 		{ return (riff_node*)riffnodelist->goto_first()->get_data(); }
+	riff_node* goto_last() 
+		{ return (riff_node*)riffnodelist->goto_last()->get_data(); }
+	riff_node* goto_prev() 
+		{ return (riff_node*)riffnodelist->goto_prev()->get_data(); }
+	riff_node* goto_next() 
+		{ return (riff_node*)riffnodelist->goto_next()->get_data(); }
+	// set inputs
+	void set_input_bar_trig(const STATUS* bt){ in_bar_trig = bt;}
+	void set_input_bar(const short* b){ in_bar = b;}
+	void set_input_pos_step_size(const double* bs){ in_pos_step_size = bs;}
+	// get outputs
 	const STATUS* get_output_note_on_trig() { return &out_note_on_trig; }
-	const STATUS* get_output_note_slide_trig() { return &out_note_slide_trig; }
+	const STATUS* get_output_note_slide_trig() { return &out_note_slide_trig;}
 	const STATUS* get_output_note_off_trig() { return &out_note_off_trig; }
-	const STATUS* get_output_riff_start_trig() { return &out_riff_start_trig; }
+	const STATUS* get_output_riff_start_trig() { return &out_riff_start_trig;}
 	const STATUS* get_output_riff_end_trig() { return &out_riff_end_trig; }
-	const STATUS* get_output_start_trig() { return &out_start_trig; }
 	const STATUS* get_output_end_trig() { return &out_end_trig; }
 	const double* get_output_freq() { return &out_freq; }
 	const double* get_output_velocity() { return &out_velocity; }
-	const unsigned long* get_total_sample_pos() { return &out_total_sample_pos; }
-	const STATUS* get_play_state() { return &play_state; }
+	const double* get_output_velocity_ramp() {return &out_velocity_ramp; }
 	const STATUS* get_riff_play_state() { return &riff_play_state; }
 	const STATUS* get_note_play_state() { return &note_play_state; }
+	const char ** get_output_notename(){ return &out_notename;}
 	// params
-	void set_velocity_response_time(double ms){vel_response = (ms >= 0) ? ms : 0;}
-	double get_velocity_response_time(){return vel_response;}
+	void set_velocity_response_time(double ms){vel_response =(ms>=0)?ms:0;}
+	void set_hold_notename(STATUS hn){hold_notename = hn;}
+	#ifndef BARE_MODULES
 	// all sequencers want access to rifflist:
 	static void register_rifflist(riff_list* rl){ rifflist = rl;}
 	static riff_list* get_rifflist(){ return rifflist;}
+	#endif
 	// virtual funcs
 	void run();
 	void init();
+	#ifndef BARE_MODULES
 	void const* get_out(outputnames::OUT_TYPE);
-	void const* set_in(inputnames::IN_TYPE, void const*){ return false;}
+	void const* set_in(inputnames::IN_TYPE, void const*);
 	bool set_param(paramnames::PAR_TYPE, void const*);
-		
+	#endif
  private:
-	/*outputs*/
+ 	//inputs
+ 	const STATUS* in_bar_trig;
+ 	const short* in_bar;
+ 	const double* in_pos_step_size;
+	/*outpduts*/
 	STATUS out_note_on_trig;
 	STATUS out_note_slide_trig;
 	STATUS out_note_off_trig;
 	STATUS out_riff_start_trig;
 	STATUS out_riff_end_trig;
-	STATUS out_start_trig;
 	STATUS out_end_trig;
+ 	const char* out_notename;
 	double out_freq;
 	double out_velocity;
-	unsigned long out_total_sample_pos;
-	STATUS play_state;
+	double out_velocity_ramp;
 	STATUS riff_play_state;
 	STATUS note_play_state;
-	/* the list */
+ 	// params
+	double vel_response;
+ 	STATUS hold_notename;
+	/* the riff node list */
 	linkedlist* riffnodelist;
 	/* working data */
 	riff_node* riff_node_ptr;
@@ -112,15 +113,12 @@ class sequencer : public synthmod
 	ll_item* riffnodeitem;
 	note_data* note_ptr;
 	ll_item* noteitem;
-	unsigned long note_on_sample_pos;
-	unsigned long note_off_sample_pos;
-	unsigned long next_note_sample_pos;
-	unsigned long riff_sample_pos;
-	unsigned long riff_start_sample;
-	unsigned long riff_end_sample;
-	unsigned long next_riff_start_sample;
-	static int sequencer_count;
-	double vel_response;
+	char zero; // out_note points to this when no note playing.
+	short riff_start_bar;
+ 	double barpos;
+	long note_on_pos; 	// i did use shorts, but with each riff specifying
+	long note_off_pos;	// 1/4 value, if it's large like 768 or something
+	double posconv;    	// notes in riffs > 16 bars long may get lost...
 	unsigned long velrsp_max_samps;
 	unsigned long velrsp_samp;
 	double vel_stpsize;
@@ -128,12 +126,13 @@ class sequencer : public synthmod
 	riff_node* remove(riff_node * rn);
 	void calc_riff_sample_positions();
 	void calc_note_sample_positions();
+	// synthmod stuff
+	static int sequencer_count;
+	#ifndef BARE_MODULES
 	static riff_list* rifflist;
 	static void create_params();
 	static bool done_params;
+	#endif
 };
-
-// splaffwuck says:  I can't be bothered!  
-// splaffwuck is dead, long live splaffwuck!
 
 #endif

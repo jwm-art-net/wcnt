@@ -1,27 +1,29 @@
 #ifndef COMBINER_H
 #include "../include/combiner.h"
 
-combiner::combiner(string uname) 
-: synthmod(synthmodnames::MOD_COMBINER, combiner_count, uname),
-  out_output(0), sigcount(0), meantotal(ON), wcntsiglist(0), wcntsig_item(0), wcntsig(0)
+combiner::combiner(string uname) : 
+	synthmod(synthmodnames::MOD_COMBINER, combiner_count, uname),
+  	out_output(0), sigcount(0), meantotal(ON), wcntsiglist(0), wcntsig_item(0), 
+	wcntsig(0)
 {
-	if (!get_outputlist()->add_output(this, outputnames::OUT_OUTPUT)){
-		invalidate();
-		return;
-	}
-	if (!(wcntsiglist = new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA))){
-		invalidate();
-		return;
-	}
+	#ifndef BARE_MODULES
+	get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
+	#endif
+	wcntsiglist = new linkedlist(
+		linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
 	combiner_count++;
 	validate();
+	#ifndef BARE_MODULES
 	create_params();
+	#endif
 }
 
 combiner::~combiner()
 {
+	#ifndef BARE_MODULES
 	get_outputlist()->delete_module_outputs(this);
 	get_inputlist()->delete_module_inputs(this);
+	#endif
     if (wcntsiglist) {
 		goto_first();
 		while (wcntsig_item) {
@@ -32,6 +34,7 @@ combiner::~combiner()
 	}
 }
 
+#ifndef BARE_MODULES
 void const* combiner::get_out(outputnames::OUT_TYPE ot)
 {
 	void const* o = 0;
@@ -72,6 +75,7 @@ bool combiner::set_param(paramnames::PAR_TYPE pt, void const* data)
 	}
 	return retv;
 }
+#endif // BARE_MODULES
 
 void combiner::init()
 {
@@ -101,6 +105,8 @@ void combiner::run()
 }
 
 int combiner::combiner_count = 0;
+
+#ifndef BARE_MODULES
 bool combiner::done_params = false;
 
 void combiner::create_params()
@@ -110,7 +116,5 @@ void combiner::create_params()
 	get_paramlist()->add_param(synthmodnames::MOD_COMBINER, paramnames::PAR_MEAN_TOTAL);
 	done_params = true;
 }
-
-
-
+#endif
 #endif

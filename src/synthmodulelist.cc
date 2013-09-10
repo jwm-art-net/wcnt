@@ -1,24 +1,18 @@
 #ifndef SYNTHMODULELIST_H
 #include "../include/synthmodulelist.h"
 
-synthmodlist::synthmodlist()
-:  smodlist(0), smod_item(0), smod(0)
+#ifndef BARE_MODULES
+
+synthmodlist::synthmodlist() :  
+	smodlist(0), smod_item(0), smod(0), 
+	search_modtype(synthmodnames::MOD_FIRST), search_result(0)
 {
-    smodlist = new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
-	if (!smodlist) {
-        cerr << "Memory shortage, try flushing the loo.";
-        exit(-1);
-    }
-    // only need one of these so make it here:- note it shall not be made anywhere else
+    smodlist = 
+		new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
+	// nonezero module is not user accessable.
+	// it's outputs are used when ever a module's input is set to off.
     smod = new nonezero("off");
-	if (!smod) {
-        cerr << "Memory shortage, try washing your hands.";
-        exit(-1);
-    }
-    if (!smodlist->add_at_head(smod)) {
-        cerr << "Error: try improving your aim, more memory may help.";
-        exit(-1);
-    }
+    smodlist->add_at_head(smod);
 }
 
 synthmodlist::~synthmodlist()
@@ -46,6 +40,13 @@ synthmodlist::create_module(synthmodnames::SYNTH_MOD_TYPE smt, string uname)
 {
     synthmod *sm;
     switch (smt) {
+	case synthmodnames::MOD_WCNT:
+		// error on attempt to create more than one, 
+		if (wcnt_module::get_wcnt_module_count() == 0)
+			sm = new wcnt_module(uname);
+		else return 0; 
+		// *err_msg = "wcnt module exists, will not create another.";
+		break;
     case synthmodnames::MOD_ADSR:
         sm = new adsr(uname);
         break;
@@ -133,15 +134,46 @@ synthmodlist::create_module(synthmodnames::SYNTH_MOD_TYPE smt, string uname)
 	case synthmodnames::MOD_COMBINER:
 		sm = new combiner(uname);
 		break;
+	case synthmodnames::MOD_TIMEMAP:
+		sm = new timemap(uname);
+		break;
+	case synthmodnames::MOD_SERIALWAVFILEOUT:
+		sm = new serialwavfileout(uname);
+		break;
+	case synthmodnames::MOD_CONTRASTER:
+		sm = new contraster(uname);
+		break;
+	case synthmodnames::MOD_DELAY:
+		sm = new delay(uname);
+		break;
+	case synthmodnames::MOD_ECHO:
+		sm = new echo(uname);
+		break;
+	case synthmodnames::MOD_MONOAMP:
+		sm = new mono_amp(uname);
+		break;
+	case synthmodnames::MOD_MULTIPLIER:
+		sm = new multiplier(uname);
+		break;
+	case synthmodnames::MOD_RANGELIMIT:
+		sm = new range_limit(uname);
+		break;
+	case synthmodnames::MOD_PAN:
+		sm = new pan(uname);
+		break;
+	case synthmodnames::MOD_RMS:
+		sm = new rms(uname);
+		break;
+	case synthmodnames::MOD_DCFILTER:
+		sm = new dc_filter(uname);
+		break;
     default:
         sm = 0;
     }
-    if (sm) {
-        if (!ordered_insert(smodlist, sm, &synthmod::get_module_type)) {
-            delete sm;
-            sm = 0;
-        }
-    }
+	if (!ordered_insert(smodlist, sm, &synthmod::get_module_type)) {
+		delete sm;
+		sm = 0;
+	}
     return sm;
 }
 
@@ -161,8 +193,7 @@ synthmodlist::delete_module(synthmod * const sm)
 synthmod* synthmodlist::get_synthmod_by_name(string const* smname)
 {
 	goto_first();
-	while(smod)
-	{
+	while(smod)	{
 		if (*smod->get_username() == *smname)
 			return smod;
 		goto_next();
@@ -170,4 +201,33 @@ synthmod* synthmodlist::get_synthmod_by_name(string const* smname)
 	return 0;
 }
 
+synthmod* synthmodlist::get_first_of_type(synthmodnames::SYNTH_MOD_TYPE smt)
+{
+	search_modtype = smt;
+	search_result = 0;
+	if (smt <= synthmodnames::MOD_FIRST || smt >= synthmodnames::MOD_LAST)
+		return 0;
+	goto_first();
+	while (smod != 0) {
+		if (smod->get_module_type() == smt) 
+			return ((synthmod*)(search_result = smod_item)->get_data());
+		goto_next();	
+	}
+	return 0;
+}
+
+synthmod* synthmodlist::get_next_of_type()
+{
+	if (search_result == 0) return 0;
+	smod = (synthmod*)(search_result->get_data());
+	while(smod != 0) {
+		if (smod->get_module_type() == search_modtype)
+			return ((synthmod*)(search_result = smod_item)->get_data());
+		goto_next();	
+	}
+	search_result = 0;
+	return 0;
+}
+
+#endif
 #endif

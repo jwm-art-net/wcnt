@@ -1,6 +1,8 @@
 #ifndef MODOUTPUT_H
 #define MODOUTPUT_H
 
+#ifndef BARE_MODULES
+
 #include "synthmodule.h"
 
 class modoutput
@@ -17,4 +19,5 @@ class modoutput
     outputnames::OUT_TYPE output_type;
 };
 
+#endif
 #endif

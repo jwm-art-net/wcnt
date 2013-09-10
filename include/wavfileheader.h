@@ -1,7 +1,7 @@
 #ifndef WAVHEADER_H
 #define WAVHEADER_H
 
-#define WAV_BUFFER_SIZE 2048
+#define WAV_BUFFER_SIZE 4096
 
 #include <string.h> // strncpy();
 

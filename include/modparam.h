@@ -1,6 +1,8 @@
 #ifndef MODPARAM_H
 #define MODPARAM_H
 
+#ifndef BARE_MODULES
+
 #include "synthmodule.h"
 
 class modparam
@@ -16,4 +18,5 @@ class modparam
 	paramnames::PAR_TYPE param_type;
 };
 
+#endif
 #endif

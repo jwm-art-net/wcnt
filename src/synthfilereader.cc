@@ -1,6 +1,8 @@
 #ifndef SYNTHFILEREADER_H
 #include "../include/synthfilereader.h"
 
+#ifndef BARE_MODULES
+
 synthfilereader::synthfilereader()
 : filename(0), filestatus(NOT_FOUND), synthfile(0), buff(0), synthheader(0), 
   err_msg(0), conv(0), genstatus(HALTED), verbose(false)
@@ -29,7 +31,7 @@ synthfilereader::FILE_STATUS synthfilereader::open_file(char *synthfilename)
         filestatus = NOT_FOUND;
     else {
         *synthfile >> *synthheader;
-        if (*synthheader == "wcnt/jwmsynth")
+        if (*synthheader == "wcnt-1.1001/jwmsynth")
             filestatus = FILE_OPEN;
         else
             filestatus = INVALID_HEADER;
@@ -37,9 +39,8 @@ synthfilereader::FILE_STATUS synthfilereader::open_file(char *synthfilename)
     return filestatus;
 }
 
-bool
-synthfilereader::read_header(unsigned long *samplerate, short *bpm,
-                             short *beatspermeasure, short *beatvalue, short* exitbar)
+bool synthfilereader::read_header(unsigned long *samplerate, short *bpm,
+	short *beatspermeasure, short *beatvalue)
 {
 	if (conv) delete conv;
 	conv = new ostringstream;
@@ -54,134 +55,120 @@ synthfilereader::read_header(unsigned long *samplerate, short *bpm,
         genstatus = MASSIVE_ERROR;
         return false;
     }
-    if (*buff == "samplerate") {
-        if (!(*synthfile >> *samplerate)) {
-            *err_msg = "Expected value for samplerate.";
-            genstatus = HALTED;
-            return false;
-        }
-        if (*samplerate > 4000 && *samplerate < 200000) {
-            if (verbose)
-                cout << "\nsamplerate set at " << *samplerate;
-        } else {
-            *conv << *samplerate;
-            *err_msg =
-                "Invalid samplerate: " + conv->str() +
-                ". valid values between 4000 and 200000.";
-            genstatus = HALTED;
-            return false;
-        }
-    } else {
-        *err_msg = "Expected 'samplerate' got " + *buff + " instead.";
-        genstatus = HALTED;
-        return false;
-    }
-    if (!skip_remarks()) {
-        *err_msg = "Unexpected end of file.";
-        genstatus = HALTED;
-        return false;
-    }
-    if (*buff == "bpm") {
-        if (!(*synthfile >> *bpm)) {
-            *err_msg = "Expected value for bpm";
-            genstatus = HALTED;
-            return false;
-        }
-        if (*bpm >= 20 && *bpm <= 1000) {
-            if (verbose)
-                cout << "\nbpm set at " << *bpm;
-        } else {
-            *conv << *bpm;
-            *err_msg =
-                "Invalid bpm: " + conv->str() +
-                ". valid values between 20 and 1000.";
-            genstatus = HALTED;
-            return false;
-        }
-    } else {
-        *err_msg = "Expected 'bpm' got " + *buff + " instead.";
-        genstatus = HALTED;
-        return false;
-    }
-    if (!skip_remarks()) {
-        *err_msg = "Unexpected end of file.";
-        genstatus = MASSIVE_ERROR;
-        return false;
-    }
-    if (*buff == "signature") {
-        if (!(*synthfile >> *beatspermeasure)) {
-            *err_msg =
-                "Expected value for time signature - beats per measure.";
-            genstatus = HALTED;
-            return false;
-        }
-        if (*beatspermeasure < 1 || *beatspermeasure > 16) {
-            *conv << *beatspermeasure;
-            *err_msg =
-                "Invalid time signature with beats per measure: "
-                + conv->str() + ". valid value in range 1 to 16.";
-            genstatus = HALTED;
-            return false;
-        }
-        char ch;
-        while (synthfile->get(ch)) {
-            if (ch == '/')
-                break;
-        }
-        if (synthfile->eof()) {
-            *err_msg =
-                "Unexpected end of file while scanning time signature.";
-            genstatus = HALTED;
-            return false;
-        }
-        if (!(*synthfile >> *beatvalue)) {
-            *err_msg = "Expected value for time signature - beat value.";
-            genstatus = HALTED;
-            return false;
-        }
-        if (*beatvalue < 1 || *beatvalue > 128) {
-            *conv << *beatvalue;
-            *err_msg =
-                "Invalid time signature with beat value: " +
-                conv->str() + ". valid value in range 1 to 128.";
-            genstatus = HALTED;
-            return false;
-        }
-        if (verbose)
-            cout << "\ntime signature set to " << *beatspermeasure
-                << "/" << *beatvalue;
-    } else {
-        *err_msg = "Expected 'signature'.";
-        genstatus = HALTED;
-        return false;
-    }
-    if (!skip_remarks()) {
-        *err_msg = "Unexpected end of file.";
-        genstatus = MASSIVE_ERROR;
-        return false;
-    }
-    if (*buff == "exit_bar") {
-        if (!(*synthfile >> *exitbar)) {
-            *err_msg = "Expected value for exit_bar.";
-            genstatus = HALTED;
-            return false;
-        }
-        if (*exitbar > 0 && *exitbar < 32766) {
-            if (verbose)
-                cout << "\nexit_bar set at " << *exitbar;
-        } else {
-            *conv << *exitbar;
-            *err_msg =
-                "Invalid exit_bar value: " + conv->str() +
-                ". valid values between 1 and 32766.";
-            genstatus = HALTED;
-            return false;
-        }
-    } else {
-        *err_msg = "Expected 'exit_bar' got " + *buff + " instead.";
-        genstatus = HALTED;
-        return false;
-    }
+	
+	if (*buff == "header") {
+		if (!eff_ing_header_bodge(samplerate, bpm, beatspermeasure, beatvalue))
+				return false;
+	} 
+	else {
+	    if (*buff == "samplerate") {
+    	    if (!(*synthfile >> *samplerate)) {
+				*err_msg = "Expected value for samplerate.";
+				genstatus = HALTED;
+				return false;
+			}
+			if (*samplerate > 4000 && *samplerate < 200000) {
+				if (verbose)
+					cout << "\nsamplerate set at " << *samplerate;
+			}
+			else {
+				*conv << *samplerate;
+				*err_msg =
+					"Invalid samplerate: " + conv->str() +
+					". valid values between 4000 and 200000.";
+				genstatus = HALTED;
+				return false;
+			}
+		} 
+		else {
+			*err_msg = "Expected 'header' or 'samplerate' got " + *buff + " instead.";
+			genstatus = HALTED;
+			return false;
+		}
+		if (!skip_remarks()) {
+			*err_msg = "Unexpected end of file.";
+			genstatus = HALTED;
+			return false;
+		}
+		if (*buff == "bpm") {
+			if (!(*synthfile >> *bpm)) {
+				*err_msg = "Expected value for bpm";
+				genstatus = HALTED;
+				return false;
+			}
+			if (*bpm >= 20 && *bpm <= 1000) {
+				if (verbose)
+					cout << "\nbpm set at " << *bpm;
+			} 
+			else {
+				*conv << *bpm;
+				*err_msg =
+					"Invalid bpm: " + conv->str() +
+					". valid values between 20 and 1000.";
+				genstatus = HALTED;
+				return false;
+			}
+		} 
+		else {
+			*err_msg = "Expected 'bpm' got " + *buff + " instead.";
+			genstatus = HALTED;
+			return false;
+		}
+		if (!skip_remarks()) {
+			*err_msg = "Unexpected end of file.";
+			genstatus = MASSIVE_ERROR;
+			return false;
+		}
+		if (*buff == "signature") {
+			if (!(*synthfile >> *beatspermeasure)) {
+				*err_msg =
+					"Expected value for time signature - beats per measure.";
+				genstatus = HALTED;
+				return false;
+			}
+			if (*beatspermeasure < 1 || *beatspermeasure > 16) {
+				*conv << *beatspermeasure;
+				*err_msg =
+					"Invalid time signature with beats per measure: "
+					+ conv->str() + ". valid value in range 1 to 16.";
+				genstatus = HALTED;
+				return false;
+			}
+			char ch;
+			while (synthfile->get(ch)) {
+				if (ch == '/')
+					break;
+			}
+			if (synthfile->eof()) {
+				*err_msg =
+					"Unexpected end of file while scanning time signature.";
+				genstatus = HALTED;
+				return false;
+			}
+			if (!(*synthfile >> *beatvalue)) {
+				*err_msg = "Expected value for time signature - beat value.";
+				genstatus = HALTED;
+				return false;
+			}
+			if (*beatvalue < 1 || *beatvalue > 128) {
+				*conv << *beatvalue;
+				*err_msg =
+					"Invalid time signature with beat value: " +
+					conv->str() + ". valid value in range 1 to 128.";
+				genstatus = HALTED;
+				return false;
+			}
+			if (verbose)
+				cout << "\ntime signature set to " << *beatspermeasure
+					<< "/" << *beatvalue;
+		} 
+		else {
+			*err_msg = "Expected 'signature'.";
+			genstatus = HALTED;
+			return false;
+		}
+		
+	}
     filestatus = FILE_READY;
     return true;
 }
@@ -212,14 +199,24 @@ synthfilereader::read_synthmodule(string const *com)
 	}
 	string modname;
 	*synthfile >> modname;
-	// interject here to check that a module with that name does not already exist!
+	// interject here to check that a module with that name 
+	// does not already exist!
 	if (synthmod::get_modlist()->get_synthmod_by_name(&modname)){
-		*err_msg = "\nsynth module already exists named: " + modname + " will not duplicate.";
+		*err_msg = "\nsynth module already exists named: " + modname;
+		*err_msg += " will not duplicate.";
 		return 0;
 	}
 	synthmod* sm = 0;
 	switch(smt)
 	{
+		case synthmodnames::MOD_WCNT:
+			if (wcnt_module::get_wcnt_module_count() == 0)
+				sm = new wcnt_module(modname);
+			else {
+				*err_msg="\na wcnt module exist already, will not create more.";
+				return 0;
+			}
+			break;
 		case synthmodnames::MOD_ADSR:
 			sm = new adsr(modname);
 			break;
@@ -249,9 +246,6 @@ synthfilereader::read_synthmodule(string const *com)
 			break;
 		case synthmodnames::MOD_NOISEGEN:
 			sm = new noise_generator(modname);
-			break;
-		case synthmodnames::MOD_NONEZERO:
-			sm = 0; // absolutely no point in making more of these ever, so don't.
 			break;
 		case synthmodnames::MOD_OSCCLOCK:
 			sm = new osc_clock(modname);
@@ -310,13 +304,46 @@ synthfilereader::read_synthmodule(string const *com)
 		case synthmodnames::MOD_COMBINER:
 			sm = new combiner(modname);
 			break;
+		case synthmodnames::MOD_TIMEMAP:
+			sm = new timemap(modname);
+			break;
+		case synthmodnames::MOD_SERIALWAVFILEOUT:
+			sm = new serialwavfileout(modname);
+			break;
+		case synthmodnames::MOD_CONTRASTER:
+			sm = new contraster(modname);
+			break;
+		case synthmodnames::MOD_DELAY:
+			sm = new delay(modname);
+			break;
+		case synthmodnames::MOD_ECHO:
+			sm = new echo(modname);
+			break;
+		case synthmodnames::MOD_MONOAMP:
+			sm = new mono_amp(modname);
+			break;
+		case synthmodnames::MOD_MULTIPLIER:
+			sm = new multiplier(modname);
+			break;
+		case synthmodnames::MOD_RANGELIMIT:
+			sm = new range_limit(modname);
+			break;
+		case synthmodnames::MOD_PAN:
+			sm = new pan(modname);
+			break;
+		case synthmodnames::MOD_RMS:
+			sm = new rms(modname);
+			break;
+		case synthmodnames::MOD_DCFILTER:
+			sm = new dc_filter(modname);
+			break;
+		case synthmodnames::MOD_NONEZERO:
+			// absolutely no point in making more of 
+			// these, ever, so don't. OK?
 		default:
-			sm = 0;
-	}
-	if (!sm) {
-		*err_msg = "\nmemory shortage for synth module: " + modname;
-		genstatus = HALTED;
-		return 0;
+			*err_msg = "\na problem occurred which shouldn't have, sorry!";
+			*err_msg += "\nplease email james@jwm-art.net about this...";
+			return 0;
 	}
 	if (verbose)
 		cout << "\n\nCreating synth module: " << *sm->get_username();
@@ -341,8 +368,13 @@ synthfilereader::read_synthmodule(string const *com)
 		case synthmodnames::MOD_COMBINER:
 			dataread = read_signals(sm);
 			break;
+		case synthmodnames::MOD_TIMEMAP:
+			dataread = read_timemap_changes((timemap*)sm);
+			break;
 		default:
-			dataread = true;
+			dataread = true; 
+			// look below to see why dataread is true :p
+                        // ie for all other modules not covered in switch
 	}
 	if (!dataread) {
 		genstatus = HALTED;
@@ -410,21 +442,7 @@ bool synthfilereader::read_inputs(synthmod* sm)
 			if (outmodname == "off") {
 				outputnames::OUT_TYPE offout = outnames->get_nonezerotype(innames->getcategory(input_type));
 				connector* connect = new connector(sm, input_type, outmodname, offout);
-				if (!connect) {
-					*err_msg = 
-						"\ncould not create connector for: off 'output' \nin module: "
-						+ *sm->get_username() + " input: " + inputname;
-					delete inlist;
-					return false;
-				}
-				if (!synthmod::get_connectlist()->add_connector(connect)) {
-					*err_msg = 
-						"\ncould not add connector object to list for: off 'output' \nin module: "
-						+ *sm->get_username() + " input:" + inputname;
-					delete inlist;
-					delete connect;
-					return false;
-				}
+				synthmod::get_connectlist()->add_connector(connect);
 				if (verbose)
 					cout << "\nadded connector: " << inputname << "\toff";
 			}
@@ -448,21 +466,7 @@ bool synthfilereader::read_inputs(synthmod* sm)
 					return false;
 				}
 				connector* connect = new connector(sm, input_type, outmodname, output_type);
-				if (!connect) {
-					*err_msg = 
-						"\ncould not create connector object: " + *sm->get_username() +
-						" " + inputname + " " + outmodname + " " + outputname;
-					delete inlist;
-					return false;
-				}
-				if (!synthmod::get_connectlist()->add_connector(connect)) {
-					*err_msg = 
-						"\ncould not add connector object to list: " + *sm->get_username() +
-						" " + inputname + " " + outmodname + " " + outputname;
-					delete inlist;
-					delete connect;
-					return false;
-				}
+				synthmod::get_connectlist()->add_connector(connect);
 				if (verbose){
 					cout << "\nadded connector: " << inputname << "\t";
 					cout << outmodname << "\t" << outputname;
@@ -537,49 +541,53 @@ void* synthfilereader::read_param_value(paramnames::PAR_TYPE pt)
 	string svalue;
 	char* cstr = 0;
 	void* data = 0;
-//	if (conv) delete conv; would do this except it's done before this func is called
-//	conv = new ostringstream; // as there is no other way to return the value string
+// if (conv) delete conv; would do this except it's done before this func is
+// called, conv = new ostringstream; not quite sure what I'm blabbing about!
+// as there is no other way to return the value string
 	switch(synthmod::get_paramnames()->getcategory(pt))
 	{
 		case CAT_DOUBLE:
 			data = new double;
 			if (!(*synthfile >> *(double*)data)) {
-				*err_msg = "\nexpected floating point value for parameter: " + parnames->getname(pt);
+				*err_msg = "\nexpected floating point value for parameter: " 
+					+ parnames->getname(pt);
 				delete (double*)data;
-				data = 0;
+				return 0;
 			}
 			*conv << *(double*)data;
 			break;
 		case CAT_SHORT:
 			data = new short;
 			if (!(*synthfile >> *(short*)data)) {
-				*err_msg = "\nexpected integer value for parameter: " + parnames->getname(pt);
+				*err_msg = "\nexpected integer value for parameter: "
+					+ parnames->getname(pt);
 				delete (short*)data;
-				data = 0;
+				return 0;
 			}
 			*conv << *(short*)data;
 			break;
 		case CAT_ULONG:
 			data = new unsigned long;
 			if (!(*synthfile >> *(unsigned long*)data)) {
-				*err_msg = "\nexpected unsigned value for parameter: " + parnames->getname(pt);
+				*err_msg = "\nexpected unsigned value for parameter: "
+					+ parnames->getname(pt);
 				delete (unsigned long*)data;
-				data = 0;
+				return 0;
 			}
 			*conv << *(unsigned long*)data;
 			break;
-		case CAT_TRIG:  // fall through to cat_state: different categories in IOCAT
-		case CAT_STATE: // but use same data type (enum STATUS) in usage.
+		case CAT_TRIG:  // fall through to cat_state: different categories in
+		case CAT_STATE: // IOCAT, but use same data type (enum STATUS) 4 usage.
 			data = new STATUS;
 			*synthfile >> svalue;
 			if (svalue == "on") 		*(STATUS*)data = ON;
 			else if (svalue == "off")*(STATUS*)data = OFF;
 			else {
 				*err_msg = 
-					"\nexpected on or off value for parameter: " + parnames->getname(pt)
-					+ " got " + svalue + " instead.";
+					"\nexpected on or off value for parameter: "
+					+ parnames->getname(pt) + " got " + svalue + " instead.";
 				delete (STATUS*)data;
-				data = 0;
+				return 0;
 			}
 			*conv << svalue;
 			break;
@@ -588,7 +596,7 @@ void* synthfilereader::read_param_value(paramnames::PAR_TYPE pt)
 				*err_msg = 
 					"\nunable to read filename for parameter: " 
 					+ parnames->getname(pt);
-				data = 0;
+				return 0;
 			} else {
 				cstr = new char[svalue.length() + 1];
 				strncpy(cstr, svalue.c_str(), svalue.length());
@@ -602,7 +610,7 @@ void* synthfilereader::read_param_value(paramnames::PAR_TYPE pt)
 				*err_msg = 
 					"\nunable to read notename for parameter: "
 					+ parnames->getname(pt);
-				data = 0;
+				return 0;
 			} else {
 				cstr = new char[svalue.length() + 1];
 				strncpy(cstr, svalue.c_str(), svalue.length());
@@ -614,67 +622,37 @@ void* synthfilereader::read_param_value(paramnames::PAR_TYPE pt)
 		case CAT_MOD_FUNC:	// enum modifier::MOD_FUNC
 			data = new modifier::MOD_FUNC;
 			*synthfile >> svalue;
-			if (svalue == "add") 		*(modifier::MOD_FUNC*)data = modifier::ADD;
-			else if (svalue == "sub")*(modifier::MOD_FUNC*)data = modifier::SUB;
-			else if (svalue == "mul")*(modifier::MOD_FUNC*)data = modifier::MUL;
-			else if (svalue == "div")*(modifier::MOD_FUNC*)data = modifier::DIV;
-			else if (svalue == "mod")*(modifier::MOD_FUNC*)data = modifier::MOD;
-			else if (svalue == "sin")*(modifier::MOD_FUNC*)data = modifier::SIN;
-			else if (svalue == "cos")*(modifier::MOD_FUNC*)data = modifier::COS;
-			else if (svalue == "tan")*(modifier::MOD_FUNC*)data = modifier::TAN;
+			if (svalue == "add")*(modifier::MOD_FUNC*)data=modifier::ADD;
+			else if (svalue == "sub")*(modifier::MOD_FUNC*)data=modifier::SUB;
+			else if (svalue == "mul")*(modifier::MOD_FUNC*)data=modifier::MUL;
+			else if (svalue == "div")*(modifier::MOD_FUNC*)data=modifier::DIV;
+			else if (svalue == "mod")*(modifier::MOD_FUNC*)data=modifier::MOD;
+			else if (svalue == "sin")*(modifier::MOD_FUNC*)data=modifier::SIN;
+			else if (svalue == "cos")*(modifier::MOD_FUNC*)data=modifier::COS;
+			else if (svalue == "tan")*(modifier::MOD_FUNC*)data=modifier::TAN;
 			else {
 				*err_msg = 
 					"\nunrecognised modifier function: " + svalue
 					+ " for parameter: " + parnames->getname(pt);
 				delete (modifier::MOD_FUNC*)data;
-				data = 0;
+				return 0;
 			}
 			*conv << svalue; // ignored if error situ
-			break;
-		case CAT_CLIP_MODE:	// enum stereo_amp::CLIP_MODE
-			data = new stereo_amp::CLIP_MODE;
-			*synthfile >> svalue;
-			if (svalue == "clip") 
-				*(stereo_amp::CLIP_MODE*)data = stereo_amp::CLIP;
-			else if (svalue == "invert_clip")
-				*(stereo_amp::CLIP_MODE*)data = stereo_amp::INVERT_CLIP;
-			else {
-				*err_msg = 
-					"\nunrecognised stereo_amp clip_mode: " + svalue
-					+ " for parameter: " + parnames->getname(pt);
-				delete (stereo_amp::CLIP_MODE*)data;
-				data = 0;
-			}
-			*conv << svalue;
-			break;
-		case CAT_LOOP_MODE:	// enum sampler::LOOP_MODE
-			data = new sampler::LOOP_MODE;
-			*synthfile >> svalue;
-			if (svalue == "off")
-				*(sampler::LOOP_MODE*)data = sampler::LOOP_OFF;
-			else if (svalue == "on" || svalue == "bi")
-				*(sampler::LOOP_MODE*)data = sampler::LOOP_ON;
-			else {
-				*err_msg = 
-					"\nunrecognised sampler loop_mode: " + svalue
-					+ " for parameter: " + parnames->getname(pt);
-				delete (sampler::LOOP_MODE*)data;
-				data = 0;
-			}
-			*conv << svalue;
 			break;
 		case CAT_WAVFILEIN:
 			if (!(*synthfile >> svalue)) {
 				*err_msg = 
 					"\nunable to read wavfilein name for parameter: "
 					+ parnames->getname(pt);
-				data = 0;
-			} else {
-				data = sampler::get_wavfilein_list()->get_wavfilein_by_name(&svalue);
+				return 0;
+			}
+			else {
+				data = 
+				sampler::get_wavfilein_list()->get_wavfilein_by_name(&svalue);
 				if (!data) {
 					*err_msg = 
 					"\nno wavfilein open named: " + svalue;
-					data = 0;
+					return 0;
 				}
 			}
 			*conv << svalue;
@@ -682,15 +660,74 @@ void* synthfilereader::read_param_value(paramnames::PAR_TYPE pt)
 		case CAT_LOGIC:
 			data = new logictrigger::LOGIC_FUNC;
 			*synthfile >> svalue;
-			if (svalue == "and") 		*(logictrigger::LOGIC_FUNC*)data = logictrigger::AND;
-			else if (svalue == "or")	*(logictrigger::LOGIC_FUNC*)data = logictrigger::OR;
-			else if (svalue == "xor")*(logictrigger::LOGIC_FUNC*)data = logictrigger::XOR;
+			if (svalue == "and")
+				*(logictrigger::LOGIC_FUNC*)data = logictrigger::AND;
+			else if (svalue == "or")
+				*(logictrigger::LOGIC_FUNC*)data = logictrigger::OR;
+			else if (svalue == "xor")
+				*(logictrigger::LOGIC_FUNC*)data = logictrigger::XOR;
 			else {
 				*err_msg = 
 					"\nunrecognised logic function: " + svalue
 					+ " for parameter: " + parnames->getname(pt);
 				delete (logictrigger::LOGIC_FUNC*)data;
-				data = 0;
+				return 0;
+			}
+			*conv << svalue;
+			break;
+		case CAT_LOOP_MODE:	// enum sampler::LOOP_MODE
+			data = new LOOP_MODE;
+			*synthfile >> svalue;
+			if (svalue == "off") *(LOOP_MODE*)data = LOOP_OFF;
+			else if (svalue == "fwd") *(LOOP_MODE*)data = LOOP_FWD;
+			else if (svalue == "rev") *(LOOP_MODE*)data = LOOP_REV;
+			else if (svalue == "bi") *(LOOP_MODE*)data = LOOP_BI;
+			else {
+				*err_msg = "\nunrecognised sampler loop_mode: " + svalue
+					+ " for parameter: " + parnames->getname(pt);
+				delete (LOOP_MODE*)data;
+				return 0;
+			}
+			*conv << svalue;
+			break;
+		case CAT_PLAY_DIR:
+			data = new PLAY_DIR;
+			*synthfile >> svalue;
+			if (svalue == "fwd") *(PLAY_DIR*)data = PLAY_FWD;
+			else if (svalue == "rev") *(PLAY_DIR*)data = PLAY_REV;
+			else {
+				*err_msg = "\nunrecognised sampler play_dir: " + svalue
+					+ " for parameter: " + parnames->getname(pt);
+				delete (PLAY_DIR*)data;
+				return 0;
+			}
+			*conv << svalue;
+			break;
+		case CAT_PLAY_MODE:
+			data = new PLAY_MODE;
+			*synthfile >> svalue;
+			if (svalue == "stop") *(PLAY_MODE*)data = PLAY_STOP;
+			else if (svalue == "wrap") *(PLAY_MODE*)data = PLAY_WRAP;
+			else if (svalue == "bounce") *(PLAY_MODE*)data = PLAY_BOUNCE;
+			else if (svalue == "jump") *(PLAY_MODE*)data = PLAY_JUMP;
+			else {
+				*err_msg = "\nunrecognised sampler play_mode: " + svalue
+					+ " for parameter: " + parnames->getname(pt);
+				delete (PLAY_MODE*)data;
+				return 0;
+			}
+			*conv << svalue;
+			break;
+		case CAT_JUMP_DIR:
+			data = new JUMP_DIR;
+			*synthfile >> svalue;
+			if (svalue == "play") *(JUMP_DIR*)data = JUMP_PLAY_DIR;
+			else if (svalue == "loop") *(JUMP_DIR*)data = JUMP_LOOP_DIR;
+			else {
+				*err_msg = "\nunrecognised sampler jump_mode: " + svalue
+					+ " for parameter: " + parnames->getname(pt);
+				delete (JUMP_DIR*)data;
+				return 0;
 			}
 			*conv << svalue;
 			break;
@@ -698,7 +735,7 @@ void* synthfilereader::read_param_value(paramnames::PAR_TYPE pt)
 			*err_msg = 
 				"\nunable to read value for parameter: " 
 				+ parnames->getname(pt) + " requested invalid parameter category";
-			data = 0;
+			return 0;
 	}
 	return data;
 }
@@ -727,18 +764,24 @@ void synthfilereader::destroy_tmp_param_data(paramnames::PAR_TYPE pt, void* data
 		case CAT_MOD_FUNC:	// enum modifier::MOD_FUNC
 			delete (modifier::MOD_FUNC*)data;
 			break;
-		case CAT_CLIP_MODE:	// enum stereo_amp::CLIP_MODE
-			delete (stereo_amp::CLIP_MODE*)data;
-			break;
-		case CAT_LOOP_MODE:	// enum sampler::LOOP_MODE
-			delete (sampler::LOOP_MODE*)data;
-			break;
 		case CAT_WAVFILEIN:
-			// don't want to delete data for wavfilein as it was not
-			// created by read_param_value(..) - unlike the above
+			// don't delete data for wavfilein as it was not
+			// created by read_param_value(..) - unlike the CAT_s
 			break;
 		case CAT_LOGIC:
 			delete (logictrigger::LOGIC_FUNC*)data;
+			break;
+		case CAT_LOOP_MODE:	// enum sampler::LOOP_MODE
+			delete (LOOP_MODE*)data;
+			break;
+		case CAT_PLAY_DIR:
+			delete (PLAY_DIR*)data;
+			break;
+		case CAT_PLAY_MODE:
+			delete (PLAY_MODE*)data;
+			break;
+		case CAT_JUMP_DIR:
+			delete (JUMP_DIR*)data;
 			break;
 		default:
 			break;
@@ -748,10 +791,9 @@ void synthfilereader::destroy_tmp_param_data(paramnames::PAR_TYPE pt, void* data
 bool synthfilereader::read_adsr_envelope(adsr* env)
 {
 	if (env->get_module_type() != synthmodnames::MOD_ADSR) {
-		*err_msg = 
-			"programmer error: requested to read adsr envelope into non adsr module: " 
-			+ *env->get_username() + " of type: " + 
-			synthmod::get_modnames()->get_name(env->get_module_type());
+		*err_msg = "programmer error: requested to read adsr envelope into";
+		*err_msg += ("adsr module: " + *env->get_username() + " of type: ");
+		*err_msg += synthmod::get_modnames()->get_name(env->get_module_type());
 		return false;
 	}
 	string const* envelope;
@@ -868,7 +910,7 @@ bool synthfilereader::read_mixer_channels(stereomixer* mix)
 		return false;
 	}
 	string const* desk = read_command();
-	if (*desk != "desk") {
+	if (*desk != "mixdesk") {
 		*err_msg = 
 			"\nin module: " + *mix->get_username() + " expected: desk got:"
 			+ *desk + " instead.";
@@ -878,7 +920,7 @@ bool synthfilereader::read_mixer_channels(stereomixer* mix)
 	stereo_channel* chan = 0;
 	synthmodlist* modlist = synthmod::get_modlist();
 	synthmodnames* modnames = synthmod::get_modnames();
-    while (*rcom != "desk") 
+    while (*rcom != "mixdesk") 
 	{
 		chan = (stereo_channel*)modlist->get_synthmod_by_name(rcom);
 		if (!chan) {
@@ -904,6 +946,80 @@ bool synthfilereader::read_mixer_channels(stereomixer* mix)
 	return true;
 }
 
+bool synthfilereader::read_timemap_changes(timemap* tmap)
+{
+	if (tmap->get_module_type() != synthmodnames::MOD_TIMEMAP) {
+		// this is pretty unlikely, but hey, it can't hurt, can it?
+		// saying that, it's just happened.............wierd.......
+		// some kind of strange flashing light up ahead............
+		*err_msg="programmer error: requested to read bpm/meter changes into";
+		*err_msg+=("timemap module: " + *tmap->get_username() + " of type: ");
+		*err_msg+=synthmod::get_modnames()->get_name(tmap->get_module_type());
+		return false;
+	}
+	string const* timestr;
+	timestr= read_command();
+	if (*timestr != "time") {
+		*err_msg = "\nin module: " + *tmap->get_username() + 
+			" expected: 'time' got:" + *timestr + " instead.";
+		return false;
+	}
+	bpmchange* bpm_ins = 0;
+	meterchange* meter_ins = 0;
+	string timecom[2] = { "bpm", "signature" };
+	string const* com = read_command();
+	// don't force user to insert a series of bpm changes
+	// followed by a series of signature changes, ie allow
+	// user to alternate between bpm and signature changes.
+	while (*com == timecom[0] || *com == timecom[1]) {
+		if (*com == "bpm") {
+			if (!(bpm_ins = read_bpm_change())) {
+				*err_msg += " for bpm change in timemap '";
+				*err_msg += *tmap->get_username();
+				*err_msg += "'";
+				return false;
+			}
+			if (!tmap->add_bpm_change(bpm_ins)) {
+				*err_msg += "\nunable to add bpm to timemap module '";
+				*err_msg += *tmap->get_username();
+				*err_msg += "'\nMaybe you tried to insert more than two bpm";
+				*err_msg += "\nchanges at a single bar?";
+				return false;
+			}
+			if (verbose) {
+				cout << "\nAdded bpm " << bpm_ins->get_bpm();
+				cout << " at bar" << bpm_ins->get_bar();
+			}
+		}
+		else { // *com == "signature" -- see while(....
+			if (!(meter_ins = read_meter_change())) {
+				*err_msg += (" for signature change in timemap '"
+					+ *tmap->get_username() + "'");
+				return false;
+			}
+			if (!tmap->add_meter_change(meter_ins)) {
+				*err_msg += ("\nunable to add signature to timemap module '" +
+					*tmap->get_username() + "'");
+				*err_msg += "\nMaybe you tried to insert more than one";
+				*err_msg += "\nsignature change at a single bar?";
+			}
+			if (verbose) {
+				cout << "\nAdded signature " << (short)meter_ins->get_beatsperbar();
+				cout << "/" << (short)meter_ins->get_beatvalue();
+				cout << " at bar" << meter_ins->get_bar();
+			}
+		}
+		com = read_command();
+	}
+	if (*com != "time") {
+		*err_msg = "\nafter bpm and signature changes in module '";
+		*err_msg += (*tmap->get_username() + "' expected '"); 
+		*err_msg += *timestr;
+		*err_msg += "' instead.";
+		return false;
+	}
+	return true;
+}
 
 bool synthfilereader::read_signals(synthmod* mod)
 {
@@ -917,9 +1033,9 @@ bool synthfilereader::read_signals(synthmod* mod)
 	else if (modtype == synthmodnames::MOD_COMBINER) 
 		comb = (combiner*)mod;
 	else {
-		*err_msg = 
-			"programmer error: requested to read wcntsignal into invalid module type: "
-			+ *mod->get_username() + " of type: " + modtypename;
+		*err_msg = "programmer error: requested to read wcntsignal into ";
+		*err_msg += ("invalid module type: " + *mod->get_username());
+		*err_msg += " of type: " + modtypename;
 		return false;
 	}
 	string const* signals = read_command();
@@ -1087,15 +1203,28 @@ riffdata *const synthfilereader::read_riffdata(string const *com)
     string riffname;
     *synthfile >> riffname;
     riffdata *riff = new riffdata(riffname);
-    if (!riff) {
-        *err_msg = "\nmemory shortage for new riff: " + riffname;
-        genstatus = HALTED;
-        return 0;
-    }
     if (verbose)
         cout << "\nCreating riff: " << *riff->get_username();
     note_data *note;
     string const *rcom = read_command();
+	// read quarter_value
+	if (*rcom != "quarter_value") {
+		*err_msg = "\nexpected 'quarter_value' got '" + *rcom + "' instead.";
+		genstatus = HALTED;
+		delete riff;
+		return 0;
+	}
+	short qval;
+    if (!(*synthfile >> qval)) {
+        *err_msg = "\nExpected numerical value for quarter_value in riff: ";
+		*err_msg += riffname;
+		genstatus = HALTED;
+        return 0;
+    }
+	riff->set_quartervalue(qval);
+	if (verbose)
+		cout << " set quarter_value to " << riff->get_quartervalue();
+    rcom = read_command();
     while (*rcom != riffname) {
         if (*rcom == "note") {
             if (!(note = read_notedata())) {
@@ -1114,7 +1243,7 @@ riffdata *const synthfilereader::read_riffdata(string const *com)
                 cout << "\nadded note: " << note->
                     get_name() << " pos: " << note->
                     get_position() << " len: " << note->
-                    get_length() << " vel:" << note->get_velocity();
+                    get_length() << " vel: " << note->get_velocity();
         } else {
             *err_msg = "\nexpected 'note' got '" + *rcom + "' instead.";
             genstatus = HALTED;
@@ -1137,8 +1266,8 @@ note_data *const synthfilereader::read_notedata()
         genstatus = HALTED;
         return 0;
     }
-    short nlen;
-    short npos;
+    double nlen;
+    double npos;
     double vel;
     if (!(*synthfile >> npos)) {
         *err_msg = "\nExpected position value for note " + name;
@@ -1157,7 +1286,7 @@ note_data *const synthfilereader::read_notedata()
     }
     if (nlen < 1 || nlen > 32766) {
         *conv << nlen;
-        *err_msg = "\nInvalid length value for note " + name + " " +
+        *err_msg = "\nJust plain wrong length value for note " + name + " " +
 					conv->str() + " valid range 1 to 32767";
         return 0;
     }
@@ -1168,20 +1297,100 @@ note_data *const synthfilereader::read_notedata()
     if (vel < 0.00 || vel > 1.00) {
         *conv << vel;
         *err_msg =
-            "\nInvalid velocity value for note " + name + " " +
+            "\nIrresponsible velocity for note " + name + " " +
             conv->str() + " valid range 0.00 to 1.00";
         return 0;
     }
-    note_data *newnote = new note_data(name.c_str(), nlen, npos, vel);
-    if (!newnote) {
-        *err_msg = "\nNot enough memory for note:" + name;
-        *conv << "\t" << npos;
-        *conv << "\t" << nlen;
-        *conv << "\t" << vel;
-        *err_msg += conv->str();
-        return 0;
-    }
-    return newnote;
+    return (new note_data(name.c_str(), nlen, npos, vel));
+}
+
+bpmchange* synthfilereader::read_bpm_change()
+{
+	if (conv) delete conv;
+	conv = new ostringstream;
+	short bar;
+	double bpm;
+	if (!(*synthfile >> bpm)) {
+		*err_msg = "\nHeck, it's a wierdo bpm value. Ehhk.";
+		return 0;
+	}
+	if (bpm < 0 || bpm > MAX_BPM) {
+		*conv << bpm;
+		*err_msg = "\nSorry, but I find a bpm of " + conv->str() 
+			+ " totally, and irrevocably, unacceptable.";
+		if (bpm < 0) 
+			*err_msg += "\nWhat kind of fool wants a negative BPM anyway?";
+		else
+			*err_msg += "\nIf you're feeling brave, you could always edit ";
+			*err_msg+="MAX_BPM in synthmodule.h to get the bpm you so desire.";
+	}
+	if (!(*synthfile >> bar)) {
+		*err_msg = "\nAre you some kind of joker, check your bar position.";
+		return 0;
+	}
+	if (bar < 0) {
+		*conv << bar;
+		*err_msg = "Djya fink " + conv->str() + " is a fuUuckin' savage bar"
+			+ " position? sort it aaaaaat mate!";
+		return 0;
+	}
+	return (new bpmchange(bar, bpm));
+}
+
+/*
+	"I sing the song of the desert, of the desert trail, moonlight oasis,
+	stories to tell, I sing the song of the desert, of the desert trail,
+	never step in the path of this snakes tail."  -- lewis parker 1998
+*/
+
+meterchange* synthfilereader::read_meter_change()
+{
+	if (conv) delete conv;
+	conv = new ostringstream;
+	short bar;
+	short bval;
+	short bpbar;
+	if (!(*synthfile >> bpbar)) {
+		*err_msg = "\nNuuugghh, can't have nonsense beats per measure.";
+		return false;
+	}
+	if (bpbar < 1 || bpbar > 16) {
+		*conv << bpbar;
+		*err_msg = "\nwon't do it, time signature beats per measure of " 
+			+ conv->str() + ". advice - range: 1 to 16.";
+		return false;
+	}
+	char ch;
+	while (synthfile->get(ch)) {
+		if (ch == '/')
+			break;
+	}
+	if (synthfile->eof()) {
+		*err_msg =
+			"\nUnexpected end of file while scanning time signature.";
+		genstatus = HALTED;
+		return false;
+	}
+	if (!(*synthfile >> bval)) {
+		*err_msg = "\nwahhhh, don't like non numerical beat values.";
+		return false;
+	}
+	if (bval < 1 || bval > 64) {
+		*err_msg = "\nI'm testing my own patience with this error checking, but";
+		*err_msg += " lucky for you I did.  beat value is within 1 to 64.";
+		return false;  // what a miserable git I am!!
+	}
+	if (!(*synthfile >> bar)) {
+		*err_msg = "\nAre you some kind of joker, check your bar position.";
+		return 0;
+	}
+	if (bar < 0) {
+		*conv << bar;
+		*err_msg = "\nDjya fink " + conv->str() + " is a fuUuckin' savage bar"
+			+ " position? sort it aaaaaat mate!";
+		return 0;
+	}
+	return (new meterchange(bar, (char)bpbar, (char)bval));
 }
 
 wavfilein *const synthfilereader::read_wavfilein(string const *com)
@@ -1191,12 +1400,18 @@ wavfilein *const synthfilereader::read_wavfilein(string const *com)
         genstatus = MASSIVE_ERROR;
         return 0;
     }
+	string samplename;
+	*synthfile >> samplename;
+    string const *rcom = read_command();
+	//rcom should be "file" at this point
+	if (*rcom != "file") {
+		*err_msg = "\ncommand " + *rcom + " issued to wavfilein reader.  expected .file.";
+		genstatus = MASSIVE_ERROR;
+		return 0;
+	}		
     string wavname;
     *synthfile >> wavname;
 	wavfilein* wavfile = new wavfilein;
-	if (!wavfile) {
-		*err_msg = "\nnot enough memory for wavfilein: " + wavname;
-	}
 	if (wavfile->open_wav(wavname.c_str()) != WAV_STATUS_OPEN) {
 		switch(wavfile->get_status())
 		{
@@ -1227,8 +1442,18 @@ wavfilein *const synthfilereader::read_wavfilein(string const *com)
 		delete wavfile;
 		wavfile = 0;
 	}
+	else
+	{
+		wavfile->set_sample_name(samplename.c_str());
+		rcom = read_command();
+		//rcom should be = samplename again 
+		if (*rcom != samplename) {
+			*err_msg = "\ncommand " + *rcom + " issued to wavfilein reader.  Xpected file.";
+			genstatus = MASSIVE_ERROR;
+			return 0;
+		}				
+	}
 	return wavfile;
-	
 }
 
 bool synthfilereader::skip_remarks()
@@ -1251,4 +1476,152 @@ bool synthfilereader::skip_remarks()
     return true;                // i'm happy - honest
 }
 
+// ie I'm pissed off at having to write this bit
+// but it will make life easier.....but it's
+// gonna have to be a bodge job, so don't give
+// me any (insert 4letter words here) lectures OK?
+
+// ie i've not done any coding for around six months
+// and I'm having trouble getting my head around it
+// again.....(as_usual)
+
+bool synthfilereader::eff_ing_header_bodge(unsigned long *samplerate, short *bpm, 
+	short *beatspermeasure, short *beatvalue)
+{
+	ifstream headerfile;
+	string hf_name;
+	*synthfile >> hf_name;
+	// stop reading from that (synthfile) for mo now we got header name.
+	headerfile.open(hf_name.c_str());  // and open header file and be really 
+	// fussy about layout 'cos i'm not messing about with whitespace 
+	// and remark processing here.
+	// but first check it's opened oK
+	if (!headerfile.is_open()) {
+		*err_msg = "Requested header refused open: " + hf_name;
+		genstatus = HALTED;
+		return false;
+	}
+	if (verbose)
+		cout << "\nReading header info from file: " + hf_name;
+	headerfile >> *buff; 
+    if (*buff == "samplerate") {
+        if (!(headerfile >> *samplerate)) {
+			*err_msg = "In header file: " + hf_name;
+            *err_msg += " expected value for samplerate.";
+            genstatus = HALTED;
+			headerfile.close();
+            return false;
+        }
+        if (*samplerate > 4000 && *samplerate < 200000) {
+            if (verbose)
+                cout << "\nsamplerate set at " << *samplerate;
+        } else {
+            *conv << *samplerate;
+            *err_msg = "in header: " + hf_name + 
+				" Invalid samplerate: " + conv->str() +
+                ". valid values between 4000 and 200000.";
+            genstatus = HALTED;
+			headerfile.close();
+            return false;
+        }
+    } else {
+        *err_msg = "in header: " + hf_name + 
+					" expected 'samplerate' got " + *buff + " instead.";
+        genstatus = HALTED;
+		headerfile.close();
+        return false;
+    }
+	headerfile >> *buff;
+    if (*buff == "bpm") {
+        if (!(headerfile >> *bpm)) {
+            *err_msg = "in header: " + hf_name + " expected value for bpm";
+            genstatus = HALTED;
+			headerfile.close();
+            return false;
+        }
+        if (*bpm >= 20 && *bpm <= 1000) {
+            if (verbose)
+                cout << "\nbpm set at " << *bpm;
+        } else {
+            *conv << *bpm;
+            *err_msg = "in header: " + hf_name + 
+                " Invalid bpm: " + conv->str() +
+                ". valid values between 20 and 1000.";
+            genstatus = HALTED;
+			headerfile.close();
+            return false;
+        }
+    } else {
+        *err_msg = "in header: " + hf_name + " Expected 'bpm' got " 
+					+ *buff + " instead.";
+        genstatus = HALTED;
+		headerfile.close();
+        return false;
+    }
+	headerfile >> *buff;
+    if (*buff == "signature") {
+        if (!(headerfile >> *beatspermeasure)) {
+            *err_msg = "in header: " + hf_name + 
+                " Expected value for time signature - beats per measure.";
+            genstatus = HALTED;
+            return false;
+        }
+        if (*beatspermeasure < 1 || *beatspermeasure > 16) {
+            *conv << *beatspermeasure;
+            *err_msg = "in header: " + hf_name + 
+                " Invalid time signature with beats per measure: "
+                + conv->str() + ". valid value in range 1 to 16.";
+            genstatus = HALTED;
+			headerfile.close();
+            return false;
+        }
+        char ch;
+        while (headerfile.get(ch)) {
+            if (ch == '/')
+                break;
+        }
+        if (headerfile.eof()) {
+            *err_msg =
+                "Unexpected end of file while scanning time signature.";
+            genstatus = HALTED;
+			headerfile.close();
+            return false;
+        }
+        if (!(headerfile >> *beatvalue)) {
+            *err_msg = "Expected value for time signature - beat value.";
+            genstatus = HALTED;
+			headerfile.close();
+            return false;
+        }
+        if (*beatvalue < 1 || *beatvalue > 128) {
+            *conv << *beatvalue;
+            *err_msg = "in header: " + hf_name + 
+                " Invalid time signature with beat value: " +
+                conv->str() + ". valid value in range 1 to 128.";
+            genstatus = HALTED;
+			headerfile.close();
+            return false;
+        }
+        if (verbose)
+            cout << "\ntime signature set to " << *beatspermeasure
+                << "/" << *beatvalue;
+    } else {
+        *err_msg = "in header: " + hf_name + " Expected 'signature'.";
+        genstatus = HALTED;
+		headerfile.close();
+        return false;
+    }
+    filestatus = FILE_READY;
+	headerfile.close();  // holy mudcow we made it!
+    return true;
+}
+// ie if you've got a multitude of wav composer not toilet files
+// eventually building up to one composition, (ie using make & makefiles)
+// then it's a sodding pissant when you want to change the bpm etc.
+// this poxy bodge allows you to tell wcnt to look at another file for
+// the header info, tell all your .wc to look at the same thing and
+// then you only need to update one of the little fuckers for mass 
+// bpm change all round wooooooooooahooooooooaweeeee!
+
+#endif
 #endif

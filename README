@@ -1,18 +1,12 @@
-||||||||||||||||||||||||||||||
-------------------------------
-wcnt - Wav Composer Not Toilet
-------------------------------
-||||||||||||||||||||||||||||||
 
-Version 1.0001 Released:
-        Monday 24th March 2003
+  O---\\\\|||[:::>  <:::]|||////---O
+  \ ----------   wcnt   ---------- /
+       Wav Composer Not Toilet!
+  / ---------- v 1.1001 ---------- \
+  O---////|||[::>    <::]|||\\\\---O
 
-See Changelog for details of
-changes etc, and scrap the old
-demos if you have them or be
-prepared to modify them.  The
-replacement demos must now be 
-downloaded separately. 
+This version is unofficially codenamed 
+'Bog Brush'.
 
 compile in the usual manner:
 
@@ -20,28 +14,20 @@ compile in the usual manner:
 make
 make install
 
-type  wcnt   for  command line 
-options  which  will give  you 
-some help and  definitely 
-download the examples package
-to try the demos.  Point your 
-browser @ wcnt.sourceforge.net
+type  wcnt   for  command line options
+which will give you some limited help.
+Some of which can be copied and pasted
+into a wcnt file and edited.
 
-If you're still stuck email me
-jameswmorris   at   users  dot 
-sourceforge dot net.
+BE SURE TO CHECK THE EXAMPLES DIRECTORY
 
-If  you  have any  suggestions  
-for code improvements etcetera
-then email me.
+note: wcnt.prj is  a  project file for
+the Anjuta IDE version 1.2.0.
+see anounce.txt and Changelog for
+important information.
 
-If you  make a really cool .wc
-file email it  to me, I'd like 
-to hear it!
-
-||||||||||||||||||||||||||||||
-------------------------------
-wcnt - Wav Composer Not Toilet
-------------------------------
-||||||||||||||||||||||||||||||
-	
+  O---\\\\|||[:::>  <:::]|||////---O
+  \ ----------   wcnt   ---------- /
+       Wav Composer Not Toilet!
+  / ---------- v 1.1001 ---------- \
+  O---////|||[::>    <::]|||\\\\---O

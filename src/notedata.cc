@@ -1,7 +1,7 @@
 #ifndef NOTEDATA_H
 #include "../include/notedata.h"
 
-note_data::note_data(const char *name, short len, short pos, double vel)
+note_data::note_data(const char *name, double len, double pos, double vel)
     :
 length(len),
 position(pos),

@@ -1,4 +1,283 @@
 --------------------------------------------------------------
+Sunday February 22 2004
+
+wcnt-1.1001 progress
+
+I've decided to release wcnt-1.1001 as it is, minus the stuff mentioned
+below.  That is going to take a while yet, and I have a working version
+which improves upon the last release - wcnt-1.0001c. So here it is!
+This version is unofficially code named 'Bog Brush'.
+
+So the next version will be named something like wcnt-1.1250
+
+CHANGES:
+	* removed code in development to get a working version back.
+
+BE SURE TO CHECK THE EXAMPLES DIRECTORY
+
+--------------------------------------------------------------
+Saturday February 21 2004
+
+wcnt-1.1001 progress
+
+It was probably Monday this week that I begun work on creating a base class
+for non module objects and data.  The idea being that it would make the 
+creation of the next bunch of modules I've got planned a bit smoother.  These
+modules will use lots of variable length lists of data which would have meant
+adding even more specialised routines in synthfilereader to read and create
+them.  The existing methods for modules to access data objects are only really
+suited for a couple of different object types.  Having many types would lead to
+a lot of duplication of long winded code.  While the implimentation of this 
+new base class is turning out to be an equally big pain, it should pay off by 
+making the integration of new data objects simpler.  I've more or less 
+completed the first stage of designing the base object and now have got to find 
+where to begin the next to actually use the information to make things happen.
+
+Needless to say until this is complete, the creation of modules to map 
+samples to notes, note variation and note remapping will have to wait.  In 
+the meantime, heres what I've done since the last entry.
+
+CHANGES:
+	* lp_filter/lp_filter
+		Removed resonance parameters and code.  It was basically sine
+		wave generation running at cutoff frequency.  Added a wet/dry
+		setting which lets through the original signal as it arrives, 
+		(ie it will be out of phase with filtered signal.)  Added 
+		out_wet_output which only contains filtered signal.  This can
+		be fed to the new input, in_feedback.  The feedback level can
+		be modulated by a controlling signal (ie by an adsr or sine_wave 
+		output etc.)
+
+	* various
+		a few small changes to several modules making minor improvements 
+		to the sensibilities of their workings.
+		
+	* stereo_amp
+		Ha! It now amplifies two signals, one for left, one for right.
+		No kidding.  It also has two amplitude levels, one for left, 
+		and one for right.  Amazing stuff.  Completely removed pan,
+		and pan modulation.
+		
+ADDITIONS:
+	* mono_amp
+		Whuh, where've I been?  Say no more.
+		
+	* dc_filter
+		the latest addition, arose after seeing some dc filtering code
+		examples which I did not really understand, from musicdsp.org.
+		The filter works from a time specified in milliseconds to do
+		the filtering, rather than specification of a frequency.  It 
+		seemed a brainwave at the time, but now I'm wondering how much
+		different it really is from a high pass filter?  It works ok 
+		though, but sometimes removes too much punch from a signal.
+	
+	* pan/panner
+		the class is called pan, the user calls it panner.  It does a
+		better job of panning than what the stereo_amp used to.  (ie
+		signal levels are checked so that it does not attempt to break
+		the laws of reality. ie not pan further left than full left.)
+		
+	* delay
+		a basic delay module.  not tested it enough yet.  The input
+		signal can have its level adjusted and/or modulated.  There
+		is also a wet/dry setting
+		
+	* echo
+		exactly the same as the delay, but with a out_wet_output and
+		an in_feedback input.  The feedback level of course can be
+		adjusted and/or modulated.  One slight problem which causes
+		wcnt to abort when delay times are set above 500 ms, but it
+		has run with delay times over 1100 ms.  Not looked into a 
+		solution yet.
+		
+	* multiplier
+		very straight forward, multiplies two signals.
+		
+	* range_limit
+		specify the lowest, and highest values to output of the input
+		signal.  clips the signal outside this range.
+		
+	* rms
+		outputs root mean square of input signal.  gets very slow for
+		values over 10 ms.  Made in anticipation of compressor, limiter
+		and expander modules.
+		
+--------------------------------------------------------------
+Monday January 26 2004
+
+wcnt-1.1001 progress
+
+Mainly been grappling with the sampler's anti clip code etc for the past 
+week or so.  Unfortunately for wcnt, I've started working (temping) so it's 
+not progressing at the rate I wish.  Nevermind.  I've also been getting some
+ideas together for variation/mapping of various things.  Once I've hooked
+all the new modules and changes into the wcnt file reader etc I'll start
+working on that.  First notename mapping different ranges with added bonus
+of variation also, due to overlapping ranges and random stuff.  Then it's 
+onto the new sampler which uses inputs instead of params for most of the 
+stuff in the current sampler, and sample mapping to note name etc.  
+Problematic about how I'll set that up though. (ie sampledata output to input 
+or individual inputs and outputs?)
+
+CHANGES:
+	* Sampler
+		Changed anti_clip samples to samples within input file rather than
+		number of output samples.  Added anti_clip_each_end (ON/OFF) to
+		allow anti clipping at the start and end of the wav, but this
+		means playback starts later and ends sooner.  Added stop trig to
+		stop sample playback dead - generally intended for use with 
+		adsr off_trig to prevent anti_clipping at the beginning of sample 
+		playback when it would not be needed.  Anti clipping now works fully 
+		without any messages saying it's been activated while already active 
+		ie it now 'remembers' what it was doing and mixes it with what it 
+		will be doing.  Because anti clipping has been changed to noof samples 
+		within input file it ramps the deg_size (taken from before it was
+		activated) to the (new) deg_size - otherwise it is too sudden.  Was
+		going to add a function to search within a range either side of a
+		given point for sample closest to zero, but have put that off 'till
+		later.  Almost forgot ;) when playback initially travels away from 
+		the loop and reaches the start or end of the wav, you can tell it
+		to wrap to the other end, bounce to change direction, or jump to 
+		jump straight to the loop.  With jump you can tell it to play in
+		the initial play direction, before it resorts to the loop mode, or
+		to just play as loop_mode intends.  Finally, added bi-directional
+		offset for when playback changes direction, it will jump n samples
+		in the input file before changing direction - to prevent mirroring
+		of a phase in the waveform.
+		
+	* ADSR
+		Added off_trig - mainly to tell sampler to stop playing when the
+		adsr has finished.
+		
+	* stereo_amp
+		Removed the clip_mode as it was crap!  It still clips to the 
+		clip level you set, but it does not do invert_clip anymore which was
+		intended for doing what the contraster module does better, but I'd
+		not bothered to complete it fully.
+		
+--------------------------------------------------------------
+Thursday January 15 2004
+
+wcnt-1.1001 progress
+
+CHANGES:
+	* Sampler
+		Now has reverse playback capabilities and bi-directional looping.  
+		And, the loop positions can be set as offsets from the start 
+		position, for when the start position is being modulated.
+		I've still got to sort out the anti-clipping code.
+
+--------------------------------------------------------------
+Tuesday January 13 2004
+
+wcnt-1.1001 progress
+
+NOTES:
+	* BARE_MODULES
+		this define is still in place in the src/Makefile.am. It prevents
+		compilation of all the user file reading stuff and lists of outputs
+		inputs, params, fleas, and cabbages.  Speeds compilation up no end. 
+		Unfortunately I'm going to have to update lots of things when I 
+		remove it. uhhhhhhhrrrrrgghh.  When it is defined wcnt runs a hard
+		coded setup which uses all the new modules and changes - in a teste
+		kind of way.
+		
+	* hmmmm
+		just looked down the page to the bit about changing bpm in a header
+		file.  not so useful anymore....but not completely redundant. 
+		timemap	uses it to create an initial bpm/tempo change at bar 0.
+		
+CHANGES:
+	* timemap
+		timemap replaces bpmmap module.  timemap handles not only bpm
+		changes, but also timesignature changes.  Thanks to some 
+		clarifications from Tim Goetze on the LAD mailing list for
+		getting me on my way with it.  
+	
+	* note_data, sequencer, timemap
+		user specifies note position and lengths using a 1/4 = 12.
+		this unlike previously 1/4 = 64 allows triplets.  Floating
+		point may be used by the user.  However, timemap, and sequencer
+		calculate things using 1/4 = 768, so note_data is converted by
+		sequencer into an integer, to keep the checks simple.
+		
+	* osc_clock
+		Now, I have actually fixed it this time, so it triggers on very 
+		first sample, so that the any waveforms using it will start 
+		immediately rather than 360 degrees (x samples) later.
+	
+ADDITIONS:
+	* serialwavfileout
+		within a given region specified by start and end bars, whenever
+		the write_trig is ON a new wavfile is written out.  Optionally
+		specify stop_trig.  naming is basenamennnn.wav where nnnn is a
+		number with leading zeros (no way could i not have those zeros).
+		Any trigger can be used, most notably note_on or something.
+		I just noticed the last wav the test creates is empty apart
+		from the header -- oops.
+		
+	* contraster
+		inspired by the contrast within SND, i created this module.
+		because I did not think properly, it has got a rude mode which
+		does it the wrong way.  Which of course can be switched by a
+		trigger.  Also wet/dry amount.  It does not do it quite as 
+		smoothly as SND, but that can probably be fixed with an LPF.
+
+--------------------------------------------------------------
+Friday January 9 2004
+
+wcnt-1.1001 progress
+
+This is latest version since 1.0001c.  I've been working on it for 
+a week or two now, having given coding on wcnt a break since last
+March.  Most of the past two weeks have been spent getting to know
+my way around the wcnt source code again.  After putting wcnt-1.001c 
+on sourceforge I intended to code the changes I'm starting on now, 
+but realised I totally needed to give it a break!  So much so it put
+me off using wcnt at all, until about a month ago.
+
+This is what's happened so far:
+
+NOTES:
+	* Time signature still does not work.  
+		You're stuck with 4/4 time for the moment.  I'll admit that I 
+		never even tested it until now.  I looked for info on the net 
+		about time signatures, but it still does not seem clear how to 
+		implement it.  I looked in cubase and experimented with bars 
+		of half notes at different time signatures but it still did 
+		not seem to yield any sense there either.  I'm looking for a
+		way which will encompass all possible time signatures.  If you
+		can give any pointers please please please! N/A don't. I've had 
+		some since.
+		
+CHANGES:
+	* Header information can be in a seperate file to the wcnt file
+		being processed.  This means you only need to update one
+		file to change the bpm/samplerate of many.  Useful for when 
+		working on a composition or library of sounds etc.
+	
+	* wavfilein definition updated
+		You now specify a name for the wavfilein aswell as the sample 
+		path and name,  ie it no longer takes the path and name of the
+		sample, for the wavfilein name.  This makes more sense when you
+		tell the sampler which wavfilein to use, ie it no longer looks 
+		like you're giving it the actual path+filename of the sample.
+
+	* sequencer module
+		I've completely removed the code for calculating the sample
+		positions of note ON and note OFF, and replaced it with code
+		which uses outputs from the new bpmmap module instead.  This 
+		has yielded improvements.  It no longer turns off a note in a 
+		riff that is still playing just because a new riff has started.
+	
+ADDITIONS:
+
+	* bpmmap module.
+		Hoorah for tempo changes!  I decided not to go overboad so you
+		can only specify a change of tempo at bar n, but you can ramp
+		the tempo between 1 or more bars, or just change it immediately.
+
+--------------------------------------------------------------
 Tuesday March 25 2003
 
 wcnt-1.0001c
@@ -15,13 +294,14 @@ ADDITIONS:
 
 	* new command line option --sample-info samplename.wav
 		surprisingly, displays .wav header information:
-		samplelenght, channels, bitrate. command line options
+		samplelength, channels, bitrate. command line options
 		are parsed in jwmsynth::scan_cl_options.  Useful to
 		know how many samples when setting certain sampler 
 		parameters
 
 	* wav header checking is now in place, no longer can you read
-		as a sample, any old file you throw at it. Boooo! Down with fascists!
+		as a sample, any old file you throw at it. 
+		Boooo! Down with fascists!
 
 --------------------------------------------------------------
 Monday March 24 2003 (several hours later....)
@@ -114,4 +394,5 @@ NEW MODULES:
 		similiar to mixer except uses wcnt_signal not mix_chan.  No 
 		master level, but has mean_total instead, when set to on
 		calculates mean average.
+--------------------------------------------------------------
 END

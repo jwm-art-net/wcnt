@@ -6,35 +6,32 @@ freq_generator::freq_generator(string uname)
   in_signal(0), out_freq(220.00), sig_range_hi(1.00), sig_range_lo(-1.00),
   freq_range_hi(440.00), freq_range_lo(110.00), step_count(24)
 {
-	if (!get_outputlist()->add_output(this, outputnames::OUT_FREQ)){
-		invalidate();
-		return;
-	}
-	if (!get_outputlist()->add_output(this, outputnames::OUT_DEG_SIZE)){
-		invalidate();
-		return;
-	}
-	if (!get_inputlist()->add_input(this, inputnames::IN_SIGNAL)){
-		invalidate();
-		return;
-	}
+	#ifndef BARE_MODULES
+	get_outputlist()->add_output(this, outputnames::OUT_FREQ);
+	get_outputlist()->add_output(this, outputnames::OUT_DEG_SIZE);
+	get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
+	#endif
 	freq_generator_count++;
 	validate();
 	init();
+	#ifndef BARE_MODULES
 	create_params();
+	#endif
 }
 
 freq_generator::~freq_generator()
 {
+	#ifndef BARE_MODULES
 	get_outputlist()->delete_module_outputs(this);
 	get_inputlist()->delete_module_inputs(this);
+	#endif
 }
 
+#ifndef BARE_MODULES
 void const* freq_generator::get_out(outputnames::OUT_TYPE ot)
 {
 	void const* o = 0;
-	switch(ot)
-	{
+	switch(ot) {
 		case outputnames::OUT_FREQ:
 			o = &out_freq;
 			break;
@@ -50,8 +47,7 @@ void const* freq_generator::get_out(outputnames::OUT_TYPE ot)
 void const* freq_generator::set_in(inputnames::IN_TYPE it, void const* o)
 {
 	void const* i = 0;
-	switch(it)
-	{
+	switch(it) {
 		case inputnames::IN_SIGNAL:
 			i = in_signal = (double*)o;
 			break;
@@ -92,6 +88,7 @@ bool freq_generator::set_param(paramnames::PAR_TYPE pt, void const* data)
 	}
 	return retv;
 }
+#endif // BARE_MODULES
 
 void freq_generator::init()
 {
@@ -101,11 +98,15 @@ void freq_generator::init()
 
 void freq_generator::run() 
 {
-	out_freq = freq_range_lo + ((int)((*in_signal - sig_range_lo) / sig_step_size)) * freq_step_size;
+	out_freq = 
+		freq_range_lo + ((int)((*in_signal - sig_range_lo) 
+		/ sig_step_size)) * freq_step_size;
 	out_deg_size = (double)audio_samplerate / out_freq;
 }
 
 int freq_generator::freq_generator_count = 0;
+
+#ifndef BARE_MODULES
 bool freq_generator::done_params = false;
 
 void freq_generator::create_params()
@@ -119,5 +120,5 @@ void freq_generator::create_params()
 	get_paramlist()->add_param(synthmodnames::MOD_FREQGEN, paramnames::PAR_FREQ_RANGE_HI);
 	done_params = true;
 }
-
+#endif
 #endif

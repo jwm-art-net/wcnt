@@ -1,0 +1,354 @@
+wcnt-1.1001/jwmsynth  // <-- wcnt file identifier
+// header info:
+samplerate 	44100
+bpm		80
+signature 	4/4
+// end of header.
+
+// sampler03.wc shows more variation of sampler01
+// and then things get twisted into a feedback loop of lowpass filters
+// accompanied by range limiters, excuse me if I'm wrong, but it kind
+// of sounds like.... something I never expected to hear from wcnt.
+
+// ideally I'd take the time to create two feedback loops of filters
+// one for the left, and one for the right, and the signal would
+// bounce around between them. nice.
+
+// setup the time_map
+time_map
+time1  
+        time
+		// add a signature change at bar 0
+		signature	4/4	0
+		// add a bpm change at bar 0, ramp bpm from bar 3 to bar 4.
+		bpm 80	0
+        time
+time1
+
+// setup how long to process:
+wcnt_exit
+wcnt_exit_module
+        in_bar  time1 out_bar
+	exit_bar 10
+wcnt_exit_module
+
+// first, create some riffs.  riffs are inserted into the sequencer, and 
+// contain note patterns.  riffs are not modules.  The first job of a riff
+// is to define the value you will use for a crotchet, or quarter note in 
+// that riff, the value you use will determine what values you use for the 
+// note lengths and note positions for all notes in the riff.
+
+// currently the wcnt sequencer module is monophonic, one sequencer can play
+// only one note at a time.  
+
+riff 
+riff1
+	quarter_value	16 
+	// quarter_value of 16 sets bar length to 64 when time signature is 4/4.
+	//   notename	position	length	velocity
+	note	g0	0		6.5	1.0
+	note	g0	8		6.5	0.5
+	note	f0	16		6.5	0.8
+	note	c0	24		7	0.7
+	note	d0	32		5.5	1.0
+	note 	d0	40		3.5	0.5
+	note	f0	48		3.5	1.0
+	note	e0	56		7.5	1.0
+riff1
+
+riff 
+riff2
+	quarter_value	16 
+	note	b0	0		4.5	1.0
+	note	a0	8		4.5	0.9
+	note	g0	16		4.5	0.8
+	note	f0	24		4.5	0.7
+	note	e0	32		4.5	0.6
+	note 	d0	40		4.5	0.5
+	note	c0	48		4.5	0.4
+	note	c0	56		4.5	0.2
+riff2
+
+
+sequencer
+seq1
+        track // add four bars of riff1:
+		riff1	0
+		riff1	1
+		riff1	2
+		riff2	3
+		riff1	4
+		riff1	5
+		riff1	6
+		riff2	7
+        track
+	// connect sequencer to keep in sync with time1 time_map module
+        in_bar			time1	out_bar
+        in_bar_trig     	time1	out_bar_trig
+        in_pos_step_size        time1	out_pos_step_size
+	// parameters for module: sequencer
+        velocity_response_time  5	// take 5 ms to change velocity
+        hold_notename		off	// ignore hold_notename
+seq1
+
+// sampler needs a deg_size to playback the sample at different rates.
+// use an osc_clock to get it to playback at musical note frequencies.
+
+osc_clock
+osc1
+	// connect with seq1 sequencer module.
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_slide_trig      seq1	out_note_slide_trig
+        in_frequency    	seq1	out_frequency
+        in_freq_mod1    	off
+        in_freq_mod2    	off
+        octave_offset		0
+        tuning_semitones        0.00	
+        portamento_time 	50.0	// duration of a note_slide event
+        freq_mod1_size  	0.0
+        freq_mod2_size  	0.0
+osc1
+
+// adsr to shape sampler output:
+
+adsr
+adsr1
+        envelope
+                attack	15.0	1.0	50.0	1.0
+                decay   40.0	0.9	45.0	0.9
+		decay	85.0	0.46	85.0	0.46
+                release	20.0	0.0	15.0	0.0
+        envelope
+	// connect to sequencer triggers
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_off_trig        seq1	out_note_off_trig
+	// nb don't use out_velocity_ramped here:
+        in_velocity     	seq1	out_velocity 
+        start_level     0.0
+        sustain_state   on	// hold volume level from decay section until note_off
+        zero_retrigger  off
+adsr1
+
+// several modules to modulate start position of sampler
+// ie 4 constants for positions in sampler, placed into
+// wcnt_signal modules which can then be inserted into
+// a switcher module, which will switch on note_on. ha.
+
+constant p1 value 0.0 	p1
+constant p2 value 0.125	p2
+constant p3 value 0.25	p3
+constant p4 value 0.5	p4
+constant p5 value 0.125	p5
+
+wcnt_signal wsp1 in_signal p1 out_output wsp1
+wcnt_signal wsp2 in_signal p2 out_output wsp2
+wcnt_signal wsp3 in_signal p3 out_output wsp3
+wcnt_signal wsp4 in_signal p4 out_output wsp4
+wcnt_signal wsp5 in_signal p5 out_output wsp5
+
+switcher
+sw1
+	signals
+		wsp1	wsp2	wsp3	wsp4	wsp5
+	signals
+	in_trig	seq1	out_note_on_trig
+	xfade_time	0.0
+sw1
+
+// first define a wavfilein to tell the sampler what file to read.
+wavfilein funkdrmr file samples/funkdrmr.wav funkdrmr
+
+// funkdrmr.wav contains 100688
+
+sampler
+sampler1
+
+//inputs for module: sampler
+        in_play_trig    	seq1	out_note_on_trig
+        in_stop_trig    	adsr1	out_off_trig
+        in_start_pos_mod	sw1	out_output
+        in_deg_size     	osc1	out_deg_size
+
+// parameters for module: sampler
+        wavfile 	funkdrmr
+        play_dir        fwd
+        play_mode       jump	// for when playback travels away from loop
+	jump_mode       play	// jump to loop and play in direction of initial play direction!
+        start_pos_min   0	// play it safe...
+        start_pos_max   250830	// near end of file
+        loop_mode       fwd	// bi-directional looping
+        loop_start_pos  7000	// compare with start_pos max
+        loop_end_pos    9000	// and start_pos min, and loop_is_offset off
+        loop_is_offset  on	// loop points are set in stone.
+        bi-directional_offset   50	// used when play direction changes
+        anti_clip_samples       150	// fade out/in samples
+        anti_clip_each_end      off	// 
+        zero_search_range       150	// how many samples to search for zero X
+        root_note       c0
+        degsize_amount  1.0	// how much to follow frequencies (deg_size)
+sampler1
+
+// note:  because anti_clip_each_end is on, the sampler adjusts the 
+// minumum and maximum samples which can be played, this gives the
+// anticlipping code something to playback, otherwise it would have
+// to read past the start when playback is reverse, and the end when
+// playback is forward.  when anti_clip_each_end is off, it does not
+// anticlip these extremes.
+
+// note:  degsize_amount
+// a value of 0.0 will always playback the sample at it's natural rate.
+// a value of 1.0 will play it back at the western equal temperment scale
+//	(providing the deg_size is of western musical notes)
+// a value of less than 1.0 will play it back at microtonal scales
+// a value greater than 1.0 will ??? (don't know what it's called!)
+
+// outputs for module: sampler
+// out_left	// output integer value, as in wav
+// out_right
+// out_l	// output converted to -1.0 to +1.0 range
+// out_r
+// out_loop_trig
+// out_play_state
+// for mono samples, left and right outputs are the same.
+
+contraster 
+sc1
+        in_signal       sampler1	out_l
+	in_power_mod	adsr1		out_output
+	in_rude_switch_trig	off
+	power_min       1.0	// a value of 0.0 will silence signal
+        power_max       16.0
+        rude_mode       off
+        wet/dry 1.0
+sc1
+
+multiplier
+msc1
+	in_signal	sc1 	out_output
+	in_modifier	adsr1	out_output
+msc1
+
+clock
+clock1
+        in_freq_mod1    off
+        freq    0.1
+        freq_mod1_size  0.0
+clock1
+
+sine_wave
+modsin1
+        in_phase_trig   	clock1	out_phase_trig
+        in_deg_size     	clock1	out_deg_size
+        recycle_mode    	off
+        on_trig_reset_phase     off
+        phase_cycles    	1.0
+modsin1
+
+clock
+clock2
+        in_freq_mod1    modsin1	out_output
+        freq    	2000
+        freq_mod1_size  4.0
+clock2
+
+lp_filter
+lpf1
+        in_signal       	msc1	out_output
+        in_cutoff_degsize       clock2	out_deg_size
+        in_feedback     	lpf3	out_output
+        in_feedback_mod 	off
+        feedback        	-0.95
+        feedback_modsize        0.0
+        wet/dry 		1.0
+lpf1
+
+constant i1 value 0.5 i1
+
+multiplier
+m1
+	in_signal	clock2	out_deg_size
+	in_modifier	i1	out_output
+m1
+
+range_limit
+rl1
+        in_signal       lpf1	out_wet_output
+        sig_range_hi    0.5
+        sig_range_lo    -0.5
+rl1
+
+lp_filter
+lpf2
+        in_signal       	rl1	out_output
+        in_cutoff_degsize       m1	out_output
+        in_feedback     	rl2	out_output
+        in_feedback_mod 	off
+        feedback        	0.5
+        feedback_modsize        0.0
+        wet/dry 		1.0
+lpf2
+
+range_limit
+rl2
+        in_signal       lpf2	out_wet_output
+        sig_range_hi    0.5
+        sig_range_lo    -0.5
+rl2
+
+multiplier
+m2
+	in_signal	m1	out_output
+	in_modifier	i1	out_output
+m2
+
+lp_filter
+lpf3
+        in_signal       	lpf2	out_output
+        in_cutoff_degsize       m2	out_output
+        in_feedback     	rl3	out_output
+        in_feedback_mod 	off
+        feedback        	0.125
+        feedback_modsize        0.0
+        wet/dry 		1.0
+lpf3
+
+range_limit
+rl3
+        in_signal       lpf3	out_wet_output
+        sig_range_hi    0.5
+        sig_range_lo    -0.5
+rl3
+
+constant one value 1.0 one
+
+mono_amp
+amp1
+	in_signal	lpf1	out_output
+	in_amp_eg	one	out_output
+	in_amp_mod	seq1	out_velocity_ramp
+	amplitude	32767	// 32767 is the maximum amplitude
+	amp_mod_size	0.95	// how much influence velocity has in this case
+	clip_level	28000	// the maximum allowed amplitude
+amp1
+
+// wavfile_out module.  a wcnt file without atleast one of these modules is 
+// as good as useless.  It has an in_bar_trig aswell as an in_bar input 
+// to stop it from thinking every sample in a bar is a new bar. 
+// And Why Not? (tm)
+
+wavfile_out
+wav1
+	in_left		amp1	out_mono
+	in_right	amp1	out_mono
+	in_bar		time1	out_bar
+	in_bar_trig	time1	out_bar_trig
+	filename	sampler03.wav
+	start_bar	0
+	end_bar		9
+wav1
+
+// Although there are only four bars in the sequencer, wav1 stops writing when
+// bar 5 is reached because the release time of the ADSR causes audible sound 
+// to last beyond the end bar 3 and into bar 4.
+
+wcnt-1.1001/jwmsynth

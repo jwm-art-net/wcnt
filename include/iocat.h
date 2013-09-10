@@ -1,31 +1,44 @@
 #ifndef IOCAT_H
 #define IOCAT_H
 
-// Used by a huge evergrowing pulsating brain that rules the world from the center of the ultraworld.
+#ifndef BARE_MODULES
+
+// Used by a huge evergrowing pulsating brain that rules the world from the 
+// center of the ultraworld, loving you mkII mix.
 
 enum IOCAT 
 { 
 	// among other things, error category:
 	CAT_FIRST,
 	// the following types cover all inputs and outputs:
-	CAT_DOUBLE,
-	CAT_SHORT,
-	CAT_ULONG,
-	CAT_TRIG,
-	CAT_STATE, 
+	CAT_DOUBLE, // signal + bpm 
+	CAT_SHORT,  // sample ysize
+	CAT_ULONG,  // sample position
+	CAT_TRIG,   // trigger ON/OFF
+	CAT_STATE,  // power/status ON/OFF
 	// these have been added as extra types for parameter 
 	// names and won't be used by inputs or outputs:
+	// note:  ^ that, in future, may not be true ^
 	CAT_FILENAME,	// errm uh dunno.
-	CAT_NOTENAME,	// sea sharp naught or c#0 
+	CAT_NOTENAME,	// sea sharp naught or c#0 - will be input/output
 	CAT_MOD_FUNC,	// enum modifier::MOD_FUNC
-	CAT_CLIP_MODE,	// enum sampler::CLIP_MODE
-	CAT_LOOP_MODE,	// enum sampler::LOOP_MODE
 	CAT_WAVFILEIN,	// class wavfilein
 	CAT_LOGIC,		// enum logictrigger::LOGIC_FUNC
+	CAT_LOOP_MODE,	// sampler::LOOP_MODE
+	CAT_PLAY_DIR,	// sampler::PLAY_DIR 
+	CAT_PLAY_MODE,	// sampler::PLAY_MODE
+	CAT_JUMP_DIR,	// sampler::JUMP_DIR
+	/*
+	//-----------------------------------------------------
+	CAT_DPARAM_TYPES,	// keep here, above dparnames types
+	//-----------------------------------------------------
+	DCAT_RIFFNAME,
+	DCAT_SIGNALNAME,
+	DCAT_SAMPLESETNAME,
+	*/
 	// keep last:
 	CAT_LAST
 };
-
 /* 
 	CAT_TRIG and CAT_STATE both refer to enum STATUS { OFF, ON } defined in
 	synthmodule.h.  The difference being CAT_TRIG is only ON for the duration
@@ -37,5 +50,5 @@ enum IOCAT
 	CAT_FILENAME, CAT_MOD_FUNC, CAT_CLIP_MODE were added for a 
 	handful of parameters which do not use the normal types.
 */
-
+#endif
 #endif

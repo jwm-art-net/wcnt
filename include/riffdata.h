@@ -31,12 +31,21 @@
 		Note that the get_prev() and get_next() methods, unlike the goto_ equivalents
 		do not iterate through the list, but only return current->get_next etc,
 		hope that clears things up?!
+		
+		What's new in wcnt1.0001?
+		-------------------------
+		
+		i've removed riff length calculation code as it is no longer needed.
+		i've added 1/4 note value so user can specify a value which suits
+		thier requirements...constructor default is 12.
 */
 class riffdata
 {
  public:
 	riffdata(string& uname);
 	~riffdata();
+	void set_quartervalue(short qv){ quarter_val = qv;}
+	short get_quartervalue(){ return quarter_val;} 
 	note_data* insert_and_position_note(note_data*);
 	bool delete_note(note_data*);
 	note_data* goto_first(){return(note_data*)notelist->goto_first()->get_data();}
@@ -50,15 +59,10 @@ class riffdata
 	note_data* get_current(){return(note_data*)notelist->sneak_current()->get_data();}
 	ll_item* sneak_first(){return notelist->goto_first();}
 	ll_item* sneak_last(){return notelist->goto_last();}
-	void setnobars(char b);
-	char getnobars();
-	short getrifflength();
 	string const* get_username(){ return username;}
 private: 
 	string* username;
-	char calculate_noof_bars();
-	char bars;
-	short riff_length;
+	short quarter_val;
 	note_data* note;
 	linkedlist* notelist;
 	linkedlist* poo;

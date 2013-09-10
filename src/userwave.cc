@@ -8,48 +8,22 @@ user_wave::user_wave(string uname)
   sect(0), sect_spanlvl(0.0), sect_startlvl(0.0), 
   counter_ratio(0), sectdegs(0), degs(360), recycle(OFF), zero_retrigger_mode(OFF)
 {
-	if (!get_outputlist()->add_output(this, outputnames::OUT_OUTPUT)){
-		invalidate();
-		return;
-	}
-	if (!get_outputlist()->add_output(this, outputnames::OUT_PLAY_STATE)){
-		invalidate();
-		return;
-	}
-	if (!get_inputlist()->add_input(this, inputnames::IN_PHASE_TRIG)){
-		invalidate();
-		return;
-	}
-	if (!get_inputlist()->add_input(this, inputnames::IN_DEG_SIZE)){
-		invalidate();
-		return;
-	}
-	if (!get_inputlist()->add_input(this, inputnames::IN_V_MOD)){
-		invalidate();
-		return;
-	}
-	if (!get_inputlist()->add_input(this, inputnames::IN_H_MOD)){
-		invalidate();
-		return;
-	}
-	if (!(env = new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA)))
-	{
-		invalidate();
-		return;
-	}
-	if (!add_vertex(0.0, 0.0, 0.0, 0.0))
-	{
-		invalidate();
-		return;
-	}
-	if (!add_vertex(360.0, 0.0, 360.0, 0.0))
-	{
-		invalidate();
-		return;
-	}
+	#ifndef BARE_MODULES
+	get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
+	get_outputlist()->add_output(this, outputnames::OUT_PLAY_STATE);
+	get_inputlist()->add_input(this, inputnames::IN_PHASE_TRIG);
+	get_inputlist()->add_input(this, inputnames::IN_DEG_SIZE);
+	get_inputlist()->add_input(this, inputnames::IN_V_MOD);
+	get_inputlist()->add_input(this, inputnames::IN_H_MOD);
+	#endif
+	env = new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
+	add_vertex(0.0, 0.0, 0.0, 0.0);
+	add_vertex(360.0, 0.0, 360.0, 0.0);
 	user_wave_count++;
 	validate();
+	#ifndef BARE_MODULES
 	create_params();
+	#endif
 }
 
 user_wave::~user_wave() 
@@ -62,10 +36,13 @@ user_wave::~user_wave()
 		delete tmp;
 	}
 	delete env;
+	#ifndef BARE_MODULES
 	get_outputlist()->delete_module_outputs(this);
 	get_inputlist()->delete_module_inputs(this);
+	#endif
 }
 
+#ifndef BARE_MODULES
 void const* user_wave::get_out(outputnames::OUT_TYPE ot)
 {
 	void const* o = 0;
@@ -125,6 +102,7 @@ bool user_wave::set_param(paramnames::PAR_TYPE pt, void const* data)
 	}
 	return retv;
 }
+#endif // BARE_MODULES
 
 wave_vertex* user_wave::add_vertex(wave_vertex* wv)
 {
@@ -138,10 +116,7 @@ wave_vertex* user_wave::add_vertex(wave_vertex* wv)
 wave_vertex* user_wave::add_vertex(double udp, double ul, double ldp, double ll)
 {
 	wave_vertex* tmp = new wave_vertex(udp, ul, ldp, ll);
-	if (!tmp)
-		return 0;
-	if (!ordered_insert(env, tmp, &wave_vertex::oi_get_position))
-	{
+	if (!ordered_insert(env, tmp, &wave_vertex::oi_get_position)){
 		delete tmp;
 		return 0;
 	}
@@ -218,6 +193,8 @@ void user_wave::run()
 }
 
 int user_wave::user_wave_count = 0;
+
+#ifndef BARE_MODULES
 bool user_wave::done_params = false;
 
 void user_wave::create_params()
@@ -228,6 +205,5 @@ void user_wave::create_params()
 	get_paramlist()->add_param(synthmodnames::MOD_USERWAVE, paramnames::PAR_ZERO_RETRIGGER);
 	done_params = true;
 }
-
-
+#endif
 #endif

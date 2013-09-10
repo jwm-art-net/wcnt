@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-## Created by Anjuta - will be overwritten
+## Created by Anjuta - will be overwritten -- no it wont.
 ## If you don't want it to overwrite it,
 ## 	Please disable it in the Anjuta project configuration
 
@@ -24,4 +24,3 @@ dist-hook:
 			cp -p $$specfile $(distdir); \
 		fi \
 	done
-

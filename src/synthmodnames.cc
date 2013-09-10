@@ -5,13 +5,8 @@ synthmodnames::synthmodnames()
 :mod_name(NULL)
 {
 	mod_name = new string[MOD_LAST + 1];
-	if (mod_name == NULL)
-	{
-		cout << "\nextreme lack of memory, exiting....";
-		cout << "\ncould not create list of module names.";
-		exit(1);
-	}
 	mod_name[MOD_FIRST] = "BAD_MODULE_TYPE";
+	mod_name[MOD_NONEZERO] = "none";
 	mod_name[MOD_ADSR] = "adsr";
 	mod_name[MOD_STEREOAMP] = "stereo_amp";
 	mod_name[MOD_CLOCK] = "clock";
@@ -22,7 +17,6 @@ synthmodnames::synthmodnames()
 	mod_name[MOD_LPFILTER] = "lp_filter";
 	mod_name[MOD_MODIFIER] = "modifier";
 	mod_name[MOD_NOISEGEN] = "noise_generator";
-	mod_name[MOD_NONEZERO] = "none";
 	mod_name[MOD_OSCCLOCK] = "osc_clock";
 	mod_name[MOD_SAMPLEHOLD] = "sample_hold";
 	mod_name[MOD_SEQUENCER] = "sequencer";
@@ -42,12 +36,23 @@ synthmodnames::synthmodnames()
 	mod_name[MOD_WCNTSIGNAL] = "wcnt_signal";
 	mod_name[MOD_HPFILTER] = "hp_filter";
 	mod_name[MOD_COMBINER] = "combiner";
+	mod_name[MOD_TIMEMAP] = "time_map";
+	mod_name[MOD_CONTRASTER] = "contraster";
+	mod_name[MOD_SERIALWAVFILEOUT] = "serial_wavout";
+	mod_name[MOD_DELAY] = "delay";
+	mod_name[MOD_ECHO] = "echo";
+	mod_name[MOD_MONOAMP] = "mono_amp";
+	mod_name[MOD_WCNT] = "wcnt_exit";	
+	mod_name[MOD_MULTIPLIER] = "multiplier";
+	mod_name[MOD_RANGELIMIT] = "range_limit";
+	mod_name[MOD_PAN] = "panner";
+	mod_name[MOD_RMS] = "rms";
+	mod_name[MOD_DCFILTER] = "dc_filter";
 }
 
 synthmodnames::~synthmodnames()
 {
-	if (mod_name) 
-		delete[] mod_name;
+	delete[] mod_name;
 }
 
 string & synthmodnames::get_name(SYNTH_MOD_TYPE id)

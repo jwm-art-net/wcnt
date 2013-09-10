@@ -17,6 +17,8 @@
 #ifndef SYNTHFILEREADER_H
 #define SYNTHFILEREADER_H
 
+#ifndef BARE_MODULES
+
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -45,7 +47,7 @@ class synthfilereader
 	synthfilereader();
 	~synthfilereader();
 	FILE_STATUS open_file(char* synthfilename);
-	bool read_header(unsigned long* samplerate, short* bpm, short* beatspermease, short* beatvalue, short* exitbar);
+	bool read_header(unsigned long* samplerate, short* bpm, short* beatspermease, short* beatvalue);
 	string const* read_command();
 	synthmod* const read_synthmodule(string const* command);
 	riffdata* const read_riffdata(string const* command);
@@ -76,9 +78,15 @@ class synthfilereader
 	bool read_sequencer_riffs(sequencer*);
 	bool read_mixer_channels(stereomixer*);
 	bool read_userwave_envelope(user_wave*);
+ 	bool read_timemap_changes(timemap*);
 	bool read_signals(synthmod*);
 	wave_vertex* read_wave_vertex();
 	adsr_coord* read_adsr_coord(adsr_coord::SECT);
+	bpmchange* read_bpm_change();
+	meterchange* read_meter_change();
+	bool eff_ing_header_bodge(unsigned long *samplerate, short *bpm, 
+				short *beatspermeasure, short *beatvalue);
 };
 
+#endif
 #endif

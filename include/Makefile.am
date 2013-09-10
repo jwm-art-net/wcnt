@@ -1,8 +1,9 @@
 ## Process this file with automake to produce Makefile.in
-
 ## Created by Anjuta - will be overwritten
 ## If you don't want it to overwrite it,
-## 	Please disable it in the Anjuta project configuration
+## Please disable it in the Anjuta project configuration
+## well i imported this project so I have to edit it manually
+## and I dont think anjuta will overwrite it in this case
 
 wcnt_includedir = $(pkgincludedir)
 
@@ -16,6 +17,7 @@ wcnt_include_DATA = \
 	lfoclock.h\
 	lfocontroller.h\
 	linkedlist.h\
+	filtercommon.h\
 	lowpassfilter.h\
 	modinput.h\
 	modinputslist.h\
@@ -55,8 +57,8 @@ wcnt_include_DATA = \
 	synthmodulelist.h\
 	modules.h\
 	jwmsynth.h\
-	connectorlist.h\
 	paramnames.h\
+	connectorlist.h\
 	modparam.h\
 	modparamlist.h\
 	wavfileinlist.h\
@@ -65,6 +67,21 @@ wcnt_include_DATA = \
 	switcher.h\
 	wcntsignal.h\
 	highpassfilter.h\
-	combiner.h
-
+	combiner.h\
+	bpmchange.h\
+        meterchange.h\
+	timemap.h\
+	riffnode.h\
+        serialwavfileout.h\
+        contraster.h\
+	delay.h\
+	echo.h\
+	monoamp.h\
+	wcntmodule.h\
+	multiplier.h\
+	rangelimit.h\
+	pan.h\
+	rms.h\
+	dc_filter.h
+	
 EXTRA_DIST = $(wcnt_include_DATA)

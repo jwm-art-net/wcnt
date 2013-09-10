@@ -16,6 +16,9 @@
  
 #ifndef WAVFILEINLIST_H
 #define WAVFILEINLIST_H
+
+#ifndef BARE_MODULES
+
 #include <string>
 #include "linkedlist.h"
 #include "wavfilein.h"
@@ -40,4 +43,5 @@ class wavfilein_list
 	wavfilein* wavfile;
 };
 
+#endif
 #endif

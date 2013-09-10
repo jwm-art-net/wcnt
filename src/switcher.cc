@@ -6,37 +6,35 @@ switcher::switcher(string uname)
   in_trig(0), out_output(0), xfadetime(25), xfade_samp(0), xfade_max_samps(0),
   xfade_stpsz(0), xfade_size(0), wcntsiglist(0), wcntsig_item(0), wcntsig(0), sig(0), prevsig(0)
 {
-	if (!get_outputlist()->add_output(this, outputnames::OUT_OUTPUT)){
-		invalidate();
-		return;
-	}
-	if (!get_inputlist()->add_input(this, inputnames::IN_TRIG)){
-		invalidate();
-		return;
-	}
-	if (!(wcntsiglist = new linkedlist(linkedlist::MULTIREF_ON, linkedlist::NO_NULLDATA))){
-		invalidate();
-		return;
-	}
+	#ifndef BARE_MODULES
+	get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
+	get_inputlist()->add_input(this, inputnames::IN_TRIG);
+	#endif
+	wcntsiglist = 
+		new linkedlist(linkedlist::MULTIREF_ON, linkedlist::NO_NULLDATA);
 	switcher_count++;
 	validate();
+	#ifndef BARE_MODULES
 	create_params();
+	#endif
+	
 }
 
 switcher::~switcher()
 {
+	#ifndef BARE_MODULES
 	get_outputlist()->delete_module_outputs(this);
 	get_inputlist()->delete_module_inputs(this);
-    if (wcntsiglist) {
-		goto_first();
-		while (wcntsig_item) {
-			delete wcntsig;
-			goto_next();
-		}
-		delete wcntsiglist;
+	#endif
+	goto_first();
+	while (wcntsig_item) {
+		delete wcntsig;
+		goto_next();
 	}
+	delete wcntsiglist;
 }
 
+#ifndef BARE_MODULES
 void const* switcher::get_out(outputnames::OUT_TYPE ot)
 {
 	void const* o = 0;
@@ -80,6 +78,7 @@ bool switcher::set_param(paramnames::PAR_TYPE pt, void const* data)
 	}
 	return retv;
 }
+#endif // BARE_MODULES
 
 void switcher::init()
 {
@@ -117,6 +116,8 @@ void switcher::run()
 }
 
 int switcher::switcher_count = 0;
+
+#ifndef BARE_MODULES
 bool switcher::done_params = false;
 
 void switcher::create_params()
@@ -126,7 +127,5 @@ void switcher::create_params()
 	get_paramlist()->add_param(synthmodnames::MOD_SWITCHER, paramnames::PAR_XFADE_TIME);
 	done_params = true;
 }
-
-
-
+#endif
 #endif

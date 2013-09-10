@@ -4,22 +4,12 @@
 stereo_channel::stereo_channel(string uname)
 :synthmod(synthmodnames::MOD_STEREOCHANNEL, stereochannel_count, uname), io_left(NULL), io_right(NULL)
 {
-	if (!get_outputlist()->add_output(this, outputnames::OUT_LEFT)){
-		invalidate();
-		return;
-	}
-	if (!get_outputlist()->add_output(this, outputnames::OUT_RIGHT)){
-		invalidate();
-		return;
-	}
-	if (!get_inputlist()->add_input(this, inputnames::IN_LEFT)){
-		invalidate();
-		return;
-	}
-	if (!get_inputlist()->add_input(this, inputnames::IN_RIGHT)){
-		invalidate();
-		return;
-	}
+	#ifndef BARE_MODULES
+	get_outputlist()->add_output(this, outputnames::OUT_LEFT);
+	get_outputlist()->add_output(this, outputnames::OUT_RIGHT);
+	get_inputlist()->add_input(this, inputnames::IN_LEFT);
+	get_inputlist()->add_input(this, inputnames::IN_RIGHT);
+	#endif
 	stereochannel_count++;
 	validate();
 //	create_params(); no params to create.
@@ -27,10 +17,13 @@ stereo_channel::stereo_channel(string uname)
 
 stereo_channel::~stereo_channel()
 {
+	#ifndef BARE_MODULES
 	get_outputlist()->delete_module_outputs(this);
 	get_inputlist()->delete_module_inputs(this);
+	#endif
 }
 
+#ifndef BARE_MODULES
 void const* stereo_channel::get_out(outputnames::OUT_TYPE ot)
 {
 	void const* o = 0;
@@ -69,6 +62,7 @@ bool stereo_channel::set_param(paramnames::PAR_TYPE pt, void const* data)
 {
 	return false; // no parameters
 }
+#endif // BARE_MODULES
 
 int stereo_channel::stereochannel_count = 0;
 

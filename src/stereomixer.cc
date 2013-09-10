@@ -1,34 +1,37 @@
 #ifndef STEREOMIXER_H
 #include "../include/stereomixer.h"
 
-stereomixer::stereomixer(string uname)
-:synthmod(synthmodnames::MOD_STEREOMIXER, stereomixer_count, uname),
-out_left(0), out_right(0), master_level(0.75), o_l(0.00), o_r(0.00), 
-chlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA), chitem(0), chl(0), chr(0), chan(0)
+stereomixer::stereomixer(string uname) :
+	synthmod(synthmodnames::MOD_STEREOMIXER, stereomixer_count, uname),
+	out_left(0), out_right(0), master_level(0.75), o_l(0.00), o_r(0.00), 
+	chlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA), 
+	chitem(0), chan(0)
 {
-	if (!get_outputlist()->add_output(this, outputnames::OUT_LEFT)){
-		invalidate();
-		return;
-	}
-	if (!get_outputlist()->add_output(this, outputnames::OUT_RIGHT)){
-		invalidate();
-		return;
-	}
+	#ifndef BARE_MODULES
+	get_outputlist()->add_output(this, outputnames::OUT_LEFT);
+	get_outputlist()->add_output(this, outputnames::OUT_RIGHT);
+	#endif
 	/* cannot register  inputs with modinputslist because they are part of list
 		don't know how many there will be.
 	*/
 	stereomixer_count++;
 	validate();
+	#ifndef BARE_MODULES
 	create_params();
+	#endif
 }
 
 stereomixer::~stereomixer() 
 {
+	#ifndef BARE_MODULES
 	get_outputlist()->delete_module_outputs(this);
 	/*no module inputs to delete*/
 	/*no need to delete items in channellist as they are just pointers*/
+	// to items in another list I think you/I 'll find.
+	#endif
 }
 
+#ifndef BARE_MODULES
 void const* stereomixer::get_out(outputnames::OUT_TYPE ot)
 {
 	void const* o = 0;
@@ -66,6 +69,7 @@ bool stereomixer::set_param(paramnames::PAR_TYPE pt, void const* data)
 	}
 	return retv;
 }
+#endif // BARE_MODULES
 
 stereo_channel* stereomixer::add_channel(stereo_channel* ch)
 {
@@ -97,29 +101,23 @@ void stereomixer::run()
 	chan = (stereo_channel*)(chitem = chlist.goto_first())->get_data();
 	while(chan != 0) 
 	{
-		chl = chan->get_output_left();
-		chr = chan->get_output_right();
-		o_l += *chl;
-		o_r += *chr;
+		o_l += *chan->get_output_left();
+		o_r += *chan->get_output_right();
 		chan = (stereo_channel*)(chitem = chitem->get_next())->get_data();
 	}
 	o_l *= master_level;
 	o_r *= master_level;
-	if (o_l < -32767) 
-		out_left = -32767;
-	else if (o_l > 32767) 
-		out_left = 32767;
-	else
-		out_left = (short)o_l;
-	if (o_r < -32767) 
-		out_right = -32767;
-	else if (o_r > 32767) 
-		out_right = 32767;
-	else 
-		out_right = (int)o_r;
+	out_left = (short)o_l;
+	if (o_l < -32767) out_left = -32767;
+	else if (o_l > 32767) out_left = 32767;
+	out_right = (short)o_r;
+	if (o_r < -32767) out_right = -32767;
+	else if (o_r > 32767) out_right = 32767;
 }
 
 int stereomixer::stereomixer_count = 0;
+
+#ifndef BARE_MODULES
 bool stereomixer::done_params = false;
 
 void stereomixer::create_params()
@@ -129,5 +127,5 @@ void stereomixer::create_params()
 	get_paramlist()->add_param(synthmodnames::MOD_STEREOMIXER, paramnames::PAR_MASTER_LEVEL);
 	done_params = true;
 }
-
-#endif 
+#endif
+#endif

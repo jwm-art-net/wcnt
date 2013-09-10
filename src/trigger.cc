@@ -5,25 +5,26 @@ trigger::trigger(string uname)
 : synthmod(synthmodnames::MOD_TRIGGER, trigger_count, uname),
   in_signal(0), out_trig(OFF), delay_time(25), trig_level(0.35), delay_samps(0)
 {
-	if (!get_outputlist()->add_output(this, outputnames::OUT_TRIG)){
-		invalidate();
-		return;
-	}
-	if (!get_inputlist()->add_input(this, inputnames::IN_SIGNAL)){
-		invalidate();
-		return;
-	}
+	#ifndef BARE_MODULES
+	get_outputlist()->add_output(this, outputnames::OUT_TRIG);
+	get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
+	#endif
 	trigger_count++;
 	validate();
+	#ifndef BARE_MODULES
 	create_params();
+	#endif
 }
 
 trigger::~trigger()
 {
+	#ifndef BARE_MODULES
 	get_outputlist()->delete_module_outputs(this);
 	get_inputlist()->delete_module_inputs(this);
+	#endif
 }
 
+#ifndef BARE_MODULES
 void const* trigger::get_out(outputnames::OUT_TYPE ot)
 {
 	void const* o = 0;
@@ -71,6 +72,7 @@ bool trigger::set_param(paramnames::PAR_TYPE pt, void const* data)
 	}
 	return retv;
 }
+#endif
 
 void trigger::run() 
 {
@@ -91,6 +93,8 @@ void trigger::run()
 }
 
 int trigger::trigger_count = 0;
+
+#ifndef BARE_MODULES
 bool trigger::done_params = false;
 
 void trigger::create_params()
@@ -101,7 +105,5 @@ void trigger::create_params()
 	get_paramlist()->add_param(synthmodnames::MOD_TRIGGER, paramnames::PAR_TRIGGER_LEVEL);
 	done_params = true;
 }
-
-
-
+#endif
 #endif

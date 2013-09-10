@@ -1,14 +1,12 @@
 #ifndef MODINPUTSLIST_H
 #include "../include/modinputslist.h"
 
+#ifndef BARE_MODULES
+
 modinputlist::modinputlist() 
 : inlist(0), input(0)
 {
-	if (!(inlist = new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA)))
-	{
-		cerr << "No nuff memree 4  in lis";
-		exit(-1);
-	}
+	inlist = new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
 }
 
 modinputlist::~modinputlist()
@@ -24,8 +22,6 @@ modinputlist::~modinputlist()
 modinput* modinputlist::add_input(synthmod* sm, inputnames::IN_TYPE ot)
 {
 	modinput* mi = new modinput(sm, ot);
-	if (mi == 0) 
-		return 0;
 	ll_item* tmp = inlist->add_at_tail(mi);
 	if (!tmp) {
 		delete mi;
@@ -100,8 +96,6 @@ modinputlist* modinputlist::get_list_of_category_orderpref(IOCAT in_cat,
 	if (pot_ins == 0) 
 		return 0; 
 	modinputlist* sorted_ins = new modinputlist;
-	if (sorted_ins == 0)
-		return pot_ins;
 	short op_count = 0;
 	short nop_count = 0;
 	inputnames::IN_TYPE* op = in_prefs;
@@ -181,8 +175,6 @@ modinputlist* modinputlist::get_inputlist_for_module(synthmod* sm)
 	do not return 0 if inlist->is_empty() because if the first module created
 	contains no inputs, the inputlist *will* be empty -  it is not an error.    */
 	modinputlist* mil = new modinputlist;
-	if (!mil)
-		return 0; // oh dear, sa-ad 
 	goto_first();
 	while(input) {
 		if (input->getsynthmodule() == sm) {
@@ -196,4 +188,5 @@ modinputlist* modinputlist::get_inputlist_for_module(synthmod* sm)
 	return mil;
 }
 
+#endif
 #endif

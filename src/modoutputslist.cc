@@ -1,14 +1,12 @@
 #ifndef MODOUTPUTSLIST_H
 #include "../include/modoutputslist.h"
 
+#ifndef BARE_MODULES
+
 modoutputlist::modoutputlist() 
 : outlist(0), output(0)
 {
-	if (!(outlist = new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA)))
-	{
-		cerr << "No nuff mearm ri 4 oot lis";
-		exit(-1);
-	}
+	outlist = new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
 }
 
 modoutputlist::~modoutputlist()
@@ -24,8 +22,6 @@ modoutputlist::~modoutputlist()
 modoutput* modoutputlist::add_output(synthmod* sm, outputnames::OUT_TYPE ot)
 {
 	modoutput* mo = new modoutput(sm, ot);
-	if (!mo) 
-		return 0;
 	if (!outlist->add_at_tail(mo)){
 		delete mo;
 		return 0;
@@ -94,19 +90,15 @@ modoutputlist* modoutputlist::list_of_category_orderpref(IOCAT out_cat,
 	if (pot_outs == 0) 
 		return 0; 
 	modoutputlist* sorted_outs = new modoutputlist;
-	if (sorted_outs == 0)
-		return pot_outs;
 	short op_count = 0;
 	short nop_count = 0;
 	outputnames::OUT_TYPE* op = out_prefs;
-	while (*op > outputnames::OUT_FIRST && *op < outputnames::OUT_LAST) 
-	{
+	while (*op > outputnames::OUT_FIRST && *op < outputnames::OUT_LAST) {
 		op_count++;
 		op++;
 	}
 	outputnames::OUT_TYPE* nop = not_out_prefs;
-	while (*nop > outputnames::OUT_FIRST && *nop < outputnames::OUT_LAST)
-	{
+	while (*nop > outputnames::OUT_FIRST && *nop < outputnames::OUT_LAST){
 		nop_count++;
 		nop++;
 	}
@@ -171,16 +163,10 @@ modoutputlist* modoutputlist::get_outputlist_for_module(synthmod* sm)
 	if (!sm)
 		return 0;
 	modoutputlist* mol = new modoutputlist;
-	if (!mol)
-		return 0; // bag o' shite
 	goto_first();
 	while(output) {
-		if (output->getsynthmodule() == sm) {
-			if (!mol->add_output(output->getsynthmodule(), output->getoutputtype())){
-				delete mol;
-				return 0;
-			}
-		}
+		if (output->getsynthmodule() == sm) 
+			mol->add_output(output->getsynthmodule(), output->getoutputtype());
 		goto_next();
 	}
 	return mol;
@@ -199,4 +185,5 @@ bool modoutputlist::is_registered(synthmod* mod)
 	return false;
 }
 
+#endif
 #endif

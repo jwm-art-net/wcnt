@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -87,7 +87,7 @@ VERSION = @VERSION@
 
 wcnt_includedir = $(pkgincludedir)
 
-wcnt_include_DATA =  	adsr.h 	adsrcoord.h 	clockclock.h 	conversions.h 	inputnames.h 	iocat.h 	lfoclock.h 	lfocontroller.h 	linkedlist.h 	lowpassfilter.h 	modinput.h 	modinputslist.h 	modoutput.h 	modoutputslist.h 	noisegenerator.h 	nonezero.h 	notedata.h 	oscclock.h 	outputnames.h 	riffdata.h 	sampler.h 	sequencer.h 	sinewave.h 	squarewave.h 	stereoamp.h 	stereochannel.h 	stereomixer.h 	synthmodnames.h 	synthmodule.h 	wavfileheader.h 	wavfilein.h 	wavfileout.h 	dtr.h 	synthfilereader.h 	rifflist.h 	constmod.h 	freqgenerator.h 	modifier.h 	samplehold.h 	trigger.h 	trianglewave.h 	trianglewave2.h 	userwave.h 	userwavevertex.h 	connector.h 	synthmodulelist.h 	modules.h 	jwmsynth.h 	connectorlist.h 	paramnames.h 	modparam.h 	modparamlist.h 	wavfileinlist.h 	randomtrigger.h 	logictrigger.h 	switcher.h 	wcntsignal.h 	highpassfilter.h 	combiner.h
+wcnt_include_DATA =  	adsr.h 	adsrcoord.h 	clockclock.h 	conversions.h 	inputnames.h 	iocat.h 	lfoclock.h 	lfocontroller.h 	linkedlist.h 	filtercommon.h 	lowpassfilter.h 	modinput.h 	modinputslist.h 	modoutput.h 	modoutputslist.h 	noisegenerator.h 	nonezero.h 	notedata.h 	oscclock.h 	outputnames.h 	riffdata.h 	sampler.h 	sequencer.h 	sinewave.h 	squarewave.h 	stereoamp.h 	stereochannel.h 	stereomixer.h 	synthmodnames.h 	synthmodule.h 	wavfileheader.h 	wavfilein.h 	wavfileout.h 	dtr.h 	synthfilereader.h 	rifflist.h 	constmod.h 	freqgenerator.h 	modifier.h 	samplehold.h 	trigger.h 	trianglewave.h 	trianglewave2.h 	userwave.h 	userwavevertex.h 	connector.h 	synthmodulelist.h 	modules.h 	jwmsynth.h 	paramnames.h 	connectorlist.h 	modparam.h 	modparamlist.h 	wavfileinlist.h 	randomtrigger.h 	logictrigger.h 	switcher.h 	wcntsignal.h 	highpassfilter.h 	combiner.h 	bpmchange.h         meterchange.h 	timemap.h 	riffnode.h         serialwavfileout.h         contraster.h 	delay.h 	echo.h 	monoamp.h 	wcntmodule.h 	multiplier.h 	rangelimit.h 	pan.h 	rms.h 	dc_filter.h
 
 
 EXTRA_DIST = $(wcnt_include_DATA)
@@ -143,7 +143,7 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$d/$$file $(distdir)/$$file; \
+	    cp -pr $$/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \

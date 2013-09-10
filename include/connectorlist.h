@@ -1,6 +1,8 @@
 #ifndef CONNECTORLIST_H
 #define CONNECTORLIST_H
 
+#ifndef BARE_MODULES
+
 #include "linkedlist.h"
 #include "connector.h"
 
@@ -32,4 +34,5 @@ class connectorlist
 	bool verbose;
 };
 
+#endif
 #endif

@@ -10,7 +10,6 @@
 #include "lowpassfilter.h"
 #include "modifier.h"
 #include "noisegenerator.h"
-#include "nonezero.h"
 #include "oscclock.h"
 #include "samplehold.h"
 #include "sampler.h"
@@ -30,7 +29,19 @@
 #include "switcher.h"
 #include "highpassfilter.h"
 #include "combiner.h"
-
-#include "riffdata.h"
+#include "nonezero.h"
+// version 1.1000 modules
+#include "timemap.h"
+#include "serialwavfileout.h"
+#include "contraster.h"
+#include "delay.h"
+#include "echo.h"
+#include "monoamp.h"
+#include "wcntmodule.h"
+#include "multiplier.h"
+#include "rangelimit.h"
+#include "pan.h"
+#include "rms.h"
+#include "dc_filter.h"
 
 #endif

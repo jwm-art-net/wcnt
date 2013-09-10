@@ -1,9 +1,13 @@
 #ifndef FREQGENERATOR_H
 #define FREQGENERATOR_H
 
+#include "synthmodule.h"
+
+#ifndef BARE_MODULES
 #include "modoutputslist.h"
 #include "modinputslist.h"
 #include "modparamlist.h"
+#endif
 
 class freq_generator : public synthmod
 {
@@ -28,10 +32,11 @@ class freq_generator : public synthmod
 	// virtual funcs
 	void run();
 	void init();
+	#ifndef BARE_MODULES
 	void const* get_out(outputnames::OUT_TYPE);
 	void const* set_in(inputnames::IN_TYPE, void const*);
 	bool set_param(paramnames::PAR_TYPE, void const*);
-	
+	#endif
  private:
 	const double* in_signal;
 	double	out_freq,
@@ -44,8 +49,10 @@ class freq_generator : public synthmod
 			freq_step_size;
 	short step_count;
 	static int freq_generator_count;
+ 	#ifndef BARE_MODULES
 	static void create_params();
 	static bool done_params;
+ 	#endif
 };
 
 #endif

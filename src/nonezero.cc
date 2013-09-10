@@ -5,34 +5,24 @@ nonezero::nonezero(string uname)
 : synthmod(synthmodnames::MOD_NONEZERO, 0, uname),
 out_none_double(0.00), out_none_short(0), out_none_ulong(0), out_none_STATUS(OFF)
 {
-	if (!get_outputlist()->add_output(this, outputnames::OUT_NONE_DOUBLE)){
-		invalidate();
-		return;
-	}
-	if (!get_outputlist()->add_output(this, outputnames::OUT_NONE_SHORT)){
-		invalidate();
-		return;
-	}
-	if (!get_outputlist()->add_output(this, outputnames::OUT_NONE_ULONG)){
-		invalidate();
-		return;
-	}
-	if (!get_outputlist()->add_output(this, outputnames::OUT_NONE_TRIG)){
-		invalidate();
-		return;
-	}
-	if (!get_outputlist()->add_output(this, outputnames::OUT_NONE_STATE)){
-		invalidate();
-		return;
-	}
+	#ifndef BARE_MODULES
+	get_outputlist()->add_output(this, outputnames::OUT_NONE_DOUBLE);
+	get_outputlist()->add_output(this, outputnames::OUT_NONE_SHORT);
+	get_outputlist()->add_output(this, outputnames::OUT_NONE_ULONG);
+	get_outputlist()->add_output(this, outputnames::OUT_NONE_TRIG);
+	get_outputlist()->add_output(this, outputnames::OUT_NONE_STATE);
+	#endif
 	validate();
 }
 
 nonezero::~nonezero()
 {
+	#ifndef BARE_MODULES
 	get_outputlist()->delete_module_outputs(this);
+	#endif
 }
 
+#ifndef BARE_MODULES
 void const* nonezero::get_out(outputnames::OUT_TYPE ot)
 {
 	void const* o = 0;
@@ -60,9 +50,8 @@ void const* nonezero::get_out(outputnames::OUT_TYPE ot)
 }
 
 void const* nonezero::set_in(inputnames::IN_TYPE it, void const* o)
-{				//															                                                     | |
-	return 0; // no inputs mo finkuts go splankyts to fukwhitz -i fink (this == sea larky) then is gosub(getting to me [:/<-<
-}				//															                                                     | |
-
-
+{				//															                                                 |a|
+	return 0; // no inputs mo finkuts go splankyts to fukwhitz -i fink (this == sea larky) then is gosub(getting to me [:/<-<|r|
+}				//															                                                 |h|
+#endif
 #endif

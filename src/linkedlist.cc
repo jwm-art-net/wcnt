@@ -1,20 +1,13 @@
 #ifndef LINKEDLIST_H
 #include "../include/linkedlist.h"
 
-ll_item::ll_item(void *d)
-    :
-data(d),
-prev(0),
-next(0)
-{
-}
+ll_item::ll_item(void *d) : data(d), prev(0), next(0) {}
 
-ll_item::~ll_item()
-{
-}
+ll_item::~ll_item() {}
 
 linkedlist::linkedlist()
-:  head(0), tail(0), current(0), find_result(0), multiref(MULTIREF_OFF), nulldata(NO_NULLDATA)
+:  head(0), tail(0), current(0), find_result(0), 
+   multiref(MULTIREF_OFF), nulldata(NO_NULLDATA)
 {
     head = new ll_item(0);
     tail = new ll_item(0);
@@ -49,8 +42,7 @@ linkedlist::add_at_head(void *data)
         return 0;
     ll_item *newitem;
     if (!head->get_next()) {    /* is_empty() */
-        if (!(newitem = new ll_item(data)))
-            return 0;
+        newitem = new ll_item(data);
         head->set_next(newitem);
         newitem->set_prev(0);
         newitem->set_next(0);
@@ -61,8 +53,7 @@ linkedlist::add_at_head(void *data)
             if (find_data(data))
                 return 0;
         }
-        if (!(newitem = new ll_item(data)))
-            return 0;
+        newitem = new ll_item(data);
         tmp = head->get_next();
         newitem->set_next(tmp);
         newitem->set_prev(0);
@@ -81,8 +72,7 @@ linkedlist::add_at_tail(void *data)
         return 0;
     ll_item *newitem;
     if (!head->get_next()) {    /* is_empty() */
-        if (!(newitem = new ll_item(data)))
-            return 0;
+        newitem = new ll_item(data);
         tail->set_prev(newitem);
         newitem->set_prev(0);
         newitem->set_next(0);
@@ -93,8 +83,7 @@ linkedlist::add_at_tail(void *data)
             if (find_data(data))
                 return 0;
         }
-        if (!(newitem = new ll_item(data)))
-            return 0;
+        newitem = new ll_item(data);
         tmp = tail->get_prev();
         newitem->set_prev(tmp);
         newitem->set_next(0);
@@ -120,19 +109,17 @@ linkedlist::insert_after(ll_item * llitem, void *data)
             return 0;
     }
     ll_item *i;
-    ll_item *newitem;
     for (i = head->get_next(); i != 0; i = i->get_next()) {
+	    ll_item *newitem;
         if (i == llitem) {
             if (i == tail->get_prev()) {
-                if (!(newitem = new ll_item(data)))
-                    return 0;
+                newitem = new ll_item(data);
                 newitem->set_prev(i);
                 newitem->set_next(0);
                 i->set_next(newitem);
                 tail->set_prev(newitem);
             } else {
-                if (!(newitem = new ll_item(data)))
-                    return 0;
+                newitem = new ll_item(data);
                 ll_item *j = i->get_next();
                 i->set_next(newitem);
                 newitem->set_prev(i);

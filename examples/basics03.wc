@@ -1,0 +1,239 @@
+wcnt-1.1001/jwmsynth  // <-- wcnt file identifier
+// header info:
+samplerate 	44100
+bpm		160
+signature 	4/4
+// end of header.
+
+// As you probably noticed from the output of basics02.wc, the sound was one
+// continuous unbroken sound.  There were no gaps between the notes, and the
+// volume did not respond to the velocity changes programmed in.
+
+// basics03.wc will correct that, and, also add some pitch modulation to
+// produce a vibrato effect.
+// (vibrato - pitch modulation, tremolo volume modulation)
+
+// setup the time_map
+time_map
+time1  
+        time
+		// add a signature change at bar 0
+		signature	4/4	0
+		// add a bpm change at bar 0, ramp bpm from bar 3 to bar 4.
+		bpm 120	0
+		bpm 120 3
+		bpm 360 4
+        time
+time1
+
+// setup how long to process:
+wcnt_exit
+wcnt_exit_module
+        in_bar  time1 out_bar
+	exit_bar 6		// process 5 bars, stop at beginning bar 6.
+wcnt_exit_module
+
+// first, create some riffs.  riffs are inserted into the sequencer, and 
+// contain note patterns.  riffs are not modules.  The first job of a riff
+// is to define the value you will use for a crotchet, or quarter note in 
+// that riff, the value you use will determine what values you use for the 
+// note lengths and note positions for all notes in the riff.
+
+// currently the wcnt sequencer module is monophonic, one sequencer can play
+// only one note at a time.  
+
+riff 
+riff1
+	quarter_value	16
+	//   notename	position	length	velocity
+	note	c0	0		7.5	1.0
+	note	d0	8		7.5	1.0
+	note	e0	16		7.5	1.0
+	note	f0	24		7	0.75
+	note	g0	32		3.5	0.5
+	note	a1	36		8.5	1.0
+	note	b1	40		8.5	1.0
+	note	c1	48		8.5	1.0
+	note	d1	56		7.5	1.0
+riff1
+
+// notice how from position 32, the notes will overlap, ie the notes are
+// longer than the seperation between them.  this will cause the pitch of
+// the notes to 'slide' up to the next, rather than jumping in pitch
+// instantly. This is known as portamento.
+
+sequencer
+seq1
+        track // add four bars of riff1:
+		riff1	0
+		riff1	1
+		riff1	2
+		riff1	3
+        track
+	// connect sequencer to keep in sync with time1 time_map module
+        in_bar			time1	out_bar
+        in_bar_trig     	time1	out_bar_trig
+        in_pos_step_size        time1	out_pos_step_size
+	// parameters for module: sequencer
+        velocity_response_time  5	// take 5 ms to change velocity
+        hold_notename		off	// ignore hold_notename
+seq1
+
+// the most useful outputs from sequencer
+// out_note_on_trig	- ON for one sample at beginning of a note.
+// out_note_slide_trig	- ON for 1 sample at beginning of a note slide.
+// out_note_off_trig	- ON for 1 sample at end of note.
+// out_frequency	- the note name converted to a frequency
+// out_velocity		- the straight velocity -  changes instantantly
+// out_velocity_ramp	- takes x ms as specified by velocity_response_time
+
+// note:
+// when a note_slide occurs, note_on does not occur.
+
+// to produce a pitch modulation in the osc_clock, a source of modulation
+// is needed.  In this case it will be another sine wave, which will be
+// driven by a clock module.
+
+clock
+vibratoclock
+        in_freq_mod1    off	// we won't modulate the modulation rate.
+        freq    	7.0	// 7 cps is considered a pleasant rate.
+        freq_mod1_size	0.0
+vibratoclock
+
+sine_wave
+vibratowave										
+	in_phase_trig	vibratoclock	out_phase_trig
+	in_deg_size	vibratoclock	out_deg_size
+	recycle_mode		off 				
+	on_trig_reset_phase	off 				
+	phase_cycles 1.0
+vibratowave
+
+osc_clock
+osc1
+	// connect with seq1 sequencer module.
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_slide_trig      seq1	out_note_slide_trig
+        in_frequency    	seq1	out_frequency
+        in_freq_mod1    	vibratowave	out_output
+        in_freq_mod2    	off
+        octave_offset		0
+        tuning_semitones        0.00	
+        portamento_time 	50.0	// duration of a note_slide event
+        freq_mod1_size  	1.05	// small amount of modulation
+        freq_mod2_size  	0.0
+osc1
+
+// notes on modulation:
+// freq_mod1_size controls how much modulation to use with input in_freq_mod1,
+// freq_mod2_size controls how much modulation to use with input in_freq_mod2.
+// a value of 1.0 for freq_mod1_size will give no modulation at all, a value
+// of 2.0 will increase the frequency by two, when the input signal is +1.0,
+// and halve the frequency when the input signal is -1.0
+
+// sine_wave	a sine wave generator uh huh
+
+sine_wave
+swave										
+	in_phase_trig	osc1	out_phase_trig
+	in_deg_size	osc1	out_deg_size
+	recycle_mode		off 				
+	on_trig_reset_phase	off 				
+	phase_cycles 1.0					
+swave
+
+// In order to create the illusion of notes stoping and starting, volume
+// changes are needed.  A volume which jumps from absolute quietness to full
+// volume is not good.  So to produce smooth graduations in the volume an
+// 'envelope' called an ADSR is used.  
+// ADSR is Attack, Decay, Sustain, and Release.  
+// The wcnt implimentation of an ADSR is slightly different to usual.  The 
+// user defines an upper envelope, and a lower envelope, so that the ADSR will
+// respond differently to different velocities (or whatever you put into it).  
+// I usually design the upper and lower envelopes to produce similiar volume
+// levels, so that only the general shape of the envelope responds to velocity,
+// not the general amplitude.  The amplifier module can be held responsible to
+// take care of modifying the general volume in response to velocity.
+
+adsr
+adsr1
+        envelope
+                attack	15.0	1.0	50.0	1.0
+                decay   20.0	0.9	65.0	0.9
+                release	45.0	0.0	120.0	0.0
+        envelope
+	// connect to sequencer triggers
+        in_note_on_trig		seq1	out_note_on_trig
+        in_note_off_trig        seq1	out_note_off_trig
+	// nb don't use out_velocity_ramped here:
+        in_velocity     	seq1	out_velocity 
+        start_level     0.0
+        sustain_state   on	// hold decay volume level until note_off?
+        zero_retrigger  off
+adsr1
+
+// the reason adsr1 does not use out_velocity_ramp is because it will not be
+// at the desired velocity at note_on, out_velocity provides the actual 
+// velocity of the note, and the adsr only checks the velocity when it is first
+// triggered.
+// when zero_retrigger is set to on, the envelope always begins at the 
+// start_level.  This is no problem until the envelope is retriggered before
+// it has finished, which will result in a sudden volume change producing a
+// click in the audio.  When zero_retrigger is off, and the envelope is
+// retriggered before it has finished, instead of using the start_level, it
+// starts from the level it is currently at.
+
+// mono_amp
+// a waveform such as sine_wave needs to be amplified in order for
+// it's signal to be compatible with the wavfileout module, which
+// creates the wav, the purpose of this file and wcnt.
+
+mono_amp
+amp1
+	in_signal	swave	out_output
+	in_amp_eg	adsr1	out_output
+	in_amp_mod	seq1	out_velocity_ramp
+	amplitude	32767	// 32767 is the maximum amplitude
+	amp_mod_size	0.95	// how much influence velocity has in this case
+	clip_level	25000	// the maximum allowed amplitude
+amp1
+
+// mono amp converts a signal specified by in_signal from a floating point
+// signal with a range of around -1 to +1, to a 16bit integer signal with
+// a maximum range of -32767 to +32767
+
+// when you look at the output file, you will notice that the waveform has
+// had the top and bottom chopped off, this is because of the clip_level
+// parameter.
+
+// in_amp_eg provides amplitude shaping, here it uses the constant module
+// defined below, as there are no defined ADSR envelopes.  I did initially
+// set it to off, and wondered why the output was silent, oops.
+
+// constant module - has been commented out
+// this module provides an unchanging signal
+
+// constant one value 1.0 one
+
+// wavfile_out module.  a wcnt file without atleast one of these modules is 
+// as good as useless.  It has an in_bar_trig aswell as an in_bar input 
+// to stop it from thinking every sample in a bar is a new bar. 
+// And Why Not? (tm)
+
+wavfile_out
+wav1
+	in_left		amp1	out_mono
+	in_right	amp1	out_mono
+	in_bar		time1	out_bar
+	in_bar_trig	time1	out_bar_trig
+	filename	basics03.wav
+	start_bar	0
+	end_bar		5 
+wav1
+
+// Although there are only four bars in the sequencer, wav1 stops writing when
+// bar 5 is reached because the release time of the ADSR causes audible sound 
+// to last beyond the end bar 3 and into bar 4.
+
+wcnt-1.1001/jwmsynth

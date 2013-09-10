@@ -2,9 +2,12 @@
 #define LFOCLOCK_H
 
 #include "conversions.h"
+
+#ifndef BARE_MODULES
 #include "modoutputslist.h"
 #include "modinputslist.h"
 #include "modparamlist.h"
+#endif
 
 class lfo_clock : public synthmod 
 {
@@ -31,10 +34,11 @@ class lfo_clock : public synthmod
 	// virtual funcs
 	void run();
 	void init();
+	#ifndef BARE_MODULES
 	void const* get_out(outputnames::OUT_TYPE);
 	void const* set_in(inputnames::IN_TYPE, void const*);
 	bool set_param(paramnames::PAR_TYPE, void const*);
-	
+	#endif
  private:
 	STATUS out_phase_trig;
 	double out_deg_size;
@@ -52,8 +56,10 @@ class lfo_clock : public synthmod
 	double degsize1;
 	double degsize2;
 	static int lfo_clock_count;
+ 	#ifndef BARE_MODULES
 	static void create_params();
 	static bool done_params;
+ 	#endif
 };
 
 #endif

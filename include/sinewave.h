@@ -3,10 +3,13 @@
 
 #include "dtr.h"
 #include <stdlib.h>
+#include "synthmodule.h"
+
+#ifndef BARE_MODULES
 #include "modoutputslist.h"
 #include "modinputslist.h"
 #include "modparamlist.h"
-
+#endif
 /*
 	sine_wave
 	---------------
@@ -55,10 +58,11 @@ class sine_wave : public synthmod
 	// virtual funcs
 	void run();
 	void init();
+	#ifndef BARE_MODULES
 	void const* get_out(outputnames::OUT_TYPE);
 	void const* set_in(inputnames::IN_TYPE, void const*);
 	bool set_param(paramnames::PAR_TYPE, void const*);
-	
+	#endif
  private:
 	double output;
 	STATUS play_state;
@@ -70,8 +74,10 @@ class sine_wave : public synthmod
 	double cycles;
 	double maxdegs;
 	static int sine_wave_count;
+ 	#ifndef BARE_MODULES
 	static void create_params();
 	static bool done_params;
+ 	#endif
 };
 
 #endif

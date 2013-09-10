@@ -1,17 +1,19 @@
 #ifndef CONNECTORLIST_H
 #include "../include/connectorlist.h"
 
+#ifndef BARE_MODULES
+
 connectorlist::connectorlist()
 : connectlist(0), connect_item(0), connect(0)
 {
-	connectlist = new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
+	connectlist = new 
+		linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
 }
 
 connectorlist::~connectorlist()
 {
 	goto_first();
-	while(connect)
-	{
+	while(connect) {
 		delete connect;
 		goto_next();
 	}
@@ -21,7 +23,8 @@ connector* connectorlist::add_connector(connector* c)
 {
 	if (!c)
 		return 0;
-	return connect = (connector*)(connect_item = connectlist->add_at_head(c))->get_data();
+	return connect = (connector*)
+		(connect_item = connectlist->add_at_head(c))->get_data();
 }
 
 bool connectorlist::delete_connector(connector* c)
@@ -59,4 +62,5 @@ bool connectorlist::make_connections()
 	return true;
 }
 
+#endif
 #endif

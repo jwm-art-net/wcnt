@@ -2,13 +2,20 @@
 
 ## Created by Anjuta - will be overwritten
 ## If you don't want it to overwrite it,
-## 	Please disable it in the Anjuta project configuration
+## Please disable it in the Anjuta project configuration
+
+## project was imported so anjuta won't actually overwrite it
+
 
 INCLUDES =
 
 CXXFLAGS =\
+## define this when you don't wont to compile the user interface code
+## usefull for testing modules
+##   -DBARE_MODULES\
 	 -Wall -Wimplicit -Wreturn-type -Wunused -Wswitch -Wcomment -Wuninitialized -Wparentheses -Wtraditional -Wpointer-arith -Wmissing-prototypes\
-	 -O1\
+	 -O3\
+         -ffast-math\
 	 -g
 
 bin_PROGRAMS = wcnt
@@ -71,9 +78,23 @@ wcnt_SOURCES = \
 	switcher.cc\
 	wcntsignal.cc\
 	highpassfilter.cc\
-	combiner.cc
-
+	combiner.cc\
+	bpmchange.cc\
+	meterchange.cc\
+	timemap.cc\
+	riffnode.cc\
+	serialwavfileout.cc\
+	contraster.cc\
+	delay.cc\
+	echo.cc\
+	monoamp.cc\
+	wcntmodule.cc\
+	multiplier.cc\
+	rangelimit.cc\
+	pan.cc\
+	rms.cc\
+	dc_filter.cc
+	
 wcnt_LDFLAGS = 
 
-wcnt_LDADD = 
-
+wcnt_LDADD =

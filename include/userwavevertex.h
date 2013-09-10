@@ -24,7 +24,10 @@ class wave_vertex
 	~wave_vertex(){};
 	wv_vtx* get_lower(){ return &lower;}
 	wv_vtx* get_upper(){ return &upper;}
+	// cant imagine what this is all about:
 	double oi_get_position(){ return lower.get_position();}
+	// actually oi is shorthand for ordered insert, ie this is the
+	// function used by ordered insert.
 	void modulate(double v_mod, double h_mod);
 	wv_vtx output;
  private:

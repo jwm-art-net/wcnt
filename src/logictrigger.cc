@@ -5,29 +5,27 @@ logictrigger::logictrigger(string uname)
 : synthmod(synthmodnames::MOD_LOGICTRIGGER, logictrigger_count, uname),
   in_trig1(0), in_trig2(0), out_trig(OFF)
 {
-	if (!get_outputlist()->add_output(this, outputnames::OUT_TRIG)){
-		invalidate();
-		return;
-	}
-	if (!get_inputlist()->add_input(this, inputnames::IN_TRIG1)){
-		invalidate();
-		return;
-	}
-	if (!get_inputlist()->add_input(this, inputnames::IN_TRIG2)){
-		invalidate();
-		return;
-	}
+	#ifndef BARE_MODULES
+	get_outputlist()->add_output(this, outputnames::OUT_TRIG);
+	get_inputlist()->add_input(this, inputnames::IN_TRIG1);
+	get_inputlist()->add_input(this, inputnames::IN_TRIG2);
+	#endif
 	logictrigger_count++;
 	validate();
+	#ifndef BARE_MODULES
 	create_params();
+	#endif
 }
 
 logictrigger::~logictrigger()
 {
+	#ifndef BARE_MODULES
 	get_outputlist()->delete_module_outputs(this);
 	get_inputlist()->delete_module_inputs(this);
+	#endif
 }
 
+#ifndef BARE_MODULES
 void const* logictrigger::get_out(outputnames::OUT_TYPE ot)
 {
 	void const* o = 0;
@@ -74,6 +72,7 @@ bool logictrigger::set_param(paramnames::PAR_TYPE pt, void const* data)
 	}
 	return retv;
 }
+#endif // BARE_MODULES
 
 void logictrigger::run() 
 {
@@ -98,6 +97,8 @@ void logictrigger::run()
 }
 
 int logictrigger::logictrigger_count = 0;
+
+#ifndef BARE_MODULES
 bool logictrigger::done_params = false;
 
 void logictrigger::create_params()
@@ -107,5 +108,5 @@ void logictrigger::create_params()
 	get_paramlist()->add_param(synthmodnames::MOD_LOGICTRIGGER, paramnames::PAR_LOGICFUNC);
 	done_params = true;
 }
-
+#endif
 #endif

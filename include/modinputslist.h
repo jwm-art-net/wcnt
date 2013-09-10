@@ -1,6 +1,8 @@
 #ifndef MODINPUTSLIST_H
 #define MODINPUTSLIST_H
 
+#ifndef BARE_MODULES
+
 #include "synthmodule.h"
 #include "linkedlist.h"
 #include "inputnames.h"
@@ -31,4 +33,5 @@ class modinputlist
 	modinput* input;
 };
 
+#endif
 #endif

@@ -1,6 +1,8 @@
 #ifndef OUTPUTNAMES_H
 #define OUTPUTNAMES_H
 
+#ifndef BARE_MODULES
+
 #include <string>
 #include "iocat.h"
 
@@ -42,6 +44,27 @@ class outputnames {
 		OUT_WRITE_END_TRIG,	
 		OUT_PRE_AMP_MOD,
 		OUT_NOT_TRIG,
+		// wcnt1.1001
+		OUT_BPM,
+		OUT_BAR,
+		OUT_BAR_TRIG,
+		OUT_POS_IN_BAR,
+		OUT_POS_STEP_SIZE,
+		OUT_SAMPLE_TOTAL,
+		OUT_SAMPLE_IN_BAR,
+		OUT_BEATS_PER_BAR,
+		OUT_BEAT_VALUE,
+		OUT_BPM_CHANGE_TRIG,
+		OUT_METER_CHANGE_TRIG,
+		OUT_BPM_CHANGE_STATE,
+		OUT_LOOP_TRIG,
+		OUT_NOTENAME,
+		OUT_VELOCITY_RAMP,
+		OUT_OFF_TRIG,
+		OUT_MONO,
+		OUT_WET_OUTPUT,
+		OUT_RMS,
+		OUT_M,
 		OUT_LAST // know when to stop
 	};
 	
@@ -57,4 +80,5 @@ class outputnames {
 	IOCAT *outcat;
 };
 
+#endif
 #endif

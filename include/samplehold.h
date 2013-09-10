@@ -2,11 +2,14 @@
 #define SAMPLEHOLD_H
 
 #include "conversions.h"
+
+#ifndef BARE_MODULES
 #include "modoutputslist.h"
 #include "modinputslist.h"
 #include "modparamlist.h"
+#endif
 
-// decay time of 0 means for ever.
+// decay time of 0 means do not decay to zero
 
 class sample_hold : public synthmod
 {
@@ -23,10 +26,11 @@ class sample_hold : public synthmod
 	// virtual funcs
 	void run();
 	void init();
+	#ifndef BARE_MODULES
 	void const* get_out(outputnames::OUT_TYPE);
 	void const* set_in(inputnames::IN_TYPE, void const*);
 	bool set_param(paramnames::PAR_TYPE, void const*);
-	
+	#endif
  private:
 	const STATUS* in_trig;
 	const double* in_signal;
@@ -36,8 +40,10 @@ class sample_hold : public synthmod
 	unsigned long ds;
 	double decay_size;
 	static int sample_hold_count;
+ 	#ifndef BARE_MODULES
 	static void create_params();
 	static bool done_params;
+ 	#endif
 };
 
 #endif

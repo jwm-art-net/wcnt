@@ -1,9 +1,13 @@
 #ifndef SQUAREWAVE_H
 #define SQUAREWAVE_H
 
+#include "synthmodule.h"
+
+#ifndef BARE_MODULES
 #include "modoutputslist.h"
 #include "modinputslist.h"
 #include "modparamlist.h"
+#endif
 
 class square_wave : public synthmod 
 {
@@ -28,10 +32,11 @@ class square_wave : public synthmod
 	// virtual funcs
 	void run();
 	void init();
+	#ifndef BARE_MODULES
 	void const* get_out(outputnames::OUT_TYPE);
 	void const* set_in(inputnames::IN_TYPE, void const*);
 	bool set_param(paramnames::PAR_TYPE, void const*);
-	
+	#endif
  private:
 	double output;
 	STATUS out_offpulse;
@@ -40,6 +45,8 @@ class square_wave : public synthmod
 	const double* in_deg_size;
 	const double* in_pwm;
 	double degs;
+	double podeg;
+	double pwdeg_rad;
 	double pulse_width;
 	double pwm_size;
 	double poff_deg;
@@ -47,8 +54,10 @@ class square_wave : public synthmod
 	STATUS recycle;
 	short cycle;
 	static int square_wave_count;
+ 	#ifndef BARE_MODULES
 	static void create_params();
 	static bool done_params;
+ 	#endif
 };
 
 #endif

@@ -1,6 +1,8 @@
 #ifndef MODPARAMLIST_H
 #define MODPARAMLIST_H
 
+#ifndef BARE_MODULES
+
 #include "linkedlist.h"
 #include "modparam.h"
 
@@ -40,4 +42,5 @@ class modparamlist
 	modparam* param;
 };
 
+#endif
 #endif

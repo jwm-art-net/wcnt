@@ -17,14 +17,22 @@
 #ifndef SYNTHMODULE_H
 #define SYNTHMODULE_H
 
-#include "linkedlist.h"
 #include "synthmodnames.h"
+
+// when you want to test a new module you've written without all the extra 
+// data like module lists, output lists, input lists, parameter lists, and 
+// connector lists:  define BARE_MODULES  - to get just that, bare modules 
+// with only enough functionality for them to run(), but you'll have to hard 
+// code the outputs to inputs, but that's ok when you just want to test the 
+// thing.
+
+#ifndef BARE_MODULES
 #include "inputnames.h"
 #include "outputnames.h"
 #include "paramnames.h"
-
+#endif
 // synthmod - base class from which all synth modules are derived from
-// has recently become more useful every day.
+// - has recently become more useful every day.
 
 // Default settings for audio output 
 extern short audio_channels;
@@ -33,23 +41,27 @@ extern short audio_bitrate;
 extern short audio_ysize;
 
 // Default settings for music tempo 
-extern short beats_per_minute;
-extern short beats_per_measure;
-extern short beat_value;
+#define MAX_BPM 2500
+extern short sm_beats_per_minute;
+extern short sm_beats_per_measure;
+extern short sm_beat_value;
 
-// Used by triggers and switches etc 
+// Used by triggers and switches and states 
 enum STATUS { OFF, ON };
 
 // forward definitions
+#ifndef BARE_MODULES
 class synthmodlist;
 class modinputlist;
 class modoutputlist;
 class modparamlist;
 class connectorlist;
+#endif
 
-// although  synthmodules do not need access to synthmodlist or connectorlist
+// although synthmodules do not need access to synthmodlist or connectorlist
 // you can use synthmod to access them.  Anything that needs access to
 // synthmodlist or connector list will need access to synthmod anyway.
+// it makes life easier for passing stuff around the user interface code.
 
 class synthmod
 {
@@ -62,14 +74,17 @@ class synthmod
 	//virtual funcs
 	virtual void run() = 0;
 	virtual void init() = 0;
+	#ifndef BARE_MODULES
 	virtual void const* get_out(outputnames::OUT_TYPE) = 0;
 	virtual void const* set_in(inputnames::IN_TYPE, void const*) = 0;
 	virtual bool set_param(paramnames::PAR_TYPE, void const*) = 0;
-	// don't want any old scruffbag muckney making modules valid,
+	#endif
+	// don't want any old scruffbag monkey making modules valid,
 	// so only allow invalidate() public and keep validate() protected.
 	void invalidate(){valid = false;}
 	bool is_valid() { return valid;}
-	// some boolarks to do stuff around hither and tither
+	#ifndef BARE_MODULES
+	// some bool_arcs to do stuff around hither and tither
 	static void register_modnames(synthmodnames* s) {modnames = s;}
 	static void register_inputnames(inputnames* i) {innames = i;}
 	static void register_outputnames(outputnames* o) {outnames = o;}
@@ -79,7 +94,10 @@ class synthmod
 	static void register_outputlist(modoutputlist* m) {outputslist = m;}
 	static void register_paramlist(modparamlist* m){paramlist = m;}
 	static void register_connectlist(connectorlist* c){ connectlist = c;}
+	#endif
+	// synthmodnames are best keep outside of BARE_MODULES
 	static synthmodnames* get_modnames(){ return modnames;}
+	#ifndef BARE_MODULES
 	static inputnames* get_inputnames(){ return innames;}
 	static outputnames* get_outputnames(){ return outnames;}
 	static paramnames* get_paramnames(){ return parnames;}
@@ -88,6 +106,7 @@ class synthmod
 	static modoutputlist* get_outputlist(){ return outputslist;}
 	static modparamlist* get_paramlist(){ return paramlist;}
 	static connectorlist* get_connectlist(){ return connectlist;}
+	#endif
  protected:
 	void validate(){valid = true;}
  private:
@@ -96,6 +115,7 @@ class synthmod
 	string username;
 	bool valid;
 	static synthmodnames* modnames;
+	#ifndef BARE_MODULES
 	static inputnames* innames;
 	static outputnames* outnames;
 	static paramnames* parnames;
@@ -104,6 +124,7 @@ class synthmod
 	static modoutputlist* outputslist;
 	static modparamlist* paramlist;
 	static connectorlist* connectlist;
+	#endif
 };
 
 #endif

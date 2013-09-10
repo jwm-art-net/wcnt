@@ -119,34 +119,24 @@ class ll_item
   public:
     ll_item(void *data);
      ~ll_item();
-    bool set_prev(ll_item * p)
-    {
+    bool set_prev(ll_item * p) {
         if (this) {
             prev = p;
             return true;
         }
         return false;
     }
-    bool set_next(ll_item * n)
-    {
+    bool set_next(ll_item * n) {
         if (this) {
             next = n;
             return true;
         }
         return false;
     }
-    void *get_data()
-    {
-        return (this) ? data : 0;
-    }
-    ll_item *get_prev()
-    {
-        return (this) ? prev : 0;
-    }
-    ll_item *get_next()
-    {
-        return (this) ? next : 0;
-    }
+	void* set_data(void * d) { return (this) ? (data = d) : 0;}
+    void* get_data() { return (this) ? data : 0; }
+    ll_item *get_prev() { return (this) ? prev : 0; }
+    ll_item *get_next() { return (this) ? next : 0; }
 
   private:
     void *data;
@@ -168,64 +158,24 @@ class linkedlist
     ll_item *add_at_tail(void *data);
     ll_item *insert_after(ll_item * llitem, void *data);
     ll_item *unlink_item(ll_item *);
-    ll_item *goto_first()
-    {
-        return (this) ? current = head->get_next() : 0;
-    }
-    ll_item *goto_last()
-    {
-        return (this) ? current = tail->get_prev() : 0;
-    }
-    ll_item *goto_prev()
-    {
-        return (this) ? current = current->get_prev() : 0;
-    }                           /* NULL if empty, NULL if current == NULL, NULL if current->get_next() == NULL -- no seg faults */
-    ll_item *goto_next()
-    {
-        return (this) ? current = current->get_next() : 0;
-    }                           /* see ll_item for proof */
-    ll_item *sneak_first()
-    {
-        return (this) ? head->get_next() : 0;
-    }
-    ll_item *sneak_last()
-    {
-        return (this) ? tail->get_prev() : 0;
-    }
-    ll_item *sneak_prev()
-    {
-        return (this) ? current->get_prev() : 0;
-    }
-    ll_item *sneak_next()
-    {
-        return (this) ? current->get_next() : 0;
-    }
-    ll_item *sneak_current()
-    {
-        return (this) ? current : 0;
-    }
+    ll_item *goto_first() { return (this) ? current = head->get_next() : 0;}
+    ll_item *goto_last()  { return (this) ? current = tail->get_prev() : 0;}
+	ll_item *goto_prev()  { return (this) ? current = current->get_prev() : 0;}
+    ll_item *goto_next()  { return (this) ? current = current->get_next() : 0;}                           /* see ll_item for proof */
+    ll_item *sneak_first(){ return ((this) ? head->get_next() : 0);}
+    ll_item *sneak_last() { return (this) ? tail->get_prev() : 0;}
+    ll_item *sneak_prev() { return (this) ? current->get_prev() : 0;}
+    ll_item *sneak_next() { return (this) ? current->get_next() : 0;}
+    ll_item *sneak_current() { return (this) ? current : 0;}
     ll_item *goto_item(ll_item *);
     ll_item *find_data(void *);
     ll_item *find_next();
-    ll_item *get_found()
-    {
-        return (this) ? find_result : 0;
-    }
-    void set_tempory(ll_item * tmp)
-    {
-        if (this)
-            tempory = tmp;
-    }
-    ll_item *get_tempory()
-    {
-        return (this) ? tempory : 0;
-    }
+    ll_item *get_found() { return (this) ? find_result : 0;}
+    void set_tempory(ll_item * tmp) { if (this) tempory = tmp;}
+    ll_item *get_tempory() { return (this) ? tempory : 0;}
     bool is_first();
     bool is_last();
-    bool is_empty()
-    {
-        return (this) ? (head->get_next() == 0) : false;
-    }
+    bool is_empty() { return (this) ? (head->get_next() == 0) : false; }
     int get_item_count();
   private:
     ll_item * head;

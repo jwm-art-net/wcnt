@@ -2,9 +2,12 @@
 #define STEREOCHANNEL_H
 
 #include "synthmodule.h"
+
+#ifndef BARE_MODULES
 #include "modoutputslist.h"
 #include "modinputslist.h"
 #include "paramnames.h"
+#endif
 
 class stereo_channel : public synthmod
 {
@@ -20,16 +23,19 @@ class stereo_channel : public synthmod
 	// virtual funcs
 	void run(){}; // check inputs/outputs for explanation of emptiness
 	void init(){};
+	#ifndef BARE_MODULES
 	void const* get_out(outputnames::OUT_TYPE);
 	void const* set_in(inputnames::IN_TYPE, void const*);
 	bool set_param(paramnames::PAR_TYPE, void const*);
-		
+	#endif
  private:
 	const short* io_left;
 	const short* io_right;
 	static int stereochannel_count;
+ 	#ifndef BARE_MODULES
 	static void create_params();
 	static bool done_params;
+ 	#endif
 };
 
 #endif

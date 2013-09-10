@@ -2,10 +2,14 @@
 #define SWITCHER_H
 
 #include "wcntsignal.h"
+#include "conversions.h"
+#include "linkedlist.h"
+
+#ifndef BARE_MODULES
 #include "modoutputslist.h"
 #include "modinputslist.h"
 #include "modparamlist.h"
-#include "conversions.h"
+#endif
 
 class switcher: public synthmod 
 {
@@ -25,10 +29,11 @@ class switcher: public synthmod
 	// virtual funcs
 	void run();
 	void init();
+	#ifndef BARE_MODULES
 	void const* get_out(outputnames::OUT_TYPE);
 	void const* set_in(inputnames::IN_TYPE, void const*);
 	bool set_param(paramnames::PAR_TYPE, void const*);
-		
+	#endif
  private:
 	STATUS const* in_trig;
 	double out_output;
@@ -44,8 +49,10 @@ class switcher: public synthmod
 	double const* prevsig;
 	double zero;// for initial stuff
 	static int switcher_count;
+ 	#ifndef BARE_MODULES
 	static void create_params();
 	static bool done_params;
+ 	#endif
 };
 
 #endif
