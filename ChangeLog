@@ -1,5 +1,76 @@
 --------------------------------------------------------------
-Thursday 31st January 2008
+Monday 4th February 2008 - wcnt-1.26.2
+
+CHANGES:
+    * jwmsynth::run() no longer searches through the modlist
+      for the wcnt_exit module... wcnt_exit::init() is
+      friends with jwm_globals and sets exit bar and in bar
+      members of jwm_globals - jwmsynth get's them from here.
+
+    * synthmod base class has had the boolean members
+      valid, and, groupable, etc, removed and replaced with
+      an int member named flags which uses a new
+      synthmod::enum - for use by linkedlist requiring a
+      function object, or by more general usage with,
+      for example:
+      	synthmod::flag(SM_UNGROUPABLE)
+
+    * #ifdef IO_DEBUG
+      disabled checking of inputs being set for a module
+      (it happened after validation i believe)
+      #endif
+
+    * #ifdef IO_PARANOIA
+      conditionally defined as IO_PARANOIA some other stuff
+      moaning about requesting setting of things without
+      things within synthmod base class .cc (ie the virtual
+      base class methods should never be called due to text
+      file ui reader etc)
+      #endif
+
+FIXES:
+    * dynamic
+      was checking current vertex when it should have been
+      checking the next for existence...
+
+NOTES:
+    * wcnt-1.26.2 is a ever so slightly slower than
+      wcnt-1.26.1. this is because the combiner, switcher,
+      spreader, mixer have been modified as mentioned
+      yesterday.
+
+--------------------------------------------------------------
+Sunday 3rd February 2008 - wcnt-1.26.2
+
+CHANGES:
+    * state_gate_trig
+      added out_not_trig output for when in_play_state yields
+      off.
+
+    * connectorlist
+      new method, remake_connections. remakes the connections
+      for a specific module and specific output, to different
+      output.
+
+    * combiner, switcher, spreader are no longer restricted
+      to containing lists of wcnt_signal - as long as the
+      modules added each contain an out_output output type
+      everything is fine. also modified the array created
+      from the list of modules to contain the output rather
+      than the module( and then getting the output from the
+      module during run() ).
+
+    * mixer's list no longer restricted to containing mix_chan
+      modules, provided the added modules each contain the
+      out_left and out_right outputs.
+
+NOTES:
+    * wcnt_signal and mix_chan modules need only be created
+      if user desires to use outputs other than out_output
+      or out_left/out_right respectively.
+
+--------------------------------------------------------------
+Thursday 31st January 2008 - wcnt-1.26.1
 
 NOTES:
     * getting ready to release this tonight...
@@ -162,62 +233,7 @@ NOTES:
       linkedlist - NOT to use the STL, but to use a template
       version of my linkedlist, and to inherit it instead.
 
-      my new linked_list is written especially for wcnt so it
-      does not have oodles of common features expected for a
-      list type container. because it is a template class now,
-      it makes it easier to use, but, few of its methods when
-      inherited by a class are made public, and those that are
-      limit direct access to the list (the ll_items) by only
-      returning a pointer to the type the list contains. so
-      back to it being written for wcnt - there are no copy
-      constructors etc, and it uses pointers for adding to and
-      for return types.
-
-      the new linked_list can be requested to delete the data
-      items the pointers in the list point to upon deleting an
-      instance of the list derived class.
-
-      for the array run() optimization the linked_list can
-      also move all the data pointers out of the list
-      structure and into an array - deleting the list as it
-      goes. when the list inherited object comes to deletion
-      it will delete the array (if deletion of data is
-      requested) instead of the (already deleted) list.
-
-      great. and so i am also pleased to say i have found some
-      kind of justification in re-inventing the wheel. i've
-      found a more precise reason for doing so infact - i've
-      learnt something. i just feel that to dismiss
-      re-inventing the wheel as a waste of time is just wrong.
-
-      sure the STL is more advanced than my linked_list, sure,
-      it can do more, BUT, i tried to use it and it appeared
-      to be slower. looking at it, i can't quite understand
-      how it works, i don't want to waste my time
-      understanding how it works. this is about the difference
-      in what i am learning: learning the STL is more a case
-      of memorizing names and conventions than the actual
-      concepts. more often than not, in my experience as an
-      (hobbyist) programmer I have learnt concepts and then
-      found at later what they are. much of the time the
-      concepts i have learnt, i've just needed a little push
-      to impliment - just a little bit of research to solidify
-      them in my mind. and it is this which i feel strongly to
-      be because i have re-invented the wheel so many times.
-      so many times with wcnt i have put off doing something
-      because i either don't quite understand how to do it and
-      think it's too complex - requiring major modifications
-      only to find that i've already (perhaps subconsciously)
-      put things in place to make it easy.
-
-      look, i know many programmers are vastly more inteligent
-      than i, and even sometimes i feel stupid for presuming
-      my program is worth announcing on Linux Audio User, but
-      I AM in a way PROUD of where I have got to with it.
-      glad that i have actually _developed_ it over the years
-      and not given up. sure it's not-real-time, but that was
-      never it's reason for being. sure, the sound quality is
-      not great, but is not....
+  **(snip)**
 
 --------------------------------------------------------------
 Sunday 13th January 2008

@@ -7,7 +7,7 @@
 #include "../include/modparamlist.h"
 
 caps_plate::caps_plate(char const* uname) :
- synthmod(synthmodnames::CAPS_PLATE, uname),
+ synthmod(synthmodnames::CAPS_PLATE, uname, SM_HAS_STEREO_OUTPUT),
  in_signal(0), out_left(0), out_right(0),
  bandwidth(0.502), tail(0.3745), damping(0.250375), blend(0.25),
  l_descriptor(0), l_inst_handle(0),

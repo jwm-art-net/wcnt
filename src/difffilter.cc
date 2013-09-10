@@ -6,7 +6,7 @@
 #include "../include/modparamlist.h"
 
 diff_filter::diff_filter(char const* uname) :
- synthmod(synthmodnames::DIFFFILTER, uname),
+ synthmod(synthmodnames::DIFFFILTER, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), out_output(0.0), oldinsig(0.0)
 {
     jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);

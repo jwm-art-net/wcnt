@@ -8,7 +8,6 @@
 #include "../include/stockerrs.h"
 #include "../include/wcntexit.h"
 
-#include <stdlib.h> // qsort
 #include <iostream>
 
 jwmsynth::jwmsynth() :
@@ -65,7 +64,7 @@ bool jwmsynth::validate_synth()
             err_msg += jwm.get_stockerrs()->get_err(et);
             return false;
         }
-        if (!sm->is_valid()){
+        if (!sm->flag(synthmod::SM_VALID)){
             err_msg = "\nModule ";
             err_msg += sm->get_username();
             err_msg += " had problems initialising...\n";
@@ -92,11 +91,13 @@ bool jwmsynth::init_synth()
     sm = sml->goto_first();
     while(sm) {
         sm->init();
+        #ifdef IO_DEBUG
         if (!sm->check_inputs()) {
             err_msg = *synthmod::get_error_msg();
             return false;
         }
-        if (!sm->is_valid()){
+        #endif
+        if (!sm->flag(synthmod::SM_VALID)){
             err_msg = *synthmod::get_error_msg();
             return false;
         }
@@ -112,12 +113,8 @@ bool jwmsynth::execute_synth()
         return true;
     }
     synthmod* sm;
-    // only use first wcnt module created, don't bother with any others
-    // although user should not have been allowed to create > 1
-    wcnt_exit* wcntexit = (wcnt_exit*) 
-        jwm.get_modlist()->get_first_of_type(synthmodnames::WCNTEXIT);
-    const short* bar = wcntexit->get_input_bar();
-    short exit_bar = wcntexit->get_exit_bar();
+    const short* bar = jwm.get_exit_in_bar();
+    short exit_bar = jwm.get_exit_bar();
     // unlink any constant modules from list as it's pointless
     // calling run() on them...
     if (jwm.is_verbose())

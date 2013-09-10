@@ -336,12 +336,6 @@ gbw_lp
     res_mod_size    0.15
 gbw_lp
 
-wcnt_signal
-ws1
-    in_signal gbw_lp out_output
-    level 1.0
-ws1
-
 group
 tqa
     modules
@@ -363,7 +357,6 @@ tqa
         synthmod name amp1
         synthmod name gbw_hp
         synthmod name gbw_lp
-        synthmod name ws1
     modules
 tqa
 
@@ -456,12 +449,12 @@ pupe1
 combiner
 cbbb-l
     signals
-        synthmod name tqa.ws1
-        synthmod name tqc.ws1
-        synthmod name tqe.ws1
-        synthmod name tqg.ws1
-        synthmod name tqi.ws1
-        synthmod name tqk.ws1
+        synthmod name tqa.gbw_lp
+        synthmod name tqc.gbw_lp
+        synthmod name tqe.gbw_lp
+        synthmod name tqg.gbw_lp
+        synthmod name tqi.gbw_lp
+        synthmod name tqk.gbw_lp
     signals
     mean_total off
 cbbb-l
@@ -469,12 +462,12 @@ cbbb-l
 combiner
 cbbb-r
     signals
-        synthmod name tqb.ws1
-        synthmod name tqd.ws1
-        synthmod name tqf.ws1
-        synthmod name tqh.ws1
-        synthmod name tqj.ws1
-        synthmod name tql.ws1
+        synthmod name tqb.gbw_lp
+        synthmod name tqd.gbw_lp
+        synthmod name tqf.gbw_lp
+        synthmod name tqh.gbw_lp
+        synthmod name tqj.gbw_lp
+        synthmod name tql.gbw_lp
     signals
     mean_total off
 cbbb-r
@@ -488,7 +481,6 @@ dc_offset_remover
 dc-r
     in_signal cbbb-r out_output
 dc-r
-
 
 echo
 ekl

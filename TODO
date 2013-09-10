@@ -1,3 +1,18 @@
+
+4th February 2008
+-- -- -- -- -- --
+
+ok, forget all those dreams from last year...
+
+the next item on the todo list is to remove the bpm and time signature
+from the header. also, resist deleting the wcnt_exit module - because
+if specifying the bar and output to use to exit became a part of the
+header - it would be terrible (and let's just leave it at that).
+
+maybe look into some of those horrible places at tidying/untangling
+messy code... ( but where to start ;-)
+
+-------------------------------------
 TODO - 1st December 2007
 
 /***** update: 31st January 2008

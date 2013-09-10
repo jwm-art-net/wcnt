@@ -25,10 +25,11 @@ class stockerrs;
 class wave_tables;
 
 #include "cmdline.h"
+#include "wcntexit.h"
 
 class synthfilereader;
 
-const char* const wcnt_version = "1.26";
+const char* const wcnt_version = "1.26.2";
 const char* const wcnt_id = "wcnt-1.26/jwmsynth";
 
 class jwm_globals
@@ -40,6 +41,10 @@ class jwm_globals
     enum { MIN_BPM = 20, MAX_BPM = 1000 };
 
     bool friend cmdline::set_jwm_globals();
+    void friend wcnt_exit::init();
+
+    short get_exit_bar(){ return x_exit_bar; }
+    short const* get_exit_in_bar(){ return x_in_bar; }
 
     const char* const path()    { return wc_path;   }
     const char* const file()    { return wc_file;   }
@@ -81,7 +86,7 @@ class jwm_globals
     wave_tables*    get_wave_tables() const { return wavetables;   }
 
 /* these two dislike global space */
-    void register_modlist(synthmodlist* sml)        { modlist = sml;    }
+    void register_modlist(synthmodlist* sml)        { modlist = sml;   }
     synthmodlist*   get_modlist() const             { return modlist;  }
     #ifdef WITH_LADSPA
     void register_ladspaloader(ladspa_loader* ll)   { ladspaloader = ll;}
@@ -92,6 +97,9 @@ class jwm_globals
 
     char* wc_path;
     char* wc_file;
+
+    short x_exit_bar;
+    short const* x_in_bar;
 
     bool verbose;
     bool dont_run;

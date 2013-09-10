@@ -8,13 +8,13 @@
 #include "../include/fxsparamlist.h"
 
 wave_phase::wave_phase(char const* uname) :
- synthmod(synthmodnames::WAVE_PHASE, uname),
+ synthmod(synthmodnames::WAVE_PHASE, uname, SM_HAS_OUT_OUTPUT),
  in_phase_trig(0), in_phase_step(0), in_shape_phase_step(0),
  output(0), pre_shape_output(0), play_state(OFF),
  type(wave_tables::SINE), shape_type(wave_tables::SINE),
  recycle(OFF), reset_phase(OFF),
  invert_alt(OFF), sync_shape(ON), cycles(1.0),
- phase(0), degs(0), max_degs(0), invph(1),
+ phase(0), shape_phase(0), degs(0), max_degs(0), invph(1),
  table(0)
 {
     jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);

@@ -37,7 +37,7 @@ connector* connector::duplicate(synthmod* sm)
         return new connector(sm, in_type, out_mod_uname, out_type);
     return 0;
 }
-
+#include <iostream>
 bool connector::connect()
 {
     if (!this) {
@@ -68,6 +68,8 @@ bool connector::connect()
         return false;
     }
     const void* const out_data = outmod->get_out(out_type);
+//    std::cout << "\noutmod = " << out_mod_uname 
+//        << " out_data = " << out_data;
     if (!out_data) {
         connect_err_msg = "\nIn module ";
         connect_err_msg += in_mod->get_username();

@@ -7,7 +7,7 @@
 #include "../include/fxsparamlist.h"
 
 balance::balance(char const* uname) :
- synthmod(synthmodnames::BALANCE, uname),
+ synthmod(synthmodnames::BALANCE, uname, SM_HAS_OUT_OUTPUT),
  in_signal1(0), in_signal2(0),out_output(0), func(ADD), bias(0)
 {
     jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);

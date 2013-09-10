@@ -153,9 +153,6 @@ multiplier shaped-r
     in_signal2 adsr1   out_output
 shaped-r
 
-wcnt_signal ws-l in_signal shaped-l out_output level 0.065 ws-l
-wcnt_signal ws-r in_signal shaped-r out_output level 0.065 ws-r
-
 group g01
 modules
     synthmod name adsr1
@@ -167,8 +164,6 @@ modules
     synthmod name sine-r
     synthmod name shaped-l
     synthmod name shaped-r
-    synthmod name ws-l
-    synthmod name ws-r
 modules
 g01
 
@@ -298,47 +293,47 @@ pe2
 combiner
 cmb-l
     signals
-        synthmod name g01.ws-l
-        synthmod name g02.ws-l
-        synthmod name g03.ws-l
-        synthmod name g04.ws-l
-        synthmod name g05.ws-l
-        synthmod name g06.ws-l
-        synthmod name g07.ws-l
-        synthmod name g08.ws-l
-        synthmod name g09.ws-l
-        synthmod name g10.ws-l
-        synthmod name g11.ws-l
-        synthmod name g12.ws-l
-        synthmod name g13.ws-l
-        synthmod name g14.ws-l
-        synthmod name g15.ws-l
-        synthmod name g16.ws-l
+        synthmod name g01.shaped-l
+        synthmod name g02.shaped-l
+        synthmod name g03.shaped-l
+        synthmod name g04.shaped-l
+        synthmod name g05.shaped-l
+        synthmod name g06.shaped-l
+        synthmod name g07.shaped-l
+        synthmod name g08.shaped-l
+        synthmod name g09.shaped-l
+        synthmod name g10.shaped-l
+        synthmod name g11.shaped-l
+        synthmod name g12.shaped-l
+        synthmod name g13.shaped-l
+        synthmod name g14.shaped-l
+        synthmod name g15.shaped-l
+        synthmod name g16.shaped-l
     signals
-    mean_total off
+    mean_total on
 cmb-l
 
 combiner
 cmb-r
     signals
-        synthmod name g01.ws-r
-        synthmod name g02.ws-r
-        synthmod name g03.ws-r
-        synthmod name g04.ws-r
-        synthmod name g05.ws-r
-        synthmod name g06.ws-r
-        synthmod name g07.ws-r
-        synthmod name g08.ws-r
-        synthmod name g09.ws-r
-        synthmod name g10.ws-r
-        synthmod name g11.ws-r
-        synthmod name g12.ws-r
-        synthmod name g13.ws-r
-        synthmod name g14.ws-r
-        synthmod name g15.ws-r
-        synthmod name g16.ws-r
+        synthmod name g01.shaped-r
+        synthmod name g02.shaped-r
+        synthmod name g03.shaped-r
+        synthmod name g04.shaped-r
+        synthmod name g05.shaped-r
+        synthmod name g06.shaped-r
+        synthmod name g07.shaped-r
+        synthmod name g08.shaped-r
+        synthmod name g09.shaped-r
+        synthmod name g10.shaped-r
+        synthmod name g11.shaped-r
+        synthmod name g12.shaped-r
+        synthmod name g13.shaped-r
+        synthmod name g14.shaped-r
+        synthmod name g15.shaped-r
+        synthmod name g16.shaped-r
     signals
-    mean_total off
+    mean_total on
 cmb-r
 
 stereo_amp amp1

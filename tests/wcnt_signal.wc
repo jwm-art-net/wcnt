@@ -7,44 +7,35 @@ signature 4/4
 timer
 t
     timings
+        time seconds 0.0
         time seconds 1.0
     timings
 t
 
+constant_freq f freq 1 f
+
+wave
+w
+    in_phase_step f out_phase_step
+    type sine
+w
+
+wcnt_signal
+ws
+    in_signal w out_output
+    level 1
+ws
+
 clock
 c
     in_freq_mod1 off
-    freq 10
+    freq 8
     freq_mod1_size 1
 c
 
-constant c1 value 1.0 c1
-constant c2 value 2.0 c2
-constant c3 value 3.0 c3
-constant c4 value 4.0 c4
-constant c5 value 5.0 c5
-
-wcnt_signal v1 in_signal c1 out_output level 1 v1
-wcnt_signal v2 in_signal c2 out_output level 1 v2
-wcnt_signal v3 in_signal c3 out_output level 1 v3
-wcnt_signal v4 in_signal c4 out_output level 1 v4
-wcnt_signal v5 in_signal c5 out_output level 1 v5
-
-combiner
-combine
-    signals
-        synthmod name v1
-        synthmod name v2
-        synthmod name v3
-        synthmod name v4
-        synthmod name v5
-    signals
-    mean_total off
-combine
-
 inspector
 i
-    _in_double_float_       combine out_output
+    _in_double_float_       ws out_output
     _in_double_float_trig_  c out_phase_trig
     _in_short_int_          off
     _in_short_int_trig_     off
@@ -61,11 +52,18 @@ i
     _string_msg_        .
 i
 
+group
+pg
+    modules
+        synthmod name ws
+    modules
+pg
+
 wcnt_exit
-exit
+x
     in_bar      t out_count
-    exit_bar    0
-exit
+    exit_bar    1
+x
 
 wcnt-1.26/jwmsynth
 

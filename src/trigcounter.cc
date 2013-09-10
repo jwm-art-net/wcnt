@@ -6,7 +6,12 @@
 #include "../include/modparamlist.h"
 
 trigcounter::trigcounter(char const* uname) :
- synthmod(synthmodnames::TRIGCOUNTER, uname),
+
+ synthmod(
+    synthmodnames::TRIGCOUNTER,
+    uname,
+    SM_HAS_OUT_TRIG),
+
  in_trig(0), in_reset_trig(0),
  out_trig(OFF), out_not_trig(OFF), out_pre_count(0), out_count(-1),
  out_play_state(OFF),

@@ -7,7 +7,11 @@
 #include "../include/conversions.h"
 
 fader::fader(char const* uname) :
- synthmod(synthmodnames::FADER, uname),
+ synthmod(
+    synthmodnames::FADER,
+    uname,
+    SM_HAS_OUT_TRIG),
+
  in_bar_trig(0), in_bar(0),
  out_output(0), out_trig(OFF), out_bar(0), out_play_state(OFF),
  start_bar(0), end_bar(1), fade_in_time(0), fade_out_time(0),

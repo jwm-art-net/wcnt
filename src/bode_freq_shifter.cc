@@ -7,7 +7,7 @@
 #include "../include/modparamlist.h"
 
 bode_freq_shifter::bode_freq_shifter(char const* uname) :
- synthmod(synthmodnames::BODE_FREQ_SHIFTER, uname),
+ synthmod(synthmodnames::BODE_FREQ_SHIFTER, uname, SM_DEFAULT),
  in_signal(0), in_shift_mod(0), out_up(0), out_down(0),
  freq_shift(0), shift_modsize(0.0),
  l_descriptor(0), l_inst_handle(0),

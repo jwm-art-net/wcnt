@@ -6,7 +6,7 @@
 #include "../include/modparamlist.h"
 
 mono_amp::mono_amp(char const* uname) :
- synthmod(synthmodnames::MONOAMP, uname),
+ synthmod(synthmodnames::MONOAMP, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), in_amp_eg(0), in_amp_mod(0),
  out_output(0),
  level(0), amp_modsize(0), clip_level(0), amp_level(0), ampsig(0)

@@ -7,7 +7,7 @@
 #include "../include/modparamlist.h"
 
 sc1::sc1(char const* uname) :
- synthmod(synthmodnames::SC1, uname),
+ synthmod(synthmodnames::SC1, uname, SM_HAS_OUT_OUTPUT),
  input(0), output(0),
  attack(101.5), release(401), thresh(0), ratio(1), knee(3.25), makeup(0),
  l_descriptor(0), l_inst_handle(0),

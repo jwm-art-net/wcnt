@@ -6,7 +6,7 @@
 #include "../include/modparamlist.h"
 
 stereo_amp::stereo_amp(char const* uname) :
- synthmod(synthmodnames::STEREOAMP, uname),
+ synthmod(synthmodnames::STEREOAMP, uname, SM_HAS_STEREO_OUTPUT),
  in_left(0), in_right(0), in_amp_eg(0), in_amp_mod(0),
  out_left(0), out_right(0),
  left_level(0), right_level(0), amp_modsize(0), clip_level(0),

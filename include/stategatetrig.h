@@ -19,6 +19,7 @@ private:
     STATUS const* in_trig;
     STATUS const* in_state;
     STATUS out_trig;
+    STATUS out_not_trig;
 };
 
 #endif

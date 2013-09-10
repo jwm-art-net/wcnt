@@ -137,7 +137,7 @@ riff2
     notelist
 riff2
 
-riff 
+riff
 riff2b
     quarter_value 1
     notelist
@@ -261,42 +261,25 @@ constant p13 value 0.8125 p13
 constant p14 value 0.875  p14
 constant p15 value 0.9375 p15
 
-wcnt_signal wsp0  in_signal p0  out_output level 1.0 wsp0
-wcnt_signal wsp1  in_signal p1  out_output level 1.0 wsp1
-wcnt_signal wsp2  in_signal p2  out_output level 1.0 wsp2
-wcnt_signal wsp3  in_signal p3  out_output level 1.0 wsp3
-wcnt_signal wsp4  in_signal p4  out_output level 1.0 wsp4
-wcnt_signal wsp5  in_signal p5  out_output level 1.0 wsp5
-wcnt_signal wsp6  in_signal p6  out_output level 1.0 wsp6
-wcnt_signal wsp7  in_signal p7  out_output level 1.0 wsp7
-wcnt_signal wsp8  in_signal p8  out_output level 1.0 wsp8
-wcnt_signal wsp9  in_signal p9  out_output level 1.0 wsp9
-wcnt_signal wsp10 in_signal p10 out_output level 1.0 wsp10
-wcnt_signal wsp11 in_signal p11 out_output level 1.0 wsp11
-wcnt_signal wsp12 in_signal p12 out_output level 1.0 wsp12
-wcnt_signal wsp13 in_signal p13 out_output level 1.0 wsp13
-wcnt_signal wsp14 in_signal p14 out_output level 1.0 wsp14
-wcnt_signal wsp15 in_signal p15 out_output level 1.0 wsp15
-
 switcher
 drumpos1
     signals
-        synthmod name wsp0
-        synthmod name wsp1
-        synthmod name wsp12
-        synthmod name wsp13
-        synthmod name wsp4
-        synthmod name wsp5
-        synthmod name wsp6
-        synthmod name wsp7
-        synthmod name wsp8
-        synthmod name wsp2
-        synthmod name wsp3
-        synthmod name wsp9
-        synthmod name wsp10
-        synthmod name wsp11
-        synthmod name wsp14
-        synthmod name wsp15
+        synthmod name p0
+        synthmod name p1
+        synthmod name p12
+        synthmod name p13
+        synthmod name p4
+        synthmod name p5
+        synthmod name p6
+        synthmod name p7
+        synthmod name p8
+        synthmod name p2
+        synthmod name p3
+        synthmod name p9
+        synthmod name p10
+        synthmod name p11
+        synthmod name p14
+        synthmod name p15
     signals
     in_trig     seq1    out_note_on_trig
     xfade_time  0.0
@@ -305,22 +288,22 @@ drumpos1
 switcher
 drumpos1i
     signals
-        synthmod name wsp12
-        synthmod name wsp13
-        synthmod name wsp4
-        synthmod name wsp5
-        synthmod name wsp6
-        synthmod name wsp7
-        synthmod name wsp8
-        synthmod name wsp2
-        synthmod name wsp3
-        synthmod name wsp9
-        synthmod name wsp10
-        synthmod name wsp11
-        synthmod name wsp14
-        synthmod name wsp15
-        synthmod name wsp0
-        synthmod name wsp1
+        synthmod name p12
+        synthmod name p13
+        synthmod name p4
+        synthmod name p5
+        synthmod name p6
+        synthmod name p7
+        synthmod name p8
+        synthmod name p2
+        synthmod name p3
+        synthmod name p9
+        synthmod name p10
+        synthmod name p11
+        synthmod name p14
+        synthmod name p15
+        synthmod name p0
+        synthmod name p1
     signals
     in_trig     seq1    out_note_on_trig
     xfade_time  0.0
@@ -581,28 +564,20 @@ crecho
     wet/dry             1.0
 crecho
 
-
-wcnt_signal d_l in_signal dl    out_output level 1.0 d_l
-wcnt_signal d_r in_signal dr    out_output level 1.0 d_r
-wcnt_signal e_l in_signal lecho out_output level 1.0 e_l
-wcnt_signal e_r in_signal recho out_output level 1.0 e_r
-wcnt_signal ce_l in_signal clecho out_output level 1.0 ce_l
-wcnt_signal ce_r in_signal crecho out_output level 1.0 ce_r
-
 combiner
 drums_l
         signals
-                synthmod name e_l
-                synthmod name ce_l
+                synthmod name lecho
+                synthmod name clecho
         signals
-        mean_total on
+        mean_total off
 drums_l
 
 combiner
 drums_r
         signals
-                synthmod name e_r
-                synthmod name ce_r
+                synthmod name recho
+                synthmod name crecho
         signals
         mean_total on
 drums_r
@@ -698,32 +673,19 @@ amp2
     clip_level   1.0
 amp2
 
-mix_chan ch1 in_left amp1 out_left in_right amp1 out_right ch1
-mix_chan ch2 in_left amp2 out_left in_right amp2 out_right ch2
-
 mixer
 mix1
     mix
-        synthmod name ch1
-        synthmod name ch2
+        synthmod name amp1
+        synthmod name amp2
     mix
-        master_level 1.0
+    master_level 1.0
 mix1
-
-caps_plate2x2
-revb
-    in_left   mix1 out_left
-    in_right  mix1 out_right
-    bandwidth  0.8235
-    tail       0.7
-    damping    0.16
-    wet/dry    0.17
-revb
 
 wavfile_out
 wav1
-    in_left     mix1 out_left // revb out_left
-    in_right    mix1 out_right // revb out_right
+    in_left     mix1 out_left
+    in_right    mix1 out_right
     in_bar      time1 out_bar
     in_bar_trig time1 out_bar_trig
     snapshot_mode off

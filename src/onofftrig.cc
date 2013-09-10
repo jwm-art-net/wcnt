@@ -9,7 +9,12 @@
 #include <math.h>
 
 onofftrig::onofftrig(char const* uname) :
- synthmod(synthmodnames::ONOFFTRIG, uname),
+
+ synthmod(
+    synthmodnames::ONOFFTRIG,
+    uname,
+    SM_HAS_OUT_TRIG),
+
  in_signal(0), out_trig(OFF), out_not_trig(OFF), out_attack_state(OFF),
  out_release_state(OFF), attack_time(0.0), release_time(0.0),
  attack_level(0.0), release_level(0.0), check_levels(OFF), 

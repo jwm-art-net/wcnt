@@ -9,7 +9,7 @@
 #include "../include/fxsparamlist.h"
 
 wave::wave(char const* uname) :
- synthmod(synthmodnames::WAVE, uname),
+ synthmod(synthmodnames::WAVE, uname, SM_HAS_OUT_OUTPUT),
  output(0.00), in_phase_step(NULL), phase(0), table(0)
 {
     jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);

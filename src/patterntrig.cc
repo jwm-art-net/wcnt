@@ -6,7 +6,12 @@
 #include "../include/modparamlist.h"
 
 patterntrig::patterntrig(char const* uname) :
- synthmod(synthmodnames::PATTERNTRIG, uname),
+
+ synthmod(
+    synthmodnames::PATTERNTRIG,
+    uname,
+    SM_HAS_OUT_TRIG),
+
  in_trig(0), out_trig(OFF), out_start_trig(OFF),
  out_end_trig(OFF), pattern(0), ptr(0)
 {
@@ -71,7 +76,10 @@ stockerrs::ERR_TYPE patterntrig::validate()
          "\nError, cannot have seperator as last symbol in pattern.";
         invalidate();
     }
-    return (is_valid()) ? stockerrs::ERR_NO_ERROR : stockerrs::ERR_ERROR;
+    return
+        (flag(SM_VALID))
+            ? stockerrs::ERR_NO_ERROR
+            : stockerrs::ERR_ERROR;
 }
 
 void const* patterntrig::get_out(outputnames::OUT_TYPE ot) const

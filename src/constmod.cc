@@ -5,10 +5,14 @@
 #include "../include/modparamlist.h"
 
 constmod::constmod(char const* uname) :
- synthmod(synthmodnames::CONSTMOD, uname),
+
+ synthmod(
+    synthmodnames::CONSTMOD,
+    uname,
+    SM_EMPTY_RUN | SM_HAS_OUT_OUTPUT),
+
  output(0)
 {
-    set_empty_run();
     jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
     create_params();
 }

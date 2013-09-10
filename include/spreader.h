@@ -5,20 +5,17 @@
 #include "linkedlist.h"
 #include "duplicate_list_module.h"
 
-class spreader: public synthmod, public linked_list<wcnt_signal>
+class spreader: public synthmod, public linked_list<synthmod>
 {
 public:
     spreader(char const*);
     ~spreader();
 
     friend synthmod*
-        duplicate_list_module<spreader, wcnt_signal>
-            (spreader* sm, wcnt_signal* _data,
+        duplicate_list_module<spreader, synthmod>
+            (spreader* sm, synthmod* _data,
                 const char* uname, synthmod::DUP_IO dupio);
 
-    wcnt_signal* add_signal(wcnt_signal* ws){
-        return add_at_tail(ws)->get_data();
-    }
     // virtual funcs
     void run();
     void init();
@@ -42,7 +39,7 @@ private:
     double end_level;
     // working
     double seg_lvl;
-    wcnt_signal** wcntsigs;
+    double const** sigs;
     static bool done_params;
     void create_params();
     static bool done_moddobj;

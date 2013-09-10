@@ -8,7 +8,7 @@
 #include <stdlib.h>
 
 square_wave::square_wave(char const* uname) :
- synthmod(synthmodnames::SQUAREWAVE, uname),
+ synthmod(synthmodnames::SQUAREWAVE, uname, SM_HAS_OUT_OUTPUT),
  output(0.00), out_offpulse(OFF), play_state(OFF),
  in_phase_trig(NULL), in_phase_step(NULL), in_pwm(NULL),
  rate(1.0), pulse_width(0.50), pwm_size(0.00), recycle(OFF),

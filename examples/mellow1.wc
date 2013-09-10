@@ -218,8 +218,6 @@ inputs1
     editlist
 inputs1
 
-mix_chan ch_out in_left stamp out_left in_right stamp out_right ch_out
-
 group
 g1
     modules
@@ -237,7 +235,6 @@ g1
         synthmod name panwave
         synthmod name pan1
         synthmod name stamp
-        synthmod name ch_out
     modules
 g1
 
@@ -313,16 +310,16 @@ inpsfb
 mixer
 mix1
     mix
-        synthmod name g1.ch_out
-        synthmod name g2.ch_out
-        synthmod name g3.ch_out
-        synthmod name g4.ch_out
-        synthmod name g5.ch_out
-        synthmod name g6.ch_out
-        synthmod name g7.ch_out
-        synthmod name g8.ch_out
-        synthmod name g9.ch_out
-        synthmod name g10.ch_out
+        synthmod name g1.stamp
+        synthmod name g2.stamp
+        synthmod name g3.stamp
+        synthmod name g4.stamp
+        synthmod name g5.stamp
+        synthmod name g6.stamp
+        synthmod name g7.stamp
+        synthmod name g8.stamp
+        synthmod name g9.stamp
+        synthmod name g10.stamp
     mix
     master_level  0.5
 mix1

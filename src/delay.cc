@@ -6,7 +6,7 @@
 #include "../include/modparamlist.h"
 
 delay::delay(char const* uname) :
- synthmod(synthmodnames::DELAY, uname),
+ synthmod(synthmodnames::DELAY, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), in_gainmod(0), out_output(0), delay_time(0), gain(0),
  gain_modsize(0), wetdry(0), output(0), filter(0), filterarraymax(0),
  fpos(0), filtertotal(0), gainamount(0)

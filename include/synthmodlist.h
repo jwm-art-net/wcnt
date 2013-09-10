@@ -56,7 +56,8 @@ public:
     //  (it unlinks them and places them in emptyrunlist)
     */
     void remove_empty_run_modules() {
-        emptyrunlist = move_to_new_list_of_by(this, empty_run(true));
+        emptyrunlist =
+            move_to_new_list_of_by(this, synthmod::SM_EMPTY_RUN);
     }
 
     /*

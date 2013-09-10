@@ -5,20 +5,16 @@
 #include "linkedlist.h"
 #include "duplicate_list_module.h"
 
-class trigswitcher: public synthmod, public linked_list<wcnt_trigger>
+class trigswitcher: public synthmod, public linked_list<synthmod>
 {
 public:
     trigswitcher(char const*);
     ~trigswitcher();
 
     friend synthmod*
-        duplicate_list_module<trigswitcher, wcnt_trigger>
-            (trigswitcher* sm, wcnt_trigger* _data,
+        duplicate_list_module<trigswitcher, synthmod>
+            (trigswitcher* sm, synthmod* _data,
                 const char* uname, synthmod::DUP_IO dupio);
-
-    wcnt_trigger* add_trigger(wcnt_trigger* s) {
-        return add_at_tail(s)->get_data();
-    }
 
     // virtual funcs
     void run();
@@ -33,7 +29,7 @@ public:
 private:
     STATUS const* in_trig;
     STATUS out_trig;
-    wcnt_trigger** wcnttrigs;
+    STATUS const** trigs;
     long trig_ix;
     STATUS const* trig;
     static bool done_moddobj;

@@ -11,7 +11,7 @@
 #include <math.h>
 
 user_wave::user_wave(char const* uname) :
- synthmod(synthmodnames::USERWAVE, uname),
+ synthmod(synthmodnames::USERWAVE, uname, SM_HAS_OUT_OUTPUT),
  in_phase_trig(0), in_phase_step(0), in_h_mod(0), in_v_mod(0),
  output(0.0), play_state(OFF),
  recycle(OFF), zero_retrigger_mode(OFF), drop_check_range(2),

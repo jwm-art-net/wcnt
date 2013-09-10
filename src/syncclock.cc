@@ -9,7 +9,7 @@
 #include <math.h>
 
 sync_clock::sync_clock(char const* uname) :
- synthmod(synthmodnames::SYNCCLOCK, uname),
+ synthmod(synthmodnames::SYNCCLOCK, uname, SM_DEFAULT),
  in_bpm(0), in_pos_stepsz(0), in_beats_per_bar(0), in_beat_value(0),
  in_phase_trig(0), in_freq_mod1(0), in_freq_mod2(0), out_phase_trig(OFF),
  out_phase_step(0), freq_mod1size(0), freq_mod2size(0), quarter_val(0),

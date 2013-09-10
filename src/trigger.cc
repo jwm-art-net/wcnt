@@ -9,7 +9,12 @@
 #include <math.h>
 
 trigger::trigger(char const* uname) :
- synthmod(synthmodnames::TRIGGER, uname),
+
+ synthmod(
+    synthmodnames::TRIGGER,
+    uname,
+    SM_HAS_OUT_TRIG),
+
  in_signal(0), out_trig(OFF), out_not_trig(OFF), out_wait_state(OFF),
  delay_time(0.0), trigger_level(0.0), delay_samps(0)
 {

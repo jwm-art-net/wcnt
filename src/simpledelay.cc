@@ -6,7 +6,7 @@
 #include "../include/modparamlist.h"
 
 simple_delay::simple_delay(char const* uname) :
- synthmod(synthmodnames::SIMPLEDELAY, uname),
+ synthmod(synthmodnames::SIMPLEDELAY, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), out_output(0), delay_time(0), output(0),
  filter(0), filterarraymax(0), fpos(0), filtertotal(0)
 {

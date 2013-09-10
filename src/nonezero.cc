@@ -4,13 +4,15 @@
 #include "../include/modoutputlist.h"
 
 nonezero::nonezero(char const* uname) :
- synthmod(synthmodnames::NONEZERO, uname),
+
+ synthmod(
+    synthmodnames::NONEZERO,
+    uname,
+    SM_EMPTY_RUN | SM_UNGROUPABLE | SM_UNDUPLICABLE),
+
  out_none_double(0.00), out_none_short(0), out_none_ulong(0),
  out_none_STATUS(OFF), out_none_string(0)
 {
-    set_empty_run();
-    remove_groupability();
-    remove_duplicability();
     out_none_string = new char[1];
     *out_none_string = '\0';
     jwm.get_outputlist()->add_output(this, outputnames::OUT_NONE_DOUBLE);

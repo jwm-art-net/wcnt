@@ -14,7 +14,7 @@
 #include <sys/timeb.h>
 
 wavfileout::wavfileout(char const* uname) :
- synthmod(synthmodnames::WAVFILEOUT, uname),
+ synthmod(synthmodnames::WAVFILEOUT, uname, SM_DEFAULT),
  in_l(0), in_r(0), in_bar(0), in_bar_trig(0),
  out_write_start_trig(OFF), out_write_end_trig(OFF),
  write_status(OFF),

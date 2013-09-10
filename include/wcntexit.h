@@ -36,11 +36,9 @@ class wcnt_exit: public synthmod
 public:
     wcnt_exit(char const*);
     ~wcnt_exit();
-    // these two needed by jwmsynth - to exit ;_)...
-    const short* get_input_bar(){ return in_bar; }
-    short get_exit_bar() { return exit_bar; }
     // virtual funcs
     void run(){};
+    void init();
     stockerrs::ERR_TYPE validate();
     void const* get_out(outputnames::OUT_TYPE) const { return 0; }
     void const* set_in(inputnames::IN_TYPE, void const*);

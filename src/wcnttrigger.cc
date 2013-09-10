@@ -5,10 +5,14 @@
 #include "../include/modinputlist.h"
 
 wcnt_trigger::wcnt_trigger(char const* uname) :
- synthmod(synthmodnames::WCNTTRIGGER, uname),
+
+ synthmod(
+    synthmodnames::WCNTTRIGGER,
+    uname,
+    SM_EMPTY_RUN | SM_HAS_OUT_TRIG),
+
  in_trig(0)
 {
-    set_empty_run();
     jwm.get_outputlist()->add_output(this, outputnames::OUT_TRIG);
     jwm.get_inputlist()->add_input(this, inputnames::IN_TRIG);
 }

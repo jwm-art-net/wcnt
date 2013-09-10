@@ -7,15 +7,15 @@
 
 class wcnt_signal;
 
-class combiner: public synthmod, public linked_list<wcnt_signal>
+class combiner: public synthmod, public linked_list<synthmod>
 {
 public:
     combiner(char const*);
     ~combiner();
 
     friend synthmod*
-        duplicate_list_module<combiner, wcnt_signal>
-            (combiner* sm, wcnt_signal* _data,
+        duplicate_list_module<combiner, synthmod>
+            (combiner* sm, synthmod* _data,
                 const char* uname, synthmod::DUP_IO dupio);
 
     // virtual funcs
@@ -34,8 +34,7 @@ private:
     double out_output;
     double meantotal;
     double total;
-    wcnt_signal** wcntsigs;
-    wcnt_signal* wcntsig;
+    double const** sigs;
     int sigcount;
     static bool done_params;
     void create_params();

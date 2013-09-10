@@ -7,7 +7,12 @@
 #include "../include/modparamlist.h"
 
 trigecho::trigecho(char const* uname) :
- synthmod(synthmodnames::TRIGECHO, uname),
+
+ synthmod(
+    synthmodnames::TRIGECHO,
+    uname,
+    SM_HAS_OUT_TRIG),
+
  in_trig(0), out_trig(OFF), out_velocity(0), out_count(0),
  delay_time(0.0), count(0), send_input_out(OFF),
  past_trigs(0), pastmax(0), pastpos(0), vel_count_ratio(0)

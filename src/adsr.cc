@@ -9,7 +9,7 @@
 #include "../include/conversions.h"
 
 adsr::adsr(char const* uname) :
- synthmod(synthmodnames::ADSR, uname),
+ synthmod(synthmodnames::ADSR, uname, SM_HAS_OUT_OUTPUT),
  in_note_on_trig(0), in_note_off_trig(0), in_velocity(0), output(0),
  out_off_trig(OFF), play_state(OFF), up_thresh(0), lo_thresh(0),
  start_level(0), min_time(0), max_sus_time(0), sustain_status(OFF),

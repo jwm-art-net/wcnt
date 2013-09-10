@@ -22,30 +22,36 @@ riff1
         note name c0    pos 128 len 80      vel 1.0
         note name e0    pos 160 len 16      vel 1.0
         note name g0    pos 208 len 12      vel 1.0
-        note name =P+N  pos 208 len 6       vel 0.0
-        note name IP+N  pos 90  len 90      vel 5.0
-        note name >P+Q  pos -1  len 256     vel 5.0
     notelist
 riff1
 
-copier rc1 from riff1 to riff2 rc1
+riff
+riff2
+    quarter_value   64
+    notelist
+        note name c2    pos 240 len 12      vel 1.0
+    notelist
+riff2
+// sequencer notes
+//-----------------
+//
+//  suppose you riff full of notes, and bearing in mind the quarter
+//  value, the notes stretch across two bars.
+//  suppose then you also create a riff which is blank except for
+//  a single short note right at the end.
+//  finally, suppose you insert the first riff at bar 0 (it will
+//  finish at the end of bar 1) and then you insert the (almost)
+//  blank riff at the beginning of bar 1...
 
-riff_editor
-re1
-    riff riff2
-    notelist
-        note name >P+Q  pos 0   len 32      vel 0.0
-    notelist
-re1
 
 sequencer
 seq
     track
         riff_node
             riff riff1  bar 0   transpose 0
-            repeat 0 repeat_stripe 1
+            repeat 3 repeat_stripe 1
         riff_node
-            riff riff2  bar 1   transpose 0
+            riff riff2  bar 4   transpose 0
             repeat 0 repeat_stripe 1
     track
     in_bar              time out_bar
@@ -76,21 +82,21 @@ osc
 wave
 sine
     in_phase_step osc out_phase_step
-    type sine
+    type saw
 sine
 
 wave_phase
 sine2
     in_phase_trig       osc out_phase_trig
     in_phase_step       osc out_phase_step
-    in_shape_phase_step off
+    in_shape_phase_step osc out_phase_step
     type        sine
-    shape_type  one
+    shape_type  sine_01
     on_trig_reset_phase off
     recycle_mode        on
     sync_shape          off
-    invert_alt          off
-    phase_cycles        1
+    invert_alt          on
+    phase_cycles        1.01
 sine2
 
 adsr

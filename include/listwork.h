@@ -131,13 +131,28 @@ T** move_to_array(linked_list<T>* list)
     return array;
 }
 
+template <typename T, typename R>
+R** create_array_using(linked_list<T>* list, R*(T::*func)())
+{
+    if (list->is_empty())
+        return 0;
+    R** array = new R*[list->get_count() + 1];
+    long ix = 0;
+    ll_item<T>* tmp = list->sneak_first();
+    while(tmp) {
+        array[ix++] = (tmp->get_data()->*func)();
+        tmp = tmp->get_next();
+    }
+    array[ix] = 0;
+    return array;
+}
+
 template <typename T>
 void destroy_array_moved_from_list(T** array)
 {
     long ix = 0;
     while(array[ix]){
-        delete array[ix];//++];
-        ix++;
+        delete array[ix++];
     }
     delete [] array;
 }

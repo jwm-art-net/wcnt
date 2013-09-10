@@ -14,11 +14,11 @@
 #include "../include/duplicate_list_module.h"
 
 switcher::switcher(char const* uname) :
- synthmod(synthmodnames::SWITCHER, uname),
+ synthmod(synthmodnames::SWITCHER, uname, SM_HAS_OUT_OUTPUT),
  linkedlist(MULTIREF_ON, PRESERVE_DATA),
  in_trig(0), xfadetime(25), out_output(0), xfade_samp(0),
  xfade_max_samps(0), xfade_stpsz(0), xfade_size(0),
- wcntsigs(0), sig_ix(0), sig(0), prevsig(0), zero(0)
+ sigs(0), sig_ix(0), sig(0), prevsig(0), zero(0)
 {
     jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
     jwm.get_inputlist()->add_input(this, inputnames::IN_TRIG);
@@ -28,8 +28,8 @@ switcher::switcher(char const* uname) :
 
 switcher::~switcher()
 {
-    if (wcntsigs)
-        delete [] wcntsigs;
+    if (sigs)
+        delete [] sigs;
 }
 
 void const* switcher::get_out(outputnames::OUT_TYPE ot) const
@@ -110,13 +110,20 @@ dobj* switcher::add_dobj(dobj* dbj)
 {
     if (dbj->get_object_type() == dobjnames::DOBJ_SYNTHMOD) {
         synthmod* sm = ((dobjmod*)dbj)->get_synthmod();
-        if (sm->get_module_type() != synthmodnames::WCNTSIGNAL) {
-            *err_msg = "\n";
+        if (!sm->flag(SM_HAS_OUT_OUTPUT)) {
+            *err_msg = get_username();
+            *err_msg += " will not accept the module ";
             *err_msg += sm->get_username();
-            *err_msg += " is not a wcnt_signal";
+            *err_msg += " because modules of type ";
+            *err_msg += jwm.get_modnames()->
+                get_name(sm->get_module_type());
+            *err_msg += " do not have the ";
+            *err_msg += jwm.get_outputnames()->
+                get_name(outputnames::OUT_OUTPUT);
+            *err_msg += " output type.";
             return 0;
         }
-        if (!add_signal((wcnt_signal*)sm)) {
+        if (!add_at_tail(sm)) {
             *err_msg = "\ncould not insert ";
             *err_msg += sm->get_username();
             *err_msg += " into switcher";
@@ -135,11 +142,21 @@ dobj* switcher::add_dobj(dobj* dbj)
 
 void switcher::init()
 {
-    if (!(wcntsigs = move_to_array(this))) {
-        invalidate();
-        return;
+    sigs = new double const*[get_count() + 1];
+    synthmod* sm = goto_first();
+    long ix = 0;
+    while(sm) {
+        sigs[ix] = (double const*)sm->get_out(outputnames::OUT_OUTPUT);
+        if (!sigs[ix]) {
+            *err_msg = "\nthings not looking good ;-(";
+            invalidate();
+            return;
+        }
+        sm = goto_next();
+        ix++;
     }
-    sig = &wcntsigs[sig_ix = 0]->out_output;
+    sigs[ix] = 0;
+    sig = sigs[sig_ix = 0];
     xfade_samp = xfade_max_samps = ms_to_samples(xfadetime);
     xfade_stpsz = 1 / (double)xfade_samp;
     xfade_size = 0;
@@ -150,19 +167,19 @@ void switcher::run()
 {
     if (*in_trig == ON) {
         prevsig = sig;
-        wcnt_signal* wcntsig = wcntsigs[++sig_ix];
-        if (!wcntsig)
-            wcntsig = wcntsigs[sig_ix = 0];
-        sig = &wcntsig->out_output;
+        sig = sigs[++sig_ix];
+        if (!sig)
+            sig = sigs[sig_ix = 0];
         xfade_samp = xfade_max_samps;
         xfade_size = 0;
     }
-    if (xfade_samp > 0) {
+    if (xfade_samp == 0)
+        out_output = *sig;
+    else {
         out_output = *prevsig * (1 - xfade_size) + *sig * xfade_size;
         xfade_samp--;
         xfade_size += xfade_stpsz;
-    } else
-        out_output = *sig;
+    }
 }
 
 bool switcher::done_params = false;

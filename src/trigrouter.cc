@@ -10,12 +10,12 @@
 #include <sstream>
 
 trigrouter::trigrouter(char const* uname) :
- synthmod(synthmodnames::TRIGROUTER, uname),
+
+ synthmod(synthmodnames::TRIGROUTER, uname, SM_UNGROUPABLE),
  in_trig(0), in_count(0),
  count(0), wrap(OFF),
  grp(0), trigs(0)
 {
-    remove_groupability();
     jwm.get_inputlist()->add_input(this, inputnames::IN_TRIG);
     jwm.get_inputlist()->add_input(this, inputnames::IN_COUNT);
     create_params();

@@ -1,74 +1,76 @@
-wcnt-1.26.1
+wcnt-1.26.2
 
 http://wcnt.sourceforge.net
 
 (source code only)
 
-First release of wcnt-1.26 after the pre releases...
+Second release of wcnt-1.26 after the pre releases...
 
-NEW MODULES:
+* rudimentary polyphony
+    no, no polyphonic sequencer.... but several new modules
+    (wcnt-1.26.1) to create polyphonic effects:
 
-    * trig_counter (module)
-      outputs n triggers when it's input triggers. can ignore n triggers
-      before doing so. stops outputing when n triggers counted, or can
-      wrap around so out_count output wraps also. out_count + out_trig
-      can be used much like the timer's out_count + out_trig or the
-      time_maps out_bar + out_bar_trig for triggering exit or file
-      writing, but more besides...
+        trig_counter  - counts and (?restricts) outputs input trigger
+        trig_echo     - echos input trigger n times
+        trig_router   - sends trigger n to auto-created output modules
+        group_control - only runs modules when appropriate -
+                        but easy to make it in-appropriate.
 
-    * trig_echo (module)
-      a module to echo triggers. it's out_count output is the number
-      of times this particular echoed trigger will trigger until
-      fade out. out_velocity outputs out_count as a value between
-      0 ~ 1.
+* fader (module)
+    created to make easy a fade in and fade out at the start and
+    end of the file to be written. uses either the time_map or
+    timer (out_bar_trig/out_trig and out_bar/out_count) outputs
+    and start and end bar parameters and extends the end by
+    fade_out_time milliseconds.
 
-    * trig_router (module)
-      a module which creates n wcnt_trigger modules and groups them
-      into a group named as it's username. it connects to an out_trig
-      and out_count outputs to decide which of the wcnt_trigger modules
-      it created should be triggered. hint: rudimentry polyphony.
+* sample_climb (module)
+    like sample_hold, but uses the grabbed 'sample' as a target
+    to climb to ( output += (target - output) * rate ).
 
-    * group_control (module)
-      this module has a single parameter: group_name where the name
-      of a group to be controlled is specified. it also has two
-      inputs, in_play_trig and in_stop_trig. basically, this module
-      steals all the group modules from the main module list so it
-      can control when they are processed. hint: rudimentry polyphony.
-
-    * sample_climb (module)
-      works like a sample_hold module in reverse: it grabs a sample
-      when triggered, and uses it as a target to climb/descend to.
-      output = output + (target - output) * rate (like square_wave).
-
-    * inspector (module)
-      an nicely arkward to use module for displaying the values of
-      various outputs when triggered. more for me than anyone else.
+* inspector (wcnt-1.26.1)
+    arkward to use module for displaying messages and values of
+    outputs/inputs.
 
 wcnt now has over 80 modules...(81 to be precise)
 
 CHANGES:
     * wavfile_out (module)
-      now has snapshot_mode parameter. adds the date and time (down
-      to the millisecond) to the filename being written. via the
-      trig_counter module it can now be used (provided snapshot_mode
-      is on) -( very much like the serial_wavfile_out module )- to
-      output a sequential series of WAVs.
+      now has snapshot_mode parameter. adds date and time (down
+      to the millisecond) to the filename being written. now you
+      can edit a .wc file to your hearts content and not loose
+      the sounds generated.
 
     * square_wave (module)
-      the square_wave can now introduce some curves into the harsh
-      square flip-flop digital waveform.
-      uses a simple output += (target - output) * rate method. lacks
-      frequency scaling though, which could be a good thing or not.
+      has rate parameter for adding curvature to the square_wave.
+      works with same method as sample_climb.
 
     * user_wave (module)
       vertices which (via modulation) collide with previous vertices
       will be dropped from the waveform - as opposed to causing
-      nasty peaks(previous version). makes an interesting twanging
-      sound.
+      nasty peaks(previous version).
+
+    * removed restrictions of combiner, spreader, and switcher to
+      only allow usage of wcnt_signals. these modules can now use
+      any module which provides the out_output output.
+
+    * removed restriction of mixer module to only allow use of
+      mix_chan modules. the mixer can now use any module which
+      provides out_left and out_right outputs.
+
+    * removed restriction of trig_switcher module to only allow
+      use of wcnt_trigger module. trig_switcher can now use any
+      module which provides the out_trig output (ie most of the
+      trigger modules).
 
 RE-CODED:
-    * many things which should not make any difference to the user,
-      except maybe a marginal speed increase in some situations.
+    * (wcnt-1.26.1) many things which should not make any difference
+      to the user, except maybe a marginal speed increase in some
+      situations.
+
+    * many more things, (synthmod changes for a start).
+
+FIXES:
+    * dynamic module was checking for existence of wrong vertex.
 
 -------------
 
@@ -81,13 +83,15 @@ NOTES:
       examples, and tests (directories of .wc files bundled with
       source code).
 
+    * another version might pop-along next week perhaps.
+
 -------------
 
 http://wcnt.sourceforge.net
 
 (source code only)
 
-wcnt-1.26.1
+wcnt-1.26.2
 
 regards,
 james jwm-art net

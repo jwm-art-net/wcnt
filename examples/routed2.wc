@@ -198,21 +198,15 @@ amp
 
 constant_freq f freq 500 f
 
-//glame_butterworth
-//lpf
-//    in_signal             amp out_output
-//    in_cutoff_phase_step  f out_phase_step
-//    in_res_mod            off
-//    filter_type   lowpass
-//    resonance     0.5
-//    res_mod_size  0
-//lpf
-
-wcnt_signal
-out
-    in_signal amp out_output //lpf out_output
-    level     0.35
-out
+glame_butterworth
+lpf
+    in_signal             amp out_output
+    in_cutoff_phase_step  f out_phase_step
+    in_res_mod            off
+    filter_type   lowpass
+    resonance     0.5
+    res_mod_size  0
+lpf
 
 group
 g1
@@ -225,8 +219,7 @@ g1
         synthmod name wv
         synthmod name amp
         synthmod name f
-//        synthmod name lpf
-        synthmod name out
+        synthmod name lpf
     modules
 g1
 
@@ -344,11 +337,11 @@ pe
 combiner
 c
     signals
-        synthmod name   g1.out
-        synthmod name   g2.out
-        synthmod name   g3.out
-        synthmod name   g4.out
-        synthmod name   g5.out
+        synthmod name   g1.lpf
+        synthmod name   g2.lpf
+        synthmod name   g3.lpf
+        synthmod name   g4.lpf
+        synthmod name   g5.lpf
     signals
     mean_total  off
 c
@@ -360,7 +353,7 @@ echol
     in_feedback      echor out_wet_output
     in_feedback_mod  off
     delay_time         170
-    gain               1
+    gain               0.55 // 1.0 //** alt **
     gain_mod_size      0
     feedback           0.725
     feedback_mod_size  0
@@ -374,18 +367,17 @@ echor
     in_feedback      echol out_wet_output
     in_feedback_mod  off
     delay_time         180
-    gain               1
+    gain               0.55 // 1.0 //** alt **
     gain_mod_size      0
     feedback           0.725
     feedback_mod_size  0
     wet/dry            0.25
 echor
 
-
 wavfile_out
 wav
-//    in_left     scl out_output
-//    in_right    scr out_output
+//    in_left     scl out_output //** alt **
+//    in_right    scr out_output //** alt **
     in_left     echol out_output
     in_right    echor out_output
     in_bar      time1   out_bar
@@ -408,17 +400,17 @@ x
 //------------------------------------------------------------------------
 wcnt-1.26/jwmsynth
 
-
+** alt **
 
 sc1
 scl
     in_signal  echol out_output
     attack_time   100
     release_time  400
-    threshold_db  -16
-    ratio_1:n     2
+    threshold_db  -18
+    ratio_1:n     2.1
     knee_db       3.25
-    makeup_db     1.5
+    makeup_db     0
 scl
 
 sc1
@@ -426,8 +418,8 @@ scr
     in_signal  echor out_output
     attack_time   100
     release_time  400
-    threshold_db  -16
-    ratio_1:n     2
+    threshold_db  -18
+    ratio_1:n     2.1
     knee_db       3.25
-    makeup_db     1.5
+    makeup_db     0
 scr

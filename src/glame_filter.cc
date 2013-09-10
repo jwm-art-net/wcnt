@@ -8,7 +8,7 @@
 #include "../include/fxsparamlist.h"
 
 glame_filter::glame_filter(char const* uname) :
- synthmod(synthmodnames::GLAME_FILTER, uname),
+ synthmod(synthmodnames::GLAME_FILTER, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), in_freq_mod1(0), output(0),
  type(LOPASS), cutoff_freq(440.0), freq_mod1size(1.0), stages(1),
  l_descriptor(0), l_inst_handle(0),

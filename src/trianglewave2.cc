@@ -7,7 +7,7 @@
 #include "../include/conversions.h"
 
 triangle_wave2::triangle_wave2(char const* uname) :
- synthmod(synthmodnames::TRIWAVE2, uname),
+ synthmod(synthmodnames::TRIWAVE2, uname, SM_HAS_OUT_OUTPUT),
  in_phase_trig(0), in_phase_step(0), in_normal_mod(0), output(0.00),
  play_state(OFF), normal_freq(440.00), norm_modsize(0), recycle(OFF),
  zero_retrigger_mode(OFF), nf_phase_step(0), nf_pre_phase_step(0),

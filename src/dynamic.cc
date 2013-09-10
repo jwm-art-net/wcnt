@@ -8,7 +8,7 @@
 #include "../include/dobjdobjlist.h"
 
 dynamic::dynamic(char const* uname) :
- synthmod(synthmodnames::DYNAMIC, uname),
+ synthmod(synthmodnames::DYNAMIC, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), in_mod(0), out_output(0), play_state(OFF),
  up_thresh(0), lo_thresh(0), posnegmirror(OFF), use_ratios(OFF),
  dynvertices(0), dvc(0), dvn(0),
@@ -232,7 +232,7 @@ void dynamic::run()
         m = 1.0;
 
     double ol = dvc->get_out_level(m);
-    if (dvc) {
+    if (dvn) {
         out_output = (ol + (dvn->get_out_level(m) - ol) 
          * ((insig - sil) / (dvn->get_signal_in_level() - sil)))
          * ((use_ratios == OFF) ? insig_sign : isig);

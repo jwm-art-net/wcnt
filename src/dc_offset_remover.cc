@@ -6,7 +6,7 @@
 #include "../include/modparamlist.h"
 
 dc_offset_remover::dc_offset_remover(char const* uname) :
- synthmod(synthmodnames::DC_OFFSET_REMOVER, uname),
+ synthmod(synthmodnames::DC_OFFSET_REMOVER, uname, SM_HAS_OUT_OUTPUT),
  input(0), output(0),
  l_descriptor(0), l_inst_handle(0), l_input(0), l_output(0)
 {

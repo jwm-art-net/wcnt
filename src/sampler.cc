@@ -11,7 +11,7 @@
 #include <iostream>
 
 sampler::sampler(char const* uname) :
- synthmod(synthmodnames::SAMPLER, uname),
+ synthmod(synthmodnames::SAMPLER, uname, SM_HAS_STEREO_OUTPUT),
  in_play_trig(0), in_start_pos_mod(0), in_phase_step(0),
  out_left(0), out_right(0),
  out_loop_trig(OFF), play_state(OFF),

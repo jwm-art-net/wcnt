@@ -5,19 +5,16 @@
 #include "linkedlist.h"
 #include "duplicate_list_module.h"
 
-class stereomixer: public synthmod, public linked_list<stereo_channel>
+class stereomixer: public synthmod, public linked_list<synthmod>
 {
 public:
     stereomixer(char const*);
     ~stereomixer();
 
     friend synthmod*
-        duplicate_list_module<stereomixer, stereo_channel>
-            (stereomixer* sm, stereo_channel* _data,
+        duplicate_list_module<stereomixer, synthmod>
+            (stereomixer* sm, synthmod* _data,
                 const char* uname, synthmod::DUP_IO dupio);
-
-    stereo_channel* add_channel(stereo_channel* ch);
-    stereo_channel* remove_channel(stereo_channel* ch);
 
     // virtual funcs
     void run();

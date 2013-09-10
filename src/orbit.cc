@@ -10,7 +10,7 @@
 #include <math.h>
 
 orbit::orbit(char const* uname) :
- synthmod(synthmodnames::ORBIT, uname),
+ synthmod(synthmodnames::ORBIT, uname, SM_DEFAULT),
  out_x(0.0), out_y(0.0),
  in_restart_trig(0), in_trig(0),
  const_a(0.0), const_b(0.0), const_c(0.0),

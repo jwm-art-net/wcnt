@@ -6,7 +6,12 @@
 #include "../include/modparamlist.h"
 
 trigdelay::trigdelay(char const* uname) :
- synthmod(synthmodnames::TRIGDELAY, uname),
+
+ synthmod(
+    synthmodnames::TRIGDELAY,
+    uname,
+    SM_HAS_OUT_TRIG),
+
  in_trig(0), out_trig(OFF), delay_time(0.0),
  past_trigs(0), pastmax(0), pastpos(0)
 {

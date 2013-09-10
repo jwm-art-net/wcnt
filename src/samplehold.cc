@@ -7,7 +7,7 @@
 #include "../include/conversions.h"
 
 sample_hold::sample_hold(char const* uname) :
- synthmod(synthmodnames::SAMPLEHOLD, uname),
+ synthmod(synthmodnames::SAMPLEHOLD, uname, SM_HAS_OUT_OUTPUT),
  in_trig(0), in_signal(0), output(0.00), decay_time(0.00), 
  decay_samps(0), ds(0), decay_size(0.00)
 {

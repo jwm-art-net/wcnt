@@ -3,6 +3,7 @@
 
 #include "inputnames.h"
 #include "outputnames.h"
+#include "namefuncobj.h"
 
 #include <string>
 
@@ -27,7 +28,6 @@ class input_module
     synthmod const* smod;
 };
 
-
 class connector
 {
 public:
@@ -37,8 +37,8 @@ public:
               outputnames::OUT_TYPE output_type );
     ~connector();
 
-    bool set_input_module(synthmod*);
     void set_output_module_name(const char*);
+    void set_output_type(outputnames::OUT_TYPE ot){ out_type = ot; }
 
     const synthmod* const get_input_module()const { return in_mod;}
     inputnames::IN_TYPE   get_input_type()  const { return in_type;}
@@ -57,6 +57,10 @@ public:
 
     bool operator()(input_module & inmod){
         return (inmod(in_mod));
+    }
+
+    bool operator()(name & outname){
+        return (outname(out_mod_uname));
     }
 
 private:

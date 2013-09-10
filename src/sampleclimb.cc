@@ -7,7 +7,7 @@
 #include "../include/conversions.h"
 
 sample_climb::sample_climb(char const* uname) :
- synthmod(synthmodnames::SAMPLECLIMB, uname),
+ synthmod(synthmodnames::SAMPLECLIMB, uname, SM_HAS_OUT_OUTPUT),
  in_trig(0), in_signal(0), output(0), rate(1), target(0)
 {
     jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);

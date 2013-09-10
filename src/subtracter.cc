@@ -5,7 +5,7 @@
 #include "../include/modinputlist.h"
 
 subtracter::subtracter(char const* uname) :
- synthmod(synthmodnames::SUBTRACTER, uname),
+ synthmod(synthmodnames::SUBTRACTER, uname, SM_HAS_OUT_OUTPUT),
  in_signal1(0), in_signal2(0), out_output(0)
 {
     jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);

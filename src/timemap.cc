@@ -8,7 +8,12 @@
 #include "../include/dobjdobjlist.h"
 
 timemap::timemap(char const* uname) :
- synthmod(synthmodnames::TIMEMAP, uname),
+
+ synthmod(
+    synthmodnames::TIMEMAP,
+    uname,
+    SM_UNGROUPABLE | SM_UNDUPLICABLE),
+
  out_bar(0), out_pos_in_bar(0), out_pos_step_size(0), out_bpm(0.0),
  out_sample_total(0), out_sample_in_bar(0),
  bpm_map(0), meter_map(0),
@@ -18,8 +23,6 @@ timemap::timemap(char const* uname) :
  bpmchange_pos(0), bpmrampsize(0), bpmchange_ratio(0), targbpm(0),
  pos_in_bar(0), bpmchange_notelen(0), bpmchangebar(0)
 {
-    remove_groupability();
-    remove_duplicability();
     jwm.get_outputlist()->add_output(this,outputnames::OUT_BPM);
     jwm.get_outputlist()->add_output(this,outputnames::OUT_BAR);
     jwm.get_outputlist()->add_output(this,outputnames::OUT_BAR_TRIG);

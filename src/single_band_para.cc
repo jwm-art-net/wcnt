@@ -7,7 +7,7 @@
 #include "../include/modparamlist.h"
 
 single_band_para::single_band_para(char const* uname) :
- synthmod(synthmodnames::SINGLE_BAND_PARA, uname),
+ synthmod(synthmodnames::SINGLE_BAND_PARA, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), in_phase_step(0), in_gain_mod(0), in_bandwidth_mod(0),
  output(0),
  gain_db(0), gain_mod_size(0), bandwidth(0), bandwidth_mod_size(0),

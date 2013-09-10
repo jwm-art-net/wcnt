@@ -12,10 +12,15 @@
 #include "../include/duplicate_list_module.h"
 
 trigswitcher::trigswitcher(char const* uname) :
- synthmod(synthmodnames::TRIGSWITCHER, uname),
+
+ synthmod(
+    synthmodnames::TRIGSWITCHER,
+    uname,
+    SM_HAS_OUT_TRIG),
+
  linkedlist(MULTIREF_ON, PRESERVE_DATA),
  in_trig(0), out_trig(OFF),
- wcnttrigs(0), trig_ix(0), trig(0)
+ trigs(0), trig_ix(0), trig(0)
 {
     jwm.get_outputlist()->add_output(this, outputnames::OUT_TRIG);
     jwm.get_inputlist()->add_input(this, inputnames::IN_TRIG);
@@ -24,8 +29,8 @@ trigswitcher::trigswitcher(char const* uname) :
 
 trigswitcher::~trigswitcher()
 {
-    if (wcnttrigs)
-        delete [] wcnttrigs;
+    if (trigs)
+        delete [] trigs;
 }
 
 void const* trigswitcher::get_out(outputnames::OUT_TYPE ot) const
@@ -79,13 +84,20 @@ dobj* trigswitcher::add_dobj(dobj* dbj)
 {
     if (dbj->get_object_type() == dobjnames::DOBJ_SYNTHMOD) {
         synthmod* sm = ((dobjmod*)dbj)->get_synthmod();
-        if (sm->get_module_type() != synthmodnames::WCNTTRIGGER) {
-            *err_msg = "\n";
+        if (!sm->flag(SM_HAS_OUT_TRIG)) {
+            *err_msg = get_username();
+            *err_msg += " will not accept the module ";
             *err_msg += sm->get_username();
-            *err_msg += " is not a wcnt_trigger";
+            *err_msg += " because modules of type ";
+            *err_msg += jwm.get_modnames()->
+                get_name(sm->get_module_type());
+            *err_msg += " do not have the ";
+            *err_msg += jwm.get_outputnames()->
+                get_name(outputnames::OUT_TRIG);
+            *err_msg += " output type.";
             return 0;
         }
-        if (!add_trigger((wcnt_trigger*)sm)) {
+        if (!add_at_tail(sm)) {
             *err_msg = "\ncould not insert ";
             *err_msg += sm->get_username();
             *err_msg += " into trigswitcher";
@@ -102,11 +114,16 @@ dobj* trigswitcher::add_dobj(dobj* dbj)
 
 void trigswitcher::init()
 {
-    if (!(wcnttrigs = move_to_array(this))){
-        invalidate();
-        return;
+    trigs = new STATUS const*[get_count() + 1];
+    synthmod* sm = goto_first();
+    long ix = 0;
+    while(sm) {
+        trigs[ix] = (STATUS const*)sm->get_out(outputnames::OUT_TRIG);
+        sm = goto_next();
+        ix++;
     }
-    trig = wcnttrigs[trig_ix = 0]->get_out_trig();
+    trigs[ix] = 0;
+    trig = trigs[trig_ix = 0];
 }
 
 void trigswitcher::run()
@@ -115,7 +132,7 @@ void trigswitcher::run()
         trig_ix++;
         if (trig_ix == get_count())
             trig_ix = 0;
-        trig = wcnttrigs[trig_ix]->get_out_trig();
+        trig = trigs[trig_ix];
     }
     out_trig = *trig;
 }

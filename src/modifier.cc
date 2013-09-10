@@ -7,7 +7,7 @@
 #include "../include/fxsparamlist.h"
 
 modifier::modifier(char const* uname) :
- synthmod(synthmodnames::MODIFIER, uname),
+ synthmod(synthmodnames::MODIFIER, uname, SM_HAS_OUT_OUTPUT),
  in_signal1(0), in_signal2(0), in_bias(0),
  out_output(0),
  func(ADD), type(M1)

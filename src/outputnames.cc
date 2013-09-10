@@ -145,7 +145,8 @@ const outputnames::output_data outputnames::data[OUT_LAST] =
     { OUT_DOWN,             "out_down",             iocat::DOUBLE  },
     #endif
     { OUT_PRE_COUNT,        "out_pre_count",        iocat::SHORT   },
-    { OUT_PRE_SHAPE_OUTPUT, "out_pre_shape_output", iocat::DOUBLE  }
+    { OUT_PRE_SHAPE_OUTPUT, "out_pre_shape_output", iocat::DOUBLE  },
+    { OUT_THROUGH,          "out_through",          iocat::DOUBLE  },
 };
 
 #endif

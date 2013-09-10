@@ -7,7 +7,7 @@
 #include "../include/conversions.h"
 
 lfo_controller::lfo_controller(char const* uname) :
- synthmod(synthmodnames::LFOCONTROL, uname),
+ synthmod(synthmodnames::LFOCONTROL, uname, SM_HAS_OUT_OUTPUT),
  in_trig(0), in_wave(0), in_amp_mod(0), out_preampmod(0), output(0),
  delay_time(0), ramp_time(0), start_level(0), end_level(0),
  response_time(0), amp_modsize(0), ams_r(0), delay_samples(0),

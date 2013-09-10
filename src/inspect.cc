@@ -8,7 +8,7 @@
 #include <iostream>
 
 inspect::inspect(char const* uname) :
- synthmod(synthmodnames::INSPECT, uname),
+ synthmod(synthmodnames::INSPECT, uname, SM_DEFAULT),
  in_df(0),  in_df_trig(0),
  in_si(0),  in_si_trig(0),
  in_ul(0),  in_ul_trig(0),

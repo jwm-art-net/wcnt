@@ -8,7 +8,7 @@
 #include "../include/conversions.h"
 
 notetran::notetran(char const* uname) :
- synthmod(synthmodnames::NOTETRAN, uname),
+ synthmod(synthmodnames::NOTETRAN, uname, SM_DEFAULT),
  in_notename(0), in_detranspose(0), in_note_on_trig(0),
  in_note_slide_trig(0), out_no_value(0), out_ns_value(0),
  out_note_on_trig(OFF), out_not_no_trig(OFF), out_note_slide_trig(OFF),

@@ -13,7 +13,7 @@
 #include "../include/duplicate_list_module.h"
 
 stereomixer::stereomixer(char const* uname) :
- synthmod(synthmodnames::STEREOMIXER, uname),
+ synthmod(synthmodnames::STEREOMIXER, uname, SM_HAS_STEREO_OUTPUT),
  linkedlist(MULTIREF_ON, PRESERVE_DATA),
  out_left(0), out_right(0), master_level(0.75),
  chans_left(0), chans_right(0)
@@ -84,12 +84,25 @@ dobj* stereomixer::add_dobj(dobj* dbj)
 {
     if (dbj->get_object_type() == dobjnames::DOBJ_SYNTHMOD) {
         synthmod* sm = ((dobjmod*)dbj)->get_synthmod();
-        if (sm->get_module_type() != synthmodnames::STEREOCHANNEL) {
+        if (sm->get_module_type() != synthmodnames::STEREOCHANNEL
+            && !sm->get_out(outputnames::OUT_LEFT))
+        {
+            *err_msg = get_username();
+            *err_msg += " will not accept the module ";
             *err_msg += sm->get_username();
-            *err_msg += " is not a stereo_channel";
+            *err_msg += " because modules of type ";
+            *err_msg += jwm.get_modnames()->
+                get_name(sm->get_module_type());
+            *err_msg += " do not have the ";
+            *err_msg += jwm.get_outputnames()->
+                get_name(outputnames::OUT_LEFT);
+            *err_msg += " or ";
+            *err_msg += jwm.get_outputnames()->
+                get_name(outputnames::OUT_RIGHT);
+            *err_msg += " output types.";
             return 0;
         }
-        if (!add_channel((stereo_channel*)sm)) {
+        if (!add_at_tail(sm)) {
             *err_msg += "could not insert ";
             *err_msg += sm->get_username();
             *err_msg += " into mixer";
@@ -106,37 +119,19 @@ dobj* stereomixer::add_dobj(dobj* dbj)
     return 0;
 }
 
-stereo_channel* stereomixer::add_channel(stereo_channel* ch)
-{
-    if (!add_at_tail(ch))
-        return 0;
-    return ch;
-}
-
-stereo_channel* stereomixer::remove_channel(stereo_channel* ch)
-{
-    llitem* chitem = find_data(sneak_first(), ch);
-    if (chitem == 0)
-        return 0;
-    if(unlink_item(chitem)) {
-        stereo_channel* chan = chitem->get_data();
-        delete chitem;
-        return chan;
-    }
-    return 0;
-}
-
 void stereomixer::init()
 {
     chans_left  = new double const*[get_count() + 1];
     chans_right = new double const*[get_count()];
-    stereo_channel* chan = goto_first();
+    synthmod* sm = goto_first();
     long ix = 0;
-    while(chan) {
-        chans_left[ix]  = chan->get_output_left();
-        chans_right[ix] = chan->get_output_right();
+    while(sm) {
+        chans_left[ix] =
+            (double const*)sm->get_out(outputnames::OUT_LEFT);
+        chans_right[ix] =
+            (double const*)sm->get_out(outputnames::OUT_RIGHT);
         ix++;
-        chan = goto_next();
+        sm = goto_next();
     }
     chans_left[ix] = 0;
     empty_list();
@@ -151,16 +146,6 @@ void stereomixer::run()
     }
     out_left  *= master_level;
     out_right *= master_level;
-    if (out_left < -1.0)
-        out_left = -1.0;
-    else
-    if (out_left > 1.0)
-        out_left = 1.0;
-    if (out_right < -1.0)
-        out_right = -1.0;
-    else 
-    if (out_right > 1.0)
-        out_right = 1.0;
 }
 
 bool stereomixer::done_params = false;

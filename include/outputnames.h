@@ -80,6 +80,7 @@ public:
         #endif
         OUT_PRE_COUNT,
         OUT_PRE_SHAPE_OUTPUT,
+        OUT_THROUGH,
         OUT_LAST
     };
     outputnames();

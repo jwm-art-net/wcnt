@@ -55,6 +55,16 @@ public:
     void reconnect_output_module_by_name(const char*from, const char*to);
 
     bool make_connections();
+
+    // wcnt_signal uses output = input * level.
+    // when level is 1.0, output == input, and the run method
+    // is removed, and the output is redirected to become the input.
+    // unfortunately, this is done via synthmod::init, which is called
+    // after make_connections, so, remake_connections is called during
+    // wcnt_signal::init to sort out the problem. other modules may
+    // also utilise this method if possible.
+    bool remake_connections(
+        synthmod*, outputnames::OUT_TYPE, outputnames::OUT_TYPE new_ot);
 };
 
 #endif

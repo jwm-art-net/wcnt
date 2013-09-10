@@ -5,7 +5,7 @@
 #include "../include/modinputlist.h"
 
 impulse::impulse(char const* uname) :
- synthmod(synthmodnames::IMPULSE, uname),
+ synthmod(synthmodnames::IMPULSE, uname, SM_HAS_OUT_OUTPUT),
  in_trig(0), out_output(0.0)
 {
     jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);

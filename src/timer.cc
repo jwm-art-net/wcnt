@@ -8,13 +8,16 @@
 #include "../include/dobjdobjlist.h"
 
 timer::timer(char const* uname) :
- synthmod(synthmodnames::TIMER, uname),
+
+ synthmod(
+    synthmodnames::TIMER,
+    uname,
+    SM_UNDUPLICABLE | SM_UNGROUPABLE | SM_HAS_OUT_TRIG),
+
  out_count(0), out_trig(OFF),
  timings(0), time_ix(0),
  samples(0)
 {
-    remove_duplicability();
-    remove_groupability();
     jwm.get_outputlist()->add_output(this, outputnames::OUT_TRIG);
     jwm.get_outputlist()->add_output(this, outputnames::OUT_COUNT);
     create_moddobj();

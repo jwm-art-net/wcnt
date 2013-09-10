@@ -19,18 +19,16 @@ public:
     stereo_channel(char const*);
     ~stereo_channel();
     // these two used by stereomixer:
-    const double* get_output_left() { return &out_left;  }
-    const double* get_output_right(){ return &out_right; }
-    void run(){ out_left = *in_left; out_right = *in_right;}
+    void run(){};
+    const double* get_output_left() { return io_left;  }
+    const double* get_output_right(){ return io_right; }
     void const* get_out(outputnames::OUT_TYPE) const;
     void const* set_in(inputnames::IN_TYPE, void const*);
     const void* get_in(inputnames::IN_TYPE it) const;
 
 private:
-    double out_left;
-    double out_right;
-    const double* in_left;
-    const double* in_right;
+    const double* io_left;
+    const double* io_right;
 };
 
 #endif

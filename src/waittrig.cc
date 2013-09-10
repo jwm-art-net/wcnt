@@ -7,7 +7,12 @@
 #include "../include/conversions.h"
 
 waittrig::waittrig(char const* uname) :
- synthmod(synthmodnames::WAITTRIG, uname),
+
+ synthmod(
+    synthmodnames::WAITTRIG,
+    uname,
+    SM_HAS_OUT_TRIG),
+
  in_trig1(0), in_trig2(0), out_trig(OFF), out_wait_state(ON),
  min_time(0), max_time(0), count(1), min_samples(0), max_samples(0),
  mins(0), maxs(0), counter(0)

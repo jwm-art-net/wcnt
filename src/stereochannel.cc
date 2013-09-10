@@ -5,8 +5,13 @@
 #include "../include/modinputlist.h"
 
 stereo_channel::stereo_channel(char const* uname) :
- synthmod(synthmodnames::STEREOCHANNEL, uname),
- out_left(0), out_right(0), in_left(0), in_right(0)
+
+ synthmod(
+    synthmodnames::STEREOCHANNEL,
+    uname,
+    SM_HAS_STEREO_OUTPUT | SM_EMPTY_RUN),
+
+ io_left(0), io_right(0)
 {
     jwm.get_outputlist()->add_output(this, outputnames::OUT_LEFT);
     jwm.get_outputlist()->add_output(this, outputnames::OUT_RIGHT);
@@ -22,8 +27,8 @@ void const* stereo_channel::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_LEFT: return &out_left;
-        case outputnames::OUT_RIGHT:return &out_right;
+        case outputnames::OUT_LEFT: return io_left;
+        case outputnames::OUT_RIGHT:return io_right;
         default: return 0;
     }
 }
@@ -32,8 +37,8 @@ void const* stereo_channel::set_in(inputnames::IN_TYPE it, void const* o)
 {
     switch(it)
     {
-        case inputnames::IN_LEFT:   return in_left = (double*)o;
-        case inputnames::IN_RIGHT:  return in_right = (double*)o;
+        case inputnames::IN_LEFT:   return io_left = (double*)o;
+        case inputnames::IN_RIGHT:  return io_right = (double*)o;
         default: return 0;
     }
 }
@@ -42,8 +47,8 @@ void const* stereo_channel::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_LEFT:   return in_left;
-        case inputnames::IN_RIGHT:  return in_right;
+        case inputnames::IN_LEFT:   return io_left;
+        case inputnames::IN_RIGHT:  return io_right;
         default: return 0;
     }
 }

@@ -7,7 +7,12 @@
 #include "../include/modparamlist.h"
 
 fast_lookahead_limiter::fast_lookahead_limiter(char const* uname) :
- synthmod(synthmodnames::FAST_LOOKAHEAD_LIMITER, uname),
+
+ synthmod(
+    synthmodnames::FAST_LOOKAHEAD_LIMITER,
+    uname,
+    SM_HAS_STEREO_OUTPUT),
+
  in_left(0), in_right(0),
  out_left(0), out_right(0),
  gain_db(0), limit_db(0), release_secs(0.5),

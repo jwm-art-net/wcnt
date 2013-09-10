@@ -7,7 +7,7 @@
 #include "../include/conversions.h"
 
 osc_clock::osc_clock(char const* uname) :
- synthmod(synthmodnames::OSCCLOCK, uname),
+ synthmod(synthmodnames::OSCCLOCK, uname, SM_DEFAULT),
  out_phase_trig(OFF), out_phase_step(0.00), out_premod_phase_step(0.00),
  in_freq(NULL), in_note_on_trig(NULL), in_note_slide_trig(NULL),
  in_play_state(NULL), in_freq_mod1(NULL), in_freq_mod2(NULL),

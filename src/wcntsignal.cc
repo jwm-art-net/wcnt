@@ -4,12 +4,14 @@
 #include "../include/modoutputlist.h"
 #include "../include/modinputlist.h"
 #include "../include/modparamlist.h"
+#include "../include/connectorlist.h"
 
 wcnt_signal::wcnt_signal(char const* uname) :
- synthmod(synthmodnames::WCNTSIGNAL, uname),
- out_output(0.0), in_signal(0), level(0.0)
+ synthmod(synthmodnames::WCNTSIGNAL, uname, SM_HAS_OUT_OUTPUT),
+ in_signal(0), out_output(0.0), level(0.0)
 {
     jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_THROUGH);
     jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
     create_params();
 }
@@ -23,6 +25,7 @@ void const* wcnt_signal::get_out(outputnames::OUT_TYPE ot) const
     switch(ot)
     {
         case outputnames::OUT_OUTPUT: return &out_output;
+        case outputnames::OUT_THROUGH:return in_signal;
         default: return 0;
     }
 }

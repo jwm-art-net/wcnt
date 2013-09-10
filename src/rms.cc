@@ -9,7 +9,7 @@
 #include <math.h>
 
 rms::rms(char const* uname) :
- synthmod(synthmodnames::RMS, uname),
+ synthmod(synthmodnames::RMS, uname, SM_DEFAULT),
  in_signal(0), out_rms(0), rms_time(0), output(0), rmsarr(0),
  arraymax(0), arrpos(0), sqrsum(0)
 {

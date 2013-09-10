@@ -188,7 +188,7 @@ dobj* group::duplicate_dobj(const char* new_group_name)
 
 bool group::groupify(synthmod* sm)
 {
-    if (!sm->is_groupable())
+    if (sm->flag(synthmod::SM_UNGROUPABLE))
         return false;
     char* from = new char [strlen(sm->get_username()) + 1];
     strcpy(from, sm->get_username());

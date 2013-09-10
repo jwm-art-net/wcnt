@@ -7,7 +7,12 @@
 #include "../include/fxsparamlist.h"
 
 logictrigger::logictrigger(char const* uname) :
- synthmod(synthmodnames::LOGICTRIGGER, uname),
+
+ synthmod(
+    synthmodnames::LOGICTRIGGER,
+    uname,
+    SM_HAS_OUT_TRIG),
+
  in_trig1(0), in_trig2(0), out_trig(OFF), logicfunc(AND), precision(0),
  t1_samps(0), t2_samps(0), trig1(OFF), trig2(OFF)
 {

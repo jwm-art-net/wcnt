@@ -5,12 +5,14 @@
 #include "../include/modparamlist.h"
 
 wcnt_exit::wcnt_exit(char const* uname) :
- synthmod(synthmodnames::WCNTEXIT, uname),
+
+ synthmod(
+    synthmodnames::WCNTEXIT,
+    uname,
+    SM_EMPTY_RUN | SM_UNGROUPABLE | SM_UNDUPLICABLE),
+
  in_bar(0), exit_bar(0)
 {
-    set_empty_run();
-    remove_groupability();
-    remove_duplicability();
     jwm.get_inputlist()->add_input(this, inputnames::IN_BAR);
     create_params();
 }
@@ -75,6 +77,12 @@ stockerrs::ERR_TYPE wcnt_exit::validate()
         return stockerrs::ERR_NEGATIVE;
     }
     return stockerrs::ERR_NO_ERROR;
+}
+
+void wcnt_exit::init()
+{
+    jwm.x_exit_bar = exit_bar;
+    jwm.x_in_bar = in_bar;
 }
 
 bool wcnt_exit::done_params = false;

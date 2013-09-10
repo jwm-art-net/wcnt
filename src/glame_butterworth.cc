@@ -8,7 +8,7 @@
 #include "../include/fxsparamlist.h"
 
 glame_butterworth::glame_butterworth(char const* uname) :
- synthmod(synthmodnames::GLAME_BUTTERWORTH, uname),
+ synthmod(synthmodnames::GLAME_BUTTERWORTH, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), in_phase_step(0),
  output(0),
  type(LOPASS),

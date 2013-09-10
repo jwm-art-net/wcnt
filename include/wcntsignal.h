@@ -3,6 +3,12 @@
 
 #include "synthmod.h"
 
+// wcnt_signal
+//  if level == 1.0, then output == input == use empty_run method
+//  else output = input * level == use run method
+//  during init (init method required only for this)
+//  connectorlist::remake_connections is called.
+
 class wcnt_signal : public synthmod
 {
 public:
@@ -17,14 +23,9 @@ public:
     bool set_param(paramnames::PAR_TYPE, void const*);
     void const* get_param(paramnames::PAR_TYPE) const;
 
-    /*
-    // make out_output public for those modules which contain lists of
-    // wcnt_signal
-    */
-    double out_output;
-
 private:
     const double* in_signal;
+    double out_output;
     double level;
     void create_params();
     static bool done_params;

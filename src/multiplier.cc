@@ -5,7 +5,7 @@
 #include "../include/modinputlist.h"
 
 multiplier::multiplier(char const* uname) :
- synthmod(synthmodnames::MULTIPLIER, uname),
+ synthmod(synthmodnames::MULTIPLIER, uname, SM_HAS_OUT_OUTPUT),
  in_signal1(0), in_signal2(0), out_output(0.00)
 {
     jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);

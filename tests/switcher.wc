@@ -30,8 +30,8 @@ wcnt_signal v3 in_signal c3 out_output level 1 v3
 wcnt_signal v4 in_signal c4 out_output level 1 v4
 wcnt_signal v5 in_signal c5 out_output level 1 v5
 
-combiner
-combine
+switcher
+sw
     signals
         synthmod name v1
         synthmod name v2
@@ -39,27 +39,9 @@ combine
         synthmod name v4
         synthmod name v5
     signals
-    mean_total off
-combine
-
-inspector
-i
-    _in_double_float_       combine out_output
-    _in_double_float_trig_  c out_phase_trig
-    _in_short_int_          off
-    _in_short_int_trig_     off
-    _in_unsigned_long_      off
-    _in_unsigned_long_trig_ off
-    _in_state_              off
-    _in_state_trig_         off
-    _in_string_             off
-    _in_string_trig_        off
-    _double_float_msg_  ws:out_output=
-    _short_int_msg_     .
-    _long_int_msg_      .
-    _state_msg_         .
-    _string_msg_        .
-i
+    in_trig c out_phase_trig
+    xfade_time 0
+sw
 
 wcnt_exit
 exit
@@ -69,5 +51,23 @@ exit
 
 wcnt-1.26/jwmsynth
 
+inspector
+i
+    _in_double_float_       sw out_output
+    _in_double_float_trig_  c out_phase_trig
+    _in_short_int_          off
+    _in_short_int_trig_     off
+    _in_unsigned_long_      off
+    _in_unsigned_long_trig_ off
+    _in_state_              off
+    _in_state_trig_         off
+    _in_string_             off
+    _in_string_trig_        off
+    _double_float_msg_  sw:out_output=
+    _short_int_msg_     .
+    _long_int_msg_      .
+    _state_msg_         .
+    _string_msg_        .
+i
 
 

@@ -13,15 +13,18 @@
 #include <sstream>
 
 group_control::group_control(char const* uname) :
- synthmod(synthmodnames::GROUPCONTROL, uname),
+
+ synthmod(
+    synthmodnames::GROUPCONTROL,
+    uname,
+    SM_UNGROUPABLE | SM_UNDUPLICABLE),
+
  in_play_trig(0), in_stop_trig(0),
  out_play_state(OFF),
  group_name(0),
  stop_pending(0),
  grp(0), runlist(0), empty_run_list(0)
 {
-    remove_groupability();
-    remove_duplicability();
     jwm.get_inputlist()->add_input(this, inputnames::IN_PLAY_TRIG);
     jwm.get_inputlist()->add_input(this, inputnames::IN_STOP_TRIG);
     jwm.get_outputlist()->add_output(this, outputnames::OUT_PLAY_STATE);
@@ -114,7 +117,7 @@ void group_control::init()
     }
     synthmodlist::linkedlist*
         emptyrunlist =
-            move_to_new_list_of_by(grpmodlist, empty_run(true));
+            move_to_new_list_of_by(grpmodlist, synthmod::SM_EMPTY_RUN);
     empty_run_list = move_to_array(emptyrunlist);
     emptyrunlist->empty_list(PRESERVE_DATA);
     delete emptyrunlist;

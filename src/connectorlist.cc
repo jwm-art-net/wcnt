@@ -165,4 +165,27 @@ bool connectorlist::make_connections()
     return true;
 }
 
+bool
+connectorlist::remake_connections(
+    synthmod* sm, outputnames::OUT_TYPE ot, outputnames::OUT_TYPE new_ot)
+{
+    char const* smname = sm->get_username();
+    llitem* i = find_in_data(sneak_first(), name(smname));
+    if (!i)
+        return false;
+    if (jwm.is_verbose())
+        std::cout << "\nRemaking connections for " << smname;
+    while(i){
+        connector* connect = i->get_data();
+        if (connect->get_output_type() == ot) {
+            connect->set_output_type(new_ot);
+            if (!connect->connect()) {
+                return false;
+            }
+        }
+        i = find_in_data(i->get_next(), name(smname));
+    }
+    return true;
+}
+
 #endif

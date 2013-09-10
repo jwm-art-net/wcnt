@@ -6,10 +6,9 @@
 #include "../include/conversions.h"
 
 constant_freq::constant_freq(char const* uname) :
- synthmod(synthmodnames::CONSTANT_FREQ, uname),
+ synthmod(synthmodnames::CONSTANT_FREQ, uname, SM_EMPTY_RUN),
  out_freq(0.0), out_phase_step(0.0)
 {
-    set_empty_run();
     jwm.get_outputlist()->add_output(this, outputnames::OUT_FREQ);
     jwm.get_outputlist()->add_output(this, outputnames::OUT_PHASE_STEP);
     create_params();

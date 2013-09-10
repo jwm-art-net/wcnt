@@ -6,7 +6,12 @@
 #include "../include/modparamlist.h"
 
 randomtrigger::randomtrigger(char const* uname) :
- synthmod(synthmodnames::RANDTRIGGER, uname),
+
+ synthmod(
+    synthmodnames::RANDTRIGGER,
+     uname,
+    SM_HAS_OUT_TRIG),
+
  in_trig(0), out_trig(OFF), out_not_trig(OFF), probability(0.5),
  not_probability(0.5)
 {

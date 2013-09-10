@@ -8,7 +8,7 @@
 #include <iostream>
 
 peak_detector::peak_detector(char const* uname) :
- synthmod(synthmodnames::PEAKDETECTOR, uname),
+ synthmod(synthmodnames::PEAKDETECTOR, uname, SM_DEFAULT),
  in_signal(0), sig_range_hi(0.0), sig_range_lo(0.0), message(0),
  force_abort(OFF), max_peaks(0), check(true)
 {

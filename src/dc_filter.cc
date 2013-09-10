@@ -7,7 +7,7 @@
 #include "../include/dtr.h"
 
 dc_filter::dc_filter(char const* uname) :
- synthmod(synthmodnames::DCFILTER, uname),
+ synthmod(synthmodnames::DCFILTER, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), output(0), dc_time(0), filter(0), filterarraymax(0),
  fpos(0), filtertotal(0)
 {

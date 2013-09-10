@@ -13,7 +13,7 @@
 #include "../include/miscfuncobj.h"
 
 stepper::stepper(char const* uname) :
- synthmod(synthmodnames::STEPPER, uname),
+ synthmod(synthmodnames::STEPPER, uname, SM_HAS_OUT_OUTPUT),
  in_trig(0), in_restart_trig(0), in_modulation(0),
  step_count(0), rtime(0), recycle(OFF),
  out_output(0),

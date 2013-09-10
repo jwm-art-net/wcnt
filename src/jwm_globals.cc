@@ -43,6 +43,7 @@
 
 jwm_globals::jwm_globals() :
  wc_path(0),    wc_file(0),
+ x_exit_bar(0), x_in_bar(0),
  verbose(false), dont_run(false), no_title(false),
  sample_rate(   jwm_init::default_samplerate),
  bt_per_minute( jwm_init::default_bpm),

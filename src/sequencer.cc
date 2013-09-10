@@ -12,7 +12,12 @@
 #include <iostream>
 
 sequencer::sequencer(char const* uname) :
- synthmod(synthmodnames::SEQUENCER, uname),
+
+ synthmod(
+    synthmodnames::SEQUENCER,
+    uname,
+    SM_UNDUPLICABLE | SM_UNGROUPABLE),
+
  in_bar_trig(0), in_bar(0), in_pos_step_size(0), in_beats_per_bar(0),
  in_beat_value(0),
  out_note_on_trig(OFF), out_note_slide_trig(OFF),
@@ -29,9 +34,6 @@ sequencer::sequencer(char const* uname) :
  play_item(0), next_in_riff(0), play_note(0), next_note(0), note_ptr(0),
  next_note_on_pos(-1), play_note_off_pos(-1)
 {
-    remove_groupability();
-    remove_duplicability();
-
     jwm.get_inputlist()->add_input(this, inputnames::IN_BAR);
     jwm.get_inputlist()->add_input(this, inputnames::IN_BAR_TRIG);
     jwm.get_inputlist()->add_input(this, inputnames::IN_POS_STEP_SIZE);

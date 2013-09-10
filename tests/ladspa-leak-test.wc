@@ -4,6 +4,11 @@ samplerate 44100
 bpm 120
 signature 4/4
 
+// this was just created because valgrind (my version atleast)
+// reports invalid read size errors etc with dlopen etc. just
+// for me to try and check my code because i was unsure if it
+// was something wrong i had done... blahblahblah.
+
 timer
 t
     timings

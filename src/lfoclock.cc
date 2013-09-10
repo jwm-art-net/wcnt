@@ -7,7 +7,7 @@
 #include "../include/conversions.h"
 
 lfo_clock::lfo_clock(char const* uname) :
- synthmod(synthmodnames::LFOCLOCK, uname),
+ synthmod(synthmodnames::LFOCLOCK, uname, SM_HAS_OUT_OUTPUT),
  out_phase_trig(OFF), out_phase_step(0.00), out_premod_phase_step(0.00),
  hrtz_freq(0.00), in_phase_trig(NULL), in_freq_mod1(NULL),
  in_freq_mod2(NULL), freq_mod1size(0.00), freq_mod2size(0.00),

@@ -468,23 +468,11 @@ cp2
     wet/dry    0.23
 cp2
 
-mix_chan
-ch1
-    in_left     cp1 out_left
-    in_right    cp1 out_right
-ch1
-
-mix_chan
-ch2
-    in_left     cp2 out_left
-    in_right    cp2 out_right
-ch2
-
 mixer
 mix1
     mix
-        synthmod name  ch1
-        synthmod name  ch2
+        synthmod name  cp1
+        synthmod name  cp2
     mix
     master_level  0.75
 mix1

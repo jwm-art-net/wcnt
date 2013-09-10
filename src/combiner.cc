@@ -13,10 +13,10 @@
 #include "../include/duplicate_list_module.h"
 
 combiner::combiner(char const* uname) :
- synthmod(synthmodnames::COMBINER, uname),
+ synthmod(synthmodnames::COMBINER, uname, SM_HAS_OUT_OUTPUT),
  linkedlist(MULTIREF_OFF, PRESERVE_DATA),
  out_output(0), meantotal(OFF),
- total(0), wcntsigs(0), wcntsig(0), sigcount(0)
+ total(0), sigs(0), sigcount(0)
 {
     jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
     create_params();
@@ -25,8 +25,8 @@ combiner::combiner(char const* uname) :
 
 combiner::~combiner()
 {
-    if (wcntsigs) // just delete the array, as the contents will reside
-        delete [] wcntsigs; // in the main (or group_control) modlist
+    if (sigs)
+        delete [] sigs;
 }
 
 void const* combiner::get_out(outputnames::OUT_TYPE ot) const
@@ -82,12 +82,20 @@ dobj* combiner::add_dobj(dobj* dbj)
 {
     if (dbj->get_object_type() == dobjnames::DOBJ_SYNTHMOD) {
         synthmod* sm = ((dobjmod*)dbj)->get_synthmod();
-        if (sm->get_module_type() != synthmodnames::WCNTSIGNAL) {
+        if (!sm->flag(SM_HAS_OUT_OUTPUT)) {
+            *err_msg = get_username();
+            *err_msg += " will not accept the module ";
             *err_msg += sm->get_username();
-            *err_msg += " is not a wcnt_signal";
+            *err_msg += " because modules of type ";
+            *err_msg += jwm.get_modnames()->
+                get_name(sm->get_module_type());
+            *err_msg += " do not have the ";
+            *err_msg += jwm.get_outputnames()->
+                get_name(outputnames::OUT_OUTPUT);
+            *err_msg += " output type.";
             return 0;
         }
-        if (!add_at_tail((wcnt_signal*)sm)) {
+        if (!add_at_tail(sm)) {
             *err_msg = " it is possible the module ";
             *err_msg += sm->get_username();
             *err_msg += " has already been added";
@@ -106,17 +114,30 @@ dobj* combiner::add_dobj(dobj* dbj)
 void combiner::init()
 {
     sigcount = get_count();
-    wcntsigs = move_to_array(this);
+    sigs = new double const*[sigcount + 1];
+    synthmod* sm = goto_first();
+    long ix = 0;
+    while(sm) {
+        sigs[ix] = (double const*)sm->get_out(outputnames::OUT_OUTPUT);
+        if (!sigs[ix]) {
+            *err_msg = "\nthings not looking good ;-(";
+            invalidate();
+            return;
+        }
+        sm = goto_next();
+        ix++;
+    }
+    sigs[ix] = 0;
+    empty_list();
 }
 
 void combiner::run()
 {
     total = 0;
     long ix = 0;
-    while((wcntsig = wcntsigs[ix])){
-        total += wcntsig->out_output;
-        ix++;
-    }
+    double const* o;
+    while((o = sigs[ix++]))
+        total += *o;
     if (meantotal == ON)
         out_output = total / sigcount;
     else
