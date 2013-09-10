@@ -16,7 +16,7 @@ DEFS=-O2 -fomit-frame-pointer -ffast-math
 # add -DCRAZY_SAMPLER if you want to see far too much information.
 
 # general debugging defs
-# DEFS=-g3 -fno-inline -DSHOW_LL_ITEM_COUNT -DSHOW_DOBJ_COUNT
+#DEFS=-g3 -fno-inline -DSHOW_LL_ITEM_COUNT -DSHOW_DOBJ_COUNT
 
 # the rest:
 PROG=wcnt

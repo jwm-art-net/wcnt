@@ -125,14 +125,25 @@ synthmod* spreader::duplicate_module(const char* uname, DUP_IO dupio)
                         set_groupname(new_grp, wcntsig->get_username());
                 synthmod* grpsig =
                             modlist->get_synthmod_by_name(grpsigname);
-                if (grpsig->get_module_type() ==
-                    synthmodnames::MOD_WCNTSIGNAL) sig_to_add = grpsig;
-                else {
-                    cout << "\nin spreader::duplicate, an attempt to ";
-                    cout << "fetch a wcnt_signal named " << grpsigname;
-                    cout << "resulted in finding ";
-                    cout << grpsig->get_username();
-                    cout << " which is not a wcnt_signal.";
+                if (grpsig) {
+                    if (grpsig->get_module_type() ==
+                                            synthmodnames::MOD_WCNTSIGNAL)
+                        sig_to_add = grpsig;
+                    else {
+                        cout << "\nin spreader::duplicate, an attempt to";
+                        cout << " fetch a wcnt_signal named "
+                                                            << grpsigname;
+                        cout << "resulted in finding ";
+                        cout << grpsig->get_username();
+                        cout << " which is not a wcnt_signal!?!?";
+                    }
+                }
+                else if (get_verbose()) {
+                    cout << "\nWarning! spreader " << uname;
+                    cout << " was expecting to find " << grpsigname;
+                    cout << " but could not.";
+                    cout << "\nCheck the order of grouping in original";
+                    cout << " group definition.";
                 }
                 delete [] grpsigname;
             }

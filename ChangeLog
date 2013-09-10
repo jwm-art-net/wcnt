@@ -3,7 +3,7 @@ Friday 6th October 2006
 
 FIXES:
     * connector::connect had a cout << null_pointer left
-      inside it by accident.
+      inside a conditional by accident.
 
     * removed group_clone data object name from dobjnames.
 
@@ -11,6 +11,21 @@ FIXES:
       inputedit::create_connectors for the output module to
       exist (ie to have previously been defined prior to the
       definition of the input_editor.)
+
+    * combiner::duplicate. when the combiner was put in a group
+      before the wcnt_signals it used, were added to the group,
+      when the group was duplicated the combiner could not find
+      them but did not check, consequently causing a segfault.
+      The checks are now in place, and if --verbose is used
+      then a warning is issued. see test_wcs/combinertest.wc.
+
+    * switcher fixed for combiner problem above
+
+    * spreader fixed for combiner problem above
+
+    * mixer fixed for combiner problem above
+
+    * trig_switcher fixed for combiner problem above
 
 --------------------------------------------------------------
 Thursday 5th October 2006

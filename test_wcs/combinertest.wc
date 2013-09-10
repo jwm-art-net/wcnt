@@ -1,8 +1,9 @@
 wcnt-1.25/jwmsynth
 
-// testing combiner with copyier and group.
+// testing combiner with copier and group.
 
-// run this with -v to see where the outputs go..
+// run this with -v to see where the outputs go...
+// ... and to see what is wrong with the group definition.
 
 header header.wch
 
@@ -70,18 +71,17 @@ wcnt_exit_module
 
 // grouping combiner seems to work correctly also.
 // with or without the wcnt_signals grouped or not.
+
 group
 g1
     modules
+        synthmod name cmb1
         synthmod name ws1
         synthmod name ws2
         synthmod name ws3
-        synthmod name cmb1
         synthmod name amp1
-//        synthmod name off
     modules
 g1
-
 
 copier grpc1 from g1 to g2 grpc1
 
@@ -100,6 +100,5 @@ pe1
 //            poopah
     editlist
 pe1
-
 
 wcnt-1.25/jwmsynth

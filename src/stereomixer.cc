@@ -70,7 +70,7 @@ synthmod* stereomixer::duplicate_module(const char* uname, DUP_IO dupio)
     char* new_grp = get_groupname(uname);
     bool regroup_channels = false;
     if (current_grp && new_grp) {
-        if (strcmp(current_grp, new_grp) == 0) {
+        if (strcmp(current_grp, new_grp) != 0) {
             regroup_channels = true;
         }
     }
@@ -87,32 +87,25 @@ synthmod* stereomixer::duplicate_module(const char* uname, DUP_IO dupio)
                         set_groupname(new_grp, chan->get_username());
                 synthmod* grpchan =
                             modlist->get_synthmod_by_name(grpchanname);
-                if (!grpchan) {
-                    *err_msg = "\nwhile duplicating the mixer ";
-                    *err_msg += "named ";
-                    *err_msg += get_username();
-                    *err_msg += " it attempted to find the grouped ";
-                    *err_msg += "mix_chan named ";
-                    *err_msg += grpchanname;
-                    *err_msg += " but it does not seem to exist. Please";
-                    *err_msg+=" check the placement of your definitions.";
-                    delete [] grpchanname;
-                    delete [] chan_grp;
-                    delete [] new_grp;
-                    delete [] current_grp;
-                    delete dup;
-                    return 0;
-                }
-                if (grpchan->get_module_type() ==
+                if (grpchan) {
+                    if (grpchan->get_module_type() ==
                                         synthmodnames::MOD_STEREOCHANNEL)
-                    chan_to_add = grpchan;
-                else {
-                    cout << "\nin stereomixer::duplicate, an attempt to ";
-                    cout << "fetch a mix_chan named " << grpchanname;
-                    cout << "resulted in finding ";
-                    cout << grpchan->get_username();
-                    cout << " which is not a mix_chan. this is an";
-                    cout << " error of some sort...Please report it.";
+                        chan_to_add = grpchan;
+                    else {
+                        cout << "\nin stereomixer::duplicate, an attempt";
+                        cout << " to fetch a mix_chan named "
+                                                        << grpchanname;
+                        cout << "resulted in finding ";
+                        cout << grpchan->get_username();
+                        cout << " which is not a mix_chan!?!?!";
+                    }
+                }
+                else if (get_verbose()) {
+                    cout << "\nWarning! mixer " << uname;
+                    cout << " was expecting to find " << grpchanname;
+                    cout << " but could not.";
+                    cout << "\nCheck the order of grouping in original";
+                    cout << " group definition.";
                 }
                 delete [] grpchanname;
             }
