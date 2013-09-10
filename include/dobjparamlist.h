@@ -3,36 +3,25 @@
 
 #include "dobjparam.h"
 #include "linkedlist.h"
+#include "listwork.h"
 
-class dobjparamlist
+/*
+// holds a list of parameters for every dobj created
+// which has parameters... see also: jwm_globals.h
+*/
+
+class dobjparamlist : public linked_list<dobjparam>
 {
-public:
-    dobjparamlist();
-    ~dobjparamlist();
-    dobjparam* add_dobjparam(dobjparam*);
+ public:
+    dobjparamlist(){};
+    dobjparamlist(DESTRUCTION d) : linkedlist(MULTIREF_OFF, d) {};
+
+    dobjparam* add_dobjparam(dobjparam* dp)
+        { return add_at_tail(dp)->get_data(); };
+
     dobjparam* add_dobjparam(dobjnames::DOBJ_TYPE, paramnames::PAR_TYPE);
-    dobjparam* goto_first() {
-        return (dpar = (dobjparam*)
-         (dpar_item = dpar_list->goto_first())->get_data());
-    }
-    dobjparam* goto_last() {
-        return (dpar = (dobjparam*)
-         (dpar_item = dpar_list->goto_last())->get_data());
-    }
-    dobjparam* goto_prev() {
-        return (dpar = (dobjparam*)
-         (dpar_item = dpar_list->goto_prev())->get_data());
-    }
-    dobjparam* goto_next() {
-        return (dpar = (dobjparam*)
-         (dpar_item = dpar_list->goto_next())->get_data());
-    }
-    dobjparamlist* get_dobjparamlist_for_dobj_type(dobjnames::DOBJ_TYPE);
+
     bool validate(dobj*, paramnames::PAR_TYPE, stockerrs::ERR_TYPE);
-private:
-    linkedlist* dpar_list;
-    ll_item* dpar_item;
-    dobjparam* dpar;
 };
 
 #endif

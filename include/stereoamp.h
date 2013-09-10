@@ -1,7 +1,7 @@
 #ifndef STEREOAMP_H
 #define STEREOAMP_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 /*
 // because we're now using libsndfile to handle file input/output
@@ -14,7 +14,6 @@ public:
     stereo_amp(char const*);
     ~stereo_amp();
     void run();
-    void init(){};
     stockerrs::ERR_TYPE validate();
     void const* get_out(outputnames::OUT_TYPE) const;
     void const* set_in(inputnames::IN_TYPE, void const*);

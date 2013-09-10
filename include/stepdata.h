@@ -2,6 +2,7 @@
 #define STEPDATA_H
 
 #include "dobj.h"
+#include "miscfuncobj.h"
 
 /*
     step_data
@@ -36,6 +37,10 @@ public:
     bool set_param(paramnames::PAR_TYPE, void*);
     void const* get_param(paramnames::PAR_TYPE) const;
     stockerrs::ERR_TYPE validate();
+
+    bool operator()(_pos_ & n) const {
+        return n(position);
+    }
 
 private:
     double position;

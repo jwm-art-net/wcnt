@@ -3,11 +3,12 @@
 #---------------------------------------------------
 DEFS=-O2 -fomit-frame-pointer -DWITH_LADSPA
 
-# Previously the optimised #DEFINES had a -ffast-math but this causes trouble
-# for the orbit module, well, not trouble, but it messes with the values.
+# Previously the optimised #DEFINES had a -ffast-math but by using this 
+# further calculation quality is sacrificed so i don't use it.
 
 # remove -DWITH_LADSPA from the DEFS= line if you wish to remove the (meagre)
-#                      LADSPA plugin support.
+#                      LADSPA plugin support. but you'd be a fool.
+
 
 #---------------------------------------------------
 # development/debugging #DEFINES  (pretty ugly)
@@ -41,9 +42,10 @@ DEFS=-O2 -fomit-frame-pointer -DWITH_LADSPA
 # DEBUG_STRLIST_PAR = displays strings read from file while processing the
 #                     special parameter type used by the input_editor and
 #                     param_editor data objects.
+
 #DEFS=-g3 -fno-inline -DWITH_LADSPA -DNAME_CHECK
 
-# the rest:
+# nothing to be modified further:
 PROG=wcnt
 WARNS=-Wall -ansi -pedantic -D_GNU_SOURCE
 CFLAGS=$(DEFS) $(WARNS) `pkg-config sndfile --cflags`
@@ -58,7 +60,7 @@ $(PROG) : $(OBJS)
 	@echo Linking $(PROG)
 	@$(CXX) $(CFLAGS) $(OBJS) $(LIBS) -ldl -o $(PROG)
 # uncomment line below and comment out line above to use ccmalloc 
-# memory profiler in the linking process...
+# memory profiler in the linking process... but i prefer to use valgrind
 #	@ccmalloc $(CXX) $(CFLAGS) $(OBJS) $(LIBS) -ldl -o $(PROG)
 	@echo $(PROG) was compiled with:
 	@echo $(CXX) $(CFLAGS)

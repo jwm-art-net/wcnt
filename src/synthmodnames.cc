@@ -47,7 +47,6 @@ const synthmodnames::mod_data synthmodnames::data[LAST] =
     { FREQGEN,          "freq_generator"    },
     { LFOCLOCK,         "lfo_clock"         },
     { LFOCONTROL,       "lfo_controller"    },
-    { LPFILTER,         "lp_filter"         },
     { MODIFIER,         "modifier"          },
     { NOISEGEN,         "noise_generator"   },
     { OSCCLOCK,         "osc_clock"         },
@@ -65,7 +64,6 @@ const synthmodnames::mod_data synthmodnames::data[LAST] =
     { LOGICTRIGGER,     "logic_trigger"     },
     { SWITCHER,         "switcher"          },
     { WCNTSIGNAL,       "wcnt_signal"       },
-    { HPFILTER,         "hp_filter"         },
     { COMBINER,         "combiner"          },
     { TIMEMAP,          "time_map"          },
     { CONTRASTER,       "contraster"        },
@@ -111,12 +109,19 @@ const synthmodnames::mod_data synthmodnames::data[LAST] =
     { BODE_FREQ_SHIFTER,        "bode_freq_shifter"         },
     { CAPS_PLATE,               "caps_plate"                },
     { CAPS_PLATE2X2,            "caps_plate2x2"             },
+    #endif
     { WAVE,             "wave"              },
     { WAVE_PHASE,       "wave_phase"        },
     { CONSTANT_FREQ,    "constant_freq"     },
     { CONSTANT_NOTE,    "constant_note"     },
-    { BALANCE,          "balance"           }
-    #endif
+    { BALANCE,          "balance"           },
+    { TRIGECHO,         "trig_echo"         },
+    { INSPECT,          "inspector"         },
+    { TRIGCOUNTER,      "trig_counter"      },
+    { TRIGROUTER,       "trig_router"       },
+    { GROUPCONTROL,     "group_control"     },
+    { FADER,            "fader"             },
+    { SAMPLECLIMB,      "sample_climb"      }
 };
 
 #endif

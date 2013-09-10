@@ -1,7 +1,7 @@
 #ifndef NONEZERO_H
 #define NONEZERO_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 /* There should be only one..........'cos there's no point 'aving two or
 more.  the plan is that it should not be an option for the user to create
@@ -38,13 +38,13 @@ public:
     // virtual funcs
     void run(){};
     void const* get_out(outputnames::OUT_TYPE) const;
-    synthmod* duplicate_module(const char* uname, DUP_IO);
 
 private:
     const double out_none_double;
     const short out_none_short;
     const unsigned long out_none_ulong;
     const STATUS out_none_STATUS;
+    char* out_none_string;
 };
 
 #endif

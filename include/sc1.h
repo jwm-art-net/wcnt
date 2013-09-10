@@ -3,7 +3,7 @@
 #ifdef WITH_LADSPA
 
 #include "ladspa_loader.h"
-#include "synthmodule.h"
+#include "synthmod.h"
 
 /*
 Plugin Name: "SC1"

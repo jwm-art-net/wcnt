@@ -22,11 +22,13 @@
 #include "../include/jwmsynth.h"
 #include "../include/jwm_globals.h"
 #include "../include/ladspa_loader.h"
-#include "../include/synthmodulelist.h"
+#include "../include/synthmodlist.h"
 #include "../include/sanity_checks.h"
 
 void title();
 void exitramblings();
+
+void test();
 
 int main(const int argc, const char** const argv)
 {
@@ -35,15 +37,6 @@ int main(const int argc, const char** const argv)
     return 0;
     #endif
     cmdline* cmd = new cmdline(argc, argv);
-    cmd->scan();
-    cmd->set_jwm_globals();
-    if (!jwm.is_no_title())
-        title();
-    if (!cmd->is_good_opts()) {
-        std::cout << cmd->get_message() << "\n";
-        delete cmd;
-        return -1;
-    }
     // ladspa_loader uses dynamic linker - which disliked it when
     // dlclose was called while globals were destructing... so
     // ladspa_loader is created/deleted here now instead... along
@@ -52,14 +45,28 @@ int main(const int argc, const char** const argv)
     ladspa_loader* ladspaloader = new ladspa_loader;
     jwm.register_ladspaloader(ladspaloader);
     #endif
-    synthmodlist* modlist = new synthmodlist;
+    synthmodlist*
+        modlist = new synthmodlist(DELETE_DATA);
     jwm.register_modlist(modlist);
     // the above is needed before cmd->scan because scan might be
     // prompted (by commandline) to create help (ie for modules etc).
+    cmd->scan();
+    cmd->set_jwm_globals();
+    if (!jwm.is_no_title())
+        title();
+    if (!cmd->is_good_opts()) {
+        std::cout << cmd->get_message() << "\n";
+        delete cmd;
+        delete modlist;
+        #ifdef WITH_LADSPA
+        delete ladspaloader;
+        #endif
+        return -1;
+    }
     jwmsynth* thesynth = new jwmsynth();
     if (   !thesynth->is_valid()       || !thesynth->generate_synth()
-        || !thesynth->connect_synth()  || !thesynth->validate_synth()
-        || !thesynth->execute_synth())
+        || !thesynth->validate_synth() || !thesynth->connect_synth()
+        || !thesynth->init_synth()     || !thesynth->execute_synth())
     {
         std::cout << thesynth->get_error_msg();
         std::cout << "\n... exiting program ...\n";

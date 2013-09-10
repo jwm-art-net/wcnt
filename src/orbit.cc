@@ -17,17 +17,15 @@ orbit::orbit(char const* uname) :
  test_iter(0),
  x(0.0), y(0.0), scale(1.0)
 {
-    jwm.get_inputlist().add_input(this, inputnames::IN_RESTART_TRIG);
-    jwm.get_inputlist().add_input(this, inputnames::IN_TRIG);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_X);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_Y);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_RESTART_TRIG);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_TRIG);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_X);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_Y);
     create_params();
 }
 
 orbit::~orbit()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
 }
 
 void const* orbit::set_in(inputnames::IN_TYPE it, void const* o)
@@ -98,7 +96,8 @@ void orbit::init()
     const STATUS* trig_input = in_trig;
     STATUS trig = ON;
     in_trig = &trig;
-    if(test_iter == 0) return;
+    if(test_iter == 0)
+        return;
     for(unsigned long i = 0; i < test_iter; i++){
         run();
         if (out_x > 0){ if(out_x > max_px) max_px = out_x; }
@@ -179,17 +178,17 @@ void orbit::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_paramlist().add_param(synthmodnames::ORBIT,
+    jwm.get_paramlist()->add_param(synthmodnames::ORBIT,
                                paramnames::ORBIT_TYPE);
-    jwm.get_fxsparamlist().add_param("hopalong/threeply/quadrup",
+    jwm.get_fxsparamlist()->add_param("hopalong/threeply/quadrup",
                                   paramnames::ORBIT_TYPE);
-    jwm.get_paramlist().add_param(synthmodnames::ORBIT,
+    jwm.get_paramlist()->add_param(synthmodnames::ORBIT,
                                paramnames::A);
-    jwm.get_paramlist().add_param(synthmodnames::ORBIT,
+    jwm.get_paramlist()->add_param(synthmodnames::ORBIT,
                                paramnames::B);
-    jwm.get_paramlist().add_param(synthmodnames::ORBIT,
+    jwm.get_paramlist()->add_param(synthmodnames::ORBIT,
                                paramnames::C);
-    jwm.get_paramlist().add_param(synthmodnames::ORBIT,
+    jwm.get_paramlist()->add_param(synthmodnames::ORBIT,
                                paramnames::TEST_ITER);
     done_params = true;
 }

@@ -1,7 +1,7 @@
 #ifndef SUBTRACTER_H
 #define SUBTRACT_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 class subtracter : public synthmod
 {

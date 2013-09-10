@@ -10,17 +10,15 @@ pan::pan(char const* uname) :
  in_signal(0), in_pan_mod(0), out_l(0), out_r(0), panpos(0),
  pan_modsize(0), pan_pos(0)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_LEFT);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_RIGHT);
-    jwm.get_inputlist().add_input(this, inputnames::IN_SIGNAL);
-    jwm.get_inputlist().add_input(this, inputnames::IN_PAN_MOD);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_LEFT);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_RIGHT);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_PAN_MOD);
     create_params();
 }
 
 pan::~pan()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
 }
 
 void const* pan::get_out(outputnames::OUT_TYPE ot) const
@@ -80,18 +78,18 @@ void const* pan::get_param(paramnames::PAR_TYPE pt) const
 
 stockerrs::ERR_TYPE pan::validate()
 {
-    if (!jwm.get_paramlist().validate(this, paramnames::PAN,
+    if (!jwm.get_paramlist()->validate(this, paramnames::PAN,
             stockerrs::ERR_RANGE_M1_1))
     {
-        *err_msg = jwm.get_paramnames().get_name(paramnames::PAN);
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::PAN);
         invalidate();
         return stockerrs::ERR_RANGE_M1_1;
     }
-    if (!jwm.get_paramlist().validate(this, paramnames::PAN_MODSIZE,
+    if (!jwm.get_paramlist()->validate(this, paramnames::PAN_MODSIZE,
             stockerrs::ERR_RANGE_0_1))
     {
         *err_msg =
-         jwm.get_paramnames().get_name(paramnames::PAN_MODSIZE);
+         jwm.get_paramnames()->get_name(paramnames::PAN_MODSIZE);
         invalidate();
         return stockerrs::ERR_RANGE_0_1;
     }
@@ -119,8 +117,8 @@ void pan::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_paramlist().add_param(synthmodnames::PAN, paramnames::PAN);
-    jwm.get_paramlist().add_param(synthmodnames::PAN,
+    jwm.get_paramlist()->add_param(synthmodnames::PAN, paramnames::PAN);
+    jwm.get_paramlist()->add_param(synthmodnames::PAN,
                                                 paramnames::PAN_MODSIZE);
     done_params = true;
 }

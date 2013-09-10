@@ -27,13 +27,13 @@ STATS_DEC
 
 bool dobj::is_named_by_user()
 {
-    if (jwm.get_dobjnames().check_type(object_type)
+    if (jwm.get_dobjnames()->check_type(object_type)
         == dobjnames::DOBJ_FIRST)
     {
         *err_msg = "\nError in object ";
         if (username) *err_msg += username;
         *err_msg += " type ";
-        *err_msg += jwm.get_dobjnames().get_name(object_type);
+        *err_msg += jwm.get_dobjnames()->get_name(object_type);
         return (valid = false);
     }
     // check_type(object_type) means need only check for 1 condition...
@@ -46,18 +46,18 @@ bool dobj::set_username(const char* un)
 {
     if (!is_named_by_user()) {// should not be given username
         *err_msg = "\ntried to set username of object type ";
-        *err_msg += jwm.get_dobjnames().get_name(object_type);
+        *err_msg += jwm.get_dobjnames()->get_name(object_type);
         *err_msg += " - does not required naming";
         return (valid = false);
     }
     if (un == 0) {
         *err_msg = "\nNULL username specified for object type ";
-        *err_msg += jwm.get_dobjnames().get_name(object_type);
+        *err_msg += jwm.get_dobjnames()->get_name(object_type);
         return (valid = false);
     }
     if (strlen(un) == 0) {
         *err_msg = "\nNULL length username specified for object type ";
-        *err_msg += jwm.get_dobjnames().get_name(object_type);
+        *err_msg += jwm.get_dobjnames()->get_name(object_type);
         return (valid = false);
     }
     if (username) delete [] username;
@@ -68,7 +68,7 @@ bool dobj::set_username(const char* un)
 
 char const* dobj::get_username()
 {
-    if (jwm.get_dobjnames().check_type(object_type)
+    if (jwm.get_dobjnames()->check_type(object_type)
         == dobjnames::DOBJ_FIRST)
         return 0;
     return username;
@@ -103,7 +103,7 @@ dobj* dobj::duplicate_dobj(const char* uname)
     *err_msg = "from:\ndata object ";
     if (username) *err_msg += username;
     *err_msg += " of data type ";
-    *err_msg += jwm.get_dobjnames().get_name(object_type);
+    *err_msg += jwm.get_dobjnames()->get_name(object_type);
     *err_msg += " does not allow copies to be made of it.";
     return 0;
 }

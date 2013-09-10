@@ -9,46 +9,49 @@
 
 timer::timer(char const* uname) :
  synthmod(synthmodnames::TIMER, uname),
- out_count(0), out_trig(OFF), t_item(0), t_list(0), current(0),
+ out_count(0), out_trig(OFF),
+ timings(0), time_ix(0),
  samples(0)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_TRIG);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_COUNT);
-    t_list =
-        new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
+    remove_duplicability();
+    remove_groupability();
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_TRIG);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_COUNT);
     create_moddobj();
 }
+#include <iostream>
 
 timer::~timer()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    goto_first();
-    while(current) {
-        delete current;
-        goto_next();
-    }
-    delete t_list;
+    if (timings)
+        destroy_array_moved_from_list(timings);
 }
 
 timing* timer::add_timing(double secs)
 {
-    if (!(current = new timing(secs))) return 0;
-    if (!t_list->add_at_tail(current)) return 0;
-    return current;
+    timing* newtime = 0;
+    if (!(newtime = new timing(secs)))
+        return 0;
+    return add_at_tail(newtime)->get_data();
 }
 
 timing* timer::add_timing(timing* t)
 {
     if (!t) return 0;
-    if (!t_list->add_at_tail(t)) return 0;
-    return current = t;
+    return add_at_tail(t)->get_data();
 }
 
 void timer::init()
 {
-    goto_first();
-    if (current)
-        samples = (unsigned long)(current->get_time() * jwm.samplerate());
+    if(!(timings = move_to_array(this))){
+        invalidate();
+        return;
+    }
+    time_ix = 0;
+    timing* t = timings[time_ix];
+    if (t)
+        samples = (unsigned long)
+            (t->get_time() * jwm.samplerate());
     else
         samples = (unsigned long) -1;
     out_count = -1;
@@ -59,12 +62,13 @@ void timer::run()
     if (samples == 0) {
         out_count++;
         out_trig = ON;
-        goto_next();
-        if (current)
-            samples
-             = (unsigned long)(current->get_time() * jwm.samplerate());
+        time_ix++;
+        timing* t = timings[time_ix];
+        if (t)
+            samples = (unsigned long)
+                (t->get_time() * jwm.samplerate());
         else
-            samples = (unsigned long) -1;
+            samples = (unsigned long)-1;
     }
     else {
         if (out_trig == ON)
@@ -81,12 +85,6 @@ void const* timer::get_out(outputnames::OUT_TYPE ot) const
         case outputnames::OUT_COUNT:return &out_count;
         default: return 0;
     }
-}
-
-synthmod* timer::duplicate_module(const char* uname, DUP_IO dupio)
-{
-    *err_msg = "timer module does not allow copies of it to be made.";
-    return 0;
 }
 
 dobj* timer::add_dobj(dobj* dbj)
@@ -115,7 +113,7 @@ void timer::create_moddobj()
     if (done_moddobj == true)
         return;
     moddobj* mdbj;
-    mdbj = jwm.get_moddobjlist().add_moddobj(
+    mdbj = jwm.get_moddobjlist()->add_moddobj(
         synthmodnames::TIMER, dobjnames::LST_TIMINGS);
     mdbj->get_dobjdobjlist()->add_dobjdobj(
         dobjnames::LST_TIMINGS, dobjnames::SIN_TIME);

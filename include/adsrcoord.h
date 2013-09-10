@@ -35,6 +35,14 @@ public:
     bool set_param(paramnames::PAR_TYPE, void*);
     void const* get_param(paramnames::PAR_TYPE pt) const;
 
+    bool operator()(SECT & s) const {
+        return this->sect == s;
+    }
+
+    bool operator()(int & s) const {
+        return (int)this->sect == s;
+    }
+
 private:
     SECT sect;
     double upper_time;

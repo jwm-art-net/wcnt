@@ -13,8 +13,8 @@ rms::rms(char const* uname) :
  in_signal(0), out_rms(0), rms_time(0), output(0), rmsarr(0),
  arraymax(0), arrpos(0), sqrsum(0)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_RMS);
-    jwm.get_inputlist().add_input(this, inputnames::IN_SIGNAL);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_RMS);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
     create_params();
 }
 
@@ -22,20 +22,10 @@ rms::rms(char const* uname) :
 
 rms::~rms()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
     if (rmsarr)
         delete [] rmsarr;
     else
         std::cout << "\noh shit!";
-}
-
-void rms::init()
-{
-    arraymax = (short)((rms_time * jwm.samplerate()) / 1000);
-    rmsarr = new double[arraymax];
-    for (int i = 0; i < arraymax; i++)
-        rmsarr[i] = 0;
 }
 
 void const* rms::get_out(outputnames::OUT_TYPE ot) const
@@ -88,14 +78,26 @@ void const* rms::get_param(paramnames::PAR_TYPE pt) const
 
 stockerrs::ERR_TYPE rms::validate()
 {
-    if (!jwm.get_paramlist().validate(this, paramnames::RMS_TIME,
+    if (!jwm.get_paramlist()->validate(this, paramnames::RMS_TIME,
             stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames().get_name(paramnames::RMS_TIME);
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::RMS_TIME);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     return stockerrs::ERR_NO_ERROR;
+}
+
+void rms::init()
+{
+    arraymax = (short)((rms_time * jwm.samplerate()) / 1000);
+    rmsarr = new double[arraymax];
+    if (!rmsarr) {
+        invalidate();
+        return;
+    }
+    for (int i = 0; i < arraymax; i++)
+        rmsarr[i] = 0;
 }
 
 void rms::run()
@@ -127,7 +129,7 @@ void rms::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_paramlist().add_param(synthmodnames::RMS,
+    jwm.get_paramlist()->add_param(synthmodnames::RMS,
         paramnames::RMS_TIME);
     done_params = true;
 }

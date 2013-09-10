@@ -12,7 +12,7 @@ peak_detector::peak_detector(char const* uname) :
  in_signal(0), sig_range_hi(0.0), sig_range_lo(0.0), message(0),
  force_abort(OFF), max_peaks(0), check(true)
 {
-    jwm.get_inputlist().add_input(this, inputnames::IN_SIGNAL);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
     create_params();
 }
 
@@ -20,7 +20,6 @@ peak_detector::~peak_detector()
 {
     if (message)
         delete [] message;
-    jwm.get_inputlist().delete_module_inputs(this);
 }
 
 void peak_detector::set_message(const char* msg)
@@ -134,15 +133,15 @@ void peak_detector::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::PEAKDETECTOR, paramnames::SIG_RANGE_HI);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::PEAKDETECTOR, paramnames::SIG_RANGE_LO);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::PEAKDETECTOR, paramnames::MSG);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::PEAKDETECTOR, paramnames::FORCE_ABORT);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::PEAKDETECTOR, paramnames::MAXPEAKS);
     done_params = true;
 }

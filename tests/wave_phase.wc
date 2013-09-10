@@ -1,0 +1,126 @@
+wcnt-1.26/jwmsynth
+
+samplerate 44100
+bpm 120
+signature 4/4
+
+timer
+t
+    timings
+        time seconds 0
+        time seconds 25
+    timings
+t
+
+constant_note middle-c name c0 middle-c
+
+osc_clock
+osc1
+        in_note_on_trig     t out_trig
+        in_note_slide_trig  off
+        in_play_state       off
+        in_frequency        middle-c out_frequency
+        in_freq_mod1        sine2 out_output //off
+        in_freq_mod2        off
+        octave_offset       0
+        tuning_semitones    0
+        portamento_time     0
+        response_time       0
+        freq_mod1_size      2
+        freq_mod2_size      1
+osc1
+
+osc_clock
+osc2
+        in_note_on_trig     t out_trig
+        in_note_slide_trig  off
+        in_play_state       off
+        in_frequency        middle-c out_frequency
+        in_freq_mod1        sine1 out_output //off
+        in_freq_mod2        off
+        octave_offset       -2
+        tuning_semitones    2
+        portamento_time     0
+        response_time       0
+        freq_mod1_size      2
+        freq_mod2_size      1
+osc2
+
+wave_phase
+sine1
+    in_phase_trig       osc1 out_phase_trig
+    in_phase_step       osc1 out_phase_step
+    in_shape_phase_step osc2 out_phase_step
+    type        sine
+    shape_type  sine
+    on_trig_reset_phase on
+    recycle_mode        off
+    sync_shape          on
+    invert_alt          on
+    phase_cycles        0.75
+sine1
+
+wave_phase
+sine2
+    in_phase_trig       osc1 out_phase_trig
+    in_phase_step       osc2 out_phase_step
+    in_shape_phase_step osc1 out_phase_step
+    type        sine
+    shape_type  sine
+    on_trig_reset_phase off
+    recycle_mode        on
+    sync_shape          on
+    invert_alt          on
+    phase_cycles        0.5
+sine2
+
+fader
+fade
+    in_bar       t out_count
+    in_bar_trig  t out_trig
+    start_bar      0
+    end_bar        1
+    fade_in_time   100
+    fade_out_time  1000
+fade
+
+constant mbias value 0.5 mbias
+
+modifier
+m12
+    in_signal1  sine1 out_output
+    in_signal2  sine2 out_output
+    in_bias mbias out_output
+    function  mul
+    type      m2
+m12
+
+multiplier
+out
+    in_signal1 m12 out_output // sine2 out_output //
+    in_signal2 fade out_output
+out
+
+wavfile_out
+wav
+    in_left     out out_output
+    in_right    out out_output
+    in_bar      fade out_bar
+    in_bar_trig fade out_trig
+    snapshot_mode off
+    data_format pcm16
+    filename    wave_phase.wav
+    start_bar   0
+    end_bar     1
+wav
+
+wcnt_exit
+exit
+    in_bar      fade out_bar
+    exit_bar    1
+exit
+
+wcnt-1.26/jwmsynth
+
+
+

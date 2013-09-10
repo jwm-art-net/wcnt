@@ -14,24 +14,16 @@ lfo_controller::lfo_controller(char const* uname) :
  ramp_samples(0), resp_size(0), resp_fa_level(0), resp_ac(0),
  level_size(0), current_level(0)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_PRE_AMP_MOD);
-    jwm.get_inputlist().add_input(this, inputnames::IN_TRIG);
-    jwm.get_inputlist().add_input(this, inputnames::IN_WAVE);
-    jwm.get_inputlist().add_input(this, inputnames::IN_AMP_MOD);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_PRE_AMP_MOD);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_TRIG);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_WAVE);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_AMP_MOD);
     create_params();
 }
 
 lfo_controller::~lfo_controller()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
-}
-
-void lfo_controller::init()
-{
-    resp_size = (double) 1 / ms_to_samples(response_time);
-    ams_r = 1 - amp_modsize;
 }
 
 void const* lfo_controller::get_out(outputnames::OUT_TYPE ot) const
@@ -109,35 +101,41 @@ void const* lfo_controller::get_param(paramnames::PAR_TYPE pt) const
 
 stockerrs::ERR_TYPE lfo_controller::validate()
 {
-    if (!jwm.get_paramlist().validate(this, paramnames::DELAY_TIME,
+    if (!jwm.get_paramlist()->validate(this, paramnames::DELAY_TIME,
             stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames().get_name(paramnames::DELAY_TIME);
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::DELAY_TIME);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
-    if (!jwm.get_paramlist().validate(this, paramnames::RAMP_TIME,
+    if (!jwm.get_paramlist()->validate(this, paramnames::RAMP_TIME,
             stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames().get_name(paramnames::RAMP_TIME);
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::RAMP_TIME);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
-    if (!jwm.get_paramlist().validate(this, paramnames::RESPONSE_TIME,
+    if (!jwm.get_paramlist()->validate(this, paramnames::RESPONSE_TIME,
             stockerrs::ERR_NEGATIVE))
     {
         *err_msg =
-         jwm.get_paramnames().get_name(paramnames::RESPONSE_TIME);
+         jwm.get_paramnames()->get_name(paramnames::RESPONSE_TIME);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (response_time < 0) {
         *err_msg
-         += jwm.get_paramnames().get_name(paramnames::RESPONSE_TIME);
+         += jwm.get_paramnames()->get_name(paramnames::RESPONSE_TIME);
         *err_msg += " less than zero";
         invalidate();
     }
     return stockerrs::ERR_NO_ERROR;
+}
+
+void lfo_controller::init()
+{
+    resp_size = (double) 1 / ms_to_samples(response_time);
+    ams_r = 1 - amp_modsize;
 }
 
 void lfo_controller::run()
@@ -179,17 +177,17 @@ void lfo_controller::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::LFOCONTROL, paramnames::DELAY_TIME);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::LFOCONTROL, paramnames::RAMP_TIME);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::LFOCONTROL, paramnames::START_LEVEL);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::LFOCONTROL, paramnames::END_LEVEL);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::LFOCONTROL, paramnames::RESPONSE_TIME);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::LFOCONTROL, paramnames::AMP_MODSIZE);
     done_params = true;
 }

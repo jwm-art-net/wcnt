@@ -1,7 +1,7 @@
 #ifndef CONSTMOD_H
 #define CONSTMOD_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 class constmod : public synthmod
 {

@@ -3,7 +3,7 @@
 
 // very simple module to invert a signal
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 class invert : public synthmod
 {

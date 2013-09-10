@@ -29,7 +29,7 @@ bool adsr_scaler::set_param(paramnames::PAR_TYPE pt, void* data)
             *err_msg = "\n";
             *err_msg += ((synthmod*)data)->get_username();
             *err_msg += " is not an ";
-            *err_msg += jwm.get_modnames().get_name(synthmodnames::ADSR);
+            *err_msg += jwm.get_modnames()->get_name(synthmodnames::ADSR);
             *err_msg += "!";
             return false;
         case paramnames::ATTACK_SCALE:
@@ -63,26 +63,26 @@ stockerrs::ERR_TYPE adsr_scaler::validate()
     //  - won't they???
     // well no, not if the adsr was defined before the adsr_scaler ;-)
     // (clue: it would have to be).
-    if (!jwm.get_dparlist().validate(
+    if (!jwm.get_dparlist()->validate(
         this, paramnames::ATTACK_SCALE, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames().get_name(
+        *err_msg = jwm.get_paramnames()->get_name(
                                         paramnames::ATTACK_SCALE);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
-    if (!jwm.get_dparlist().validate(
+    if (!jwm.get_dparlist()->validate(
         this, paramnames::DECAY_SCALE, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames().get_name(
+        *err_msg = jwm.get_paramnames()->get_name(
                                         paramnames::DECAY_SCALE);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
-    if (!jwm.get_dparlist().validate(
+    if (!jwm.get_dparlist()->validate(
         this, paramnames::RELEASE_SCALE, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames().get_name(
+        *err_msg = jwm.get_paramnames()->get_name(
                                         paramnames::RELEASE_SCALE);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
@@ -114,13 +114,13 @@ stockerrs::ERR_TYPE adsr_scaler::validate()
 void adsr_scaler::create_params()
 {
     if (done_params == true) return;
-    jwm.get_dparlist().add_dobjparam(dobjnames::DEF_ADSR_SCALER,
+    jwm.get_dparlist()->add_dobjparam(dobjnames::DEF_ADSR_SCALER,
                                     paramnames::ADSR_NAME);
-    jwm.get_dparlist().add_dobjparam(dobjnames::DEF_ADSR_SCALER,
+    jwm.get_dparlist()->add_dobjparam(dobjnames::DEF_ADSR_SCALER,
                                     paramnames::ATTACK_SCALE);
-    jwm.get_dparlist().add_dobjparam(dobjnames::DEF_ADSR_SCALER,
+    jwm.get_dparlist()->add_dobjparam(dobjnames::DEF_ADSR_SCALER,
                                     paramnames::DECAY_SCALE);
-    jwm.get_dparlist().add_dobjparam(dobjnames::DEF_ADSR_SCALER,
+    jwm.get_dparlist()->add_dobjparam(dobjnames::DEF_ADSR_SCALER,
                                     paramnames::RELEASE_SCALE);
     done_params = true;
 }

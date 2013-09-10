@@ -3,43 +3,39 @@
 
 #include "dobjnames.h"
 #include "linkedlist.h"
+#include "listwork.h"
 
-class dobj;
+#include "dobj.h"
 
-class dobjlist
+class dobjlist : public linked_list<dobj>
 {
-public:
-    dobjlist();
-    ~dobjlist();
-    dobj* add_dobj(dobj*); // add a dobj to the list
+ public:
+    dobjlist(): search_type(dobjnames::DOBJ_FIRST), search_result(0)
+    {};
+
+    dobj* add_dobj(dobj* d) { return add_at_tail(d)->get_data(); }
+
     // create_dobj does not add to list.
     dobj* create_dobj(dobjnames::DOBJ_TYPE);
-    dobj* goto_first() {
-        return d_obj = (dobj*)
-         (dobj_item = dobj_list->goto_first())->get_data();
-    }
-    dobj* goto_last() {
-        return d_obj = (dobj*)
-         (dobj_item = dobj_list->goto_last())->get_data();
-    }
-    dobj* goto_prev() {
-        return d_obj = (dobj*)
-         (dobj_item = dobj_list->goto_prev())->get_data();
-    }
-    dobj* goto_next() {
-        return d_obj = (dobj*)
-         (dobj_item = dobj_list->goto_next())->get_data();
-    }
-    dobj* get_dobj_by_name(char const*);
-    dobj* get_first_of_dobj_type(dobjnames::DOBJ_TYPE);
-    dobj* get_next_of_dobj_type();
 
-private:
-    linkedlist* dobj_list;
-    ll_item* dobj_item;
-    dobj*	d_obj;
-    dobjnames::DOBJ_TYPE search_dobj_type;
-    ll_item* dobj_search;
+    dobj* get_dobj_by_name(char const* n) {
+        return find_in_data(sneak_first(), name(n))->get_data();
+    }
+
+    dobj* get_first_of_type(dobjnames::DOBJ_TYPE dt) {
+        return (search_result =
+            find_in_data(sneak_first(), search_type = dt))->get_data();
+    }
+
+    dobj* get_next_of_type() {
+        return (search_result =
+            find_in_data(search_result->get_next(),
+                search_type))->get_data();
+    }
+
+ private:
+    dobjnames::DOBJ_TYPE search_type;
+    llitem* search_result;
 };
 
 #endif

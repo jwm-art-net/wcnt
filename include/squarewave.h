@@ -1,7 +1,7 @@
 #ifndef SQUAREWAVE_H
 #define SQUAREWAVE_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 class square_wave : public synthmod
 {
@@ -24,14 +24,16 @@ private:
     const STATUS* in_phase_trig;
     const double* in_phase_step;
     const double* in_pwm;
+    double rate;
+    double pulse_width;
+    double pwm_size;
+    STATUS recycle;
+    STATUS pulse;
     double degs;
     double podeg;
     double pwdeg_rad;
-    double pulse_width;
-    double pwm_size;
     double poff_deg;
-    STATUS pulse;
-    STATUS recycle;
+    double target;
     short cycle;
     void create_params();
     static bool done_params;

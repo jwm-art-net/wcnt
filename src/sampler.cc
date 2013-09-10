@@ -35,14 +35,14 @@ sampler::sampler(char const* uname) :
  ac_out_left(0), ac_out_right(0),
  ch(WAV_CH_UNKNOWN)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_LEFT);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_RIGHT);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_LOOP_TRIG);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_PLAY_STATE);
-    jwm.get_inputlist().add_input(this, inputnames::IN_PLAY_TRIG);
-    jwm.get_inputlist().add_input(this, inputnames::IN_STOP_TRIG);
-    jwm.get_inputlist().add_input(this, inputnames::IN_START_POS_MOD);
-    jwm.get_inputlist().add_input(this, inputnames::IN_PHASE_STEP);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_LEFT);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_RIGHT);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_LOOP_TRIG);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_PLAY_STATE);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_PLAY_TRIG);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_STOP_TRIG);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_START_POS_MOD);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_PHASE_STEP);
     create_params();
     sampletot = 0;
 }
@@ -57,8 +57,6 @@ sampler::~sampler()
         delete [] ac_m_buf;
     if (ac_st_buf)
         delete [] ac_st_buf;
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
 }
 
 void const* sampler::get_out(outputnames::OUT_TYPE ot) const
@@ -190,7 +188,7 @@ stockerrs::ERR_TYPE sampler::validate()
 {
     WAV_STATUS wavstatus = wavfile->open_wav();
     if (wavstatus == WAV_STATUS_NOT_FOUND) {
-        *err_msg = jwm.get_paramnames().get_name(paramnames::FILENAME);
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::FILENAME);
         *err_msg += ", using wavfilein ";
         *err_msg += wavfile->get_username();
         *err_msg += " the file ";
@@ -200,7 +198,7 @@ stockerrs::ERR_TYPE sampler::validate()
         return stockerrs::ERR_ERROR;
     }
     if (wavstatus == WAV_STATUS_WAVERR) {
-        *err_msg = jwm.get_paramnames().get_name(paramnames::FILENAME);
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::FILENAME);
         *err_msg += ", using wavfilein ";
         *err_msg += wavfile->get_username();
         *err_msg += " the file ";
@@ -210,7 +208,7 @@ stockerrs::ERR_TYPE sampler::validate()
         return stockerrs::ERR_ERROR;
     }
     if (wavstatus != WAV_STATUS_OPEN) {
-        *err_msg = jwm.get_paramnames().get_name(paramnames::FILENAME);
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::FILENAME);
         *err_msg += ", using wavfilein ";
         *err_msg += wavfile->get_username();
         *err_msg = ", an unspecified error occurred trying to open ";
@@ -218,71 +216,73 @@ stockerrs::ERR_TYPE sampler::validate()
         invalidate();
         return stockerrs::ERR_ERROR;
     }
-    modparamlist& pl = jwm.get_paramlist();
-    if (!pl.validate(this, paramnames::START_POS_MIN,
+    modparamlist* pl = jwm.get_paramlist();
+    if (!pl->validate(this, paramnames::START_POS_MIN,
             stockerrs::ERR_NEGATIVE))
     {
         *err_msg =
-         jwm.get_paramnames().get_name(paramnames::START_POS_MIN);
+         jwm.get_paramnames()->get_name(paramnames::START_POS_MIN);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
-    if (!pl.validate(this, paramnames::START_POS_MAX,
+    if (!pl->validate(this, paramnames::START_POS_MAX,
             stockerrs::ERR_NEGATIVE))
     {
         *err_msg =
-         jwm.get_paramnames().get_name(paramnames::START_POS_MAX);
+         jwm.get_paramnames()->get_name(paramnames::START_POS_MAX);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (max_start_pos < min_start_pos) {
         *err_msg =
-         jwm.get_paramnames().get_name(paramnames::START_POS_MAX);
+         jwm.get_paramnames()->get_name(paramnames::START_POS_MAX);
         *err_msg += " must not be less than ";
         *err_msg +=
-         jwm.get_paramnames().get_name(paramnames::START_POS_MIN);
+         jwm.get_paramnames()->get_name(paramnames::START_POS_MIN);
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (loop_is_offset == OFF) {
-        if (!pl.validate(this, paramnames::LOOP_BEGIN,
+        if (!pl->validate(this, paramnames::LOOP_BEGIN,
                 stockerrs::ERR_NEGATIVE))
         {
             *err_msg =
-             jwm.get_paramnames().get_name(paramnames::LOOP_BEGIN);
+             jwm.get_paramnames()->get_name(paramnames::LOOP_BEGIN);
             *err_msg += " of absolute value";
             invalidate();
             return stockerrs::ERR_NEGATIVE;
         }
-        if (!pl.validate(this, paramnames::LOOP_END,
+        if (!pl->validate(this, paramnames::LOOP_END,
                 stockerrs::ERR_NEGATIVE))
         {
             *err_msg =
-             jwm.get_paramnames().get_name(paramnames::LOOP_END);
+             jwm.get_paramnames()->get_name(paramnames::LOOP_END);
             *err_msg += " of absolute value";
             invalidate();
             return stockerrs::ERR_NEGATIVE;
         }
     }
     if (loop_end <= loop_begin) {
-        *err_msg = jwm.get_paramnames().get_name(paramnames::LOOP_END);
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::LOOP_END);
         *err_msg += " must be more than ";
         *err_msg +=
-            jwm.get_paramnames().get_name(paramnames::LOOP_BEGIN);
+            jwm.get_paramnames()->get_name(paramnames::LOOP_BEGIN);
         invalidate();
         return stockerrs::ERR_ERROR;
     }
-    if (anti_clip_size < 0 || anti_clip_size > jwm_init::max_anti_clip_samples) {
-        *err_msg = jwm.get_paramnames().get_name(paramnames::ANTI_CLIP);
+    if (anti_clip_size < 0
+        || anti_clip_size > jwm_init::max_anti_clip_samples)
+    {
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::ANTI_CLIP);
         *err_msg += " out of range 0 ~ 2048";
         invalidate();
         return stockerrs::ERR_ERROR;
     }
-    if (!pl.validate(this, paramnames::ZERO_SEARCH_RANGE,
+    if (!pl->validate(this, paramnames::ZERO_SEARCH_RANGE,
             stockerrs::ERR_NEGATIVE))
     {
         *err_msg =
-         jwm.get_paramnames().get_name(paramnames::ZERO_SEARCH_RANGE);
+         jwm.get_paramnames()->get_name(paramnames::ZERO_SEARCH_RANGE);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -301,20 +301,36 @@ void sampler::init()
         sr_ratio = (double)wavfile->get_sample_rate() / jwm.samplerate();
         if (ch == WAV_CH_MONO) {
             mono_buffer = new double[jwm_init::wav_buffer_size];
+            if (!mono_buffer) {
+                invalidate();
+                return;
+            }
             for (int i = 0; i < jwm_init::wav_buffer_size; i++)
                 mono_buffer[i] = 0;
             ac_m_buf = new double[jwm_init::max_anti_clip_size];
+            if (!ac_m_buf) {
+                invalidate();
+                return;
+            }
             for (int i = 0; i < jwm_init::max_anti_clip_size; i++)
                 ac_m_buf[i] = 0;
         }
         else {
             st_buffer = new st_data[jwm_init::wav_buffer_size];
+            if (!st_buffer) {
+                invalidate();
+                return;
+            }
             for (int i = 0; i < jwm_init::wav_buffer_size; i++)
             {
                 st_buffer[i].left = 0;
                 st_buffer[i].right = 0;
             }
             ac_st_buf = new st_data[jwm_init::max_anti_clip_size];
+            if (!ac_st_buf) {
+                invalidate();
+                return;
+            }
             for (int i = 0; i < jwm_init::max_anti_clip_size; i++) {
                 ac_st_buf[i].left = 0;
                 ac_st_buf[i].right = 0;
@@ -1196,30 +1212,30 @@ void sampler::create_params()
 {
     if (done_params == true)
         return;
-    modparamlist& pl = jwm.get_paramlist();
-    pl.add_param(synthmodnames::SAMPLER, paramnames::WAVFILEIN);
-    pl.add_param(synthmodnames::SAMPLER, paramnames::PLAY_DIR);
-    jwm.get_fxsparamlist().add_param("fwd/rev",
+    modparamlist* pl = jwm.get_paramlist();
+    pl->add_param(synthmodnames::SAMPLER, paramnames::WAVFILEIN);
+    pl->add_param(synthmodnames::SAMPLER, paramnames::PLAY_DIR);
+    jwm.get_fxsparamlist()->add_param("fwd/rev",
                                       paramnames::PLAY_DIR);
-    pl.add_param(synthmodnames::SAMPLER, paramnames::PLAY_MODE);
-    jwm.get_fxsparamlist().add_param("stop/wrap/bounce/jump",
+    pl->add_param(synthmodnames::SAMPLER, paramnames::PLAY_MODE);
+    jwm.get_fxsparamlist()->add_param("stop/wrap/bounce/jump",
                                       paramnames::PLAY_MODE);
-    pl.add_param(synthmodnames::SAMPLER, paramnames::JUMP_MODE);
-    jwm.get_fxsparamlist().add_param("play/loop",
+    pl->add_param(synthmodnames::SAMPLER, paramnames::JUMP_MODE);
+    jwm.get_fxsparamlist()->add_param("play/loop",
                                       paramnames::JUMP_MODE);
-    pl.add_param(synthmodnames::SAMPLER, paramnames::START_POS_MIN);
-    pl.add_param(synthmodnames::SAMPLER, paramnames::START_POS_MAX);
-    pl.add_param(synthmodnames::SAMPLER, paramnames::LOOP_MODE);
-    jwm.get_fxsparamlist().add_param("off/fwd/rev/bi",
+    pl->add_param(synthmodnames::SAMPLER, paramnames::START_POS_MIN);
+    pl->add_param(synthmodnames::SAMPLER, paramnames::START_POS_MAX);
+    pl->add_param(synthmodnames::SAMPLER, paramnames::LOOP_MODE);
+    jwm.get_fxsparamlist()->add_param("off/fwd/rev/bi",
                                       paramnames::LOOP_MODE);
-    pl.add_param(synthmodnames::SAMPLER, paramnames::LOOP_BEGIN);
-    pl.add_param(synthmodnames::SAMPLER, paramnames::LOOP_END);
-    pl.add_param(synthmodnames::SAMPLER, paramnames::LOOP_IS_OFFSET);
-    pl.add_param(synthmodnames::SAMPLER, paramnames::LOOP_BI_OFFSET);
-    pl.add_param(synthmodnames::SAMPLER, paramnames::ANTI_CLIP);
-    pl.add_param(synthmodnames::SAMPLER, paramnames::AC_EACH_END);
-    pl.add_param(synthmodnames::SAMPLER, paramnames::ZERO_SEARCH_RANGE);
-    pl.add_param(synthmodnames::SAMPLER, paramnames::PHASE_STEP_AMOUNT);
+    pl->add_param(synthmodnames::SAMPLER, paramnames::LOOP_BEGIN);
+    pl->add_param(synthmodnames::SAMPLER, paramnames::LOOP_END);
+    pl->add_param(synthmodnames::SAMPLER, paramnames::LOOP_IS_OFFSET);
+    pl->add_param(synthmodnames::SAMPLER, paramnames::LOOP_BI_OFFSET);
+    pl->add_param(synthmodnames::SAMPLER, paramnames::ANTI_CLIP);
+    pl->add_param(synthmodnames::SAMPLER, paramnames::AC_EACH_END);
+    pl->add_param(synthmodnames::SAMPLER, paramnames::ZERO_SEARCH_RANGE);
+    pl->add_param(synthmodnames::SAMPLER, paramnames::PHASE_STEP_AMOUNT);
     done_params = true;
 }
 #endif

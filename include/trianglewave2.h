@@ -1,7 +1,7 @@
 #ifndef TRIANGLEWAVE2_H
 #define TRIANGLEWAVE2_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 class triangle_wave2 : public synthmod
 {

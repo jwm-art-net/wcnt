@@ -1,0 +1,208 @@
+wcnt-1.26/jwmsynth
+//------------------------------------------------------------------------
+//
+//  drums01-b.wc:
+//      uses drums02.wc and simply edits it's parameters to
+//      create a completely different drum pattern
+//
+//------------------------------------------------------------------------
+
+header header.wch
+
+synth_file_reader
+wc1
+    filename       drums01.wc
+    mod_action     exclude
+    dobj_action    exclude
+    modules
+    modules
+    data_objects
+    data_objects
+wc1
+
+constant_freq cf1 freq 0.31125421 cf1
+
+wave
+cf1wv
+    in_phase_step cf1 out_phase_step
+    type sine
+cf1wv
+
+rnd_trigger
+tptpt1
+    in_trig drum_next out_trig
+    probability 0.45
+    not_probability 0.0
+tptpt1
+
+sample_hold
+sh
+    in_trig    tptpt1 out_trig
+    in_signal  cf1wv out_output
+    decay_time  0
+sh
+
+clock
+rclock
+    in_freq_mod1 sh out_output
+    freq 1100
+    freq_mod1_size 2.0
+rclock
+
+wave_phase
+wvy1
+    in_phase_trig rclock out_phase_trig
+    in_phase_step osc1 out_phase_step
+    in_shape_phase_step rclock out_phase_step
+    type sine
+    shape_type saw_01
+    on_trig_reset_phase on
+    recycle_mode on
+    sync_shape on
+    invert_alt on
+    phase_cycles 0.5
+wvy1
+
+constant mb value 0.675 mb
+
+modifier
+m1l
+    in_signal1 wvy1 out_output
+    in_signal2 sampler1 out_left
+    in_bias mb out_output
+    function mul
+    type m1
+m1l
+
+modifier
+m1r
+    in_signal1 wvy1 out_output
+    in_signal2 sampler1 out_right
+    in_bias mb out_output
+    function mul
+    type m1
+m1r
+
+mix_chan
+ch
+    in_left  m1l out_output
+    in_right m1r out_output
+ch
+
+group
+g1
+    modules
+        synthmod name rclock
+        synthmod name wvy1
+        synthmod name m1l
+        synthmod name m1r
+        synthmod name ch
+    modules
+g1
+
+copier cp10 from g1 to g2 cp10
+copier cp11 from g1 to g3 cp11
+copier cp12 from g1 to g4 cp12
+copier cp13 from g1 to g5 cp13
+
+copier cp101 from g1 to g6 cp101
+copier cp112 from g1 to g7 cp112
+copier cp123 from g1 to g8 cp123
+copier cp134 from g1 to g9 cp134
+
+param_editor
+gpe1
+    editlist
+        edit g1.rclock freq 110
+        edit g2.rclock freq 220
+        edit g3.rclock freq 440
+        edit g4.rclock freq 880
+        edit g5.rclock freq 1660
+        edit g6.rclock freq 160
+        edit g7.rclock freq 300
+        edit g8.rclock freq 550
+        edit g9.rclock freq 920
+    editlist
+gpe1
+
+mixer
+mix1
+    mix
+        synthmod name g1.ch
+        synthmod name g2.ch
+        synthmod name g3.ch
+        synthmod name g4.ch
+        synthmod name g5.ch
+        synthmod name g6.ch
+        synthmod name g7.ch
+        synthmod name g8.ch
+        synthmod name g9.ch
+    mix
+    master_level 0.5333
+mix1
+
+input_editor
+ie1rc
+    editlist
+        connect dl in_signal1 mix1 out_left
+        connect dr in_signal1 mix1 out_right
+        connect wobble2
+            in_phase_step cf1 out_phase_step
+        connect osc1
+            in_freq_mod1 shwob out_output
+    editlist
+ie1rc
+
+adsr_scaler
+asc1
+     adsr_name      adsr1
+     attack_scale   1
+     decay_scale    1
+     release_scale  1.225
+asc1
+
+adsr_scaler
+asc3
+     adsr_name      adsr3
+     attack_scale   1
+     decay_scale    1
+     release_scale  1.5
+asc3
+
+sample_hold
+shwob
+    in_trig    drum_next out_trig
+    in_signal  wobble out_output
+    decay_time  0
+shwob
+
+param_editor
+par-master
+    editlist
+        edit sampler1
+            loop_start_pos 2000
+            loop_end_pos 3000
+            loop_mode fwd
+        edit osc1
+            octave_offset 1
+            tuning_semitones 8
+            freq_mod1_size 0.75
+            freq_mod2_size 0.25
+        edit drum_trig
+            freq 8.0
+            freq_mod1_size 1
+            freq_mod2_size 1
+        edit revb
+            bandwidth .7312
+            tail 0.27777
+            wet/dry 0.275
+        edit wav1
+            filename drums01-b.wav
+            end_bar 32
+        edit wcnt_exit_module
+            exit_bar 32
+    editlist
+par-master
+
+//------------------------------------------------------------------------
+wcnt-1.26/jwmsynth

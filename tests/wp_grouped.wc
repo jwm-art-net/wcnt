@@ -1,0 +1,122 @@
+wcnt-1.26/jwmsynth
+
+samplerate 44100
+bpm 120
+signature 4/4
+
+synth_file_reader
+wp_file
+    filename wvph.wc
+    mod_action  exclude
+    dobj_action exclude
+    modules
+        mod name out
+    modules
+    data_objects
+    data_objects
+wp_file
+
+param_editor
+pe0
+    editlist
+        edit sine1
+            phase_cycles 0.175
+            on_trig_reset_phase off
+            sync_shape on
+            recycle_mode on
+            shape_type sine
+        edit sine2
+            phase_cycles 0.145
+            on_trig_reset_phase off
+            sync_shape on
+            shape_type sine
+    editlist
+pe0
+
+wcnt_signal out in_signal m12 out_output level 0.5 out
+
+group
+g1
+    modules
+        synthmod name osc1
+        synthmod name osc2
+        synthmod name sine1
+        synthmod name sine2
+        synthmod name m12
+        synthmod name out
+    modules
+g1
+
+copier cp1 from g1 to g2 cp1
+copier cp2 from g1 to g3 cp2
+copier cp3 from g1 to g4 cp3
+copier cp4 from g1 to g5 cp4
+copier cp5 from g1 to g6 cp5
+copier cp6 from g1 to g7 cp6
+copier cp7 from g1 to g8 cp7
+
+combiner
+mixl
+    signals
+        synthmod name g1.out
+        synthmod name g2.out
+        synthmod name g3.out
+        synthmod name g4.out
+    signals
+    mean_total off
+mixl
+
+combiner
+mixr
+    signals
+        synthmod name g5.out
+        synthmod name g6.out
+        synthmod name g7.out
+        synthmod name g8.out
+    signals
+    mean_total off
+mixr
+
+stereo_amp
+amp
+    in_left    mixr out_output
+    in_right   mixl out_output
+    in_amp_eg   fade out_output
+    in_amp_mod  off
+    left_level    0.85
+    right_level   0.85
+    amp_mod_size  0.0
+    clip_level    1.0
+amp
+
+input_editor
+ie1
+    editlist
+        connect wav
+            in_left  amp out_left
+            in_right amp out_right
+    editlist
+ie1
+
+param_editor
+pe1
+    editlist
+
+        edit wav
+            snapshot_mode on
+            filename wp_grouped.wav
+
+        edit g2.osc1 tuning_semitones 1
+        edit g3.osc2 tuning_semitones 3
+        edit g4.osc1 tuning_semitones -1
+        edit g5.osc2 tuning_semitones -3
+        edit g6.osc1 tuning_semitones 5
+        edit g7.osc2 tuning_semitones -4
+        edit g8.osc1 tuning_semitones -5
+    editlist
+pe1
+
+wcnt-1.26/jwmsynth
+
+
+

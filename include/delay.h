@@ -1,7 +1,7 @@
 #ifndef DELAY_H
 #define DELAY_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 class delay : public synthmod
 {

@@ -722,10 +722,11 @@ revb
 
 wavfile_out
 wav1
-    in_left     revb out_left
-    in_right    revb out_right
+    in_left     mix1 out_left // revb out_left
+    in_right    mix1 out_right // revb out_right
     in_bar      time1 out_bar
     in_bar_trig time1 out_bar_trig
+    snapshot_mode off
     data_format float32
     filename    drx01.wav
     start_bar   0

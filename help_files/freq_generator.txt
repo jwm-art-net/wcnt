@@ -1,5 +1,5 @@
 The freq_generator takes values from it's in_signal input and
-translates them into frequency and deg_size (degrees per sample).
+translates them into frequency and phase_step values.
 
 When in_signal provides a signal below sig_range_lo, then freq_range_lo
 is the frequency which will be output. Conversly, when in_signal's

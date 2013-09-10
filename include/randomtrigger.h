@@ -1,7 +1,7 @@
 #ifndef RANDOMTRIGGER_H
 #define RANDOMTRIGGER_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 class randomtrigger: public synthmod
 {

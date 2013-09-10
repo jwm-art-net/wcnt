@@ -12,17 +12,15 @@ waittrig::waittrig(char const* uname) :
  min_time(0), max_time(0), count(1), min_samples(0), max_samples(0),
  mins(0), maxs(0), counter(0)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_TRIG);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_WAIT_STATE);
-    jwm.get_inputlist().add_input(this, inputnames::IN_TRIG1);
-    jwm.get_inputlist().add_input(this, inputnames::IN_TRIG2);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_TRIG);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_WAIT_STATE);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_TRIG1);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_TRIG2);
     create_params();
 }
 
 waittrig::~waittrig()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
 }
 
 void const* waittrig::get_out(outputnames::OUT_TYPE ot) const
@@ -86,25 +84,25 @@ void const* waittrig::get_param(paramnames::PAR_TYPE pt) const
 
 stockerrs::ERR_TYPE waittrig::validate()
 {
-    modparamlist& pl = jwm.get_paramlist();
-    if (!pl.validate(this, paramnames::MIN_WAIT,
+    modparamlist* pl = jwm.get_paramlist();
+    if (!pl->validate(this, paramnames::MIN_WAIT,
             stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames().get_name(paramnames::MIN_WAIT);
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::MIN_WAIT);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
-    if (!pl.validate(this, paramnames::MAX_WAIT,
+    if (!pl->validate(this, paramnames::MAX_WAIT,
             stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames().get_name(paramnames::MAX_WAIT);
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::MAX_WAIT);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
-    if (!pl.validate(this, paramnames::COUNT,
+    if (!pl->validate(this, paramnames::COUNT,
             stockerrs::ERR_NEG_ZERO))
     {
-        *err_msg = jwm.get_paramnames().get_name(paramnames::COUNT);
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::COUNT);
         invalidate();
         return stockerrs::ERR_NEG_ZERO;
     }
@@ -158,11 +156,11 @@ void waittrig::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
      synthmodnames::WAITTRIG, paramnames::MIN_WAIT);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
      synthmodnames::WAITTRIG, paramnames::MAX_WAIT);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
      synthmodnames::WAITTRIG, paramnames::COUNT);
     done_params = true;
 }

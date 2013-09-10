@@ -76,24 +76,24 @@ stockerrs::ERR_TYPE riff_node::validate()
         *err_msg += " is not a riff and cannot be used as one.";
         return stockerrs::ERR_ERROR;
     }
-    if (!jwm.get_dparlist().validate(this,
+    if (!jwm.get_dparlist()->validate(this,
         paramnames::BAR, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames().get_name(paramnames::BAR);
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::BAR);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
-    if (!jwm.get_dparlist().validate(this,
+    if (!jwm.get_dparlist()->validate(this,
         paramnames::REPEAT, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames().get_name(paramnames::REPEAT);
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::REPEAT);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
-    if (!jwm.get_dparlist().validate(this,
+    if (!jwm.get_dparlist()->validate(this,
         paramnames::REPEAT_STRIPE, stockerrs::ERR_NEG_ZERO))
     {
-        *err_msg = jwm.get_paramnames().get_name(
+        *err_msg = jwm.get_paramnames()->get_name(
             paramnames::REPEAT_STRIPE);
         invalidate();
         return stockerrs::ERR_NEG_ZERO;
@@ -106,15 +106,15 @@ bool riff_node::done_params = false;
 void riff_node::create_params()
 {
     if (done_params == true) return;
-    jwm.get_dparlist().add_dobjparam(dobjnames::SIN_RIFFNODE,
+    jwm.get_dparlist()->add_dobjparam(dobjnames::SIN_RIFFNODE,
         paramnames::RIFFNAME);
-    jwm.get_dparlist().add_dobjparam(dobjnames::SIN_RIFFNODE,
+    jwm.get_dparlist()->add_dobjparam(dobjnames::SIN_RIFFNODE,
         paramnames::BAR);
-    jwm.get_dparlist().add_dobjparam(dobjnames::SIN_RIFFNODE,
+    jwm.get_dparlist()->add_dobjparam(dobjnames::SIN_RIFFNODE,
         paramnames::TRANSPOSE);
-    jwm.get_dparlist().add_dobjparam(dobjnames::SIN_RIFFNODE,
+    jwm.get_dparlist()->add_dobjparam(dobjnames::SIN_RIFFNODE,
         paramnames::REPEAT);
-    jwm.get_dparlist().add_dobjparam(dobjnames::SIN_RIFFNODE,
+    jwm.get_dparlist()->add_dobjparam(dobjnames::SIN_RIFFNODE,
         paramnames::REPEAT_STRIPE);
     done_params = true;
 }

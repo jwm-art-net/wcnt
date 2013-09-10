@@ -11,17 +11,15 @@ contraster::contraster(char const* uname) :
  power_min(1.0), power_max(2.0), rude_mode(OFF),
  power(0.0), powerrad(0.0)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_inputlist().add_input(this, inputnames::IN_SIGNAL);
-    jwm.get_inputlist().add_input(this, inputnames::IN_POWER_MOD);
-    jwm.get_inputlist().add_input(this, inputnames::IN_RUDE_SWITCH_TRIG);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_POWER_MOD);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_RUDE_SWITCH_TRIG);
     create_params();
 }
 
 contraster::~contraster()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
 }
 
 void const* contraster::get_out(outputnames::OUT_TYPE ot) const
@@ -103,10 +101,10 @@ void const* contraster::get_param(paramnames::PAR_TYPE pt) const
 
 stockerrs::ERR_TYPE contraster::validate()
 {
-    if (!jwm.get_paramlist().validate(this, paramnames::WETDRY,
+    if (!jwm.get_paramlist()->validate(this, paramnames::WETDRY,
             stockerrs::ERR_RANGE_0_1))
     {
-        *err_msg = jwm.get_paramnames().get_name(paramnames::WETDRY);
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::WETDRY);
         invalidate();
         return stockerrs::ERR_RANGE_0_1;
     }
@@ -154,13 +152,13 @@ void contraster::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
      synthmodnames::CONTRASTER, paramnames::POWER_MIN);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
      synthmodnames::CONTRASTER, paramnames::POWER_MAX);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
      synthmodnames::CONTRASTER, paramnames::RUDE_MODE);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
      synthmodnames::CONTRASTER, paramnames::WETDRY);
     done_params = true;
 }

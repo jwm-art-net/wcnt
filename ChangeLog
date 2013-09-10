@@ -1,4 +1,377 @@
 --------------------------------------------------------------
+Thursday 31st January 2008
+
+NOTES:
+    * getting ready to release this tonight...
+
+FIXES:
+    * switcher
+      seg-fault caused when a single wcnt_signal was used
+      more than once in same switcher.
+
+--------------------------------------------------------------
+Wednesday 30th January 2008
+
+CHANGES:
+    * wavfile_out
+      modified this to take into account that it should behave
+      in a similar fashion to the serial_wavfile_out if a)
+      it's trig and count inputs connect to a trig_counter
+      with counter wrapping on, and b) it is using
+      snapshot_mode. if (a) but not (b) then the same file
+      will just be continually over-written. Added MS to
+      time information added to filename in snapshot mode.
+
+    * trig_counter
+      the count parameter now specifies how many times to
+      count the triggers and output them. previously, it
+      let through count-1 triggers.
+
+--------------------------------------------------------------
+Monday 28th January 2008
+
+NOTES:
+    * Debugging work - figuring out why some generated files
+      sound different between this version and the previous
+      version - besides the intentional differences.
+
+CHANGES:
+    * user_wave
+      this sounded different - but due to a bug in previous
+      versions of wcnt. fixed that.
+      worked some more on the run() code. vertexs can now
+      collide with each other...
+      ... they always get processed in the same order but one
+      might get modulated such that it moves behind another,
+      these get dropped out - and dropped back in again later.
+      added drop_check_range parameter - during tests I used
+      a value of two (less, and the drop-check fails and
+      nasty spikes occurr).
+
+    * wave_phase (i'm not sure about this)
+      
+--------------------------------------------------------------
+Thursday 24th January 2008
+
+NOTES:
+    * the templatization of the linkedlist class has created
+      many problems and has needed a lot of work to sort them
+      all out. so much work that i am infact still in the
+      process of debugging the bastard.
+
+      lastnight while working on wcnt i got distracted by my
+      test .wc files and started working on sound instead and
+      using the orbit module i kept on looking for that
+      perfect sound...
+
+      so today i took a break from debugging, and implimented
+      the following...
+
+    * there are now 81 modules within wcnt.
+
+CHANGES:
+    * square_wave module
+      added rate parameter. has range between 0 and 1. using
+      a rate of 1 gives the harsh digital square wave of old.
+      a rate of around 0.5 adds some curvature, and very low
+      rate values add more curvature. when the square wave
+      runs, instead of instantly setting the output level
+      (-1 or +1), it sets these as a target. the current
+      output level is then processed as:
+          output += (target - output) * rate
+      the waveform therefor quickly accelerates toward the
+      target and slows as it approaches - providing the
+      curve. this was an idea from a few weeks ago based on
+      something i did many years ago in a much more random
+      fashion.
+
+    * wavfile_out module
+      added snapshot_mode parameter. when set to on, the
+      filename has the current date and time added to it.
+      so with snapshot_mode on, filename.wav will become
+          filename-20070124-233237.wav
+      so many times i have experimented with a .wc file trying
+      to find a particular sound and consequently lost some
+      good sounds - this new parameter means that even if the
+      means to generate the sounds is lost (due to editing)
+      the sounds themselves still remain. EXCELLENT!
+
+    * sample_climb
+      this is basically a sample and hold version of the rate
+      modification of the squarewave - but more like sample
+      and climb (to the sample at a given 'rate').
+
+--------------------------------------------------------------
+Friday 18th January 2008
+
+NOTES:
+    * regarding the conversion to a templatized linked_list
+      class, this evening around 9pm was the first time the
+      whole thing compiled. so far it will display module
+      definitions via the commandline module help option - 
+      but only if the module does not contain any dobj shit.
+
+--------------------------------------------------------------
+Thursday 17th January 2008
+
+NOTES:
+    * performance
+      i noticed that after the recent additions of new modules
+      that wcnt has been getting increasingly slow. decided
+      to try and learn the STL and use <list> instead of my
+      own primitive linkedlist class. tested both handling int
+      data types and the STL list outperformed my own list
+      like a Ferarri F40 racing a Model T Ford.
+
+      so the STL list seemed without a doubt the way to go.
+      i started first of all, within jwmsynth::run by
+      moving the list of modules from the synthmodlist class
+      into an STL list<synthmod*> but, when running wcnt from
+      the commandline using the time command, the STL list
+      was thousandths of a second slower.
+
+      so i compared the performance of wcnt-1.26-pre2 (in dev)
+      with an old version - wcnt-1.25.5 and the older version
+      was infact faster. so deduced the decrease in speed in
+      newer versions is due to the increase in virtual methods
+      being used (by synthmod derived classes as new modules
+      are added).
+
+      in order to learn the STL i'd looked online, in the C++
+      annotations (recommended btw) and in the src code, and
+      decided it was rather complex - and my own linked list
+      code just needed a little optimization (more scraping).
+
+      eventually it dawned on me that the simplest way of
+      stepping through the list of modules when running the
+      generated synth would be to hold them in an array.
+
+      again, i did the conversion just inside jwmsynth::run()
+      and lo and behold! oh my! the processing time was
+      halved! by gum old chap! this made me happy.
+
+      one of the things i _had_ decided to do with the STL was
+      for (initially) the synthmodlist to inherit
+      list<synthmod*> and thus remove the generally redundant
+      accessing methods which all classes using my linked_list
+      had (because they used containment rather than
+      inheriting it).
+
+      so NOW, right NOW, as we speak, I am goddamit, in the
+      process of re-writing most of the classes that use my
+      linkedlist - NOT to use the STL, but to use a template
+      version of my linkedlist, and to inherit it instead.
+
+      my new linked_list is written especially for wcnt so it
+      does not have oodles of common features expected for a
+      list type container. because it is a template class now,
+      it makes it easier to use, but, few of its methods when
+      inherited by a class are made public, and those that are
+      limit direct access to the list (the ll_items) by only
+      returning a pointer to the type the list contains. so
+      back to it being written for wcnt - there are no copy
+      constructors etc, and it uses pointers for adding to and
+      for return types.
+
+      the new linked_list can be requested to delete the data
+      items the pointers in the list point to upon deleting an
+      instance of the list derived class.
+
+      for the array run() optimization the linked_list can
+      also move all the data pointers out of the list
+      structure and into an array - deleting the list as it
+      goes. when the list inherited object comes to deletion
+      it will delete the array (if deletion of data is
+      requested) instead of the (already deleted) list.
+
+      great. and so i am also pleased to say i have found some
+      kind of justification in re-inventing the wheel. i've
+      found a more precise reason for doing so infact - i've
+      learnt something. i just feel that to dismiss
+      re-inventing the wheel as a waste of time is just wrong.
+
+      sure the STL is more advanced than my linked_list, sure,
+      it can do more, BUT, i tried to use it and it appeared
+      to be slower. looking at it, i can't quite understand
+      how it works, i don't want to waste my time
+      understanding how it works. this is about the difference
+      in what i am learning: learning the STL is more a case
+      of memorizing names and conventions than the actual
+      concepts. more often than not, in my experience as an
+      (hobbyist) programmer I have learnt concepts and then
+      found at later what they are. much of the time the
+      concepts i have learnt, i've just needed a little push
+      to impliment - just a little bit of research to solidify
+      them in my mind. and it is this which i feel strongly to
+      be because i have re-invented the wheel so many times.
+      so many times with wcnt i have put off doing something
+      because i either don't quite understand how to do it and
+      think it's too complex - requiring major modifications
+      only to find that i've already (perhaps subconsciously)
+      put things in place to make it easy.
+
+      look, i know many programmers are vastly more inteligent
+      than i, and even sometimes i feel stupid for presuming
+      my program is worth announcing on Linux Audio User, but
+      I AM in a way PROUD of where I have got to with it.
+      glad that i have actually _developed_ it over the years
+      and not given up. sure it's not-real-time, but that was
+      never it's reason for being. sure, the sound quality is
+      not great, but is not....
+
+--------------------------------------------------------------
+Sunday 13th January 2008
+
+ADDITIONS:
+    * group_controller module
+      removes modules of specified group from the main
+      synthmodlist and into a private synthmodlist. using two
+      inputs (in_play_trig and in_stop_trig) the module
+      decides if it should run the modules or not run them.
+
+      in_play_trig ordinarily will connect to whatever
+      triggers the adsr within the 'hijacked' group.
+      in_stop_trig ordinarily connects to the out_off_trig
+      output of the same adsr which is triggered by the same
+      output as in_play_trig.
+
+      there is nothing to prevent the Wrong Thing ;-)
+
+      see examples/routed.wc for a demo.
+
+CHANGES:
+    * synthmod (module base class)
+      added members set_empty_run(), has_empty_run(), and
+      empty_run for modules with empty run() methods to easily
+      let it be known they can be removed from the run list.
+
+    * synthmodulelist
+      new member method to remove modules from the list which
+      have been grouped to the specified group name. creates
+      and returns a new synthmodlist containing the grouped
+      modules.
+      
+      two new member methods have been added, validate_modules
+      and init_modules, see jwmsynth below for why.
+
+    * jwmsynth
+      code to validate and initialise the modules has migrated
+      to synthmodlist so that a (planned) module can validate
+      and initialise the modules it has removed from the main
+      synthmodlist (see yesterdays notes regarding the planned
+      'voice' module) without duplicating the code to do so..
+      
+--------------------------------------------------------------
+Saturday 12th January 2008
+
+NOTES:
+    * polyphony
+      Have worked out some ideas on how to create polyphony
+      within wcnt. the very beginnings of this step begun
+      from ideas developed while creating the trig_counter and
+      trig_echo modules which aswell as outputing a trigger,
+      also output a count.
+
+      it is envisioned, that these two outputs will be used as
+      a basis for polyphony. the out_count output will dictate
+      which 'voice' is to be triggered.
+
+      currently, the only module to use these outputs in this
+      way is the trig_router (see below).
+
+      the next step will be to create a 'voice' module (needs
+      a less descriptive name?) which will, using a parameter
+      specifying a group name, remove all the modules within
+      that group from the main modulelist and add them to its
+      own private modulelist.
+
+      finally, create a polyphonic sequencer. also riffs may
+      need to be altered, or a new polyphonic riff type
+      created, but icrottomh.
+
+ADDITIONS:
+    * trig_router module
+      a module which creates a number of wcnt_trigger modules
+      and connects them to it's internal hidden trigger
+      outputs. then using in_trig and in_count, determines
+      which of the triggers will trigger.
+
+FIXES:
+    * removed module name setting for the newest non-ladspa
+      modules to outside of the WITH_LADSPA conditional.
+
+CHANGES:
+    * trig_counter
+      added play_state output, and wrap parameter.
+
+    * removed call to synthmod::init from
+      jwmsynth::validate_synth and created
+      jwmsynth::init_synth instead - which is called
+      immediately before jwmsynth::generate_synth
+
+    * synthmodule (base class for all modules)
+      added member methods and variable to remove (default)
+      ability to be added to a group.
+
+    * removed groupability from wcnt_exit, trig_router, and
+      sequencer modules.
+
+    * linkedlist
+      scraped it about a little.
+
+--------------------------------------------------------------
+Friday 11th January 2008
+
+FIXES:
+    * sanity_checks
+      the inputs/outputs/params checking failed to correctly
+      ascertain when a module had failed the first or second
+      test when the second or third test had passed.
+
+    * constant_note
+      changed member variable note from
+      char* [jwm_init::note_array_size] to dynamic char** so
+      it works as an output now.
+
+    * commandline options: --input-help
+      re-ordered code in main. has the disadvantage that some
+      things are created unnecessarily in some instances...
+      it's that or --input-help causing a segmentation fault.
+
+ADDITIONS:
+    * trig_echo module
+      the trig echo module echos a trigger input to it's
+      output. each successive instance of an echo outputs
+      an increasing count, and a decreasing velocity, aswell
+      as the echos of the trigger. the user specifies how many
+      echos should occurr, and if the input trigger should be
+      sent as output also.
+
+    * inspector module
+      has two inputs and a message parameter representing each
+      of the input/output category/data types. one of the
+      inputs is a trigger to tell the module that this is when
+      the corresponding message and input value should be
+      displayed. it is for inspecting the values coming from
+      outputs ;)
+
+    * trig_counter
+      counts how many times it's in_trig triggers. the count
+      parameter sets the maximum number of times it will allow
+      the input to the trigger out_trig...
+      ...added pre_count parameter to ignore the first few
+      triggers, added out_not_trig to trigger when out_trig
+      should not. and added in_reset_trig to reset the state
+      of the counters.
+
+CHANGES:
+    * nonezero module
+      ie the module whose outputs are used when an input is
+      turned 'off'. added 'off' ability for inputs who expect
+      a string (char*) - ie in_notename etc. the inspector
+      module brought this about.
+
+--------------------------------------------------------------
 Wednesday 1st January 2008
 
 CHANGES:

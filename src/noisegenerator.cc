@@ -8,12 +8,11 @@ noise_generator::noise_generator(char const* uname) :
  output(0.00)
 {
     srandom(time(0)); //srand(time(0));
-    jwm.get_outputlist().add_output(this, outputnames::OUT_OUTPUT);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
 }
 
 noise_generator::~noise_generator()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
 }
 
 void const* noise_generator::get_out(outputnames::OUT_TYPE ot) const

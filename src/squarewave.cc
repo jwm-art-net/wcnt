@@ -5,25 +5,27 @@
 #include "../include/modinputlist.h"
 #include "../include/modparamlist.h"
 
+#include <stdlib.h>
+
 square_wave::square_wave(char const* uname) :
  synthmod(synthmodnames::SQUAREWAVE, uname),
- output(0.00), out_offpulse(OFF), play_state(OFF), in_phase_trig(NULL),
- in_phase_step(NULL), in_pwm(NULL), degs(0.00), pulse_width(0.50),
- pwm_size(0.00), poff_deg(0.00), pulse(OFF), recycle(OFF), cycle(0)
+ output(0.00), out_offpulse(OFF), play_state(OFF),
+ in_phase_trig(NULL), in_phase_step(NULL), in_pwm(NULL),
+ rate(1.0), pulse_width(0.50), pwm_size(0.00), recycle(OFF),
+ pulse(OFF), degs(0.00), podeg(0), pwdeg_rad(0), poff_deg(0.00),
+ target(0), cycle(0)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_OFF_PULSE);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_PLAY_STATE);
-    jwm.get_inputlist().add_input(this, inputnames::IN_PHASE_TRIG);
-    jwm.get_inputlist().add_input(this, inputnames::IN_PHASE_STEP);
-    jwm.get_inputlist().add_input(this, inputnames::IN_PWM);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_OFF_PULSE);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_PLAY_STATE);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_PHASE_TRIG);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_PHASE_STEP);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_PWM);
     create_params();
 }
 
 square_wave::~square_wave()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
 }
 
 void const* square_wave::get_out(outputnames::OUT_TYPE ot) const
@@ -63,6 +65,9 @@ bool square_wave::set_param(paramnames::PAR_TYPE pt, void const* data)
 {
     switch(pt)
     {
+        case paramnames::RATE:
+            rate = *(double*)data;
+            return true;
         case paramnames::PULSE_WIDTH:
             pulse_width = *(double*)data;
             return true;
@@ -81,28 +86,37 @@ void const* square_wave::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::PULSE_WIDTH:   return &pulse_width;
-        case paramnames::PWM_SIZE:      return &pwm_size;
-        case paramnames::RECYCLE_MODE:  return &recycle;
+        case paramnames::RATE:         return &rate;
+        case paramnames::PULSE_WIDTH:  return &pulse_width;
+        case paramnames::PWM_SIZE:     return &pwm_size;
+        case paramnames::RECYCLE_MODE: return &recycle;
         default: return 0;
     }
 }
 
 stockerrs::ERR_TYPE square_wave::validate()
 {
-    if (!jwm.get_paramlist().validate(this, paramnames::PULSE_WIDTH,
+    if (!jwm.get_paramlist()->validate(this, paramnames::RATE,
             stockerrs::ERR_RANGE_0_1_IN))
     {
         *err_msg =
-         jwm.get_paramnames().get_name(paramnames::PULSE_WIDTH);
+         jwm.get_paramnames()->get_name(paramnames::RATE);
         invalidate();
         return stockerrs::ERR_RANGE_0_1_IN;
     }
-    if (!jwm.get_paramlist().validate(this, paramnames::PWM_SIZE,
+    if (!jwm.get_paramlist()->validate(this, paramnames::PULSE_WIDTH,
+            stockerrs::ERR_RANGE_0_1_IN))
+    {
+        *err_msg =
+         jwm.get_paramnames()->get_name(paramnames::PULSE_WIDTH);
+        invalidate();
+        return stockerrs::ERR_RANGE_0_1_IN;
+    }
+    if (!jwm.get_paramlist()->validate(this, paramnames::PWM_SIZE,
             stockerrs::ERR_RANGE_0_1))
     {
         *err_msg =
-         jwm.get_paramnames().get_name(paramnames::PWM_SIZE);
+         jwm.get_paramnames()->get_name(paramnames::PWM_SIZE);
         invalidate();
         return stockerrs::ERR_RANGE_0_1;
     }
@@ -128,7 +142,7 @@ void square_wave::run()
             poff_deg = 1.00;
         else if (poff_deg > 359.00)
             poff_deg = 359.00;
-        output = 1;
+        target = 1;
         pulse = ON;
     }
     degs += *in_phase_step;
@@ -141,7 +155,7 @@ void square_wave::run()
             if (recycle == OFF)
             {
                 play_state = OFF;
-                output = 0;
+                target = 0;
             }
             else
             {
@@ -157,7 +171,7 @@ void square_wave::run()
         {
             if (degs >= poff_deg)
             {
-                output = -1.00;
+                target = -1.00;
                 pulse = OFF;
                 out_offpulse = ON;
             }
@@ -165,6 +179,7 @@ void square_wave::run()
         else if (out_offpulse == ON)
             out_offpulse = OFF;
     }
+    output += (target - output) * rate;
 }
 
 bool square_wave::done_params = false;
@@ -173,11 +188,13 @@ void square_wave::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
+        synthmodnames::SQUAREWAVE, paramnames::RATE);
+    jwm.get_paramlist()->add_param(
         synthmodnames::SQUAREWAVE, paramnames::PULSE_WIDTH);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::SQUAREWAVE, paramnames::PWM_SIZE);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::SQUAREWAVE, paramnames::RECYCLE_MODE);
     done_params = true;
 }

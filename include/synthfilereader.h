@@ -48,47 +48,6 @@ public:
 
     void set_wc_filename(char const* filename);
 
-//    void set_module_action(ACTION ma){ mod_action = ma;}
-//    void set_dobj_action(ACTION da){ dobj_action = da;}
-//    char const* get_wc_file_name(){ return wc_filename;}
-//    ACTION get_module_action(){ return mod_action;}
-//    ACTION get_dobj_action(){ return dobj_action;}
-
-    modnamedobj* add_modname(modnamedobj*);
-    modnamedobj* goto_first_modname() {
-        return modname = (modnamedobj*)
-            (mname_item = modnamelist->goto_first())->get_data();
-    }
-    modnamedobj* goto_last_modname() {
-        return modname = (modnamedobj*)
-            (mname_item = modnamelist->goto_last())->get_data();
-    }
-    modnamedobj* goto_next_modname() {
-        return modname = (modnamedobj*)
-            (mname_item = modnamelist->goto_next())->get_data();
-    }
-    modnamedobj* goto_prev_modname() {
-        return modname = (modnamedobj*)
-            (mname_item = modnamelist->goto_prev())->get_data();
-    }
-    dobjnamedobj* add_dobjname(dobjnamedobj*);
-    dobjnamedobj* goto_first_dobjname() {
-        return dobjname = (dobjnamedobj*)
-            (dname_item = dobjnamelist->goto_first())->get_data();
-    }
-    dobjnamedobj* goto_last_dobjname() {
-        return dobjname = (dobjnamedobj*)
-            (dname_item = dobjnamelist->goto_last())->get_data();
-    }
-    dobjnamedobj* goto_next_dobjname() {
-        return dobjname = (dobjnamedobj*)
-            (dname_item = dobjnamelist->goto_next())->get_data();
-    }
-    dobjnamedobj* goto_prev_dobjname() {
-        return dobjname = (dobjnamedobj*)
-            (dname_item = dobjnamelist->goto_prev())->get_data();
-    }
-
     bool read_and_create();
 
     std::string get_wc_error_msg(){ return *wc_err_msg;}
@@ -106,12 +65,8 @@ private:
     ACTION dobj_action;
 
     // lists
-    linkedlist* modnamelist;
-    linkedlist* dobjnamelist;
-    ll_item* mname_item;
-    ll_item* dname_item;
-    modnamedobj* modname;
-    dobjnamedobj* dobjname;
+    linked_list<modnamedobj>*  modnamelist;
+    linked_list<dobjnamedobj>* dobjnamelist;
 
     // working
     WC_FILE_TYPE wc_file_type;
@@ -121,9 +76,11 @@ private:
     std::string* command; // used to force a command into buff
     std::string* synthheader;
     std::string* wc_err_msg;
-    std::ostringstream* conv;
+
     bool inc_current;  // include current? - bodgish
+
 //--- private member methods ---//
+
     FILE_STATUS open_file();
     bool read_header(unsigned long* samplerate, double* bpm, 
      short* beatspermeasure, short* beatvalue);

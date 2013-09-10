@@ -97,7 +97,7 @@ seq1
     track
         riff_node
             riff riff1a  bar 0   transpose 0
-            repeat 0 repeat_stripe 1
+            repeat 3 repeat_stripe 4
         riff_node
             riff riff1a  bar 2   transpose 5
             repeat 3 repeat_stripe 4
@@ -303,10 +303,11 @@ wav1
     in_right    amp1 out_output
     in_bar      time1   out_bar
     in_bar_trig time1   out_bar_trig
+    snapshot_mode off
     data_format float32
     filename    bass01.wav
     start_bar   0
-    end_bar     4
+    end_bar     16
 wav1
 
 // setup how long to process:
@@ -314,7 +315,7 @@ wav1
 wcnt_exit
 wcnt_exit_module
     in_bar  time1   out_bar
-    exit_bar    4
+    exit_bar    16
 wcnt_exit_module
 
 //------------------------------------------------------------------------

@@ -495,6 +495,7 @@ wav1
     in_right    mix1    out_right
     in_bar      time1   out_bar
     in_bar_trig time1   out_bar_trig
+    snapshot_mode off
     data_format float32
     filename    drums-tz-01.wav
     start_bar   0

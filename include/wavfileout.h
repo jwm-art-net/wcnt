@@ -3,7 +3,7 @@
 
 #include <sndfile.h>
 
-#include "synthmodule.h"
+#include "synthmod.h"
 #include "wavfileheader.h"
 
 class wavfileout: public synthmod
@@ -40,12 +40,14 @@ private:
     STATUS write_status;
 
     // params
+    STATUS snapshot_mode;
     DATA_FMT data_format;
     short start_bar;
     short end_bar;
+    char* _filename;
 
     // other/working
-    char * filename;
+    char* filename;
     SNDFILE * fileout;
     SF_INFO sfinfo;
     WAV_STATUS status;
@@ -54,6 +56,7 @@ private:
     unsigned short buff_pos;
     void write_wav_at(st_data* buf, unsigned long smp);
     void write_wav_chunk(st_data* buf, unsigned long smp, int bsize);
+    void timestamp_filename();
     // synthmod stuff
     void create_params();
     static bool done_params;

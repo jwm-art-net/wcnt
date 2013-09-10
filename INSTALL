@@ -55,7 +55,9 @@ it happened to be processing at the time of the crash.
 I have tested wcnt within Debian Etch on an AMD Athlon XP 3000, with
 2GB of dodgy SDRAM :(
 
+As a side note, make examples on my machine takes just under two and a half
+minutes to generate 19 minutes worth of audio.
 
 [eof]
 
---jwm2008
+--jwm2007

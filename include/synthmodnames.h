@@ -17,7 +17,6 @@ public:
         FREQGEN,
         LFOCLOCK,
         LFOCONTROL,
-        LPFILTER,
         MODIFIER,
         NOISEGEN,
         OSCCLOCK,
@@ -35,7 +34,6 @@ public:
         LOGICTRIGGER,
         SWITCHER,
         WCNTSIGNAL,
-        HPFILTER,
         COMBINER,
         TIMEMAP,
         CONTRASTER,
@@ -87,6 +85,13 @@ public:
         CONSTANT_FREQ,
         CONSTANT_NOTE,
         BALANCE,
+        TRIGECHO,
+        INSPECT,
+        TRIGCOUNTER,
+        TRIGROUTER,
+        GROUPCONTROL,
+        FADER,
+        SAMPLECLIMB,
         LAST
     };
     synthmodnames();

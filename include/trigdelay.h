@@ -1,7 +1,7 @@
 #ifndef TRIGDELAY_H
 #define TRIGDELAY_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 class trigdelay : public synthmod
 {

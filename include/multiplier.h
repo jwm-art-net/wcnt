@@ -3,7 +3,7 @@
 
 // very simple module to multiply to signals together
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 class multiplier : public synthmod
 {

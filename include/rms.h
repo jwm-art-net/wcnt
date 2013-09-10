@@ -1,7 +1,7 @@
 #ifndef RMS_H
 #define RMS_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 /*
 // rms

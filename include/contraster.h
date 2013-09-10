@@ -1,7 +1,7 @@
 #ifndef CONTRASTER_H
 #define CONTRASTER_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 // SND ___inspired____ this one. (SND is a sound editor)
 //

@@ -1,0 +1,175 @@
+wcnt-1.26/jwmsynth
+
+samplerate 44100
+bpm 120
+signature 4/4
+
+timer
+t
+    timings
+        time seconds 0
+        time seconds 25
+    timings
+t
+
+constant_freq f freq 7 f
+
+clock
+c1
+    in_freq_mod1 off
+    freq 1
+    freq_mod1_size 1
+c1
+
+square_wave
+sq
+    in_phase_trig c1 out_phase_trig
+    in_phase_step c1 out_phase_step
+    in_pwm        off
+    rate          0.15
+    pulse_width   0.5
+    pwm_size      0
+    recycle_mode  off
+sq
+
+clock
+c2
+    in_freq_mod1 off
+    freq 1.5
+    freq_mod1_size 1
+c2
+
+square_wave
+sq2
+    in_phase_trig c2 out_phase_trig
+    in_phase_step c2 out_phase_step
+    in_pwm        off
+    rate          0.25
+    pulse_width   0.5
+    pwm_size      0
+    recycle_mode  off
+sq2
+
+constant_note middle-c name c-1 middle-c
+
+osc_clock
+osc1
+        in_note_on_trig     t out_trig
+        in_note_slide_trig  off
+        in_play_state       off
+        in_frequency        middle-c out_frequency
+        in_freq_mod1        sine2 out_pre_shape_output
+        in_freq_mod2        sq out_output
+        octave_offset       0
+        tuning_semitones    0
+        portamento_time     0
+        response_time       0
+        freq_mod1_size      2
+        freq_mod2_size      0.75
+osc1
+
+osc_clock
+osc2
+        in_note_on_trig     t out_trig
+        in_note_slide_trig  off
+        in_play_state       off
+        in_frequency        middle-c out_frequency
+        in_freq_mod1        sine1 out_output
+        in_freq_mod2        sq2 out_output
+        octave_offset       2
+        tuning_semitones    0
+        portamento_time     0
+        response_time       0
+        freq_mod1_size      2
+        freq_mod2_size      1.1
+osc2
+
+wave_phase
+sine1
+    in_phase_trig       osc1 out_phase_trig
+    in_phase_step       osc1 out_phase_step
+    in_shape_phase_step osc2 out_phase_step
+    type        sine
+    shape_type  saw
+    on_trig_reset_phase on
+    recycle_mode        off
+    sync_shape          off
+    invert_alt          on
+    phase_cycles        0.25
+sine1
+
+wave_phase
+sine2
+    in_phase_trig       osc1 out_phase_trig
+    in_phase_step       osc2 out_phase_step
+    in_shape_phase_step osc1 out_phase_step
+    type        sine
+    shape_type  saw
+    on_trig_reset_phase on
+    recycle_mode        off
+    sync_shape          off
+    invert_alt          on
+    phase_cycles        0.25
+sine2
+
+fader
+fade
+    in_bar       t out_count
+    in_bar_trig  t out_trig
+    start_bar      0
+    end_bar        1
+    fade_in_time   10
+    fade_out_time  1000
+fade
+
+constant_freq mf freq 0.025 mf
+wave
+ms
+    in_phase_step mf out_phase_step
+    type sine
+ms
+
+wcnt_signal
+msa
+    in_signal ms out_output
+    level 0.5
+msa
+
+modifier
+m12
+    in_signal1  sine2 out_output
+    in_signal2  sine1 out_output
+    in_bias     msa out_output
+    function  sub
+    type      m1
+m12
+
+multiplier
+out
+    in_signal1 m12 out_output
+    in_signal2 fade out_output
+out
+
+wavfile_out
+wav
+    in_left     out out_output // sine1 out_output // 
+    in_right    out out_output // sine2 out_output // 
+    in_bar      fade out_bar
+    in_bar_trig fade out_trig
+    snapshot_mode off
+    data_format float32
+    filename    wvph.wav
+    start_bar   0
+    end_bar     1
+wav
+
+wcnt_exit
+exit
+    in_bar      fade out_bar
+    exit_bar    1
+exit
+
+wcnt-1.26/jwmsynth
+
+
+

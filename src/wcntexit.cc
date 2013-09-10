@@ -8,13 +8,15 @@ wcnt_exit::wcnt_exit(char const* uname) :
  synthmod(synthmodnames::WCNTEXIT, uname),
  in_bar(0), exit_bar(0)
 {
-    jwm.get_inputlist().add_input(this, inputnames::IN_BAR);
+    set_empty_run();
+    remove_groupability();
+    remove_duplicability();
+    jwm.get_inputlist()->add_input(this, inputnames::IN_BAR);
     create_params();
 }
 
 wcnt_exit::~wcnt_exit()
 {
-    jwm.get_inputlist().delete_module_inputs(this);
 }
 
 void const* wcnt_exit::set_in(inputnames::IN_TYPE it, void const* o)
@@ -64,11 +66,11 @@ synthmod* wcnt_exit::duplicate_module(const char* uname, DUP_IO dupio)
 
 stockerrs::ERR_TYPE wcnt_exit::validate()
 {
-    if (!jwm.get_paramlist().validate(this, paramnames::EXIT_BAR,
+    if (!jwm.get_paramlist()->validate(this, paramnames::EXIT_BAR,
             stockerrs::ERR_NEGATIVE))
     {
         *err_msg =
-         jwm.get_paramnames().get_name(paramnames::EXIT_BAR);
+         jwm.get_paramnames()->get_name(paramnames::EXIT_BAR);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -81,7 +83,7 @@ void wcnt_exit::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::WCNTEXIT, paramnames::EXIT_BAR);
     done_params = true;
 }

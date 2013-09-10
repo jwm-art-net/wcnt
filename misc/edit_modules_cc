@@ -1,3 +1,0 @@
-#!/bin/bash
-modules=`grep 'synthmod(synthmodnames::' ../src/*.cc -l | tr '\n' ' '`
-nedit $modules

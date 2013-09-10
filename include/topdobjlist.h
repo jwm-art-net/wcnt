@@ -29,38 +29,48 @@
 // (but obviously you cannot have two different dobj based classes
 // using the same dobjnames::DOBJ_TYPE.)
 
-class topdobjlist
+class topdobjlist : public linked_list<dobjdobjlist>
 {
 public:
     topdobjlist();
     ~topdobjlist();
     dobjdobjlist* create_dobjdobjlist(dobjnames::DOBJ_TYPE parent,
                                         dobjnames::DOBJ_TYPE child);
-    dobjdobjlist* goto_first() {
-        return dd_list = (dobjdobjlist*)
-         (tldobj_item = tldobj_list->goto_first())->get_data();
+
+    dobjdobjlist* get_first_of_type(dobjnames::DOBJ_TYPE dt) {
+        search_type = dt;
+        search_result = sneak_first();
+        while(search_result) {
+            dobjdobjlist* dd_list = search_result->get_data();
+            if (dd_list->sneak_first()->get_data()
+                        ->get_dobj_type() == search_type)
+                return dd_list;
+            search_result = search_result->get_next();
+        }
+        search_result = 0;
+        return 0;
     }
-    dobjdobjlist* goto_last() {
-        return dd_list = (dobjdobjlist*)
-         (tldobj_item = tldobj_list->goto_last())->get_data();
+
+    dobjdobjlist* get_next_of_type() {
+        search_result = search_result->get_next();
+        while(search_result) {
+            dobjdobjlist* dd_list = search_result->get_data();
+            if (dd_list->sneak_first()->get_data()
+                        ->get_dobj_type() == search_type)
+                return dd_list;
+            search_result = search_result->get_next();
+        }
+        search_result = 0;
+        return 0;
     }
-    dobjdobjlist* goto_prev() {
-        return dd_list = (dobjdobjlist*)
-         (tldobj_item = tldobj_list->goto_prev())->get_data();
-    }
-    dobjdobjlist* goto_next() {
-        return dd_list = (dobjdobjlist*)
-         (tldobj_item = tldobj_list->goto_next())->get_data();
-    }
-    dobjdobjlist* get_first_of_type(dobjnames::DOBJ_TYPE);
-    dobjdobjlist* get_next_of_type();
 
 private:
-    linkedlist* tldobj_list;
-    ll_item* tldobj_item;
-    dobjdobjlist* dd_list;
-    ll_item* search_result;
-    dobjnames::DOBJ_TYPE search_dbjtype;
+    llitem* search_result;
+    dobjnames::DOBJ_TYPE search_type;
 };
+
+
+
+
 
 #endif

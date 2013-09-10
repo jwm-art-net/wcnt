@@ -30,7 +30,7 @@ riff1
         note name g0    pos 208 len 12      vel 1.0
         note name =P+N  pos 208 len 6       vel 0.0
         note name IP+N  pos 90  len 90      vel 5.0
-        note name >P+Q  pos -1  len 256      vel 5.0
+        note name >P+Q  pos -1  len 256     vel 5.0
     notelist
 riff1
 
@@ -164,6 +164,7 @@ shave
     in_time_mod     adsr1   out_output
     recycle_mode    off
     zero_retrigger  on
+    drop_check_range 1
 shave
 
 invert
@@ -485,6 +486,7 @@ wavfile_out wav1
     in_right    amp1  out_right
     in_bar      time1 out_bar
     in_bar_trig time1 out_bar_trig
+    snapshot_mode off
     data_format float32
     filename    ressoffulate01.wav
     start_bar   0

@@ -14,20 +14,18 @@ lfo_clock::lfo_clock(char const* uname) :
  degs(360.00), degsize1(0.00), degsize2(0.00)
 {
 // degs initialised at 360 so immediately triggers if in_phase_trig is off
-    jwm.get_outputlist().add_output(this, outputnames::OUT_PHASE_TRIG);
-    jwm.get_outputlist().add_output(this,
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_PHASE_TRIG);
+    jwm.get_outputlist()->add_output(this,
         outputnames::OUT_PREMOD_PHASE_STEP);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_PHASE_STEP);
-    jwm.get_inputlist().add_input(this, inputnames::IN_PHASE_TRIG);
-    jwm.get_inputlist().add_input(this, inputnames::IN_FREQ_MOD1);
-    jwm.get_inputlist().add_input(this, inputnames::IN_FREQ_MOD2);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_PHASE_STEP);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_PHASE_TRIG);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_FREQ_MOD1);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_FREQ_MOD2);
     create_params();
 }
 
 lfo_clock::~lfo_clock()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
 }
 
 void const* lfo_clock::get_out(outputnames::OUT_TYPE ot) const
@@ -101,26 +99,26 @@ void const* lfo_clock::get_param(paramnames::PAR_TYPE pt) const
 
 stockerrs::ERR_TYPE lfo_clock::validate()
 {
-    if (!jwm.get_paramlist().validate(this, paramnames::FREQ,
+    if (!jwm.get_paramlist()->validate(this, paramnames::FREQ,
             stockerrs::ERR_RANGE_FREQ))
     {
-        *err_msg = jwm.get_paramnames().get_name(paramnames::FREQ);
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::FREQ);
         invalidate();
         return stockerrs::ERR_RANGE_FREQ;
     }
-    if (!jwm.get_paramlist().validate(this, paramnames::FREQ_MOD1SIZE,
+    if (!jwm.get_paramlist()->validate(this, paramnames::FREQ_MOD1SIZE,
             stockerrs::ERR_RANGE_FMOD))
     {
         *err_msg
-         = jwm.get_paramnames().get_name(paramnames::FREQ_MOD1SIZE);
+         = jwm.get_paramnames()->get_name(paramnames::FREQ_MOD1SIZE);
         invalidate();
         return stockerrs::ERR_RANGE_FMOD;
     }
-    if (!jwm.get_paramlist().validate(this, paramnames::FREQ_MOD2SIZE,
+    if (!jwm.get_paramlist()->validate(this, paramnames::FREQ_MOD2SIZE,
             stockerrs::ERR_RANGE_FMOD))
     {
         *err_msg
-         = jwm.get_paramnames().get_name(paramnames::FREQ_MOD2SIZE);
+         = jwm.get_paramnames()->get_name(paramnames::FREQ_MOD2SIZE);
         invalidate();
         return stockerrs::ERR_RANGE_FMOD;
     }
@@ -174,11 +172,11 @@ void lfo_clock::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
      synthmodnames::LFOCLOCK, paramnames::FREQ);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
      synthmodnames::LFOCLOCK, paramnames::FREQ_MOD1SIZE);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
      synthmodnames::LFOCLOCK, paramnames::FREQ_MOD2SIZE);
     done_params = true;
 }

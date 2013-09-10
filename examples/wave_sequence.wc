@@ -118,6 +118,7 @@ wav1
     in_right    amp1 out_output
     in_bar t1   out_count
     in_bar_trig t1 out_trig
+    snapshot_mode off
     data_format float32
     filename    wave_sequence.wav
     start_bar   0

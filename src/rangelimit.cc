@@ -9,15 +9,13 @@ range_limit::range_limit(char const* uname) :
  synthmod(synthmodnames::RANGELIMIT, uname),
  in_signal(0), out_output(0), sigrangehi(0), sigrangelo(0)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_inputlist().add_input(this, inputnames::IN_SIGNAL);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
     create_params();
 }
 
 range_limit::~range_limit()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
 }
 
 void const* range_limit::get_out(outputnames::OUT_TYPE ot) const
@@ -97,9 +95,9 @@ void range_limit::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::RANGELIMIT, paramnames::SIG_RANGE_HI);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::RANGELIMIT, paramnames::SIG_RANGE_LO);
     done_params = true;
 }

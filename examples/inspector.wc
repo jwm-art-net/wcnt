@@ -1,0 +1,131 @@
+wcnt-1.26/jwmsynth
+
+//------------------------------------------------------------------------
+// examples/inspector.wc
+//
+// a simple example of using the inspector module for examing the
+// values coming through various outputs via it's inputs.
+//
+//------------------------------------------------------------------------
+
+samplerate 44100
+bpm 120
+signature 4/4
+
+time_map
+tm
+    meter_map
+    meter_map
+    bpm_map
+    bpm_map
+tm
+
+timer
+t
+    timings
+        time seconds 0
+        time seconds 0.5
+        time seconds 0.5
+    timings
+t
+
+constant_note n1 name d-2 n1
+constant_note n2 name a2 n2
+
+adsr
+adsr1
+        envelope
+        section name attack
+            ut  15.0    ul  1.0
+            lt  15.0    ll  0.25
+        section name decay
+            ut  50.0    ul  0.8
+            lt  50.0    ll  0.1
+        section name release
+            ut  350.0    ul  0.0
+            lt  350.0    ll  0.0
+        envelope
+        in_note_on_trig     t out_trig
+        in_note_off_trig    off
+        in_velocity         off
+        up_thresh        1.0
+        lo_thresh        0.0
+        start_level      0.0
+        min_time         0.0
+        max_sustain_time 0.0
+        release_is_ratio off
+        sustain_state    off
+        zero_retrigger   off
+adsr1
+
+wave
+s1
+    in_phase_step   n1 out_phase_step
+    type            sine
+s1
+
+wave
+s2
+    in_phase_step   n2 out_phase_step
+    type            sine
+s2
+
+constant mb value 0.5 mb
+
+modifier
+m1
+    in_signal1 s1 out_output
+    in_signal2 s2 out_output
+    in_bias mb out_output
+    function add
+    type m2
+m1
+
+clock
+c1
+    in_freq_mod1 off
+    freq 15
+    freq_mod1_size 1.0
+c1
+
+clock
+c2
+    in_freq_mod1 off
+    freq 4
+    freq_mod1_size 1.0
+c2
+
+logic_trigger
+lt1
+    in_trig1 t out_trig
+    in_trig2 adsr1 out_off_trig
+    function or
+    precision 0
+lt1
+
+inspector
+i1
+    _in_double_float_       m1 out_output
+    _in_double_float_trig_  c1 out_phase_trig
+    _in_short_int_          t out_count
+    _in_short_int_trig_     t out_trig
+    _in_unsigned_long_      tm out_sample_total
+    _in_unsigned_long_trig_ c2 out_phase_trig
+    _in_state_              adsr1 out_play_state
+    _in_state_trig_         lt1 out_trig
+    _in_string_             n1 out_notename
+    _in_string_trig_        t out_trig
+    _double_float_msg_  modifier_m1_output_is:
+    _short_int_msg_     ----------timer_t_trigger:
+    _long_int_msg_      --------processed_samples:
+    _state_msg_         (((((_adsr1_is:
+    _string_msg_        ----------constant_note_n1_out_notename_is:
+i1
+
+wcnt_exit
+x
+    in_bar      t out_count
+    exit_bar    2
+x
+
+wcnt-1.26/jwmsynth

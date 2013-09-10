@@ -4,11 +4,13 @@
 #include "../include/modoutputlist.h"
 #include "../include/modinputlist.h"
 #include "../include/modparamlist.h"
-#include "../include/synthmodule.h"
-#include "../include/synthmodulelist.h"
+#include "../include/synthmod.h"
+#include "../include/synthmodlist.h"
 #include "../include/conversions.h"
 #include "../include/moddobjlist.h"
 #include "../include/dobjdobjlist.h"
+#include "../include/listwork.h"
+#include "../include/miscfuncobj.h"
 
 stepper::stepper(char const* uname) :
  synthmod(synthmodnames::STEPPER, uname),
@@ -16,31 +18,20 @@ stepper::stepper(char const* uname) :
  step_count(0), rtime(0), recycle(OFF),
  out_output(0),
  output(0), last_output(0), step_no(0), up_levels(0), lo_levels(0),
- rtime_samp(0), rtime_max_samps(0), rtime_stpsz(0), rtime_size(0),
- steplist(0), step_item(0), step(0)
+ rtime_samp(0), rtime_max_samps(0), rtime_stpsz(0), rtime_size(0)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_inputlist().add_input(this, inputnames::IN_TRIG);
-    jwm.get_inputlist().add_input(this, inputnames::IN_RESTART_TRIG);
-    jwm.get_inputlist().add_input(this, inputnames::IN_MODULATION);
-    steplist =
-        new linkedlist(linkedlist::MULTIREF_ON, linkedlist::NO_NULLDATA);
-    insert_step(new step_data(0.0, 0.0, 0.0));
-    insert_step(new step_data(1.0, 1.0, 1.0));
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_TRIG);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_RESTART_TRIG);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_MODULATION);
+    insert_step(0.0, 0.0, 0.0);
+    insert_step(1.0, 1.0, 1.0);
     create_params();
     create_moddobj();
 }
 
 stepper::~stepper()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
-    goto_first();
-    while(step) {
-        delete step;
-        goto_next();
-    }
-    delete steplist;
     if (up_levels) delete [] up_levels;
     if (lo_levels) delete [] lo_levels;
 }
@@ -123,11 +114,11 @@ synthmod* stepper::duplicate_module(const char* uname, DUP_IO dupio)
     if (dupio == AUTO_CONNECT)
         duplicate_inputs_to(dup);
     duplicate_params_to(dup);
-    goto_first();
+    step_data* step = goto_first();
     while(step) {
         dup->insert_step(step->get_position(), step->get_upper_level(),
                                                step->get_lower_level());
-        goto_next();
+        step = goto_next();
     }
     return dup;
 }
@@ -144,20 +135,20 @@ stockerrs::ERR_TYPE stepper::validate()
         invalidate();
         return stockerrs::ERR_ERROR;
     }
-    if (!jwm.get_paramlist().validate(this, paramnames::RESPONSE_TIME,
+    if (!jwm.get_paramlist()->validate(this, paramnames::RESPONSE_TIME,
                                             stockerrs::ERR_NEGATIVE))
     {
         *err_msg =
-            jwm.get_paramnames().get_name(paramnames::RESPONSE_TIME);
+            jwm.get_paramnames()->get_name(paramnames::RESPONSE_TIME);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (up_thresh < lo_thresh) {
         *err_msg =
-         jwm.get_paramnames().get_name(paramnames::UP_THRESH);
+         jwm.get_paramnames()->get_name(paramnames::UP_THRESH);
         *err_msg += " must not be less than ";
         *err_msg +=
-         jwm.get_paramnames().get_name(paramnames::LO_THRESH);
+         jwm.get_paramnames()->get_name(paramnames::LO_THRESH);
         invalidate();
         return stockerrs::ERR_ERROR;
     }
@@ -167,25 +158,26 @@ stockerrs::ERR_TYPE stepper::validate()
 step_data* stepper::insert_step(double pos, double uplvl, double lolvl)
 {
     step_data* newstep = new step_data(pos, uplvl, lolvl);
-    return insert_step(newstep);
+    if (!newstep)
+        return 0;
+    if (!insert_step(newstep))
+        return 0;
+    return newstep;
 }
 
 step_data* stepper::insert_step(step_data* newstep)
 {
-    step_data* oldstep = lookup_data_match(
-                            steplist, newstep, &step_data::get_position);
-    if (oldstep) delete_step(oldstep);
-    return ordered_insert(steplist, newstep, &step_data::get_position);
-}
-
-bool stepper::delete_step(step_data* oldstep)
-{
-    if (!oldstep) return false;
-    ll_item* tmp = steplist->find_data(oldstep);
-    if (!tmp) return false;
-    delete steplist->unlink_item(tmp);
-    delete oldstep;
-    return true;
+    llitem* old_step_item = find_in_data(sneak_first(),
+                            _pos_(newstep->get_position()));
+    if (old_step_item) {
+        delete old_step_item->get_data();
+        old_step_item->set_data(newstep);
+        return newstep;
+    }
+    else
+        return ordered_insert(this, newstep,
+            &step_data::get_position
+                )->get_data();
 }
 
 dobj* stepper::add_dobj(dobj* dbj)
@@ -194,13 +186,13 @@ dobj* stepper::add_dobj(dobj* dbj)
         if (insert_step((step_data*)dbj))
             return dbj;
         *err_msg = "\ncould not insert ";
-        *err_msg += jwm.get_dobjnames().get_name(dobjnames::SIN_STEP);
+        *err_msg += jwm.get_dobjnames()->get_name(dobjnames::SIN_STEP);
         *err_msg += " into stepper";
         return 0;
     }
     *err_msg = "\n***major error*** attempt made to add an ";
     *err_msg += "\ninvalid object type of ";
-    *err_msg += jwm.get_dobjnames().get_name(dbj->get_object_type());
+    *err_msg += jwm.get_dobjnames()->get_name(dbj->get_object_type());
     *err_msg += " to ";
     *err_msg += get_username();
     return 0;
@@ -214,24 +206,27 @@ void stepper::init()
     }
     up_levels = new double[step_count];
     lo_levels = new double[step_count];
+    if(!up_levels || !lo_levels){
+        invalidate();
+        return;
+    }
     double cur_pos = 0, cur_lvl = 0, next_pos = 0, next_lvl = 0;
     double pos = 0, pos_ratio;
     double stz = 1.0 / (double)step_count;
-    goto_first();
-    ll_item* next_step_item = step_item->get_next();
-    step_data* next_step = (step_data*)next_step_item->get_data();
+    step_data* step = goto_first();
+    step_data* next_step = 0;
     for (int i = 0; i < step_count; i++) {
         do {
-            if ((next_step_item = step_item->get_next())) {
+            if ((next_step = sneak_next()->get_data())) {
                 cur_pos = step->get_position();
-                next_step = (step_data*)next_step_item->get_data();
                 next_pos = next_step->get_position();
             }
             else {
                 next_pos = 2; // otherwise pos always 0.0 ~ 1.0
                 break;
             }
-            if (pos >= next_pos) goto_next();
+            if (pos >= next_pos)
+                step = goto_next();
         }while (pos >= next_pos);
         pos_ratio = (pos - cur_pos) / (next_pos - cur_pos);
         cur_lvl = step->get_upper_level();
@@ -281,15 +276,15 @@ void stepper::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_paramlist().add_param( synthmodnames::STEPPER,
+    jwm.get_paramlist()->add_param( synthmodnames::STEPPER,
                                         paramnames::STEP_COUNT);
-    jwm.get_paramlist().add_param( synthmodnames::STEPPER,
+    jwm.get_paramlist()->add_param( synthmodnames::STEPPER,
                                         paramnames::UP_THRESH);
-    jwm.get_paramlist().add_param( synthmodnames::STEPPER,
+    jwm.get_paramlist()->add_param( synthmodnames::STEPPER,
                                         paramnames::LO_THRESH);
-    jwm.get_paramlist().add_param( synthmodnames::STEPPER,
+    jwm.get_paramlist()->add_param( synthmodnames::STEPPER,
                                         paramnames::RESPONSE_TIME);
-    jwm.get_paramlist().add_param( synthmodnames::STEPPER,
+    jwm.get_paramlist()->add_param( synthmodnames::STEPPER,
                                         paramnames::RECYCLE_MODE);
     done_params = true;
 }
@@ -301,7 +296,7 @@ void stepper::create_moddobj()
     if (done_moddobj == true)
         return;
     moddobj* mdbj;
-    mdbj = jwm.get_moddobjlist().add_moddobj(
+    mdbj = jwm.get_moddobjlist()->add_moddobj(
         synthmodnames::STEPPER, dobjnames::LST_STEPS);
     mdbj->get_dobjdobjlist()->add_dobjdobj(
         dobjnames::LST_STEPS, dobjnames::SIN_STEP);

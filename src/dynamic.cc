@@ -11,31 +11,21 @@ dynamic::dynamic(char const* uname) :
  synthmod(synthmodnames::DYNAMIC, uname),
  in_signal(0), in_mod(0), out_output(0), play_state(OFF),
  up_thresh(0), lo_thresh(0), posnegmirror(OFF), use_ratios(OFF),
- dynamics(0), dvtx_item(0), dvtx_item1(0), dvtx(0), dvtx1(0),
+ dynvertices(0), dvc(0), dvn(0),
  thresh_range(0)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_PLAY_STATE);
-    jwm.get_inputlist().add_input(this, inputnames::IN_SIGNAL);
-    jwm.get_inputlist().add_input(this, inputnames::IN_MODULATION);
-    dynamics = 
-     new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_PLAY_STATE);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_MODULATION);
     create_params();
     create_dobj();
 }
 
 dynamic::~dynamic()
 {
-    goto_first();
-    while (dvtx)
-    {
-        dvtx1 = dvtx;
-        goto_next();
-        delete dvtx1;
-    }
-    delete dynamics;
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
+    if (dynvertices)
+        destroy_array_moved_from_list(dynvertices);
 }
 
 void const* dynamic::get_out(outputnames::OUT_TYPE ot) const
@@ -104,17 +94,15 @@ void const* dynamic::get_param(paramnames::PAR_TYPE pt) const
 dobj* dynamic::add_dobj(dobj* dbj)
 {
     dobj* retv = 0;
-    dobjnames::DOBJ_TYPE dbjtype = dbj->get_object_type();
-    switch(dbjtype)
+    switch(dbj->get_object_type())
     {
-    case dobjnames::SIN_DVERTEX:
-        if (!(retv = add_dvertex((dynvertex*)dbj)))
-            *err_msg="\ncould not add vertex to " + *get_username();
+        case dobjnames::SIN_DVERTEX:
+            if (!(retv = add_dvertex((dynvertex*)dbj)))
+                *err_msg="\ncould not add vertex to " + *get_username();
         break;
-    default:
-        *err_msg = "\n***major error*** attempt made to add an ";
-        *err_msg += "\ninvalid object type to " + *get_username();
-        retv = 0;
+        default:
+            *err_msg = "\n***major error*** attempt made to add an ";
+            *err_msg += "\ninvalid object type to " + *get_username();
     }
     return retv;
 }
@@ -125,12 +113,12 @@ synthmod* dynamic::duplicate_module(const char* uname, DUP_IO dupio)
     if (dupio == AUTO_CONNECT)
         duplicate_inputs_to(dup);
     duplicate_params_to(dup);
-    goto_first();
-    while(dvtx) {
-        dup->add_dvertex(dvtx->get_signal_in_level(),
-                            dvtx->get_upper_signal_out_level(),
-                            dvtx->get_lower_signal_out_level());
-        goto_next();
+    dvc = goto_first();
+    while(dvc) {
+        dup->add_dvertex(   dvc->get_signal_in_level(),
+                            dvc->get_upper_signal_out_level(),
+                            dvc->get_lower_signal_out_level());
+        dvc = goto_next();
     }
     return dup;
 }
@@ -149,45 +137,38 @@ stockerrs::ERR_TYPE dynamic::validate()
     }
     if (up_thresh < lo_thresh) {
         *err_msg =
-         jwm.get_paramnames().get_name(paramnames::UP_THRESH);
+         jwm.get_paramnames()->get_name(paramnames::UP_THRESH);
         *err_msg += " must not be less than ";
         *err_msg +=
-         jwm.get_paramnames().get_name(paramnames::LO_THRESH);
+         jwm.get_paramnames()->get_name(paramnames::LO_THRESH);
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     return stockerrs::ERR_NO_ERROR;
 }
 
-dynvertex* dynamic::add_dvertex(dynvertex* dv)
-{
-    if (!dv) return 0;
-    return ordered_insert(dynamics, dv, &dynvertex::get_signal_in_level);
-}
-
 dynvertex* dynamic::add_dvertex(double sil, double usol, double lsol)
 {
-    dvtx1 = new dynvertex(sil, usol, lsol);
-    if (!ordered_insert(dynamics, dvtx1,
-        &dynvertex::get_signal_in_level))
-    {
-        delete dvtx1;
+    dvc = new dynvertex(sil, usol, lsol);
+    if (!add_dvertex(dvc)) {
+        delete dvc;
         return 0;
     }
-    return dvtx1;
+    return dvc;
 }
 
 bool dynamic::delete_dvertex(dynvertex* dv)
 {
     if (!dv)
         return false;
-    if (dv == get_first() || dv == get_last())
-        return false;  // don't allow user to delete initial or end
-
-    ll_item* tmp = dynamics->find_data(dv);
+    if (dv == sneak_first()->get_data() ||
+        dv == sneak_last()->get_data())
+        // don't allow user to delete initial or end
+        return false;
+    llitem* tmp = find_data(sneak_first(), dv);
     if (tmp == 0)
         return false;
-    delete dynamics->unlink_item(tmp);
+    delete unlink_item(tmp);
     delete dv;
     return true;
 }
@@ -200,21 +181,27 @@ void dynamic::init()
         lo_thresh = ut;
     }
     thresh_range = up_thresh - lo_thresh;
+    if (!(dynvertices = move_to_array(this)))
+        invalidate();
 }
 
 dynvertex* dynamic::goto_dvertex(double sil)
 {
-    goto_first();
-    while (dvtx) {
-        if ((dvtx1 = get_next())) {
-            if (!(dvtx->get_signal_in_level()
-                    == dvtx1->get_signal_in_level()))
-                if (sil >= dvtx->get_signal_in_level() &&
-                        sil < dvtx1->get_signal_in_level())
-                    return dvtx1;
+    long dvix = 0;
+    dvc = dynvertices[dvix];
+    dvn = 0;
+    while (dvc) {
+        if ((dvn = dynvertices[dvix + 1])) {
+            if (!(dvc->get_signal_in_level()
+                    == dvn->get_signal_in_level()))
+            {
+                if (sil >= dvc->get_signal_in_level() &&
+                        sil < dvn->get_signal_in_level())
+                    return dvn;
+            }
         } else
             return 0;
-        goto_next();
+        dvc = dynvertices[++dvix];
     }
     return 0;
 }
@@ -224,17 +211,30 @@ void dynamic::run()
     double isig = *in_signal;
     double insig = isig;
     double insig_sign = (insig < 0) ? -1 : 1;
-    if (posnegmirror == ON) insig *= insig_sign; else insig_sign = 1;
-    dvtx1 = goto_dvertex(insig);
-    double sil = dvtx->get_signal_in_level();
+
+    if (posnegmirror == ON)
+        insig *= insig_sign;
+    else
+        insig_sign = 1;
+
+    dvn = goto_dvertex(insig);
+
+    double sil = dvc->get_signal_in_level();
     double inmod = *in_mod;
+
     inmod *= (inmod < 0) ? -1 : 1;
+
     double m = (inmod - lo_thresh) / thresh_range;
-    if (m <= 0.0) m = 0; else if (m > 1.0) m = 1.0;
-    double ol = dvtx->get_out_level(m);
-    if (dvtx1) {
-        out_output = (ol + (dvtx1->get_out_level(m) - ol) 
-         * ((insig - sil) / (dvtx1->get_signal_in_level() - sil)))
+
+    if (m <= 0.0)
+        m = 0;
+    else if (m > 1.0)
+        m = 1.0;
+
+    double ol = dvc->get_out_level(m);
+    if (dvc) {
+        out_output = (ol + (dvn->get_out_level(m) - ol) 
+         * ((insig - sil) / (dvn->get_signal_in_level() - sil)))
          * ((use_ratios == OFF) ? insig_sign : isig);
     }
     else out_output = ol * ((use_ratios == OFF) ? insig_sign : isig);
@@ -247,13 +247,13 @@ void dynamic::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
      synthmodnames::DYNAMIC, paramnames::UP_THRESH);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
      synthmodnames::DYNAMIC, paramnames::LO_THRESH);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
      synthmodnames::DYNAMIC, paramnames::POSNEG_MIRROR);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
      synthmodnames::DYNAMIC, paramnames::USE_RATIOS);
     done_params = true;
 }
@@ -263,7 +263,7 @@ void dynamic::create_dobj()
     if (done_dobj == true)
         return;
     moddobj* mdbj;
-    mdbj = jwm.get_moddobjlist().add_moddobj(
+    mdbj = jwm.get_moddobjlist()->add_moddobj(
         synthmodnames::DYNAMIC, dobjnames::LST_DYNAMICS);
     mdbj->get_dobjdobjlist()->add_dobjdobj(
         dobjnames::LST_DYNAMICS, dobjnames::SIN_DVERTEX);

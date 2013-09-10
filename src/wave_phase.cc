@@ -10,25 +10,23 @@
 wave_phase::wave_phase(char const* uname) :
  synthmod(synthmodnames::WAVE_PHASE, uname),
  in_phase_trig(0), in_phase_step(0), in_shape_phase_step(0),
- output(0), play_state(OFF),
+ output(0), pre_shape_output(0), play_state(OFF),
  type(wave_tables::SINE), shape_type(wave_tables::SINE),
  recycle(OFF), reset_phase(OFF),
  invert_alt(OFF), sync_shape(ON), cycles(1.0),
- phase(0), degs(0), max_degs(0), invph(0),
+ phase(0), degs(0), max_degs(0), invph(1),
  table(0)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_PLAY_STATE);
-    jwm.get_inputlist().add_input(this, inputnames::IN_PHASE_TRIG);
-    jwm.get_inputlist().add_input(this, inputnames::IN_PHASE_STEP);
-    jwm.get_inputlist().add_input(this, inputnames::IN_SHAPE_PHASE_STEP);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_PLAY_STATE);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_PHASE_TRIG);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_PHASE_STEP);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_SHAPE_PHASE_STEP);
     create_params();
 }
 
 wave_phase::~wave_phase()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
 }
 
 void const* wave_phase::get_out(outputnames::OUT_TYPE ot) const
@@ -36,6 +34,8 @@ void const* wave_phase::get_out(outputnames::OUT_TYPE ot) const
     switch(ot)
     {
         case outputnames::OUT_OUTPUT:       return &output;
+        case outputnames::OUT_PRE_SHAPE_OUTPUT:
+            return &pre_shape_output;
         case outputnames::OUT_PLAY_STATE:   return &play_state;
         default: return 0;
     }
@@ -113,68 +113,63 @@ void const* wave_phase::get_param(paramnames::PAR_TYPE pt) const
 
 void wave_phase::init()
 {
-    table = jwm.get_wave_tables().get_table(type);
-    shape_table = jwm.get_wave_tables().get_table(shape_type);
+    table = jwm.get_wave_tables()->get_table(type);
+    shape_table = jwm.get_wave_tables()->get_table(shape_type);
     max_degs = 360 * cycles;
-    if (invert_alt == OFF)
-        invph = 1;
+    if (invert_alt == ON)
+        invph = -1;
 }
 
 stockerrs::ERR_TYPE wave_phase::validate()
 {
-    if (!jwm.get_paramlist().validate(this, paramnames::CYCLES,
+    if (!jwm.get_paramlist()->validate(this, paramnames::CYCLES,
             stockerrs::ERR_NEG_ZERO))
     {
-        *err_msg = jwm.get_paramnames().get_name(paramnames::CYCLES);
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::CYCLES);
         invalidate();
         return stockerrs::ERR_NEG_ZERO;
     }
     return stockerrs::ERR_NO_ERROR;
 }
-
+#include<iostream>
 void wave_phase::run()
 {
     if (play_state == OFF || reset_phase == ON) {
         if (*in_phase_trig == ON)
         {
             play_state = ON;
-            phase = 0;
-            if (sync_shape == ON)
-                shape_phase = 0;
             if (reset_phase == ON) {
                 degs = 0;
-                if (invert_alt == ON) {
-                    if (invph == 0)
-                        invph = 1;
-                    else
-                        invph = -invph;
-                }
+                phase = 0;
+                if (invert_alt == ON)
+                    invph = -invph;
             }
+            if (sync_shape == ON)
+                shape_phase = 0;
         }
     }
     if (play_state == ON)
     {
-        output = table[phase >> wave_tables::table_shift] * invph
-            * shape_table[shape_phase >> wave_tables::table_shift];
+        pre_shape_output =
+            table[phase >> wave_tables::table_shift] * invph;
         phase += (unsigned long)
             (*in_phase_step * wave_tables::phase_step_base);
-        shape_phase += (unsigned long)
-            (*in_shape_phase_step * wave_tables::phase_step_base);
         if ((degs += *in_phase_step) > max_degs){
             degs -= max_degs;
-            phase = 0;
+            if (reset_phase == ON)
+                phase = 0;
             if (recycle == OFF) {
                 if (*in_phase_trig == OFF)
                     play_state = OFF;
             }
-            if (reset_phase == OFF && invert_alt == ON) {
-                if (invph == 0)
-                    invph = 1;
-                else
-                    invph = -invph;
-            }
+            if (reset_phase == OFF && invert_alt == ON)
+                invph = -invph;
         }
     }
+    output = pre_shape_output *
+        shape_table[shape_phase >> wave_tables::table_shift];
+    shape_phase += (unsigned long)
+        (*in_shape_phase_step * wave_tables::phase_step_base);
 }
 
 bool wave_phase::done_params = false;
@@ -183,24 +178,33 @@ void wave_phase::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_paramlist().add_param(synthmodnames::WAVE_PHASE,
-        paramnames::WAVE_TYPE);
-    jwm.get_fxsparamlist().add_param(jwm.get_wave_tables().fxstring,
-                                      paramnames::WAVE_TYPE);
-    jwm.get_paramlist().add_param(synthmodnames::WAVE_PHASE,
-        paramnames::WAVE_SHAPE_TYPE);
-    jwm.get_fxsparamlist().add_param(jwm.get_wave_tables().fxstring,
-                                      paramnames::WAVE_SHAPE_TYPE);
-    jwm.get_paramlist().add_param(synthmodnames::WAVE_PHASE,
-        paramnames::TRIG_RESET_PHASE);
-    jwm.get_paramlist().add_param(synthmodnames::WAVE_PHASE,
-        paramnames::RECYCLE_MODE);
-    jwm.get_paramlist().add_param(synthmodnames::WAVE_PHASE,
-        paramnames::SYNC_SHAPE);
-    jwm.get_paramlist().add_param(synthmodnames::WAVE_PHASE,
-        paramnames::INVERT_ALT);
-    jwm.get_paramlist().add_param(synthmodnames::WAVE_PHASE,
-        paramnames::CYCLES);
+    jwm.get_paramlist()->add_param(
+        synthmodnames::WAVE_PHASE,
+            paramnames::WAVE_TYPE);
+    jwm.get_fxsparamlist()->add_param(
+        jwm.get_wave_tables()->fxstring,
+            paramnames::WAVE_TYPE);
+    jwm.get_paramlist()->add_param(
+        synthmodnames::WAVE_PHASE,
+            paramnames::WAVE_SHAPE_TYPE);
+    jwm.get_fxsparamlist()->add_param(
+        jwm.get_wave_tables()->fxstring,
+            paramnames::WAVE_SHAPE_TYPE);
+    jwm.get_paramlist()->add_param(
+        synthmodnames::WAVE_PHASE,
+            paramnames::TRIG_RESET_PHASE);
+    jwm.get_paramlist()->add_param(
+        synthmodnames::WAVE_PHASE,
+            paramnames::RECYCLE_MODE);
+    jwm.get_paramlist()->add_param(
+        synthmodnames::WAVE_PHASE,
+            paramnames::SYNC_SHAPE);
+    jwm.get_paramlist()->add_param(
+        synthmodnames::WAVE_PHASE,
+            paramnames::INVERT_ALT);
+    jwm.get_paramlist()->add_param(
+        synthmodnames::WAVE_PHASE,
+            paramnames::CYCLES);
    done_params = true;
 }
 

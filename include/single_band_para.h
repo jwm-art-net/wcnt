@@ -2,7 +2,7 @@
 #define SINGLE_BAND_PARA_H
 #ifdef WITH_LADSPA
 
-#include "synthmodule.h"
+#include "synthmod.h"
 #include "ladspa_loader.h"
 
 /*

@@ -203,6 +203,21 @@ class paramnames
         INVERT_ALT,
         SYNC_SHAPE,
         MODIFIER_TYPE,
+        SEND_INPUT_OUT,
+        /* inspector module's IOCAT type corresponding msg params */
+        INSPECT_DF_MSG,
+        INSPECT_SI_MSG,
+        INSPECT_UL_MSG,
+        INSPECT_ST_MSG,
+        INSPECT_STR_MSG,
+        PRE_COUNT,
+        WRAP,
+        GROUP_NAME,
+        FADE_IN_TIME,
+        FADE_OUT_TIME,
+        RATE,
+        SNAPSHOT_MODE,
+        DROP_CHECK_RANGE,
         LAST
     };
     paramnames();

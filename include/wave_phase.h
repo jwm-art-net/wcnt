@@ -1,7 +1,7 @@
 #ifndef WAVE_PHASE_H
 #define WAVE_PHASE_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 #include "wave_tables.h"
 
 class wave_phase : public synthmod
@@ -22,6 +22,7 @@ private:
     double const* in_phase_step;
     double const* in_shape_phase_step;
     double output;
+    double pre_shape_output;
     STATUS play_state;
     wave_tables::WT type;
     wave_tables::WT shape_type;

@@ -1,0 +1,210 @@
+wcnt-1.26/jwmsynth
+
+//------------------------------------------------------------------------
+// wavfile_out.wc
+//
+//  used to test the wavfile_out module:
+//
+//      the new trig_counter module counts the number of times it's
+//      in_trig input triggers. the trig_counter's primary use was
+//      to count it's triggering up to a specified count and then
+//      stop outputting the trigger, but there was a good advantage
+//      to allowing the out_count to wrap around and continue counting.
+//
+//      this counting wrap-around has implications for the wavfile_out
+//      module: what if the user connected it to the trig_counter which
+//      wraps it's count?...
+//      ...if the wavefile_out had it's snapshot_mode set to on then
+//      it starts to behave like the serial_wavfile_out module, except
+//      each wav file is named with a timestamp instead of an
+//      incrementing number (0000 - 9999).
+//
+//      but if you use the wavfile_out in this manner then things might
+//      not be as you expect: look at this file, it lasts for 16 seconds.
+//      a clock is set to trigger every second, a trig_counter counts
+//      (and wraps) two triggers, the wavfile_out takes this it starts
+//      at count 0 and ends at count 1, so it starts to write a new file
+//      at every other second, in this case 8 wav files...
+//
+//      ...well, it would if it had been setup that way, but this file
+//      contains a mild 'hack' to get it to write at 1 second intervals.
+//      it does this by using a logic_trigger to combine the out_off_trig
+//      trigger with the clock's out_phase_trig trigger - and the
+//      trig_counter then is setup to count the logic_trigger's triggers
+//      instead of the clock's out_phase_trig triggers
+//
+//      problem solved == sixteen wav files instead of eight.
+//
+//------------------------------------------------------------------------
+
+
+samplerate 44100
+bpm 120
+signature 4/4
+
+constant_note n name c-1 n
+
+timer
+t
+    timings
+        time seconds 0
+        time seconds 16
+    timings
+t
+
+constant_freq lfo0 freq 0.15331 lfo0
+
+wave
+swave
+    in_phase_step lfo0 out_phase_step
+    type saw
+swave
+
+wave
+swave2
+    in_phase_step lfo0 out_phase_step
+    type sine
+swave2
+
+osc_clock
+osc1
+    in_note_on_trig     t out_trig
+    in_note_slide_trig  off
+    in_play_state       off
+    in_frequency        n out_frequency
+    in_freq_mod1        swave out_output
+    in_freq_mod2        off
+    octave_offset       0
+    tuning_semitones    0.0
+    portamento_time     0.0
+    response_time       0.0
+    freq_mod1_size      0.5
+    freq_mod2_size      1.0
+osc1
+
+osc_clock
+osc2
+    in_note_on_trig     t out_trig
+    in_note_slide_trig  off
+    in_play_state       off
+    in_frequency        n out_frequency
+    in_freq_mod1        swave2 out_output
+    in_freq_mod2        off
+    octave_offset       0
+    tuning_semitones    5.0
+    portamento_time     0.0
+    response_time       0.0
+    freq_mod1_size      2.0
+    freq_mod2_size      1.0
+osc2
+
+constant_freq lfo1 freq 1.26 lfo1
+
+wave
+pwswave
+    in_phase_step lfo1 out_phase_step
+    type saw
+pwswave
+
+constant_freq lfo2 freq 0.5123 lfo2
+
+wave
+plswave
+    in_phase_step lfo2 out_phase_step
+    type saw
+plswave
+
+user_wave
+uwave1
+    waveform
+        vertex ud 10    ul -1.0   ld 130   ll  1.0
+        vertex ud 100   ul  1.0   ld 100   ll  0.5
+        vertex ud 50    ul -0.5   ld 250   ll  0.5
+        vertex ud 200   ul -0.5   ld 200   ll -1.0
+        vertex ud 120   ul  1.0   ld 320   ll -1.0
+    waveform
+    in_phase_trig   osc1    out_phase_trig
+    in_phase_step   osc2    out_phase_step
+    in_level_mod    plswave out_output
+    in_time_mod     pwswave out_output
+    recycle_mode    on
+    zero_retrigger  off
+    drop_check_range 2
+uwave1
+
+clock
+c
+    in_freq_mod1 off
+    freq 1
+    freq_mod1_size 1
+c
+
+adsr
+adsr
+        envelope
+        section name attack
+            ut  10.0    ul  1
+            lt  10.0    ll  1
+        section name decay
+            ut  50.0    ul  0.875
+            lt  25.0    ll  0.875
+        section name release
+            ut  25.0    ul  0
+            lt  15.0    ll  0
+        envelope
+        in_note_on_trig     c out_phase_trig
+        in_note_off_trig    off
+        in_velocity         off
+        up_thresh        1
+        lo_thresh        0
+        start_level      0
+        min_time         900
+        max_sustain_time 0
+        release_is_ratio on
+        sustain_state    off
+        zero_retrigger   on
+adsr
+
+logic_trigger
+lg
+    in_trig1 c out_phase_trig
+    in_trig2 adsr out_off_trig
+    function or
+    precision 0
+lg
+
+trig_counter
+tc
+    in_trig       lg out_trig
+    in_reset_trig off
+    pre_count  0
+    count      2
+    wrap       on
+tc
+
+multiplier
+m
+    in_signal1 uwave1 out_output
+    in_signal2 adsr out_output
+m
+
+wavfile_out
+wav_out
+    in_left     m out_output
+    in_right    m out_output
+    in_bar      tc out_count
+    in_bar_trig tc out_trig
+    snapshot_mode on
+    data_format float32
+    filename    wavfile_out.wav
+    start_bar   0
+    end_bar     1
+wav_out
+
+wcnt_exit
+wcnt_exit_module
+    in_bar      t out_count
+    exit_bar    1
+wcnt_exit_module
+
+wcnt-1.26/jwmsynth

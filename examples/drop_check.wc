@@ -1,0 +1,315 @@
+wcnt-1.26/jwmsynth
+
+//------------------------------------------------------------------------
+//
+// examples/drop_check.wc
+//
+//      derived from tests/user_wave.wc
+//
+//      uses the user_wave module with modulating vertices which
+//      are intentionally dropped when their modulation causes
+//      them to 'collide' with each other due to the sort order.
+//
+//      the user_wave processes the vertices in order of their
+//      ld parameter (degree position for _Lower shape). the
+//      vertices degree position (in this file atleast) is
+//      intentionally unordered so they collide with each other.
+//
+//      in previous versions of wcnt this would have caused massive
+//      peaks outside the waveforms usual range (due to the method
+//      of calculating the waveform's levels). the user_wave also
+//      has a new parameter: drop_check_range, which is for when a
+//      vertex approaches it's previous vertex.
+//      if it is drop_check_range degrees in proximity, it gets dropped.
+//      this was needed because an exact proximity match was not
+//      enough to prevent the peaks in output levels, and the range
+//      required seemed rather too arbitrary to hard-code a value.
+//
+//------------------------------------------------------------------------
+
+samplerate 44100
+bpm 120
+signature 4/4
+
+timer
+t
+    timings
+        time seconds 0
+        time seconds 110
+    timings
+t
+
+timer
+tsw
+    timings
+        time seconds 0
+        time seconds 42
+        time seconds 8
+        time seconds 28
+        time seconds 10
+        time seconds 10
+        time seconds 10
+    timings
+tsw
+
+constant_freq lfo0 freq 0.15331 lfo0
+
+wave
+swave
+    in_phase_step lfo0 out_phase_step
+    type saw
+swave
+
+wave
+swave2
+    in_phase_step lfo0 out_phase_step
+    type sine
+swave2
+
+constant_note n1 name c-1 n1
+constant_note n2 name c#1 n2
+
+wcnt_signal nws1 in_signal n1 out_frequency level 1.0 nws1
+wcnt_signal nws2 in_signal n2 out_frequency level 1.0 nws2
+
+switcher
+sw1
+    signals
+        synthmod name nws2
+        synthmod name nws1
+    signals
+    in_trig         tsw out_trig
+    xfade_time 0
+sw1
+
+osc_clock
+osc1
+    in_note_on_trig     t out_trig
+    in_note_slide_trig  tsw out_trig
+    in_play_state       off
+    in_frequency        sw1 out_output
+    in_freq_mod1        swave out_output
+    in_freq_mod2        uwave2 out_output
+    octave_offset       0
+    tuning_semitones    0.0
+    portamento_time     75.0
+    response_time       0.0
+    freq_mod1_size      0.5
+    freq_mod2_size      1.25
+osc1
+
+osc_clock
+osc2
+    in_note_on_trig     t out_trig
+    in_note_slide_trig  tsw out_trig
+    in_play_state       off
+    in_frequency        sw1 out_output
+    in_freq_mod1        swave2 out_output
+    in_freq_mod2        uwave1 out_output
+    octave_offset       0
+    tuning_semitones    5.0
+    portamento_time     75.0
+    response_time       0.0
+    freq_mod1_size      2.0
+    freq_mod2_size      1.25
+osc2
+
+constant_freq lfo1 freq 1.26 lfo1
+
+wave
+pwswave
+    in_phase_step lfo1 out_phase_step
+    type saw
+pwswave
+
+constant_freq lfo2 freq 2.5123 lfo2
+
+wave
+plswave
+    in_phase_step lfo2 out_phase_step
+    type saw
+plswave
+
+user_wave
+uwave1
+    waveform
+        vertex  ud 10   ul  -1.0    ld 80   ll   1.0
+        vertex  ud 100  ul   1.0    ld 100  ll   0.5
+        vertex  ud 50   ul  -0.5    ld 250  ll   0.5
+        vertex  ud 300  ul  -0.5    ld 300  ll  -1.0
+        vertex  ud 120  ul   1.0    ld 320  ll  -1.0
+    waveform
+    in_phase_trig  osc1      out_phase_trig
+    in_phase_step  osc2      out_phase_step
+    in_level_mod   plswave    out_output
+    in_time_mod    pwswave   out_output
+    recycle_mode    on
+    zero_retrigger  off
+    drop_check_range 2
+uwave1
+
+user_wave
+uwave2
+    waveform
+        vertex  ud 10   ul  -1.0    ld 80   ll   1.0
+        vertex  ud 100  ul   1.0    ld 100  ll   0.5
+        vertex  ud 50   ul  -0.5    ld 250  ll   0.5
+        vertex  ud 300  ul  -0.5    ld 300  ll  -1.0
+        vertex  ud 120  ul   1.0    ld 320  ll  -1.0
+    waveform
+    in_phase_trig  osc1      out_phase_trig
+    in_phase_step  osc2      out_phase_step
+    in_level_mod   pwswave    out_output
+    in_time_mod    plswave   out_output
+    recycle_mode    on
+    zero_retrigger  off
+    drop_check_range 2
+uwave2
+
+constant_note nn1 name e0 nn1
+constant_note nn2 name f0 nn2
+constant_note nn3 name e-1 nn3
+constant_note nn3i name f-1 nn3i
+constant_note nn3ii name d-1 nn3ii
+constant_note nn3iii name b-1 nn3iii
+constant_note nn3iiii name g-1 nn3iiii
+
+wcnt_signal nnws1 in_signal nn1 out_phase_step level 1.0 nnws1
+wcnt_signal nnws2 in_signal nn2 out_phase_step level 1.0 nnws2
+wcnt_signal nnws3 in_signal nn3 out_phase_step level 1.0 nnws3
+wcnt_signal nnws3i in_signal nn3i out_phase_step level 1.0 nnws3i
+wcnt_signal nnws3ii in_signal nn3ii out_phase_step level 1.0 nnws3ii
+wcnt_signal nnws3iii in_signal nn3iii out_phase_step level 1.0 nnws3iii
+wcnt_signal nnws3iiii in_signal nn3iiii out_phase_step level 1.0 nnws3iiii
+
+timer
+tsw1
+    timings
+        time seconds 62
+        time seconds 12
+        time seconds 1
+        time seconds 1
+        time seconds 1
+        time seconds 1
+        time seconds 23
+    timings
+tsw1
+
+switcher
+sw2
+    signals
+        synthmod name nnws1
+        synthmod name nnws2
+        synthmod name nnws3
+        synthmod name nnws3i
+        synthmod name nnws3ii
+        synthmod name nnws3iii
+        synthmod name nnws3iiii
+    signals
+    in_trig tsw1 out_trig
+    xfade_time 25
+sw2
+
+wave sine in_phase_step sw2 out_output type sine sine
+
+constant mb value 0.5 mb
+
+modifier
+m
+    in_signal1 uwave1 out_output
+    in_signal2 uwave2 out_output
+    in_bias mb out_output
+    function sub
+    type m1
+m
+
+constant m2b value 0.75 m2b
+
+modifier
+m2
+    in_signal1 sine out_output
+    in_signal2 m out_output
+    in_bias m2b out_output
+    function add
+    type m2
+m2
+
+wcnt_signal
+mm
+    in_signal m2 out_output
+    level 2
+mm
+
+mix_chan
+ch1
+    in_left  uwave1 out_output
+    in_right mm out_output
+ch1
+
+mix_chan
+ch2
+    in_left  mm out_output
+    in_right uwave2 out_output
+ch2
+
+mixer
+stmix
+    mix
+        synthmod name ch1
+        synthmod name ch2
+    mix
+    master_level 0.5
+stmix
+
+caps_plate2x2
+revb
+    in_left   stmix out_left
+    in_right  stmix out_right
+    bandwidth  0.99
+    tail       0.6
+    damping    0.01
+    wet/dry    0.25
+revb
+
+fader
+fade
+    in_bar      t out_count
+    in_bar_trig t out_trig
+    start_bar       0
+    end_bar         1
+    fade_in_time   10000
+    fade_out_time  15000
+fade
+
+stereo_amp
+amp
+    in_left     revb out_left
+    in_right    revb out_right
+    in_amp_eg   fade out_output
+    in_amp_mod  off
+    left_level  0.9
+    right_level 0.9
+    amp_mod_size 0
+    clip_level   1
+amp
+
+wavfile_out
+wav_out
+    in_left     amp out_left
+    in_right    amp out_right
+    in_bar      fade out_bar
+    in_bar_trig fade out_trig
+    snapshot_mode off
+    data_format float32
+    filename    drop_check.wav
+    start_bar   0
+    end_bar     1
+wav_out
+
+wcnt_exit
+wcnt_exit_module
+    in_bar      fade out_bar
+    exit_bar    1
+wcnt_exit_module
+
+wcnt-1.26/jwmsynth

@@ -15,6 +15,7 @@ public:
         OUT_NONE_ULONG,
         OUT_NONE_TRIG,
         OUT_NONE_STATE,
+        OUT_NONE_STRING,
         OUT_OUTPUT,
         OUT_PLAY_STATE,
         OUT_LEFT,
@@ -77,6 +78,8 @@ public:
         OUT_UP,
         OUT_DOWN,
         #endif
+        OUT_PRE_COUNT,
+        OUT_PRE_SHAPE_OUTPUT,
         OUT_LAST
     };
     outputnames();

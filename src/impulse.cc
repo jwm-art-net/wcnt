@@ -8,14 +8,12 @@ impulse::impulse(char const* uname) :
  synthmod(synthmodnames::IMPULSE, uname),
  in_trig(0), out_output(0.0)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_inputlist().add_input(this, inputnames::IN_TRIG);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_TRIG);
 }
 
 impulse::~impulse()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
 }
 
 void impulse::run()

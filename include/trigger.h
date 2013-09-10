@@ -1,7 +1,7 @@
 #ifndef TRIGGER_H
 #define TRIGGER_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 class trigger: public synthmod
 {

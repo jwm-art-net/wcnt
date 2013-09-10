@@ -9,14 +9,12 @@ diff_filter::diff_filter(char const* uname) :
  synthmod(synthmodnames::DIFFFILTER, uname),
  in_signal(0), out_output(0.0), oldinsig(0.0)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_inputlist().add_input(this, inputnames::IN_SIGNAL);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
 }
 
 diff_filter::~diff_filter()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
 }
 
 void diff_filter::run()

@@ -1,82 +1,93 @@
-Pre-release of Wav Composer Not Toilet 1.26
-
-wcnt is a not-real-time commandline text-file-based modular synth/sequencer/sampler for GNU/Linux to generate WAV audio files.
-
-Download from:
-http://wcnt.sourceforge.net
-
---------------------------------------------------------------------------
-This is the second release building up to wcnt-1.26
-
-Since wcnt-1.25.5, the program has undergone many important changes.
-
-  * libsndfile: the audio file IO lib from mega-nerd.com allows wcnt
-    to read and write *WAV* audio in other data formats besides 16bit
-    pcm. Consequently, all 16bit 'audio' inputs and outputs have been
-    removed. *** Make sure you have it installed *** :)
-
-  * LADSPA: a number of modules (9) have been created to use a select
-    few LADSPA plugins. These provide much better filters, reverb,
-    limiting, and compression. More might be added in future.
-
-  * orbit module: impliments three orbit fractals which iterate upon
-    a trigger, and the output of which is scaled (via an interation
-    test) within the -1.0 to +1.0 range.
-
-  * adsr_scaler data object: allows indivdual sections of previously
-    defined adsr modules to be scaled on the time axis. it's quick
-    and easy.
-
-  * improved command line option handling: help describing the command
-    line options. several new options such as --dont-run and --no-title.
-    module help now lists the modules sorted into three alphabetical
-    collumns to make life easier.
-
-  * many memory leaks plugged, and numerous operational bugs squashed.
-
-  * no more -ffast_math compiler optimizations causing dodgy calculations.
-
-  * removed sine_wave and tri_wave modules altogether.
-
-  * wave module: a new easy-to-use module for quickly generating sine,
-    triangle, and sawtooth waveforms and a number of variations of these
-    outputting in the 0.0 to +1.0 range (instead of -1.0 to +1.0).
-
-  * wave_phase module: comes close to the old sine_wave and triangle_wave
-    implimentations. seperate phase trigger and phase_step inputs, and
-    seperate phase_step input for a shaping waveform. improved algorythm
-    means it's more likely to do what it's meant to :). new parameter to
-    invert every other phase (or every other partial phase etc), combined
-    with shaping (ie multiplication of two waveforms) allows a greater
-    variety of waveforms to be created.
-
-  * dc_filter and rms modules: no longer do their calculations in such an
-    extremely defficient manner.
-
-  * deg_size type inputs and outputs renamed to the far more sensible
-    phase_step type.
-
-  * constant_freq and constant_note: two new constant modules which
-    output translations of their parameter, so they're independant of
-    the sample rate unlike doing the same thing with the constant module.
-
-  * balance module: this is the modifier module renamed to show what it
-    actually does: balance two signals.
-
-  * modifier module: does something much more interesting than balance
-    two signals - ie combining two waveforms to create a third.
-
-  * many code changes and improvments.
---------------------------------------------------------------------------
-
-*****
-Please note the online help at wcnt.sf.net is now out of date. I've begun working on inline help, the beginnings of which are included as a number of text files. The text files provide short descriptions and guidlines on the usages of individual modules.
-
-*****
-All your old .wc files will now be broken with this version. Sorry - things change as I slowly learn.
+wcnt-1.26.1
 
 http://wcnt.sourceforge.net
 
-best regards,
+(source code only)
 
+First release of wcnt-1.26 after the pre releases...
+
+NEW MODULES:
+
+    * trig_counter (module)
+      outputs n triggers when it's input triggers. can ignore n triggers
+      before doing so. stops outputing when n triggers counted, or can
+      wrap around so out_count output wraps also. out_count + out_trig
+      can be used much like the timer's out_count + out_trig or the
+      time_maps out_bar + out_bar_trig for triggering exit or file
+      writing, but more besides...
+
+    * trig_echo (module)
+      a module to echo triggers. it's out_count output is the number
+      of times this particular echoed trigger will trigger until
+      fade out. out_velocity outputs out_count as a value between
+      0 ~ 1.
+
+    * trig_router (module)
+      a module which creates n wcnt_trigger modules and groups them
+      into a group named as it's username. it connects to an out_trig
+      and out_count outputs to decide which of the wcnt_trigger modules
+      it created should be triggered. hint: rudimentry polyphony.
+
+    * group_control (module)
+      this module has a single parameter: group_name where the name
+      of a group to be controlled is specified. it also has two
+      inputs, in_play_trig and in_stop_trig. basically, this module
+      steals all the group modules from the main module list so it
+      can control when they are processed. hint: rudimentry polyphony.
+
+    * sample_climb (module)
+      works like a sample_hold module in reverse: it grabs a sample
+      when triggered, and uses it as a target to climb/descend to.
+      output = output + (target - output) * rate (like square_wave).
+
+    * inspector (module)
+      an nicely arkward to use module for displaying the values of
+      various outputs when triggered. more for me than anyone else.
+
+wcnt now has over 80 modules...(81 to be precise)
+
+CHANGES:
+    * wavfile_out (module)
+      now has snapshot_mode parameter. adds the date and time (down
+      to the millisecond) to the filename being written. via the
+      trig_counter module it can now be used (provided snapshot_mode
+      is on) -( very much like the serial_wavfile_out module )- to
+      output a sequential series of WAVs.
+
+    * square_wave (module)
+      the square_wave can now introduce some curves into the harsh
+      square flip-flop digital waveform.
+      uses a simple output += (target - output) * rate method. lacks
+      frequency scaling though, which could be a good thing or not.
+
+    * user_wave (module)
+      vertices which (via modulation) collide with previous vertices
+      will be dropped from the waveform - as opposed to causing
+      nasty peaks(previous version). makes an interesting twanging
+      sound.
+
+RE-CODED:
+    * many things which should not make any difference to the user,
+      except maybe a marginal speed increase in some situations.
+
+-------------
+
+NOTES:
+    * tested it as much i can by myself and without any strict
+      regime. i will have missed something...
+
+    * documentation is very much out of date now, sorry. the only
+      thing I can offer right now is the occasional comment in the
+      examples, and tests (directories of .wc files bundled with
+      source code).
+
+-------------
+
+http://wcnt.sourceforge.net
+
+(source code only)
+
+wcnt-1.26.1
+
+regards,
 james jwm-art net

@@ -19,23 +19,21 @@ osc_clock::osc_clock(char const* uname) :
 {
 // degs initialised with 360 so that it 
 // immediately triggers if in_phase_trig is off
-    jwm.get_outputlist().add_output(this, outputnames::OUT_PHASE_TRIG);
-    jwm.get_outputlist().add_output(this,
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_PHASE_TRIG);
+    jwm.get_outputlist()->add_output(this,
         outputnames::OUT_PREMOD_PHASE_STEP);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_PHASE_STEP);
-    jwm.get_inputlist().add_input(this, inputnames::IN_NOTE_ON_TRIG);
-    jwm.get_inputlist().add_input(this, inputnames::IN_NOTE_SLIDE_TRIG);
-    jwm.get_inputlist().add_input(this, inputnames::IN_PLAY_STATE);
-    jwm.get_inputlist().add_input(this, inputnames::IN_FREQ);
-    jwm.get_inputlist().add_input(this, inputnames::IN_FREQ_MOD1);
-    jwm.get_inputlist().add_input(this, inputnames::IN_FREQ_MOD2);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_PHASE_STEP);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_NOTE_ON_TRIG);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_NOTE_SLIDE_TRIG);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_PLAY_STATE);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_FREQ);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_FREQ_MOD1);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_FREQ_MOD2);
     create_params();
 }
 
 osc_clock::~osc_clock()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
 }
 
 void const* osc_clock::get_out(outputnames::OUT_TYPE ot) const
@@ -138,51 +136,51 @@ void const* osc_clock::get_param(paramnames::PAR_TYPE pt) const
 
 stockerrs::ERR_TYPE osc_clock::validate()
 {
-    modparamlist& pl = jwm.get_paramlist();
-    if (!pl.validate(this, paramnames::PORTAMENTO,
+    modparamlist* pl = jwm.get_paramlist();
+    if (!pl->validate(this, paramnames::PORTAMENTO,
             stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames().get_name(paramnames::PORTAMENTO);
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::PORTAMENTO);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
-    if (!pl.validate(this, paramnames::RESPONSE_TIME,
+    if (!pl->validate(this, paramnames::RESPONSE_TIME,
             stockerrs::ERR_NEGATIVE))
     {
         *err_msg
-         = jwm.get_paramnames().get_name(paramnames::RESPONSE_TIME);
+         = jwm.get_paramnames()->get_name(paramnames::RESPONSE_TIME);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
-    if (!pl.validate(this, paramnames::FREQ_MOD1SIZE,
+    if (!pl->validate(this, paramnames::FREQ_MOD1SIZE,
             stockerrs::ERR_RANGE_FMOD))
     {
         *err_msg
-         = jwm.get_paramnames().get_name(paramnames::FREQ_MOD1SIZE);
+         = jwm.get_paramnames()->get_name(paramnames::FREQ_MOD1SIZE);
         invalidate();
         return stockerrs::ERR_RANGE_FMOD;
     }
-    if (!pl.validate(this, paramnames::FREQ_MOD2SIZE,
+    if (!pl->validate(this, paramnames::FREQ_MOD2SIZE,
             stockerrs::ERR_RANGE_FMOD))
     {
         *err_msg
-         = jwm.get_paramnames().get_name(paramnames::FREQ_MOD2SIZE);
+         = jwm.get_paramnames()->get_name(paramnames::FREQ_MOD2SIZE);
         invalidate();
         return stockerrs::ERR_RANGE_FMOD;
     }
-    if (!pl.validate(this, paramnames::TUNING_SEMITONES,
+    if (!pl->validate(this, paramnames::TUNING_SEMITONES,
             stockerrs::ERR_RANGE_SEMI))
     {
         *err_msg
-         = jwm.get_paramnames().get_name(paramnames::TUNING_SEMITONES);
+         = jwm.get_paramnames()->get_name(paramnames::TUNING_SEMITONES);
         invalidate();
         return stockerrs::ERR_RANGE_SEMI;
     }
-    if (!pl.validate(this, paramnames::OCTAVE,
+    if (!pl->validate(this, paramnames::OCTAVE,
             stockerrs::ERR_RANGE_OCT))
     {
         *err_msg
-         = jwm.get_paramnames().get_name(paramnames::OCTAVE);
+         = jwm.get_paramnames()->get_name(paramnames::OCTAVE);
         invalidate();
         return stockerrs::ERR_RANGE_OCT;
     }
@@ -206,8 +204,9 @@ void osc_clock::run()
             target_phase_step
              = freq_to_step(*in_freq, octave_offset, semitones);
             slidesamples = ms_to_samples(portamento);
-            slide_size = (double)(target_phase_step - out_premod_phase_step)
-             / slidesamples;
+            slide_size = (double)
+                (target_phase_step - out_premod_phase_step)
+                    / slidesamples;
         }
     }
     else if (*in_note_on_trig == ON) {
@@ -219,8 +218,9 @@ void osc_clock::run()
             target_phase_step
              =  freq_to_step(*in_freq, octave_offset, semitones);
             slidesamples = ms_to_samples(response_time);
-            slide_size = (double)(target_phase_step - out_premod_phase_step)
-             / slidesamples;
+            slide_size = (double)
+                (target_phase_step - out_premod_phase_step)
+                    / slidesamples;
         }
     }
     if (slidesamples > 0)
@@ -263,17 +263,17 @@ void osc_clock::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::OSCCLOCK, paramnames::OCTAVE);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::OSCCLOCK, paramnames::TUNING_SEMITONES);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::OSCCLOCK, paramnames::PORTAMENTO);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::OSCCLOCK, paramnames::RESPONSE_TIME);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::OSCCLOCK, paramnames::FREQ_MOD1SIZE);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::OSCCLOCK, paramnames::FREQ_MOD2SIZE);
     done_params = true;
 }

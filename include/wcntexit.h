@@ -1,7 +1,7 @@
 #ifndef WCNTEXIT_H
 #define WCNTEXIT_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 /*
 wcnt_exit

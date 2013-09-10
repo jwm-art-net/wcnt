@@ -8,14 +8,13 @@ wcnt_trigger::wcnt_trigger(char const* uname) :
  synthmod(synthmodnames::WCNTTRIGGER, uname),
  in_trig(0)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_TRIG);
-    jwm.get_inputlist().add_input(this, inputnames::IN_TRIG);
+    set_empty_run();
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_TRIG);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_TRIG);
 }
 
 wcnt_trigger::~wcnt_trigger()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
 }
 
 void const* wcnt_trigger::get_out(outputnames::OUT_TYPE ot) const

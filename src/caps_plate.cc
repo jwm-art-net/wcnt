@@ -13,16 +13,14 @@ caps_plate::caps_plate(char const* uname) :
  l_descriptor(0), l_inst_handle(0),
  l_input(0), l_out_left(0), l_out_right(0)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_LEFT);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_RIGHT);
-    jwm.get_inputlist().add_input(this, inputnames::IN_SIGNAL);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_LEFT);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_RIGHT);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
     create_params();
 }
 
 caps_plate::~caps_plate()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
     if (l_descriptor) l_descriptor->cleanup(l_inst_handle);
     if (l_input) delete [] l_input;
     if (l_out_left) delete [] l_out_left;
@@ -98,28 +96,28 @@ stockerrs::ERR_TYPE caps_plate::validate()
 {
     if (bandwidth < 0.005 || bandwidth > 0.999) {
         *err_msg +=
-            jwm.get_paramnames().get_name(paramnames::BANDWIDTH);
+            jwm.get_paramnames()->get_name(paramnames::BANDWIDTH);
         *err_msg += " must be within range 0.005 to 0.999";
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (tail < 0.0 || tail > 0.749) {
         *err_msg +=
-            jwm.get_paramnames().get_name(paramnames::TAIL);
+            jwm.get_paramnames()->get_name(paramnames::TAIL);
         *err_msg += " must be within range 0.0 to 0.749";
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (damping < 0.0005 || damping > 1.0) {
         *err_msg +=
-            jwm.get_paramnames().get_name(paramnames::DAMPING);
+            jwm.get_paramnames()->get_name(paramnames::DAMPING);
         *err_msg += " must be within range 0.0005 to 1.0";
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (blend < 0.0 || blend > 1.0) {
         *err_msg +=
-            jwm.get_paramnames().get_name(paramnames::WETDRY);
+            jwm.get_paramnames()->get_name(paramnames::WETDRY);
         *err_msg += " must be within range 0.0 to 1.0";
         invalidate();
         return stockerrs::ERR_ERROR;
@@ -129,10 +127,10 @@ stockerrs::ERR_TYPE caps_plate::validate()
 
 void caps_plate::init()
 {
-    ladspa_loader& ll = jwm.get_ladspaloader();
-    ladspa_plug* lp = ll.get_plugin("caps", "Plate");
+    ladspa_loader* ll = jwm.get_ladspaloader();
+    ladspa_plug* lp = ll->get_plugin("caps", "Plate");
     if (lp == 0) {
-        *err_msg = ll.get_error_msg();
+        *err_msg = ll->get_error_msg();
         invalidate();
         return;
     }
@@ -177,13 +175,13 @@ void caps_plate::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_paramlist().add_param(synthmodnames::CAPS_PLATE,
+    jwm.get_paramlist()->add_param(synthmodnames::CAPS_PLATE,
                                paramnames::BANDWIDTH);
-    jwm.get_paramlist().add_param(synthmodnames::CAPS_PLATE,
+    jwm.get_paramlist()->add_param(synthmodnames::CAPS_PLATE,
                                paramnames::TAIL);
-    jwm.get_paramlist().add_param(synthmodnames::CAPS_PLATE,
+    jwm.get_paramlist()->add_param(synthmodnames::CAPS_PLATE,
                                paramnames::DAMPING);
-    jwm.get_paramlist().add_param(synthmodnames::CAPS_PLATE,
+    jwm.get_paramlist()->add_param(synthmodnames::CAPS_PLATE,
                                paramnames::WETDRY);
     done_params = true;
 }

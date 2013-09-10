@@ -1,0 +1,153 @@
+wcnt-1.26/jwmsynth
+
+samplerate 44100
+bpm 120
+signature 4/4
+
+time_map
+time
+    meter_map
+    meter_map
+    bpm_map
+    bpm_map
+time
+
+riff
+riff1
+    quarter_value   64
+    notelist
+        note name c0    pos 0   len 80      vel 1.0
+        note name f0    pos 64  len 20      vel 1.0
+        note name e0    pos 96  len 8       vel 1.0
+        note name c0    pos 128 len 80      vel 1.0
+        note name e0    pos 160 len 16      vel 1.0
+        note name g0    pos 208 len 12      vel 1.0
+        note name =P+N  pos 208 len 6       vel 0.0
+        note name IP+N  pos 90  len 90      vel 5.0
+        note name >P+Q  pos -1  len 256     vel 5.0
+    notelist
+riff1
+
+copier rc1 from riff1 to riff2 rc1
+
+riff_editor
+re1
+    riff riff2
+    notelist
+        note name >P+Q  pos 0   len 32      vel 0.0
+    notelist
+re1
+
+sequencer
+seq
+    track
+        riff_node
+            riff riff1  bar 0   transpose 0
+            repeat 0 repeat_stripe 1
+        riff_node
+            riff riff2  bar 1   transpose 0
+            repeat 0 repeat_stripe 1
+    track
+    in_bar              time out_bar
+    in_bar_trig         time out_bar_trig
+    in_pos_step_size    time out_pos_step_size
+    in_beats_per_bar    time out_beats_per_bar
+    in_beat_value       time out_beat_value
+    start_bar 0
+    velocity_response_time 0
+seq
+
+osc_clock
+osc
+        in_note_on_trig     seq out_note_on_trig
+        in_note_slide_trig  seq out_note_slide_trig
+        in_play_state       adsr out_play_state
+        in_frequency        seq out_frequency
+        in_freq_mod1        off
+        in_freq_mod2        off
+        octave_offset       0
+        tuning_semitones    0
+        portamento_time     50
+        response_time       10
+        freq_mod1_size      1
+        freq_mod2_size      1
+osc
+
+wave
+sine
+    in_phase_step osc out_phase_step
+    type sine
+sine
+
+wave_phase
+sine2
+    in_phase_trig       osc out_phase_trig
+    in_phase_step       osc out_phase_step
+    in_shape_phase_step off
+    type        sine
+    shape_type  one
+    on_trig_reset_phase off
+    recycle_mode        on
+    sync_shape          off
+    invert_alt          off
+    phase_cycles        1
+sine2
+
+adsr
+adsr
+        envelope
+        section name attack
+            ut  10.0    ul  1.000
+            lt  10.0    ll  0.125
+        section name decay
+            ut  50.0    ul  0.875
+            lt  25.0    ll  0.250
+        section name release
+            ut  25.0    ul  0.750
+            lt  15.0    ll  0.250
+        section name release
+            ut  25.0    ul  0.000
+            lt  15.0    ll  0.000
+        envelope
+        in_note_on_trig     seq out_note_on_trig
+        in_note_off_trig    seq out_note_off_trig
+        in_velocity         seq out_velocity
+        up_thresh        1
+        lo_thresh        0
+        start_level      0
+        min_time         0
+        max_sustain_time 0
+        release_is_ratio on
+        sustain_state    on
+        zero_retrigger   off
+adsr
+
+multiplier
+out
+    in_signal1 sine2 out_output
+    in_signal2 adsr out_output
+out
+
+wavfile_out
+wav
+    in_left     out out_output
+    in_right    out out_output
+    in_bar      time out_bar
+    in_bar_trig time out_bar_trig
+    snapshot_mode off
+    data_format pcm16
+    filename    errors.wav
+    start_bar   0
+    end_bar     5
+wav
+
+wcnt_exit
+exit
+    in_bar      time out_bar
+    exit_bar    5
+exit
+
+wcnt-1.26/jwmsynth
+
+
+

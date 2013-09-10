@@ -23,24 +23,22 @@ notetran::notetran(char const* uname) :
     no_hi_notename = new char[jwm_init::note_array_size];
     ns_lo_notename = new char[jwm_init::note_array_size];
     ns_hi_notename = new char[jwm_init::note_array_size];
-    jwm.get_outputlist().add_output(this, outputnames::OUT_NOVALUE);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_NSVALUE);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_NOTE_ON_TRIG);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_NOT_NO_TRIG);
-    jwm.get_outputlist().add_output(this,
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_NOVALUE);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_NSVALUE);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_NOTE_ON_TRIG);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_NOT_NO_TRIG);
+    jwm.get_outputlist()->add_output(this,
         outputnames::OUT_NOTE_SLIDE_TRIG);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_NOT_NS_TRIG);
-    jwm.get_inputlist().add_input(this, inputnames::IN_NOTENAME);
-    jwm.get_inputlist().add_input(this, inputnames::IN_NOTE_ON_TRIG);
-    jwm.get_inputlist().add_input(this, inputnames::IN_NOTE_SLIDE_TRIG);
-    jwm.get_inputlist().add_input(this, inputnames::IN_DETRANSPOSE);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_NOT_NS_TRIG);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_NOTENAME);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_NOTE_ON_TRIG);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_NOTE_SLIDE_TRIG);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_DETRANSPOSE);
     create_params();
 }
 
 notetran::~notetran()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
     delete [] no_lo_notename;
     delete [] no_hi_notename;
     delete [] ns_lo_notename;
@@ -158,42 +156,42 @@ void const* notetran::get_param(paramnames::PAR_TYPE pt) const
 stockerrs::ERR_TYPE notetran::validate()
 {
     if (!check_notename(no_lo_notename)) {
-        *err_msg += jwm.get_paramnames().get_name(paramnames::NO_LONOTE);
+        *err_msg += jwm.get_paramnames()->get_name(paramnames::NO_LONOTE);
         *err_msg += " ";
         *err_msg += no_lo_notename;
         invalidate();
     }
     if (!check_notename(no_hi_notename)) {
-        *err_msg += jwm.get_paramnames().get_name(paramnames::NO_HINOTE);
+        *err_msg += jwm.get_paramnames()->get_name(paramnames::NO_HINOTE);
         *err_msg += " ";
         *err_msg += no_hi_notename;
         invalidate();
     }
     if (!check_notename(ns_lo_notename)) {
-        *err_msg += jwm.get_paramnames().get_name(paramnames::NS_LONOTE);
+        *err_msg += jwm.get_paramnames()->get_name(paramnames::NS_LONOTE);
         *err_msg += " ";
         *err_msg += ns_lo_notename;
         invalidate();
     }
     if (!check_notename(ns_hi_notename)) {
-        *err_msg += jwm.get_paramnames().get_name(paramnames::NS_HINOTE);
+        *err_msg += jwm.get_paramnames()->get_name(paramnames::NS_HINOTE);
         *err_msg += " ";
         *err_msg += ns_hi_notename;
         invalidate();
     }
-    if (!jwm.get_paramlist().validate(this, paramnames::NO_RESPTIME,
+    if (!jwm.get_paramlist()->validate(this, paramnames::NO_RESPTIME,
             stockerrs::ERR_NEGATIVE))
     {
         *err_msg =
-         jwm.get_paramnames().get_name(paramnames::NO_RESPTIME);
+         jwm.get_paramnames()->get_name(paramnames::NO_RESPTIME);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
-    if (!jwm.get_paramlist().validate(this, paramnames::NS_RESPTIME,
+    if (!jwm.get_paramlist()->validate(this, paramnames::NS_RESPTIME,
             stockerrs::ERR_NEGATIVE))
     {
         *err_msg =
-         jwm.get_paramnames().get_name(paramnames::NS_RESPTIME);
+         jwm.get_paramnames()->get_name(paramnames::NS_RESPTIME);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -303,29 +301,29 @@ void notetran::create_params()
     if (done_params == true)
         return;
     // inserted in order to be defined by user
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::NOTETRAN, paramnames::NO_LONOTE);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::NOTETRAN, paramnames::NO_HINOTE);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::NOTETRAN, paramnames::MINNO_OUT);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::NOTETRAN, paramnames::MAXNO_OUT);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::NOTETRAN, paramnames::DETRAN_NO);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::NOTETRAN, paramnames::NO_RESPTIME);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::NOTETRAN, paramnames::NS_LONOTE);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::NOTETRAN, paramnames::NS_HINOTE);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::NOTETRAN, paramnames::MINNS_OUT);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::NOTETRAN, paramnames::MAXNS_OUT);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::NOTETRAN, paramnames::DETRAN_NS);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::NOTETRAN, paramnames::NS_RESPTIME);
     done_params = true;
 }

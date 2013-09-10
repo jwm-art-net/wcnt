@@ -11,23 +11,14 @@ dc_filter::dc_filter(char const* uname) :
  in_signal(0), output(0), dc_time(0), filter(0), filterarraymax(0),
  fpos(0), filtertotal(0)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_inputlist().add_input(this, inputnames::IN_SIGNAL);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
     create_params();
 }
 
 dc_filter::~dc_filter()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
     delete [] filter;
-}
-
-void dc_filter::init()
-{
-    filterarraymax = (short)((dc_time * jwm.samplerate()) / 1000);
-    filter = new double[filterarraymax];
-    for (int i = 0; i < filterarraymax; i++) filter[i] = 0;
 }
 
 void const* dc_filter::get_out(outputnames::OUT_TYPE ot) const
@@ -80,14 +71,25 @@ void const* dc_filter::get_param(paramnames::PAR_TYPE pt) const
 
 stockerrs::ERR_TYPE dc_filter::validate()
 {
-    if (!jwm.get_paramlist().validate(this, paramnames::DC_TIME,
+    if (!jwm.get_paramlist()->validate(this, paramnames::DC_TIME,
             stockerrs::ERR_NEG_ZERO))
     {
-        *err_msg = jwm.get_paramnames().get_name(paramnames::DC_TIME);
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::DC_TIME);
         invalidate();
         return stockerrs::ERR_NEG_ZERO;
     }
     return stockerrs::ERR_NO_ERROR;
+}
+
+void dc_filter::init()
+{
+    filterarraymax = (short)((dc_time * jwm.samplerate()) / 1000);
+    filter = new double[filterarraymax];
+    if (!filter){
+        invalidate();
+        return;
+    }
+    for (int i = 0; i < filterarraymax; i++) filter[i] = 0;
 }
 
 void dc_filter::run()
@@ -106,7 +108,7 @@ void dc_filter::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
      synthmodnames::DCFILTER, paramnames::DC_TIME);
     done_params = true;
 }

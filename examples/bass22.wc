@@ -184,6 +184,7 @@ psquare
     in_phase_trig  pclock out_phase_trig
     in_phase_step    pclock out_phase_step
     in_pwm         pwm1 out_output
+    rate          1.0
     pulse_width   0.5
     pwm_size      0.75
     recycle_mode  off
@@ -267,18 +268,9 @@ sb-eq
     bandwidth_mod_size  0.55
 sb-eq
 
-bode_freq_shifter
-freqshift
-    in_signal     sb-eq out_output
-    in_shift_mod  penv2 out_output
-    freq_shift     100
-    shift_mod_size 1250.0
-freqshift
-
-
 sc1
 sc
-    in_signal       freqshift out_up //sb-eq out_output
+    in_signal       sb-eq out_output
     attack_time     2.0
     release_time    55.0
     threshold_db    -20
@@ -315,7 +307,7 @@ wav
     in_right     lpf out_output
     in_bar       time1 out_bar
     in_bar_trig  time1 out_bar_trig
-
+    snapshot_mode off
     data_format  float32
     filename     bass22.wav
     start_bar    0

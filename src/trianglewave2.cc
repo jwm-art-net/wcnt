@@ -15,18 +15,16 @@ triangle_wave2::triangle_wave2(char const* uname) :
  sect_spanlvl(0), sect_startlvl(0), old_maxsamps(0), sectmaxsamps(1),
  sectsample(0), counter_ratio(0)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_PLAY_STATE);
-    jwm.get_inputlist().add_input(this, inputnames::IN_PHASE_TRIG);
-    jwm.get_inputlist().add_input(this, inputnames::IN_PHASE_STEP);
-    jwm.get_inputlist().add_input(this, inputnames::IN_NORM_MOD);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_PLAY_STATE);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_PHASE_TRIG);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_PHASE_STEP);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_NORM_MOD);
     create_params();
 }
 
 triangle_wave2::~triangle_wave2()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
 }
 
 void const* triangle_wave2::get_out(outputnames::OUT_TYPE ot) const
@@ -96,18 +94,18 @@ void const* triangle_wave2::get_param(paramnames::PAR_TYPE pt) const
 
 stockerrs::ERR_TYPE triangle_wave2::validate()
 {
-    if (!jwm.get_paramlist().validate(this, paramnames::NORM_FREQ,
+    if (!jwm.get_paramlist()->validate(this, paramnames::NORM_FREQ,
             stockerrs::ERR_RANGE_FREQ))
     {
-        *err_msg = jwm.get_paramnames().get_name(paramnames::NORM_FREQ);
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::NORM_FREQ);
         invalidate();
         return stockerrs::ERR_RANGE_FREQ;
     }
-    if (!jwm.get_paramlist().validate(this, paramnames::NORM_MODSIZE,
+    if (!jwm.get_paramlist()->validate(this, paramnames::NORM_MODSIZE,
             stockerrs::ERR_RANGE_FMOD))
     {
         *err_msg
-         = jwm.get_paramnames().get_name(paramnames::NORM_MODSIZE);
+         = jwm.get_paramnames()->get_name(paramnames::NORM_MODSIZE);
         invalidate();
         return stockerrs::ERR_RANGE_FMOD;
     }
@@ -191,13 +189,13 @@ void triangle_wave2::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::TRIWAVE2, paramnames::NORM_FREQ);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
      	synthmodnames::TRIWAVE2, paramnames::NORM_MODSIZE);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
      	synthmodnames::TRIWAVE2, paramnames::RECYCLE_MODE);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::TRIWAVE2, paramnames::ZERO_RETRIGGER);
     done_params = true;
 }

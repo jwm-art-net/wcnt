@@ -7,17 +7,15 @@
 
 wcnt_signal::wcnt_signal(char const* uname) :
  synthmod(synthmodnames::WCNTSIGNAL, uname),
- in_signal(0), out_output(0.0), level(0.0)
+ out_output(0.0), in_signal(0), level(0.0)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_inputlist().add_input(this, inputnames::IN_SIGNAL);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
     create_params();
 }
 
 wcnt_signal::~wcnt_signal()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
 }
 
 void const* wcnt_signal::get_out(outputnames::OUT_TYPE ot) const
@@ -74,7 +72,7 @@ void wcnt_signal::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::WCNTSIGNAL, paramnames::LEVEL);
     done_params = true;
 }

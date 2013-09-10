@@ -547,7 +547,7 @@ wav
     in_right     scr out_output
     in_bar       t1 out_count
     in_bar_trig  t1 out_trig
-
+    snapshot_mode off
     data_format  float32
     filename     price_crash.wav
     start_bar    0

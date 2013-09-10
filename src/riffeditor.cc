@@ -74,11 +74,11 @@ stockerrs::ERR_TYPE riff_editor::validate()
 void riff_editor::create_params()
 {
     if (done_params == true) return;
-    jwm.get_dparlist().add_dobjparam(
+    jwm.get_dparlist()->add_dobjparam(
         dobjnames::DEF_RIFFEDITOR, paramnames::RIFFNAME);
-    dobjdobjlist* dbjlist = jwm.get_topdobjlist().create_dobjdobjlist(
-        dobjnames::DEF_RIFFEDITOR, dobjnames::LST_NOTES);
-    dbjlist->add_dobjdobj(dobjnames::LST_NOTES, dobjnames::SIN_NOTE);
+    jwm.get_topdobjlist()->create_dobjdobjlist(
+        dobjnames::DEF_RIFFEDITOR, dobjnames::LST_NOTES)->
+            add_dobjdobj(dobjnames::LST_NOTES, dobjnames::SIN_NOTE);
     done_params = true;
 }
 

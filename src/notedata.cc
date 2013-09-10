@@ -5,6 +5,10 @@
 #include "../include/conversions.h"
 #include "../include/dobjparamlist.h"
 
+#ifdef NOTE_EDIT_DEBUG
+#include <iostream>
+#endif
+
 note_data::note_data() :
  dobj(dobjnames::SIN_NOTE),
  note_type(NOTE_TYPE_ERR),position(0), length(0), velocity(0)
@@ -214,24 +218,24 @@ void const* note_data::get_param(paramnames::PAR_TYPE dt) const
 stockerrs::ERR_TYPE note_data::validate()
 {
     if (note_type == NOTE_TYPE_ERR) {
-        *err_msg = jwm.get_paramnames().get_name(paramnames::NAME);
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::NAME);
         *err_msg += " is problematically set with ";
         *err_msg += notename;
         invalidate();
         return stockerrs::ERR_NOTENAME;
     } else if (note_type == NOTE_TYPE_EDIT)
         return stockerrs::ERR_NO_ERROR;
-    if (!jwm.get_dparlist().validate(this,
+    if (!jwm.get_dparlist()->validate(this,
         paramnames::NOTE_POS, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames().get_name(paramnames::NOTE_POS);
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::NOTE_POS);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
-    if (!jwm.get_dparlist().validate(this,
+    if (!jwm.get_dparlist()->validate(this,
         paramnames::NOTE_LEN, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames().get_name(paramnames::NOTE_LEN);
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::NOTE_LEN);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -241,13 +245,13 @@ stockerrs::ERR_TYPE note_data::validate()
 void note_data::create_params()
 {
     if (note_data::done_params == true) return;
-    jwm.get_dparlist().add_dobjparam(
+    jwm.get_dparlist()->add_dobjparam(
         dobjnames::SIN_NOTE, paramnames::NAME);
-    jwm.get_dparlist().add_dobjparam(
+    jwm.get_dparlist()->add_dobjparam(
         dobjnames::SIN_NOTE, paramnames::NOTE_POS);
-    jwm.get_dparlist().add_dobjparam(
+    jwm.get_dparlist()->add_dobjparam(
         dobjnames::SIN_NOTE, paramnames::NOTE_LEN);
-    jwm.get_dparlist().add_dobjparam(
+    jwm.get_dparlist()->add_dobjparam(
         dobjnames::SIN_NOTE, paramnames::NOTE_VEL);
     note_data::done_params = true;
 }

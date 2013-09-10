@@ -15,10 +15,12 @@ class jwmsynth
 
     // must call these functions  in order stated
     bool is_valid() { return valid;}// 1
-    bool generate_synth();          // 3
-    bool connect_synth();           // 4
-    bool validate_synth();          // 5
-    bool execute_synth();           // 6
+    bool generate_synth();          // 2
+    bool connect_synth();           // 3 note: original validate and init
+    bool validate_synth();          // 4 code migrated to synthmodlist due
+    bool init_synth();              // 5 to planned synthmodlist stealing
+    bool execute_synth();           // 6 module...
+
     std::string get_error_msg(){ return err_msg;}
 
  private:

@@ -1,7 +1,7 @@
 #ifndef SIMPLEDELAY_H
 #define SIMPLEDELAY_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 class simple_delay : public synthmod
 {

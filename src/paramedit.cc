@@ -1,7 +1,7 @@
 #ifndef PARAMEDIT_H
 #include "../include/paramedit.h"
-#include "../include/synthmodule.h"
-#include "../include/synthmodulelist.h"
+#include "../include/synthmod.h"
+#include "../include/synthmodlist.h"
 #include "../include/dobjlist.h"
 #include "../include/modparamlist.h"
 #include "../include/dobjparamlist.h"
@@ -27,8 +27,8 @@ paramedit::~paramedit()
 
 bool paramedit::set_name(const char* n)
 {
-    synthmod* sm = jwm.get_modlist().get_synthmod_by_name(n);
-    dobj* dbj = jwm.get_dobjlist().get_dobj_by_name(n);
+    synthmod* sm = jwm.get_modlist()->get_synthmod_by_name(n);
+    dobj* dbj = jwm.get_dobjlist()->get_dobj_by_name(n);
     if (!sm && !dbj)
         return false;
     if (name)
@@ -49,8 +49,8 @@ void paramedit::set_parstr(const char* n)
 
 bool paramedit::do_param_edits()
 {
-    synthmod* sm = jwm.get_modlist().get_synthmod_by_name(name);
-    dobj* dbj = jwm.get_dobjlist().get_dobj_by_name(name);
+    synthmod* sm = jwm.get_modlist()->get_synthmod_by_name(name);
+    dobj* dbj = jwm.get_dobjlist()->get_dobj_by_name(name);
     if (sm && dbj) {
         *err_msg ="\na data object and module share username ";
         *err_msg += name;
@@ -94,14 +94,15 @@ bool paramedit::mod_param_edit(synthmod* module, const char* parname,
                                const char* valstr)
 {
     synthmodnames::SYNTH_MOD_TYPE smt = module->get_module_type();
-    modparamlist* parlist = jwm.get_paramlist().
-        get_paramlist_for_moduletype(smt);
+    modparamlist::linkedlist*
+        parlist = new_list_of_by(jwm.get_paramlist(),smt);
+
     modparam* mp = parlist->goto_first();
     paramnames::PAR_TYPE pt = paramnames::FIRST;
     bool confused = false;
     while(mp) {
         paramnames::PAR_TYPE mpt = mp->get_paramtype();
-        char const* mparname = jwm.get_paramnames().get_name(mpt);
+        char const* mparname = jwm.get_paramnames()->get_name(mpt);
         if (strcmp(parname, mparname) == 0) {
             if (pt != paramnames::FIRST)
                 confused = true;
@@ -141,14 +142,15 @@ bool paramedit::dobj_param_edit(dobj* dobject, const char* parname,
                                 const char* valstr)
 {
     dobjnames::DOBJ_TYPE dt = dobject->get_object_type();
-    dobjparamlist* parlist = jwm.get_dparlist().
-        get_dobjparamlist_for_dobj_type(dt);
+    dobjparamlist::linkedlist*
+        parlist = new_list_of_by(jwm.get_dparlist(), dt);
+
     dobjparam* dp = parlist->goto_first();
     paramnames::PAR_TYPE pt = paramnames::FIRST;
     bool confused = false;
     while(dp) {
         paramnames::PAR_TYPE dpt = dp->get_partype();
-        char const* mparname = jwm.get_paramnames().get_name(dpt);
+        char const* mparname = jwm.get_paramnames()->get_name(dpt);
         if (strcmp(parname, mparname) == 0) {
             if (pt != paramnames::FIRST)
                 confused = true;
@@ -220,9 +222,9 @@ void paramedit::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_dparlist().add_dobjparam(
+    jwm.get_dparlist()->add_dobjparam(
         dobjnames::SIN_EDIT_PARAM, paramnames::STR_UNNAMED);
-    jwm.get_dparlist().add_dobjparam(
+    jwm.get_dparlist()->add_dobjparam(
         dobjnames::SIN_EDIT_PARAM, paramnames::STR_LIST);
     done_params = true;
 }

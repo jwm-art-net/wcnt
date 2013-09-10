@@ -71,13 +71,15 @@ tri1
     type                 tri
 tri1
 
+constant mbias value 0.5 mbias
+
 modifier
 m1
     in_signal1 tri1 out_output
     in_signal2 saws out_output
+    in_bias mbias out_output
     function mul
     type m2
-    bias 0.5
 m1
 
 mono_amp
@@ -96,6 +98,7 @@ wav1
     in_right    amp1 out_output
     in_bar t1   out_count
     in_bar_trig t1 out_trig
+    snapshot_mode off
     data_format float32
     filename    wave_fm_sweep.wav
     start_bar   0

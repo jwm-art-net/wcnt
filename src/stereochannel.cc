@@ -8,16 +8,14 @@ stereo_channel::stereo_channel(char const* uname) :
  synthmod(synthmodnames::STEREOCHANNEL, uname),
  out_left(0), out_right(0), in_left(0), in_right(0)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_LEFT);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_RIGHT);
-    jwm.get_inputlist().add_input(this, inputnames::IN_LEFT);
-    jwm.get_inputlist().add_input(this, inputnames::IN_RIGHT);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_LEFT);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_RIGHT);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_LEFT);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_RIGHT);
 }
 
 stereo_channel::~stereo_channel()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
 }
 
 void const* stereo_channel::get_out(outputnames::OUT_TYPE ot) const

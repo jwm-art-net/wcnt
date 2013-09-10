@@ -23,40 +23,19 @@ to the inputs and outputs.
     added bool validate(..) func.  called by synthmod::validate().
      works out modparam from PAR_TYPE and calls its bool validate(..) */
 
-class modparamlist
+class modparamlist : public linked_list<modparam>
 {
 public:
     modparamlist();
-    ~modparamlist();
-    modparam*
-        add_param(modparam*);
-    modparam*
-        add_param(synthmodnames::SYNTH_MOD_TYPE, paramnames::PAR_TYPE);
-    modparam* goto_first() {
-        return param = (modparam*)
-         (param_item = parlist->goto_first())->get_data();
-    }
-    modparam* goto_last() {
-        return param = (modparam*)
-         (param_item = parlist->goto_last())->get_data();
-    }
-    modparam* goto_prev() {
-        return param = (modparam*)
-         (param_item = parlist->goto_prev())->get_data();
-    }
-    modparam* goto_next() {
-        return param = (modparam*)
-         (param_item = parlist->goto_next())->get_data();
-    }
-    modparamlist* 
-        get_paramlist_for_moduletype(synthmodnames::SYNTH_MOD_TYPE);
+    modparamlist(DESTRUCTION);
+
+    modparam* add_param(
+        synthmodnames::SYNTH_MOD_TYPE, paramnames::PAR_TYPE);
+
     bool validate(synthmod*, paramnames::PAR_TYPE, stockerrs::ERR_TYPE);
 
 private:
     bool delete_param(modparam*);
-    linkedlist* parlist;
-    ll_item* param_item;
-    modparam* param;
 };
 
 #endif

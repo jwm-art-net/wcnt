@@ -108,8 +108,9 @@ wave-a
 square_wave
 squarewave
     in_phase_trig  osc1 out_phase_trig
-    in_phase_step    osc1 out_phase_step
-    in_pwm         wave2    out_output
+    in_phase_step osc1 out_phase_step
+    in_pwm        wave2    out_output
+    rate          0.5
     pulse_width   0.285
     pwm_size      0.125
     recycle_mode  off
@@ -352,6 +353,7 @@ wav1
     in_right    mix1    out_right
     in_bar      time1   out_bar
     in_bar_trig time1   out_bar_trig
+    snapshot_mode off
     data_format float32
     filename    mellow1.wav
     start_bar   0

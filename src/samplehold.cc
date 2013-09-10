@@ -11,16 +11,14 @@ sample_hold::sample_hold(char const* uname) :
  in_trig(0), in_signal(0), output(0.00), decay_time(0.00), 
  decay_samps(0), ds(0), decay_size(0.00)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_inputlist().add_input(this, inputnames::IN_TRIG);
-    jwm.get_inputlist().add_input(this, inputnames::IN_SIGNAL);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_TRIG);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
     create_params();
 }
 
 sample_hold::~sample_hold()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
 }
 
 void const* sample_hold::get_out(outputnames::OUT_TYPE ot) const
@@ -75,10 +73,10 @@ void const* sample_hold::get_param(paramnames::PAR_TYPE pt) const
 
 stockerrs::ERR_TYPE sample_hold::validate()
 {
-    if (!jwm.get_paramlist().validate(this, paramnames::DECAY_TIME,
+    if (!jwm.get_paramlist()->validate(this, paramnames::DECAY_TIME,
             stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames().get_name(paramnames::DECAY_TIME);
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::DECAY_TIME);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -116,7 +114,7 @@ void sample_hold::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::SAMPLEHOLD, paramnames::DECAY_TIME);
     done_params = true;
 }

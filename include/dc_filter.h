@@ -1,7 +1,7 @@
 #ifndef DC_FILTER_H
 #define DC_FILTER_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 // I have wanted one of these for quite a long while.. had a look at
 // musicdsp.org etc and found some code snippets and mathamatical

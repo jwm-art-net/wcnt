@@ -2,7 +2,7 @@
 #define STEPPER_H
 
 #include "stepdata.h"
-#include "synthmodule.h"
+#include "synthmod.h"
 #include "linkedlist.h"
 
 /*   _______
@@ -33,30 +33,14 @@
     for modulation purposes, which is what in_modulation is for.
 */
 
-class stepper: public synthmod
+class stepper: public synthmod, public linked_list<step_data>
 {
 public:
     stepper(char const*);
     ~stepper();
     step_data* insert_step(step_data*);
     step_data* insert_step(double pos, double uplvl, double lolvl);
-    bool delete_step(step_data*);
-    step_data* goto_first() {
-        return step = (step_data*)
-         (step_item = steplist->goto_first())->get_data();
-    }
-    step_data* goto_last() {
-        return step = (step_data*)
-         (step_item = steplist->goto_last())->get_data();
-    }
-    step_data* goto_prev() {
-        return step = (step_data*)
-         (step_item = steplist->goto_prev())->get_data();
-    }
-    step_data* goto_next() {
-        return step = (step_data*)
-         (step_item = steplist->goto_next())->get_data();
-    }
+
     // virtual funcs
     void run();
     void init();
@@ -92,11 +76,7 @@ private:
     unsigned long rtime_max_samps;
     double rtime_stpsz;
     double rtime_size;
-    // the step list and associates:
-    linkedlist* steplist;
-    ll_item*    step_item;
-    step_data*  step;
-    // interface stuff
+
     static bool done_params;
     void create_params();
     static bool done_moddobj;

@@ -1,7 +1,7 @@
 #ifndef ORBIT_H
 #define ORBIT_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 class orbit : public synthmod
 {

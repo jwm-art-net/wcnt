@@ -1,0 +1,9 @@
+tri_wave - a triangle waveform generating module.
+
+Much like the sine_wave it's best not to connect it's in_phase_trig at all.
+You will definitely want to connect it's in_deg_size input to a clock module's
+out_deg_size output, if you want a waveform to be generated. And, don't forget"
+to set recycle_mode to on and zero_retrigger to off, in this case."
+This waveform is not anti-aliased. Output values are between -1.0 and +1.0"
+
+See also: sine_wave tri_wave2 clock"

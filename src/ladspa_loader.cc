@@ -62,35 +62,24 @@ LADSPA_Handle ladspa_plug::instantiate()
 //-------------------------------------------------------------
 
 ladspa_lib::ladspa_lib(const char* fname, LADSPA_Handle handle) :
- filename(fname), lib_handle(handle),
- plugins(0), plug(0), plug_item(0)
+ filename(fname), lib_handle(handle)
 {
-    plugins = new linkedlist(linkedlist::MULTIREF_OFF,
-                             linkedlist::NO_NULLDATA);
 }
 
 ladspa_lib::~ladspa_lib()
 {
-    if (plugins){
-        goto_first();
-        while(plug){
-            delete plug;
-            goto_next();
-        }
-        delete plugins;
-    }
     dlclose(lib_handle);
 }
 
 ladspa_plug* ladspa_lib::get_plugin(const char* name)
 {
-    if(plugins == 0 || name == 0)
+    if(name == 0)
         return 0;
-    goto_first();
+    ladspa_plug* plug = goto_first();
     while(plug){
         if (strcmp(name, plug->get_label()) == 0)
             return plug;
-        goto_next();
+        plug = goto_next();
     }
     const LADSPA_Descriptor* ldescr;
     ladspa_func_grab lfg;
@@ -107,50 +96,40 @@ ladspa_plug* ladspa_lib::get_plugin(const char* name)
         if(strcmp(ldescr->Label, name) == 0)
             break;
     }
-    ladspa_plug* lp = new ladspa_plug(ldescr);
-    if(add_plug(lp) == 0){
-        if(lp) delete lp;
+    plug = 0;
+    plug = new ladspa_plug(ldescr);
+    if(add_at_tail(plug) == 0){
+        if(plug) delete plug;
         return 0;
     }
-    return lp;
+    return plug;
 }
 
 //-------------------------------------------------------------
 
-ladspa_loader::ladspa_loader() :
- ladspa_libs(0), lib(0), lib_item(0)
+ladspa_loader::ladspa_loader()
 {
-    ladspa_libs = new linkedlist(linkedlist::MULTIREF_OFF,
-                                 linkedlist::NO_NULLDATA);
 }
 
 ladspa_loader::~ladspa_loader()
 {
-    if(ladspa_libs){
-        goto_first();
-        while(lib){
-            delete lib;
-            goto_next();
-        }
-        delete ladspa_libs;
-    }
 }
 
 ladspa_plug*
 ladspa_loader::get_plugin(const char* fname, const char* label)
 {
-    if(!ladspa_libs || !fname || !label){
+    if(!fname || !label){
         err_msg = "loading of LADSPA plugin ";
         err_msg += fname; err_msg += " ";
         err_msg += label; err_msg += " halted - before it even began...";
         return 0;
     }
     // see if plugin lib is already loaded...
-    goto_first();
+    ladspa_lib* lib = goto_first();
     while(lib){
         if (strcmp(lib->get_filename(), fname) == 0)
             return lib->get_plugin(label);
-        goto_next();
+        lib = goto_next();
     }
     // requested plugin lib not yet loaded...
     LADSPA_Handle lhandle;
@@ -162,16 +141,18 @@ ladspa_loader::get_plugin(const char* fname, const char* label)
                    " Is the LADSPA_PATH environment variable set???";
         return 0;
     }
-    ladspa_lib* ll = new ladspa_lib(fname, lhandle);
-    if (add_lib(ll) == 0){
-        if (ll) delete ll;
+    lib = 0;
+    lib = new ladspa_lib(fname, lhandle);
+    if (add_at_tail(lib) == 0){
+        if (lib)
+            delete lib;
         err_msg = "Library for LADSPA plugin ";
         err_msg += fname; err_msg += " ";
         err_msg += label;
         err_msg += " loaded ok, but now something else has gone wrong!";
         return 0;
     }
-    return ll->get_plugin(label);
+    return lib->get_plugin(label);
 }
 
 void* ladspa_loader::dlopen_plugin(const char* fname, int flag)

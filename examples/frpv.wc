@@ -1,0 +1,141 @@
+wcnt-1.26/jwmsynth
+
+samplerate 44100
+bpm 120
+signature 4/4
+
+timer
+t
+    timings
+        time seconds 0
+        time seconds 30
+    timings
+t
+
+constant_note n name c0 n
+
+osc_clock
+osc1
+    in_note_on_trig     t out_trig
+    in_note_slide_trig  off
+    in_play_state       off
+    in_frequency        n out_frequency
+    in_freq_mod1        off
+    in_freq_mod2        off
+    octave_offset      -1
+    tuning_semitones    0.0
+    portamento_time     0.0
+    response_time       0.0
+    freq_mod1_size      1.0
+    freq_mod2_size      1.0
+osc1
+
+osc_clock
+osc2
+    in_note_on_trig     t out_trig
+    in_note_slide_trig  off
+    in_play_state       off
+    in_frequency        n out_frequency
+    in_freq_mod1        off
+    in_freq_mod2        off
+    octave_offset      -2
+    tuning_semitones    0.5
+    portamento_time     0.0
+    response_time       0.0
+    freq_mod1_size      1.0
+    freq_mod2_size      1.0
+osc2
+
+clock
+pwclock
+    in_freq_mod1    off
+    freq            0.2754
+    freq_mod1_size  1.0
+pwclock
+
+wave
+pwswave
+    in_phase_step    pwclock out_phase_step
+    type saw
+pwswave
+
+clock
+plclock
+    in_freq_mod1    off
+    freq            0.4754
+    freq_mod1_size  1.0
+plclock
+
+wave
+plswave
+    in_phase_step    plclock out_phase_step
+    type saw
+plswave
+
+user_wave
+uwave1
+    waveform
+        vertex  ud 50   ul  0.4         ld 50   ll  -0.6
+        vertex  ud 120  ul -0.4         ld 120  ll   1.0
+        vertex  ud 270  ul  0.6         ld 270  ll  -0.4
+        vertex  ud 300  ul -1.0         ld 250  ll   0.4
+        vertex  ud 355  ul  0.4         ld 355  ll  -0.4
+    waveform
+    in_phase_trig  osc1      out_phase_trig
+    in_phase_step    osc1      out_phase_step
+    in_level_mod   plswave    out_output
+    in_time_mod    pwswave   out_output
+    recycle_mode    off
+    zero_retrigger  off
+    drop_check_range 2
+uwave1
+
+user_wave
+uwave2
+    waveform
+        vertex  ud 50   ul  0.4         ld 20   ll  -0.6
+        vertex  ud 120  ul -0.4         ld 230  ll   1.0
+        vertex  ud 270  ul  0.6         ld 140  ll  -0.4
+        vertex  ud 300  ul -1.0         ld 250  ll   0.4
+        vertex  ud 355  ul  0.4         ld 310  ll  -0.4
+    waveform
+    in_phase_trig  osc2      out_phase_trig
+    in_phase_step    osc2      out_phase_step
+    in_level_mod   plswave   out_output
+    in_time_mod    pwswave   out_output
+    recycle_mode    off
+    zero_retrigger  off
+    drop_check_range 2
+uwave2
+
+constant np5 value 0.5 np5
+
+modifier
+m
+    in_signal1  uwave1 out_output
+    in_signal2  uwave2 out_output
+    in_bias     np5 out_output
+    function  sub
+    type      m1
+m
+
+wavfile_out
+wav_out
+    in_left     m out_output
+    in_right    m out_output
+    in_bar      t    out_count
+    in_bar_trig t    out_trig
+    snapshot_mode off
+    data_format float32
+    filename    frpv.wav
+    start_bar   0
+    end_bar     1
+wav_out
+
+wcnt_exit
+wcnt_exit_module
+    in_bar      t out_count
+    exit_bar 1
+wcnt_exit_module
+
+wcnt-1.26/jwmsynth

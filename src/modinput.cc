@@ -1,7 +1,7 @@
 #ifndef MODINPUT_H
 #include "../include/modinput.h"
 #include "../include/jwm_globals.h"
-#include "../include/synthmodule.h"
+#include "../include/synthmod.h"
 
 modinput::modinput(synthmod * sm, inputnames::IN_TYPE it) :
  synthmodule(sm), input_type(it)
@@ -25,7 +25,7 @@ inputnames::IN_TYPE modinput::get_inputtype()
 iocat::IOCAT modinput::get_inputcategory()
 {
     return (this != 0)
-     ? jwm.get_inputnames().get_category(input_type)
+     ? jwm.get_inputnames()->get_category(input_type)
      : iocat::FIRST;
 }
 

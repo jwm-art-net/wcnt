@@ -1,7 +1,7 @@
 #ifndef RANGELIMIT_H
 #define RANGELIMIT_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 class range_limit : public synthmod
 {

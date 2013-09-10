@@ -64,6 +64,9 @@ outputnames::get_nonezerotype(iocat::IOCAT iocat) const
     case iocat::STATE:
         ot = OUT_NONE_STATE;
         break;
+    case iocat::STRING:
+        ot = OUT_NONE_STRING;
+        break;
     default:
         ot = OUT_FIRST;
     }
@@ -78,6 +81,7 @@ const outputnames::output_data outputnames::data[OUT_LAST] =
     { OUT_NONE_ULONG,       "off",                  iocat::ULONG   },
     { OUT_NONE_TRIG,        "off",                  iocat::TRIG    },
     { OUT_NONE_STATE,       "off",                  iocat::STATE   },
+    { OUT_NONE_STRING,      "off",                  iocat::STATE   },
     { OUT_OUTPUT,           "out_output",           iocat::DOUBLE  },
     { OUT_PLAY_STATE,       "out_play_state",       iocat::STATE   },
     { OUT_LEFT,             "out_left",             iocat::DOUBLE  },
@@ -138,8 +142,10 @@ const outputnames::output_data outputnames::data[OUT_LAST] =
     { OUT_Y,                "out_y",                iocat::DOUBLE  },
     #ifdef WITH_LADSPA
     { OUT_UP,               "out_up",               iocat::DOUBLE  },
-    { OUT_DOWN,             "out_down",             iocat::DOUBLE  }
+    { OUT_DOWN,             "out_down",             iocat::DOUBLE  },
     #endif
+    { OUT_PRE_COUNT,        "out_pre_count",        iocat::SHORT   },
+    { OUT_PRE_SHAPE_OUTPUT, "out_pre_shape_output", iocat::DOUBLE  }
 };
 
 #endif

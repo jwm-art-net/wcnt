@@ -67,71 +67,48 @@ the method requires both elements of the time signature to be passed.
 
 */
 
-class riffdata : public dobj
+class riffdata : public dobj, public linked_list<note_data>
 {
-public:
+ public:
     riffdata();
     ~riffdata();
-    void set_quartervalue(short qv){ quarter_val = qv;}
+
+    /*
+    // needed (kinda, atleast for ease of...)
+    */
+    void set_quartervalue(short qv)
+                            { quarter_val = qv;}
     short get_quartervalue(){ return quarter_val;}
+
     note_data* insert_and_position_note(note_data*);
-    bool delete_note(note_data*);
+    note_data* add_edit_note(note_data* en) {
+        if (en->get_note_type() != note_data::NOTE_TYPE_EDIT)
+            return 0;
+        return editlist->add_at_tail(en)->get_data();
+    };
     note_data* edit_notes(note_data* editnote);
-    note_data* goto_first() {
-        return note = (note_data*)
-         (note_item = notelist->goto_first())->get_data();
-    }
-    note_data* goto_last() {
-        return note = (note_data*)
-         (note_item = notelist->goto_last())->get_data();
-    }
-    note_data* goto_prev() {
-        return note = (note_data*)
-         (note_item = notelist->goto_prev())->get_data();
-    }
-    note_data* goto_next() {
-        return note = (note_data*)
-         (note_item = notelist->goto_next())->get_data();
-    }
-    // these do not update any list pointers
-    note_data* get_first() {
-        return (note_data*)notelist->sneak_first()->get_data();
-    }
-    note_data* get_last() {
-        return (note_data*)notelist->sneak_last()->get_data();
-    }
-    note_data* get_prev() {
-        return (note_data*)notelist->sneak_prev()->get_data();
-    }
-    note_data* get_next() {
-        return (note_data*)notelist->sneak_next()->get_data();
-    }
-    // errr, umm
-    note_data* get_current() {
-        return (note_data*)notelist->sneak_current()->get_data();
-    }
-    // these give direct access to list
-    ll_item* sneak_first(){ return notelist->sneak_first(); }
-    ll_item* sneak_last(){ return notelist->sneak_last(); }
+
+    /*
     // beats per bar grabbed from output of
     // time map module, input into sequencer.
+    */
     double calc_riff_length(char beats_per_bar, char beat_value);
+
+    /*
     // virtuals from dobj
+    */
     stockerrs::ERR_TYPE validate();
     bool set_param(paramnames::PAR_TYPE, void*);
     void const* get_param(paramnames::PAR_TYPE) const;
     dobj const* add_dobj(dobj*);
     dobj* duplicate_dobj(const char*);
 
-private:
+ private:
     short quarter_val;
-    note_data* note;
-    linkedlist* notelist;
+
     linkedlist* editlist;
-    ll_item* note_item;
 
     double calc_note_param(note_data::NOTE_OP, double, double);
-
     void create_params();
     static bool done_params;
 };

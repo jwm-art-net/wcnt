@@ -4,39 +4,23 @@
 #include "paramedit.h"
 #include "linkedlist.h"
 
-class parameditor : public dobj
+class parameditor : public dobj, public linked_list<paramedit>
 {
-public:
+ public:
     parameditor();
-    ~parameditor();
-    paramedit* add_paramedit(paramedit*);
-    paramedit* goto_first_paramedit() {
-        return par_edit = (paramedit*)
-            (edit_item = par_edit_list->goto_first())->get_data();
-    }
-    paramedit* goto_last_paramedit() {
-        return par_edit = (paramedit*)
-            (edit_item = par_edit_list->goto_last())->get_data();
-    }
-    paramedit* goto_prev_paramedit() {
-        return par_edit = (paramedit*)
-            (edit_item = par_edit_list->goto_prev())->get_data();
-    }
-    paramedit* goto_next_paramedit() {
-        return par_edit = (paramedit*)
-            (edit_item = par_edit_list->goto_next())->get_data();
-    }
+
     bool do_param_edits();
+
+    /*
     // virtuals from dobj
+    */
     virtual stockerrs::ERR_TYPE validate(){
         return stockerrs::ERR_NO_ERROR;
     }
+
     dobj const* add_dobj(dobj* dbj);
 
-private:
-    linkedlist* par_edit_list;
-    ll_item* edit_item;
-    paramedit* par_edit;
+ private:
     void create_params();
     static bool done_params;
 };

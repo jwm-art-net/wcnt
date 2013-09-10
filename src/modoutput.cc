@@ -1,7 +1,7 @@
 #ifndef MODOUTPUT_H
 #include "../include/modoutput.h"
 #include "../include/jwm_globals.h"
-#include "../include/synthmodule.h"
+#include "../include/synthmod.h"
 
 modoutput::modoutput(synthmod * sm, outputnames::OUT_TYPE ot) :
  synthmodule(sm), output_type(ot)
@@ -25,7 +25,7 @@ outputnames::OUT_TYPE modoutput::get_outputtype()
 iocat::IOCAT modoutput::get_outputcategory()
 {
     return (this != 0)
-     ? jwm.get_outputnames().get_category(output_type)
+     ? jwm.get_outputnames()->get_category(output_type)
      
      : iocat::FIRST;
 }

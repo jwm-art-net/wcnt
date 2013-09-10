@@ -28,7 +28,7 @@ public:
     dobjnames::DOBJ_TYPE get_dobj_sprog() {
         return (this) ? sprog : dobjnames::DOBJ_FIRST;
     }
-    dobjdobj & operator= (dobjdobj &);
+
 private:
     dobjnames::DOBJ_TYPE dobj_type;
     dobjnames::DOBJ_TYPE sprog;

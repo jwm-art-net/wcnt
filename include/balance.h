@@ -1,7 +1,7 @@
 #ifndef BALANCE_H
 #define BALANCE_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 class balance : public synthmod
 {

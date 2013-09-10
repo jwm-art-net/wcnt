@@ -14,17 +14,15 @@ bode_freq_shifter::bode_freq_shifter(char const* uname) :
  l_freq_shift(0.0), l_input(0), l_out_down(0), l_out_up(0),
  l_out_latency(0)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_UP);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_DOWN);
-    jwm.get_inputlist().add_input(this, inputnames::IN_SIGNAL);
-    jwm.get_inputlist().add_input(this, inputnames::IN_SHIFT_MOD);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_UP);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_DOWN);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_SHIFT_MOD);
     create_params();
 }
 
 bode_freq_shifter::~bode_freq_shifter()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
     if (l_descriptor) l_descriptor->cleanup(l_inst_handle);
     if (l_input) delete [] l_input;
     if (l_out_down) delete [] l_out_down;
@@ -96,7 +94,7 @@ stockerrs::ERR_TYPE bode_freq_shifter::validate()
 {
     if (freq_shift < 0 || freq_shift > 5000) {
         *err_msg +=
-            jwm.get_paramnames().get_name(paramnames::FREQ_SHIFT);
+            jwm.get_paramnames()->get_name(paramnames::FREQ_SHIFT);
         *err_msg += " must be within range 0 to 5000";
         invalidate();
         return stockerrs::ERR_ERROR;
@@ -106,10 +104,10 @@ stockerrs::ERR_TYPE bode_freq_shifter::validate()
 
 void bode_freq_shifter::init()
 {
-    ladspa_loader& ll = jwm.get_ladspaloader();
-    ladspa_plug* lp = ll.get_plugin("bode_shifter_1431", "bodeShifter");
+    ladspa_loader* ll = jwm.get_ladspaloader();
+    ladspa_plug* lp = ll->get_plugin("bode_shifter_1431", "bodeShifter");
     if (lp == 0) {
-        *err_msg = ll.get_error_msg();
+        *err_msg = ll->get_error_msg();
         invalidate();
         return;
     }
@@ -154,9 +152,9 @@ void bode_freq_shifter::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_paramlist().add_param(synthmodnames::BODE_FREQ_SHIFTER,
+    jwm.get_paramlist()->add_param(synthmodnames::BODE_FREQ_SHIFTER,
                                paramnames::FREQ_SHIFT);
-    jwm.get_paramlist().add_param(synthmodnames::BODE_FREQ_SHIFTER,
+    jwm.get_paramlist()->add_param(synthmodnames::BODE_FREQ_SHIFTER,
                                paramnames::SHIFT_MODSIZE);
     done_params = true;
 }

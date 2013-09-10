@@ -1,7 +1,7 @@
 #ifndef SAMPLEHOLD_H
 #define SAMPLEHOLD_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 /* decay time of 0 means do not decay to zero */
 

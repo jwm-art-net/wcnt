@@ -2,7 +2,7 @@
 #define SEQUENCER_H
 
 #include "riffnode.h"
-#include "synthmodule.h"
+#include "synthmod.h"
 
 /*
     wcnt-1.128
@@ -30,27 +30,20 @@
 
 */
 
-class sequencer : public synthmod
+class sequencer : public synthmod, public linked_list<riff_node>
 {
-public:
+ public:
     sequencer(char const*);
     ~sequencer();
+/*
+    unused:
     riff_node* add_riff(const char* const riffname, short barpos);
     riff_node* add_riff(riffdata*, short barpos);
+*/
     riff_node* add_riff_node(riff_node*);
+
     bool delete_riff_node(riff_node* rn);
-    riff_node* goto_first() {
-        return (riff_node*)riffnodelist->goto_first()->get_data();
-    }
-    riff_node* goto_last() {
-        return (riff_node*)riffnodelist->goto_last()->get_data();
-    }
-    riff_node* goto_prev() {
-        return (riff_node*)riffnodelist->goto_prev()->get_data();
-    }
-    riff_node* goto_next() {
-        return (riff_node*)riffnodelist->goto_next()->get_data();
-    }
+
     // virtual funcs
     void run();
     void init();
@@ -62,7 +55,7 @@ public:
     void const* get_param(paramnames::PAR_TYPE) const;
     synthmod* duplicate_module(const char* uname, DUP_IO dupio);
     dobj* add_dobj(dobj*);
-private:
+ private:
     // ***** inputs *****
     const STATUS* in_bar_trig;
     const short* in_bar;
@@ -87,13 +80,10 @@ private:
     // ***** params *****
     short start_bar;
     double vel_response;
-    // ***** the riff node list *****
-    linkedlist* riffnodelist;
     // ***** working data *****
     riff_node* cur_node;
     riff_node* riff_node_ptr;
     riffdata* riff_ptr;
-    ll_item* riffnodeitem;
     short riff_start_bar;
     double riff_pos;
     double riff_len;
@@ -104,9 +94,9 @@ private:
     STATUS start_pending;
     STATUS end_pending;
     // ***** new play_list and note stuff *****
-    linkedlist* play_list;
-    ll_item* play_item;
-    ll_item* next_in_riff;
+    linked_list<note_data>* play_list;
+    ll_item<note_data>* play_item;
+    ll_item<note_data>* next_in_riff;
     note_data* play_note;
     note_data* next_note;
     note_data* note_ptr;
@@ -115,7 +105,7 @@ private:
     // ***** helper methods *****
     // position conversion to that used by time_map, transpose etc.
     note_data* posconv_note(note_data* riff_note);
-    void init_next_note(ll_item* riff_note_item);
+    void init_next_note(ll_item<note_data>* riff_note_item);
     void output_note(note_data* note);
     // synthmod stuff
     static bool done_params;

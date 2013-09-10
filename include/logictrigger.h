@@ -1,7 +1,7 @@
 #ifndef LOGICTRIGGER_H
 #define LOGICTRIGGER_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 /*   new logic function - XORNOT
     -----------------------------

@@ -2,7 +2,7 @@
 #define CAPS_PLATE2X2_H
 #ifdef WITH_LADSPA
 
-#include "synthmodule.h"
+#include "synthmod.h"
 #include "ladspa_loader.h"
 
 /*

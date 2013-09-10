@@ -1,7 +1,7 @@
 #ifndef PAN_H
 #define PAN_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 class pan : public synthmod
 {

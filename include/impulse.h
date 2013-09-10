@@ -1,7 +1,7 @@
 #ifndef IMPULSE_H
 #define IMPULSE_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 class impulse : public synthmod
 {

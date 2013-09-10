@@ -12,14 +12,12 @@ wave::wave(char const* uname) :
  synthmod(synthmodnames::WAVE, uname),
  output(0.00), in_phase_step(NULL), phase(0), table(0)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_inputlist().add_input(this, inputnames::IN_PHASE_STEP);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_PHASE_STEP);
     create_params();
 }
 wave::~wave()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
 }
 
 void const* wave::get_out(outputnames::OUT_TYPE ot) const
@@ -72,7 +70,10 @@ void const* wave::get_param(paramnames::PAR_TYPE pt) const
 
 void wave::init()
 {
-    table = jwm.get_wave_tables().get_table(type);
+    if (!(table = jwm.get_wave_tables()->get_table(type))){
+        invalidate();
+        return;
+    }
 }
 
 void wave::run()
@@ -86,9 +87,9 @@ void wave::create_params()
 {
     if (wave::done_params == true)
         return;
-    jwm.get_paramlist().add_param(synthmodnames::WAVE,
+    jwm.get_paramlist()->add_param(synthmodnames::WAVE,
         paramnames::WAVE_TYPE);
-    jwm.get_fxsparamlist().add_param(jwm.get_wave_tables().fxstring,
+    jwm.get_fxsparamlist()->add_param(jwm.get_wave_tables()->fxstring,
                                       paramnames::WAVE_TYPE);
     wave::done_params = true;
 }

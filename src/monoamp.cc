@@ -11,17 +11,15 @@ mono_amp::mono_amp(char const* uname) :
  out_output(0),
  level(0), amp_modsize(0), clip_level(0), amp_level(0), ampsig(0)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_inputlist().add_input(this, inputnames::IN_SIGNAL);
-    jwm.get_inputlist().add_input(this, inputnames::IN_EG);
-    jwm.get_inputlist().add_input(this, inputnames::IN_AMP_MOD);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_EG);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_AMP_MOD);
     create_params();
 }
 
 mono_amp::~mono_amp()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
 }
 
 void const* mono_amp::get_out(outputnames::OUT_TYPE ot) const
@@ -86,19 +84,19 @@ void const* mono_amp::get_param(paramnames::PAR_TYPE pt) const
 
 stockerrs::ERR_TYPE mono_amp::validate()
 {
-    if (!jwm.get_paramlist().validate(this, paramnames::AMP_MODSIZE,
+    if (!jwm.get_paramlist()->validate(this, paramnames::AMP_MODSIZE,
             stockerrs::ERR_RANGE_0_1))
     {
         *err_msg =
-         jwm.get_paramnames().get_name(paramnames::AMP_MODSIZE);
+         jwm.get_paramnames()->get_name(paramnames::AMP_MODSIZE);
         invalidate();
         return stockerrs::ERR_RANGE_0_1;
     }
-    if (!jwm.get_paramlist().validate(this, paramnames::CLIP_LEVEL,
+    if (!jwm.get_paramlist()->validate(this, paramnames::CLIP_LEVEL,
             stockerrs::ERR_NEG_ZERO))
     {
         *err_msg =
-         jwm.get_paramnames().get_name(paramnames::CLIP_LEVEL);
+         jwm.get_paramnames()->get_name(paramnames::CLIP_LEVEL);
         invalidate();
         return stockerrs::ERR_NEG_ZERO;
     }
@@ -122,11 +120,11 @@ void mono_amp::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::MONOAMP, paramnames::LEVEL);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::MONOAMP, paramnames::AMP_MODSIZE);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::MONOAMP, paramnames::CLIP_LEVEL);
     done_params = true;
 }

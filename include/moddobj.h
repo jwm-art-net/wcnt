@@ -16,7 +16,7 @@ class dobjdobjlist;
 
 class moddobj
 {
-public:
+ public:
     moddobj(synthmodnames::SYNTH_MOD_TYPE, dobjnames::DOBJ_TYPE);
     ~moddobj();
     synthmodnames::SYNTH_MOD_TYPE get_moduletype() {
@@ -24,7 +24,12 @@ public:
     }
     dobjnames::DOBJ_TYPE get_first_child() { return first_child; }
     dobjdobjlist* get_dobjdobjlist() { return (this) ? dd_list : 0;}
-private:
+
+    bool operator()(synthmodnames::SYNTH_MOD_TYPE & smt) const {
+        return this->synthmodule_type == smt;
+    }
+
+ private:
     synthmodnames::SYNTH_MOD_TYPE synthmodule_type;
     dobjnames::DOBJ_TYPE first_child;
     dobjdobjlist* dd_list;

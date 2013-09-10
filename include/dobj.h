@@ -6,22 +6,21 @@
 #include "stockerrs.h"
 #include "paramnames.h"
 #include "dobjnames.h"
+#include "namefuncobj.h"
 
 class dobj
 {
 public:
     dobj(dobjnames::DOBJ_TYPE objtype);
     virtual ~dobj();
-    dobjnames::DOBJ_TYPE get_object_type() {
-        return ((this) ? object_type : dobjnames::DOBJ_FIRST);
-    }
+    dobjnames::DOBJ_TYPE get_object_type() { return object_type; }
     bool is_named_by_user();
     bool set_username(const char*);
     // some dobj are unamed by user, but contain another string which
     // is helpful when identifying errors, which is why get_username()
     // is now virtual.
-    virtual char const* get_username(); 
-    bool is_valid(){ return ((this) ? valid : false);}
+    virtual char const* get_username();
+    bool is_valid() { return valid; }
     virtual stockerrs::ERR_TYPE validate() = 0;
     virtual bool set_param(paramnames::PAR_TYPE, void*);
     virtual void const* get_param(paramnames::PAR_TYPE) const;
@@ -31,6 +30,14 @@ public:
     static void clear_error_msg(){ *err_msg = "";}
     static void register_error_msg(std::string* e)  { err_msg = e;    }
     static std::string const* get_error_msg()       { return err_msg; }
+
+    bool operator()(dobjnames::DOBJ_TYPE & dt) {
+        return object_type == dt;
+    }
+
+    bool operator()(name & n) const {
+        return n(username);
+    }
 
 #ifdef DOBJ_STATS
 STATS_FUNCS

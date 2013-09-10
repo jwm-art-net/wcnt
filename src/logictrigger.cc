@@ -11,16 +11,14 @@ logictrigger::logictrigger(char const* uname) :
  in_trig1(0), in_trig2(0), out_trig(OFF), logicfunc(AND), precision(0),
  t1_samps(0), t2_samps(0), trig1(OFF), trig2(OFF)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_TRIG);
-    jwm.get_inputlist().add_input(this, inputnames::IN_TRIG1);
-    jwm.get_inputlist().add_input(this, inputnames::IN_TRIG2);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_TRIG);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_TRIG1);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_TRIG2);
     create_params();
 }
 
 logictrigger::~logictrigger()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
 }
 
 void const* logictrigger::get_out(outputnames::OUT_TYPE ot) const
@@ -184,11 +182,11 @@ void logictrigger::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_paramlist().add_param(synthmodnames::LOGICTRIGGER,
+    jwm.get_paramlist()->add_param(synthmodnames::LOGICTRIGGER,
         paramnames::LOGICFUNC);
-    jwm.get_fxsparamlist().add_param("and/or/xor/xornot",
+    jwm.get_fxsparamlist()->add_param("and/or/xor/xornot",
         paramnames::LOGICFUNC);
-    jwm.get_paramlist().add_param(synthmodnames::LOGICTRIGGER,
+    jwm.get_paramlist()->add_param(synthmodnames::LOGICTRIGGER,
         paramnames::PRECISION);
     done_params = true;
 }

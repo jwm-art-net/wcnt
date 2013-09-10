@@ -1,7 +1,7 @@
 #ifndef LFOCLOCK_H
 #define LFOCLOCK_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 class lfo_clock : public synthmod
 {

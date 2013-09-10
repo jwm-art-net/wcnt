@@ -22,14 +22,14 @@ t1
 timer
 t2
     timings
-        time seconds 32.0
+        time seconds 35.0
     timings
 t2
 
 timer
 t3
     timings
-        time seconds 35.0
+        time seconds 38.0
     timings
 t3
 
@@ -243,6 +243,7 @@ drum_off
         in_phase_trig   drum_trig   out_phase_trig
         in_phase_step     drum_trig   out_phase_step
         in_pwm          wobble      out_output
+        rate            1.0
         pulse_width     0.95
         pwm_size        0.25
         recycle_mode    off
@@ -494,6 +495,7 @@ wav1
     in_right    amp1    out_right
     in_bar      time1   out_bar
     in_bar_trig time1   out_bar_trig
+    snapshot_mode off
     data_format float32
     filename    drums01.wav
     start_bar   0

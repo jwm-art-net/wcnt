@@ -3,7 +3,7 @@
 
 #include <sndfile.h>
 
-#include "synthmodule.h"
+#include "synthmod.h"
 #include "wavfileheader.h"
 
 /*  writes multiple wav files.

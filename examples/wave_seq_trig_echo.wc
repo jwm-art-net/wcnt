@@ -1,0 +1,181 @@
+wcnt-1.26/jwmsynth
+
+// examples/wave_seq_trig_echo.wc
+// example of using the trig_echo and trig_counter modules.
+
+
+samplerate 44100
+bpm 120
+signature 4/4
+
+constant one value 1.0 one
+
+// duration of sound
+
+timer
+t1
+    timings
+        time seconds 0.0
+        time seconds 33.0
+    timings
+t1
+
+clock
+clock1
+    in_freq_mod1    sh out_output
+    freq            77
+    freq_mod1_size  0.333
+clock1
+
+wave
+saw
+    in_phase_step   clock1 out_phase_step
+    type saw
+saw
+
+clock
+clock2
+    in_freq_mod1    off
+    freq            1.333333
+    freq_mod1_size  1.0
+clock2
+
+wave
+sine
+    in_phase_step  clock2 out_phase_step
+    type sine
+sine
+
+clock
+clockt
+    in_freq_mod1    off
+    freq            0.583435
+    freq_mod1_size  1.0
+clockt
+
+trig_counter
+tcount
+    in_trig         clockt out_phase_trig
+    in_reset_trig   off
+    pre_count   0
+    count       10
+    wrap        off
+tcount
+
+inspector
+i
+    _in_double_float_       off
+    _in_double_float_trig_  off
+    _in_short_int_          tcount out_count
+    _in_short_int_trig_     off //clockt out_phase_trig
+    _in_unsigned_long_      off
+    _in_unsigned_long_trig_ off
+    _in_state_              tcount out_play_state
+    _in_state_trig_         off //clockt out_phase_trig
+    _in_string_             off
+    _in_string_trig_        off
+    _double_float_msg_  .
+    _short_int_msg_     tcount:_______out_count:
+    _long_int_msg_      .
+    _state_msg_         tcount:__out_play_state:
+    _string_msg_        .
+i
+
+trig_echo
+trigecho
+    in_trig  tcount out_trig
+    delay_time      650.1986755
+    count           25
+    send_input_out  on
+trigecho
+
+sample_hold
+sh
+    in_trig     trigecho out_trig
+    in_signal   sine out_output
+    decay_time  174
+sh
+
+adsr
+adsr
+    envelope
+        section name  attack
+            ut 5   ul 1.0
+            lt 20   ll 0.125
+        section name  decay
+            ut 25   ul 0.9
+            lt 10   ll 0.025
+        section name  release
+            ut 80   ul 0.0
+            lt 35   ll 0.0
+    envelope
+    in_note_on_trig   trigecho out_trig
+    in_note_off_trig  off
+    in_velocity       trigecho out_velocity
+    up_thresh         1.0
+    lo_thresh         0.0
+    start_level       0.0
+    min_time          0.0
+    max_sustain_time  0.0
+    release_is_ratio  on
+    sustain_state     off
+    zero_retrigger    off
+adsr
+
+clock
+clock3
+    in_freq_mod1    sh out_output
+    freq            544.0
+    freq_mod1_size  3.0
+clock3
+
+glame_butterworth
+lpf
+    in_signal               saw out_output
+    in_cutoff_phase_step    clock3 out_phase_step
+    in_res_mod              off
+    filter_type     lowpass
+    resonance       0.52
+    res_mod_size    0.0
+lpf
+
+mono_amp
+amp1
+    in_signal   lpf  out_output
+    in_amp_eg   adsr out_output
+    in_amp_mod  off
+    level           0.75
+    amp_mod_size    0.0
+    clip_level      0.975
+amp1
+
+caps_plate
+reverb
+    in_signal  amp1 out_output
+    bandwidth  0.95
+    tail       0.27
+    damping    0.63
+    wet/dry    0.075
+reverb
+
+wavfile_out
+wav1
+    in_left     reverb out_left
+    in_right    reverb out_right
+    in_bar t1   out_count
+    in_bar_trig t1 out_trig
+    snapshot_mode off
+    data_format float32
+    filename    wave_seq_trig_echo.wav
+    start_bar   0
+    end_bar     1
+wav1
+
+wcnt_exit
+wcnt_exit_module
+    in_bar      t1 out_count
+    exit_bar    1
+wcnt_exit_module
+
+wcnt-1.26/jwmsynth
+

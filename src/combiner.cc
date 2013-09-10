@@ -4,33 +4,29 @@
 #include "../include/modoutputlist.h"
 #include "../include/modinputlist.h"
 #include "../include/modparamlist.h"
-#include "../include/synthmodulelist.h"
+#include "../include/synthmodlist.h"
 #include "../include/dobjlist.h"
 #include "../include/moddobjlist.h"
 #include "../include/dobjdobjlist.h"
 #include "../include/dobjmod.h"
-
-#include <iostream>
+#include "../include/wcntsignal.h"
+#include "../include/duplicate_list_module.h"
 
 combiner::combiner(char const* uname) :
  synthmod(synthmodnames::COMBINER, uname),
- out_output(0), sigcount(0), meantotal(ON), wcntsiglist(0),
- wcntsig_item(0), wcntsig(0)
+ linkedlist(MULTIREF_OFF, PRESERVE_DATA),
+ out_output(0), meantotal(OFF),
+ total(0), wcntsigs(0), wcntsig(0), sigcount(0)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_OUTPUT);
-    wcntsiglist = 
-     new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
     create_params();
     create_moddobj();
 }
 
 combiner::~combiner()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
-//  wcntsig is a synthmodule which would have been created
-//  before this module.  don't need to delete here.
-    delete wcntsiglist;
+    if (wcntsigs) // just delete the array, as the contents will reside
+        delete [] wcntsigs; // in the main (or group_control) modlist
 }
 
 void const* combiner::get_out(outputnames::OUT_TYPE ot) const
@@ -65,67 +61,7 @@ void const* combiner::get_param(paramnames::PAR_TYPE pt) const
 
 synthmod* combiner::duplicate_module(const char* uname, DUP_IO dupio)
 {
-    combiner* dup = new combiner(uname);
-    if (dupio == AUTO_CONNECT)
-        duplicate_inputs_to(dup);
-    duplicate_params_to(dup);
-    const char* const current_grp = get_groupname(get_username());
-    const char* const new_grp = get_groupname(uname);
-    bool regroup_wcnt_sigs = false;
-    if (current_grp && new_grp) {
-        if (strcmp(current_grp, new_grp) != 0) {
-            regroup_wcnt_sigs = true;
-        }
-    }
-    synthmodlist& modlist = jwm.get_modlist();
-    if (jwm.is_verbose())
-        std::cout << "\n----------\nadding to duplicated combiner "
-            << uname;
-    goto_first();
-    while (wcntsig) {
-        const char* const sig_grp =
-            get_groupname(wcntsig->get_username());
-        synthmod* sig_to_add = wcntsig;
-        if (sig_grp && regroup_wcnt_sigs == true) {
-            if (strcmp(sig_grp, current_grp) == 0) {
-                const char* const grpsigname =
-                        set_groupname(new_grp, wcntsig->get_username());
-                synthmod* grpsig =
-                            modlist.get_synthmod_by_name(grpsigname);
-                if (grpsig) {
-                    if (grpsig->get_module_type() ==
-                                            synthmodnames::WCNTSIGNAL)
-                        sig_to_add = grpsig;
-                    else {
-                        std::cout << 
-                            "\nin combiner::duplicate, an attempt to";
-                        std::cout << " fetch a wcnt_signal named " <<
-                            grpsigname;
-                        std::cout << "resulted in finding ";
-                        std::cout << grpsig->get_username();
-                        std::cout << " which is not a wcnt_signal!?!?";
-                    }
-                }
-                else if (jwm.is_verbose()) {
-                    std::cout << "\nWarning! combiner " << uname;
-                    std::cout << " was expecting to find " << grpsigname;
-                    std::cout << " but could not.\nCheck the order of"
-                        "grouping in original group definition.";
-                }
-                delete [] grpsigname;
-            }
-            delete [] sig_grp;
-        }
-        dup->add_signal((wcnt_signal*)sig_to_add);
-        if (jwm.is_verbose())
-            std::cout << "\nadded " << sig_to_add->get_username();
-        goto_next();
-    }
-    delete [] current_grp;
-    delete [] new_grp;
-    if (jwm.is_verbose())
-        std::cout << "\n----------";
-    return dup;
+    return duplicate_list_module(this, goto_first(), uname, dupio);
 }
 
 stockerrs::ERR_TYPE combiner::validate()
@@ -151,15 +87,15 @@ dobj* combiner::add_dobj(dobj* dbj)
             *err_msg += " is not a wcnt_signal";
             return 0;
         }
-        if (!add_signal((wcnt_signal*)sm)) {
-            *err_msg = "could not insert ";
+        if (!add_at_tail((wcnt_signal*)sm)) {
+            *err_msg = " it is possible the module ";
             *err_msg += sm->get_username();
-            *err_msg += " into combiner";
+            *err_msg += " has already been added";
             return 0;
         }
         // add the dobj synthmod wrapper to the dobjlist
         // so it gets deleted in the end.
-        jwm.get_dobjlist().add_dobj(dbj);
+        jwm.get_dobjlist()->add_dobj(dbj);
         return dbj;
     }
     *err_msg = "\n***major error*** attempt made to add an ";
@@ -169,17 +105,17 @@ dobj* combiner::add_dobj(dobj* dbj)
 
 void combiner::init()
 {
-    goto_first();
-    sig = wcntsig->get_output();
+    sigcount = get_count();
+    wcntsigs = move_to_array(this);
 }
 
 void combiner::run()
 {
     total = 0;
-    goto_first();
-    while(wcntsig){
-        total += *(wcntsig->get_output());
-        goto_next();
+    long ix = 0;
+    while((wcntsig = wcntsigs[ix])){
+        total += wcntsig->out_output;
+        ix++;
     }
     if (meantotal == ON)
         out_output = total / sigcount;
@@ -192,8 +128,8 @@ void combiner::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_paramlist().
-    add_param(synthmodnames::COMBINER, paramnames::MEAN_TOTAL);
+    jwm.get_paramlist()->
+        add_param(synthmodnames::COMBINER, paramnames::MEAN_TOTAL);
     done_params = true;
 }
 
@@ -203,7 +139,7 @@ void combiner::create_moddobj()
     if (done_moddobj == true)
         return;
     moddobj* mdbj;
-    mdbj = jwm.get_moddobjlist().add_moddobj(
+    mdbj = jwm.get_moddobjlist()->add_moddobj(
         synthmodnames::COMBINER, dobjnames::LST_SIGNALS);
     mdbj->get_dobjdobjlist()->add_dobjdobj(
         dobjnames::LST_SIGNALS, dobjnames::DOBJ_SYNTHMOD);

@@ -1,7 +1,7 @@
 #ifndef PEAKDETECTOR_H
 #define PEAKDETECTOR_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 /*
 //  peak_detector

@@ -10,7 +10,7 @@ timer
 t1
     timings
         time seconds 0.0
-        time seconds 20.0
+        time seconds 60.0
     timings
 t1
 
@@ -133,6 +133,7 @@ sq1
     in_phase_trig  clockd out_phase_trig
     in_phase_step  clockd out_phase_step
     in_pwm         off
+    rate          1
     pulse_width   0.125
     pwm_size      0.0
     recycle_mode  off
@@ -152,13 +153,15 @@ wp2
     phase_cycles        0.5
 wp2
 
+constant mbias value 0.25 mbias
+
 modifier
 m1
     in_signal1 wp1 out_output
     in_signal2 wp2 out_output
+    in_bias mbias out_output
     function mul
     type m2
-    bias 0.25
 m1
 
 clock
@@ -206,6 +209,7 @@ wav
     in_right    out out_output
     in_bar t1   out_count
     in_bar_trig t1 out_trig
+    snapshot_mode off
     data_format float32
     filename    wave_phase.wav
     start_bar   0

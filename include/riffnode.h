@@ -3,6 +3,7 @@
 
 #include "riffdata.h"
 #include "dobj.h"
+#include "miscfuncobj.h"
 
 /*
 class riff_node 
@@ -87,6 +88,11 @@ public:
     virtual stockerrs::ERR_TYPE validate();
     bool set_param(paramnames::PAR_TYPE, void*);
     void const* get_param(paramnames::PAR_TYPE pt) const;
+
+    bool operator()(_start_bar_ & n) {
+        return n(start_bar);
+    }
+
 private:
     short start_bar;
     riffdata* riff_source;

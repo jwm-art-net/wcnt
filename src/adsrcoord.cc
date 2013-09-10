@@ -73,18 +73,18 @@ void const* adsr_coord::get_param(paramnames::PAR_TYPE pt) const
 
 stockerrs::ERR_TYPE adsr_coord::validate()
 {
-    dobjparamlist& dpl = jwm.get_dparlist();
-    if (!dpl.validate(
+    dobjparamlist* dpl = jwm.get_dparlist();
+    if (!dpl->validate(
         this, paramnames::UPTIME, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames().get_name(paramnames::UPTIME);
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::UPTIME);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
-    if (!dpl.validate(
+    if (!dpl->validate(
         this, paramnames::LOTIME, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames().get_name(paramnames::LOTIME);
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::LOTIME);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -94,17 +94,17 @@ stockerrs::ERR_TYPE adsr_coord::validate()
 void adsr_coord::create_params()
 {
     if (adsr_coord::done_params == true) return;
-    jwm.get_dparlist().add_dobjparam(
+    jwm.get_dparlist()->add_dobjparam(
         dobjnames::SIN_COORD, paramnames::ADSRSECT);
-    jwm.get_fxsparamlist().add_param("attack/decay/sustain/release",
+    jwm.get_fxsparamlist()->add_param("attack/decay/sustain/release",
         paramnames::ADSRSECT);
-    jwm.get_dparlist().add_dobjparam(
+    jwm.get_dparlist()->add_dobjparam(
         dobjnames::SIN_COORD, paramnames::UPTIME);
-    jwm.get_dparlist().add_dobjparam(
+    jwm.get_dparlist()->add_dobjparam(
         dobjnames::SIN_COORD, paramnames::UPLEVEL);
-    jwm.get_dparlist().add_dobjparam(
+    jwm.get_dparlist()->add_dobjparam(
         dobjnames::SIN_COORD, paramnames::LOTIME);
-    jwm.get_dparlist().add_dobjparam(
+    jwm.get_dparlist()->add_dobjparam(
         dobjnames::SIN_COORD, paramnames::LOLEVEL);
     done_params = true;
 }

@@ -153,7 +153,7 @@ void const* wavfilein::get_param(paramnames::PAR_TYPE dt) const
 stockerrs::ERR_TYPE wavfilein::validate()
 {
     if (!check_notename(rootnote)) {
-        *err_msg = jwm.get_paramnames().get_name(paramnames::ROOT_NOTE);
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::ROOT_NOTE);
         *err_msg += ", ";
         *err_msg += rootnote;
         invalidate();
@@ -165,9 +165,9 @@ stockerrs::ERR_TYPE wavfilein::validate()
 void wavfilein::create_params()
 {
     if (done_params == true)	return;
-    jwm.get_dparlist().add_dobjparam(
+    jwm.get_dparlist()->add_dobjparam(
         dobjnames::DEF_WAVFILEIN, paramnames::FILENAME);
-    jwm.get_dparlist().add_dobjparam(
+    jwm.get_dparlist()->add_dobjparam(
         dobjnames::DEF_WAVFILEIN, paramnames::ROOT_NOTE);
     done_params = true;
 }

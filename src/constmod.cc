@@ -8,13 +8,13 @@ constmod::constmod(char const* uname) :
  synthmod(synthmodnames::CONSTMOD, uname),
  output(0)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_OUTPUT);
+    set_empty_run();
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
     create_params();
 }
 
 constmod::~constmod()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
 }
 
 void const* constmod::get_out(outputnames::OUT_TYPE ot) const
@@ -53,7 +53,7 @@ void constmod::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
      synthmodnames::CONSTMOD, paramnames::VALUE);
     done_params = true;
 }

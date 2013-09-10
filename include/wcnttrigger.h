@@ -1,7 +1,7 @@
 #ifndef WCNTTRIGGER_H
 #define WCNTTRIGGER_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 class wcnt_trigger : public synthmod
 {

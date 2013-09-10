@@ -1,7 +1,7 @@
 #ifndef ONOFFTRIG_H
 #define ONOFFTRIG_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 class onofftrig: public synthmod
 {

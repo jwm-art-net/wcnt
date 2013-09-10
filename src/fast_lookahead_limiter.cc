@@ -17,17 +17,15 @@ fast_lookahead_limiter::fast_lookahead_limiter(char const* uname) :
  l_in_left(0), l_in_right(0), l_out_left(0), l_out_right(0),
  l_out_latency(0)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_LEFT);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_RIGHT);
-    jwm.get_inputlist().add_input(this, inputnames::IN_LEFT);
-    jwm.get_inputlist().add_input(this, inputnames::IN_RIGHT);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_LEFT);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_RIGHT);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_LEFT);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_RIGHT);
     create_params();
 }
 
 fast_lookahead_limiter::~fast_lookahead_limiter()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
     if (l_descriptor) l_descriptor->cleanup(l_inst_handle);
     if (l_in_left)  delete [] l_in_left;
     if (l_in_right) delete [] l_in_right;
@@ -103,21 +101,21 @@ stockerrs::ERR_TYPE fast_lookahead_limiter::validate()
 {
     if (gain_db < -20 || gain_db > 20) {
         *err_msg +=
-         jwm.get_paramnames().get_name(paramnames::GAIN_DB);
+         jwm.get_paramnames()->get_name(paramnames::GAIN_DB);
         *err_msg += " must be within range -20.0 to +20.0";
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (limit_db < -20 || limit_db > 0) {
         *err_msg +=
-         jwm.get_paramnames().get_name(paramnames::LIMIT_DB);
+         jwm.get_paramnames()->get_name(paramnames::LIMIT_DB);
         *err_msg += " must be within range -20.0 to 0.0";
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (release_secs < 0.01 || release_secs > 2.0) {
         *err_msg +=
-         jwm.get_paramnames().get_name(paramnames::RELEASE_SECS);
+         jwm.get_paramnames()->get_name(paramnames::RELEASE_SECS);
         *err_msg += " must be within range 0.01 to 2.0";
         invalidate();
         return stockerrs::ERR_ERROR;
@@ -127,11 +125,11 @@ stockerrs::ERR_TYPE fast_lookahead_limiter::validate()
 
 void fast_lookahead_limiter::init()
 {
-    ladspa_loader& ll = jwm.get_ladspaloader();
-    ladspa_plug* lp = ll.get_plugin("fast_lookahead_limiter_1913",
+    ladspa_loader* ll = jwm.get_ladspaloader();
+    ladspa_plug* lp = ll->get_plugin("fast_lookahead_limiter_1913",
                                      "fastLookaheadLimiter");
     if (lp == 0) {
-        *err_msg = ll.get_error_msg();
+        *err_msg = ll->get_error_msg();
         invalidate();
         return;
     }
@@ -179,11 +177,11 @@ void fast_lookahead_limiter::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_paramlist().add_param(synthmodnames::FAST_LOOKAHEAD_LIMITER,
+    jwm.get_paramlist()->add_param(synthmodnames::FAST_LOOKAHEAD_LIMITER,
                                paramnames::GAIN_DB);
-    jwm.get_paramlist().add_param(synthmodnames::FAST_LOOKAHEAD_LIMITER,
+    jwm.get_paramlist()->add_param(synthmodnames::FAST_LOOKAHEAD_LIMITER,
                                paramnames::LIMIT_DB);
-    jwm.get_paramlist().add_param(synthmodnames::FAST_LOOKAHEAD_LIMITER,
+    jwm.get_paramlist()->add_param(synthmodnames::FAST_LOOKAHEAD_LIMITER,
                                paramnames::RELEASE_SECS);
     done_params = true;
 }

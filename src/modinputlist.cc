@@ -1,29 +1,18 @@
 #ifndef MODINPUTSLIST_H
 #include "../include/modinputlist.h"
 #include "../include/jwm_globals.h"
-#include "../include/synthmodule.h"
+#include "../include/synthmod.h"
+#include "../include/listwork.h"
 
-modinputlist::modinputlist() : inlist(0), input(0)
+modinputlist::modinputlist(DESTRUCTION d) :
+ linkedlist(MULTIREF_OFF, d)
 {
-    inlist = 
-     new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
-}
-
-modinputlist::~modinputlist()
-{
-    ll_item* tmp = inlist->goto_first();
-    while(tmp != 0)
-    {
-        delete (modinput*)tmp->get_data();
-        tmp = inlist->goto_next();
-    }
-    delete inlist;
 }
 
 modinput* modinputlist::add_input(synthmod* sm, inputnames::IN_TYPE ot)
 {
     modinput* mi = new modinput(sm, ot);
-    ll_item* tmp = inlist->add_at_tail(mi);
+    llitem* tmp = add_at_tail(mi);
     if (!tmp) {
         delete mi;
         return 0;
@@ -31,52 +20,28 @@ modinput* modinputlist::add_input(synthmod* sm, inputnames::IN_TYPE ot)
     return mi;
 }
 
-bool modinputlist::delete_module_inputs(synthmod* sm)
+void modinputlist::delete_module_inputs(synthmod* sm)
 {
-    if (inlist->is_empty())
-        return false;
-    input = goto_first();
-    while(input)
-    {
-        if (input->get_synthmodule() == sm) {
-            inlist->unlink_item(input_item);
-            delete input;
-            delete input_item;
-            input = goto_first();
-        }
-        else
-            input = goto_next();
-    }
-    return true;
-}
-
-bool modinputlist::delete_input(modinput* mo)
-{
-    if (!mo)
-        return false;
-    ll_item * tmp = inlist->find_data(mo);
-    if (tmp)
-    {
-        inlist->unlink_item(tmp);
-        delete mo;
+    llitem* initem = find_in_data(sneak_first(), sm);
+    while(initem){
+        delete initem->get_data();
+        llitem* tmp = initem;
+        initem = find_in_data(initem->get_next(), sm);
+        unlink_item(tmp);
         delete tmp;
-        return true;
     }
-    return false;
 }
 
+/*
 modinputlist* modinputlist::get_list_of_category(iocat::IOCAT oc)
 {
-    if (inlist->is_empty())
+    if (is_empty() || oc <= iocat::FIRST || oc >= iocat::LAST)
         return 0;
-    if (oc <= iocat::FIRST || oc >= iocat::LAST)
-        return 0;
-    input = goto_first();
-    modinputlist* incatlist = new modinputlist;
+    modinput* input = goto_first();
+    modinputlist* incatlist = new modinputlist(PRESERVE_DATA);
     const inputnames& innames = jwm.get_inputnames();
     inputnames::IN_TYPE ot;
-    while(input != 0)
-    {
+    while(input) {
         ot = input->get_inputtype();
         if (innames.get_category(ot) == oc)
             incatlist->add_input(input->get_synthmodule(), ot);
@@ -84,21 +49,24 @@ modinputlist* modinputlist::get_list_of_category(iocat::IOCAT oc)
     }
     return incatlist;
 }
+*/
 
+/*
 modinputlist*
 modinputlist::get_list_of_category_orderpref(iocat::IOCAT in_cat,
         synthmodnames::SYNTH_MOD_TYPE* sm_prefs,
         inputnames::IN_TYPE* in_prefs,
         inputnames::IN_TYPE* not_in_prefs )
 {
-    if (inlist->is_empty())
+    if (is_empty())
         return 0;
     if (in_cat <= iocat::FIRST || in_cat >= iocat::LAST)
         return 0;
     modinputlist* pot_ins = get_list_of_category(in_cat);
     if (pot_ins == 0)
         return 0;
-    modinputlist* sorted_ins = new modinputlist;
+    modinputlist*
+        sorted_ins = new modinputlist(PRESERVE_DATA);
     short op_count = 0;
     short nop_count = 0;
     inputnames::IN_TYPE* op = in_prefs;
@@ -121,20 +89,20 @@ modinputlist::get_list_of_category_orderpref(iocat::IOCAT in_cat,
             if (in_prefs[a] == not_in_prefs[b])
             {
                 in_prefs[a] = inputnames::IN_FIRST;	
-                /* invalid name input type preference */
+                // invalid name input type preference
                 not_in_prefs[b] = inputnames::IN_FIRST;
             }
         }
     }
     synthmod * sm;	
-    /* make list of inputs from pot_ins sorted with preferences. */
+    // make list of inputs from pot_ins sorted with preferences.
     for(a = 0; in_prefs[a] > inputnames::IN_FIRST
             && in_prefs[a] < inputnames::IN_LAST; a++)
     {
         for(c = 0; sm_prefs[c] > synthmodnames::FIRST
                 && sm_prefs[c] < synthmodnames::LAST; c++)
         {
-            input = pot_ins->goto_first();
+            modinput* input = pot_ins->goto_first();
             while(input != 0)
             {
                 sm = input->get_synthmodule();
@@ -145,9 +113,9 @@ modinputlist::get_list_of_category_orderpref(iocat::IOCAT in_cat,
             }
         }
     }
-    short in_prefchk; /* add remaining valid inputs */
+    short in_prefchk; // add remaining valid inputs
     short not_prefchk;
-    input = pot_ins->goto_first();
+    modinput* input = pot_ins->goto_first();
     while(input != 0)
     {
         in_prefchk = 0;
@@ -176,25 +144,6 @@ modinputlist::get_list_of_category_orderpref(iocat::IOCAT in_cat,
     delete pot_ins;
     return sorted_ins;
 }
-
-modinputlist* modinputlist::get_inputlist_for_module(synthmod* sm)
-{
-    if (!sm)
-        return 0;
-    modinputlist* mil = new modinputlist;
-    goto_first();
-    while(input) {
-        if (input->get_synthmodule() == sm) {
-            if (!mil->add_input(input->get_synthmodule(),
-                                input->get_inputtype()))
-            {
-                delete mil;
-                return 0;
-            }
-        }
-        goto_next();
-    }
-    return mil;
-}
+*/
 
 #endif

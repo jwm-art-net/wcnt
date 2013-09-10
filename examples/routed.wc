@@ -1,0 +1,443 @@
+wcnt-1.26/jwmsynth
+//------------------------------------------------------------------------
+//
+// routed.wc
+//  
+//------------------------------------------------------------------------
+
+header header.wch
+
+//------------------------------------------------------------------------
+
+synth_file_reader
+timefile
+    filename time.wch
+    mod_action  exclude
+    dobj_action exclude
+    modules
+    modules
+    data_objects
+    data_objects
+timefile
+
+riff
+riff1
+    quarter_value   32
+    notelist
+        note name c0   pos 0    len 1  vel 1.0
+        note name c1   pos 32   len 1  vel 1.0
+        note name f0   pos 64   len 1  vel 1.0
+        note name c1   pos 96   len 1  vel 1.0
+        note name e0   pos 112  len 1  vel 1.0
+        note name c0   pos 128  len 1  vel 1.0
+        note name c1   pos 160  len 1  vel 1.0
+        note name e0   pos 172  len 1  vel 1.0
+        note name c-1  pos 192  len 1  vel 1.0
+        note name e1   pos 208  len 1  vel 1.0
+        note name g1   pos 224  len 1  vel 1.0
+    notelist
+riff1
+
+copier rc1 from riff1 to riff1-brk rc1
+
+riff_editor
+re1
+    riff  riff1-brk
+    notelist
+        note name >P*L pos 128.0 len 0.0 vel 0.0
+    notelist
+re1
+
+copier rc2 from riff1-brk to riff2 rc2
+
+param_editor
+rpe1
+    editlist
+        edit riff2 quarter_value 16
+    editlist
+rpe1
+
+sequencer
+seq
+    track
+        riff_node   riff riff1-brk
+            bar 0       transpose 0
+            repeat 1    repeat_stripe 4
+        riff_node   riff riff1-brk
+            bar 2   transpose 2
+            repeat 1    repeat_stripe 4
+
+        riff_node   riff riff1
+            bar 8   transpose 0
+            repeat 1    repeat_stripe 4
+        riff_node   riff riff1
+            bar 10  transpose 2
+            repeat 1    repeat_stripe 4
+
+        riff_node   riff riff1-brk
+            bar 17       transpose 0
+            repeat 1    repeat_stripe 4
+        riff_node   riff riff1-brk
+            bar 19  transpose 2
+            repeat 1    repeat_stripe 4
+
+        riff_node   riff riff2
+            bar 26       transpose 0
+            repeat 2    repeat_stripe 4
+        riff_node   riff riff2
+            bar 28  transpose 2
+            repeat 2    repeat_stripe 4
+
+    track
+    in_bar              time1 out_bar
+    in_bar_trig         time1 out_bar_trig
+    in_pos_step_size    time1 out_pos_step_size
+    in_beats_per_bar    time1 out_beats_per_bar
+    in_beat_value       time1 out_beat_value
+    start_bar               0
+    velocity_response_time  5
+seq
+
+trig_echo
+te
+    in_trig     seq out_note_on_trig
+    delay_time      350
+    count           5
+    send_input_out  on
+te
+
+trig_router
+tr
+    in_trig   te out_trig
+    in_count  te out_count
+    count  5
+    wrap   off
+tr
+
+sample_hold
+vel
+    in_trig     off // later..
+    in_signal   te out_velocity
+    decay_time 0
+vel
+
+adsr
+env
+    envelope
+        section name attack
+            ut  5.0    ul  1.0
+            lt  10.0   ll  0.0125
+        section name decay
+            ut  135.0    ul  0.8
+            lt  75.0    ll  0.1
+        section name release
+            ut  575.0    ul  0.0
+            lt  125.0    ll  0.0
+    envelope
+    // will connect later...
+    in_note_on_trig     off
+    in_note_off_trig    off
+    in_velocity         vel out_output
+    up_thresh        1.0
+    lo_thresh        0.0
+    start_level      0.0
+    min_time         0.0
+    max_sustain_time 0.0
+    release_is_ratio off
+    sustain_state    off
+    zero_retrigger   off
+env
+
+sample_hold
+freq
+    in_trig     off // later..
+    in_signal   seq out_frequency
+    decay_time 0
+freq
+
+osc_clock
+osc1
+    in_note_on_trig     off // later..
+    in_note_slide_trig  off
+    in_play_state       env out_play_state
+    in_frequency        freq out_output
+    in_freq_mod1        off
+    in_freq_mod2        off
+    octave_offset       0
+    tuning_semitones    0
+    portamento_time     125
+    response_time       1
+    freq_mod1_size      1
+    freq_mod2_size      1
+osc1
+
+osc_clock
+osc2
+    in_note_on_trig     off // later..
+    in_note_slide_trig  off
+    in_play_state       env out_play_state
+    in_frequency        freq out_output
+    in_freq_mod1        wv out_output
+    in_freq_mod2        off
+    octave_offset       0
+    tuning_semitones    0
+    portamento_time     125
+    response_time       1
+    freq_mod1_size      1.25
+    freq_mod2_size      1
+osc2
+
+wave_phase
+wv
+    in_phase_trig       osc1 out_phase_trig
+    in_phase_step       osc1 out_phase_step
+    in_shape_phase_step osc2 out_phase_step
+    type                saw
+    shape_type          tri
+    on_trig_reset_phase on
+    recycle_mode        on
+    sync_shape          on
+    invert_alt          on
+    phase_cycles        0.5
+wv
+
+mono_amp
+amp
+    in_signal   wv out_output
+    in_amp_eg   env out_output
+    in_amp_mod  off
+    level           1.0
+    amp_mod_size    0.0
+    clip_level      1.0
+amp
+
+constant_freq f freq 500 f
+
+glame_butterworth
+lpf
+    in_signal             amp out_output
+    in_cutoff_phase_step  f out_phase_step
+    in_res_mod            off
+    filter_type   lowpass
+    resonance     0.5
+    res_mod_size  0
+lpf
+
+wcnt_signal
+out
+    in_signal lpf out_output
+    level     0.75
+out
+
+group
+g1
+    modules
+        synthmod name vel
+        synthmod name env
+        synthmod name freq
+        synthmod name osc1
+        synthmod name osc2
+        synthmod name wv
+        synthmod name amp
+        synthmod name f
+        synthmod name lpf
+        synthmod name out
+    modules
+g1
+
+copier c1 from g1 to g2 c1
+copier c2 from g1 to g3 c2
+copier c3 from g1 to g4 c3
+copier c4 from g1 to g5 c4
+
+group_control
+gc1
+    in_play_trig  tr.1 out_trig
+    in_stop_trig  g1.env out_off_trig
+    group_name  g1
+gc1
+
+group_control
+gc2
+    in_play_trig  tr.2 out_trig
+    in_stop_trig  g2.env out_off_trig
+    group_name  g2
+gc2
+
+group_control
+gc3
+    in_play_trig  tr.3 out_trig
+    in_stop_trig  g3.env out_off_trig
+    group_name  g3
+gc3
+
+group_control
+gc4
+    in_play_trig  tr.4 out_trig
+    in_stop_trig  g4.env out_off_trig
+    group_name  g4
+gc4
+
+group_control
+gc5
+    in_play_trig  tr.5 out_trig
+    in_stop_trig  g5.env out_off_trig
+    group_name  g5
+gc5
+
+input_editor
+ie
+    editlist
+
+        connect g1.vel in_trig tr.1 out_trig
+        connect g2.vel in_trig tr.2 out_trig
+        connect g3.vel in_trig tr.3 out_trig
+        connect g4.vel in_trig tr.4 out_trig
+        connect g5.vel in_trig tr.5 out_trig
+
+        connect g1.env in_note_on_trig tr.1 out_trig
+        connect g2.env in_note_on_trig tr.2 out_trig
+        connect g3.env in_note_on_trig tr.3 out_trig
+        connect g4.env in_note_on_trig tr.4 out_trig
+        connect g5.env in_note_on_trig tr.5 out_trig
+
+        connect g1.freq in_trig tr.1 out_trig
+        connect g2.freq in_trig tr.2 out_trig
+        connect g3.freq in_trig tr.3 out_trig
+        connect g4.freq in_trig tr.4 out_trig
+        connect g5.freq in_trig tr.5 out_trig
+
+        connect g1.osc1 in_note_on_trig tr.1 out_trig
+        connect g2.osc1 in_note_on_trig tr.2 out_trig
+        connect g3.osc1 in_note_on_trig tr.3 out_trig
+        connect g4.osc1 in_note_on_trig tr.4 out_trig
+        connect g5.osc1 in_note_on_trig tr.5 out_trig
+
+        connect g1.osc2 in_note_on_trig tr.1 out_trig
+        connect g2.osc2 in_note_on_trig tr.2 out_trig
+        connect g3.osc2 in_note_on_trig tr.3 out_trig
+        connect g4.osc2 in_note_on_trig tr.4 out_trig
+        connect g5.osc2 in_note_on_trig tr.5 out_trig
+
+    editlist
+ie
+
+param_editor
+pe
+    editlist
+        edit g1.osc1 tuning_semitones 0.0
+        edit g2.osc1 tuning_semitones 2.0
+        edit g3.osc1 tuning_semitones 3.0
+        edit g4.osc1 tuning_semitones 5.0
+        edit g5.osc1 tuning_semitones 7.0
+
+        edit g1.osc2
+            tuning_semitones 0.0
+            octave_offset -1
+        edit g2.osc2
+            tuning_semitones 2.0
+            octave_offset -1
+        edit g3.osc2
+            tuning_semitones 3.0
+            octave_offset -1
+        edit g4.osc2
+            tuning_semitones 5.0
+            octave_offset -1
+        edit g5.osc2
+            tuning_semitones 7.0
+            octave_offset -1
+
+        edit g1.f freq 500
+        edit g2.f freq 800
+        edit g3.f freq 1400
+        edit g4.f freq 2600
+        edit g5.f freq 5000
+
+    editlist
+pe
+
+combiner
+c
+    signals
+        synthmod name   g1.out
+        synthmod name   g2.out
+        synthmod name   g3.out
+        synthmod name   g4.out
+        synthmod name   g5.out
+    signals
+    mean_total off
+c
+
+echo
+echol
+    in_signal        c out_output
+    in_gain_mod      off
+    in_feedback      echor out_wet_output
+    in_feedback_mod  off
+    delay_time         170
+    gain               1
+    gain_mod_size      0
+    feedback           0.725
+    feedback_mod_size  0
+    wet/dry            0.25
+echol
+
+echo
+echor
+    in_signal        c out_output
+    in_gain_mod      off
+    in_feedback      echol out_wet_output
+    in_feedback_mod  off
+    delay_time         180
+    gain               1
+    gain_mod_size      0
+    feedback           0.725
+    feedback_mod_size  0
+    wet/dry            0.25
+echor
+
+sc1
+scl
+    in_signal  echol out_output
+    attack_time   100
+    release_time  400
+    threshold_db  -18
+    ratio_1:n     2
+    knee_db       3.25
+    makeup_db     1.5
+scl
+
+sc1
+scr
+    in_signal  echor out_output
+    attack_time   100
+    release_time  400
+    threshold_db  -18
+    ratio_1:n     2
+    knee_db       3.25
+    makeup_db     1.5
+scr
+
+wavfile_out
+wav
+    in_left     scl out_output
+    in_right    scr out_output
+    in_bar      time1   out_bar
+    in_bar_trig time1   out_bar_trig
+    snapshot_mode off
+    data_format pcm16
+    filename    routed.wav
+    start_bar   0
+    end_bar     40
+wav
+
+wcnt_exit
+x
+    in_bar  time1   out_bar
+    exit_bar    40
+x
+
+//------------------------------------------------------------------------
+// End Of File _jwm 2005.
+//------------------------------------------------------------------------
+wcnt-1.26/jwmsynth

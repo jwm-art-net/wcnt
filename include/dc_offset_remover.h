@@ -2,7 +2,7 @@
 #define DC_OFFSET_REMOVER_H
 #ifdef WITH_LADSPA
 
-#include "synthmodule.h"
+#include "synthmod.h"
 #include "ladspa_loader.h"
 
 /*

@@ -1,3 +1,0 @@
-#!/bin/bash
-modules=`grep ': public synthmod' ../include/*.h -l | tr '\n' ' '`
-nedit $modules

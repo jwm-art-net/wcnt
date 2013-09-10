@@ -9,22 +9,25 @@ constant_note::constant_note(char const* uname) :
  synthmod(synthmodnames::CONSTANT_NOTE, uname),
  out_freq(0.0), out_phase_step(0.0)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_NOTENAME);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_FREQ);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_PHASE_STEP);
+    set_empty_run();
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_NOTENAME);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_FREQ);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_PHASE_STEP);
+    note = new char[jwm_init::note_array_size];
     create_params();
 }
 
 constant_note::~constant_note()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
+    if (note)
+        delete [] note;
 }
 
 void const* constant_note::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot) 
     {
-        case outputnames::OUT_NOTENAME:   return note;
+        case outputnames::OUT_NOTENAME:   return &note;
         case outputnames::OUT_FREQ:       return &out_freq;
         case outputnames::OUT_PHASE_STEP: return &out_phase_step;
         default: return 0;
@@ -54,7 +57,7 @@ void const* constant_note::get_param(paramnames::PAR_TYPE pt) const
 stockerrs::ERR_TYPE constant_note::validate()
 {
     if (!check_notename(note)){
-        *err_msg = jwm.get_paramnames().get_name(paramnames::NAME);
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::NAME);
         invalidate();
         return stockerrs::ERR_NOTENAME;
     }
@@ -79,7 +82,7 @@ void constant_note::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::CONSTANT_NOTE, paramnames::NAME);
     done_params = true;
 }

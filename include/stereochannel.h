@@ -1,7 +1,7 @@
 #ifndef STEREOCHANNEL_H
 #define STEREOCHANNEL_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 /*
 // previously I'd used the same variables for each input and output

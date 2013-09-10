@@ -41,10 +41,10 @@ void const* timing::get_param(paramnames::PAR_TYPE pt) const
 
 stockerrs::ERR_TYPE timing::validate()
 {
-    if (!jwm.get_dparlist().validate(
+    if (!jwm.get_dparlist()->validate(
         this, paramnames::SECONDS, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames().get_name(paramnames::BAR);
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::BAR);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -56,7 +56,7 @@ bool timing::done_params = false;
 void timing::create_params()
 {
     if (done_params == true) return;
-    jwm.get_dparlist().add_dobjparam(
+    jwm.get_dparlist()->add_dobjparam(
         dobjnames::SIN_TIME, paramnames::SECONDS);
     done_params = true;
 }

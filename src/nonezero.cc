@@ -5,28 +5,27 @@
 
 nonezero::nonezero(char const* uname) :
  synthmod(synthmodnames::NONEZERO, uname),
- out_none_double(0.00), out_none_short(0), out_none_ulong(0), 
- out_none_STATUS(OFF)
+ out_none_double(0.00), out_none_short(0), out_none_ulong(0),
+ out_none_STATUS(OFF), out_none_string(0)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_NONE_DOUBLE);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_NONE_SHORT);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_NONE_ULONG);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_NONE_TRIG);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_NONE_STATE);
+    set_empty_run();
+    remove_groupability();
+    remove_duplicability();
+    out_none_string = new char[1];
+    *out_none_string = '\0';
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_NONE_DOUBLE);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_NONE_SHORT);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_NONE_ULONG);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_NONE_TRIG);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_NONE_STATE);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_NONE_STRING);
 }
 
 nonezero::~nonezero()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
+    if (out_none_string)
+        delete [] out_none_string;
 }
-
-synthmod* nonezero::duplicate_module(const char* uname, DUP_IO dupio)
-{
-    *err_msg = "\nYou are trying to duplicate 'off', ";
-    *err_msg += "you can put a stop to that right now.";
-    return 0;
-}
-
 
 void const* nonezero::get_out(outputnames::OUT_TYPE ot) const
 {
@@ -37,6 +36,7 @@ void const* nonezero::get_out(outputnames::OUT_TYPE ot) const
         case outputnames::OUT_NONE_ULONG:   return &out_none_ulong;
         case outputnames::OUT_NONE_TRIG:    return &out_none_STATUS;
         case outputnames::OUT_NONE_STATE:   return &out_none_STATUS;
+        case outputnames::OUT_NONE_STRING:  return &out_none_string;
         default: return 0;
     }
 }

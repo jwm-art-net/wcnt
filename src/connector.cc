@@ -1,7 +1,7 @@
 #ifndef CONNECTOR_H
 #include "../include/connector.h"
-#include "../include/synthmodule.h"
-#include "../include/synthmodulelist.h"
+#include "../include/synthmod.h"
+#include "../include/synthmodlist.h"
 #include "../include/jwm_globals.h"
 
 connector::connector(
@@ -46,13 +46,13 @@ bool connector::connect()
         return false;
     }
     const synthmod* outmod =
-        jwm.get_modlist().get_synthmod_by_name(out_mod_uname);
+        jwm.get_modlist()->get_synthmod_by_name(out_mod_uname);
     if (!in_mod) {
         connect_err_msg = "\nConnection error! Bad News!";
         connect_err_msg += "\ninput module not set, nothing to connect";
         connect_err_msg += "to!";
         connect_err_msg += "\nFOI input type is set as ";
-        connect_err_msg += jwm.get_inputnames().get_name(in_type);
+        connect_err_msg += jwm.get_inputnames()->get_name(in_type);
         connect_err_msg += " and out module name is ";
         connect_err_msg += out_mod_uname;
         return false;
@@ -61,7 +61,7 @@ bool connector::connect()
         connect_err_msg = "\nIn module ";
         connect_err_msg += in_mod->get_username();
         connect_err_msg += ", cannot connect input ";
-        connect_err_msg += jwm.get_inputnames().get_name(in_type);
+        connect_err_msg += jwm.get_inputnames()->get_name(in_type);
         connect_err_msg += ", the module ";
         connect_err_msg += out_mod_uname;
         connect_err_msg += " does not exist";
@@ -72,11 +72,11 @@ bool connector::connect()
         connect_err_msg = "\nIn module ";
         connect_err_msg += in_mod->get_username();
         connect_err_msg += ", cannot connect input ";
-        connect_err_msg += jwm.get_inputnames().get_name(in_type);
+        connect_err_msg += jwm.get_inputnames()->get_name(in_type);
         connect_err_msg += ", to module ";
         connect_err_msg += out_mod_uname;
         connect_err_msg += ", it does not have any ";
-        connect_err_msg += jwm.get_outputnames().get_name(out_type);
+        connect_err_msg += jwm.get_outputnames()->get_name(out_type);
         connect_err_msg += " output";
         return false;
     }
@@ -85,7 +85,7 @@ bool connector::connect()
         connect_err_msg += "\nIn module ";
         connect_err_msg += *in_mod->get_username();
         connect_err_msg += " not programmed to set input ";
-        connect_err_msg += jwm.get_inputnames().get_name(in_type);
+        connect_err_msg += jwm.get_inputnames()->get_name(in_type);
         return false;
     }
     return true;

@@ -789,7 +789,7 @@ mix_l
                 synthmod name cl4
                 synthmod name cl5
         signals
-        mean_total off
+    mean_total off
 mix_l
 
 combiner
@@ -801,7 +801,7 @@ mix_r
                 synthmod name cr4
                 synthmod name cr5
         signals
-        mean_total off
+    mean_total off
 mix_r
 
 dynamic
@@ -889,6 +889,7 @@ wav1
     in_right    amp1    out_right
     in_bar      time1   out_bar
     in_bar_trig time1   out_bar_trig
+    snapshot_mode off
     data_format float32
     filename    fox02.wav
     start_bar   0

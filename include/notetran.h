@@ -1,7 +1,7 @@
 #ifndef NOTETRAN_H
 #define NOTETRAN_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 /*
 // class notetran

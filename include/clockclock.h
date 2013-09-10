@@ -1,7 +1,7 @@
 #ifndef CLOCKCLOCK_H
 #define CLOCKCLOCK_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 class clockclock : public synthmod
 {

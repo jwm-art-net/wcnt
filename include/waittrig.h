@@ -1,7 +1,7 @@
 #ifndef WAITTRIG_H
 #define WAITTRIG_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 /*
     only outputs trigger one, when it is triggered, but not

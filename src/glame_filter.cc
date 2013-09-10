@@ -16,9 +16,9 @@ glame_filter::glame_filter(char const* uname) :
  l_input(0), l_output(0),
  type_names(0)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_inputlist().add_input(this, inputnames::IN_SIGNAL);
-    jwm.get_inputlist().add_input(this, inputnames::IN_FREQ_MOD1);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_FREQ_MOD1);
     create_params();
     type_names = new char*[2];
     type_names[0] = "lowpass_iir";
@@ -29,8 +29,6 @@ glame_filter::glame_filter(char const* uname) :
 
 glame_filter::~glame_filter()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
     if (l_descriptor) l_descriptor->cleanup(l_inst_handle);
     if (l_input) delete [] l_input;
     if (l_output) delete [] l_output;
@@ -108,7 +106,7 @@ stockerrs::ERR_TYPE glame_filter::validate()
 {
     if (cutoff_freq < min_cutoff || cutoff_freq > max_cutoff) {
         *err_msg +=
-         jwm.get_paramnames().get_name(paramnames::FREQ);
+         jwm.get_paramnames()->get_name(paramnames::FREQ);
         *err_msg += " must be within range 0.0001 * samplerate "
                     " to 0.45 * samplerate";
         invalidate();
@@ -116,16 +114,16 @@ stockerrs::ERR_TYPE glame_filter::validate()
     }
     if (stages < 1 || stages > 10){
         *err_msg +=
-         jwm.get_paramnames().get_name(paramnames::FREQ);
+         jwm.get_paramnames()->get_name(paramnames::FREQ);
         *err_msg += " must be within range 1 to 10";
         invalidate();
         return stockerrs::ERR_ERROR;
     }
-    if (!jwm.get_paramlist().validate(this, paramnames::FREQ_MOD1SIZE,
+    if (!jwm.get_paramlist()->validate(this, paramnames::FREQ_MOD1SIZE,
             stockerrs::ERR_RANGE_FMOD))
     {
         *err_msg
-         = jwm.get_paramnames().get_name(paramnames::FREQ_MOD1SIZE);
+         = jwm.get_paramnames()->get_name(paramnames::FREQ_MOD1SIZE);
         invalidate();
         return stockerrs::ERR_RANGE_FMOD;
     }
@@ -134,14 +132,14 @@ stockerrs::ERR_TYPE glame_filter::validate()
 
 void glame_filter::init()
 {
-    ladspa_loader& ll = jwm.get_ladspaloader();
+    ladspa_loader* ll = jwm.get_ladspaloader();
     ladspa_plug* lp = 0;
     if(type == LOPASS)
-        lp = ll.get_plugin("lowpass_iir_1891", "lowpass_iir");
+        lp = ll->get_plugin("lowpass_iir_1891", "lowpass_iir");
     else
-        lp = ll.get_plugin("highpass_iir_1890", "highpass_iir");
+        lp = ll->get_plugin("highpass_iir_1890", "highpass_iir");
     if (lp == 0) {
-        *err_msg = ll.get_error_msg();
+        *err_msg = ll->get_error_msg();
         invalidate();
         return;
     }
@@ -188,15 +186,15 @@ void glame_filter::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_paramlist().add_param(synthmodnames::GLAME_FILTER,
+    jwm.get_paramlist()->add_param(synthmodnames::GLAME_FILTER,
                                paramnames::GLAME_FILTER_TYPE);
-    jwm.get_fxsparamlist().add_param("lowpass/highpass",
+    jwm.get_fxsparamlist()->add_param("lowpass/highpass",
                                   paramnames::GLAME_FILTER_TYPE);
-    jwm.get_paramlist().add_param(synthmodnames::GLAME_FILTER,
+    jwm.get_paramlist()->add_param(synthmodnames::GLAME_FILTER,
                                paramnames::FREQ);
-    jwm.get_paramlist().add_param(synthmodnames::GLAME_FILTER,
+    jwm.get_paramlist()->add_param(synthmodnames::GLAME_FILTER,
                                paramnames::FREQ_MOD1SIZE);
-    jwm.get_paramlist().add_param(synthmodnames::GLAME_FILTER,
+    jwm.get_paramlist()->add_param(synthmodnames::GLAME_FILTER,
                                paramnames::STAGES);
     done_params = true;
 }

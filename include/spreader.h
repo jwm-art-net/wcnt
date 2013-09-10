@@ -3,31 +3,21 @@
 
 #include "wcntsignal.h"
 #include "linkedlist.h"
+#include "duplicate_list_module.h"
 
-class spreader: public synthmod
+class spreader: public synthmod, public linked_list<wcnt_signal>
 {
 public:
     spreader(char const*);
     ~spreader();
-    wcnt_signal* add_signal(wcnt_signal* s) {
-        return wcntsig = (wcnt_signal*)
-         (wcntsig_item = wcntsiglist->add_at_tail(s))->get_data();
-    }
-    wcnt_signal* goto_first() {
-        return wcntsig = (wcnt_signal*)
-         (wcntsig_item = wcntsiglist->goto_first())->get_data();
-    }
-    wcnt_signal* goto_last() {
-        return wcntsig = (wcnt_signal*)
-         (wcntsig_item = wcntsiglist->goto_last())->get_data();
-    }
-    wcnt_signal* goto_prev() {
-        return wcntsig = (wcnt_signal*)
-         (wcntsig_item = wcntsiglist->goto_prev())->get_data();
-    }
-    wcnt_signal* goto_next() {
-        return wcntsig = (wcnt_signal*)
-        (wcntsig_item = wcntsiglist->goto_next())->get_data();
+
+    friend synthmod*
+        duplicate_list_module<spreader, wcnt_signal>
+            (spreader* sm, wcnt_signal* _data,
+                const char* uname, synthmod::DUP_IO dupio);
+
+    wcnt_signal* add_signal(wcnt_signal* ws){
+        return add_at_tail(ws)->get_data();
     }
     // virtual funcs
     void run();
@@ -51,15 +41,8 @@ private:
     double start_level;
     double end_level;
     // working
-    double level_dif;
     double seg_lvl;
-    short sig_count;
-    linkedlist* wcntsiglist;
-    ll_item*	wcntsig_item;
-    wcnt_signal* wcntsig;
-    double const* sig;
-    double const* prevsig;
-    double zero;// for initial stuff
+    wcnt_signal** wcntsigs;
     static bool done_params;
     void create_params();
     static bool done_moddobj;

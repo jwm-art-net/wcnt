@@ -17,22 +17,20 @@ sync_clock::sync_clock(char const* uname) :
  phasepos(0), snapto(0)
 {
 // degs initialised at 360 so immediately triggers if in_phase_trig is off
-    jwm.get_inputlist().add_input(this, inputnames::IN_BPM);
-    jwm.get_inputlist().add_input(this, inputnames::IN_POS_STEP_SIZE);
-    jwm.get_inputlist().add_input(this, inputnames::IN_BEATS_PER_BAR);
-    jwm.get_inputlist().add_input(this, inputnames::IN_BEAT_VALUE);
-    jwm.get_inputlist().add_input(this, inputnames::IN_PHASE_TRIG);
-    jwm.get_inputlist().add_input(this, inputnames::IN_FREQ_MOD1);
-    jwm.get_inputlist().add_input(this, inputnames::IN_FREQ_MOD2);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_PHASE_TRIG);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_PHASE_STEP);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_BPM);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_POS_STEP_SIZE);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_BEATS_PER_BAR);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_BEAT_VALUE);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_PHASE_TRIG);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_FREQ_MOD1);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_FREQ_MOD2);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_PHASE_TRIG);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_PHASE_STEP);
     create_params();
 }
 
 sync_clock::~sync_clock()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
 }
 
 void const* sync_clock::get_out(outputnames::OUT_TYPE ot) const
@@ -130,19 +128,19 @@ void const* sync_clock::get_param(paramnames::PAR_TYPE pt) const
 
 stockerrs::ERR_TYPE sync_clock::validate()
 {
-    if (!jwm.get_paramlist().validate(
+    if (!jwm.get_paramlist()->validate(
         this, paramnames::QUARTER_VAL, stockerrs::ERR_NEGATIVE))
     {
         *err_msg =
-         jwm.get_paramnames().get_name(paramnames::QUARTER_VAL);
+         jwm.get_paramnames()->get_name(paramnames::QUARTER_VAL);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
-    if (!jwm.get_paramlist().validate(
+    if (!jwm.get_paramlist()->validate(
         this, paramnames::NOTE_LEN, stockerrs::ERR_NEGATIVE))
     {
         *err_msg =
-         jwm.get_paramnames().get_name(paramnames::NOTE_LEN);
+         jwm.get_paramnames()->get_name(paramnames::NOTE_LEN);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -204,12 +202,12 @@ void sync_clock::create_params()
 {
     if (done_params == true)
         return;
-    modparamlist& pl = jwm.get_paramlist();
-    pl.add_param(synthmodnames::SYNCCLOCK, paramnames::FREQ_MOD1SIZE);
-    pl.add_param(synthmodnames::SYNCCLOCK, paramnames::FREQ_MOD2SIZE);
-    pl.add_param(synthmodnames::SYNCCLOCK, paramnames::QUARTER_VAL);
-    pl.add_param(synthmodnames::SYNCCLOCK, paramnames::NOTE_LEN);
-    pl.add_param(synthmodnames::SYNCCLOCK, paramnames::SNAP_TO);
+    modparamlist* pl = jwm.get_paramlist();
+    pl->add_param(synthmodnames::SYNCCLOCK, paramnames::FREQ_MOD1SIZE);
+    pl->add_param(synthmodnames::SYNCCLOCK, paramnames::FREQ_MOD2SIZE);
+    pl->add_param(synthmodnames::SYNCCLOCK, paramnames::QUARTER_VAL);
+    pl->add_param(synthmodnames::SYNCCLOCK, paramnames::NOTE_LEN);
+    pl->add_param(synthmodnames::SYNCCLOCK, paramnames::SNAP_TO);
     done_params = true;
 }
 

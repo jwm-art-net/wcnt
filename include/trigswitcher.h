@@ -3,32 +3,23 @@
 
 #include "wcnttrigger.h"
 #include "linkedlist.h"
+#include "duplicate_list_module.h"
 
-class trigswitcher: public synthmod
+class trigswitcher: public synthmod, public linked_list<wcnt_trigger>
 {
 public:
     trigswitcher(char const*);
     ~trigswitcher();
+
+    friend synthmod*
+        duplicate_list_module<trigswitcher, wcnt_trigger>
+            (trigswitcher* sm, wcnt_trigger* _data,
+                const char* uname, synthmod::DUP_IO dupio);
+
     wcnt_trigger* add_trigger(wcnt_trigger* s) {
-        return wcnttrig = (wcnt_trigger*)
-         (wcnttrig_item = wcnttriglist->add_at_tail(s))->get_data();
+        return add_at_tail(s)->get_data();
     }
-    wcnt_trigger* goto_first() {
-        return wcnttrig = (wcnt_trigger*)
-         (wcnttrig_item = wcnttriglist->goto_first())->get_data();
-    }
-    wcnt_trigger* goto_last() {
-        return wcnttrig = (wcnt_trigger*)
-         (wcnttrig_item = wcnttriglist->goto_last())->get_data();
-    }
-    wcnt_trigger* goto_prev() {
-        return wcnttrig = (wcnt_trigger*)
-         (wcnttrig_item = wcnttriglist->goto_prev())->get_data();
-    }
-    wcnt_trigger* goto_next() {
-        return wcnttrig = (wcnt_trigger*)
-         (wcnttrig_item = wcnttriglist->goto_next())->get_data();
-    }
+
     // virtual funcs
     void run();
     void init();
@@ -42,9 +33,8 @@ public:
 private:
     STATUS const* in_trig;
     STATUS out_trig;
-    linkedlist* wcnttriglist;
-    ll_item* wcnttrig_item;
-    wcnt_trigger* wcnttrig;
+    wcnt_trigger** wcnttrigs;
+    long trig_ix;
     STATUS const* trig;
     static bool done_moddobj;
     void create_moddobj();

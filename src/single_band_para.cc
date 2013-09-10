@@ -15,19 +15,17 @@ single_band_para::single_band_para(char const* uname) :
  l_input(0), l_output(0),
  l_gain_db(0), l_frequency(440), l_bandwidth(1)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_inputlist().add_input(this, inputnames::IN_SIGNAL);
-    jwm.get_inputlist().add_input(this, inputnames::IN_PHASE_STEP);
-    jwm.get_inputlist().add_input(this, inputnames::IN_GAIN_MOD);
-    jwm.get_inputlist().add_input(this, inputnames::IN_BANDWIDTH_MOD);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_PHASE_STEP);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_GAIN_MOD);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_BANDWIDTH_MOD);
     create_params();
     max_freq = 0.4 * jwm.samplerate();
 }
 
 single_band_para::~single_band_para()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
     if (l_descriptor) l_descriptor->cleanup(l_inst_handle);
     if (l_input) delete [] l_input;
     if (l_output) delete [] l_output;
@@ -110,14 +108,14 @@ stockerrs::ERR_TYPE single_band_para::validate()
 {
     if (gain_db < -70 || gain_db > 30) {
         *err_msg +=
-         jwm.get_paramnames().get_name(paramnames::GAIN_DB);
+         jwm.get_paramnames()->get_name(paramnames::GAIN_DB);
         *err_msg += " must be within range -70 to 30";
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (bandwidth < 0 || bandwidth > 4) {
         *err_msg +=
-         jwm.get_paramnames().get_name(paramnames::BANDWIDTH);
+         jwm.get_paramnames()->get_name(paramnames::BANDWIDTH);
         *err_msg += " must be within range 0 to 4";
         invalidate();
         return stockerrs::ERR_ERROR;
@@ -127,10 +125,10 @@ stockerrs::ERR_TYPE single_band_para::validate()
 
 void single_band_para::init()
 {
-    ladspa_loader& ll = jwm.get_ladspaloader();
-    ladspa_plug* lp = ll.get_plugin("single_para_1203", "singlePara");
+    ladspa_loader* ll = jwm.get_ladspaloader();
+    ladspa_plug* lp = ll->get_plugin("single_para_1203", "singlePara");
     if (lp == 0) {
-        *err_msg = ll.get_error_msg();
+        *err_msg = ll->get_error_msg();
         invalidate();
         return;
     }
@@ -178,13 +176,13 @@ void single_band_para::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_paramlist().add_param(synthmodnames::SINGLE_BAND_PARA,
+    jwm.get_paramlist()->add_param(synthmodnames::SINGLE_BAND_PARA,
                                     paramnames::GAIN_DB);
-    jwm.get_paramlist().add_param(synthmodnames::SINGLE_BAND_PARA,
+    jwm.get_paramlist()->add_param(synthmodnames::SINGLE_BAND_PARA,
                                     paramnames::GAIN_MODSIZE);
-    jwm.get_paramlist().add_param(synthmodnames::SINGLE_BAND_PARA,
+    jwm.get_paramlist()->add_param(synthmodnames::SINGLE_BAND_PARA,
                                     paramnames::BANDWIDTH);
-    jwm.get_paramlist().add_param(synthmodnames::SINGLE_BAND_PARA,
+    jwm.get_paramlist()->add_param(synthmodnames::SINGLE_BAND_PARA,
                                     paramnames::BANDWIDTH_MODSIZE);
     done_params = true;
 }

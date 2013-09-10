@@ -67,6 +67,20 @@ public:
         IN_FREQ_MOD,
         IN_SIGNAL1,
         IN_SIGNAL2,
+        /* inspect module's iocat type inputs etc */
+        IN__DF,
+        IN__DF_TRIG,
+        IN__SI,
+        IN__SI_TRIG,
+        IN__UL,
+        IN__UL_TRIG,
+        IN__ST,
+        IN__ST_TRIG,
+        IN__STR,
+        IN__STR_TRIG,
+        IN_RESET_TRIG,
+        IN_COUNT,
+        IN_BIAS,
         // used for array to know how many:
         IN_LAST
     };

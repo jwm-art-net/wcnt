@@ -1,7 +1,7 @@
 #ifndef WAVE_H
 #define WAVE_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 #include "wave_tables.h"
 
 class wave : public synthmod

@@ -6,15 +6,16 @@
 #include "../include/modparamlist.h"
 #include "../include/fxsparamlist.h"
 #include "../include/dobjparamlist.h"
-#include "../include/synthmodulelist.h"
+#include "../include/synthmodlist.h"
 #include "../include/dobjlist.h"
 #include "../include/topdobjlist.h"
 #include "../include/moddobjlist.h"
 #include "../include/connectorlist.h"
 #include "../include/ladspa_loader.h"
-#include "../include/synthmodule.h"
+#include "../include/synthmod.h"
 #include "../include/dobj.h"
 #include "../include/wave_tables.h"
+#include "../include/conversions.h"
 
 #include <string>
 
@@ -124,6 +125,12 @@ STATS_DISPLAY(note_data)
 #endif
     std::cout << std::endl;
 #endif
+}
+
+void jwm_globals::samplerate(unsigned long sr)
+{
+    sample_rate = sr;
+    mid_a_phase_step = freq_to_step(440);
 }
 
 jwm_globals jwm;

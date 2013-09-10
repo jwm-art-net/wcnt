@@ -16,6 +16,18 @@
 
 class synthmod;
 
+class input_module
+{
+ public:
+    input_module(synthmod* sm) : smod(sm) {};
+    input_module(synthmod const* sm) : smod(sm) {};
+    bool operator()(synthmod* sm) const { return smod == sm; }
+    bool operator()(synthmod const* sm) const { return smod == sm; }
+ private:
+    synthmod const* smod;
+};
+
+
 class connector
 {
 public:
@@ -42,6 +54,11 @@ public:
     connector* duplicate(synthmod*);
     static const std::string* get_connect_err_msg()
         { return &connect_err_msg;}
+
+    bool operator()(input_module & inmod){
+        return (inmod(in_mod));
+    }
+
 private:
     synthmod* in_mod;
     inputnames::IN_TYPE in_type;

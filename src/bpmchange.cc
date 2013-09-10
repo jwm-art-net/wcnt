@@ -43,17 +43,17 @@ void const* bpmchange::get_param(paramnames::PAR_TYPE pt) const
 
 stockerrs::ERR_TYPE bpmchange::validate()
 {
-    if (!jwm.get_dparlist().validate(
+    if (!jwm.get_dparlist()->validate(
         this, paramnames::BPM, stockerrs::ERR_RANGE_BPM))
     {
-        *err_msg = jwm.get_paramnames().get_name(paramnames::BPM);
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::BPM);
         invalidate();
         return stockerrs::ERR_RANGE_BPM;
     }
-    if (!jwm.get_dparlist().validate(
+    if (!jwm.get_dparlist()->validate(
         this, paramnames::BAR, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames().get_name(paramnames::BAR);
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::BAR);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -65,9 +65,9 @@ bool bpmchange::done_params = false;
 void bpmchange::create_params()
 {
     if (done_params == true) return;
-    jwm.get_dparlist().add_dobjparam(
+    jwm.get_dparlist()->add_dobjparam(
         dobjnames::SIN_BPM, paramnames::BPM);
-    jwm.get_dparlist().add_dobjparam(
+    jwm.get_dparlist()->add_dobjparam(
         dobjnames::SIN_BPM, paramnames::BAR);
     done_params = true;
 }

@@ -19,47 +19,42 @@
 //  them deleted by the destructor.
 */
 
-class connectorlist
+class connectorlist : public linked_list<connector>
 {
 public:
-    enum DELCON { NO_DELETE_CONNECTIONS };
-    connectorlist();
-    connectorlist(DELCON);
+    connectorlist(){};
+    connectorlist(DESTRUCTION);
     ~connectorlist();
-    connector* goto_first() {
-        return connect = (connector*)
-         (connect_item = connectlist->goto_first())->get_data();
-    }
-    connector* goto_last() {
-        return connect = (connector*)
-         (connect_item = connectlist->goto_last())->get_data();
-    }
-    connector* goto_prev() {
-        return connect = (connector*)
-         (connect_item = connectlist->goto_prev())->get_data();
-    }
-    connector* goto_next() {
-        return connect = (connector*)
-         (connect_item = connectlist->goto_next())->get_data();
-    }
-    connector* goto_connector(connector* rd) {
-        return connect = (connector*)
-         (connect_item = connectlist->find_data(rd))->get_data();
-    }
-    connector* get_connector_by_input(synthmod*, inputnames::IN_TYPE);
-    connector* add_connector(connector* rd);
-    bool delete_connector(connector*);
-    connectorlist* duplicate_connections_for_module(synthmod* from,
-                                                    synthmod* to);
-    void reconnect_output_module_by_name(const char*from, const char*to);
-    void set_delete_connections() { delete_connections = true; }
-    bool make_connections();
 
-private:
-    linkedlist* connectlist;
-    ll_item* connect_item;
-    connector* connect;
-    bool delete_connections;
+    connector* get_connector_by_input(synthmod*, inputnames::IN_TYPE);
+
+    connector* add_connector(connector* rd);
+
+    bool delete_connector(connector*);
+
+    /*
+    // duplicate_connections
+    //  duplicates and adds the connections
+    */
+    bool duplicate_connections(synthmod* from, synthmod* to);
+
+    /*
+    // duplicates_connections_for_module
+    //  duplicates connections into a new list for further processing
+    */
+    linkedlist*
+    duplicate_connections_for_module(synthmod* from, synthmod* to);
+
+    /*
+    // duplicate_connections_for_group
+    //  returns 0 on sucess, or the connector which failed.
+    */
+    connector*
+    duplicate_connections_for_group(char const* from, char const* to);
+
+    void reconnect_output_module_by_name(const char*from, const char*to);
+
+    bool make_connections();
 };
 
 #endif

@@ -1,7 +1,7 @@
 #ifndef MODIFIER_H
 #define MODIFIER_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 class modifier : public synthmod
 {
@@ -21,10 +21,10 @@ public:
 private:
     const double* in_signal1;
     const double* in_signal2;
+    const double* in_bias;
     double out_output;
     FUNC func;
     TYPE type;
-    double bias;
     void create_params();
     static bool done_params;
 };

@@ -10,14 +10,12 @@ dc_offset_remover::dc_offset_remover(char const* uname) :
  input(0), output(0),
  l_descriptor(0), l_inst_handle(0), l_input(0), l_output(0)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_inputlist().add_input(this, inputnames::IN_SIGNAL);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
 }
 
 dc_offset_remover::~dc_offset_remover()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
     if (l_descriptor) l_descriptor->cleanup(l_inst_handle);
     if (l_input)  delete [] l_input;
     if (l_output) delete [] l_output;
@@ -25,11 +23,11 @@ dc_offset_remover::~dc_offset_remover()
 
 void dc_offset_remover::init()
 {
-    ladspa_loader& ll = jwm.get_ladspaloader();
-    ladspa_plug* lp = ll.get_plugin("dc_remove_1207",
+    ladspa_loader* ll = jwm.get_ladspaloader();
+    ladspa_plug* lp = ll->get_plugin("dc_remove_1207",
                                      "dcRemove");
     if (lp == 0) {
-        *err_msg = ll.get_error_msg();
+        *err_msg = ll->get_error_msg();
         invalidate();
         return;
     }

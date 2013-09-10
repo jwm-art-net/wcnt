@@ -3,31 +3,21 @@
 
 #include "wcntsignal.h"
 #include "linkedlist.h"
+#include "duplicate_list_module.h"
 
-class switcher: public synthmod
+class switcher: public synthmod, public linked_list<wcnt_signal>
 {
 public:
     switcher(char const*);
     ~switcher();
+
+    friend synthmod*
+        duplicate_list_module<switcher, wcnt_signal>
+            (switcher* sm, wcnt_signal* _data,
+                const char* uname, synthmod::DUP_IO dupio);
+
     wcnt_signal* add_signal(wcnt_signal* s) {
-        return wcntsig = (wcnt_signal*)
-         (wcntsig_item = wcntsiglist->add_at_tail(s))->get_data();
-    }
-    wcnt_signal* goto_first() {
-        return wcntsig = (wcnt_signal*)
-         (wcntsig_item = wcntsiglist->goto_first())->get_data();
-    }
-    wcnt_signal* goto_last() {
-        return wcntsig = (wcnt_signal*)
-         (wcntsig_item = wcntsiglist->goto_last())->get_data();
-    }
-    wcnt_signal* goto_prev() {
-        return wcntsig = (wcnt_signal*)
-         (wcntsig_item = wcntsiglist->goto_prev())->get_data();
-    }
-    wcnt_signal* goto_next() {
-        return wcntsig = (wcnt_signal*)
-         (wcntsig_item = wcntsiglist->goto_next())->get_data();
+        return add_at_tail(s)->get_data();
     }
     // virtual funcs
     void run();
@@ -48,9 +38,8 @@ private:
     unsigned long xfade_max_samps;
     double xfade_stpsz;
     double xfade_size;
-    linkedlist* wcntsiglist;
-    ll_item* wcntsig_item;
-    wcnt_signal* wcntsig;
+    wcnt_signal** wcntsigs;
+    long sig_ix;
     double const* sig;
     double const* prevsig;
     double zero;// for initial stuff

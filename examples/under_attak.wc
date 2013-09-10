@@ -207,6 +207,7 @@ psquare
     in_phase_trig  pclock out_phase_trig
     in_phase_step  pclock out_phase_step
     in_pwm         pwm1 out_output
+    rate          0.5
     pulse_width   0.5
     pwm_size      0.75
     recycle_mode  off
@@ -308,8 +309,8 @@ wav
     in_right     boost_and_clip out_right
     in_bar       time1 out_bar
     in_bar_trig  time1 out_bar_trig
-
-    data_format  float32 // standard 16bit integer WAV
+    snapshot_mode off
+    data_format  float32
     filename     under_attak.wav
     start_bar    0
     end_bar      8

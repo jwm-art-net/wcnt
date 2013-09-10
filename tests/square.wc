@@ -1,0 +1,177 @@
+wcnt-1.26/jwmsynth
+
+//------------------------------------------------------------------------
+// examples/sinewave.wc
+//
+//      creates 1 second WAV file containg a sinewave running
+//      at the frequency of middle-C
+//
+//------------------------------------------------------------------------
+
+samplerate 44100
+bpm 120
+signature 4/4
+
+timer
+t
+    timings
+        time seconds 0
+        time seconds 45
+    timings
+t
+
+constant_freq lfo1 freq 1.5778 lfo1
+
+wave
+lfosine1
+    in_phase_step lfo1 out_phase_step
+    type sine
+lfosine1
+
+constant_freq lfo1b freq 0.25778 lfo1b
+
+wave
+lfosine1b
+    in_phase_step lfo1b out_phase_step
+    type sine
+lfosine1b
+
+clock
+lfoclock2
+    in_freq_mod1    off
+    freq            0.175
+    freq_mod1_size  1
+lfoclock2
+
+square_wave
+lfosqu2
+    in_phase_trig   lfoclock2 out_phase_trig
+    in_phase_step   lfoclock2 out_phase_step
+    in_pwm          off
+    rate            0.0005
+    pulse_width     0.5
+    pwm_size        0.0
+    recycle_mode    off
+lfosqu2
+
+clock
+clock1
+    in_freq_mod1 lfosqu2 out_output
+    freq 220
+    freq_mod1_size 1.1
+clock1
+
+square_wave
+squ1
+    in_phase_trig   clock1 out_phase_trig
+    in_phase_step   clock1 out_phase_step
+    in_pwm          lfosine1b out_output
+    rate            0.125
+    pulse_width     0.5
+    pwm_size        0.75
+    recycle_mode    off
+squ1
+
+clock
+clock2
+    in_freq_mod1 lfosqu2 out_output
+    freq 330
+    freq_mod1_size 0.9
+clock2
+
+square_wave
+squ2
+    in_phase_trig   clock2 out_phase_trig
+    in_phase_step   clock2 out_phase_step
+    in_pwm          lfosine1 out_output
+    rate            0.125
+    pulse_width     0.5
+    pwm_size        0.75
+    recycle_mode    off
+squ2
+
+constant mbias value 0.75 mbias
+
+modifier
+mod
+    in_signal1 squ1 out_output
+    in_signal2 squ2 out_output
+    in_bias mbias out_output
+    function  mul
+    type      m2
+mod
+
+glame_filter
+hpf
+    in_signal     mod out_output
+    in_freq_mod1  off
+    filter_type     highpass
+    freq            200
+    freq_mod1_size  1
+    stages          1
+hpf
+
+glame_filter
+lpf
+    in_signal     hpf out_output
+    in_freq_mod1  off
+    filter_type     lowpass
+    freq            3000
+    freq_mod1_size  1
+    stages          1
+lpf
+
+echo
+echo
+    in_signal        lpf out_output
+    in_gain_mod      off
+    in_feedback      echo out_wet_output
+    in_feedback_mod  off
+    delay_time         125
+    gain               1
+    gain_mod_size      0
+    feedback           0.8125
+    feedback_mod_size  0
+    wet/dry            0.25
+echo
+
+fader
+faded
+    in_bar      t out_count
+    in_bar_trig t out_trig
+    start_bar      0
+    end_bar        1
+    fade_in_time   10
+    fade_out_time  300
+faded
+
+mono_amp
+amp
+    in_signal   echo out_output
+    in_amp_eg   faded out_output
+    in_amp_mod  off
+    level         1.575
+    amp_mod_size  0
+    clip_level    1
+amp
+
+wavfile_out
+w
+    in_left     amp out_output
+    in_right    amp out_output
+    in_bar      faded out_bar
+    in_bar_trig faded out_trig
+    snapshot_mode on
+    data_format float32
+    filename    square.wav
+    start_bar   0
+    end_bar     1
+w
+
+wcnt_exit
+x
+    in_bar      faded out_bar
+    exit_bar    1
+x
+
+wcnt-1.26/jwmsynth

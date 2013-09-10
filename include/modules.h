@@ -8,7 +8,6 @@
 #include "freqgenerator.h"
 #include "lfoclock.h"
 #include "lfocontroller.h"
-#include "lowpassfilter.h"
 #include "modifier.h"
 #include "noisegenerator.h"
 #include "oscclock.h"
@@ -26,7 +25,6 @@
 #include "randomtrigger.h"
 #include "logictrigger.h"
 #include "switcher.h"
-#include "highpassfilter.h"
 #include "combiner.h"
 #include "nonezero.h"
 // version 1.1000
@@ -68,7 +66,6 @@
 // wcnt-1.26
 #include "difffilter.h"
 #include "impulse.h"
-#include "cosinewave.h"
 #include "orbit.h"
 
 #ifdef WITH_LADSPA // hardcoded ladspa plugin modules
@@ -88,5 +85,12 @@
 #include "constant_freq.h"
 #include "constant_note.h"
 #include "balance.h"
+#include "trigecho.h"
+#include "inspect.h"
+#include "trigcounter.h"
+#include "trigrouter.h"
+#include "groupcontrol.h"
+#include "fader.h"
+#include "sampleclimb.h"
 
 #endif

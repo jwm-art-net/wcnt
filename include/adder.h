@@ -1,7 +1,7 @@
 #ifndef ADDER_H
 #define ADDER_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 class adder : public synthmod
 {

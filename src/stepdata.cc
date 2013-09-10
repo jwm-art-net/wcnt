@@ -52,10 +52,10 @@ void const* step_data::get_param(paramnames::PAR_TYPE dt) const
 
 stockerrs::ERR_TYPE step_data::validate()
 {
-    if (!jwm.get_dparlist().validate(
+    if (!jwm.get_dparlist()->validate(
         this, paramnames::POS, stockerrs::ERR_RANGE_0_1))
     {
-        *err_msg = jwm.get_paramnames().get_name(paramnames::POS);
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::POS);
         invalidate();
         return stockerrs::ERR_RANGE_0_1;
     }
@@ -65,11 +65,11 @@ stockerrs::ERR_TYPE step_data::validate()
 void step_data::create_params()
 {
     if (step_data::done_params == true) return;
-    jwm.get_dparlist().add_dobjparam(
+    jwm.get_dparlist()->add_dobjparam(
         dobjnames::SIN_STEP, paramnames::POS);
-    jwm.get_dparlist().add_dobjparam(
+    jwm.get_dparlist()->add_dobjparam(
         dobjnames::SIN_STEP, paramnames::UPLEVEL);
-    jwm.get_dparlist().add_dobjparam(
+    jwm.get_dparlist()->add_dobjparam(
         dobjnames::SIN_STEP, paramnames::LOLEVEL);
     step_data::done_params = true;
 }

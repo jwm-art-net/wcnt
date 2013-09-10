@@ -22,77 +22,56 @@ sequencer::sequencer(char const* uname) :
  out_transpose(0),
  riff_play_state(OFF), note_play_state(OFF),
  start_bar(0), vel_response(0),
- riffnodelist(0), cur_node(0), riff_node_ptr(0), riff_ptr(0),
- riffnodeitem(0), riff_start_bar(0), riff_pos(0),
+ cur_node(0), riff_node_ptr(0), riff_ptr(0),
+ riff_start_bar(0), riff_pos(0),
  riff_len(0), posconv(0), velrsp_max_samps(0), velrsp_samp(0),
  vel_stpsize(0), start_pending(ON), end_pending(OFF), play_list(0),
  play_item(0), next_in_riff(0), play_note(0), next_note(0), note_ptr(0),
  next_note_on_pos(-1), play_note_off_pos(-1)
 {
-    jwm.get_inputlist().add_input(this, inputnames::IN_BAR);
-    jwm.get_inputlist().add_input(this, inputnames::IN_BAR_TRIG);
-    jwm.get_inputlist().add_input(this, inputnames::IN_POS_STEP_SIZE);
-    jwm.get_inputlist().add_input(this, inputnames::IN_BEATS_PER_BAR);
-    jwm.get_inputlist().add_input(this, inputnames::IN_BEAT_VALUE);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_NOTE_ON_TRIG);
-    jwm.get_outputlist().add_output(this, 
+    remove_groupability();
+    remove_duplicability();
+
+    jwm.get_inputlist()->add_input(this, inputnames::IN_BAR);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_BAR_TRIG);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_POS_STEP_SIZE);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_BEATS_PER_BAR);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_BEAT_VALUE);
+
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_NOTE_ON_TRIG);
+    jwm.get_outputlist()->add_output(this,
                                         outputnames::OUT_NOTE_SLIDE_TRIG);
-    jwm.get_outputlist().add_output(this,
+    jwm.get_outputlist()->add_output(this,
                                         outputnames::OUT_NOTE_OFF_TRIG);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_NOTENAME);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_FREQ);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_VELOCITY);
-    jwm.get_outputlist().add_output(this,
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_NOTENAME);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_FREQ);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_VELOCITY);
+    jwm.get_outputlist()->add_output(this,
                                         outputnames::OUT_VELOCITY_RAMP);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_TRANSPOSE);
-    jwm.get_outputlist().add_output(this,
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_TRANSPOSE);
+    jwm.get_outputlist()->add_output(this,
                                         outputnames::OUT_RIFF_START_TRIG);
-    jwm.get_outputlist().add_output(this,
+    jwm.get_outputlist()->add_output(this,
                                         outputnames::OUT_RIFF_END_TRIG);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_START_TRIG);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_END_TRIG);
-    jwm.get_outputlist().add_output(this,
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_START_TRIG);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_END_TRIG);
+    jwm.get_outputlist()->add_output(this,
                                         outputnames::OUT_RIFF_PLAY_STATE);
-    jwm.get_outputlist().add_output(this,
+    jwm.get_outputlist()->add_output(this,
                                         outputnames::OUT_NOTE_PLAY_STATE);
-    riffnodelist =
-     new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
-    play_list =
-     new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
+    play_list = new linked_list<note_data>;
     create_params();
     create_moddobj();
 }
 
 sequencer::~sequencer()
 {
-    ll_item* tmp = riffnodelist->goto_first();
-    while (tmp) {
-        delete (riff_node*)tmp->get_data();
-        tmp = riffnodelist->goto_next();
-    }
-    delete riffnodelist;
-    tmp = play_list->goto_first();
-    bool del_next = true; // next_note will get deleted even if
-    while (tmp) {         // it was not added to play_list...
-        note_data* tn = (note_data*)tmp->get_data();
-        if (tn == next_note)
-            del_next = false;
-        #ifdef NOTE_EDIT_DEBUG
-        cout << "\nSequencer destructor destroying note:";
-        #endif
-        delete tn;
-        tmp = play_list->goto_next();
-    }
-    delete play_list;
-    if (del_next) {
-        #ifdef NOTE_EDIT_DEBUG
-        cout << "\nSequencer destructor destroying note:";
-        #endif
+    if (next_note
+     && !play_list->find_data(play_list->sneak_first(), next_note))
         delete next_note;
-    }
-    if (out_notename) delete [] out_notename;
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
+    delete play_list;
+    if (out_notename)
+        delete [] out_notename;
 }
 
 void const* sequencer::get_out(outputnames::OUT_TYPE ot) const
@@ -222,12 +201,12 @@ synthmod* sequencer::duplicate_module(const char* uname, DUP_IO dupio)
 
 stockerrs::ERR_TYPE sequencer::validate()
 {
-    if (!jwm.get_paramlist().validate(this,
+    if (!jwm.get_paramlist()->validate(this,
             paramnames::VELOCITY_RESPONSE,
             stockerrs::ERR_NEGATIVE))
     {
         *err_msg =
-         jwm.get_paramnames().get_name(paramnames::VELOCITY_RESPONSE);
+         jwm.get_paramnames()->get_name(paramnames::VELOCITY_RESPONSE);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -244,59 +223,43 @@ stockerrs::ERR_TYPE sequencer::validate()
 
 riff_node* sequencer::add_riff_node(riff_node* rn)
 {
-    riff_node* oldrn = 0;
-    riff_node* insrn = 0;
-    if (rn == NULL)
-        return NULL;
+    if (!rn)
+        return 0;
+    llitem* oldrn_i = find_in_data_or_last_less_than(
+        sneak_first(), rn, &riff_node::get_start_bar);
     short rep = rn->get_repeat();
     short repstr = rn->get_repeat_stripe();
     do{
-        oldrn = lookup_data_match(
-                riffnodelist, rn, &riff_node::get_start_bar);
-        if (oldrn)
-            delete_riff_node(oldrn);
-        insrn = ordered_insert(
-                riffnodelist, rn, &riff_node::get_start_bar);
-        if (!insrn) {
-            return 0;
+        if (oldrn_i) {
+            if (oldrn_i->get_data()->get_start_bar()
+                == rn->get_start_bar())
+            {
+                delete oldrn_i->get_data();
+                oldrn_i->set_data(rn);
+            }
+            else
+                insert_after(oldrn_i, rn);
         }
+        else
+            add_at_tail(rn);
         if (rep > 0)
-            rn = insrn->duplicate_for_bar(
-                                        insrn->get_start_bar() + repstr);
+            rn = rn->duplicate_for_bar(rn->get_start_bar() + repstr);
+        oldrn_i = find_in_data_or_last_less_than(
+            oldrn_i->get_next(), rn, &riff_node::get_start_bar);
         rep--;
     }while (rep >= 0);
-    return insrn;
-}
-
-riff_node* sequencer::add_riff(riffdata* rd, short barpos)
-{
-    if (rd == NULL)
-        return NULL;
-    riff_node* newriffnode = new riff_node(rd, barpos);
-    if (lookup_data_match(riffnodelist,
-                          newriffnode, &riff_node::get_start_bar))
-    { // no more than one riff at any bar.
-        delete newriffnode;
-        return 0;
-    }
-    riff_node* tmp = 
-     ordered_insert(riffnodelist,newriffnode,&riff_node::get_start_bar);
-    if (tmp == NULL) {
-        delete newriffnode;
-        return NULL;
-    }
-    return tmp;
+    return rn;
 }
 
 bool sequencer::delete_riff_node(riff_node* rn)
 {
     if (!rn)
         return false;
-    ll_item* tmp = riffnodelist->find_data(rn);
+    llitem* tmp = find_data(sneak_first(), rn);
     if (!tmp)
         return false;
     delete rn;
-    delete riffnodelist->unlink_item(tmp);
+    delete unlink_item(tmp);
     return true;
 }
 
@@ -336,10 +299,11 @@ note_data* sequencer::posconv_note(note_data* rn)
     return newnote;
 }
 
-void sequencer::init_next_note(ll_item* riff_note_item)
+void sequencer::init_next_note(ll_item<note_data>* riff_note_item)
 {
     if (next_note != 0) {
-        std::cout << "\nProgrammer Error! next_note is not NULL";
+        std::cout << "\nProgrammer Error! in sequencer "
+        << get_username() << " - next_note is set!";
     }
     if (riff_note_item) {
         next_in_riff = riff_note_item;
@@ -380,12 +344,12 @@ void sequencer::run()
             // ***** adjust length of notes still ON *****
             if (note_play_state == ON) {
                 play_note_off_pos -= riff_len;
-                play_item = play_list->goto_first();
+                play_item = play_list->sneak_first();
                 while(play_item) {
-                    note_ptr = (note_data*)play_item->get_data();
+                    note_ptr = play_item->get_data();
                     note_ptr->set_length(
                         note_ptr->get_length() - riff_len);
-                    play_item = play_list->goto_next();
+                    play_item = play_item->get_next();
                 }
             }
             cur_node = riff_node_ptr;
@@ -398,8 +362,7 @@ void sequencer::run()
                 next_note = 0;
             }
             init_next_note(riff_ptr->sneak_first());
-            riff_node_ptr = (riff_node*)
-             (riffnodeitem = riffnodelist->goto_next())->get_data();
+            riff_node_ptr = goto_next();
             if (riff_node_ptr)
                 riff_start_bar = riff_node_ptr->get_start_bar()
                     - start_bar;
@@ -442,14 +405,14 @@ void sequencer::run()
         if (note_play_state == ON) {
             if (riff_pos >= play_note_off_pos) {
                 // delete all notes in playlist that have finished...
-                play_item = play_list->goto_first();
+                play_item = play_list->sneak_first();
                 while(play_item) {
                     note_ptr = (note_data*)play_item->get_data();
                     if (riff_pos >= note_ptr->get_length()) {
-                        ll_item* n = play_item->get_next();
+                        ll_item<note_data>* n = play_item->get_next();
                         play_list->unlink_item(play_item);
                         #ifdef NOTE_EDIT_DEBUG
-                        cout << "\nSequencer destroying note:";
+                        std::cout << "\nSequencer destroying note:";
                         #endif
                         delete note_ptr;
                         delete play_item;
@@ -458,7 +421,7 @@ void sequencer::run()
                     else
                         play_item = play_item->get_next();
                 }
-                play_item = play_list->goto_last();
+                play_item = play_list->sneak_last();
                 if (play_item == 0) {
                     note_play_state = OFF;
                     out_note_off_trig = ON;
@@ -503,9 +466,9 @@ void sequencer::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::SEQUENCER, paramnames::START_BAR);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::SEQUENCER, paramnames::VELOCITY_RESPONSE);
     done_params = true;
 }
@@ -517,7 +480,7 @@ void sequencer::create_moddobj()
     if (done_moddobj == true)
         return;
     moddobj* mdbj;
-    mdbj = jwm.get_moddobjlist().add_moddobj(
+    mdbj = jwm.get_moddobjlist()->add_moddobj(
         synthmodnames::SEQUENCER, dobjnames::LST_TRACK);
     mdbj->get_dobjdobjlist()->add_dobjdobj(
         dobjnames::LST_TRACK, dobjnames::SIN_RIFFNODE);

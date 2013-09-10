@@ -1,7 +1,7 @@
 #ifndef FREQGENERATOR_H
 #define FREQGENERATOR_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 class freq_generator : public synthmod
 {

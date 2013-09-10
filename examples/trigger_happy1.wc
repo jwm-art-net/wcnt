@@ -34,6 +34,7 @@ squ_wave1
     in_phase_trig   clock1 out_phase_trig
     in_phase_step   clock1 out_phase_step
     in_pwm          off
+    rate          0.3
     pulse_width   0.5
     pwm_size      0.0
     recycle_mode  off
@@ -151,6 +152,7 @@ wav1
     in_right    amp1 out_output
     in_bar      t1 out_count
     in_bar_trig t1 out_trig
+    snapshot_mode off
     data_format pcm16 //float32
     filename    trigger_happy1.wav
     start_bar   0

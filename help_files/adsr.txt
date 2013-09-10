@@ -1,5 +1,5 @@
 A dual-shaped implimentation of the classic ADSR envelope allowing the
-shape of the envelope to change in response to it's input in_velocity.
+output shape of the envelope to respond to the in_velocity input.
 How you impliment this is up to you. The lower shape could be quieter
 than the upper shape, or the upper shape might have longer duration for
 example.
@@ -15,15 +15,21 @@ in_velocity are interpreted to cause the upper or lower shapes to be
 created. Values from in_velocity between up_thresh and lo_thresh will
 create in-between shapes.
 
+The adsr has two trigger inputs. in_note_on_trig causes the envelope
+to begin it's attack stage, and in_note_off_trig causes the release
+stage to begin if the envelope has already begun.
+
+Usage of in_note_off_trig can be set to off so the envelope's release
+stage is never triggered, but the sustain_state parameter should be set
+off in this case.
+
 start_level will normally be set to 0.0 if the adsr is to be used for
-controlling amplitude. zero_retrigger should also be off in this case.
+controlling amplitude. zero_retrigger should also be off in this case,
+for when the envelope is re-triggered before it has finished.
 
-Sometimes while using a slow attack time, in_note_off_trig triggers
-while the envelope's levels are still building up, such that when the
-release stage starts, the levels increase rather than decrease as
-intended. By using release_is_ratio, this behaviour can be corrected.
-
-If you don't use in_note_off_trig, then set sustain_state to off to
-avoid infinite length sustain sections.
+When using very slow attack times, the input in_note_off_trig might
+trigger during the attack stage before the levels have built up. By
+setting release_is_ratio to on, you can ensure the release stage is
+always quieter than any previous stage.
 
 See also: mono_amp stereo_amp multiplier

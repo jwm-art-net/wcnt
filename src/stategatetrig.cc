@@ -8,15 +8,13 @@ stategatetrig::stategatetrig(char const* uname) :
  synthmod(synthmodnames::STATEGATETRIG, uname),
  in_trig(0), in_state(0), out_trig(OFF)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_TRIG);
-    jwm.get_inputlist().add_input(this, inputnames::IN_TRIG);
-    jwm.get_inputlist().add_input(this, inputnames::IN_STATE);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_TRIG);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_TRIG);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_STATE);
 }
 
 stategatetrig::~stategatetrig()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
 }
 
 void const* stategatetrig::get_out(outputnames::OUT_TYPE ot) const

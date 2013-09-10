@@ -4,31 +4,28 @@
 #include "../include/modoutputlist.h"
 #include "../include/modinputlist.h"
 #include "../include/modparamlist.h"
-#include "../include/synthmodulelist.h"
+#include "../include/synthmodlist.h"
 #include "../include/moddobjlist.h"
 #include "../include/dobjlist.h"
 #include "../include/dobjmod.h"
 #include "../include/dobjdobjlist.h"
-
-#include <iostream>
+#include "../include/duplicate_list_module.h"
 
 trigswitcher::trigswitcher(char const* uname) :
  synthmod(synthmodnames::TRIGSWITCHER, uname),
- in_trig(0), out_trig(OFF), wcnttriglist(0), wcnttrig_item(0),
- wcnttrig(0), trig(0)
+ linkedlist(MULTIREF_ON, PRESERVE_DATA),
+ in_trig(0), out_trig(OFF),
+ wcnttrigs(0), trig_ix(0), trig(0)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_TRIG);
-    jwm.get_inputlist().add_input(this, inputnames::IN_TRIG);
-    wcnttriglist =
-        new linkedlist(linkedlist::MULTIREF_ON, linkedlist::NO_NULLDATA);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_TRIG);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_TRIG);
     create_moddobj();
 }
 
 trigswitcher::~trigswitcher()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
-    delete wcnttriglist;
+    if (wcnttrigs)
+        delete [] wcnttrigs;
 }
 
 void const* trigswitcher::get_out(outputnames::OUT_TYPE ot) const
@@ -60,64 +57,7 @@ void const* trigswitcher::get_in(inputnames::IN_TYPE it) const
 
 synthmod* trigswitcher::duplicate_module(const char* uname, DUP_IO dupio)
 {
-    trigswitcher* dup = new trigswitcher(uname);
-    if (dupio == AUTO_CONNECT)
-        duplicate_inputs_to(dup);
-    duplicate_params_to(dup);
-
-    const char* const current_grp = get_groupname(get_username());
-    const char* const new_grp = get_groupname(uname);
-    bool regroup_wcnt_trigs = false;
-    if (current_grp && new_grp) {
-        if (strcmp(current_grp, new_grp) != 0) {
-            regroup_wcnt_trigs = true;
-        }
-    }
-    synthmodlist& modlist = jwm.get_modlist();
-    if (jwm.is_verbose())
-        std::cout << "\n----------\nadding to duplicated trig_switcher "
-                                                                << uname;
-    goto_first();
-    while (wcnttrig) {
-        const char* const trig_grp =
-            get_groupname(wcnttrig->get_username());
-        synthmod* trig_to_add = wcnttrig;
-        if (trig_grp && regroup_wcnt_trigs == true) {
-            if (strcmp(trig_grp, current_grp) == 0) {
-                const char* const grptrigname =
-                        set_groupname(new_grp, wcnttrig->get_username());
-                synthmod* grptrig =
-                            modlist.get_synthmod_by_name(grptrigname);
-                if (grptrig) {
-                    if (grptrig->get_module_type() ==
-                                        synthmodnames::WCNTTRIGGER)
-                        trig_to_add = grptrig;
-                    else {
-                        std::cout << "\nin switcher::duplicate, an "
-                            "attempt to fetch a wcnt_trigger named "
-                            << grptrigname << "resulted in finding "
-                            << grptrig->get_username()
-                            << " which is not a wcnt_trigger.";
-                    }
-                }
-                else if (jwm.is_verbose()) {
-                    std::cout << "\nWarning! trig_switcher " << uname
-                        << " was expecting to find " << grptrigname
-                        << " but could not.\nCheck the order of grouping"
-                           " in original group definition.";
-                }
-                delete [] grptrigname;
-            }
-            delete [] trig_grp;
-        }
-        dup->add_trigger((wcnt_trigger*)trig_to_add);
-        if (jwm.is_verbose())
-            std::cout << "\nadded " << trig_to_add->get_username();
-        goto_next();
-    }
-    delete [] current_grp;
-    delete [] new_grp;
-    return dup;
+    return duplicate_list_module(this, goto_first(), uname, dupio);
 }
 
 stockerrs::ERR_TYPE trigswitcher::validate()
@@ -151,7 +91,7 @@ dobj* trigswitcher::add_dobj(dobj* dbj)
             *err_msg += " into trigswitcher";
             return 0;
         }
-        jwm.get_dobjlist().add_dobj(dbj);
+        jwm.get_dobjlist()->add_dobj(dbj);
         return dbj;
     }
     *err_msg = "\n***major error*** attempt made to add an ";
@@ -162,16 +102,20 @@ dobj* trigswitcher::add_dobj(dobj* dbj)
 
 void trigswitcher::init()
 {
-    goto_first();
-    trig = wcnttrig->get_out_trig();
+    if (!(wcnttrigs = move_to_array(this))){
+        invalidate();
+        return;
+    }
+    trig = wcnttrigs[trig_ix = 0]->get_out_trig();
 }
 
 void trigswitcher::run()
 {
     if (*in_trig == ON) {
-        if (!(wcnttrig = goto_next()))
-            wcnttrig = goto_first();
-        trig = wcnttrig->get_out_trig();
+        trig_ix++;
+        if (trig_ix == get_count())
+            trig_ix = 0;
+        trig = wcnttrigs[trig_ix]->get_out_trig();
     }
     out_trig = *trig;
 }
@@ -183,7 +127,7 @@ void trigswitcher::create_moddobj()
     if (done_moddobj == true)
         return;
     moddobj* mdbj;
-    mdbj = jwm.get_moddobjlist().add_moddobj(
+    mdbj = jwm.get_moddobjlist()->add_moddobj(
         synthmodnames::TRIGSWITCHER, dobjnames::LST_TRIGGERS);
     mdbj->get_dobjdobjlist()->add_dobjdobj(
         dobjnames::LST_TRIGGERS, dobjnames::DOBJ_SYNTHMOD);

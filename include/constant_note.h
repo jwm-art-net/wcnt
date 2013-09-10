@@ -1,7 +1,7 @@
 #ifndef CONSTANT_NOTE_H
 #define CONSTANT_NOTE_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 #include "jwm_init.h"
 
 class constant_note : public synthmod
@@ -17,7 +17,7 @@ public:
     stockerrs::ERR_TYPE validate();
 
 private:
-    char note[jwm_init::note_array_size]; /* is param and output */
+    char* note; /* is param and output */
     double out_freq;
     double out_phase_step;
     void set_note(const char*);

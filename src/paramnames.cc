@@ -234,7 +234,22 @@ const paramnames::param_data paramnames::data[LAST] =
     { WAVE_SHAPE_TYPE,  "shape_type",           iocat::FIX_STR },
     { INVERT_ALT,       "invert_alt",           iocat::STATE   },
     { SYNC_SHAPE,       "sync_shape",           iocat::STATE   },
-    { MODIFIER_TYPE,    "type",                 iocat::FIX_STR }
+    { MODIFIER_TYPE,    "type",                 iocat::FIX_STR },
+    { SEND_INPUT_OUT,   "send_input_out",       iocat::STATE   },
+    /* inspect module's bs */
+    { INSPECT_DF_MSG,   "_double_float_msg_",   iocat::STRING  },
+    { INSPECT_SI_MSG,   "_short_int_msg_",      iocat::STRING  },
+    { INSPECT_UL_MSG,   "_long_int_msg_",       iocat::STRING  },
+    { INSPECT_ST_MSG,   "_state_msg_",          iocat::STRING  },
+    { INSPECT_STR_MSG,  "_string_msg_",         iocat::STRING  },
+    { PRE_COUNT,        "pre_count",            iocat::SHORT   },
+    { WRAP,             "wrap",                 iocat::STATE   },
+    { GROUP_NAME,       "group_name",           iocat::STRING  },
+    { FADE_IN_TIME,     "fade_in_time",         iocat::DOUBLE  },
+    { FADE_OUT_TIME,    "fade_out_time",        iocat::DOUBLE  },
+    { RATE,             "rate",                 iocat::DOUBLE  },
+    { SNAPSHOT_MODE,    "snapshot_mode",        iocat::STATE   },
+    { DROP_CHECK_RANGE, "drop_check_range",     iocat::SHORT   }
 };
 
 #endif

@@ -15,19 +15,17 @@ onofftrig::onofftrig(char const* uname) :
  attack_level(0.0), release_level(0.0), check_levels(OFF), 
  attack_samps(0), release_samps(0), do_attack(true)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_TRIG);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_NOT_TRIG);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_ATTACK_STATE);
-    jwm.get_outputlist().add_output(this,
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_TRIG);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_NOT_TRIG);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_ATTACK_STATE);
+    jwm.get_outputlist()->add_output(this,
         outputnames::OUT_RELEASE_STATE);
-    jwm.get_inputlist().add_input(this, inputnames::IN_SIGNAL);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
     create_params();
 }
 
 onofftrig::~onofftrig()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
 }
 
 void const* onofftrig::get_out(outputnames::OUT_TYPE ot) const
@@ -103,43 +101,43 @@ void const* onofftrig::get_param(paramnames::PAR_TYPE pt) const
 
 stockerrs::ERR_TYPE onofftrig::validate()
 {
-    modparamlist& pl = jwm.get_paramlist();
-    const paramnames& pns = jwm.get_paramnames();
-    if (!pl.validate(this, paramnames::ATTACK_TIME,
+    modparamlist* pl = jwm.get_paramlist();
+    const paramnames* pns = jwm.get_paramnames();
+    if (!pl->validate(this, paramnames::ATTACK_TIME,
             stockerrs::ERR_NEG_ZERO))
     {
-        *err_msg = pns.get_name(paramnames::ATTACK_TIME);
+        *err_msg = pns->get_name(paramnames::ATTACK_TIME);
         invalidate();
         return stockerrs::ERR_NEG_ZERO;
     }
-    if (!pl.validate(this, paramnames::ATTACK_LEVEL,
+    if (!pl->validate(this, paramnames::ATTACK_LEVEL,
             stockerrs::ERR_NEG_ZERO))
     {
-        *err_msg = pns.get_name(paramnames::ATTACK_LEVEL);
+        *err_msg = pns->get_name(paramnames::ATTACK_LEVEL);
         invalidate();
         return stockerrs::ERR_NEG_ZERO;
     }
-    if (!pl.validate(this, paramnames::RELEASE_TIME,
+    if (!pl->validate(this, paramnames::RELEASE_TIME,
             stockerrs::ERR_NEG_ZERO))
     {
-        *err_msg = pns.get_name(paramnames::RELEASE_TIME);
+        *err_msg = pns->get_name(paramnames::RELEASE_TIME);
         invalidate();
         return stockerrs::ERR_NEG_ZERO;
     }
-    if (!pl.validate(this, paramnames::RELEASE_LEVEL,
+    if (!pl->validate(this, paramnames::RELEASE_LEVEL,
             stockerrs::ERR_NEG_ZERO))
     {
-        *err_msg = pns.get_name(paramnames::RELEASE_LEVEL);
+        *err_msg = pns->get_name(paramnames::RELEASE_LEVEL);
         invalidate();
         return stockerrs::ERR_NEG_ZERO;
     }
     if (check_levels == ON && attack_level <= release_level) {
         *err_msg = "when ";
-        *err_msg += pns.get_name(paramnames::CHECK_LEVELS);
+        *err_msg += pns->get_name(paramnames::CHECK_LEVELS);
         *err_msg += " is set on, ";
-        *err_msg += pns.get_name(paramnames::ATTACK_LEVEL);
+        *err_msg += pns->get_name(paramnames::ATTACK_LEVEL);
         *err_msg += " must be higher than ";
-        *err_msg += pns.get_name(paramnames::RELEASE_LEVEL);
+        *err_msg += pns->get_name(paramnames::RELEASE_LEVEL);
         invalidate();
         return stockerrs::ERR_ERROR;
     }
@@ -198,15 +196,15 @@ void onofftrig::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::ONOFFTRIG, paramnames::ATTACK_TIME);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::ONOFFTRIG, paramnames::ATTACK_LEVEL);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::ONOFFTRIG, paramnames::RELEASE_TIME);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::ONOFFTRIG, paramnames::RELEASE_LEVEL);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::ONOFFTRIG, paramnames::CHECK_LEVELS);
     done_params = true;
 }

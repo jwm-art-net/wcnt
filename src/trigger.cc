@@ -13,16 +13,14 @@ trigger::trigger(char const* uname) :
  in_signal(0), out_trig(OFF), out_not_trig(OFF), out_wait_state(OFF),
  delay_time(0.0), trigger_level(0.0), delay_samps(0)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_TRIG);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_WAIT_STATE);
-    jwm.get_inputlist().add_input(this, inputnames::IN_SIGNAL);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_TRIG);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_WAIT_STATE);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
     create_params();
 }
 
 trigger::~trigger()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
 }
 
 void const* trigger::get_out(outputnames::OUT_TYPE ot) const
@@ -81,19 +79,19 @@ void const* trigger::get_param(paramnames::PAR_TYPE pt) const
 
 stockerrs::ERR_TYPE trigger::validate()
 {
-    if (!jwm.get_paramlist().validate(this, paramnames::DELAY_TIME,
+    if (!jwm.get_paramlist()->validate(this, paramnames::DELAY_TIME,
             stockerrs::ERR_NEGATIVE))
     {
         *err_msg =
-         jwm.get_paramnames().get_name(paramnames::DELAY_TIME);
+         jwm.get_paramnames()->get_name(paramnames::DELAY_TIME);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
-    if (!jwm.get_paramlist().validate(this, paramnames::TRIGGER_LEVEL,
+    if (!jwm.get_paramlist()->validate(this, paramnames::TRIGGER_LEVEL,
             stockerrs::ERR_NEG_ZERO))
     {
         *err_msg =
-         jwm.get_paramnames().get_name(paramnames::TRIGGER_LEVEL);
+         jwm.get_paramnames()->get_name(paramnames::TRIGGER_LEVEL);
         invalidate();
         return stockerrs::ERR_NEG_ZERO;
     }
@@ -132,9 +130,9 @@ void trigger::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
      synthmodnames::TRIGGER, paramnames::DELAY_TIME);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
      synthmodnames::TRIGGER, paramnames::TRIGGER_LEVEL);
     done_params = true;
 }

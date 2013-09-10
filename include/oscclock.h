@@ -1,7 +1,7 @@
 #ifndef OSCCLOCK_H
 #define OSCCLOCK_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 /*
     (v.1.128)

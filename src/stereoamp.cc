@@ -12,19 +12,17 @@ stereo_amp::stereo_amp(char const* uname) :
  left_level(0), right_level(0), amp_modsize(0), clip_level(0),
  left(0), right(0)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_LEFT);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_RIGHT);
-    jwm.get_inputlist().add_input(this, inputnames::IN_LEFT);
-    jwm.get_inputlist().add_input(this, inputnames::IN_RIGHT);
-    jwm.get_inputlist().add_input(this, inputnames::IN_EG);
-    jwm.get_inputlist().add_input(this, inputnames::IN_AMP_MOD);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_LEFT);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_RIGHT);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_LEFT);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_RIGHT);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_EG);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_AMP_MOD);
     create_params();
 }
 
 stereo_amp::~stereo_amp()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
 }
 
 void const* stereo_amp::get_out(outputnames::OUT_TYPE ot) const
@@ -96,19 +94,19 @@ void const* stereo_amp::get_param(paramnames::PAR_TYPE pt) const
 
 stockerrs::ERR_TYPE stereo_amp::validate()
 {
-    if (!jwm.get_paramlist().validate(this, paramnames::AMP_MODSIZE,
+    if (!jwm.get_paramlist()->validate(this, paramnames::AMP_MODSIZE,
             stockerrs::ERR_RANGE_0_1))
     {
         *err_msg =
-         jwm.get_paramnames().get_name(paramnames::AMP_MODSIZE);
+         jwm.get_paramnames()->get_name(paramnames::AMP_MODSIZE);
         invalidate();
         return stockerrs::ERR_RANGE_0_1;
     }
-    if (!jwm.get_paramlist().validate(this, paramnames::CLIP_LEVEL,
+    if (!jwm.get_paramlist()->validate(this, paramnames::CLIP_LEVEL,
             stockerrs::ERR_NEG_ZERO))
     {
         *err_msg =
-         jwm.get_paramnames().get_name(paramnames::CLIP_LEVEL);
+         jwm.get_paramnames()->get_name(paramnames::CLIP_LEVEL);
         invalidate();
         return stockerrs::ERR_NEG_ZERO;
     }
@@ -139,13 +137,13 @@ void stereo_amp::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::STEREOAMP, paramnames::LEFT_LEVEL);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::STEREOAMP, paramnames::RIGHT_LEVEL);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::STEREOAMP, paramnames::AMP_MODSIZE);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
      	synthmodnames::STEREOAMP, paramnames::CLIP_LEVEL);
     done_params = true;
 }

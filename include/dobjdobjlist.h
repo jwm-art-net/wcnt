@@ -4,41 +4,28 @@
 
 #include "linkedlist.h"
 #include "dobjnames.h"
+#include "dobjdobj.h"
 
-class dobjdobj;
-
+/*
 // good name for a class I think, some may find it ugly, but beauty is
 // in the eye of the beholder. that's what I keep telling myself anyway.
+*/
 
-class dobjdobjlist
+class dobjdobjlist : public linked_list<dobjdobj>
 {
-public:
-    dobjdobjlist();
-    ~dobjdobjlist();
-    dobjdobj* add_dobjdobj(dobjdobj*);
+ public:
+    dobjdobjlist(){};
+    dobjdobjlist(DESTRUCTION d): linkedlist(MULTIREF_OFF, d) {};
+
+
+    dobjdobj* add_dobjdobj(dobjdobj* dd) {
+        return add_at_tail(dd)->get_data();
+    }
+
     dobjdobj* add_dobjdobj(dobjnames::DOBJ_TYPE, dobjnames::DOBJ_TYPE);
-    dobjdobj* goto_first() { 
-        return dobj_dobj = (dobjdobj*)
-         (dobjdobj_item = dobjdobj_list->goto_first())->get_data();
-    }
-    dobjdobj* goto_last() {
-        return dobj_dobj = (dobjdobj*)
-         (dobjdobj_item = dobjdobj_list->goto_last())->get_data();
-    }
-    dobjdobj* goto_prev() {
-        return dobj_dobj = (dobjdobj*)
-         (dobjdobj_item = dobjdobj_list->goto_prev())->get_data();
-    }
-    dobjdobj* goto_next() {
-        return dobj_dobj = (dobjdobj*)
-         (dobjdobj_item = dobjdobj_list->goto_next())->get_data();
-    }
+
     dobjdobjlist* get_dobjdobjlist_for_dobjtype(dobjnames::DOBJ_TYPE);
     dobjdobjlist* get_dobjdobjlist_of_sprogs(dobjnames::DOBJ_TYPE);
-private:
-    linkedlist* dobjdobj_list;
-    ll_item* dobjdobj_item;
-    dobjdobj* dobj_dobj;
 };
 
 #endif

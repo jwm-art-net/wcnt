@@ -11,26 +11,16 @@ delay::delay(char const* uname) :
  gain_modsize(0), wetdry(0), output(0), filter(0), filterarraymax(0),
  fpos(0), filtertotal(0), gainamount(0)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_inputlist().add_input(this, inputnames::IN_SIGNAL);
-    jwm.get_inputlist().add_input(this, inputnames::IN_GAIN_MOD);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_GAIN_MOD);
     create_params();
 }
 
 delay::~delay()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
     if (filter)
         delete [] filter;
-}
-
-void delay::init()
-{
-    filterarraymax = (long)((delay_time * jwm.samplerate()) / 1000);
-    filter = new double[filterarraymax];
-    for (long i = 0; i < filterarraymax; i++) filter[i] = 0;
-    fpos = filterarraymax - 1;
 }
 
 void const* delay::get_out(outputnames::OUT_TYPE ot) const
@@ -97,37 +87,49 @@ void const* delay::get_param(paramnames::PAR_TYPE pt) const
 
 stockerrs::ERR_TYPE delay::validate()
 {
-    modparamlist& pl = jwm.get_paramlist();
-    if (!pl.validate(this, paramnames::DELAY_TIME,
+    modparamlist* pl = jwm.get_paramlist();
+    if (!pl->validate(this, paramnames::DELAY_TIME,
             stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames().get_name(paramnames::DELAY_TIME);
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::DELAY_TIME);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
-    if (!pl.validate(this, paramnames::GAIN,
+    if (!pl->validate(this, paramnames::GAIN,
             stockerrs::ERR_RANGE_M1_1))
     {
-        *err_msg = jwm.get_paramnames().get_name(paramnames::GAIN);
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::GAIN);
         invalidate();
         return stockerrs::ERR_RANGE_M1_1;
     }
-    if (!pl.validate(this, paramnames::GAIN_MODSIZE,
+    if (!pl->validate(this, paramnames::GAIN_MODSIZE,
             stockerrs::ERR_RANGE_0_1))
     {
         *err_msg
-         = jwm.get_paramnames().get_name(paramnames::GAIN_MODSIZE);
+         = jwm.get_paramnames()->get_name(paramnames::GAIN_MODSIZE);
         invalidate();
         return stockerrs::ERR_RANGE_0_1;
     }
-    if (!pl.validate(this, paramnames::WETDRY,
+    if (!pl->validate(this, paramnames::WETDRY,
             stockerrs::ERR_RANGE_0_1))
     {
-        *err_msg = jwm.get_paramnames().get_name(paramnames::WETDRY);
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::WETDRY);
         invalidate();
         return stockerrs::ERR_RANGE_0_1;
     }
     return stockerrs::ERR_NO_ERROR;
+}
+
+void delay::init()
+{
+    filterarraymax = (long)((delay_time * jwm.samplerate()) / 1000);
+    filter = new double[filterarraymax];
+    if (!filter){
+        invalidate();
+        return;
+    }
+    for (long i = 0; i < filterarraymax; i++) filter[i] = 0;
+    fpos = filterarraymax - 1;
 }
 
 void delay::run()
@@ -151,13 +153,13 @@ void delay::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
      synthmodnames::DELAY, paramnames::DELAY_TIME);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
      synthmodnames::DELAY, paramnames::GAIN);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
      synthmodnames::DELAY, paramnames::GAIN_MODSIZE);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
      synthmodnames::DELAY, paramnames::WETDRY);
     done_params = true;
 }

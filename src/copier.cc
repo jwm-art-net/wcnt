@@ -1,8 +1,8 @@
 #ifndef COPIER_H
 #include "../include/copier.h"
 #include "../include/dobjlist.h"
-#include "../include/synthmodule.h"
-#include "../include/synthmodulelist.h"
+#include "../include/synthmod.h"
+#include "../include/synthmodlist.h"
 #include "../include/groupnames.h"
 #include "../include/jwm_globals.h"
 #include "../include/dobjparamlist.h"
@@ -29,9 +29,9 @@ bool copier::set_from_name(const char* name)
         from_name = new char[strlen(name) + 1];
         strcpy(from_name, name); // copy to from_name.
     }
-    if ((from_dobj = jwm.get_dobjlist().get_dobj_by_name(name)))
+    if ((from_dobj = jwm.get_dobjlist()->get_dobj_by_name(name)))
         return true;
-    if ((from_mod = jwm.get_modlist().get_synthmod_by_name(name)))
+    if ((from_mod = jwm.get_modlist()->get_synthmod_by_name(name)))
         return true;
     return false;
 }
@@ -43,12 +43,12 @@ bool copier::set_to_name(const char* name)
         to_name = new char[strlen(name) + 1];
         strcpy(to_name, name); // copy to to_name
     }
-    if (strcmp(name, jwm.get_dobjnames().get_name(
+    if (strcmp(name, jwm.get_dobjnames()->get_name(
             dobjnames::LST_EDITS)) == 0)
         return false;
-    if (jwm.get_dobjlist().get_dobj_by_name(name))
+    if (jwm.get_dobjlist()->get_dobj_by_name(name))
         return false;
-    if (jwm.get_modlist().get_synthmod_by_name(name))
+    if (jwm.get_modlist()->get_synthmod_by_name(name))
         return false;
     return true;
 }
@@ -68,7 +68,7 @@ bool copier::set_param(paramnames::PAR_TYPE pt, void* data)
         }
         return true;
     case paramnames::COPYTO: {
-        const char* const grpname = 
+        const char* const grpname =
             get_groupname((const char*)data);
         if (grpname) {
             delete [] grpname;
@@ -90,7 +90,7 @@ bool copier::set_param(paramnames::PAR_TYPE pt, void* data)
             *err_msg += (const char*)data;
             *err_msg += " because the name ";
             *err_msg += (const char*)data;
-            if (strcmp(to_name, jwm.get_dobjnames().get_name(
+            if (strcmp(to_name, jwm.get_dobjnames()->get_name(
                     dobjnames::LST_EDITS))==0)
                 *err_msg += " is reserved.";
             else
@@ -128,7 +128,7 @@ stockerrs::ERR_TYPE copier::validate()
             *err_msg = *synthmod::get_error_msg();
             return stockerrs::ERR_ERROR;
         }
-        if (!jwm.get_modlist().add_module(to_mod)) {
+        if (!jwm.get_modlist()->add_module(to_mod)) {
             *err_msg = "\ncould not add module ";
             *err_msg += to_mod->get_username();
             *err_msg += " copied from ";
@@ -141,7 +141,7 @@ stockerrs::ERR_TYPE copier::validate()
     else if (from_dobj) {
         if (!(to_dobj = from_dobj->duplicate_dobj(to_name)))
             return stockerrs::ERR_ERROR;
-        jwm.get_dobjlist().add_dobj(to_dobj);
+        jwm.get_dobjlist()->add_dobj(to_dobj);
         return stockerrs::ERR_NO_ERROR;
     }
     return stockerrs::ERR_ERROR;
@@ -150,9 +150,9 @@ stockerrs::ERR_TYPE copier::validate()
 void copier::create_params()
 {
     if (done_params == true) return;
-    jwm.get_dparlist().add_dobjparam(
+    jwm.get_dparlist()->add_dobjparam(
         dobjnames::DEF_COPIER, paramnames::COPYFROM);
-    jwm.get_dparlist().add_dobjparam(
+    jwm.get_dparlist()->add_dobjparam(
         dobjnames::DEF_COPIER, paramnames::COPYTO);
     done_params = true;
 }

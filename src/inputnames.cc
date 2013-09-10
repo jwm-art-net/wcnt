@@ -101,5 +101,19 @@ const inputnames::input_data inputnames::data[IN_LAST] =
     { IN_SIGNAL1,           "in_signal1",           iocat::DOUBLE  },
     { IN_SIGNAL2,           "in_signal2",           iocat::DOUBLE  },
     #endif
+    /* inspect module's bs */
+    { IN__DF,               "_in_double_float_",      iocat::DOUBLE  },
+    { IN__DF_TRIG,          "_in_double_float_trig_", iocat::TRIG    },
+    { IN__SI,               "_in_short_int_",         iocat::SHORT   },
+    { IN__SI_TRIG,          "_in_short_int_trig_",    iocat::TRIG    },
+    { IN__UL,               "_in_unsigned_long_",     iocat::ULONG   },
+    { IN__UL_TRIG,          "_in_unsigned_long_trig_",iocat::TRIG    },
+    { IN__ST,               "_in_state_",             iocat::STATE   },
+    { IN__ST_TRIG,          "_in_state_trig_",        iocat::TRIG    },
+    { IN__STR,              "_in_string_",            iocat::STRING  },
+    { IN__STR_TRIG,         "_in_string_trig_",       iocat::TRIG    },
+    { IN_RESET_TRIG,        "in_reset_trig",        iocat::TRIG    },
+    { IN_COUNT,             "in_count",             iocat::SHORT   },
+    { IN_BIAS,              "in_bias",              iocat::DOUBLE  }
 };
 #endif

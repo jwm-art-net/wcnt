@@ -1,7 +1,7 @@
 #ifndef LFOCONTROLLER_H
 #define LFOCONTROLLER_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 class lfo_controller : public synthmod
 {

@@ -1,7 +1,7 @@
 #ifndef CONSTANT_FREQ_H
 #define CONSTANT_FREQ_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 class constant_freq : public synthmod
 {

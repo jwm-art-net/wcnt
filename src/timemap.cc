@@ -10,206 +10,152 @@
 timemap::timemap(char const* uname) :
  synthmod(synthmodnames::TIMEMAP, uname),
  out_bar(0), out_pos_in_bar(0), out_pos_step_size(0), out_bpm(0.0),
- out_sample_total(0), out_sample_in_bar(0), bpm_item(0), bpm_map(0),
- currentbpm(0), targetbpm(0), bpmsampletot(0), bpmchangesamp(0),
+ out_sample_total(0), out_sample_in_bar(0),
+ bpm_map(0), meter_map(0),
+ currentbpm(0), targetbpm(0),
+ currentmeter(0),
+ bpmsampletot(0), bpmchangesamp(0),
  bpmchange_pos(0), bpmrampsize(0), bpmchange_ratio(0), targbpm(0),
  pos_in_bar(0), bpmchange_notelen(0), bpmchangebar(0)
 {
-    jwm.get_outputlist().add_output(this,outputnames::OUT_BPM);
-    jwm.get_outputlist().add_output(this,outputnames::OUT_BAR);
-    jwm.get_outputlist().add_output(this,outputnames::OUT_BAR_TRIG);
-    jwm.get_outputlist().add_output(this,outputnames::OUT_POS_IN_BAR);
-    jwm.get_outputlist().add_output(this,outputnames::OUT_POS_STEP_SIZE);
-    jwm.get_outputlist().add_output(this,outputnames::OUT_SAMPLE_TOTAL);
-    jwm.get_outputlist().add_output(this,outputnames::OUT_SAMPLE_IN_BAR);
-    jwm.get_outputlist().add_output(this,outputnames::OUT_BEATS_PER_BAR);
-    jwm.get_outputlist().add_output(this,outputnames::OUT_BEAT_VALUE);
-    jwm.get_outputlist().add_output(this,
+    remove_groupability();
+    remove_duplicability();
+    jwm.get_outputlist()->add_output(this,outputnames::OUT_BPM);
+    jwm.get_outputlist()->add_output(this,outputnames::OUT_BAR);
+    jwm.get_outputlist()->add_output(this,outputnames::OUT_BAR_TRIG);
+    jwm.get_outputlist()->add_output(this,outputnames::OUT_POS_IN_BAR);
+    jwm.get_outputlist()->add_output(this,outputnames::OUT_POS_STEP_SIZE);
+    jwm.get_outputlist()->add_output(this,outputnames::OUT_SAMPLE_TOTAL);
+    jwm.get_outputlist()->add_output(this,outputnames::OUT_SAMPLE_IN_BAR);
+    jwm.get_outputlist()->add_output(this,outputnames::OUT_BEATS_PER_BAR);
+    jwm.get_outputlist()->add_output(this,outputnames::OUT_BEAT_VALUE);
+    jwm.get_outputlist()->add_output(this,
                                     outputnames::OUT_BPM_CHANGE_TRIG);
-    jwm.get_outputlist().add_output(this,
+    jwm.get_outputlist()->add_output(this,
                                     outputnames::OUT_METER_CHANGE_TRIG);
-    jwm.get_outputlist().add_output(this,
+    jwm.get_outputlist()->add_output(this,
                                     outputnames::OUT_BPM_CHANGE_STATE);
-    bpm_map =
-        new linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
-    add_bpm_change(0, 0);
-    meter_map =
-        new linkedlist(linkedlist::MULTIREF_OFF,linkedlist::NO_NULLDATA);
-    add_meter_change(0, jwm.beats_per_measure(), jwm.beat_value());
+
+    bpm_map = new linked_list<bpmchange>;
+    if (!bpm_map->add_at_head(new bpmchange(0, 0)))
+        invalidate();
+    meter_map = new linked_list<meterchange>;
+    if (!meter_map->add_at_head(
+        new meterchange(
+            0,
+            jwm.beats_per_measure(),
+            jwm.beat_value())))
+        invalidate();
     create_moddobj();
 }
 
 timemap::~timemap()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    goto_first_bpm();
-    while(currentbpm) {
-        delete currentbpm;
-        goto_next_bpm();
-    }
-    delete bpm_map;
-    goto_first_meter();
-    while(currentmeter) {
-        delete currentmeter;
-        goto_next_meter();
-    }
-    delete meter_map;
+    if (bpm_map)
+        delete bpm_map;
+    if (meter_map)
+        delete meter_map;
 }
 
 bpmchange* timemap::add_bpm_change(short atbar, double bpm)
 {
-    if (!goto_first_bpm()) { // create very first bpm change
-        currentbpm = new bpmchange(atbar, bpm);
-        bpm_item = bpm_map->add_at_head(currentbpm);
-        return currentbpm;
+    bpmchange* newbpm = new bpmchange(atbar, bpm);
+    if (!(currentbpm = add_bpm_change(newbpm))) {
+        delete newbpm;
+        return 0;
     }
-    if (atbar == 0) {// just change it, not create.
-        currentbpm->set_bpm(bpm);
-        return currentbpm;
-    }
-    while(currentbpm) {
-        // first must always be at bar zero=done by constructor.
-        bpmchange* bc = (bpmchange*)bpm_map->sneak_next()->get_data();
-        if (currentbpm->get_bar() == atbar) {
-            if (!bc) { // currentbpm is last in list - safe to add
-                currentbpm = new bpmchange(atbar, bpm);
-                bpm_item = bpm_map->add_at_tail(currentbpm);
-                return currentbpm;
-            }
-            if (bc->get_bar() == atbar) return 0;
-            if (bc->get_bar() > atbar){
-                currentbpm  = new bpmchange(atbar, bpm);
-                bpm_item = bpm_map->insert_after(bpm_item, currentbpm);
-                return currentbpm;
-            }
-        }
-        if (bc) {
-            if (bc->get_bar() > atbar) { // insert after current
-                currentbpm = new bpmchange(atbar, bpm);
-                bpm_item = bpm_map->insert_after(bpm_item, currentbpm);
-                return currentbpm;
-            }
-        } else {
-            currentbpm = new bpmchange(atbar, bpm);
-            bpm_item = bpm_map->add_at_tail(currentbpm);
-            return currentbpm;
-        }
-        goto_next_bpm();
-    } // while(currentbpm)
-    return 0;  // should not ever reach this place
+    return newbpm;
 }
 
 bpmchange* timemap::add_bpm_change(bpmchange * bch)
 {
-    goto_first_bpm();
-    if (bch->get_bar() == 0) {// just replace, not insert
-        delete currentbpm;// delete meterchange object
-        bpm_item->set_data(bch);
+    currentbpm = bpm_map->goto_first();
+    if (bch->get_bar() == 0) {
+        delete currentbpm;
+        bpm_map->sneak_current()->set_data(bch);
         return (currentbpm = bch);
     }
     while(currentbpm){
-        // first must always be at bar zero,done by constructor.
-        bpmchange* bc = (bpmchange*)bpm_map->sneak_next()->get_data();
+        bpmchange* bc = bpm_map->sneak_next()->get_data();
         if (currentbpm->get_bar() == bch->get_bar()) {
             if (!bc) { // currentbpm is last in list - safe to add
-                bpm_item = bpm_map->add_at_tail(bch);
-                return (currentbpm = bch);
+                return currentbpm =
+                    bpm_map->add_at_tail(bch)->get_data();
             }
-            if (bc->get_bar() == bch->get_bar()) return 0;
-            if (bc->get_bar() > bch->get_bar()){
-                bpm_item = bpm_map->insert_after(bpm_item, bch);
-                return (currentbpm = bch);
+            if (bc->get_bar() == bch->get_bar())
+                return 0;
+            if (bc->get_bar() > bch->get_bar()) {
+                return currentbpm =
+                    bpm_map->insert_after(
+                        bpm_map->sneak_current(), bch
+                    )->get_data();
             }
         }
         if (bc) {
             if (bc->get_bar() > bch->get_bar()) { // insert after current
-                bpm_item = bpm_map->insert_after(bpm_item, bch);
-                return (currentbpm = bch);
+                return currentbpm =
+                    bpm_map->insert_after(
+                        bpm_map->sneak_current(), bch
+                    )->get_data();
             }
-        } else {
-            bpm_item = bpm_map->add_at_tail(bch);
-            return (currentbpm = bch);
         }
-        goto_next_bpm();
-    } // while(currentbpm)
+        else
+            return currentbpm = bpm_map->add_at_tail(bch)->get_data();
+        currentbpm = bpm_map->goto_next();
+    }
     return 0;  // should not ever get here..
 }
 
 meterchange* timemap::add_meter_change(short atbar, char btpb, char btval)
 {
-    if (!goto_first_meter()) { // create very first meter
-        currentmeter = new meterchange(atbar, btpb, btval);
-        meter_item = meter_map->add_at_head(currentmeter);
-        return currentmeter;
+    meterchange* newmeter = new meterchange(atbar, btpb, btval);
+    if (!(currentmeter = add_meter_change(newmeter))){
+        delete newmeter;
+        return 0;
     }
-    if (atbar == 0) {// just change it, not create.
-        currentmeter->set_beatsperbar(btpb);
-        currentmeter->set_beatvalue(btval);
-        return currentmeter;
-    }
-    while(currentmeter){
-        // first must always be at bar zero=done by constructor.
-        meterchange* mc = (meterchange*)
-                          meter_map->sneak_next()->get_data();
-        if (currentmeter->get_bar() == atbar) { // change not create
-            currentmeter->set_beatsperbar(btpb);
-            currentmeter->set_beatvalue(btval);
-            return currentmeter;
-        }
-        if (mc) {
-            if (mc->get_bar() > atbar) { // insert after current
-                currentmeter = new meterchange(atbar, btpb, btval);
-                meter_item =
-                    meter_map->insert_after(meter_item, currentmeter);
-                return currentmeter;
-            }
-        } else {
-            currentmeter = new meterchange(atbar, btpb, btval);
-            meter_item = meter_map->add_at_tail(currentmeter);
-            return currentmeter;
-        }
-        goto_next_meter();
-    } // while(currentmeter)
-    return 0;
+    return newmeter;
 }
 
 meterchange* timemap::add_meter_change(meterchange* mch)
 {
-    goto_first_meter();
+    currentmeter = meter_map->goto_first();
     // don't forget the list will *never* be empty
     if (mch->get_bar() == 0) {
         delete currentmeter;
-        meter_item->set_data(mch);
-        return (currentmeter = mch);
+        meter_map->sneak_first()->set_data(mch);
+        return currentmeter = mch;
     }
     while(currentmeter){
         if (currentmeter->get_bar() == mch->get_bar()) {
             delete currentmeter;
-            meter_item->set_data(mch);
+            meter_map->sneak_current()->set_data(mch);
             return (currentmeter = mch);
         }
-        meterchange* mc = (meterchange*)
-                          meter_map->sneak_next()->get_data();
+        meterchange* mc = meter_map->sneak_next()->get_data();
         if (mc) {
             if (mc->get_bar() > mch->get_bar()) {
-                meter_item = meter_map->insert_after(meter_item, mch);
-                return (currentmeter = mch);
+                return currentmeter =
+                    meter_map->insert_after(
+                        meter_map->sneak_current(), mch)
+                            ->get_data();
             }
-        } else {
-            meter_item = meter_map->add_at_tail(mch);
-            return (currentmeter = mch);
         }
-        goto_next_meter();
+        else {
+            
+            return currentmeter =
+                meter_map->add_at_tail(mch)->get_data();
+        }
+        currentmeter = meter_map->goto_next();
     }
     return 0;
 }
 
 void timemap::init()
 {
-    goto_first_bpm();
+    currentbpm = bpm_map->goto_first();
     bpmchangebar = currentbpm->get_bar(); // = 0;
     targetbpm = currentbpm;
-    goto_first_meter();
+    currentmeter = meter_map->goto_first();
     meterchangebar = currentmeter->get_bar();
     out_beats_per_bar = currentmeter->get_beatsperbar();
     out_beat_value = currentmeter->get_beatvalue();
@@ -237,18 +183,21 @@ void timemap::run()
                                  (4.0 / (double)out_beat_value));
             barlength = out_beats_per_bar * beatlength;
             out_meter_change_trig = ON;
-            goto_next_meter();
-            if (!currentmeter) meterchangebar = -1;
-            else meterchangebar = currentmeter->get_bar();
+            currentmeter = meter_map->goto_next();
+            if (!currentmeter)
+                meterchangebar = -1;
+            else
+                meterchangebar = currentmeter->get_bar();
         }
     }
-    else if (out_meter_change_trig == ON) out_meter_change_trig = OFF;
+    else
+    if (out_meter_change_trig == ON)
+        out_meter_change_trig = OFF;
     if (out_bar == bpmchangebar) {
         currentbpm = targetbpm;
         out_bpm = p_bpm + currentbpm->get_bpm();
         p_bpm = out_bpm;
-        bpm_item = bpm_item->get_next();
-        targetbpm = (bpmchange*)bpm_item->get_data();
+        targetbpm = bpm_map->goto_next();
         out_bpm_change_trig = ON;
         if (!targetbpm) {
             bpmchangebar = -1;
@@ -261,8 +210,7 @@ void timemap::run()
                 currentbpm = targetbpm;
                 out_bpm += currentbpm->get_bpm();
                 p_bpm = out_bpm; // make it so.
-                bpm_item = bpm_item->get_next();
-                targetbpm = (bpmchange*)bpm_item->get_data();
+                targetbpm = bpm_map->goto_next();
                 out_bpm_change_state = ON;
             }
             if (!targetbpm) {
@@ -405,11 +353,11 @@ void timemap::create_moddobj()
     if (done_moddobj == true)
         return;
     moddobj* mdbj;
-    mdbj = jwm.get_moddobjlist().add_moddobj(
+    mdbj = jwm.get_moddobjlist()->add_moddobj(
         synthmodnames::TIMEMAP, dobjnames::LST_METER);
     mdbj->get_dobjdobjlist()->add_dobjdobj(
         dobjnames::LST_METER, dobjnames::SIN_METER);
-    mdbj = jwm.get_moddobjlist().add_moddobj(
+    mdbj = jwm.get_moddobjlist()->add_moddobj(
         synthmodnames::TIMEMAP, dobjnames::LST_BPM);
     mdbj->get_dobjdobjlist()->add_dobjdobj(
         dobjnames::LST_BPM, dobjnames::SIN_BPM);

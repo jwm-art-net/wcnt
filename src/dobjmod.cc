@@ -35,7 +35,7 @@ bool dobjmod::done_params = false;
 void dobjmod::create_params()
 {
     if (done_params == true) return;
-    jwm.get_dparlist().add_dobjparam(
+    jwm.get_dparlist()->add_dobjparam(
         dobjnames::DOBJ_SYNTHMOD, paramnames::MODNAME);
     done_params = true;
 }

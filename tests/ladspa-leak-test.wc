@@ -1,0 +1,26 @@
+wcnt-1.26/jwmsynth
+
+samplerate 44100
+bpm 120
+signature 4/4
+
+timer
+t
+    timings
+        time seconds 0
+        time seconds 1
+    timings
+t
+
+dc_offset_remover
+dc
+    in_signal off
+dc
+
+wcnt_exit
+x
+    in_bar      t out_count
+    exit_bar    1
+x
+
+wcnt-1.26/jwmsynth

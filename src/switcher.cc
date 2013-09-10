@@ -4,39 +4,32 @@
 #include "../include/modoutputlist.h"
 #include "../include/modinputlist.h"
 #include "../include/modparamlist.h"
-#include "../include/synthmodule.h"
-#include "../include/synthmodulelist.h"
+#include "../include/synthmod.h"
+#include "../include/synthmodlist.h"
 #include "../include/moddobjlist.h"
 #include "../include/dobjlist.h"
 #include "../include/dobjmod.h"
 #include "../include/conversions.h"
 #include "../include/dobjdobjlist.h"
-
-#include <iostream>
+#include "../include/duplicate_list_module.h"
 
 switcher::switcher(char const* uname) :
  synthmod(synthmodnames::SWITCHER, uname),
+ linkedlist(MULTIREF_ON, PRESERVE_DATA),
  in_trig(0), xfadetime(25), out_output(0), xfade_samp(0),
- xfade_max_samps(0), xfade_stpsz(0), xfade_size(0), wcntsiglist(0),
- wcntsig_item(0), wcntsig(0), sig(0), prevsig(0), zero(0)
+ xfade_max_samps(0), xfade_stpsz(0), xfade_size(0),
+ wcntsigs(0), sig_ix(0), sig(0), prevsig(0), zero(0)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_inputlist().add_input(this, inputnames::IN_TRIG);
-    wcntsiglist =
-        new linkedlist(linkedlist::MULTIREF_ON, linkedlist::NO_NULLDATA);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_TRIG);
     create_params();
     create_moddobj();
 }
 
 switcher::~switcher()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
-/*
-    wcntsig is a synthmodule which would have been created
-    before this module.  don't need to delete here.
-*/
-    delete wcntsiglist;
+    if (wcntsigs)
+        delete [] wcntsigs;
 }
 
 void const* switcher::get_out(outputnames::OUT_TYPE ot) const
@@ -88,66 +81,7 @@ void const* switcher::get_param(paramnames::PAR_TYPE pt) const
 
 synthmod* switcher::duplicate_module(const char* uname, DUP_IO dupio)
 {
-    switcher* dup = new switcher(uname);
-    if (dupio == AUTO_CONNECT)
-        duplicate_inputs_to(dup);
-    duplicate_params_to(dup);
-
-    const char* const current_grp = get_groupname(get_username());
-    const char* const new_grp = get_groupname(uname);
-    bool regroup_wcnt_sigs = false;
-    if (current_grp && new_grp) {
-        if (strcmp(current_grp, new_grp) != 0) {
-            regroup_wcnt_sigs = true;
-        }
-    }
-    synthmodlist& modlist = jwm.get_modlist();
-    if (jwm.is_verbose())
-        std::cout << "\n----------\nadding to duplicated switcher "
-            << uname;
-    goto_first();
-    while (wcntsig) {
-        const char* const sig_grp =
-            get_groupname(wcntsig->get_username());
-        synthmod* sig_to_add = wcntsig;
-        if (sig_grp && regroup_wcnt_sigs == true) {
-            if (strcmp(sig_grp, current_grp) == 0) {
-                const char* const grpsigname =
-                        set_groupname(new_grp, wcntsig->get_username());
-                synthmod* grpsig =
-                            modlist.get_synthmod_by_name(grpsigname);
-                if (grpsig) {
-                    if (grpsig->get_module_type() ==
-                                            synthmodnames::WCNTSIGNAL)
-                        sig_to_add = grpsig;
-                    else {
-                        std::cout << "\nin switcher::duplicate, an "
-                            "attempt to fetch a wcnt_signal named "
-                            << grpsigname << "resulted in finding "
-                            << grpsig->get_username()
-                            << " which is not a wcnt_signal!?!?";
-                    }
-                }
-                else if (jwm.is_verbose()) {
-                    std::cout << "\nWarning! switcher " << uname
-                        << " was expecting to find " << grpsigname
-                        << " but could not.\nCheck the order of grouping"
-                        << " in original group definition.";
-                }
-                delete [] grpsigname;
-            }
-            delete [] sig_grp;
-        }
-        dup->add_signal((wcnt_signal*)sig_to_add);
-        if (jwm.is_verbose())
-            std::cout << "\nadded " << sig_to_add->get_username();
-        goto_next();
-    }
-    delete [] current_grp;
-    delete [] new_grp;
-    if (jwm.is_verbose())
-        std::cout << "\n----------";
-    return dup;
+    return duplicate_list_module(this, goto_first(), uname, dupio);
 }
 
 stockerrs::ERR_TYPE switcher::validate()
@@ -162,10 +96,10 @@ stockerrs::ERR_TYPE switcher::validate()
         invalidate();
         return stockerrs::ERR_ERROR;
     }
-    if (!jwm.get_paramlist().validate(this, paramnames::XFADE_TIME,
+    if (!jwm.get_paramlist()->validate(this, paramnames::XFADE_TIME,
             stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames().get_name(paramnames::XFADE_TIME);
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::XFADE_TIME);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -190,7 +124,7 @@ dobj* switcher::add_dobj(dobj* dbj)
         }
         // add the dobj synthmod wrapper to the dobjlist
         // so it gets deleted in the end.
-        jwm.get_dobjlist().add_dobj(dbj);
+        jwm.get_dobjlist()->add_dobj(dbj);
         return dbj;
     }
     *err_msg = "\n***major error*** attempt made to add an ";
@@ -201,8 +135,11 @@ dobj* switcher::add_dobj(dobj* dbj)
 
 void switcher::init()
 {
-    goto_first();
-    sig = wcntsig->get_output();
+    if (!(wcntsigs = move_to_array(this))) {
+        invalidate();
+        return;
+    }
+    sig = &wcntsigs[sig_ix = 0]->out_output;
     xfade_samp = xfade_max_samps = ms_to_samples(xfadetime);
     xfade_stpsz = 1 / (double)xfade_samp;
     xfade_size = 0;
@@ -213,9 +150,10 @@ void switcher::run()
 {
     if (*in_trig == ON) {
         prevsig = sig;
-        if (!(wcntsig = goto_next()))
-            wcntsig = goto_first();
-        sig = wcntsig->get_output();
+        wcnt_signal* wcntsig = wcntsigs[++sig_ix];
+        if (!wcntsig)
+            wcntsig = wcntsigs[sig_ix = 0];
+        sig = &wcntsig->out_output;
         xfade_samp = xfade_max_samps;
         xfade_size = 0;
     }
@@ -233,7 +171,7 @@ void switcher::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
      synthmodnames::SWITCHER, paramnames::XFADE_TIME);
     done_params = true;
 }
@@ -245,7 +183,7 @@ void switcher::create_moddobj()
     if (done_moddobj == true)
         return;
     moddobj* mdbj;
-    mdbj = jwm.get_moddobjlist().add_moddobj(
+    mdbj = jwm.get_moddobjlist()->add_moddobj(
         synthmodnames::SWITCHER, dobjnames::LST_SIGNALS);
     mdbj->get_dobjdobjlist()->add_dobjdobj(
         dobjnames::LST_SIGNALS, dobjnames::DOBJ_SYNTHMOD);

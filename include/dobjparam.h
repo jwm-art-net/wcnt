@@ -28,10 +28,19 @@ public:
     }
     iocat::IOCAT get_dparam_category() {
         return (this) 
-            ? jwm.get_paramnames().get_category(partype)
+            ? jwm.get_paramnames()->get_category(partype)
             : iocat::FIRST;
     }
     bool validate(dobj*, stockerrs::ERR_TYPE);
+
+    bool operator()(dobjnames::DOBJ_TYPE & dt) const {
+        return dobjtype == dt;
+    }
+
+    bool operator()(paramnames::PAR_TYPE & pt) const {
+        return partype == pt;
+    }
+
 private:
     dobjnames::DOBJ_TYPE dobjtype;
     paramnames::PAR_TYPE partype;

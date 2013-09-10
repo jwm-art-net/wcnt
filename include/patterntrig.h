@@ -1,7 +1,7 @@
 #ifndef PATTERNTRIG_H
 #define PATTERNTRIG_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 /*  from a text pattern string, consisting of an arbitrary length
     of 1's and 0's, outputs a trigger or not, when triggered.

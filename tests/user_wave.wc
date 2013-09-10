@@ -1,0 +1,124 @@
+wcnt-1.26/jwmsynth
+
+samplerate 44100
+bpm 120
+signature 4/4
+
+timer
+t
+    timings
+        time seconds 0
+        time seconds 30
+    timings
+t
+
+constant_freq lfo0 freq 0.15331 lfo0
+
+wave
+swave
+    in_phase_step lfo0 out_phase_step
+    type saw
+swave
+
+wave
+swave2
+    in_phase_step lfo0 out_phase_step
+    type sine
+swave2
+
+constant_note n name c-1 n
+
+osc_clock
+osc1
+    in_note_on_trig     t out_trig
+    in_note_slide_trig  off
+    in_play_state       off
+    in_frequency        n out_frequency
+    in_freq_mod1        swave out_output
+    in_freq_mod2        off
+    octave_offset       0
+    tuning_semitones    0.0
+    portamento_time     0.0
+    response_time       0.0
+    freq_mod1_size      0.5
+    freq_mod2_size      1.0
+osc1
+
+osc_clock
+osc2
+    in_note_on_trig     t out_trig
+    in_note_slide_trig  off
+    in_play_state       off
+    in_frequency        n out_frequency
+    in_freq_mod1        swave2 out_output
+    in_freq_mod2        off
+    octave_offset       0
+    tuning_semitones    5.0
+    portamento_time     0.0
+    response_time       0.0
+    freq_mod1_size      2.0
+    freq_mod2_size      1.0
+osc2
+
+constant_freq lfo1 freq 1.26 lfo1
+
+wave
+pwswave
+    in_phase_step    lfo1 out_phase_step
+    type saw
+pwswave
+
+constant_freq lfo2 freq 2.5123 lfo2
+
+wave
+plswave
+    in_phase_step    lfo2 out_phase_step
+    type saw
+plswave
+
+// user_wave has new parameter: drop_check_range
+// this is used for checking when vertices modulate such that they
+// "collide" with each other...
+// drop_check_range says how many degrees apart as one vertex approaches
+// the previous vertex to treat as a dropout... in this case, when
+// the vertex with ld 250 is modulated and becomes 102 it will be treated
+// as a dropout.
+
+user_wave
+uwave
+    waveform
+        vertex  ud 10  ul   -1.0      ld 80  ll   1.0
+        vertex  ud 100  ul   1.0      ld 100  ll   0.5
+        vertex  ud 50   ul  -0.5       ld 250  ll   0.5
+        vertex  ud 300  ul  -0.5       ld 300  ll  -1.0
+        vertex  ud 120  ul   1.0       ld 320  ll   -1.0
+    waveform
+    in_phase_trig  osc1      out_phase_trig
+    in_phase_step  osc2      out_phase_step
+    in_level_mod   plswave    out_output
+    in_time_mod    pwswave   out_output
+    recycle_mode    on
+    zero_retrigger  off
+    drop_check_range 2
+uwave
+
+wavfile_out
+wav_out
+    in_left     uwave out_output
+    in_right    uwave out_output
+    in_bar      t out_count
+    in_bar_trig t out_trig
+    snapshot_mode off
+    data_format float32
+    filename    user_wave.wav
+    start_bar   0
+    end_bar     1
+wav_out
+
+wcnt_exit
+wcnt_exit_module
+    in_bar      t out_count
+    exit_bar    1
+wcnt_exit_module
+
+wcnt-1.26/jwmsynth

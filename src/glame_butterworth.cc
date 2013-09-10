@@ -16,10 +16,11 @@ glame_butterworth::glame_butterworth(char const* uname) :
  l_input(0), l_output(0),
  type_names(0)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_inputlist().add_input(this, inputnames::IN_SIGNAL);
-    jwm.get_inputlist().add_input(this, inputnames::IN_CUTOFF_PHASE_STEP);
-    jwm.get_inputlist().add_input(this, inputnames::IN_RES_MOD);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
+    jwm.get_inputlist()->add_input(this,
+                                        inputnames::IN_CUTOFF_PHASE_STEP);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_RES_MOD);
     create_params();
     type_names = new char*[2];
     type_names[0] = "buttlow_iir";
@@ -30,8 +31,6 @@ glame_butterworth::glame_butterworth(char const* uname) :
 
 glame_butterworth::~glame_butterworth()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
     if (l_descriptor) l_descriptor->cleanup(l_inst_handle);
     if (l_input) delete [] l_input;
     if (l_output) delete [] l_output;
@@ -108,7 +107,7 @@ stockerrs::ERR_TYPE glame_butterworth::validate()
 {
     if (resonance < 0.1 || resonance > 1.41) {
         *err_msg +=
-         jwm.get_paramnames().get_name(paramnames::RESONANCE);
+         jwm.get_paramnames()->get_name(paramnames::RESONANCE);
         *err_msg += " must be within range 0.1 to 1.41";
         invalidate();
         return stockerrs::ERR_ERROR;
@@ -118,11 +117,11 @@ stockerrs::ERR_TYPE glame_butterworth::validate()
 
 void glame_butterworth::init()
 {
-    ladspa_loader& ll = jwm.get_ladspaloader();
-    ladspa_plug* lp = ll.get_plugin("butterworth_1902",
+    ladspa_loader* ll = jwm.get_ladspaloader();
+    ladspa_plug* lp = ll->get_plugin("butterworth_1902",
                                      type_names[type]);
     if (lp == 0) {
-        *err_msg = ll.get_error_msg();
+        *err_msg = ll->get_error_msg();
         invalidate();
         return;
     }
@@ -165,15 +164,15 @@ void glame_butterworth::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
             synthmodnames::GLAME_BUTTERWORTH,
             paramnames::GLAME_FILTER_TYPE);
-    jwm.get_fxsparamlist().add_param("lowpass/highpass",
+    jwm.get_fxsparamlist()->add_param("lowpass/highpass",
                                   paramnames::GLAME_FILTER_TYPE);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
             synthmodnames::GLAME_BUTTERWORTH,
             paramnames::RESONANCE);
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
             synthmodnames::GLAME_BUTTERWORTH,
             paramnames::RES_MODSIZE);
     done_params = true;

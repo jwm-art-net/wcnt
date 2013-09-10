@@ -28,6 +28,9 @@ class fixstrparam
     int get_substring_count();
     int get_substring_index(const char* substr);
     const char* get_substring(int index);
+    bool operator()(paramnames::PAR_TYPE & pt) {
+        return param_type == pt;
+    }
  private:
     const char* string_list;
     paramnames::PAR_TYPE param_type;

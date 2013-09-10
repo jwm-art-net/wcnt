@@ -3,38 +3,19 @@
 
 #include "linkedlist.h"
 #include "fixstrparam.h"
+#include "listwork.h"
 
-class fxsparamlist
+class fxsparamlist : public linked_list<fixstrparam>
 {
-public:
-    fxsparamlist();
-    ~fxsparamlist();
-    fixstrparam*
-        add_param(fixstrparam*);
-    fixstrparam*
-        add_param(char const* string_list, paramnames::PAR_TYPE);
-    fixstrparam* goto_first() {
-        return fxspar = (fixstrparam*)
-         (fxspar_item = fxsparlist->goto_first())->get_data();
-    }
-    fixstrparam* goto_last() {
-        return fxspar = (fixstrparam*)
-         (fxspar_item = fxsparlist->goto_last())->get_data();
-    }
-    fixstrparam* goto_prev() {
-        return fxspar = (fixstrparam*)
-         (fxspar_item = fxsparlist->goto_prev())->get_data();
-    }
-    fixstrparam* goto_next() {
-        return fxspar = (fixstrparam*)
-         (fxspar_item = fxsparlist->goto_next())->get_data();
-    }
-    fixstrparam* get_fix_str_param(paramnames::PAR_TYPE);
+ public:
+    fxsparamlist(){};
 
-private:
-    linkedlist* fxsparlist;
-    ll_item* fxspar_item;
-    fixstrparam* fxspar;
+    fixstrparam* add_param(char const* string_list, paramnames::PAR_TYPE);
+
+    fixstrparam* get_fix_str_param(paramnames::PAR_TYPE pt)
+    {
+        return find_in_data(sneak_first(), pt)->get_data();
+    }
 };
 
 #endif

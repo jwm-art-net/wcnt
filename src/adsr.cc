@@ -14,37 +14,28 @@ adsr::adsr(char const* uname) :
  out_off_trig(OFF), play_state(OFF), up_thresh(0), lo_thresh(0),
  start_level(0), min_time(0), max_sus_time(0), sustain_status(OFF),
  release_ratio(OFF), zero_retrigger(OFF), thresh_range(0), end_level(0),
- released(OFF), tsamps(0), min_samps(0), max_sus_samps(0), env(0),
- sect(0), sectsample(0), sectmaxsamples(0), levelsize(0), coord_item(0),
- coord(0)
+ released(OFF), tsamps(0), min_samps(0), max_sus_samps(0),
+ sect(0), sectsample(0), sectmaxsamples(0), levelsize(0),
+ run_coords(0), coord(0), coord_ix(0),
+ decay_ix(0), sustain_ix(0), release_ix(0)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_OFF_TRIG);
-    jwm.get_outputlist().add_output(this, outputnames::OUT_PLAY_STATE);
-    jwm.get_inputlist().add_input(this, inputnames::IN_NOTE_ON_TRIG);
-    jwm.get_inputlist().add_input(this, inputnames::IN_NOTE_OFF_TRIG);
-    jwm.get_inputlist().add_input(this, inputnames::IN_VELOCITY);
-    env = new 
-     linkedlist(linkedlist::MULTIREF_OFF, linkedlist::NO_NULLDATA);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_OFF_TRIG);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_PLAY_STATE);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_NOTE_ON_TRIG);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_NOTE_OFF_TRIG);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_VELOCITY);
 
-    coord = new adsr_coord(adsr_coord::ADSR_SUSTAIN, 0 ,0 ,0 ,0);
-    env->add_at_head(coord);
+    add_at_head(new adsr_coord(adsr_coord::ADSR_SUSTAIN, 0 ,0 ,0 ,0));
+
     create_params();
     create_moddobj();
 }
 
 adsr::~adsr()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
-    if (env) {
-        goto_first();
-        while (coord) {
-            delete coord;
-            goto_next();
-        }
-        delete env;
-    }
+    if (run_coords)
+        destroy_array_moved_from_list(run_coords);
 }
 
 const void * adsr::get_out(outputnames::OUT_TYPE ot) const
@@ -151,26 +142,26 @@ stockerrs::ERR_TYPE adsr::validate()
     }
     if (up_thresh < lo_thresh) {
         *err_msg =
-         jwm.get_paramnames().get_name(paramnames::UP_THRESH);
+         jwm.get_paramnames()->get_name(paramnames::UP_THRESH);
         *err_msg += " must not be less than ";
         *err_msg +=
-         jwm.get_paramnames().get_name(paramnames::LO_THRESH);
+         jwm.get_paramnames()->get_name(paramnames::LO_THRESH);
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     ;
-    if (!jwm.get_paramlist().validate(this, paramnames::MIN_TIME,
+    if (!jwm.get_paramlist()->validate(this, paramnames::MIN_TIME,
             stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames().get_name(paramnames::MIN_TIME);
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::MIN_TIME);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
-    if (!jwm.get_paramlist().validate(this, paramnames::MAX_SUSTAIN_TIME,
+    if (!jwm.get_paramlist()->validate(this, paramnames::MAX_SUSTAIN_TIME,
             stockerrs::ERR_NEGATIVE))
     {
         *err_msg =
-            jwm.get_paramnames().get_name(paramnames::MAX_SUSTAIN_TIME);
+            jwm.get_paramnames()->get_name(paramnames::MAX_SUSTAIN_TIME);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -199,19 +190,10 @@ adsr_coord* adsr::insert_coord(adsr_coord* ac)
 {
     if (ac->get_adsr_section() == adsr_coord::ADSR_SUSTAIN)
         return 0; // don't let user try it on.
-    if (ac->get_adsr_section() < goto_first()->get_adsr_section())
-        return (adsr_coord*)(env->add_at_head(ac))->get_data();
-    adsr_coord *tmp = 0;
-    ll_item* lltmp = 0;
-    while (coord) {
-        lltmp = coord_item;
-        tmp = coord;
-        goto_next();
-        if (coord)
-            if (coord->get_adsr_section() > ac->get_adsr_section())
-                break;
-    }
-    return (adsr_coord*)(env->insert_after(lltmp, ac))->get_data();
+    llitem* tmp = ordered_insert(this, ac, &adsr_coord::get_adsr_section);
+    if (!tmp)
+        return 0;
+    return tmp->get_data();
 }
 
 adsr_coord* adsr::insert_coord(
@@ -220,93 +202,9 @@ adsr_coord* adsr::insert_coord(
     adsr_coord* nc = new adsr_coord(adsrsect, ut, ul, lt, ll);
     if (!insert_coord(nc)) {
         delete nc;
-        nc = 0;
+        return 0;
     }
     return nc;
-}
-
-adsr_coord * adsr::insert_coord_after(adsr_coord * ac)
-{
-    if (ac->get_adsr_section() == adsr_coord::ADSR_SUSTAIN)
-        return NULL;
-    ll_item* tmp = env->find_data(ac);
-    if (tmp == NULL)
-        return NULL;
-    adsr_coord* nac = (adsr_coord *)tmp->get_next()->get_data();
-    double nut = ac->get_upper_time();
-    double nlt = ac->get_lower_time();
-    double nul;
-    double nll;
-    if (nac == NULL) {
-        // as there is no coord after ac, generate it's 
-        // levels from the previous coord 
-        nul = 0;
-        nll = 0;
-        adsr_coord* pac = (adsr_coord *)tmp->get_prev()->get_data();
-        if (pac == NULL) { // paranoia?
-            invalidate();
-            return NULL;
-        }
-        ac->set_upper_level(pac->get_upper_level() / 2);
-        ac->set_lower_level(pac->get_lower_level() / 2);
-    } else {
-        nul = (ac->get_upper_level() + nac->get_upper_level()) / 2;
-        nll = (ac->get_lower_level() + nac->get_lower_level()) / 2;
-    }
-    adsr_coord* newcoord = 
-     new adsr_coord(ac->get_adsr_section(), nut, nul, nlt, nll);
-    if (!env->insert_after(tmp, newcoord)->get_data()) {
-        delete newcoord;
-        return 0;
-    }
-    return newcoord;
-}
-
-adsr_coord * adsr::insert_coord_after(
- adsr_coord * ac, double ut, double ul, double lt, double ll)
-{
-    if (ac->get_adsr_section() == adsr_coord::ADSR_SUSTAIN)
-        return NULL;
-    ll_item *tmp = env->find_data(ac);
-    if (tmp == NULL)
-        return NULL;
-    adsr_coord *newcoord = 
-     new adsr_coord(ac->get_adsr_section(), ut, ul, lt, ll);
-    if (!env->insert_after(tmp, newcoord)->get_data()) {
-        delete newcoord;
-        return 0;
-    }
-    return newcoord;
-}
-
-void adsr::delete_coord(adsr_coord * ac)
-{
-    ll_item *tmp = env->find_data(ac);
-    if (tmp == NULL)
-        return;
-    adsr_coord *pac = (adsr_coord *) tmp->get_prev()->get_data();
-    adsr_coord *nac = (adsr_coord *) tmp->get_next()->get_data();
-    if (pac == NULL || nac == NULL)
-        return;                 /* don't delete first or last coord */
-    if (pac->get_adsr_section() == ac->get_adsr_section() 
-     || nac->get_adsr_section() == ac->get_adsr_section())
-    {
-        delete env->unlink_item(tmp);
-        delete ac;
-    }
-    /* else ac is the only coord in section, so do not delete it */
-    return;
-}
-
-adsr_coord * adsr::goto_section(adsr_coord::SECT n)
-{
-    goto_first();
-    while (coord) {
-        if (coord->get_adsr_section() == n)
-            return coord;
-        goto_next();
-    }
-    return NULL;
 }
 
 void adsr::scale_section(adsr_coord::SECT n, double ratio)
@@ -332,6 +230,20 @@ void adsr::init()
     min_samps = ms_to_samples(min_time);
     max_sus_samps = ms_to_samples(max_sus_time);
     output = start_level;
+    run_coords = move_to_array(this);
+    for (long ix = 0; run_coords[ix] != 0; ix++) {
+        if (run_coords[ix]->get_adsr_section() == adsr_coord::ADSR_DECAY
+            && decay_ix == 0)
+            decay_ix = ix;
+        else
+        if (run_coords[ix]->get_adsr_section() == adsr_coord::ADSR_SUSTAIN
+            && sustain_ix == 0)
+            sustain_ix = ix;
+        else
+        if (run_coords[ix]->get_adsr_section() == adsr_coord::ADSR_RELEASE
+            && release_ix == 0)
+            release_ix = ix;
+    }
 }
 
 void adsr::run()
@@ -341,7 +253,7 @@ void adsr::run()
         released = OFF;
         tsamps = 0;
         max_samps = (unsigned long)-1;
-        goto_first();
+        coord = run_coords[coord_ix = 0];
         if (zero_retrigger == ON)
             output = start_level;
         ready_section();
@@ -351,7 +263,7 @@ void adsr::run()
             if (*in_note_off_trig == ON && released == OFF) {
                 if (tsamps >= min_samps) {
                     released = ON;
-                    goto_section(adsr_coord::ADSR_RELEASE);
+                    coord = run_coords[coord_ix = release_ix];
                     ready_section();
                 }
                 else
@@ -359,7 +271,7 @@ void adsr::run()
             }
             if (tsamps >= max_samps && released == OFF) {
                 released = ON;
-                goto_section(adsr_coord::ADSR_RELEASE);
+                coord = run_coords[coord_ix = release_ix];
                 ready_section();
             }
         }
@@ -369,8 +281,8 @@ void adsr::run()
         if (sectsample >= sectmaxsamples) {
             sectsample = 0;
             end_level = coord->output_level;// grab while it's hot.
-            goto_next();
-            if (!coord) {
+            coord = run_coords[++coord_ix];
+            if (!coord){
                 if (release_ratio == ON)
                     output *= end_level;
                 else
@@ -439,7 +351,7 @@ synthmod* adsr::duplicate_module(const char* uname, DUP_IO dupio)
     if (dupio == AUTO_CONNECT)
         duplicate_inputs_to(dupadsr);
     duplicate_params_to(dupadsr);
-    goto_first();
+    coord = goto_first();
     while (coord) {
         if (coord->get_adsr_section() != adsr_coord::ADSR_SUSTAIN)
         {
@@ -449,7 +361,7 @@ synthmod* adsr::duplicate_module(const char* uname, DUP_IO dupio)
                                     coord->get_lower_time(),
                                     coord->get_lower_level());
         }
-        goto_next();
+        coord = goto_next();
     }
     return dupadsr;
 }
@@ -459,15 +371,15 @@ void adsr::create_params()
 {
     if (done_params == true)
         return;
-    modparamlist& mpl = jwm.get_paramlist();
-    mpl.add_param(synthmodnames::ADSR, paramnames::UP_THRESH);
-    mpl.add_param(synthmodnames::ADSR, paramnames::LO_THRESH);
-    mpl.add_param(synthmodnames::ADSR, paramnames::START_LEVEL);
-    mpl.add_param(synthmodnames::ADSR, paramnames::MIN_TIME);
-    mpl.add_param(synthmodnames::ADSR, paramnames::MAX_SUSTAIN_TIME);
-    mpl.add_param(synthmodnames::ADSR, paramnames::RELEASE_RATIO);
-    mpl.add_param(synthmodnames::ADSR, paramnames::SUSTAIN_STATUS);
-    mpl.add_param(synthmodnames::ADSR, paramnames::ZERO_RETRIGGER);
+    modparamlist* mpl = jwm.get_paramlist();
+    mpl->add_param(synthmodnames::ADSR, paramnames::UP_THRESH);
+    mpl->add_param(synthmodnames::ADSR, paramnames::LO_THRESH);
+    mpl->add_param(synthmodnames::ADSR, paramnames::START_LEVEL);
+    mpl->add_param(synthmodnames::ADSR, paramnames::MIN_TIME);
+    mpl->add_param(synthmodnames::ADSR, paramnames::MAX_SUSTAIN_TIME);
+    mpl->add_param(synthmodnames::ADSR, paramnames::RELEASE_RATIO);
+    mpl->add_param(synthmodnames::ADSR, paramnames::SUSTAIN_STATUS);
+    mpl->add_param(synthmodnames::ADSR, paramnames::ZERO_RETRIGGER);
     done_params = true;
 }
 
@@ -477,7 +389,7 @@ void adsr::create_moddobj()
     if (done_moddobj == true)
         return;
     moddobj* mdbj;
-    mdbj = jwm.get_moddobjlist().add_moddobj(
+    mdbj = jwm.get_moddobjlist()->add_moddobj(
         synthmodnames::ADSR, dobjnames::LST_ENVELOPE);
     mdbj->get_dobjdobjlist()->add_dobjdobj(
         dobjnames::LST_ENVELOPE, dobjnames::SIN_COORD);

@@ -1,7 +1,7 @@
 #ifndef TIMEMAP_H
 #define TIMEMAP_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 #include "linkedlist.h"
 #include "bpmchange.h"
 #include "meterchange.h"
@@ -137,55 +137,30 @@
         dobj handles validation of the bpm and meter changes.
 */
 
+/*
+// wcnt-1.26-pre2i
+//  with the new template version of my linked_list class, i wanted to
+//  keep everything except the goto_next/prev/first/last methods hidden
+//  from outside of the derived class.
+//  but by doing this, the linked_list cannot be used without being
+//  inherited. so it may aswell be pure abstract virtual (in that case)
+//  (hmmm, no, because then there'd be the extra overhead).
+//  so anyway,,,
+*/
+
 class timemap : public synthmod
 {
 public:
     enum { QUARTER_VALUE = 6720 };
     timemap(char const*);
     ~timemap();
-    // list insertion and navigation methods
+
     bpmchange* add_bpm_change(short atbar, double bpm);
     bpmchange* add_bpm_change(bpmchange *);
-    bpmchange* goto_first_bpm() {
-        return currentbpm = (bpmchange*)
-         (bpm_item = bpm_map->goto_first())->get_data();
-    }
-    bpmchange* goto_last_bpm() {
-        return currentbpm = (bpmchange*)
-         (bpm_item = bpm_map->goto_last())->get_data();
-    }
-    bpmchange* goto_prev_bpm() {
-        return currentbpm = (bpmchange*)
-         (bpm_item = bpm_map->goto_prev())->get_data();
-    }
-    bpmchange* goto_next_bpm() {
-        return currentbpm = (bpmchange*)
-         (bpm_item = bpm_map->goto_next())->get_data();
-    }
-    bpmchange* get_next_bpm(){
-        return (bpmchange*)(bpm_item->get_next())->get_data();
-    }
-    bpmchange* get_prev_bpm(){
-        return (bpmchange*)(bpm_item->get_prev())->get_data();
-    }
+
     meterchange* add_meter_change(short atbar, char btpb, char btval);
     meterchange* add_meter_change(meterchange*);
-    meterchange* goto_first_meter() {
-        return currentmeter = (meterchange*)
-         (meter_item = meter_map->goto_first())->get_data();
-    }
-    meterchange* goto_last_meter() {
-        return currentmeter = (meterchange*)
-         (meter_item = meter_map->goto_last())->get_data();
-    }
-    meterchange* goto_prev_meter() {
-        return currentmeter = (meterchange*)
-         (meter_item = meter_map->goto_prev())->get_data();
-    }
-    meterchange* goto_next_meter() {
-        return currentmeter = (meterchange*)
-         (meter_item = meter_map->goto_next())->get_data();
-    }
+
     // general purpose method used for checking by other modules,
     // bool check_position(short bar, double pos, short quarter_val);
     // virtual methods
@@ -210,11 +185,8 @@ private:
     STATUS out_meter_change_trig;
     STATUS out_bpm_change_state;
     // list variables
-    ll_item* bpm_item;
-    ll_item* meter_item;
-    //	bpmchange* bpm_change;
-    linkedlist* bpm_map;
-    linkedlist* meter_map;
+    linked_list<bpmchange>*   bpm_map;
+    linked_list<meterchange>* meter_map;
     // working variables
     bpmchange* currentbpm;
     bpmchange* targetbpm;

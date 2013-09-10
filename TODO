@@ -1,16 +1,8 @@
-TODO:
-----------
-_Official_
-----------
-
-for completed 1.26 version:
-
- Complete commandline module help to display descriptions of what a module
- does alongwith the definition of the module
- 
----------------------------------------------------------------------
-(unofficial)
 TODO - 1st December 2007
+
+/***** update: 31st January 2008
+  this stuff here is definitely for the future, requires more thought...
+*/////
 
 i'm thinking about some  kind of thing, some kind of stuff...
 
@@ -25,12 +17,11 @@ obvious choice when the output categories are the same amongst similiar
 outputs (ie for tagging inputs/outputs as frequency, or amplitude etcetc).
 
 something to provide as many input/parameter pairings for frequency
-modulation as user requires (ie not limited to one or two pair). [[[ urgh
-i doubt this will happen... 1stjan08 ]]]
+modulation as user requires (ie not limited to one or two pair).
 
 something better to make certain types of modulation - more transparent
 in their function. someway of choosing scale units (ie semitones or ratio
-etc) [[[ hmmm maybe... 1stjan08 ]]].
+etc).
 
 some of this may make it faster for the user to type out quickly, but then
 it might make the program /even/ slower.

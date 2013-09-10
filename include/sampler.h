@@ -2,7 +2,7 @@
 #define SAMPLER_H
 
 #include "samplercommon.h"
-#include "synthmodule.h"
+#include "synthmod.h"
 
 /* removed all sorts of guff I'd written in 70 lines of comment */
 

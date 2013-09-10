@@ -1,7 +1,7 @@
 #ifndef STATEGATETRIG_H
 #define STATEGATETRIG_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 /*    only outputs the input trigger when the input state is ON */
 

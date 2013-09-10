@@ -1,0 +1,65 @@
+wcnt-1.26/jwmsynth
+
+samplerate 44100
+bpm 120
+signature 4/4
+
+timer
+t
+    timings
+        time seconds 0
+        time seconds 1
+    timings
+t
+
+constant_note n name c1 n
+
+clock
+clock1
+    in_freq_mod1 off
+    freq 220
+    freq_mod1_size 1.0
+clock1
+
+wave
+s
+    in_phase_step   n out_phase_step
+    type            sine
+s
+
+fader
+faded
+    in_bar      t out_count
+    in_bar_trig t out_trig
+    start_bar      0
+    end_bar        1
+    fade_in_time   10
+    fade_out_time  300
+faded
+
+multiplier
+m
+    in_signal1 s out_output
+    in_signal2 faded out_output
+m
+
+wavfile_out
+w
+    in_left     m out_output
+    in_right    m out_output
+    in_bar      t out_count
+    in_bar_trig t out_trig
+    snapshot_mode on
+    data_format float32
+    filename    test.wav
+    start_bar   0
+    end_bar     1
+w
+
+wcnt_exit
+x
+    in_bar      t out_count
+    exit_bar    1
+x
+
+wcnt-1.26/jwmsynth

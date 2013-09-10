@@ -1,7 +1,7 @@
 #ifndef MONOAMP_H
 #define MONOAMP_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 // because we're now using libsndfile to handle file input/output
 // we no longer have 16bit integer input/output and amplitude levels

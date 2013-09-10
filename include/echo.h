@@ -1,7 +1,7 @@
 #ifndef ECHO_H
 #define ECHO_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 class echo : public synthmod
 {

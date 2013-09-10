@@ -10,15 +10,13 @@ trigdelay::trigdelay(char const* uname) :
  in_trig(0), out_trig(OFF), delay_time(0.0),
  past_trigs(0), pastmax(0), pastpos(0)
 {
-    jwm.get_outputlist().add_output(this, outputnames::OUT_TRIG);
-    jwm.get_inputlist().add_input(this, inputnames::IN_TRIG);
+    jwm.get_outputlist()->add_output(this, outputnames::OUT_TRIG);
+    jwm.get_inputlist()->add_input(this, inputnames::IN_TRIG);
     create_params();
 }
 
 trigdelay::~trigdelay()
 {
-    jwm.get_outputlist().delete_module_outputs(this);
-    jwm.get_inputlist().delete_module_inputs(this);
     if (past_trigs)
         delete [] past_trigs;
 }
@@ -27,6 +25,10 @@ void trigdelay::init()
 {
     pastmax = (long)((delay_time * jwm.samplerate()) / 1000);
     past_trigs = new STATUS[pastmax];
+    if(!past_trigs){
+        invalidate();
+        return;
+    }
     for (long i = 0; i < pastmax; i++) past_trigs[i] = OFF;
     pastpos = pastmax - 1;
 }
@@ -72,10 +74,10 @@ void const* trigdelay::get_param(paramnames::PAR_TYPE pt) const
 
 stockerrs::ERR_TYPE trigdelay::validate()
 {
-    if (!jwm.get_paramlist().validate(this, paramnames::DELAY_TIME,
+    if (!jwm.get_paramlist()->validate(this, paramnames::DELAY_TIME,
             stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames().get_name(paramnames::DELAY_TIME);
+        *err_msg = jwm.get_paramnames()->get_name(paramnames::DELAY_TIME);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -96,7 +98,7 @@ void trigdelay::create_params()
 {
     if (done_params == true)
         return;
-    jwm.get_paramlist().add_param(
+    jwm.get_paramlist()->add_param(
         synthmodnames::TRIGDELAY, paramnames::DELAY_TIME);
     done_params = true;
 }

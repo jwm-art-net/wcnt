@@ -55,11 +55,11 @@ void const* dynvertex::get_param(paramnames::PAR_TYPE pt) const
 void dynvertex::create_params()
 {
     if (done_params == true) return;
-    jwm.get_dparlist().add_dobjparam(
+    jwm.get_dparlist()->add_dobjparam(
         dobjnames::SIN_DVERTEX, paramnames::SIGIN_LEVEL);
-    jwm.get_dparlist().add_dobjparam(
+    jwm.get_dparlist()->add_dobjparam(
         dobjnames::SIN_DVERTEX, paramnames::SIGOUT_UPLEVEL);
-    jwm.get_dparlist().add_dobjparam(
+    jwm.get_dparlist()->add_dobjparam(
         dobjnames::SIN_DVERTEX, paramnames::SIGOUT_LOLEVEL);
     done_params = true;
 }

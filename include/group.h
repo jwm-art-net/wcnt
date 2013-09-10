@@ -2,7 +2,6 @@
 #define GROUP_H
 
 #include "dobj.h"
-#include "linkedlist.h"
 
 /*
     group
@@ -70,12 +69,21 @@
     process is complete.
 
 ----------------
-*/
 
 // oh look, my comments were never updated to reflect the fact i got this
 // all working. notice there is no name parameter anymore. so whatever you
 // call the group-data-object, will be the name of the 'group' - ie the
 // name which gets prefixed to the module name.  --jwm2007
+
+yeah well --jwm2008.
+
+...
+
+// the group class no longer holds a list of modules which it has grouped.
+// it is unnecessary as they can easily be found within the main
+// synthmodlist.
+
+*/
 
 class synthmod;
 
@@ -85,36 +93,24 @@ class group : public dobj
     group();
     ~group();
 
-    synthmod* add_module(synthmod* s);
-    synthmod* goto_first() {
-        return mod = (synthmod*)
-         (mod_item = modlist->goto_first())->get_data();
-    }
-    synthmod* goto_last() {
-        return mod = (synthmod*)
-         (mod_item = modlist->goto_last())->get_data();
-    }
-    synthmod* goto_prev() {
-        return mod = (synthmod*)
-         (mod_item = modlist->goto_prev())->get_data();
-    }
-    synthmod* goto_next() {
-        return mod = (synthmod*)
-         (mod_item = modlist->goto_next())->get_data();
-    }
+    bool is_controlled()  { return controlled; }
+    void set_controlled() { controlled = true; }
+
+    synthmod* group_module(synthmod* s);
+
     void cancel_duplicate_status(){is_duplicate = false;}
     // virtuals from dobj
     dobj* add_dobj(dobj*);
     stockerrs::ERR_TYPE validate();
     dobj* duplicate_dobj(const char*);
+
  private:
     enum CLONE {DUPLICATE = 1};
     group(CLONE);
     bool groupify(synthmod*);
     bool is_duplicate;
-    linkedlist* modlist;
-    ll_item* mod_item;
-    synthmod* mod;
+    bool controlled; /* (by the group_control) */
+
     void create_params();
     static bool done_params;
 };

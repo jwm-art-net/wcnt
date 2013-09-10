@@ -1,7 +1,7 @@
 #ifndef DIFFFILTER_H
 #define DIFFFILTER_H
 
-#include "synthmodule.h"
+#include "synthmod.h"
 
 class diff_filter : public synthmod
 {
