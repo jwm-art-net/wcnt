@@ -50,7 +50,7 @@ public:
 
     bool read_and_create();
 
-    std::string get_wc_error_msg(){ return *wc_err_msg;}
+    const char* get_wc_error_msg() { return wc_err_msg; }
 
     virtual stockerrs::ERR_TYPE validate();
     bool set_param(paramnames::PAR_TYPE, void*);
@@ -75,7 +75,9 @@ private:
     std::string* buff;
     std::string* command; // used to force a command into buff
     std::string* synthheader;
-    std::string* wc_err_msg;
+
+    /*std::string* wc_err_msg;*/
+    char wc_err_msg[STRBUFLEN];
 
     bool inc_current;  // include current? - bodgish
 

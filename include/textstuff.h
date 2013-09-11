@@ -25,4 +25,7 @@ std::string*
 collumnize(const char** textarr,    unsigned int arrsize,
            unsigned int colwidth,   unsigned int colcount,  bool sort);
 
+// sizeof buf is STRBUFLEN (see types.h)
+size_t cfmt(char* buf, const char* fmt, ...);
+
 #endif

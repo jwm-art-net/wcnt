@@ -7,6 +7,10 @@ enum STATUS
     ON  = 0x1
 };
 
+
+#define STRBUFLEN 4000
+
+
 //------------------------------------------------------------------------
 // Use the following macros for generating basic statistics about
 // a class: number created, destroyed, most at once, and existing.

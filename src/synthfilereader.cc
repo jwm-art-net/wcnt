@@ -17,7 +17,7 @@
 #include "../include/fxsparamlist.h"
 #include "../include/dobjdobjlist.h"
 #include "../include/dobjdobj.h"
-
+#include "../include/textstuff.h"
 #include "../include/listwork.h"
 
 #include <iostream>
@@ -30,15 +30,15 @@ synthfilereader::synthfilereader() :
  modnamelist(0), dobjnamelist(0),
  wc_file_type(WC_INCLUDE_FILE),
  filestatus(NOT_FOUND), synthfile(0), buff(0), command(0),
- synthheader(0), wc_err_msg(0)
+ synthheader(0)
 {
     synthfile = new ifstream;
     buff = new string;
     synthheader = new string;
-    wc_err_msg = new string;
     create_params();
     modnamelist = new  linked_list<modnamedobj>;
     dobjnamelist = new linked_list<dobjnamedobj>;
+    wc_err_msg[0] = '\0';
 }
 
 synthfilereader::synthfilereader(WC_FILE_TYPE ft) :
@@ -47,15 +47,15 @@ synthfilereader::synthfilereader(WC_FILE_TYPE ft) :
  modnamelist(0), dobjnamelist(0),
  wc_file_type(ft),
  filestatus(NOT_FOUND), synthfile(0), buff(0), command(0),
- synthheader(0), wc_err_msg(0)
+ synthheader(0)
 {
     synthfile = new ifstream;
     buff = new string;
     synthheader = new string;
-    wc_err_msg = new string;
     create_params();
     modnamelist = new  linked_list<modnamedobj>;
     dobjnamelist = new linked_list<dobjnamedobj>;
+    wc_err_msg[0] = '\0';
 }
 
 synthfilereader::~synthfilereader()
@@ -68,7 +68,6 @@ synthfilereader::~synthfilereader()
     if (command)
         delete command;
     delete synthheader;
-    delete wc_err_msg;
     delete modnamelist;
     delete dobjnamelist;
 }
@@ -104,14 +103,11 @@ bool synthfilereader::read_and_create()
         return false;
     switch (open_file()) {
         case synthfilereader::NOT_FOUND:
-            *wc_err_msg = "\nfile ";
-            *wc_err_msg += wc_filename;
-            *wc_err_msg += " not found.\n";
+            cfmt(wc_err_msg, "File %s not found.", wc_filename);
             return false;
         case synthfilereader::INVALID_HEADER:
-            *wc_err_msg = "\nfile ";
-            *wc_err_msg += wc_filename;
-            *wc_err_msg += " does not contain a valid header.\n";
+            cfmt(wc_err_msg, "File %s does not contain a valid header.",
+                                                            wc_filename);
             return false;
         case synthfilereader::FILE_OPEN:
             break;

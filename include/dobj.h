@@ -4,6 +4,7 @@
 #include <string>
 
 #include "stockerrs.h"
+#include "types.h"
 #include "paramnames.h"
 #include "dobjnames.h"
 #include "namefuncobj.h"

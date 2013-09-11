@@ -100,3 +100,7 @@ collumnize(const char** textarr,    unsigned int arrsize,
     delete [] list;
     return str;
 }
+
+// sizeof buf is STRBUFLEN (see types.h)
+size_t cfmt(char* buf, const char* fmt, ...);
+
