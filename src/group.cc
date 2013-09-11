@@ -1,4 +1,3 @@
-#ifndef GROUP_H
 #include "../include/group.h"
 #include "../include/jwm_globals.h"
 #include "../include/synthmod.h"
@@ -216,6 +215,3 @@ void group::create_params()
 }
 
 bool group::done_params = false;
-
-
-#endif

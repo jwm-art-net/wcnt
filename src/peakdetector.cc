@@ -1,4 +1,3 @@
-#ifndef PEAKDETECTOR_H
 #include "../include/peakdetector.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -146,4 +145,3 @@ void peak_detector::create_params()
     done_params = true;
 }
 
-#endif

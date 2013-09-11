@@ -1,4 +1,3 @@
-#ifndef IMPULSE_H
 #include "../include/impulse.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -41,5 +40,3 @@ void const* impulse::get_in(inputnames::IN_TYPE it) const
         return in_trig;
     return 0;
 }
-
-#endif

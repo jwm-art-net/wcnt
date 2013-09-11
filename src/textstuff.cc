@@ -1,4 +1,3 @@
-#ifndef TEXTSTUFF_H
 #include "../include/textstuff.h"
 
 #include <functional>
@@ -101,7 +100,3 @@ collumnize(const char** textarr,    unsigned int arrsize,
     delete [] list;
     return str;
 }
-
-#endif
-
-

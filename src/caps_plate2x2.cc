@@ -1,4 +1,3 @@
-#ifndef CAPS_PLATE2X2_H
 #include "../include/caps_plate2x2.h"
 #ifdef WITH_LADSPA
 #include "../include/jwm_globals.h"
@@ -195,4 +194,3 @@ void caps_plate2x2::create_params()
 }
 
 #endif // WITH_LADSPA
-#endif // CAPS_PLATE2X2_H

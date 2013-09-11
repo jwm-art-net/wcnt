@@ -1,4 +1,3 @@
-#ifndef MODIFIER_H
 #include "../include/modifier.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -142,4 +141,3 @@ void modifier::create_params()
     done_params = true;
 }
 
-#endif

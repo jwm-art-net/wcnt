@@ -1,4 +1,3 @@
-#ifndef ORBIT_H
 #include "../include/orbit.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -193,4 +192,3 @@ void orbit::create_params()
     done_params = true;
 }
 
-#endif

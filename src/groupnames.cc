@@ -1,4 +1,3 @@
-#ifndef GROUPNAMES_H
 #include "../include/groupnames.h"
 
 #include <stdio.h>
@@ -56,4 +55,3 @@ char* set_groupname(const char* const groupname, const char* const name)
     return newname;
 }
 
-#endif

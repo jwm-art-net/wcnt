@@ -1,4 +1,4 @@
-#ifndef ONOFFTRIG_H
+
 #include "../include/onofftrig.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -213,4 +213,3 @@ void onofftrig::create_params()
         synthmodnames::ONOFFTRIG, paramnames::CHECK_LEVELS);
     done_params = true;
 }
-#endif

@@ -1,4 +1,3 @@
-#ifndef SANITY_CHECKS_H
 
 #include "../include/sanity_checks.h"
 
@@ -368,4 +367,3 @@ int check_mod_param_fixed_string(synthmod* sm, paramnames::PAR_TYPE pt)
 }
 
 #endif // SANITY_CHECKS
-#endif // SANITY_CHECKS_H

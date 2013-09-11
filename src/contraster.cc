@@ -1,4 +1,3 @@
-#ifndef CONTRASTER_H
 #include "../include/contraster.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -163,4 +162,3 @@ void contraster::create_params()
     done_params = true;
 }
 
-#endif

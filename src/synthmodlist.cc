@@ -1,4 +1,3 @@
-#ifndef SYNTHMODULELIST_H
 #include "../include/synthmodlist.h"
 #include "../include/modules.h"
 #include "../include/jwm_globals.h"
@@ -167,4 +166,3 @@ synthmodlist::duplicate_group(char const* from, char const* to)
     return grplist;
 }
 
-#endif

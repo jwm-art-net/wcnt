@@ -1,4 +1,3 @@
-#ifndef MODOUTPUT_H
 #include "../include/modoutput.h"
 #include "../include/jwm_globals.h"
 #include "../include/synthmod.h"
@@ -30,4 +29,3 @@ iocat::IOCAT modoutput::get_outputcategory()
      : iocat::FIRST;
 }
 
-#endif

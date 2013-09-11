@@ -1,4 +1,3 @@
-#ifndef GROUPCONTROL_H
 #include "../include/groupcontrol.h"
 #include "../include/jwm_globals.h"
 #include "../include/modinputlist.h"
@@ -203,4 +202,3 @@ void group_control::create_params()
     done_params = true;
 }
 
-#endif

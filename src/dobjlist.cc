@@ -1,4 +1,3 @@
-#ifndef DOBJLIST_H
 #include "../include/dobjlist.h"
 #include "../include/jwm_globals.h"
 #include "../include/dataobjects.h"
@@ -84,4 +83,3 @@ dobj* dobjlist::create_dobj(dobjnames::DOBJ_TYPE dt)
     return dobjy;
 }
 
-#endif

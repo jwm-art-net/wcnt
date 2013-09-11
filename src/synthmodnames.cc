@@ -1,4 +1,3 @@
-#ifndef SYNTHMODNAMES_H
 #include "../include/synthmodnames.h"
 
 #ifdef NAME_CHECK
@@ -123,4 +122,3 @@ const synthmodnames::mod_data synthmodnames::data[LAST] =
     { SAMPLECLIMB,      "sample_climb"      }
 };
 
-#endif

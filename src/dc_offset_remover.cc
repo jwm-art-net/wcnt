@@ -1,4 +1,3 @@
-#ifndef DC_OFFSET_REMOVER_H
 #include "../include/dc_offset_remover.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -83,4 +82,3 @@ void dc_offset_remover::run()
     output = *l_output;
 }
 
-#endif

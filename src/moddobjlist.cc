@@ -1,4 +1,3 @@
-#ifndef MODOBJLIST_H
 #include "../include/moddobjlist.h"
 
 moddobjlist::moddobjlist() :
@@ -15,4 +14,3 @@ moddobj* moddobjlist::add_moddobj(synthmodnames::SYNTH_MOD_TYPE smt,
     return add_at_tail(mo)->get_data();
 }
 
-#endif

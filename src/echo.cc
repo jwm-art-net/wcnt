@@ -1,4 +1,3 @@
-#ifndef ECHO_H
 #include "../include/echo.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -198,4 +197,3 @@ void echo::create_params()
     done_params = true;
 }
 
-#endif

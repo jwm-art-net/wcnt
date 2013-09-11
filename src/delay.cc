@@ -1,4 +1,3 @@
-#ifndef DELAY_H
 #include "../include/delay.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -164,4 +163,3 @@ void delay::create_params()
     done_params = true;
 }
 
-#endif

@@ -1,4 +1,3 @@
-#ifndef METERCHANGE_H
 #include "../include/meterchange.h"
 #include "../include/jwm_globals.h"
 #include "../include/dobjparamlist.h"
@@ -80,4 +79,3 @@ void meterchange::create_params()
     done_params = true;
 }
 
-#endif

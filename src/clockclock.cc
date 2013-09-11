@@ -1,4 +1,3 @@
-#ifndef CLOCKCLOCK_H
 #include "../include/clockclock.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -141,4 +140,3 @@ void clockclock::create_params()
     done_params = true;
 }
 
-#endif

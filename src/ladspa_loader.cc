@@ -1,4 +1,3 @@
-#ifndef LADSPA_LOAD_H
 #ifdef WITH_LADSPA
 
 #include "../include/ladspa_loader.h"
@@ -211,5 +210,4 @@ void* ladspa_loader::dlopen_plugin(const char* fname, int flag)
     return dlopen(fname, flag);
 }
 
-#endif
 #endif

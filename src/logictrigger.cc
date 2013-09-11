@@ -1,4 +1,3 @@
-#ifndef LOGICTRIGGER_H
 #include "../include/logictrigger.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -195,4 +194,3 @@ void logictrigger::create_params()
         paramnames::PRECISION);
     done_params = true;
 }
-#endif

@@ -1,4 +1,3 @@
-#ifndef TIMER_H
 #include "../include/timer.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -123,4 +122,3 @@ void timer::create_moddobj()
     done_moddobj = true;
 }
 
-#endif

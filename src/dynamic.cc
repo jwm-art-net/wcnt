@@ -1,4 +1,3 @@
-#ifndef DYNAMIC_H
 #include "../include/dynamic.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -269,4 +268,3 @@ void dynamic::create_dobj()
         dobjnames::LST_DYNAMICS, dobjnames::SIN_DVERTEX);
     done_dobj = true;
 }
-#endif

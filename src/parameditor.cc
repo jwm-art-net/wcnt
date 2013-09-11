@@ -1,4 +1,3 @@
-#ifndef PARAMEDITOR_H
 #include "../include/parameditor.h"
 #include "../include/setparam.h"
 #include "../include/jwm_globals.h"
@@ -71,4 +70,3 @@ void parameditor::create_params()
 
 bool parameditor::done_params = false;
 
-#endif

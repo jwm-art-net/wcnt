@@ -1,4 +1,3 @@
-#ifndef DUPLICATE_LIST_MODULE_H
 /*
 #include "../include/duplicate_list_module.h"
 
@@ -65,4 +64,3 @@ duplicate_list_module(T* sm, D* _data,
     return dup;
 }
 */
-#endif

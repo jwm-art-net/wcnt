@@ -1,4 +1,3 @@
-#ifndef DOBJPARAMLIST_H
 #include "../include/dobjparamlist.h"
 #include "../include/dobj.h"
 
@@ -38,4 +37,3 @@ dobjparamlist::validate(
     return false;
 }
 
-#endif

@@ -1,4 +1,3 @@
-#ifndef SUBTRACTER_H
 #include "../include/subtracter.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -44,4 +43,3 @@ void const* subtracter::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-#endif

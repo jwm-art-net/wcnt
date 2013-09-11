@@ -1,4 +1,3 @@
-#ifndef COMBINER_H
 #include "../include/combiner.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -167,4 +166,3 @@ void combiner::create_moddobj()
     done_moddobj = true;
 }
 
-#endif

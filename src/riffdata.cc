@@ -1,4 +1,3 @@
-#ifndef RIFFDATA_HH
 #include "../include/riffdata.h"
 #include "../include/jwm_globals.h"
 #include "../include/conversions.h"
@@ -394,4 +393,3 @@ void riffdata::create_params()
 
 bool riffdata::done_params = false;
 
-#endif

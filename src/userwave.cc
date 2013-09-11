@@ -1,4 +1,3 @@
-#ifndef USERWAVE_H
 #include "../include/userwave.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -307,4 +306,3 @@ void user_wave::create_dobj()
     done_dobj = true;
 }
 
-#endif

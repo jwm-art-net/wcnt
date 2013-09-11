@@ -1,4 +1,3 @@
-#ifndef COPIER_H
 #include "../include/copier.h"
 #include "../include/dobjlist.h"
 #include "../include/synthmod.h"
@@ -159,5 +158,3 @@ void copier::create_params()
 
 bool copier::done_params = false;
 
-
-#endif

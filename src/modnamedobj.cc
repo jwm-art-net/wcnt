@@ -1,4 +1,3 @@
-#ifndef MODNAMEDOBJ_H
 #include "../include/modnamedobj.h"
 #include "../include/dobjparamlist.h"
 
@@ -56,4 +55,3 @@ void modnamedobj::create_params()
 
 bool modnamedobj::done_params = false;
 
-#endif

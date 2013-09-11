@@ -1,4 +1,3 @@
-#ifndef DOBJ_H
 #include "../include/dobj.h"
 #include "../include/jwm_globals.h"
 #include "../include/dobjlist.h"
@@ -114,4 +113,3 @@ std::string*  dobj::err_msg = 0;
 STATS_INIT(dobj)
 #endif
 
-#endif

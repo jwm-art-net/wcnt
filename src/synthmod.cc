@@ -1,4 +1,3 @@
-#ifndef SYNTHMODULE_H
 #include "../include/synthmod.h"
 #include "../include/synthmodlist.h"
 #include "../include/jwm_globals.h"
@@ -198,4 +197,3 @@ STATUS synthmod::abort_status = OFF; // don't force an abort just yet.
 STATS_INIT(synthmod)
 #endif
 
-#endif

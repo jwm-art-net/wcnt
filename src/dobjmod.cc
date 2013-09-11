@@ -1,4 +1,3 @@
-#ifndef DOBJMOD_H
 #include "../include/dobjmod.h"
 #include "../include/jwm_globals.h"
 #include "../include/dobjparamlist.h"
@@ -39,5 +38,3 @@ void dobjmod::create_params()
         dobjnames::DOBJ_SYNTHMOD, paramnames::MODNAME);
     done_params = true;
 }
-
-#endif

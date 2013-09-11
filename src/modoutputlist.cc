@@ -1,4 +1,3 @@
-#ifndef MODOUTPUTSLIST_H
 #include "../include/modoutputlist.h"
 #include "../include/jwm_globals.h"
 #include "../include/synthmod.h"
@@ -156,4 +155,3 @@ modoutputlist* modoutputlist::list_of_category_orderpref(
 }
 */
 
-#endif

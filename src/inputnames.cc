@@ -1,4 +1,3 @@
-#ifndef INPUTNAMES_H
 #include "../include/inputnames.h"
 
 #ifdef NAME_CHECK
@@ -116,4 +115,3 @@ const inputnames::input_data inputnames::data[IN_LAST] =
     { IN_COUNT,             "in_count",             iocat::SHORT   },
     { IN_BIAS,              "in_bias",              iocat::DOUBLE  }
 };
-#endif

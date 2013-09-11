@@ -1,4 +1,3 @@
-#ifndef STEREOAMP_H
 #include "../include/stereoamp.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -148,4 +147,3 @@ void stereo_amp::create_params()
     done_params = true;
 }
 
-#endif

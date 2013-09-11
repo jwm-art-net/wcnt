@@ -1,4 +1,3 @@
-#ifndef STEPDATA_H
 #include "../include/stepdata.h"
 #include "../include/jwm_globals.h"
 #include "../include/dobjparamlist.h"
@@ -76,4 +75,3 @@ void step_data::create_params()
 
 bool step_data::done_params = false;
 
-#endif

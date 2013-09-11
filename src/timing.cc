@@ -1,4 +1,3 @@
-#ifndef TIMING_H
 #include "../include/timing.h"
 #include "../include/jwm_globals.h"
 #include "../include/dobjparamlist.h"
@@ -61,4 +60,3 @@ void timing::create_params()
     done_params = true;
 }
 
-#endif

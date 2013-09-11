@@ -1,4 +1,3 @@
-#ifndef DOBJDOBJLIST_H
 #include "../include/dobjdobjlist.h"
 #include "../include/jwm_globals.h"
 #include "../include/dobjdobj.h"
@@ -55,5 +54,3 @@ dobjdobjlist * dobjdobjlist::get_dobjdobjlist_of_sprogs(
     }
     return mdl;
 }
-
-#endif

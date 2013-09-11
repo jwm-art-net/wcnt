@@ -1,4 +1,3 @@
-#ifndef PAN_H
 #include "../include/pan.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -122,4 +121,3 @@ void pan::create_params()
                                                 paramnames::PAN_MODSIZE);
     done_params = true;
 }
-#endif

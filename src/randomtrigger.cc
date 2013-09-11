@@ -1,4 +1,3 @@
-#ifndef RANDOMTRIGGER_H
 #include "../include/randomtrigger.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -130,4 +129,3 @@ void randomtrigger::create_params()
     done_params = true;
 }
 
-#endif

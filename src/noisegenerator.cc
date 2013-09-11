@@ -1,4 +1,3 @@
-#ifndef NOISEGENERATOR_H
 #include "../include/noisegenerator.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -24,4 +23,3 @@ void const* noise_generator::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-#endif

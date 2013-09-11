@@ -1,4 +1,3 @@
-#ifndef ADDER_H
 #include "../include/adder.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -44,4 +43,3 @@ void const* adder::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-#endif

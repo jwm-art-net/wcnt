@@ -1,4 +1,3 @@
-#ifndef INSPECT_H
 #include "../include/inspect.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -174,5 +173,3 @@ void inspect::create_params()
         synthmodnames::INSPECT, paramnames::INSPECT_STR_MSG);
     done_params = true;
 }
-
-#endif

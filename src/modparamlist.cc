@@ -1,4 +1,3 @@
-#ifndef MODPARAMLIST_H
 #include "../include/modparamlist.h"
 #include "../include/synthmod.h"
 
@@ -40,4 +39,3 @@ bool modparamlist::validate(
     return false;
 }
 
-#endif

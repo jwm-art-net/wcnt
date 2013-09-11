@@ -1,4 +1,3 @@
-#ifndef FREQGENERATOR_H
 #include "../include/freqgenerator.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -145,4 +144,3 @@ void freq_generator::create_params()
     done_params = true;
 }
 
-#endif

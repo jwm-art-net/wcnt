@@ -1,4 +1,3 @@
-#ifndef STEPPER_H
 #include "../include/stepper.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -303,4 +302,3 @@ void stepper::create_moddobj()
     done_moddobj = true;
 }
 
-#endif

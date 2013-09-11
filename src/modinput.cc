@@ -1,4 +1,3 @@
-#ifndef MODINPUT_H
 #include "../include/modinput.h"
 #include "../include/jwm_globals.h"
 #include "../include/synthmod.h"
@@ -29,4 +28,3 @@ iocat::IOCAT modinput::get_inputcategory()
      : iocat::FIRST;
 }
 
-#endif

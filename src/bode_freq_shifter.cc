@@ -1,4 +1,3 @@
-#ifndef BODE_FREQ_SHIFTER_H
 #include "../include/bode_freq_shifter.h"
 #ifdef WITH_LADSPA
 #include "../include/jwm_globals.h"
@@ -160,4 +159,3 @@ void bode_freq_shifter::create_params()
 }
 
 #endif // WITH_LADSPA
-#endif // BODE_FREQ_SHIFTER_H

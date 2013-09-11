@@ -1,4 +1,3 @@
-#ifndef DOBJPARAM_H
 #include "../include/dobjparam.h"
 #include "../include/jwm_globals.h"
 #include "../include/checkvalue.h"
@@ -26,4 +25,3 @@ bool dobjparam::validate(dobj* d, stockerrs::ERR_TYPE et)
     }
 }
 
-#endif

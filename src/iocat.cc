@@ -1,4 +1,3 @@
-#ifndef IOCAT_H
 #include "../include/iocat.h"
 
 
@@ -41,6 +40,3 @@ const iocat::iocat_data iocat::data[LAST] =
     { DOBJ,     "data_object_name"              },
     { SYNTHMOD, "module_name"                   }
 };
-
-
-#endif

@@ -1,4 +1,3 @@
-#ifndef NONEZERO_H
 #include "../include/nonezero.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -43,4 +42,3 @@ void const* nonezero::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-#endif

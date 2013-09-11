@@ -1,4 +1,3 @@
-#ifndef SYNTHFILEREADER_H
 #include "../include/synthfilereader.h"
 #include "../include/jwm_globals.h"
 #include "../include/jwm_init.h"
@@ -1263,5 +1262,3 @@ void synthfilereader::create_params()
                 dobjnames::SIN_DOBJNAME);
     done_params = true;
 }
-
-#endif

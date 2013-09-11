@@ -1,4 +1,3 @@
-#ifndef RIFFEDITOR_H
 #include "../include/riffeditor.h"
 #include "../include/riffdata.h"
 #include "../include/jwm_globals.h"
@@ -84,4 +83,3 @@ void riff_editor::create_params()
 
 bool riff_editor::done_params = false;
 
-#endif

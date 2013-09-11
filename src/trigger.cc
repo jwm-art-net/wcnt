@@ -1,4 +1,3 @@
-#ifndef TRIGGER_H
 #include "../include/trigger.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -141,4 +140,3 @@ void trigger::create_params()
      synthmodnames::TRIGGER, paramnames::TRIGGER_LEVEL);
     done_params = true;
 }
-#endif

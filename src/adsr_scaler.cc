@@ -1,4 +1,3 @@
-#ifndef ADSR_SCALER_H
 #include "../include/adsr_scaler.h"
 #include "../include/jwm_globals.h"
 #include "../include/dobjparamlist.h"
@@ -127,4 +126,3 @@ void adsr_scaler::create_params()
 
 bool adsr_scaler::done_params = false;
 
-#endif

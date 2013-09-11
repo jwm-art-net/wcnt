@@ -1,4 +1,3 @@
-#ifndef SAMPLEHOLD_H
 #include "../include/samplehold.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -119,4 +118,3 @@ void sample_hold::create_params()
     done_params = true;
 }
 
-#endif

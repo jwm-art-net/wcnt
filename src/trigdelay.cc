@@ -1,4 +1,3 @@
-#ifndef TRIGDELAY_H
 #include "../include/trigdelay.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -108,4 +107,3 @@ void trigdelay::create_params()
     done_params = true;
 }
 
-#endif

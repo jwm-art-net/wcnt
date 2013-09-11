@@ -1,4 +1,3 @@
-#ifndef CMDLINE_H
 #include "../include/cmdline.h"
 #include "../include/jwm_globals.h"
 #include "../include/conversions.h"
@@ -814,4 +813,3 @@ void cmdline::about()
 
 //#include "../data/commandline_help.h"
 
-#endif

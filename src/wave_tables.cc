@@ -1,4 +1,3 @@
-#ifndef WAVE_TABLES_H
 #include "../include/wave_tables.h"
 
 #include <math.h>
@@ -104,4 +103,3 @@ const int wave_tables::table_shift = TABLE_SHIFT;
 double wave_tables::phase_step_base = 0;
 double wave_tables::phase_step_scalar = 0;
 
-#endif

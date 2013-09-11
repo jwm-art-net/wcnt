@@ -1,4 +1,3 @@
-#ifndef STEREOMIXER_H
 #include "../include/stereomixer.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -173,4 +172,3 @@ void stereomixer::create_moddobj()
     done_moddobj = true;
 }
 
-#endif

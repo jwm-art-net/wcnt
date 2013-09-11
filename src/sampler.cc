@@ -1,4 +1,3 @@
-#ifndef SAMPLER_H
 #include "../include/sampler.h"
 #include "../include/wavfilein.h"
 #include "../include/jwm_globals.h"
@@ -1238,4 +1237,3 @@ void sampler::create_params()
     pl->add_param(synthmodnames::SAMPLER, paramnames::PHASE_STEP_AMOUNT);
     done_params = true;
 }
-#endif

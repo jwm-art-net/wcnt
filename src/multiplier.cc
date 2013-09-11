@@ -1,4 +1,3 @@
-#ifndef MULTIPLIER_H
 #include "../include/multiplier.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -48,4 +47,3 @@ void const* multiplier::get_in(inputnames::IN_TYPE it) const
 
 // go on... givvus a snare rush - rush - rush - rush.
 
-#endif

@@ -1,4 +1,3 @@
-#ifndef OUTPUTNAMES_H
 #include "../include/outputnames.h"
 
 #ifdef NAME_CHECK
@@ -149,4 +148,3 @@ const outputnames::output_data outputnames::data[OUT_LAST] =
     { OUT_THROUGH,          "out_through",          iocat::DOUBLE  },
 };
 
-#endif

@@ -1,4 +1,3 @@
-#ifndef TRIANGLEWAVE_H
 #include "../include/wave_phase.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -208,4 +207,3 @@ void wave_phase::create_params()
    done_params = true;
 }
 
-#endif

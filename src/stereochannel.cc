@@ -1,4 +1,3 @@
-#ifndef STEREOCHANNEL_H
 #include "../include/stereochannel.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -53,4 +52,3 @@ void const* stereo_channel::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-#endif

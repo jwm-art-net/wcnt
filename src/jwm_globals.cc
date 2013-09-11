@@ -1,4 +1,3 @@
-#ifndef JWM_GLOBALS_H
 #include "../include/jwm_globals.h"
 #include "../include/jwm_init.h"
 #include "../include/modinputlist.h"
@@ -132,4 +131,3 @@ void jwm_globals::samplerate(unsigned long sr)
 
 jwm_globals jwm;
 
-#endif

@@ -1,4 +1,3 @@
-#ifndef RANGELIMIT_H
 #include "../include/rangelimit.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -102,4 +101,3 @@ void range_limit::create_params()
     done_params = true;
 }
 
-#endif

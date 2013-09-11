@@ -1,4 +1,3 @@
-#ifndef DOBJNAMES_H
 #include "../include/dobjnames.h"
 
 #include <string.h>
@@ -130,4 +129,3 @@ const dobjnames::dobj_data dobjnames::data[DOBJ_LAST] =
 //------------------------------------------------------
 };
 
-#endif

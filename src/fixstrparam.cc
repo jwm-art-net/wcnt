@@ -1,4 +1,3 @@
-#ifndef FIXSTRPARAM_H
 #include "../include/fixstrparam.h"
 
 fixstrparam::
@@ -91,4 +90,3 @@ const char* fixstrparam::get_substring(int index)
     return substr;
 }
 
-#endif

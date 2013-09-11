@@ -1,4 +1,3 @@
-#ifndef GLAME_BUTTERWORTH_H
 #include "../include/glame_butterworth.h"
 #ifdef WITH_LADSPA
 #include "../include/jwm_globals.h"
@@ -176,4 +175,3 @@ void glame_butterworth::create_params()
 }
 
 #endif // WITH_LADSPA
-#endif // GLAME_BUTTERWORTH_H

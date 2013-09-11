@@ -1,4 +1,3 @@
-#ifndef DOBJNAMEDOBJ_H
 #include "../include/dobjnamedobj.h"
 #include "../include/jwm_globals.h"
 #include "../include/dobjparamlist.h"
@@ -57,4 +56,3 @@ void dobjnamedobj::create_params()
 
 bool dobjnamedobj::done_params = false;
 
-#endif

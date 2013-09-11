@@ -1,4 +1,3 @@
-#ifndef USERWAVEVERTEX_H
 #include "../include/userwavevertex.h"
 #include "../include/jwm_globals.h"
 #include "../include/dobjparamlist.h"
@@ -97,4 +96,3 @@ void wave_vertex::create_params()
 
 bool wave_vertex::done_params = false;
 
-#endif

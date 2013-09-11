@@ -1,4 +1,3 @@
-#ifndef SWITCHER_H
 #include "../include/switcher.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -207,4 +206,3 @@ void switcher::create_moddobj()
     done_moddobj = true;
 }
 
-#endif

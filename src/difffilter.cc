@@ -1,4 +1,3 @@
-#ifndef DIFFFILTER_H
 #include "../include/difffilter.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -45,4 +44,3 @@ void const* diff_filter::get_in(inputnames::IN_TYPE it) const
     return 0;
 }
 
-#endif

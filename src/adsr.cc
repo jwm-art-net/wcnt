@@ -1,4 +1,3 @@
-#ifndef ADSR_H
 #include "../include/adsr.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -395,4 +394,3 @@ void adsr::create_moddobj()
         dobjnames::LST_ENVELOPE, dobjnames::SIN_COORD);
     done_moddobj = true;
 }
-#endif

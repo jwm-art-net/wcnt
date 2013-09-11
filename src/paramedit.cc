@@ -1,4 +1,3 @@
-#ifndef PARAMEDIT_H
 #include "../include/paramedit.h"
 #include "../include/synthmod.h"
 #include "../include/synthmodlist.h"
@@ -237,4 +236,3 @@ void paramedit::create_params()
 
 bool paramedit::done_params = false;
 
-#endif

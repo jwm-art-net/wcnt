@@ -1,4 +1,3 @@
-#ifndef TRIGSWITCHER_H
 #include "../include/trigswitcher.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -151,4 +150,3 @@ void trigswitcher::create_moddobj()
     done_moddobj = true;
 }
 
-#endif

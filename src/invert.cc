@@ -1,4 +1,3 @@
-#ifndef INVERT_H
 #include "../include/invert.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -44,4 +43,3 @@ void const* invert::get_in(inputnames::IN_TYPE it) const
 }
 
 // I'm not going to be dancing here for too much longer.
-#endif

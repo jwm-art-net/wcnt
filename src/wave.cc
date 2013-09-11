@@ -1,4 +1,3 @@
-#ifndef WAVE_H
 #include "../include/wave.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -96,4 +95,3 @@ void wave::create_params()
 
 bool wave::done_params = false;
 
-#endif

@@ -1,4 +1,3 @@
-#ifndef OSCCLOCK_H
 #include "../include/oscclock.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -278,4 +277,3 @@ void osc_clock::create_params()
     done_params = true;
 }
 
-#endif

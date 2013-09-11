@@ -1,4 +1,3 @@
-#ifndef DC_FILTER_H
 #include "../include/dc_filter.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -113,4 +112,3 @@ void dc_filter::create_params()
     done_params = true;
 }
 
-#endif

@@ -1,4 +1,3 @@
-#ifndef MODDOBJ_H
 #include "../include/moddobj.h"
 #include "../include/dobjdobjlist.h"
 
@@ -14,4 +13,3 @@ moddobj::~moddobj()
     delete dd_list;
 }
 
-#endif

@@ -1,4 +1,3 @@
-#ifndef IOCATCONVERT_H
 #include "../include/iocatconvert.h"
 #include "../include/meterchange.h"
 #include "../include/jwm_globals.h"
@@ -164,4 +163,3 @@ void destroy_iocat_data(iocat::IOCAT ioc, void* data)
 std::string err_msg;
 
 } // namespace iocat
-#endif

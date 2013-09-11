@@ -1,4 +1,3 @@
-#ifndef SYNCCLOCK_H
 #include "../include/syncclock.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -211,4 +210,3 @@ void sync_clock::create_params()
     done_params = true;
 }
 
-#endif

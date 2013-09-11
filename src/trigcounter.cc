@@ -1,4 +1,3 @@
-#ifndef TRIGCOUNTER_H
 #include "../include/trigcounter.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -175,4 +174,3 @@ void trigcounter::create_params()
     done_params = true;
 }
 
-#endif

@@ -1,4 +1,3 @@
-#ifndef INPUTEDIT_H
 #include "../include/inputedit.h"
 #include "../include/connectorlist.h"
 #include "../include/synthmodlist.h"
@@ -190,4 +189,3 @@ void inputedit::create_params()
 
 bool inputedit::done_params = false;
 
-#endif

@@ -1,4 +1,3 @@
-#ifndef TIMEMAP_H
 #include "../include/timemap.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -340,4 +339,3 @@ void timemap::create_moddobj()
     done_moddobj = true;
 }
 
-#endif

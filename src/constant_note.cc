@@ -1,4 +1,3 @@
-#ifndef CONSTANT_NOTE_H
 #include "../include/constant_note.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -86,4 +85,3 @@ void constant_note::create_params()
     done_params = true;
 }
 
-#endif

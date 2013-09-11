@@ -1,4 +1,3 @@
-#ifndef WAVFILEOUT_H
 #include "../include/wavfileout.h"
 #include "../include/jwm_globals.h"
 #include "../include/jwm_init.h"
@@ -321,4 +320,3 @@ void wavfileout::create_params()
     done_params = true;
 }
 
-#endif

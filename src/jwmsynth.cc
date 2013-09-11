@@ -1,4 +1,3 @@
-#ifndef JWMSYNTH_H
 #include "../include/jwmsynth.h"
 #include "../include/jwm_globals.h"
 #include "../include/synthmodlist.h"
@@ -159,4 +158,3 @@ bool jwmsynth::execute_synth()
         destroy_array_moved_from_list(runlist);
     return true;
 }
-#endif

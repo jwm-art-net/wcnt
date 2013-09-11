@@ -1,4 +1,3 @@
-#ifndef SC1_H
 #include "../include/sc1.h"
 #ifdef WITH_LADSPA
 #include "../include/jwm_globals.h"
@@ -203,4 +202,3 @@ void sc1::create_params()
 }
 
 #endif // WITH_LADSPA
-#endif // SC1_H

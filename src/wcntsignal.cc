@@ -1,4 +1,3 @@
-#ifndef WCNTSIGNAL_H
 #include "../include/wcntsignal.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -80,4 +79,3 @@ void wcnt_signal::create_params()
     done_params = true;
 }
 
-#endif

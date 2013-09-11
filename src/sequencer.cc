@@ -1,4 +1,3 @@
-#ifndef SEQUENCER_H
 #include "../include/sequencer.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -489,4 +488,3 @@ void sequencer::create_moddobj()
     done_moddobj = true;
 }
 
-#endif

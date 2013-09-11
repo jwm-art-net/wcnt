@@ -1,4 +1,3 @@
-#ifndef WCNTEXIT_H
 #include "../include/wcntexit.h"
 #include "../include/jwm_globals.h"
 #include "../include/modinputlist.h"
@@ -116,4 +115,3 @@ void wcnt_exit::create_params()
     done_params = true;
 }
 
-#endif

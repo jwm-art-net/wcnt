@@ -1,4 +1,3 @@
-#ifndef LFOCONTROL_H
 #include "../include/lfocontroller.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -192,4 +191,3 @@ void lfo_controller::create_params()
     done_params = true;
 }
 
-#endif

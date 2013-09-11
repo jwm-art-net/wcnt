@@ -1,4 +1,3 @@
-#ifndef SINGLE_BAND_PARA_H
 #include "../include/single_band_para.h"
 #ifdef WITH_LADSPA
 #include "../include/jwm_globals.h"
@@ -188,4 +187,3 @@ void single_band_para::create_params()
 }
 
 #endif // WITH_LADSPA
-#endif // SINGLE_BAND_PARA_H

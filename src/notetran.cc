@@ -1,4 +1,3 @@
-#ifndef TRIGGER_H
 #include "../include/notetran.h"
 #include "../include/jwm_globals.h"
 #include "../include/jwm_init.h"
@@ -328,4 +327,3 @@ void notetran::create_params()
     done_params = true;
 }
 
-#endif

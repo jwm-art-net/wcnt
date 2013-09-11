@@ -1,4 +1,3 @@
-#ifndef SQUAREWAVE_H
 #include "../include/squarewave.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -199,4 +198,3 @@ void square_wave::create_params()
     done_params = true;
 }
 
-#endif

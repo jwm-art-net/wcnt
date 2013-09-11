@@ -1,4 +1,3 @@
-#ifndef DELAY_H
 #include "../include/rms.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -117,4 +116,3 @@ void rms::create_params()
     done_params = true;
 }
 
-#endif

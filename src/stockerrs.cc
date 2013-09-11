@@ -1,4 +1,3 @@
-#ifndef STOCKERRS_H
 #include "../include/stockerrs.h"
 
 stockerrs::stockerrs()
@@ -91,4 +90,3 @@ bool stockerrs::check_type(ERR_TYPE et)
     }
 }
 
-#endif

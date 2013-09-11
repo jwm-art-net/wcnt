@@ -1,4 +1,3 @@
-#ifndef CONNECTOR_H
 #include "../include/connector.h"
 #include "../include/synthmod.h"
 #include "../include/synthmodlist.h"
@@ -95,4 +94,3 @@ bool connector::connect()
 
 std::string connector::connect_err_msg;
 
-#endif

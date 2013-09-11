@@ -1,4 +1,3 @@
-#ifndef SAMPLECLIMB_H
 #include "../include/sampleclimb.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -100,5 +99,3 @@ void sample_climb::create_params()
         synthmodnames::SAMPLECLIMB, paramnames::RATE);
     done_params = true;
 }
-
-#endif

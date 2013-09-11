@@ -1,4 +1,3 @@
-#ifndef SETPARAM_H
 #include "../include/setparam.h"
 #include "../include/jwm_globals.h"
 #include "../include/iocatconvert.h"
@@ -186,4 +185,3 @@ std::string err_msg;
 
 } // namespace setpar
 
-#endif

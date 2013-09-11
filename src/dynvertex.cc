@@ -1,4 +1,3 @@
-#ifndef DYNVERTEX_H
 #include "../include/dynvertex.h"
 #include "../include/jwm_globals.h"
 #include "../include/dobjparamlist.h"
@@ -65,4 +64,3 @@ void dynvertex::create_params()
 }
 
 bool dynvertex::done_params = false;
-#endif

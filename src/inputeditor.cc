@@ -1,4 +1,3 @@
-#ifndef INPUTEDITOR_H
 #include "../include/inputeditor.h"
 #include "../include/connectorlist.h"
 #include "../include/jwm_globals.h"
@@ -75,4 +74,3 @@ void inputeditor::create_params()
 
 bool inputeditor::done_params = false;
 
-#endif

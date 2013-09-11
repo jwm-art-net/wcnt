@@ -1,4 +1,3 @@
-#ifndef FXSPARAMLIST_H
 #include "../include/fxsparamlist.h"
 
 fixstrparam*
@@ -15,5 +14,3 @@ fxsparamlist::add_param(char const* str_list, paramnames::PAR_TYPE pt)
     }
     return fsp;
 }
-
-#endif

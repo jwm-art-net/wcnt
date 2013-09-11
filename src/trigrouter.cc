@@ -1,4 +1,3 @@
-#ifndef TRIGROUTER_H
 #include "../include/trigrouter.h"
 #include "../include/jwm_globals.h"
 #include "../include/modinputlist.h"
@@ -163,4 +162,3 @@ void trigrouter::create_params()
     done_params = true;
 }
 
-#endif

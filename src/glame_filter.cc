@@ -1,4 +1,3 @@
-#ifndef GLAME_FILTER_H
 #include "../include/glame_filter.h"
 #ifdef WITH_LADSPA
 #include "../include/jwm_globals.h"
@@ -197,4 +196,3 @@ void glame_filter::create_params()
 }
 
 #endif // WITH_LADSPA
-#endif // glame_filter_H

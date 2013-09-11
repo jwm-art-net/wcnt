@@ -1,4 +1,3 @@
-#ifndef STATEGATETRIG_H
 #include "../include/stategatetrig.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -67,4 +66,3 @@ void stategatetrig::run()
         out_not_trig = OFF;
 }
 
-#endif

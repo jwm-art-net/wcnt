@@ -1,4 +1,3 @@
-#ifndef LFOCLOCK_H
 #include "../include/lfoclock.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -181,4 +180,3 @@ void lfo_clock::create_params()
     done_params = true;
 }
 
-#endif

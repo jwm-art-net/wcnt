@@ -1,4 +1,3 @@
-#ifndef BPMCHANGE_H
 #include "../include/bpmchange.h"
 #include "../include/jwm_globals.h"
 #include "../include/dobjparamlist.h"
@@ -72,4 +71,3 @@ void bpmchange::create_params()
     done_params = true;
 }
 
-#endif

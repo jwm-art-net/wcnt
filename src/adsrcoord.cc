@@ -1,4 +1,3 @@
-#ifndef ADSRCOORD_H
 #include "../include/adsrcoord.h"
 #include "../include/jwm_globals.h"
 #include "../include/dobjparamlist.h"
@@ -110,4 +109,3 @@ void adsr_coord::create_params()
 }
 
 bool adsr_coord::done_params = false;
-#endif

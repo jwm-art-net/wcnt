@@ -1,4 +1,3 @@
-#ifndef FAST_LOOKAHEAD_LIMITER_H
 #include "../include/fast_lookahead_limiter.h"
 #ifdef WITH_LADSPA
 #include "../include/jwm_globals.h"
@@ -192,4 +191,3 @@ void fast_lookahead_limiter::create_params()
 }
 
 #endif // WITH_LADSPA
-#endif // fast_lookahead_limiter_H

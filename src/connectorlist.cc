@@ -1,4 +1,3 @@
-#ifndef CONNECTORLIST_H
 #include "../include/connectorlist.h"
 #include "../include/synthmod.h"
 #include "../include/jwm_globals.h"
@@ -188,4 +187,3 @@ connectorlist::remake_connections(
     return true;
 }
 
-#endif

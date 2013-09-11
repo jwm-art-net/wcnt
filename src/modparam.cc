@@ -1,4 +1,3 @@
-#ifndef MODPARAM_H
 #include "../include/modparam.h"
 #include "../include/jwm_globals.h"
 #include "../include/synthmod.h"
@@ -34,4 +33,3 @@ bool modparam::validate(synthmod* sm, stockerrs::ERR_TYPE et)
     }
 }
 
-#endif

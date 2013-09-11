@@ -1,4 +1,3 @@
-#ifndef FADER_H
 #include "../include/fader.h"
 #include "../include/jwm_globals.h"
 #include "../include/modinputlist.h"
@@ -201,5 +200,3 @@ void fader::create_params()
         synthmodnames::FADER, paramnames::FADE_OUT_TIME);
     done_params = true;
 }
-
-#endif

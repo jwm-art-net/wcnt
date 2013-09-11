@@ -1,4 +1,3 @@
-#ifndef CONSTMOD_H
 #include "../include/constmod.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -62,4 +61,3 @@ void constmod::create_params()
     done_params = true;
 }
 
-#endif

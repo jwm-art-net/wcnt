@@ -1,4 +1,3 @@
-#ifndef SERIALWAVFILEOUT_H
 #include "../include/serialwavfileout.h"
 #include "../include/jwm_globals.h"
 #include "../include/jwm_init.h"
@@ -291,4 +290,3 @@ void serialwavfileout::create_params()
     done_params = true;
 }
 
-#endif

@@ -1,4 +1,3 @@
-#ifndef WCNTTRIGGER_H
 #include "../include/wcnttrigger.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -47,5 +46,3 @@ void const* wcnt_trigger::get_in(inputnames::IN_TYPE it) const
         default: return 0;
     }
 }
-
-#endif

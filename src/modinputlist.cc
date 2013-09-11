@@ -1,4 +1,3 @@
-#ifndef MODINPUTSLIST_H
 #include "../include/modinputlist.h"
 #include "../include/jwm_globals.h"
 #include "../include/synthmod.h"
@@ -146,4 +145,3 @@ modinputlist::get_list_of_category_orderpref(iocat::IOCAT in_cat,
 }
 */
 
-#endif

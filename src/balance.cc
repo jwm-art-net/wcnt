@@ -1,4 +1,3 @@
-#ifndef BALANCE_H
 #include "../include/balance.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -112,4 +111,3 @@ void balance::create_params()
     done_params = true;
 }
 
-#endif

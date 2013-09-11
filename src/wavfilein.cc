@@ -1,4 +1,3 @@
-#ifndef WAVFILEIN_H
 #include "../include/wavfilein.h"
 #include "../include/jwm_globals.h"
 #include "../include/jwm_init.h"
@@ -174,4 +173,3 @@ void wavfilein::create_params()
 
 bool wavfilein::done_params = false;
 
-#endif

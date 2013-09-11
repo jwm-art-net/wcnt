@@ -1,4 +1,3 @@
-#ifndef TOPDOBJLIST_H
 #include "../include/topdobjlist.h"
 #include "../include/jwm_globals.h"
 #include "../include/dobjdobjlist.h"
@@ -30,4 +29,3 @@ dobjdobjlist* topdobjlist::create_dobjdobjlist(
     }
     return newddlist;
 }
-#endif

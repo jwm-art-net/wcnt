@@ -1,4 +1,3 @@
-#ifndef CONVERSIONS_H
 #include "../include/conversions.h"
 #include "../include/jwm_globals.h"
 #include "../include/jwm_init.h"
@@ -163,4 +162,3 @@ unsigned long ms_to_samples(double t)
     return (unsigned long)(jwm.samplerate() * (t / 1000));
 }
 
-#endif

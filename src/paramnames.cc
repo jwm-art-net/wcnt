@@ -1,4 +1,3 @@
-#ifndef paramnames_H
 #include "../include/paramnames.h"
 
 #ifdef NAME_CHECK
@@ -252,4 +251,3 @@ const paramnames::param_data paramnames::data[LAST] =
     { DROP_CHECK_RANGE, "drop_check_range",     iocat::SHORT   }
 };
 
-#endif

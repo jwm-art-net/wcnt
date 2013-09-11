@@ -1,4 +1,3 @@
-#ifndef TRIGECHO_H
 #include "../include/trigecho.h"
 #include "../include/jwm_globals.h"
 #include "../include/conversions.h"
@@ -155,4 +154,3 @@ void trigecho::create_params()
     done_params = true;
 }
 
-#endif

@@ -1,4 +1,3 @@
-#ifndef NOTEDATA_H
 #include "../include/notedata.h"
 #include "../include/jwm_init.h"
 #include "../include/jwm_globals.h"
@@ -262,4 +261,3 @@ bool note_data::done_params = false;
 STATS_INIT(note_data)
 #endif
 
-#endif

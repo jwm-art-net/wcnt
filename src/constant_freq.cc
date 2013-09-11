@@ -1,4 +1,3 @@
-#ifndef CONSTANT_FREQ_H
 #include "../include/constant_freq.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -76,4 +75,3 @@ void constant_freq::create_params()
     done_params = true;
 }
 
-#endif

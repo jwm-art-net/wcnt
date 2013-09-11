@@ -1,4 +1,3 @@
-#ifndef TRIANGLEWAVE2_H
 #include "../include/trianglewave2.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -200,4 +199,3 @@ void triangle_wave2::create_params()
     done_params = true;
 }
 
-#endif

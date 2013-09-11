@@ -1,4 +1,3 @@
-#ifndef MONOAMP_H
 #include "../include/monoamp.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -129,4 +128,3 @@ void mono_amp::create_params()
     done_params = true;
 }
 
-#endif

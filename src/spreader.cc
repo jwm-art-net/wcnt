@@ -1,4 +1,3 @@
-#ifndef SPREADER_H
 #include "../include/spreader.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -206,4 +205,3 @@ void spreader::create_moddobj()
     done_moddobj = true;
 }
 
-#endif

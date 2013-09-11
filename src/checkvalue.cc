@@ -1,4 +1,3 @@
-#ifndef CHECKVALUE_H
 #include "../include/checkvalue.h"
 #include "../include/jwm_globals.h"
 #include "../include/jwm_ranges.h"
@@ -79,4 +78,3 @@ bool check_value(long double n, stockerrs::ERR_TYPE et)
     return false;
 }
 
-#endif

@@ -1,4 +1,3 @@
-#ifndef SIMPLEDELAY_H
 #include "../include/simpledelay.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -112,4 +111,3 @@ void simple_delay::create_params()
     done_params = true;
 }
 
-#endif

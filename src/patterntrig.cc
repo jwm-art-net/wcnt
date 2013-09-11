@@ -1,4 +1,3 @@
-#ifndef PATTERNTRIG_H
 #include "../include/patterntrig.h"
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
@@ -165,4 +164,3 @@ void patterntrig::create_params()
     done_params = true;
 }
 
-#endif

@@ -1,4 +1,3 @@
-#ifndef RIFFNODE_H
 #include "../include/riffnode.h"
 #include "../include/jwm_globals.h"
 #include "../include/topdobjlist.h"
@@ -119,4 +118,3 @@ void riff_node::create_params()
     done_params = true;
 }
 
-#endif
