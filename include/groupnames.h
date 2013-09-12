@@ -8,7 +8,7 @@
 //  finds the group name portion of the name passed.
 //  returns it as new char[] if it exists, otherwise 0.
 */
-const char* const get_groupname(const char* name);
+const char* get_groupname(const char* name);
 
 /*
 // set_groupname

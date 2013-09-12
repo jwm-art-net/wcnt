@@ -95,8 +95,8 @@ public:
     };
     synthmodnames();
     ~synthmodnames(){};
-    const char* const get_name(SYNTH_MOD_TYPE id) const;
-    SYNTH_MOD_TYPE get_type(const char* const name) const;
+    const char*     get_name(SYNTH_MOD_TYPE id) const;
+    SYNTH_MOD_TYPE  get_type(const char* const name) const;
 
 private:
     struct mod_data

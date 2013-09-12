@@ -18,7 +18,7 @@ outputnames::outputnames()
 #endif
 }
 
-char const* const outputnames::get_name(OUT_TYPE id) const
+char const* outputnames::get_name(OUT_TYPE id) const
 {
     if (id >= OUT_FIRST && id < OUT_LAST)
         return data[id].name;

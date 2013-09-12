@@ -84,8 +84,8 @@ private:
     FILE_STATUS open_file();
     bool read_header(unsigned long* samplerate);
     std::string const* read_command();
-    synthmod* const read_synthmodule(std::string const* command);
-    dobj* const read_dobj(std::string const* command);
+    synthmod*   read_synthmodule(std::string const* command);
+    dobj*       read_dobj(std::string const* command);
     bool include_mod(const char* name);
     bool include_dbj(const char* name);
     bool read_and_create_synthmod(std::string const* com);

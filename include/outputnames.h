@@ -85,10 +85,10 @@ public:
     };
     outputnames();
     ~outputnames(){};
-    const char* const get_name(OUT_TYPE type) const;
-    iocat::IOCAT get_category(OUT_TYPE type) const;
-    OUT_TYPE get_type(char const* const name) const;
-    OUT_TYPE get_nonezerotype(iocat::IOCAT cat) const;
+    const char*     get_name(OUT_TYPE type) const;
+    iocat::IOCAT    get_category(OUT_TYPE type) const;
+    OUT_TYPE        get_type(char const* const name) const;
+    OUT_TYPE        get_nonezerotype(iocat::IOCAT cat) const;
 private:
     struct output_data
     {

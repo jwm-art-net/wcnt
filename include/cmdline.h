@@ -60,7 +60,7 @@ class cmdline
 
     bool set_jwm_globals();
 
-    const char* const get_message();
+    const char* get_message();
 
  private:
     int const           opts_count;

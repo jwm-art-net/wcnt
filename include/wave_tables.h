@@ -22,7 +22,7 @@ class wave_tables
     wave_tables();
     ~wave_tables();
     void calc_phase_step_scalar(unsigned long samplerate);
-    const double* const get_table(WT);
+    const double* get_table(WT);
     static const int table_bits;
     static const int table_shift;
     static double phase_step_base;

@@ -21,7 +21,7 @@ dobjnames::dobjnames()
 
 }
 
-const char* const
+const char*
 dobjnames::get_name(dobjnames::DOBJ_TYPE dt) const
 {
     return data[check_type(dt)].name;
@@ -65,7 +65,7 @@ dobjnames::get_sub_type(dobjnames::DOBJ_TYPE dt) const
     return DOBJ_FIRST;
 }
 
-char const* const
+char const*
 dobjnames::get_sub_name(dobjnames::DOBJ_TYPE dt) const
 {
     return data[get_sub_type(dt)].name;

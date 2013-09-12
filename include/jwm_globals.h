@@ -29,7 +29,7 @@ class wave_tables;
 
 class synthfilereader;
 
-const char* const wcnt_version = "1.26.3";
+const char* const wcnt_version = "1.26.5";
 const char* const wcnt_id = "wcnt-1.26/jwmsynth";
 
 class jwm_globals
@@ -46,11 +46,11 @@ class jwm_globals
     short get_exit_bar(){ return x_exit_bar; }
     short const* get_exit_in_bar(){ return x_in_bar; }
 
-    const char* const path()    { return wc_path;   }
-    const char* const file()    { return wc_file;   }
-    bool is_verbose()           { return verbose;   }
-    bool is_dont_run()          { return dont_run;  }
-    bool is_no_title()          { return no_title;  }
+    const char* path()  { return wc_path;   }
+    const char* file()  { return wc_file;   }
+    bool is_verbose()   { return verbose;   }
+    bool is_dont_run()  { return dont_run;  }
+    bool is_no_title()  { return no_title;  }
 
     void set_verbose(bool v)    { verbose = v; }
 

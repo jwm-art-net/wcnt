@@ -40,7 +40,7 @@ public:
     void set_output_module_name(const char*);
     void set_output_type(outputnames::OUT_TYPE ot){ out_type = ot; }
 
-    const synthmod* const get_input_module()const { return in_mod;}
+    const synthmod*       get_input_module()const { return in_mod;}
     inputnames::IN_TYPE   get_input_type()  const { return in_type;}
     char const* get_output_module_name()    const { return out_mod_uname;}
     outputnames::OUT_TYPE get_output_type() const { return out_type;}

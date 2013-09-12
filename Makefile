@@ -47,7 +47,7 @@ DEFS=-O2 -fomit-frame-pointer -DWITH_LADSPA
 
 # nothing to be modified further:
 PROG=wcnt
-WARNS=-Wall -ansi -pedantic -D_GNU_SOURCE
+WARNS=-Wall -Wextra
 CFLAGS=$(DEFS) $(WARNS) `pkg-config sndfile --cflags`
 LIBS=`pkg-config sndfile --libs`
 SRC=$(wildcard src/*.cc)

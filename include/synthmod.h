@@ -45,10 +45,10 @@ class synthmod
     synthmodnames::SYNTH_MOD_TYPE get_module_type()
         { return module_type; }
 
-    const char* const get_username() const
+    const char* get_username() const
         { return username; }
 
-    const char* const get_group_name() const
+    const char* get_group_name() const
         {
             return
                 ((flags & SM_UNGROUPABLE)
@@ -93,7 +93,7 @@ class synthmod
     static std::string const* get_error_msg()       { return err_msg;}
 
     // should only be used by jwmsynth::run()
-    static const STATUS* const get_abort_status()
+    static const STATUS* get_abort_status()
         { return &abort_status;}
 
     bool operator()(synthmodnames::SYNTH_MOD_TYPE & smt) const

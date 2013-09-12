@@ -18,7 +18,7 @@ paramnames::paramnames()
 #endif
 }
 
-char const* const paramnames::get_name(PAR_TYPE id) const
+char const* paramnames::get_name(PAR_TYPE id) const
 {
     if (id >= FIRST && id < LAST)
         return data[id].name;

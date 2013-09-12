@@ -18,7 +18,7 @@ synthmodnames::synthmodnames()
 #endif
 }
 
-const char* const synthmodnames::get_name(SYNTH_MOD_TYPE id) const
+const char* synthmodnames::get_name(SYNTH_MOD_TYPE id) const
 {
     if (id > FIRST && id < LAST)
         return data[id].name;

@@ -298,7 +298,7 @@ bool synthfilereader::include_dbj(const char* name)
     return (dobj_action == WC_INCLUDE) ? false : true;
 }
 
-synthmod *const synthfilereader::read_synthmodule(string const *com)
+synthmod* synthfilereader::read_synthmodule(string const *com)
 {
     synthmodnames::SYNTH_MOD_TYPE
                 smt = jwm.get_modnames()->get_type(com->c_str());
@@ -411,7 +411,7 @@ synthmod *const synthfilereader::read_synthmodule(string const *com)
 // return dobj on success
 // return 0 on failure
 //--
-dobj* const synthfilereader::read_dobj(string const* com)
+dobj* synthfilereader::read_dobj(string const* com)
 {
     const dobjnames* dbjnames = jwm.get_dobjnames();
     dobjnames::DOBJ_TYPE dobjtype = dbjnames->get_type(com->c_str());

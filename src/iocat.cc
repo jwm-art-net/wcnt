@@ -19,7 +19,7 @@ iocat::iocat()
 #endif
 }
 
-const char* const iocat::get_name(IOCAT iocat) const
+const char* iocat::get_name(IOCAT iocat) const
 {
     if (iocat <= FIRST || iocat >= LAST)
         return data[FIRST].name;

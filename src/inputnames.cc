@@ -18,7 +18,7 @@ inputnames::inputnames()
 #endif
 }
 
-const char* const inputnames::get_name(IN_TYPE id) const
+const char* inputnames::get_name(IN_TYPE id) const
 {
     if (id >= IN_FIRST && id < IN_LAST)
         return data[id].name;

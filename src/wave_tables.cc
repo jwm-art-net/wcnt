@@ -25,7 +25,7 @@ void wave_tables::calc_phase_step_scalar(unsigned long samplerate)
     phase_step_scalar = (phase_step_base * 360) / samplerate;
 }
 
-const double* const wave_tables::get_table(WT type)
+const double* wave_tables::get_table(WT type)
 {
     if (!table[type])
         create_table(type);
