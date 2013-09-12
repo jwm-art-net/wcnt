@@ -22,7 +22,26 @@
 
 #include <iostream>
 #include <fstream>
+
 using namespace std; // just this once as it's used so much in here...
+
+
+
+#define wc_err(fmt, ... ) \
+    cfmt(wc_err_msg, STRBUFLEN, fmt, __VA_ARGS__)
+
+size_t synthfilereader::wc_err(const char* fmt, ...)
+{
+    return cfmt(wc_err_msg, STRBUFLEN, fmt
+    char buf[STRBUFLEN];
+    va_list args;
+    va_start(args, fmt);
+    size_t n = vsnprintf(buf, STRBUFLEN, fmt, args);
+    va_end(args);
+    strncpy(wc_err_msg, buf);
+    return n;
+}
+
 
 synthfilereader::synthfilereader() :
  dobj(dobjnames::DEF_WCFILE),
@@ -103,18 +122,16 @@ bool synthfilereader::read_and_create()
         return false;
     switch (open_file()) {
         case synthfilereader::NOT_FOUND:
-            cfmt(wc_err_msg, "File %s not found.", wc_filename);
+            wc_err("File %s not found.", wc_filename);
             return false;
         case synthfilereader::INVALID_HEADER:
-            cfmt(wc_err_msg, "File %s does not contain a valid header.",
+            wc_err("File %s does not contain a valid header.",
                                                             wc_filename);
             return false;
         case synthfilereader::FILE_OPEN:
             break;
         case synthfilereader::FILE_READY:
-            *wc_err_msg = "\nfile ";
-            *wc_err_msg += wc_filename;
-            *wc_err_msg += " inspires premature optimism.\n";
+            wc_err("File %s inspires premature optimism.", wc_filename);
             return false;
     }
     unsigned long srate;
@@ -133,10 +150,8 @@ bool synthfilereader::read_and_create()
         jwm.samplerate(srate);
     else {
         if (srate != jwm.samplerate()) {
-            *wc_err_msg = "\nWarning!\nFile ";
-            *wc_err_msg+= wc_filename;
-            *wc_err_msg+= " has conflicting header information"
-                          " with that already in use.";
+            wc_err("Warning! Header data in file %s conflicts with header \
+                    data already in use.", wc_filename);
         }
     }
     string const *com = read_command();
@@ -176,17 +191,14 @@ bool synthfilereader::read_and_create_synthmod(string const* com)
             if (jwm.get_modlist()->
                     get_first_of_type(synthmodnames::WCNTEXIT))
             {
-                *wc_err_msg
-                   = "\nCannot create more than one wcnt_exit module: ";
-                *wc_err_msg += mod->get_username();
+                wc_err("Cannot create more than one wcnt_exit module. Not \
+                                    creating %s.", mod->get_username());
                 delete mod;
                 return 0;
             }
         }
         if (!jwm.get_modlist()->add_module(mod)) {
-            *wc_err_msg = "\ncould not add module ";
-            *wc_err_msg += mod->get_username();
-            *wc_err_msg += " to list.";
+            wc_err("Failed to add module %s to list.", mod->get_username());
             delete mod;
             return false;
         }
@@ -208,16 +220,15 @@ bool synthfilereader::read_and_create_dobj(string const* com)
         return false;
     if (include_dbj(dbj->get_username())){
         if (!dbj->validate()) {
-        *wc_err_msg = *dbj->get_error_msg();
-        return false;
+            wc_err("%s", dbj->get_error_msg()->c_str());
+            return false;
         }
     }
     string dbjuname = dbj->get_username();
     if (include_dbj(dbj->get_username())) {
         if (!jwm.get_dobjlist()->add_dobj(dbj)) {
-            *wc_err_msg = "\ncould not add data object ";
-            *wc_err_msg += dbj->get_username();
-            *wc_err_msg += " to list.";
+            wc_err("Could not add data object %s to list.",
+                                        dbj->get_username());
             return false;
         }
         switch(dbj->get_object_type())
@@ -229,7 +240,7 @@ bool synthfilereader::read_and_create_dobj(string const* com)
             {
                 synthfilereader* wcf = (synthfilereader*)dbj;
                 if (!(wcf->read_and_create())) { // ooooh
-                    *wc_err_msg = wcf->get_wc_error_msg();
+                    wc_err("%s", wcf->get_wc_error_msg());
                     return false;
                 }
                 break;
@@ -238,7 +249,7 @@ bool synthfilereader::read_and_create_dobj(string const* com)
             {
                 parameditor* pe = (parameditor*)dbj;
                 if (!pe->do_param_edits()) {
-                    *wc_err_msg = *dobj::get_error_msg();
+                    wc_err("%s", *dobj::get_error_msg()->c_str());
                     return false;
                 }
                 break;
@@ -247,7 +258,7 @@ bool synthfilereader::read_and_create_dobj(string const* com)
             {
                 inputeditor* ie = (inputeditor*)dbj;
                 if (!ie->create_connectors()) {
-                    *wc_err_msg = *dobj::get_error_msg();
+                    wc_err("%s", *dobj::get_error_msg()->c_str());
                     return false;
                 }
                 break;
@@ -301,55 +312,45 @@ synthmod* synthfilereader::read_synthmodule(string const *com)
     if (smt == synthmodnames::FIRST 
         || smt == synthmodnames::NONEZERO)
     {
-        *wc_err_msg = "\nUnrecognised wcnt/jwmsynth module: " + *com;
+        wc_err("Unrecognised wcnt/jwmsynth module %s.", com->c_str());
         return 0;
     }
     string modname;
     *synthfile >> modname;
     if (strcmp(modname.c_str(), "off") == 0) {
-        *wc_err_msg = "\ncannot use reserved word off to name module ";
-        *wc_err_msg += *com;
+        wc_err("Cannot use reserved word off to name module %s.",
+                                                        com->c_str());
         return 0;
     }
     if (strcmp(modname.c_str(),
         jwm.get_dobjnames()->get_name(dobjnames::LST_EDITS)) == 0)
     {
-        *wc_err_msg = "\ncannot use reserved word ";
-        *wc_err_msg +=
-            jwm.get_dobjnames()->get_name(dobjnames::LST_EDITS);
-        *wc_err_msg += " to name module ";
-        *wc_err_msg += *com;
+        wc_err("Cannot use reserved word %s to name module %s.",
+                jwm.get_dobjnames()->get_name(dobjnames::LST_EDITS),
+                com->c_str());
         return 0;
     }
     const char* const grpname = get_groupname(modname.c_str());
     if (grpname) {
         delete [] grpname;
-        *wc_err_msg = "\nthe ";
-        *wc_err_msg += jwm.get_modnames()->get_name(smt);
-        *wc_err_msg += " name ";
-        *wc_err_msg += modname;
-        *wc_err_msg += " uses the . character which is reserved for ";
-        *wc_err_msg += "grouped modules only. use the group data object";
-        *wc_err_msg += " to add a module to a group.";
+        wc_err("The %s module name %s uses the '.' character which is \
+                reserved for grouped modules only (use the group data \
+                object if you want to add the module to a group.)",
+                jwm.get_modnames()->get_name(smt), modname);
         return 0;
     }
     if (include_mod(modname.c_str())) {
         if (jwm.get_modlist()->get_synthmod_by_name(modname.c_str()))
         {
-            *wc_err_msg = "\nsynth module already exists named ";
-            *wc_err_msg += modname;
+            wc_err("A synth module already exists named %s.", modname);
             return 0;
         }
         dobj* dbj = jwm.get_dobjlist()->get_dobj_by_name(modname.c_str());
         if (dbj){ // formality because of parameditor.cc workings.
-            *wc_err_msg = "\nwill not name ";
-            *wc_err_msg += *com;
-            *wc_err_msg += " ";
-            *wc_err_msg += dbj->get_username();
-            *wc_err_msg += 
-             ", the name has already been taken by data object of type ";
-            *wc_err_msg +=
-             jwm.get_dobjnames()->get_name(dbj->get_object_type());
+            wc_err("Cannot not name %s as %s, the name is already in use \
+                    by a data object of type %s.",  com->c_str(),
+                                                    dbj->get_username(),
+                    jwm.get_dobjnames()->get_name(dbj->get_object_type()));
             return 0;
         }
         inc_current = true;
@@ -362,30 +363,26 @@ synthmod* synthfilereader::read_synthmodule(string const *com)
     }
     synthmod* sm = jwm.get_modlist()->create_module(smt, modname.c_str());
     if (!read_dobjs(sm)){
-        *wc_err_msg = sm->get_username() + *wc_err_msg;
-        *wc_err_msg = "\nIn module " + *wc_err_msg;
+        wc_err("In module %s, %s.", sm->get_username(), wc_err_msg);
         delete sm;
         return 0;
     }
     if (!read_inputs(sm)){
-        *wc_err_msg = sm->get_username() + *wc_err_msg;
-        *wc_err_msg = "\nIn module " + *wc_err_msg;
+        wc_err("In module %s, %s.", sm->get_username(), wc_err_msg);
         delete sm;
         return 0;
     }
     if (!read_params(sm)){
-        *wc_err_msg = sm->get_username() + *wc_err_msg;
-        *wc_err_msg = "\nIn module " + *wc_err_msg;
+        wc_err("In module %s, %s.", sm->get_username(), wc_err_msg);
         delete sm;
         return 0;
     }
     com = read_command();
     if (*com != modname) {
-        *wc_err_msg = "\nIn module ";
         *wc_err_msg += sm->get_username();
-        *wc_err_msg += ", expected definition termination ";
-        *wc_err_msg += sm->get_username();
-        *wc_err_msg += ", got " + *com + " instead.";
+        wc_err("In module %s expected definition termination %s, \
+                got %s instead.", sm->get_username(), sm->get_username(),
+                                                            com->c_str());
         delete sm;
         return 0;
     }

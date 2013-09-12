@@ -79,6 +79,7 @@ private:
     /*std::string* wc_err_msg;*/
     char wc_err_msg[STRBUFLEN];
 
+
     bool inc_current;  // include current? - bodgish
 
 //--- private member methods ---//

@@ -5,6 +5,9 @@
 
 #include <iostream>
 #include <cstring>
+#include <cstdlib>
+#include <cstdarg>
+
 
 std::string*
 collumnize(const char** textarr,    unsigned int arrsize,
@@ -101,6 +104,14 @@ collumnize(const char** textarr,    unsigned int arrsize,
     return str;
 }
 
-// sizeof buf is STRBUFLEN (see types.h)
-size_t cfmt(char* buf, const char* fmt, ...);
+size_t cfmt(char* buf, size_t len, const char* fmt, ...)
+{
+    char tmp[len + 1];
+    va_list args;
+    va_start(args, fmt);
+    size_t n = vsnprintf(tmp, len, fmt, args);
+    va_end(args);
+    strncpy(buf, tmp, len);
+    return n;
+}
 
