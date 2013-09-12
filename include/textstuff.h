@@ -27,6 +27,6 @@ collumnize(const char** textarr,    unsigned int arrsize,
 
 
 
-size_t cfmt(char* buf, size_t len, const char* fmt, ...)
+size_t cfmt(char* buf, size_t len, const char* fmt, ...);
 
 #endif
