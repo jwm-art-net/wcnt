@@ -3,6 +3,10 @@
 #include "../include/topdobjlist.h"
 #include "../include/dobjparamlist.h"
 
+#ifdef DEBUG_MSG
+#include <cstdio>
+#endif
+
 riff_node::riff_node() :
  dobj(dobjnames::SIN_RIFFNODE), start_bar(0), riff_source(0),
  transpose(0), repeat(0), repeat_stripe(0)
@@ -70,30 +74,29 @@ stockerrs::ERR_TYPE riff_node::validate()
 {
     if (((dobj*)riff_source)->get_object_type() != dobjnames::DEF_RIFF) 
     {
-        *err_msg = "\n";
-        *err_msg += riff_source->get_username();
-        *err_msg += " is not a riff and cannot be used as one.";
+        dobjerr("%s is not a riff and cannot be used as one.",
+                                    riff_source->get_username());
         return stockerrs::ERR_ERROR;
     }
     if (!jwm.get_dparlist()->validate(this,
         paramnames::BAR, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::BAR);
+        dobjerr("%s", jwm.get_paramnames()->get_name(paramnames::BAR));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (!jwm.get_dparlist()->validate(this,
         paramnames::REPEAT, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::REPEAT);
+        dobjerr("%s", jwm.get_paramnames()->get_name(paramnames::REPEAT));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (!jwm.get_dparlist()->validate(this,
         paramnames::REPEAT_STRIPE, stockerrs::ERR_NEG_ZERO))
     {
-        *err_msg = jwm.get_paramnames()->get_name(
-            paramnames::REPEAT_STRIPE);
+        dobjerr("%s", jwm.get_paramnames()->get_name(
+                                            paramnames::REPEAT_STRIPE));
         invalidate();
         return stockerrs::ERR_NEG_ZERO;
     }

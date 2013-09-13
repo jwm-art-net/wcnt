@@ -3,6 +3,11 @@
 #include "../include/dobjparamlist.h"
 #include "../include/fxsparamlist.h"
 
+#ifdef DEBUG_MSG
+#include <cstdio>
+#endif
+
+
 adsr_coord::adsr_coord() :
         dobj(dobjnames::SIN_COORD), sect(ADSR_ATTACK),
         upper_time(0), upper_level(0), lower_time(0), lower_level(0)
@@ -76,14 +81,14 @@ stockerrs::ERR_TYPE adsr_coord::validate()
     if (!dpl->validate(
         this, paramnames::UPTIME, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::UPTIME);
+        dobjerr("%s", jwm.get_paramnames()->get_name(paramnames::UPTIME));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (!dpl->validate(
         this, paramnames::LOTIME, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::LOTIME);
+        dobjerr("%s", jwm.get_paramnames()->get_name(paramnames::LOTIME));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }

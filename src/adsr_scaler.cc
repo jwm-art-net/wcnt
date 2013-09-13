@@ -2,6 +2,10 @@
 #include "../include/jwm_globals.h"
 #include "../include/dobjparamlist.h"
 
+#ifdef DEBUG_MSG
+#include <cstdio>
+#endif
+
 adsr_scaler::adsr_scaler() :
  dobj(dobjnames::DEF_ADSR_SCALER),
  padsr(0),
@@ -25,11 +29,8 @@ bool adsr_scaler::set_param(paramnames::PAR_TYPE pt, void* data)
                 padsr = (adsr*)data;
                 return true;
             }
-            *err_msg = "\n";
-            *err_msg += ((synthmod*)data)->get_username();
-            *err_msg += " is not an ";
-            *err_msg += jwm.get_modnames()->get_name(synthmodnames::ADSR);
-            *err_msg += "!";
+            dobjerr("%s is not an %s.", ((synthmod*)data)->get_username(),
+                        jwm.get_modnames()->get_name(synthmodnames::ADSR));
             return false;
         case paramnames::ATTACK_SCALE:
             attack_scale = *(double*)data;
@@ -65,24 +66,24 @@ stockerrs::ERR_TYPE adsr_scaler::validate()
     if (!jwm.get_dparlist()->validate(
         this, paramnames::ATTACK_SCALE, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames()->get_name(
-                                        paramnames::ATTACK_SCALE);
+        dobjerr("%s", jwm.get_paramnames()->get_name(
+                                        paramnames::ATTACK_SCALE));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (!jwm.get_dparlist()->validate(
         this, paramnames::DECAY_SCALE, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames()->get_name(
-                                        paramnames::DECAY_SCALE);
+        dobjerr("%s", jwm.get_paramnames()->get_name(
+                                        paramnames::DECAY_SCALE));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (!jwm.get_dparlist()->validate(
         this, paramnames::RELEASE_SCALE, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames()->get_name(
-                                        paramnames::RELEASE_SCALE);
+        dobjerr("%s", jwm.get_paramnames()->get_name(
+                                        paramnames::RELEASE_SCALE));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -90,7 +91,7 @@ stockerrs::ERR_TYPE adsr_scaler::validate()
     if(!ac){
         // this won't arise because you can't define an adsr with zero
         // sections.
-        *err_msg = "\nyeah, so, try harder next time mate.";
+        dobjerr("%s", "The impossible has happened.");
         return stockerrs::ERR_ERROR;
     }
     double scale;

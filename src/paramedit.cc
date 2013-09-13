@@ -9,6 +9,11 @@
 
 #include <iostream>
 
+#ifdef DEBUG_MSG
+#include <cstdio>
+#endif
+
+
 paramedit::paramedit() :
  dobj(dobjnames::SIN_EDIT_PARAM),
  name(0), parstr(0)
@@ -51,17 +56,14 @@ bool paramedit::do_param_edits()
     synthmod* sm = jwm.get_modlist()->get_synthmod_by_name(name);
     dobj* dbj = jwm.get_dobjlist()->get_dobj_by_name(name);
     if (sm && dbj) {
-        *err_msg ="\na data object and module share username ";
-        *err_msg += name;
-        *err_msg += ". will not edit parameters ";
-        *err_msg += parstr;
+        dobjerr("A data object and module share the username %s. Cannot \
+                    edit parameters %s", name, parstr);
         invalidate();
         return false;
     }
     if (!sm && !dbj) {
-        *err_msg = "\nthere are no data objects or modules named ";
-        *err_msg += name;
-        *err_msg += ". cannot edit parameters of non-existant entity.";
+        dobjerr("There are no data objects or modules named %s. Cannot \
+                    edit parameters.", name);
         invalidate();
         return false;
     }
@@ -116,25 +118,21 @@ bool paramedit::mod_param_edit(synthmod* module, const char* parname,
         mp = parlist->goto_next();
     }
     if (confused) {
-        *err_msg = " there seems to be more than one parameter named ";
-        *err_msg += parname;
-        *err_msg += ". cannot choose. please inform wcnt developer";
+        dobjerr("There seems to be more than one parameter named %s \
+                                            - this is a bug.", parname);
         invalidate();
         delete parlist;
         return false;
     }
     if (pt == paramnames::FIRST) {
-        *err_msg = "\nmodule ";
-        *err_msg += module->get_username();
-        *err_msg += " does not have any parameter named ";
-        *err_msg += parname;
+        dobjerr("Module %s does not have any parameter named %s.",
+                                        module->get_username(), parname);
         invalidate();
         delete parlist;
         return false;
     }
     if (!setpar::set_param(module, parname, pt, valstr, 0)) {
-        *err_msg = "\n";
-        *err_msg += setpar::err_msg;
+        dobjerr("%s", setpar::err_msg.c_str());
         invalidate();
         delete parlist;
         return false;
@@ -164,25 +162,21 @@ bool paramedit::dobj_param_edit(dobj* dobject, const char* parname,
         dp = parlist->goto_next();
     }
     if (confused) {
-        *err_msg = " there seems to be more than one parameter named ";
-        *err_msg += parname;
-        *err_msg += ". cannot choose. please inform wcnt developer";
+        dobjerr("There seems to be more than one parameter named %s \
+                                            - this is a bug.", parname);
         invalidate();
         delete parlist;
         return false;
     }
     if (pt == paramnames::FIRST) {
-        *err_msg = "\ndata object ";
-        *err_msg += dobject->get_username();
-        *err_msg += " does not have any parameter named ";
-        *err_msg += parname;
+        dobjerr("Data object %s does not have any parameter named %s.",
+                                        dobject->get_username(), parname);
         invalidate();
         delete parlist;
         return false;
     }
     if (!setpar::set_param(dobject, parname, pt, valstr, 0)) {
-        *err_msg = "\n";
-        *err_msg += setpar::err_msg;
+        dobjerr("%s", setpar::err_msg.c_str());
         invalidate();
         delete parlist;
         return false;
@@ -197,10 +191,8 @@ bool paramedit::set_param(paramnames::PAR_TYPE dt, void* data)
     {
     case paramnames::STR_UNNAMED:
         if (!set_name((char*)data)) {
-            *err_msg = "\nthere are no data objects or modules named ";
-            *err_msg += (char*)data;
-            *err_msg +=
-                ". cannot edit parameters of non-existant entity.";
+            dobjerr("There are no data objects or modules named %s \
+                    cannot edit parameters.", (char*)data);
             invalidate();
             return false;
         }

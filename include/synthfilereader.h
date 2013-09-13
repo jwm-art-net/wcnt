@@ -76,7 +76,6 @@ private:
     std::string* command; // used to force a command into buff
     std::string* synthheader;
 
-    /*std::string* wc_err_msg;*/
     char wc_err_msg[STRBUFLEN];
 
 

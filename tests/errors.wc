@@ -4,7 +4,7 @@ samplerate 44100
 
 time_map
 time
-    meter_maps
+    meter_map
         meter   tsig 6/4    bar 0
     meter_map
     bpm_map

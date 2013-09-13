@@ -5,6 +5,11 @@
 #include "../include/dobjparamlist.h"
 #include "../include/dobjdobjlist.h"
 
+#ifdef DEBUG_MSG
+#include <cstdio>
+#endif
+
+
 riff_editor::riff_editor() :
  dobj(dobjnames::DEF_RIFFEDITOR), riff_source(0)
 {
@@ -24,9 +29,8 @@ bool riff_editor::set_param(paramnames::PAR_TYPE pt, void* data)
             set_riff_source((riffdata*)data);// pass pointer
             return true;
         }
-        *err_msg = "\n";
-        *err_msg += get_username();
-        *err_msg += " is not a riff and cannot be used as one.";
+        dobjerr("%s is not a riff and cannot be used as one.",
+                                                get_username());
         return false;
     default:
         return false;
@@ -51,15 +55,13 @@ dobj const* riff_editor::add_dobj(dobj* dbj)
     case dobjnames::SIN_NOTE:
         retv = riff_source->insert_and_position_note((note_data*)dbj);
         if (!retv)
-            *err_msg = "\ncould not add note change to ";
-            *err_msg += riff_source->get_username();
-            *err_msg += " by way of riff_editor ";
-            *err_msg += get_username();
+            dobjerr("Could not add note change to %s by way of \
+                    riff_editor %s.", riff_source->get_username(),
+                                      get_username());
         break;
     default:
-        *err_msg = "\n***major error*** attempt made to add an ";
-        *err_msg += "\ninvalid object type to ";
-        *err_msg += get_username();
+        dobjerr("%s", "*** MAJOR ERROR *** Bad attempt made to add \
+                        invalid object type to %s.", get_username());
         retv = 0;
     }
     return retv;

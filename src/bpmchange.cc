@@ -2,6 +2,10 @@
 #include "../include/jwm_globals.h"
 #include "../include/dobjparamlist.h"
 
+#ifdef DEBUG_MSG
+#include <cstdio>
+#endif
+
 bpmchange::bpmchange() : 
  dobj(dobjnames::SIN_BPM), atbar(0), tobpm(0)
 {
@@ -45,14 +49,14 @@ stockerrs::ERR_TYPE bpmchange::validate()
     if (!jwm.get_dparlist()->validate(
         this, paramnames::BPM, stockerrs::ERR_RANGE_BPM))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::BPM);
+        dobjerr("%s", jwm.get_paramnames()->get_name(paramnames::BPM));
         invalidate();
         return stockerrs::ERR_RANGE_BPM;
     }
     if (!jwm.get_dparlist()->validate(
         this, paramnames::BAR, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::BAR);
+        dobjerr("%s", jwm.get_paramnames()->get_name(paramnames::BAR));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }

@@ -7,6 +7,11 @@
 #include <iostream>
 #include <string>
 
+#ifdef DEBUG_MSG
+#include <cstdio>
+#endif
+
+
 inputeditor::inputeditor() :
  dobj(dobjnames::DEF_INPUTEDITOR)
 {
@@ -26,13 +31,9 @@ bool inputeditor::create_connectors()
                 << "\nsetting inputs for " << ie->get_modname();
         }
         if (!ie->create_connectors()) {
-            std::string errmsg = *err_msg;
-            *err_msg = "\nIn ";
-            *err_msg += jwm.get_dobjnames()->get_name(get_object_type());
-            *err_msg += " ";
-            *err_msg += get_username();
-            *err_msg += ", connection attempt failed, ";
-            *err_msg += errmsg;
+            dobjerr("In %s %s connection attempt failed %s.",
+                        jwm.get_dobjnames()->get_name(get_object_type()),
+                        get_username(), err_msg);
             return false;
         }
         ie = goto_next();
@@ -48,14 +49,13 @@ dobj const* inputeditor::add_dobj(dobj* dbj)
     {
         case dobjnames::SIN_EDIT_INPUT:
             if (!(retv = add_at_tail((inputedit*)dbj)->get_data())) {
-                *err_msg = "\ncould not add parameter edit to ";
-                *err_msg += *get_username();
+                dobjerr("Could not add parameter edit to %s",
+                                                    *get_username());
             }
             break;
         default:
-            *err_msg = "\n***major error*** attempt made to add an ";
-            *err_msg += "\ninvalid object type to ";
-            *err_msg += *get_username();
+            dobjerr("*** MAJOR ERROR *** Bad attempt made to add \
+                        invalid object type to %s.", *get_username());
             retv = 0;
     }
     return retv;

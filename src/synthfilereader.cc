@@ -212,7 +212,7 @@ bool synthfilereader::read_and_create_dobj(string const* com)
         return false;
     if (include_dbj(dbj->get_username())){
         if (!dbj->validate()) {
-            wc_err("%s", dbj->get_error_msg()->c_str());
+            wc_err("%s", dobj::get_error_msg());
             return false;
         }
     }
@@ -241,7 +241,7 @@ bool synthfilereader::read_and_create_dobj(string const* com)
             {
                 parameditor* pe = (parameditor*)dbj;
                 if (!pe->do_param_edits()) {
-                    wc_err("%s", *dobj::get_error_msg()->c_str());
+                    wc_err("%s", dobj::get_error_msg());
                     return false;
                 }
                 break;
@@ -250,7 +250,7 @@ bool synthfilereader::read_and_create_dobj(string const* com)
             {
                 inputeditor* ie = (inputeditor*)dbj;
                 if (!ie->create_connectors()) {
-                    wc_err("%s", *dobj::get_error_msg()->c_str());
+                    wc_err("%s", dobj::get_error_msg());
                     return false;
                 }
                 break;
@@ -472,7 +472,7 @@ dobj* synthfilereader::read_dobj(string const* com)
         stockerrs::ERR_TYPE et = dbj->validate();
         if (et != stockerrs::ERR_NO_ERROR) {
             wc_err("In data object %s, parameter %s %s %s", 
-                    dbj->get_username(), dbj->get_error_msg()->c_str(),
+                    dbj->get_username(), dobj::get_error_msg(),
                     jwm.get_stockerrs()->get_prefix_err(et),
                     jwm.get_stockerrs()->get_err(et));
             delete dbj;
@@ -560,7 +560,7 @@ bool synthfilereader::read_dobjs(dobj* dbj)
                         wc_err("Data object %s has error in %s %s %s %s.",
                                 dbj->get_username(),
                                 sprogname,
-                                sprog->get_error_msg()->c_str(),
+                                dobj::get_error_msg(),
                                 jwm.get_stockerrs()->get_prefix_err(et),
                                 jwm.get_stockerrs()->get_err(et));
                         delete sprog;
@@ -572,7 +572,7 @@ bool synthfilereader::read_dobjs(dobj* dbj)
                         wc_err("*** MAJOR ERROR *** Could not add data \
                                 object %s to data object %s.", sprogname,
                                 dbj->get_username(),
-                                dbj->get_error_msg()->c_str());
+                                dobj::get_error_msg());
                         delete sprog;
                         delete dd_list;
                         return false;
@@ -647,7 +647,7 @@ bool synthfilereader::read_dobjs(synthmod* sm)
                 }
                 if (!read_dobj_params(dbj, 0)) {
                     wc_err("%s, %s %s", dbjname.c_str(), xsprogname,
-                                    dbj->get_error_msg()->c_str());
+                                                dobj::get_error_msg());
                     delete dbj;
                     return false;
                 }
@@ -655,8 +655,7 @@ bool synthfilereader::read_dobjs(synthmod* sm)
                     stockerrs::ERR_TYPE et = dbj->validate();
                     if (et!= stockerrs::ERR_NO_ERROR) {
                         wc_err("data object %s %s %s %s.",
-                                xdbjname,
-                                dbj->get_error_msg()->c_str(),
+                                xdbjname, dobj::get_error_msg(),
                                 jwm.get_stockerrs()->get_prefix_err(et),
                                 jwm.get_stockerrs()->get_err(et));
                         delete dbj;
@@ -1145,16 +1144,16 @@ dobj const* synthfilereader::add_dobj(dobj* dbj)
     case dobjnames::SIN_DOBJNAME:
         retv = dobjnamelist->add_at_tail((dobjnamedobj*)dbj)->get_data();
         if (!retv)
-            *err_msg="\ncould not add dobjname to " + *get_username();
+            dobjerr("Could not add dobjname to %s.", *get_username());
         break;
     case dobjnames::SIN_MODNAME:
         retv = modnamelist->add_at_tail((modnamedobj*)dbj)->get_data();
         if (!retv)
-            *err_msg="\ncould not add modname to " + *get_username();
+            dobjerr("Could not add modname to %s.", *get_username());
         break;
     default:
-        *err_msg = "\n***major error*** attempt made to add an ";
-        *err_msg += "\ninvalid object type to " + *get_username();
+        dobjerr("*** MAJOR ERROR *** Bad attempt made to add \
+                invalid object type to %s.", *get_username());
     }
     return retv;
 }

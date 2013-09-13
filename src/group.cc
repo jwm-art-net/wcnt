@@ -10,6 +10,11 @@
 
 #include <iostream>
 
+#ifdef DEBUG_MSG
+#include <cstdio>
+#endif
+
+
 group::group() :
  dobj(dobjnames::DEF_GROUP),
  is_duplicate(false), controlled(false)
@@ -34,12 +39,8 @@ synthmod* group::group_module(synthmod* sm)
         set_groupname(get_username(), sm->get_username());
     if (jwm.get_modlist()->get_synthmod_by_name(grpname))
     {
-        *err_msg = "\ncould not add ";
-        *err_msg += sm->get_username();
-        *err_msg += " to group ";
-        *err_msg += get_username();
-        *err_msg += ". A module already exists called ";
-        *err_msg += grpname;
+        dobjerr("Could not add %s to group %s. A module already exists \
+                 named %s.", sm->get_username(), get_username(), grpname);
         delete [] grpname;
         invalidate();
         return 0;
@@ -47,14 +48,10 @@ synthmod* group::group_module(synthmod* sm)
     delete [] grpname;
     if (!is_duplicate) {
         if (!groupify(sm)) {
-            *err_msg = "\ncould not add ";
-            *err_msg += sm->get_username();
-            *err_msg += " to group ";
-            *err_msg += get_username();
-            *err_msg += ".\nit is forbidden to add a ";
-            *err_msg +=
-                jwm.get_modnames()->get_name(sm->get_module_type());
-            *err_msg += " module to a group.";
+            dobjerr("Could not add %s to group %s. It is forbidden to add \
+                                                 a %s module to a group.",
+                     sm->get_username(), get_username(),
+                     jwm.get_modnames()->get_name(sm->get_module_type()));
             invalidate();
             return 0;
         }
@@ -76,11 +73,8 @@ dobj* group::add_dobj(dobj* dbj)
         synthmod* sm = ((dobjmod*)dbj)->get_synthmod();
         const char* const grpname = sm->get_group_name();
         if (grpname) {
-            *err_msg = "\ncannot add module to group ";
-            *err_msg += get_username();
-            *err_msg += ". it is already part of the ";
-            *err_msg += grpname;
-            *err_msg += " group.";
+            dobjerr("Cannot add module to group %s, it is already in \
+                    the group %s.", get_username(), grpname);
             delete grpname;
             return 0;
         }
@@ -93,9 +87,9 @@ dobj* group::add_dobj(dobj* dbj)
         jwm.get_dobjlist()->add_dobj(dbj);
         return dbj;
     }
-    *err_msg = "\n***major error*** attempt made to add an ";
-    *err_msg += "\ninvalid object type to ";
-    *err_msg += *get_username();
+
+    dobjerr("*** MAJOR ERROR *** bad attempt made to add invalid object\
+            type to %s.", *get_username());
     return 0;
 }
 
@@ -112,9 +106,8 @@ dobj* group::duplicate_dobj(const char* new_group_name)
 
     if (!duplist)
     {
-        *err_msg = "\nduplication of modules within group ";
-        *err_msg += *get_username();
-        *err_msg += " failed.";
+        dobjerr("Duplication of modules within group %s failed.",
+                                                *get_username());
         return 0;
     }
 

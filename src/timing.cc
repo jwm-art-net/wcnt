@@ -2,6 +2,11 @@
 #include "../include/jwm_globals.h"
 #include "../include/dobjparamlist.h"
 
+#ifdef DEBUG_MSG
+#include <cstdio>
+#endif
+
+
 timing::timing():
  dobj(dobjnames::SIN_TIME), seconds(0.0)
 {
@@ -43,7 +48,7 @@ stockerrs::ERR_TYPE timing::validate()
     if (!jwm.get_dparlist()->validate(
         this, paramnames::SECONDS, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::BAR);
+        dobjerr("%s", jwm.get_paramnames()->get_name(paramnames::BAR));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }

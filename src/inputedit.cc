@@ -8,6 +8,11 @@
 #include <iostream>
 #include <sstream>
 
+#ifdef DEBUG_MSG
+#include <cstdio>
+#endif
+
+
 inputedit::inputedit() :
  dobj(dobjnames::SIN_EDIT_INPUT),
  modname(0), iostr(0)
@@ -49,9 +54,7 @@ bool inputedit::create_connectors()
     synthmod* in_sm;
     synthmodlist* smlist = jwm.get_modlist();
     if (!(in_sm = smlist->get_synthmod_by_name(modname))) {
-        *err_msg = "input module ";
-        *err_msg += modname;
-        *err_msg += " does not exist.";
+        dobjerr("Input module %s does not exist.", modname);
         invalidate();
         return false;
     }
@@ -64,10 +67,8 @@ bool inputedit::create_connectors()
         inputnames::IN_TYPE in_type;
         in_type = innames->get_type(input_name.c_str());
         if (in_type == inputnames::IN_FIRST) {
-            *err_msg = "\nunrecognised input type ";
-            *err_msg += input_name;
-            *err_msg += ", in connection for ";
-            *err_msg += modname;
+            dobjerr("Unrecognised input type %s, in connection for %s.",
+                                            input_name.c_str(), modname);
             invalidate();
             return false;
         }
@@ -85,22 +86,17 @@ bool inputedit::create_connectors()
             strm >> output_name;
             out_type = outnames->get_type(output_name.c_str());
             if (out_type == outputnames::OUT_FIRST) {
-                *err_msg = "unrecognised output type ";
-                *err_msg += output_name;
-                *err_msg += " in connection for ";
-                *err_msg += modname;
+                dobjerr("Unrecognised output type %s in connection for %s.",
+                                            output_name.c_str(), modname);
                 invalidate();
                 return false;
             }
             if (innames->get_category(in_type)
                 != outnames->get_category(out_type))
             {
-                *err_msg = "in connection for ";
-                *err_msg += modname;
-                *err_msg += " output ";
-                *err_msg += output_name;
-                *err_msg += " does not match category of input ";
-                *err_msg += input_name;
+                dobjerr("In connection for %s output %s does not match \
+                                category of input %s.", modname,
+                                output_name.c_str(), input_name.c_str());
                 invalidate();
                 return false;
             }
@@ -127,11 +123,8 @@ bool inputedit::create_connectors()
         }
         delete inlist;
         if (!success) {
-            *err_msg = "the module ";
-            *err_msg += modname;
-            *err_msg += " lacks any ";
-            *err_msg += input_name;
-            *err_msg += " input";
+            dobjerr("The module %s lacks any %s input.", modname,
+                                                     input_name.c_str());
             invalidate();
             return false;
         }
@@ -151,9 +144,7 @@ bool inputedit::set_param(paramnames::PAR_TYPE dt, void* data)
     {
         case paramnames::STR_UNNAMED:
             if (!set_modname((char*)data)) {
-                *err_msg = "input module ";
-                *err_msg += (char*)data;
-                *err_msg += " does not exist.";
+                dobjerr("Input module %s does not exist.", (char*)data);
                 invalidate();
                 return false;
             }

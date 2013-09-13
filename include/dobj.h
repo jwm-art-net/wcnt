@@ -8,6 +8,8 @@
 #include "paramnames.h"
 #include "dobjnames.h"
 #include "namefuncobj.h"
+#include "textstuff.h"
+
 
 class dobj
 {
@@ -28,9 +30,8 @@ public:
     virtual dobj const* add_dobj(dobj*); // don't be fooled...
     virtual dobj* duplicate_dobj(const char*);
 
-    static void clear_error_msg(){ *err_msg = "";}
-    static void register_error_msg(std::string* e)  { err_msg = e;    }
-    static std::string const* get_error_msg()       { return err_msg; }
+    static void clear_error_msg()       { err_msg[0] = '\0'; }
+    static const char* get_error_msg()  { return err_msg; }
 
     bool operator()(dobjnames::DOBJ_TYPE & dt) {
         return object_type == dt;
@@ -45,7 +46,7 @@ STATS_FUNCS
 #endif
 
 protected:
-    static std::string* err_msg;
+    static char err_msg[STRBUFLEN];
     virtual void create_params() = 0;
     void invalidate(){ valid = false;}
 private:
@@ -58,5 +59,19 @@ STATS_VARS
 #endif
 
 };
+
+
+#ifdef DEBUG_MSG
+#define dobjerr(fmt, ... )                              \
+{                                                       \
+    printf("%40s:%5d %-35s\n",                          \
+                    __FILE__, __LINE__, __FUNCTION__);  \
+    cfmt(dobj::err_msg, STRBUFLEN, fmt, __VA_ARGS__);   \
+}
+#else
+#define dobjerr(fmt, ... ) \
+    cfmt(dobj::err_msg, STRBUFLEN, fmt, __VA_ARGS__)
+#endif
+
 
 #endif

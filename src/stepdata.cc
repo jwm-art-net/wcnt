@@ -2,6 +2,11 @@
 #include "../include/jwm_globals.h"
 #include "../include/dobjparamlist.h"
 
+#ifdef DEBUG_MSG
+#include <cstdio>
+#endif
+
+
 step_data::step_data() :
  dobj(dobjnames::SIN_STEP),
  position(0), up_level(0), lo_level(0)
@@ -54,7 +59,7 @@ stockerrs::ERR_TYPE step_data::validate()
     if (!jwm.get_dparlist()->validate(
         this, paramnames::POS, stockerrs::ERR_RANGE_0_1))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::POS);
+        dobjerr("%s", jwm.get_paramnames()->get_name(paramnames::POS));
         invalidate();
         return stockerrs::ERR_RANGE_0_1;
     }

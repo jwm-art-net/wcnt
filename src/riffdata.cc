@@ -9,6 +9,10 @@
 
 #include <iostream>
 
+#ifdef DEBUG_MSG
+#include <cstdio>
+#endif
+
 #ifdef NOTE_EDIT_DEBUG
 using std::cout;
 #endif
@@ -353,13 +357,11 @@ dobj const* riffdata::add_dobj(dobj* dbj)
     {
     case dobjnames::SIN_NOTE:
         if (!(retv = insert_and_position_note((note_data*)dbj)))
-            *err_msg = "\ncould not add note change to ";
-            *err_msg += *get_username();
+            dobjerr("Could not add note change to %s.", *get_username());
         break;
     default:
-        *err_msg = "\n***major error*** attempt made to add an ";
-        *err_msg += "\ninvalid object type to ";
-        *err_msg += *get_username();
+        dobjerr("*** MAJOR ERROR *** bad attempt made to add invalid \
+                                object type to %s.", *get_username());
         retv = 0;
     }
     return retv;
@@ -370,8 +372,8 @@ stockerrs::ERR_TYPE riffdata::validate()
     if (!jwm.get_dparlist()->validate(
         this, paramnames::QUARTER_VAL, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg =
-            jwm.get_paramnames()->get_name(paramnames::QUARTER_VAL);
+        dobjerr("%s", jwm.get_paramnames()->get_name(
+                                            paramnames::QUARTER_VAL));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }

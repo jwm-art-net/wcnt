@@ -73,7 +73,6 @@ jwm_globals::jwm_globals() :
     wavetables  = new wave_tables;
     // ummmm...
     synthmod::register_error_msg(new std::string);
-    dobj::register_error_msg(new std::string);
 }
 
 jwm_globals::~jwm_globals()
@@ -100,7 +99,6 @@ jwm_globals::~jwm_globals()
     delete [] wc_file;
     // ummmm...
     delete synthmod::get_error_msg();
-    delete dobj::get_error_msg();
 
 #ifdef SHOWCOUNTS
 #ifdef LIST_STATS

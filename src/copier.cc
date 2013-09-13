@@ -6,6 +6,10 @@
 #include "../include/jwm_globals.h"
 #include "../include/dobjparamlist.h"
 
+#ifdef DEBUG_MSG
+#include <cstdio>
+#endif
+
 copier::copier() :
  dobj(dobjnames::DEF_COPIER),
  from_name(0), to_name(0),
@@ -59,10 +63,8 @@ bool copier::set_param(paramnames::PAR_TYPE pt, void* data)
     case paramnames::COPYFROM:
         if (!set_from_name((const char* const)data))
         {
-            *err_msg = "\nCannot copy ";
-            *err_msg += (const char*)data;
-            *err_msg += 
-                " no modules or data object with that name were found.";
+            dobjerr("Cannot copy %s, no such module or data object.",
+                                                    (const char*)data);
             return false;
         }
         return true;
@@ -71,29 +73,21 @@ bool copier::set_param(paramnames::PAR_TYPE pt, void* data)
             get_groupname((const char*)data);
         if (grpname) {
             delete [] grpname;
-            *err_msg = "\nCannot copy ";
-            *err_msg += from_name;
-            *err_msg += " to ";
-            *err_msg += (const char*)data;
-            *err_msg += " because the name ";
-            *err_msg += (const char*)data;
-            *err_msg += " contains a dot . character which is reserved";
-            *err_msg += " for grouped modules only.";
+            dobjerr("Cannot copy %s to %s because the name %s contains \
+                    a '.' character which is strictly reserved for \
+                    grouped modules only.", from_name, (const char*)data,
+                                                       (const char*)data);
             return false;
         }
         if (!set_to_name((const char*)data))
         {
-            *err_msg = "\nCannot copy ";
-            *err_msg += from_name;
-            *err_msg += " to ";
-            *err_msg += (const char*)data;
-            *err_msg += " because the name ";
-            *err_msg += (const char*)data;
-            if (strcmp(to_name, jwm.get_dobjnames()->get_name(
-                    dobjnames::LST_EDITS))==0)
-                *err_msg += " is reserved.";
-            else
-                *err_msg += " is already in use.";
+            const char* d = jwm.get_dobjnames()->get_name(
+                                                    dobjnames::LST_EDITS);
+            const char* e = (strcmp(to_name, d) == 0
+                                            ? "is reserved"
+                                            : "already in use");
+            dobjerr("Cannot copy %s to %s because the name %s is %s.",
+                        from_name, (const char*)data, (const char*)data, e);
             return false;
         }
         return true;
@@ -124,15 +118,13 @@ stockerrs::ERR_TYPE copier::validate()
         if (!(to_mod = from_mod->duplicate_module(to_name,
                                     synthmod::AUTO_CONNECT)))
         {
-            *err_msg = *synthmod::get_error_msg();
+            dobjerr("%s", synthmod::get_error_msg()->c_str());
             return stockerrs::ERR_ERROR;
         }
         if (!jwm.get_modlist()->add_module(to_mod)) {
-            *err_msg = "\ncould not add module ";
-            *err_msg += to_mod->get_username();
-            *err_msg += " copied from ";
-            *err_msg += from_mod->get_username();
-            *err_msg += " to module run list. bad.";
+            dobjerr("Could not add module %s copied from %s to module \
+                                                        run list. Bad.",
+                        to_mod->get_username(), from_mod->get_username());
             return stockerrs::ERR_ERROR;
         }
         return stockerrs::ERR_NO_ERROR;

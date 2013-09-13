@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <string>
+#include <cstdio>
 
 parameditor::parameditor() :
  dobj(dobjnames::DEF_PARAMEDITOR)
@@ -22,13 +23,9 @@ bool parameditor::do_param_edits()
             std::cout << pe->get_name();
         }
         if (!pe->do_param_edits()) {
-            std::string errmsg = *err_msg;
-            *err_msg = "\nIn ";
-            *err_msg += jwm.get_dobjnames()->get_name(get_object_type());
-            *err_msg += " ";
-            *err_msg += get_username();
-            *err_msg += ", set parameter attempt failed, ";
-            *err_msg += errmsg;
+            dobjerr("In %s %s, parameter set attempt failed %s",
+                    jwm.get_dobjnames()->get_name(get_object_type()),
+                                            get_username(), err_msg);
             invalidate();
             return false;
         }
@@ -45,13 +42,11 @@ dobj const* parameditor::add_dobj(dobj* dbj)
     {
     case dobjnames::SIN_EDIT_PARAM:
         if (!(retv = add_at_tail((paramedit*)dbj)->get_data()))
-            *err_msg = "\ncould not add parameter edit to ";
-            *err_msg += *get_username();
+            dobjerr("Could not add parameter edit to %s", get_username());
         break;
     default:
-        *err_msg = "\n***major error*** attempt made to add an ";
-        *err_msg += "\ninvalid object type to ";
-        *err_msg += *get_username();
+        dobjerr("*** MAJOR ERROR *** bad attempt to add invalid object \
+                                            type to %s", get_username());
         retv = 0;
     }
     return retv;
