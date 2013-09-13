@@ -86,16 +86,16 @@ stockerrs::ERR_TYPE mono_amp::validate()
     if (!jwm.get_paramlist()->validate(this, paramnames::AMP_MODSIZE,
             stockerrs::ERR_RANGE_0_1))
     {
-        *err_msg =
-         jwm.get_paramnames()->get_name(paramnames::AMP_MODSIZE);
+        sm_err("%s",
+                jwm.get_paramnames()->get_name(paramnames::AMP_MODSIZE));
         invalidate();
         return stockerrs::ERR_RANGE_0_1;
     }
     if (!jwm.get_paramlist()->validate(this, paramnames::CLIP_LEVEL,
             stockerrs::ERR_NEG_ZERO))
     {
-        *err_msg =
-         jwm.get_paramnames()->get_name(paramnames::CLIP_LEVEL);
+        sm_err("%s",
+                jwm.get_paramnames()->get_name(paramnames::CLIP_LEVEL));
         invalidate();
         return stockerrs::ERR_NEG_ZERO;
     }

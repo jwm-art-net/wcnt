@@ -94,30 +94,26 @@ void const* caps_plate::get_param(paramnames::PAR_TYPE pt) const
 stockerrs::ERR_TYPE caps_plate::validate()
 {
     if (bandwidth < 0.005 || bandwidth > 0.999) {
-        *err_msg +=
-            jwm.get_paramnames()->get_name(paramnames::BANDWIDTH);
-        *err_msg += " must be within range 0.005 to 0.999";
+        sm_err("%s must be within range 0.005 to 0.999.",
+                jwm.get_paramnames()->get_name(paramnames::BANDWIDTH));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (tail < 0.0 || tail > 0.749) {
-        *err_msg +=
-            jwm.get_paramnames()->get_name(paramnames::TAIL);
-        *err_msg += " must be within range 0.0 to 0.749";
+        sm_err("%s must be within range 0.0 to 0.749", 
+                jwm.get_paramnames()->get_name(paramnames::TAIL));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (damping < 0.0005 || damping > 1.0) {
-        *err_msg +=
-            jwm.get_paramnames()->get_name(paramnames::DAMPING);
-        *err_msg += " must be within range 0.0005 to 1.0";
+        sm_err("%s must be within range 0.0005 to 1.0",
+                jwm.get_paramnames()->get_name(paramnames::DAMPING));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (blend < 0.0 || blend > 1.0) {
-        *err_msg +=
-            jwm.get_paramnames()->get_name(paramnames::WETDRY);
-        *err_msg += " must be within range 0.0 to 1.0";
+        sm_err("%s must be within range 0.0 to 1.0",
+                jwm.get_paramnames()->get_name(paramnames::WETDRY));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
@@ -129,17 +125,17 @@ void caps_plate::init()
     ladspa_loader* ll = jwm.get_ladspaloader();
     ladspa_plug* lp = ll->get_plugin("caps", "Plate");
     if (lp == 0) {
-        *err_msg = ll->get_error_msg();
+        sm_err("%s", ll->get_error_msg().c_str());
         invalidate();
         return;
     }
     if ((l_descriptor = lp->get_descriptor()) == 0) {
-        *err_msg = lp->get_error_msg();
+        sm_err("%s", lp->get_error_msg().c_str());
         invalidate();
         return;
     }
     if ((l_inst_handle = lp->instantiate()) == 0) {
-        *err_msg = lp->get_error_msg();
+        sm_err("%s", lp->get_error_msg().c_str());
         invalidate();
         return;
     }

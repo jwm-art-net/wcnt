@@ -94,44 +94,38 @@ void const* sc1::get_param(paramnames::PAR_TYPE pt) const
 stockerrs::ERR_TYPE sc1::validate()
 {
     if (attack  < 2 || attack > 400) {
-        *err_msg +=
-         jwm.get_paramnames()->get_name(paramnames::ATTACK_TIME);
-        *err_msg += " must be within range 2 to 400";
+        sm_err("%s must be within range 2 ~ 400.",
+                jwm.get_paramnames()->get_name(paramnames::ATTACK_TIME));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (release  < 2 || release > 800) {
-        *err_msg +=
-         jwm.get_paramnames()->get_name(paramnames::RELEASE_TIME);
-        *err_msg += " must be within range 2 to 800";
+        sm_err("%s must be within range 2 ~ 800.",
+                jwm.get_paramnames()->get_name(paramnames::RELEASE_TIME));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (thresh  < -30 || thresh > 0) {
-        *err_msg +=
-         jwm.get_paramnames()->get_name(paramnames::THRESH_DB);
-        *err_msg += " must be within range -30 to 0";
+        sm_err("%s must be within range -30 ~ 0",
+                 jwm.get_paramnames()->get_name(paramnames::THRESH_DB));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (ratio  < 1 || ratio > 10) {
-        *err_msg +=
-         jwm.get_paramnames()->get_name(paramnames::RATIO_1N);
-        *err_msg += " must be within range 1 to 10";
+        sm_err("%s must be within range 1 ~ 10",
+                jwm.get_paramnames()->get_name(paramnames::RATIO_1N));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (knee  < 1 || knee > 10) {
-        *err_msg +=
-         jwm.get_paramnames()->get_name(paramnames::KNEE_DB);
-        *err_msg += " must be within range 1 to 10";
+        sm_err("%s must be within range 1 ~ 10",
+                jwm.get_paramnames()->get_name(paramnames::KNEE_DB));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (makeup  < 0 || makeup > 24) {
-        *err_msg +=
-         jwm.get_paramnames()->get_name(paramnames::MAKEUP_DB);
-        *err_msg += " must be within range 1 to 10";
+        sm_err("%s must be within range 0 ~ 24",
+                jwm.get_paramnames()->get_name(paramnames::MAKEUP_DB));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
@@ -144,17 +138,17 @@ void sc1::init()
     ladspa_plug* lp = ll->get_plugin("sc1_1425",
                                      "sc1");
     if (lp == 0) {
-        *err_msg = ll->get_error_msg();
+        sm_err("%s", ll->get_error_msg().c_str());
         invalidate();
         return;
     }
     if ((l_descriptor = lp->get_descriptor()) == 0) {
-        *err_msg = lp->get_error_msg();
+        sm_err("%s", lp->get_error_msg().c_str());
         invalidate();
         return;
     }
     if ((l_inst_handle = lp->instantiate()) == 0) {
-        *err_msg = lp->get_error_msg();
+        sm_err("%s", lp->get_error_msg().c_str());
         invalidate();
         return;
     }

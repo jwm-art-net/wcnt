@@ -103,7 +103,7 @@ stockerrs::ERR_TYPE contraster::validate()
     if (!jwm.get_paramlist()->validate(this, paramnames::WETDRY,
             stockerrs::ERR_RANGE_0_1))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::WETDRY);
+        sm_err("%s", jwm.get_paramnames()->get_name(paramnames::WETDRY));
         invalidate();
         return stockerrs::ERR_RANGE_0_1;
     }

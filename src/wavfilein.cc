@@ -4,10 +4,6 @@
 #include "../include/conversions.h"
 #include "../include/dobjparamlist.h"
 
-#ifdef DEBUG_MSG
-#include <cstdio>
-#endif
-
 
 wavfilein::wavfilein() :
  dobj(dobjnames::DEF_WAVFILEIN),

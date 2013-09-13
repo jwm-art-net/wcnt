@@ -95,13 +95,13 @@ dobj* dynamic::add_dobj(dobj* dbj)
     dobj* retv = 0;
     switch(dbj->get_object_type())
     {
-        case dobjnames::SIN_DVERTEX:
-            if (!(retv = add_dvertex((dynvertex*)dbj)))
-                *err_msg="\ncould not add vertex to " + *get_username();
+    case dobjnames::SIN_DVERTEX:
+        if (!(retv = add_dvertex((dynvertex*)dbj)))
+            sm_err("Could not add vertex to %s.", get_username());
         break;
-        default:
-            *err_msg = "\n***major error*** attempt made to add an ";
-            *err_msg += "\ninvalid object type to " + *get_username();
+    default:
+        sm_err("*** MAJOR ERROR *** Bad attempt made to add invalid object \
+                                            type to %s.", get_username());
     }
     return retv;
 }
@@ -124,22 +124,15 @@ synthmod* dynamic::duplicate_module(const char* uname, DUP_IO dupio)
 
 stockerrs::ERR_TYPE dynamic::validate()
 {
-    if (!goto_first()) {
-        *err_msg = "***oops*** try adding some dvertex to amp_map";
-        invalidate();
-        return stockerrs::ERR_ERROR;
-    } else if (!goto_next()) {
-        *err_msg =
-         "***oops*** try adding more than one dvertex to amp_map";
+    if (!goto_first() || !goto_next()) {
+        sm_err("%s", "requires two or more dvertex added to amp_map.");
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (up_thresh < lo_thresh) {
-        *err_msg =
-         jwm.get_paramnames()->get_name(paramnames::UP_THRESH);
-        *err_msg += " must not be less than ";
-        *err_msg +=
-         jwm.get_paramnames()->get_name(paramnames::LO_THRESH);
+        sm_err("%s must not be less than %s.",
+                jwm.get_paramnames()->get_name(paramnames::UP_THRESH),
+                jwm.get_paramnames()->get_name(paramnames::LO_THRESH));
         invalidate();
         return stockerrs::ERR_ERROR;
     }

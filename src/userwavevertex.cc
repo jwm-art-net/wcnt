@@ -2,9 +2,6 @@
 #include "../include/jwm_globals.h"
 #include "../include/dobjparamlist.h"
 
-#ifdef DEBUG_MSG
-#include <cstdio>
-#endif
 
 wave_vertex::wave_vertex() :
  dobj(dobjnames::SIN_VERTEX), out_deg(0), out_pos(0),

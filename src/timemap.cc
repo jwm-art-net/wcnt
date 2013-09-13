@@ -72,33 +72,26 @@ meterchange* timemap::add_meter_change(meterchange* mch)
 stockerrs::ERR_TYPE timemap::validate()
 {
     if (!(currentmeter = meter_map->goto_first())) {
-        *err_msg = "time signature not set for ";
-        *err_msg += get_username();
-        *err_msg += " - will not continue.";
+        sm_err("Time signature not set for %s. Will not continue.",
+                                                    get_username());
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (!(currentbpm = bpm_map->goto_first())) {
-        *err_msg = "bpm not set for ";
-        *err_msg += get_username();
-        *err_msg += " - will not continue.";
+        sm_err("BPM not set for %s. Will not continue.", get_username());
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     std::ostringstream conv;
     if (currentmeter->get_bar() > 0) {
-        *err_msg = "the first added time signature is at bar ";
-        conv << currentmeter->get_bar();
-        *err_msg += conv.str();
-        *err_msg += " - should start at bar 0.";
+        sm_err("The first added time signature is at bar %d. Should be \
+                                    at bar 0.", currentmeter->get_bar());
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (currentbpm->get_bar() > 0) {
-        *err_msg = "the first added tempo is at bar ";
-        conv << currentbpm->get_bar();
-        *err_msg += conv.str();
-        *err_msg += " - should start at bar 0.";
+        sm_err("The first added tempo is at bar %d. Should start at \
+                                        bar 0.", currentbpm->get_bar());
         invalidate();
         return stockerrs::ERR_ERROR;
     }
@@ -106,18 +99,16 @@ stockerrs::ERR_TYPE timemap::validate()
     while(currentbpm){
         bpm += currentbpm->get_bpm();
         if (bpm < jwm_init::min_bpm) {
-            conv << "at bar " << currentbpm->get_bar();
-            conv << " bpm change takes tempo below minimum value of ";
-            conv << jwm_init::min_bpm;
-            *err_msg = conv.str() + ".";
+            sm_err("At bar %d BPM change takes tempo below minimum \
+                                    BPM of %d.", currentbpm->get_bar(),
+                                                    jwm_init::min_bpm);
             invalidate();
             return stockerrs::ERR_ERROR;
         }
         if (bpm > jwm_init::max_bpm) {
-            conv << "at bar " << currentbpm->get_bar();
-            conv << " bpm change takes tempo above maximum value of ";
-            conv << jwm_init::max_bpm;
-            *err_msg = conv.str() + ".";
+            sm_err("At bar %d BPM change takes tempo above maximum \
+                                    BPM of %d.", currentbpm->get_bar(),
+                                                    jwm_init::max_bpm);
             invalidate();
             return stockerrs::ERR_ERROR;
         }
@@ -300,17 +291,15 @@ dobj* timemap::add_dobj(dobj* dbj)
     {
     case dobjnames::SIN_METER:
         if (!(retv = add_meter_change((meterchange*)dbj)))
-            *err_msg = "\ncould not add meter change to "
-                       + *get_username();
+            sm_err("Could not add meter change to %s.", get_username());
         break;
     case dobjnames::SIN_BPM:
         if (!(retv = add_bpm_change((bpmchange*)dbj)))
-            *err_msg = "\ncould not add bpm change to "
-                       + *get_username();
+            sm_err("Could not add bpm change to %s.", get_username());
         break;
     default:
-        *err_msg = "\n***major error*** attempt made to add an ";
-        *err_msg += "\ninvalid object type to " + *get_username();
+        sm_err("*** MAJOR ERROR *** Bad attempt made to add invalid object \
+                                            type to %s.", get_username());
         retv = 0;
     }
     return retv;
@@ -318,7 +307,7 @@ dobj* timemap::add_dobj(dobj* dbj)
 
 synthmod* timemap::duplicate_module(const char* uname, DUP_IO dupio)
 {
-    *err_msg = "time_map module does not allow copies of it to be made.";
+    sm_err("%s", "The time_map module does not allow duplication.");
     return 0;
 }
 

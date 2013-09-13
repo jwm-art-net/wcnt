@@ -70,9 +70,9 @@ synthmod* stereomixer::duplicate_module(const char* uname, DUP_IO dupio)
 stockerrs::ERR_TYPE stereomixer::validate()
 {
     if (master_level == 0) {
-        *err_msg
-         = jwm.get_paramnames()->get_name(paramnames::MASTER_LEVEL);
-        *err_msg += " is zero, all will be very quiet!";
+        // should probably allow zero amplitude...
+        sm_err("%s is zero, all will be very quiet!",
+                jwm.get_paramnames()->get_name(paramnames::MASTER_LEVEL));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
@@ -86,25 +86,17 @@ dobj* stereomixer::add_dobj(dobj* dbj)
         if (sm->get_module_type() != synthmodnames::STEREOCHANNEL
             && !sm->get_out(outputnames::OUT_LEFT))
         {
-            *err_msg = get_username();
-            *err_msg += " will not accept the module ";
-            *err_msg += sm->get_username();
-            *err_msg += " because modules of type ";
-            *err_msg += jwm.get_modnames()->
-                get_name(sm->get_module_type());
-            *err_msg += " do not have the ";
-            *err_msg += jwm.get_outputnames()->
-                get_name(outputnames::OUT_LEFT);
-            *err_msg += " or ";
-            *err_msg += jwm.get_outputnames()->
-                get_name(outputnames::OUT_RIGHT);
-            *err_msg += " output types.";
+            sm_err("%s will not accept the module %s because modules of \
+                    type %s do not have the %s or %s output types.",
+                    get_username(), sm->get_username(),
+                    jwm.get_modnames()->get_name(sm->get_module_type()),
+                    jwm.get_outputnames()->get_name(outputnames::OUT_LEFT),
+                    jwm.get_outputnames()->get_name(
+                                                outputnames::OUT_RIGHT));
             return 0;
         }
         if (!add_at_tail(sm)) {
-            *err_msg += "could not insert ";
-            *err_msg += sm->get_username();
-            *err_msg += " into mixer";
+            sm_err("Could not insert %s into mixer.", sm->get_username());
             return 0;
         }
         // add the dobj synthmod wrapper to the dobjlist
@@ -112,9 +104,8 @@ dobj* stereomixer::add_dobj(dobj* dbj)
         jwm.get_dobjlist()->add_dobj(dbj);
         return dbj;
     }
-    *err_msg = "\n***major error*** attempt made to add an ";
-    *err_msg += "\ninvalid object type to ";
-    *err_msg += get_username();
+    sm_err("*** MAJOR ERROR *** Bad attempt made to add invalid object \
+                                            type to %s.", get_username());
     return 0;
 }
 

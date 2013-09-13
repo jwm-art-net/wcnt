@@ -5,10 +5,6 @@
 #include "../include/dobjparamlist.h"
 #include "../include/dobjdobjlist.h"
 
-#ifdef DEBUG_MSG
-#include <cstdio>
-#endif
-
 
 riff_editor::riff_editor() :
  dobj(dobjnames::DEF_RIFFEDITOR), riff_source(0)

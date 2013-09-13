@@ -91,13 +91,8 @@ synthmod* spreader::duplicate_module(const char* uname, DUP_IO dupio)
 
 stockerrs::ERR_TYPE spreader::validate()
 {
-    if (!goto_first()) {
-        *err_msg = "must be at least two signals to spread across";
-        invalidate();
-        return stockerrs::ERR_ERROR;
-    }
-    else if (!goto_next()){
-        *err_msg= "must be at least two signals to spread across";
+    if (!goto_first() || !goto_next()) {
+        sm_err("%s", "Must be at least two signals to spread across.");
         invalidate();
         return stockerrs::ERR_ERROR;
     }
@@ -109,22 +104,17 @@ dobj* spreader::add_dobj(dobj* dbj)
     if (dbj->get_object_type() == dobjnames::DOBJ_SYNTHMOD) {
         synthmod* sm = ((dobjmod*)dbj)->get_synthmod();
         if (!sm->flag(SM_HAS_OUT_OUTPUT)) {
-            *err_msg = get_username();
-            *err_msg += " will not accept the module ";
-            *err_msg += sm->get_username();
-            *err_msg += " because modules of type ";
-            *err_msg += jwm.get_modnames()->
-                get_name(sm->get_module_type());
-            *err_msg += " do not have the ";
-            *err_msg += jwm.get_outputnames()->
-                get_name(outputnames::OUT_OUTPUT);
-            *err_msg += " output type.";
+            sm_err("%s will not accept the module %s because modules of \
+                    type %s do not have the %s output.",
+                    get_username(), sm->get_username(),
+                    jwm.get_modnames()->get_name(sm->get_module_type()),
+                    jwm.get_outputnames()->get_name(
+                                                outputnames::OUT_OUTPUT));
             return 0;
         }
         if (!add_at_tail(sm)) {
-            *err_msg = "\ncould not insert ";
-            *err_msg += sm->get_username();
-            *err_msg += " into spreader";
+            sm_err("Could not insert %s into spreader.",
+                                        sm->get_username());
             return 0;
         }
         // add the dobj synthmod wrapper to the dobjlist
@@ -132,8 +122,8 @@ dobj* spreader::add_dobj(dobj* dbj)
         jwm.get_dobjlist()->add_dobj(dbj);
         return dbj;
     }
-    *err_msg = "\n***major error*** attempt made to add an ";
-    *err_msg += "\ninvalid object type to " + *get_username();
+    sm_err("*** MAJOR ERROR *** Bad attempt made to add invalid \
+                                    object to %s.", get_username());
     return 0;
 }
 
@@ -145,7 +135,8 @@ void spreader::init()
     while(sm) {
         sigs[ix] = (double const*)sm->get_out(outputnames::OUT_OUTPUT);
         if (!sigs[ix]) {
-            *err_msg = "\nthings not looking good ;-(";
+            sm_err("Things not looking good ;-(... %s",
+                   "Don't worry, I have no idea what this means either.");
             invalidate();
             return;
         }

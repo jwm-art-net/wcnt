@@ -92,9 +92,8 @@ void const* bode_freq_shifter::get_param(paramnames::PAR_TYPE pt) const
 stockerrs::ERR_TYPE bode_freq_shifter::validate()
 {
     if (freq_shift < 0 || freq_shift > 5000) {
-        *err_msg +=
-            jwm.get_paramnames()->get_name(paramnames::FREQ_SHIFT);
-        *err_msg += " must be within range 0 to 5000";
+        sm_err("%s must be within range 0 ~ 5000.",
+                jwm.get_paramnames()->get_name(paramnames::FREQ_SHIFT));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
@@ -106,17 +105,17 @@ void bode_freq_shifter::init()
     ladspa_loader* ll = jwm.get_ladspaloader();
     ladspa_plug* lp = ll->get_plugin("bode_shifter_1431", "bodeShifter");
     if (lp == 0) {
-        *err_msg = ll->get_error_msg();
+        sm_err("%s", ll->get_error_msg().c_str());
         invalidate();
         return;
     }
     if ((l_descriptor = lp->get_descriptor()) == 0) {
-        *err_msg = lp->get_error_msg();
+        sm_err("%s", lp->get_error_msg().c_str());
         invalidate();
         return;
     }
     if ((l_inst_handle = lp->instantiate()) == 0) {
-        *err_msg = lp->get_error_msg();
+        sm_err("%s", lp->get_error_msg().c_str());
         invalidate();
         return;
     }

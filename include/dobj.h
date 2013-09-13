@@ -10,6 +10,10 @@
 #include "namefuncobj.h"
 #include "textstuff.h"
 
+#ifdef DEBUG_MSG
+#include <cstdio>
+#endif
+
 
 class dobj
 {
@@ -30,7 +34,6 @@ public:
     virtual dobj const* add_dobj(dobj*); // don't be fooled...
     virtual dobj* duplicate_dobj(const char*);
 
-    static void clear_error_msg()       { err_msg[0] = '\0'; }
     static const char* get_error_msg()  { return err_msg; }
 
     bool operator()(dobjnames::DOBJ_TYPE & dt) {

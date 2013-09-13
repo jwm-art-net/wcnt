@@ -11,6 +11,11 @@
 #include "stockerrs.h"
 #include "groupnames.h"
 #include "boolfuncobj.h"
+#include "textstuff.h"
+
+#ifdef DEBUG_MSG
+#include <cstdio>
+#endif
 
 /*
 //  synthmod - pure abstract base class for jwm synth modules.
@@ -87,10 +92,7 @@ class synthmod
     bool check_inputs();
     #endif
 
-    // statics - created and registered from jwmsynth constructor
-    static void register_error_msg(std::string* e)  { err_msg = e;   }
-    static void clear_error_msg()                   { *err_msg = ""; }
-    static std::string const* get_error_msg()       { return err_msg;}
+    static const char* get_error_msg()  { return err_msg; }
 
     // should only be used by jwmsynth::run()
     static const STATUS* get_abort_status()
@@ -122,7 +124,7 @@ class synthmod
     void duplicate_inputs_to(synthmod*);
     void duplicate_params_to(synthmod*);
 
-    static std::string* err_msg;
+    static char err_msg[STRBUFLEN];
 
  private:
     synthmodnames::SYNTH_MOD_TYPE   module_type;
@@ -138,5 +140,19 @@ class synthmod
     STATS_VARS
     #endif
 };
+
+#ifdef DEBUG_MSG
+#define sm_err(fmt, ... )                              \
+{                                                       \
+    printf("%40s:%5d %-35s\n",                          \
+                    __FILE__, __LINE__, __FUNCTION__);  \
+    cfmt(synthmod::err_msg, STRBUFLEN, fmt, __VA_ARGS__);   \
+}
+#else
+#define sm_err(fmt, ... ) \
+    cfmt(synthmod::err_msg, STRBUFLEN, fmt, __VA_ARGS__)
+#endif
+
+
 
 #endif

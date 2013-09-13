@@ -97,12 +97,11 @@ dobj* timer::add_dobj(dobj* dbj)
     {
     case dobjnames::SIN_TIME:
         if (!(retv = add_timing((timing*)dbj)))
-            *err_msg = "\ncould not add timing to "
-                       + *get_username();
+            sm_err("Could not add timing to %s", get_username());
         break;
     default:
-        *err_msg = "\n***major error*** attempt made to add an ";
-        *err_msg += "\ninvalid object type to " + *get_username();
+        sm_err("*** MAJOR ERROR *** Bad attempt made to add invalid object \
+                                            type to %s.", get_username());
         retv = 0;
     }
     return retv;

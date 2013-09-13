@@ -101,23 +101,23 @@ stockerrs::ERR_TYPE lfo_clock::validate()
     if (!jwm.get_paramlist()->validate(this, paramnames::FREQ,
             stockerrs::ERR_RANGE_FREQ))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::FREQ);
+        sm_err("%s", jwm.get_paramnames()->get_name(paramnames::FREQ));
         invalidate();
         return stockerrs::ERR_RANGE_FREQ;
     }
     if (!jwm.get_paramlist()->validate(this, paramnames::FREQ_MOD1SIZE,
             stockerrs::ERR_RANGE_FMOD))
     {
-        *err_msg
-         = jwm.get_paramnames()->get_name(paramnames::FREQ_MOD1SIZE);
+        sm_err("%s", jwm.get_paramnames()->get_name(
+                                            paramnames::FREQ_MOD1SIZE));
         invalidate();
         return stockerrs::ERR_RANGE_FMOD;
     }
     if (!jwm.get_paramlist()->validate(this, paramnames::FREQ_MOD2SIZE,
             stockerrs::ERR_RANGE_FMOD))
     {
-        *err_msg
-         = jwm.get_paramnames()->get_name(paramnames::FREQ_MOD2SIZE);
+        sm_err("%s", jwm.get_paramnames()->get_name(
+                                            paramnames::FREQ_MOD2SIZE));
         invalidate();
         return stockerrs::ERR_RANGE_FMOD;
     }

@@ -45,12 +45,8 @@ void synthmod::set_group_name(const char* const gname)
 const void* synthmod::get_out(outputnames::OUT_TYPE) const
 {
     #ifdef IO_PARANOIA
-    *err_msg = "\n*** Program Error! ***\nmodule ";
-    *err_msg += get_username();
-    *err_msg += "\nattempt made to get output when none exist\n";
-    *err_msg += "\nPlease email james@jwm-art.net";
-    *err_msg += " with the .wc file(s) responsible so the issue";
-    *err_msg += " can be resolved. Thankyou.";
+    sm_err("*** MAJOR ERROR *** Bad attempt made to get output where \
+                                            none exist.", get_username());
     #endif
     return 0;
 }
@@ -58,12 +54,8 @@ const void* synthmod::get_out(outputnames::OUT_TYPE) const
 const void* synthmod::set_in(inputnames::IN_TYPE, const void*)
 {
     #ifdef IO_PARANOIA
-    *err_msg = "\n*** Program Error! ***\nmodule ";
-    *err_msg += get_username();
-    *err_msg += "\nattempt made to set input when none exist\n";
-    *err_msg += "\nPlease email james@jwm-art.net";
-    *err_msg += " with the .wc file(s) responsible so the issue";
-    *err_msg += " can be resolved. Thankyou.";
+    sm_err("*** MAJOR ERROR *** Bad attempt made to set input where \
+                                            none exist.", get_username());
     #endif
     return 0;
 }
@@ -71,12 +63,8 @@ const void* synthmod::set_in(inputnames::IN_TYPE, const void*)
 const void* synthmod::get_in(inputnames::IN_TYPE) const
 {
     #ifdef IO_PARANOIA
-    *err_msg = "\n*** Program Error! ***\nmodule ";
-    *err_msg += get_username();
-    *err_msg += "\nattempt made to get input when none exist\n";
-    *err_msg += "\nPlease email james@jwm-art.net";
-    *err_msg += " with the .wc file(s) responsible so the issue";
-    *err_msg += " can be resolved. Thankyou.";
+    sm_err("*** MAJOR ERROR *** Bad attempt made to get input where \
+                                            none exist.", get_username());
     #endif
     return 0;
 }
@@ -84,12 +72,8 @@ const void* synthmod::get_in(inputnames::IN_TYPE) const
 bool synthmod::set_param(paramnames::PAR_TYPE, const void*)
 {
     #ifdef IO_PARANOIA
-    *err_msg = "\n*** Program Error! ***\nmodule ";
-    *err_msg += get_username();
-    *err_msg += "\nattempt made to set parameter when none exist\n";
-    *err_msg += "\nPlease email james@jwm-art.net";
-    *err_msg += " with the .wc file(s) responsible so the issue";
-    *err_msg += " can be resolved. Thankyou.";
+    sm_err("*** MAJOR ERROR *** Bad attempt made to set parameter where \
+                                            none exist.", get_username());
     #endif
     return false;
 }
@@ -97,12 +81,8 @@ bool synthmod::set_param(paramnames::PAR_TYPE, const void*)
 const void* synthmod::get_param(paramnames::PAR_TYPE) const
 {
     #ifdef IO_PARANOIA
-    *err_msg = "\n*** Program Error! ***\nmodule ";
-    *err_msg += get_username();
-    *err_msg += "\nattempt made to get parameter when none exist\n";
-    *err_msg += "\nPlease email james@jwm-art.net";
-    *err_msg += " with the .wc file(s) responsible so the issue";
-    *err_msg += " can be resolved. Thankyou.";
+    sm_err("*** MAJOR ERROR *** Bad attempt made to get parameter where \
+                                            none exist.", get_username());
     #endif
     return 0;
 }
@@ -110,13 +90,8 @@ const void* synthmod::get_param(paramnames::PAR_TYPE) const
 dobj* synthmod::add_dobj(dobj*)
 {
     #ifdef IO_PARANOIA
-    *err_msg = "\n*** Program Error! ***\nmodule ";
-    *err_msg += get_username();
-    *err_msg += "\nattempt made to add data object to";
-    *err_msg += "\nmodule lacking ability to accept them\n";
-    *err_msg += "\nPlease email james@jwm-art.net";
-    *err_msg += " with the .wc file(s) responsible so the issue";
-    *err_msg += " can be resolved. Thankyou.";
+    sm_err("*** MAJOR ERROR *** Bad attempt made to add data object to \
+                module unable to contain data objects.", get_username());
     #endif
     return 0;
 }
@@ -125,11 +100,8 @@ synthmod*
 synthmod::duplicate_module(const char* uname, DUP_IO iocon)
 {
     if (flag(SM_UNDUPLICABLE)) {
-        *err_msg = "\nmodule ";
-        *err_msg += username;
-        *err_msg += " of type ";
-        *err_msg += jwm.get_modnames()->get_name(module_type);
-        *err_msg += " is forbidden from being copied.";
+        sm_err("Duplication of module %s is forbidden due to type %s.",
+                username, jwm.get_modnames()->get_name(module_type));
         return 0;
     }
     synthmod* dup = jwm.get_modlist()->create_module(module_type, uname);
@@ -171,15 +143,10 @@ bool synthmod::check_inputs()
     modinput* modinp = modinps->goto_first();
     while(modinp) {
         if (!get_in(modinp->get_inputtype())) {
-            *err_msg = "\n*** Program Error! ***\nmodule ";
-            *err_msg += get_username();
-            *err_msg += " has not had its input ";
-            *err_msg +=
-                jwm.get_inputnames()->get_name(
-                    modinp->get_inputtype());
-            *err_msg += " set.\n Please email james@jwm-art.net";
-            *err_msg += " with the .wc file(s) responsible so the issue";
-            *err_msg += " can be resolved. Thankyou.";
+            sm_err("*** MAJOR ERROR *** Module %s does not have its %s \
+                    input set.", get_username(), 
+                        jwm.get_inputnames()->get_name(
+                                        modinp->get_inputtype()));
             delete modinps;
             return false;
         }
@@ -190,7 +157,7 @@ bool synthmod::check_inputs()
 }
 #endif
 
-std::string* synthmod::err_msg = 0;
+char synthmod::err_msg[] = "";
 STATUS synthmod::abort_status = OFF; // don't force an abort just yet.
 
 #ifdef MOD_STATS

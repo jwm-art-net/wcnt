@@ -81,7 +81,8 @@ stockerrs::ERR_TYPE trigdelay::validate()
     if (!jwm.get_paramlist()->validate(this, paramnames::DELAY_TIME,
             stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::DELAY_TIME);
+        sm_err("%s", jwm.get_paramnames()->get_name(
+                                            paramnames::DELAY_TIME));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }

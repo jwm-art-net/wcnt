@@ -2,9 +2,6 @@
 #include "../include/jwm_globals.h"
 #include "../include/dobjparamlist.h"
 
-#ifdef DEBUG_MSG
-#include <cstdio>
-#endif
 
 bpmchange::bpmchange() : 
  dobj(dobjnames::SIN_BPM), atbar(0), tobpm(0)

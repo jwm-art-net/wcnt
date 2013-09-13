@@ -9,9 +9,6 @@
 
 #include <iostream>
 
-#ifdef DEBUG_MSG
-#include <cstdio>
-#endif
 
 #ifdef NOTE_EDIT_DEBUG
 using std::cout;
@@ -357,11 +354,11 @@ dobj const* riffdata::add_dobj(dobj* dbj)
     {
     case dobjnames::SIN_NOTE:
         if (!(retv = insert_and_position_note((note_data*)dbj)))
-            dobjerr("Could not add note change to %s.", *get_username());
+            dobjerr("Could not add note change to %s.", get_username());
         break;
     default:
         dobjerr("*** MAJOR ERROR *** bad attempt made to add invalid \
-                                object type to %s.", *get_username());
+                                object type to %s.", get_username());
         retv = 0;
     }
     return retv;

@@ -125,42 +125,40 @@ void const* adsr::get_param(paramnames::PAR_TYPE pt) const
 stockerrs::ERR_TYPE adsr::validate()
 {
     if (!goto_section(adsr_coord::ADSR_ATTACK)) {
-        *err_msg = "adsr lacks attack section!";
+        sm_err("%s", "adsr lacks attack section!");
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (!goto_section(adsr_coord::ADSR_DECAY)) {
-        *err_msg = "adsr lacks decay section!";
+        sm_err("%s", "adsr lacks decay section!");
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (!goto_section(adsr_coord::ADSR_RELEASE)) {
-        *err_msg = "adsr lacks release section!";
+        sm_err("%s", "adsr lacks release section!");
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (up_thresh < lo_thresh) {
-        *err_msg =
-         jwm.get_paramnames()->get_name(paramnames::UP_THRESH);
-        *err_msg += " must not be less than ";
-        *err_msg +=
-         jwm.get_paramnames()->get_name(paramnames::LO_THRESH);
+        sm_err("%s must not be less than %s.",
+                jwm.get_paramnames()->get_name(paramnames::UP_THRESH),
+                jwm.get_paramnames()->get_name(paramnames::LO_THRESH));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     ;
     if (!jwm.get_paramlist()->validate(this, paramnames::MIN_TIME,
-            stockerrs::ERR_NEGATIVE))
+                                            stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::MIN_TIME);
+        sm_err("%s", jwm.get_paramnames()->get_name(paramnames::MIN_TIME));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (!jwm.get_paramlist()->validate(this, paramnames::MAX_SUSTAIN_TIME,
-            stockerrs::ERR_NEGATIVE))
+                                            stockerrs::ERR_NEGATIVE))
     {
-        *err_msg =
-            jwm.get_paramnames()->get_name(paramnames::MAX_SUSTAIN_TIME);
+        sm_err("%s", jwm.get_paramnames()->get_name(
+                                            paramnames::MAX_SUSTAIN_TIME));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -175,11 +173,11 @@ dobj* adsr::add_dobj(dobj* dbj)
     {
     case dobjnames::SIN_COORD:
         if (!(retv = insert_coord((adsr_coord*)dbj)))
-            *err_msg="\ncould not section to " + *get_username();
+            sm_err("Could not add section to %s.", get_username());
         break;
     default:
-        *err_msg = "\n***major error*** attempt made to add an ";
-        *err_msg += "\ninvalid object type to " + *get_username();
+        sm_err("*** MAJOR ERROR *** Bad attempt made to add invalid object \
+                                            type to %s.", get_username());
         retv = 0;
     }
     return retv;

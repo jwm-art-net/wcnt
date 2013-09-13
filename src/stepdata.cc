@@ -2,10 +2,6 @@
 #include "../include/jwm_globals.h"
 #include "../include/dobjparamlist.h"
 
-#ifdef DEBUG_MSG
-#include <cstdio>
-#endif
-
 
 step_data::step_data() :
  dobj(dobjnames::SIN_STEP),

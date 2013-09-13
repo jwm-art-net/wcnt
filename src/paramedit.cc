@@ -9,10 +9,6 @@
 
 #include <iostream>
 
-#ifdef DEBUG_MSG
-#include <cstdio>
-#endif
-
 
 paramedit::paramedit() :
  dobj(dobjnames::SIN_EDIT_PARAM),

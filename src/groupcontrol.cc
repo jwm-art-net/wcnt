@@ -166,24 +166,19 @@ bool group_control::set_group_name(char const* name)
     dobj* grp_dbj = jwm.get_dobjlist()->get_dobj_by_name(group_name);
     if (!grp_dbj) {
         invalidate();
-        *err_msg = "\nno group named ";
-        *err_msg += group_name;
-        *err_msg += " exists.";
+        sm_err("No group named %s exists.", group_name);
         return false;
     }
     if (grp_dbj->get_object_type() != dobjnames::DEF_GROUP){
         invalidate();
-        *err_msg = "\n";
-        *err_msg += group_name;
-        *err_msg += " is not a group.";
+        sm_err("%s is not a group.", group_name);
         return false;
     }
     grp = (group*)grp_dbj;
     if (grp->is_controlled()) {
         invalidate();
-        *err_msg = "\ngroup ";
-        *err_msg += group_name;
-        *err_msg += " is already controlled by another group_controller";
+        sm_err("Group %s is already controlled by a group_controller.",
+                                                            group_name);
         return false;
     }
     grp->set_controlled();

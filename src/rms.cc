@@ -76,7 +76,7 @@ stockerrs::ERR_TYPE rms::validate()
     if (!jwm.get_paramlist()->validate(this, paramnames::RMS_TIME,
             stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::RMS_TIME);
+        sm_err("%s", jwm.get_paramnames()->get_name(paramnames::RMS_TIME));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }

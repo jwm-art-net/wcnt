@@ -99,39 +99,33 @@ void const* fader::get_param(paramnames::PAR_TYPE pt) const
 
 stockerrs::ERR_TYPE fader::validate()
 {
-    if (!jwm.get_paramlist()->
-        validate(this, paramnames::START_BAR,
-            stockerrs::ERR_NEGATIVE))
+    if (!jwm.get_paramlist()->validate(this, paramnames::START_BAR,
+                                            stockerrs::ERR_NEGATIVE))
     {
-        *err_msg =
-            jwm.get_paramnames()->get_name(paramnames::START_BAR);
+        sm_err("%s", jwm.get_paramnames()->get_name(paramnames::START_BAR));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
-    if (!jwm.get_paramlist()->
-        validate(this, paramnames::END_BAR,
-            stockerrs::ERR_NEGATIVE))
+    if (!jwm.get_paramlist()->validate(this, paramnames::END_BAR,
+                                            stockerrs::ERR_NEGATIVE))
     {
-        *err_msg =
-            jwm.get_paramnames()->get_name(paramnames::END_BAR);
+        sm_err("%s", jwm.get_paramnames()->get_name(paramnames::END_BAR));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
-    if (!jwm.get_paramlist()->
-        validate(this, paramnames::FADE_IN_TIME,
-            stockerrs::ERR_NEGATIVE))
+    if (!jwm.get_paramlist()->validate(this, paramnames::FADE_IN_TIME,
+                                            stockerrs::ERR_NEGATIVE))
     {
-        *err_msg =
-            jwm.get_paramnames()->get_name(paramnames::FADE_IN_TIME);
+        sm_err("%s", jwm.get_paramnames()->get_name(
+                                            paramnames::FADE_IN_TIME));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
-    if (!jwm.get_paramlist()->
-        validate(this, paramnames::FADE_OUT_TIME,
-            stockerrs::ERR_NEGATIVE))
+    if (!jwm.get_paramlist()->validate(this, paramnames::FADE_OUT_TIME,
+                                            stockerrs::ERR_NEGATIVE))
     {
-        *err_msg =
-            jwm.get_paramnames()->get_name(paramnames::FADE_OUT_TIME);
+        sm_err("%s", jwm.get_paramnames()->get_name(
+                                            paramnames::FADE_OUT_TIME));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }

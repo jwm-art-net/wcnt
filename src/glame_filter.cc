@@ -101,25 +101,23 @@ void const* glame_filter::get_param(paramnames::PAR_TYPE pt) const
 stockerrs::ERR_TYPE glame_filter::validate()
 {
     if (cutoff_freq < min_cutoff || cutoff_freq > max_cutoff) {
-        *err_msg +=
-         jwm.get_paramnames()->get_name(paramnames::FREQ);
-        *err_msg += " must be within range 0.0001 * samplerate "
-                    " to 0.45 * samplerate";
+        sm_err("%s must be within range 0.0001 * samplerate ~ \
+                0.45 * samplerate.",
+                jwm.get_paramnames()->get_name(paramnames::FREQ));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (stages < 1 || stages > 10){
-        *err_msg +=
-         jwm.get_paramnames()->get_name(paramnames::FREQ);
-        *err_msg += " must be within range 1 to 10";
+        sm_err("%s must be within range 1 ~ 10",
+                    jwm.get_paramnames()->get_name(paramnames::FREQ));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (!jwm.get_paramlist()->validate(this, paramnames::FREQ_MOD1SIZE,
             stockerrs::ERR_RANGE_FMOD))
     {
-        *err_msg
-         = jwm.get_paramnames()->get_name(paramnames::FREQ_MOD1SIZE);
+        sm_err("%s", jwm.get_paramnames()->get_name(
+                                            paramnames::FREQ_MOD1SIZE));
         invalidate();
         return stockerrs::ERR_RANGE_FMOD;
     }
@@ -135,17 +133,17 @@ void glame_filter::init()
     else
         lp = ll->get_plugin("highpass_iir_1890", "highpass_iir");
     if (lp == 0) {
-        *err_msg = ll->get_error_msg();
+        sm_err("%s", ll->get_error_msg().c_str());
         invalidate();
         return;
     }
     if ((l_descriptor = lp->get_descriptor()) == 0) {
-        *err_msg = lp->get_error_msg();
+        sm_err("%s", lp->get_error_msg().c_str());
         invalidate();
         return;
     }
     if ((l_inst_handle = lp->instantiate()) == 0) {
-        *err_msg = lp->get_error_msg();
+        sm_err("%s", lp->get_error_msg().c_str());
         invalidate();
         return;
     }

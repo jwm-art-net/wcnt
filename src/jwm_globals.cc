@@ -71,8 +71,6 @@ jwm_globals::jwm_globals() :
     connectlist = new connectorlist;
     stock_errs  = new stockerrs;
     wavetables  = new wave_tables;
-    // ummmm...
-    synthmod::register_error_msg(new std::string);
 }
 
 jwm_globals::~jwm_globals()
@@ -97,8 +95,6 @@ jwm_globals::~jwm_globals()
     // these created by friend function cmdline::set_jwm_globals()
     delete [] wc_path;
     delete [] wc_file;
-    // ummmm...
-    delete synthmod::get_error_msg();
 
 #ifdef SHOWCOUNTS
 #ifdef LIST_STATS

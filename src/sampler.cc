@@ -106,8 +106,8 @@ bool sampler::set_param(paramnames::PAR_TYPE pt, void const* data)
     case paramnames::WAVFILEIN:
         if (((dobj*)data)->get_object_type() != dobjnames::DEF_WAVFILEIN)
         {
-            *err_msg = "\n" + *((dobj*)data)->get_username();
-            *err_msg += " is not a wavfilein";
+            sm_err("%s is not a wavfilein.",
+                    *((dobj*)data)->get_username());
             return false;
         }
         wavfile = (wavfilein*)data; // note: pointer.
@@ -187,31 +187,24 @@ stockerrs::ERR_TYPE sampler::validate()
 {
     WAV_STATUS wavstatus = wavfile->open_wav();
     if (wavstatus == WAV_STATUS_NOT_FOUND) {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::FILENAME);
-        *err_msg += ", using wavfilein ";
-        *err_msg += wavfile->get_username();
-        *err_msg += " the file ";
-        *err_msg += wavfile->get_filename();
-        *err_msg += " was not found.";
+
+        sm_err("%s using wavfilein %s file %s not found.",
+                jwm.get_paramnames()->get_name(paramnames::FILENAME),
+                wavfile->get_username(), wavfile->get_filename());
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (wavstatus == WAV_STATUS_WAVERR) {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::FILENAME);
-        *err_msg += ", using wavfilein ";
-        *err_msg += wavfile->get_username();
-        *err_msg += " the file ";
-        *err_msg += wavfile->get_filename();
-        *err_msg += " is not a wav file.";
+        sm_err("%s using wavfilein %s file %s is not a WAV.",
+                jwm.get_paramnames()->get_name(paramnames::FILENAME),
+                wavfile->get_username(), wavfile->get_filename());
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (wavstatus != WAV_STATUS_OPEN) {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::FILENAME);
-        *err_msg += ", using wavfilein ";
-        *err_msg += wavfile->get_username();
-        *err_msg = ", an unspecified error occurred trying to open ";
-        *err_msg += wavfile->get_filename();
+        sm_err("%s using wavfilein %s file %s failed to open.",
+                jwm.get_paramnames()->get_name(paramnames::FILENAME),
+                wavfile->get_username(), wavfile->get_filename());
         invalidate();
         return stockerrs::ERR_ERROR;
     }
@@ -219,25 +212,23 @@ stockerrs::ERR_TYPE sampler::validate()
     if (!pl->validate(this, paramnames::START_POS_MIN,
             stockerrs::ERR_NEGATIVE))
     {
-        *err_msg =
-         jwm.get_paramnames()->get_name(paramnames::START_POS_MIN);
+        sm_err("%s",
+                jwm.get_paramnames()->get_name(paramnames::START_POS_MIN));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (!pl->validate(this, paramnames::START_POS_MAX,
             stockerrs::ERR_NEGATIVE))
     {
-        *err_msg =
-         jwm.get_paramnames()->get_name(paramnames::START_POS_MAX);
+        sm_err("%s",
+                jwm.get_paramnames()->get_name(paramnames::START_POS_MAX));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (max_start_pos < min_start_pos) {
-        *err_msg =
-         jwm.get_paramnames()->get_name(paramnames::START_POS_MAX);
-        *err_msg += " must not be less than ";
-        *err_msg +=
-         jwm.get_paramnames()->get_name(paramnames::START_POS_MIN);
+        sm_err("%s must not be less than %s.",
+                jwm.get_paramnames()->get_name(paramnames::START_POS_MAX),
+                jwm.get_paramnames()->get_name(paramnames::START_POS_MIN));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
@@ -245,43 +236,41 @@ stockerrs::ERR_TYPE sampler::validate()
         if (!pl->validate(this, paramnames::LOOP_BEGIN,
                 stockerrs::ERR_NEGATIVE))
         {
-            *err_msg =
-             jwm.get_paramnames()->get_name(paramnames::LOOP_BEGIN);
-            *err_msg += " of absolute value";
+            sm_err("%s of absolute value.", /* eh? */
+                    jwm.get_paramnames()->get_name(paramnames::LOOP_BEGIN));
             invalidate();
             return stockerrs::ERR_NEGATIVE;
         }
         if (!pl->validate(this, paramnames::LOOP_END,
                 stockerrs::ERR_NEGATIVE))
         {
-            *err_msg =
-             jwm.get_paramnames()->get_name(paramnames::LOOP_END);
-            *err_msg += " of absolute value";
+            sm_err("%s of absolute value.", /* eh? */
+                    jwm.get_paramnames()->get_name(paramnames::LOOP_END));
             invalidate();
             return stockerrs::ERR_NEGATIVE;
         }
     }
     if (loop_end <= loop_begin) {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::LOOP_END);
-        *err_msg += " must be more than ";
-        *err_msg +=
-            jwm.get_paramnames()->get_name(paramnames::LOOP_BEGIN);
+        sm_err("%s must be more than %s.",
+                jwm.get_paramnames()->get_name(paramnames::LOOP_END),
+                jwm.get_paramnames()->get_name(paramnames::LOOP_BEGIN));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (anti_clip_size < 0
         || anti_clip_size > jwm_init::max_anti_clip_samples)
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::ANTI_CLIP);
-        *err_msg += " out of range 0 ~ 2048";
+        sm_err("%s out of range 0 ~ %d.", 
+                jwm.get_paramnames()->get_name(paramnames::ANTI_CLIP),
+                jwm_init::max_anti_clip_samples);
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (!pl->validate(this, paramnames::ZERO_SEARCH_RANGE,
             stockerrs::ERR_NEGATIVE))
     {
-        *err_msg =
-         jwm.get_paramnames()->get_name(paramnames::ZERO_SEARCH_RANGE);
+        sm_err("%s",
+            jwm.get_paramnames()->get_name(paramnames::ZERO_SEARCH_RANGE));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }

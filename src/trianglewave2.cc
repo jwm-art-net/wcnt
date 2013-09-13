@@ -96,15 +96,15 @@ stockerrs::ERR_TYPE triangle_wave2::validate()
     if (!jwm.get_paramlist()->validate(this, paramnames::NORM_FREQ,
             stockerrs::ERR_RANGE_FREQ))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::NORM_FREQ);
+        sm_err("%s", jwm.get_paramnames()->get_name(paramnames::NORM_FREQ));
         invalidate();
         return stockerrs::ERR_RANGE_FREQ;
     }
     if (!jwm.get_paramlist()->validate(this, paramnames::NORM_MODSIZE,
             stockerrs::ERR_RANGE_FMOD))
     {
-        *err_msg
-         = jwm.get_paramnames()->get_name(paramnames::NORM_MODSIZE);
+        sm_err("%s", jwm.get_paramnames()->get_name(
+                                            paramnames::NORM_MODSIZE));
         invalidate();
         return stockerrs::ERR_RANGE_FMOD;
     }

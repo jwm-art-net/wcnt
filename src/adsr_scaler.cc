@@ -2,10 +2,6 @@
 #include "../include/jwm_globals.h"
 #include "../include/dobjparamlist.h"
 
-#ifdef DEBUG_MSG
-#include <cstdio>
-#endif
-
 adsr_scaler::adsr_scaler() :
  dobj(dobjnames::DEF_ADSR_SCALER),
  padsr(0),

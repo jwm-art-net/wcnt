@@ -137,49 +137,48 @@ stockerrs::ERR_TYPE osc_clock::validate()
 {
     modparamlist* pl = jwm.get_paramlist();
     if (!pl->validate(this, paramnames::PORTAMENTO,
-            stockerrs::ERR_NEGATIVE))
+                                            stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::PORTAMENTO);
+        sm_err("%s", jwm.get_paramnames()->get_name(
+                                            paramnames::PORTAMENTO));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (!pl->validate(this, paramnames::RESPONSE_TIME,
-            stockerrs::ERR_NEGATIVE))
+                                            stockerrs::ERR_NEGATIVE))
     {
-        *err_msg
-         = jwm.get_paramnames()->get_name(paramnames::RESPONSE_TIME);
+        sm_err("%s", jwm.get_paramnames()->get_name(
+                                            paramnames::RESPONSE_TIME));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (!pl->validate(this, paramnames::FREQ_MOD1SIZE,
-            stockerrs::ERR_RANGE_FMOD))
+                                            stockerrs::ERR_RANGE_FMOD))
     {
-        *err_msg
-         = jwm.get_paramnames()->get_name(paramnames::FREQ_MOD1SIZE);
+        sm_err("%s", jwm.get_paramnames()->get_name(
+                                            paramnames::FREQ_MOD1SIZE));
         invalidate();
         return stockerrs::ERR_RANGE_FMOD;
     }
     if (!pl->validate(this, paramnames::FREQ_MOD2SIZE,
-            stockerrs::ERR_RANGE_FMOD))
+                                            stockerrs::ERR_RANGE_FMOD))
     {
-        *err_msg
-         = jwm.get_paramnames()->get_name(paramnames::FREQ_MOD2SIZE);
+        sm_err("%s", jwm.get_paramnames()->get_name(
+                                            paramnames::FREQ_MOD2SIZE));
         invalidate();
         return stockerrs::ERR_RANGE_FMOD;
     }
     if (!pl->validate(this, paramnames::TUNING_SEMITONES,
-            stockerrs::ERR_RANGE_SEMI))
+                                            stockerrs::ERR_RANGE_SEMI))
     {
-        *err_msg
-         = jwm.get_paramnames()->get_name(paramnames::TUNING_SEMITONES);
+        sm_err("%s", jwm.get_paramnames()->get_name(
+                                            paramnames::TUNING_SEMITONES));
         invalidate();
         return stockerrs::ERR_RANGE_SEMI;
     }
-    if (!pl->validate(this, paramnames::OCTAVE,
-            stockerrs::ERR_RANGE_OCT))
+    if (!pl->validate(this, paramnames::OCTAVE, stockerrs::ERR_RANGE_OCT))
     {
-        *err_msg
-         = jwm.get_paramnames()->get_name(paramnames::OCTAVE);
+        sm_err("%s", jwm.get_paramnames()->get_name(paramnames::OCTAVE));
         invalidate();
         return stockerrs::ERR_RANGE_OCT;
     }

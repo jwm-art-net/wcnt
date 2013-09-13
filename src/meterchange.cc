@@ -2,9 +2,6 @@
 #include "../include/jwm_globals.h"
 #include "../include/dobjparamlist.h"
 
-#ifdef DEBUG_MSG
-#include <cstdio>
-#endif
 
 meterchange::meterchange() :
  dobj(dobjnames::SIN_METER),

@@ -2,10 +2,6 @@
 #include "../include/jwm_globals.h"
 #include "../include/dobjlist.h"
 
-#ifdef DEBUG_MSG
-#include <cstdio>
-#endif
-
 
 dobj::dobj(dobjnames::DOBJ_TYPE dt) :
  object_type(dt), username(0), valid(true)

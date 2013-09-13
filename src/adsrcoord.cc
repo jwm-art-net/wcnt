@@ -3,10 +3,6 @@
 #include "../include/dobjparamlist.h"
 #include "../include/fxsparamlist.h"
 
-#ifdef DEBUG_MSG
-#include <cstdio>
-#endif
-
 
 adsr_coord::adsr_coord() :
         dobj(dobjnames::SIN_COORD), sect(ADSR_ATTACK),

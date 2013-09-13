@@ -667,8 +667,7 @@ bool synthfilereader::read_dobjs(synthmod* sm)
                     if (!sm->add_dobj(dbj)) {
                         wc_err("*** MAJOR ERROR *** Could not add data \
                                 object %s %s in data object %s.",
-                                xsprogname, sm->get_error_msg()->c_str(),
-                                                                xdbjname);
+                                xsprogname, sm->get_error_msg(), xdbjname);
                         delete dbj;
                         return false;
                     }
@@ -1144,16 +1143,16 @@ dobj const* synthfilereader::add_dobj(dobj* dbj)
     case dobjnames::SIN_DOBJNAME:
         retv = dobjnamelist->add_at_tail((dobjnamedobj*)dbj)->get_data();
         if (!retv)
-            dobjerr("Could not add dobjname to %s.", *get_username());
+            dobjerr("Could not add dobjname to %s.", get_username());
         break;
     case dobjnames::SIN_MODNAME:
         retv = modnamelist->add_at_tail((modnamedobj*)dbj)->get_data();
         if (!retv)
-            dobjerr("Could not add modname to %s.", *get_username());
+            dobjerr("Could not add modname to %s.", get_username());
         break;
     default:
         dobjerr("*** MAJOR ERROR *** Bad attempt made to add \
-                invalid object type to %s.", *get_username());
+                invalid object type to %s.", get_username());
     }
     return retv;
 }

@@ -10,10 +10,6 @@
 
 #include <iostream>
 
-#ifdef DEBUG_MSG
-#include <cstdio>
-#endif
-
 
 group::group() :
  dobj(dobjnames::DEF_GROUP),
@@ -89,7 +85,7 @@ dobj* group::add_dobj(dobj* dbj)
     }
 
     dobjerr("*** MAJOR ERROR *** bad attempt made to add invalid object\
-            type to %s.", *get_username());
+                                            type to %s.", get_username());
     return 0;
 }
 
@@ -107,7 +103,7 @@ dobj* group::duplicate_dobj(const char* new_group_name)
     if (!duplist)
     {
         dobjerr("Duplication of modules within group %s failed.",
-                                                *get_username());
+                                                get_username());
         return 0;
     }
 

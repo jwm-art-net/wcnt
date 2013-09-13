@@ -65,12 +65,8 @@ synthmod* combiner::duplicate_module(const char* uname, DUP_IO dupio)
 
 stockerrs::ERR_TYPE combiner::validate()
 {
-    if (!goto_first()) {
-        *err_msg = " signals to combine";
-        invalidate();
-        return stockerrs::ERR_ATLEAST2;
-    } else if (!goto_next()){
-        *err_msg = " signals to combine";
+    if (!goto_first() || !goto_next()) {
+        sm_err("%s", " signals to combine");
         invalidate();
         return stockerrs::ERR_ATLEAST2;
     }
@@ -82,22 +78,17 @@ dobj* combiner::add_dobj(dobj* dbj)
     if (dbj->get_object_type() == dobjnames::DOBJ_SYNTHMOD) {
         synthmod* sm = ((dobjmod*)dbj)->get_synthmod();
         if (!sm->flag(SM_HAS_OUT_OUTPUT)) {
-            *err_msg = get_username();
-            *err_msg += " will not accept the module ";
-            *err_msg += sm->get_username();
-            *err_msg += " because modules of type ";
-            *err_msg += jwm.get_modnames()->
-                get_name(sm->get_module_type());
-            *err_msg += " do not have the ";
-            *err_msg += jwm.get_outputnames()->
-                get_name(outputnames::OUT_OUTPUT);
-            *err_msg += " output type.";
+            sm_err("%s will not accept the module %s because modules \
+                    of type %s do not have the %s output type.",
+                    get_username(), sm->get_username(),
+                    jwm.get_modnames()->get_name(sm->get_module_type()),
+                    jwm.get_outputnames()->get_name(
+                                                outputnames::OUT_OUTPUT));
             return 0;
         }
         if (!add_at_tail(sm)) {
-            *err_msg = " it is possible the module ";
-            *err_msg += sm->get_username();
-            *err_msg += " has already been added";
+            sm_err("It is possible the module %s has already been added",
+                                                    sm->get_username());
             return 0;
         }
         // add the dobj synthmod wrapper to the dobjlist
@@ -105,8 +96,8 @@ dobj* combiner::add_dobj(dobj* dbj)
         jwm.get_dobjlist()->add_dobj(dbj);
         return dbj;
     }
-    *err_msg = "\n***major error*** attempt made to add an ";
-    *err_msg += "\ninvalid object type to " + *get_username();
+    sm_err("*** MAJOR ERROR *** Bad attempt made to add invalid object \
+                                            type to %s.", get_username());
     return 0;
 }
 
@@ -119,7 +110,8 @@ void combiner::init()
     while(sm) {
         sigs[ix] = (double const*)sm->get_out(outputnames::OUT_OUTPUT);
         if (!sigs[ix]) {
-            *err_msg = "\nthings not looking good ;-(";
+            sm_err("Things not looking good ;-(... %s",
+                   "Don't worry, I have no idea what this means either.");
             invalidate();
             return;
         }

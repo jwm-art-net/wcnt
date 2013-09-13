@@ -8,9 +8,6 @@
 #include <iostream>
 #endif
 
-#ifdef DEBUG_MSG
-#include <cstdio>
-#endif
 
 
 note_data::note_data() :

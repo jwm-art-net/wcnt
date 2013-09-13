@@ -104,23 +104,20 @@ fast_lookahead_limiter::get_param(paramnames::PAR_TYPE pt) const
 stockerrs::ERR_TYPE fast_lookahead_limiter::validate()
 {
     if (gain_db < -20 || gain_db > 20) {
-        *err_msg +=
-         jwm.get_paramnames()->get_name(paramnames::GAIN_DB);
-        *err_msg += " must be within range -20.0 to +20.0";
+        sm_err("%s must be within range -20.0 ~ +20.0.",
+                jwm.get_paramnames()->get_name(paramnames::GAIN_DB));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (limit_db < -20 || limit_db > 0) {
-        *err_msg +=
-         jwm.get_paramnames()->get_name(paramnames::LIMIT_DB);
-        *err_msg += " must be within range -20.0 to 0.0";
+        sm_err("%s must be within range -20.0 ~ 0.0.",
+                jwm.get_paramnames()->get_name(paramnames::LIMIT_DB));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (release_secs < 0.01 || release_secs > 2.0) {
-        *err_msg +=
-         jwm.get_paramnames()->get_name(paramnames::RELEASE_SECS);
-        *err_msg += " must be within range 0.01 to 2.0";
+        sm_err("%s must be within range 0.01 ~ 2.0.",
+                jwm.get_paramnames()->get_name(paramnames::RELEASE_SECS));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
@@ -133,17 +130,17 @@ void fast_lookahead_limiter::init()
     ladspa_plug* lp = ll->get_plugin("fast_lookahead_limiter_1913",
                                      "fastLookaheadLimiter");
     if (lp == 0) {
-        *err_msg = ll->get_error_msg();
+        sm_err("%s", ll->get_error_msg().c_str());
         invalidate();
         return;
     }
     if ((l_descriptor = lp->get_descriptor()) == 0) {
-        *err_msg = lp->get_error_msg();
+        sm_err("%s", lp->get_error_msg().c_str());
         invalidate();
         return;
     }
     if ((l_inst_handle = lp->instantiate()) == 0) {
-        *err_msg = lp->get_error_msg();
+        sm_err("%s", lp->get_error_msg().c_str());
         invalidate();
         return;
     }

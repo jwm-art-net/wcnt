@@ -90,29 +90,30 @@ stockerrs::ERR_TYPE delay::validate()
     if (!pl->validate(this, paramnames::DELAY_TIME,
             stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::DELAY_TIME);
+        sm_err("%s", jwm.get_paramnames()->get_name(
+                                            paramnames::DELAY_TIME));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (!pl->validate(this, paramnames::GAIN,
             stockerrs::ERR_RANGE_M1_1))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::GAIN);
+        sm_err("%s", jwm.get_paramnames()->get_name(paramnames::GAIN));
         invalidate();
         return stockerrs::ERR_RANGE_M1_1;
     }
     if (!pl->validate(this, paramnames::GAIN_MODSIZE,
             stockerrs::ERR_RANGE_0_1))
     {
-        *err_msg
-         = jwm.get_paramnames()->get_name(paramnames::GAIN_MODSIZE);
+        sm_err("%s", jwm.get_paramnames()->get_name(
+                                            paramnames::GAIN_MODSIZE));
         invalidate();
         return stockerrs::ERR_RANGE_0_1;
     }
     if (!pl->validate(this, paramnames::WETDRY,
             stockerrs::ERR_RANGE_0_1))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::WETDRY);
+        sm_err("%s", jwm.get_paramnames()->get_name(paramnames::WETDRY));
         invalidate();
         return stockerrs::ERR_RANGE_0_1;
     }

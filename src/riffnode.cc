@@ -3,9 +3,6 @@
 #include "../include/topdobjlist.h"
 #include "../include/dobjparamlist.h"
 
-#ifdef DEBUG_MSG
-#include <cstdio>
-#endif
 
 riff_node::riff_node() :
  dobj(dobjnames::SIN_RIFFNODE), start_bar(0), riff_source(0),

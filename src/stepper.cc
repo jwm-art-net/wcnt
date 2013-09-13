@@ -125,29 +125,27 @@ synthmod* stepper::duplicate_module(const char* uname, DUP_IO dupio)
 stockerrs::ERR_TYPE stepper::validate()
 {
     if (!goto_first()) {
-        *err_msg = "step shape unformed";
+        sm_err("%s", "Step shape unformed.");
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     else if (!goto_next()){
-        *err_msg = "step shape needs more form";
+        sm_err("%s", "Step shape needs more form.");
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (!jwm.get_paramlist()->validate(this, paramnames::RESPONSE_TIME,
                                             stockerrs::ERR_NEGATIVE))
     {
-        *err_msg =
-            jwm.get_paramnames()->get_name(paramnames::RESPONSE_TIME);
+        sm_err("%s", jwm.get_paramnames()->get_name(
+                                            paramnames::RESPONSE_TIME));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (up_thresh < lo_thresh) {
-        *err_msg =
-         jwm.get_paramnames()->get_name(paramnames::UP_THRESH);
-        *err_msg += " must not be less than ";
-        *err_msg +=
-         jwm.get_paramnames()->get_name(paramnames::LO_THRESH);
+        sm_err("%s must not be less than %s.",
+                jwm.get_paramnames()->get_name(paramnames::UP_THRESH),
+                jwm.get_paramnames()->get_name(paramnames::LO_THRESH));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
@@ -184,16 +182,12 @@ dobj* stepper::add_dobj(dobj* dbj)
     if (dbj->get_object_type() == dobjnames::SIN_STEP) {
         if (insert_step((step_data*)dbj))
             return dbj;
-        *err_msg = "\ncould not insert ";
-        *err_msg += jwm.get_dobjnames()->get_name(dobjnames::SIN_STEP);
-        *err_msg += " into stepper";
+        sm_err("Could not insert %s into stepper.",
+                jwm.get_dobjnames()->get_name(dobjnames::SIN_STEP));
         return 0;
     }
-    *err_msg = "\n***major error*** attempt made to add an ";
-    *err_msg += "\ninvalid object type of ";
-    *err_msg += jwm.get_dobjnames()->get_name(dbj->get_object_type());
-    *err_msg += " to ";
-    *err_msg += get_username();
+    sm_err("*** MAJOR ERROR *** Bad attempt made to add invalid object \
+                                            type to %s.", get_username());
     return 0;
 }
 

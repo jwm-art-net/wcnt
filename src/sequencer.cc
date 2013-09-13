@@ -182,13 +182,11 @@ dobj* sequencer::add_dobj(dobj* dbj)
     {
     case dobjnames::SIN_RIFFNODE:
         if (!(retv = add_riff_node((riff_node*)dbj)))
-            *err_msg="\ncould not add riff node to ";
-            *err_msg += get_username();
+            sm_err("Could not add riff node to %s", get_username());
         break;
     default:
-        *err_msg = "\n***major error*** attempt made to add an ";
-        *err_msg += "\ninvalid object type to ";
-        *err_msg += get_username();
+        sm_err("*** MAJOR ERROR *** Bad attempt made to add invalid object \
+                                            type to %s.", get_username());
         retv = 0;
     }
     return retv;
@@ -196,7 +194,7 @@ dobj* sequencer::add_dobj(dobj* dbj)
 
 synthmod* sequencer::duplicate_module(const char* uname, DUP_IO dupio)
 {
-    *err_msg += "sequencer does not allow copies of it to be made.";
+    sm_err("%s", "sequencer does not allow copies to be made of it.");
     return 0;
 }
 
@@ -206,8 +204,8 @@ stockerrs::ERR_TYPE sequencer::validate()
             paramnames::VELOCITY_RESPONSE,
             stockerrs::ERR_NEGATIVE))
     {
-        *err_msg =
-         jwm.get_paramnames()->get_name(paramnames::VELOCITY_RESPONSE);
+        sm_err("%s", jwm.get_paramnames()->get_name(
+                                        paramnames::VELOCITY_RESPONSE));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }

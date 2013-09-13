@@ -84,17 +84,17 @@ void const* clockclock::get_param(paramnames::PAR_TYPE pt) const
 stockerrs::ERR_TYPE clockclock::validate()
 {
     if (!jwm.get_paramlist()->validate(this, paramnames::FREQ,
-            stockerrs::ERR_RANGE_FREQ))
+                                            stockerrs::ERR_RANGE_FREQ))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::FREQ);
+        sm_err("%s", jwm.get_paramnames()->get_name(paramnames::FREQ));
         invalidate();
         return stockerrs::ERR_RANGE_FREQ;
     }
     if (!jwm.get_paramlist()->validate(this, paramnames::FREQ_MOD1SIZE,
-            stockerrs::ERR_RANGE_FMOD))
+                                            stockerrs::ERR_RANGE_FMOD))
     {
-        *err_msg
-         = jwm.get_paramnames()->get_name(paramnames::FREQ_MOD1SIZE);
+        sm_err("%s", jwm.get_paramnames()->get_name(
+                                            paramnames::FREQ_MOD1SIZE));
         invalidate();
         return stockerrs::ERR_RANGE_FMOD;
     }

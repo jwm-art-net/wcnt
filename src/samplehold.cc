@@ -75,7 +75,8 @@ stockerrs::ERR_TYPE sample_hold::validate()
     if (!jwm.get_paramlist()->validate(this, paramnames::DECAY_TIME,
             stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::DECAY_TIME);
+        sm_err("%s", jwm.get_paramnames()->get_name(
+                                            paramnames::DECAY_TIME));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }

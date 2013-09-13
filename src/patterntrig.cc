@@ -36,16 +36,12 @@ void patterntrig::set_pattern_string(char* pat)
 
 stockerrs::ERR_TYPE patterntrig::validate()
 {
-    if (!pattern) {
-        *err_msg = "\nNo pattern - oops.";
+    if (!pattern || strlen(pattern) < 1) {
+        sm_err("%s", "No pattern - oops.");
         invalidate();
         return stockerrs::ERR_ERROR;
     }
-    else if (strlen(pattern) < 1) {
-        *err_msg = "\nNon pattern - oops.";
-        invalidate();
-        return stockerrs::ERR_ERROR;
-    }
+
     int bc = 0;
     ptr = pattern;
     while (*ptr != '\0') {
@@ -58,21 +54,18 @@ stockerrs::ERR_TYPE patterntrig::validate()
                 bc++;
                 break;
             default:
-                *err_msg += "\ninvalid character ";
-                *err_msg += *ptr;
-                *err_msg += " in pattern.";
+                sm_err("Invalid character %c in pattern.", *ptr);
                 invalidate();
         }
         if (bc > 1) {
-            *err_msg += "\nError, adjacent seperators in pattern.";
+            sm_err("%s", "Error, adjacent seperators in pattern.");
             invalidate();
         }
         ptr++;
     }
     ptr = 0;
     if (bc > 0) {
-        *err_msg += 
-         "\nError, cannot have seperator as last symbol in pattern.";
+        sm_err("%s", "Cannot have seperator as last symbol in pattern.");
         invalidate();
     }
     return

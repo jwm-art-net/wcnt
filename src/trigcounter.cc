@@ -95,21 +95,21 @@ void const* trigcounter::get_param(paramnames::PAR_TYPE pt) const
 stockerrs::ERR_TYPE trigcounter::validate()
 {
     if (!jwm.get_paramlist()->validate(this, paramnames::PRE_COUNT,
-            stockerrs::ERR_NEGATIVE))
+                                            stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::PRE_COUNT);
+        sm_err("%s", jwm.get_paramnames()->get_name(paramnames::PRE_COUNT));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (!jwm.get_paramlist()->validate(this, paramnames::COUNT,
-            stockerrs::ERR_ABOVE1))
+                                            stockerrs::ERR_ABOVE1))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::COUNT);
+        sm_err("%s", jwm.get_paramnames()->get_name(paramnames::COUNT));
         invalidate();
         return stockerrs::ERR_ABOVE1;
     }
     if (count < 1){
-        *err_msg = "ppo";
+        sm_err("PPO %s", "(I'm as confused as you).");
         invalidate();
         return stockerrs::ERR_ERROR;
     }

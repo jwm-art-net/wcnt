@@ -54,7 +54,7 @@ stockerrs::ERR_TYPE trigrouter::validate()
     if (!jwm.get_paramlist()->validate(this,
         paramnames::COUNT, stockerrs::ERR_ABOVE1))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::COUNT);
+        sm_err("%s", jwm.get_paramnames()->get_name(paramnames::COUNT));
         invalidate();
         return stockerrs::ERR_ABOVE1;
     }

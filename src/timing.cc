@@ -2,10 +2,6 @@
 #include "../include/jwm_globals.h"
 #include "../include/dobjparamlist.h"
 
-#ifdef DEBUG_MSG
-#include <cstdio>
-#endif
-
 
 timing::timing():
  dobj(dobjnames::SIN_TIME), seconds(0.0)

@@ -102,9 +102,8 @@ void const* glame_butterworth::get_param(paramnames::PAR_TYPE pt) const
 stockerrs::ERR_TYPE glame_butterworth::validate()
 {
     if (resonance < 0.1 || resonance > 1.41) {
-        *err_msg +=
-         jwm.get_paramnames()->get_name(paramnames::RESONANCE);
-        *err_msg += " must be within range 0.1 to 1.41";
+        sm_err("%s must be within range 0.1 ~ 1.41.",   
+                jwm.get_paramnames()->get_name(paramnames::RESONANCE));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
@@ -117,17 +116,17 @@ void glame_butterworth::init()
     ladspa_plug* lp = ll->get_plugin("butterworth_1902",
                                      type_names[type]);
     if (lp == 0) {
-        *err_msg = ll->get_error_msg();
+        sm_err("%s", ll->get_error_msg().c_str());
         invalidate();
         return;
     }
     if ((l_descriptor = lp->get_descriptor()) == 0) {
-        *err_msg = lp->get_error_msg();
+        sm_err("%s", lp->get_error_msg().c_str());
         invalidate();
         return;
     }
     if ((l_inst_handle = lp->instantiate()) == 0) {
-        *err_msg = lp->get_error_msg();
+        sm_err("%s", lp->get_error_msg().c_str());
         invalidate();
         return;
     }

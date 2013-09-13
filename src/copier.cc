@@ -6,9 +6,6 @@
 #include "../include/jwm_globals.h"
 #include "../include/dobjparamlist.h"
 
-#ifdef DEBUG_MSG
-#include <cstdio>
-#endif
 
 copier::copier() :
  dobj(dobjnames::DEF_COPIER),
@@ -118,7 +115,7 @@ stockerrs::ERR_TYPE copier::validate()
         if (!(to_mod = from_mod->duplicate_module(to_name,
                                     synthmod::AUTO_CONNECT)))
         {
-            dobjerr("%s", synthmod::get_error_msg()->c_str());
+            dobjerr("%s", synthmod::get_error_msg());
             return stockerrs::ERR_ERROR;
         }
         if (!jwm.get_modlist()->add_module(to_mod)) {

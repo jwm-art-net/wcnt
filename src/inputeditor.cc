@@ -7,10 +7,6 @@
 #include <iostream>
 #include <string>
 
-#ifdef DEBUG_MSG
-#include <cstdio>
-#endif
-
 
 inputeditor::inputeditor() :
  dobj(dobjnames::DEF_INPUTEDITOR)
@@ -50,12 +46,12 @@ dobj const* inputeditor::add_dobj(dobj* dbj)
         case dobjnames::SIN_EDIT_INPUT:
             if (!(retv = add_at_tail((inputedit*)dbj)->get_data())) {
                 dobjerr("Could not add parameter edit to %s",
-                                                    *get_username());
+                                                    get_username());
             }
             break;
         default:
             dobjerr("*** MAJOR ERROR *** Bad attempt made to add \
-                        invalid object type to %s.", *get_username());
+                        invalid object type to %s.", get_username());
             retv = 0;
     }
     return retv;

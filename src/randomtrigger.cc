@@ -85,16 +85,16 @@ stockerrs::ERR_TYPE randomtrigger::validate()
     if (!jwm.get_paramlist()->validate(this, paramnames::PROBABILITY,
             stockerrs::ERR_RANGE_0_1))
     {
-        *err_msg =
-         jwm.get_paramnames()->get_name(paramnames::PROBABILITY);
+        sm_err("%s", jwm.get_paramnames()->get_name(
+                                            paramnames::PROBABILITY));
         invalidate();
         return stockerrs::ERR_RANGE_0_1;
     }
     if (!jwm.get_paramlist()->validate(this, paramnames::NOTPROBABILITY,
             stockerrs::ERR_RANGE_0_1))
     {
-        *err_msg =
-         jwm.get_paramnames()->get_name(paramnames::NOTPROBABILITY);
+        sm_err("%s", jwm.get_paramnames()->get_name(
+                                            paramnames::NOTPROBABILITY));
         invalidate();
         return stockerrs::ERR_RANGE_0_1;
     }
