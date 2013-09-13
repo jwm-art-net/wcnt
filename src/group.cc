@@ -35,8 +35,8 @@ synthmod* group::group_module(synthmod* sm)
         set_groupname(get_username(), sm->get_username());
     if (jwm.get_modlist()->get_synthmod_by_name(grpname))
     {
-        dobjerr("Could not add %s to group %s. A module already exists \
-                 named %s.", sm->get_username(), get_username(), grpname);
+        dobjerr("Could not add %s to group %s. A module already exists "
+                "named %s.", sm->get_username(), get_username(), grpname);
         delete [] grpname;
         invalidate();
         return 0;
@@ -44,8 +44,8 @@ synthmod* group::group_module(synthmod* sm)
     delete [] grpname;
     if (!is_duplicate) {
         if (!groupify(sm)) {
-            dobjerr("Could not add %s to group %s. It is forbidden to add \
-                                                 a %s module to a group.",
+            dobjerr("Could not add %s to group %s. It is forbidden to add "
+                                                "a %s module to a group.",
                      sm->get_username(), get_username(),
                      jwm.get_modnames()->get_name(sm->get_module_type()));
             invalidate();
@@ -69,8 +69,8 @@ dobj* group::add_dobj(dobj* dbj)
         synthmod* sm = ((dobjmod*)dbj)->get_synthmod();
         const char* const grpname = sm->get_group_name();
         if (grpname) {
-            dobjerr("Cannot add module to group %s, it is already in \
-                    the group %s.", get_username(), grpname);
+            dobjerr("Cannot add module to group %s, it is already in "
+                    "the group %s.", get_username(), grpname);
             delete grpname;
             return 0;
         }
@@ -84,8 +84,8 @@ dobj* group::add_dobj(dobj* dbj)
         return dbj;
     }
 
-    dobjerr("*** MAJOR ERROR *** bad attempt made to add invalid object\
-                                            type to %s.", get_username());
+    dobjerr("*** MAJOR ERROR *** bad attempt made to add invalid object "
+                                           "type to %s.", get_username());
     return 0;
 }
 

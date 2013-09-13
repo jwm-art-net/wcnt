@@ -3,6 +3,20 @@
 #include "../include/synthmodlist.h"
 #include "../include/jwm_globals.h"
 
+
+#ifdef DEBUG_MSG
+#define connerr(fmt, ... )                              \
+{                                                       \
+    printf("%40s:%5d %-35s\n",                          \
+                    __FILE__, __LINE__, __FUNCTION__);  \
+    cfmt(connector::err_msg, STRBUFLEN, fmt, __VA_ARGS__);   \
+}
+#else
+#define connerr(fmt, ... ) \
+    cfmt(connector::err_msg, STRBUFLEN, fmt, __VA_ARGS__)
+#endif
+
+
 connector::connector(
  synthmod* input_module, inputnames::IN_TYPE input_type,
  const char* output_module_name, outputnames::OUT_TYPE output_type) :
@@ -40,57 +54,42 @@ connector* connector::duplicate(synthmod* sm)
 bool connector::connect()
 {
     if (!this) {
-        connect_err_msg =
-            "\nCannot make connection, connection does not exist!";
+        connerr("%s", "Cannot make connection, connection does not exist!");
         return false;
     }
     const synthmod* outmod =
         jwm.get_modlist()->get_synthmod_by_name(out_mod_uname);
     if (!in_mod) {
-        connect_err_msg = "\nConnection error! Bad News!";
-        connect_err_msg += "\ninput module not set, nothing to connect";
-        connect_err_msg += "to!";
-        connect_err_msg += "\nFOI input type is set as ";
-        connect_err_msg += jwm.get_inputnames()->get_name(in_type);
-        connect_err_msg += " and out module name is ";
-        connect_err_msg += out_mod_uname;
+        connerr("Connection error! Input module not set, nothing to "
+                "connect to. FYI input type is set as %s and out module "
+                "name is %s.", jwm.get_inputnames()->get_name(in_type),
+                                                        out_mod_uname);
         return false;
     }
     if (!outmod) {
-        connect_err_msg = "\nIn module ";
-        connect_err_msg += in_mod->get_username();
-        connect_err_msg += ", cannot connect input ";
-        connect_err_msg += jwm.get_inputnames()->get_name(in_type);
-        connect_err_msg += ", the module ";
-        connect_err_msg += out_mod_uname;
-        connect_err_msg += " does not exist";
+        connerr("In module %s cannot connect input %s, module %s does "
+                "not exist.", in_mod->get_username(),
+                jwm.get_inputnames()->get_name(in_type), out_mod_uname);
         return false;
     }
     const void* const out_data = outmod->get_out(out_type);
 //    std::cout << "\noutmod = " << out_mod_uname 
 //        << " out_data = " << out_data;
     if (!out_data) {
-        connect_err_msg = "\nIn module ";
-        connect_err_msg += in_mod->get_username();
-        connect_err_msg += ", cannot connect input ";
-        connect_err_msg += jwm.get_inputnames()->get_name(in_type);
-        connect_err_msg += ", to module ";
-        connect_err_msg += out_mod_uname;
-        connect_err_msg += ", it does not have any ";
-        connect_err_msg += jwm.get_outputnames()->get_name(out_type);
-        connect_err_msg += " output";
+        connerr("In module %s cannot connect input %s. Module %s does not "
+                "have any %s output.", in_mod->get_username(),
+                jwm.get_inputnames()->get_name(in_type), out_mod_uname,
+                jwm.get_outputnames()->get_name(out_type));
         return false;
     }
     if (!in_mod->set_in(in_type, out_data)) {
-        connect_err_msg = "\n*** MODULE ERROR ***";
-        connect_err_msg += "\nIn module ";
-        connect_err_msg += *in_mod->get_username();
-        connect_err_msg += " not programmed to set input ";
-        connect_err_msg += jwm.get_inputnames()->get_name(in_type);
+        connerr("*** MODULE ERROR *** In module %s not programmed to "
+                "accept connections for input %s.", *in_mod->get_username(),
+                                jwm.get_inputnames()->get_name(in_type));
         return false;
     }
     return true;
 }
 
-std::string connector::connect_err_msg;
+char connector::err_msg[STRBUFLEN];
 

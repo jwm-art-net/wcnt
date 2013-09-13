@@ -100,8 +100,8 @@ dobj* dynamic::add_dobj(dobj* dbj)
             sm_err("Could not add vertex to %s.", get_username());
         break;
     default:
-        sm_err("*** MAJOR ERROR *** Bad attempt made to add invalid object \
-                                            type to %s.", get_username());
+        sm_err("*** MAJOR ERROR *** Bad attempt made to add invalid object "
+                                           "type to %s.", get_username());
     }
     return retv;
 }

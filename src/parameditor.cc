@@ -45,8 +45,8 @@ dobj const* parameditor::add_dobj(dobj* dbj)
             dobjerr("Could not add parameter edit to %s", get_username());
         break;
     default:
-        dobjerr("*** MAJOR ERROR *** bad attempt to add invalid object \
-                                            type to %s", get_username());
+        dobjerr("*** MAJOR ERROR *** bad attempt to add invalid object "
+                                           "type to %s", get_username());
         retv = 0;
     }
     return retv;

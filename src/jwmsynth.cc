@@ -9,8 +9,20 @@
 
 #include <iostream>
 
+#ifdef DEBUG_MSG
+#define jwm_err(fmt, ... )                           \
+{                                                       \
+    printf("%40s:%5d %-35s\n",                          \
+                    __FILE__, __LINE__, __FUNCTION__);  \
+    cfmt(err_msg, STRBUFLEN, fmt, __VA_ARGS__);  \
+}
+#else
+#define jwm_err(fmt, ... ) \
+    cfmt(err_msg, STRBUFLEN, fmt, __VA_ARGS__)
+#endif
+
+
 jwmsynth::jwmsynth() :
- synthmod_err_msg(0), dobj_err_msg(0),
  synthfile_reader(0), valid(false),
  exit_bar(0), in_bar_trig(0), in_bar(0)
 {
@@ -27,7 +39,7 @@ jwmsynth::~jwmsynth()
 bool jwmsynth::generate_synth()
 {
     if (!synthfile_reader->read_and_create()) {
-        err_msg = synthfile_reader->get_wc_error_msg();
+        jwm_err("%s", synthfile_reader->get_wc_error_msg());
         return false;
     }
     return true;
@@ -40,7 +52,7 @@ bool jwmsynth::connect_synth()
         std::cout << ", hold your horses:\n";
     }
     if (!jwm.get_connectlist()->make_connections()) {
-        err_msg = *connector::get_connect_err_msg();
+        jwm_err("%s", connector::get_connect_err_msg());
         return false;
     }
     return true;
@@ -55,27 +67,23 @@ bool jwmsynth::validate_synth()
     sm = jwm.get_modlist()->goto_first();
     while(sm) {
         if ((et = sm->validate()) != stockerrs::ERR_NO_ERROR) {
-            err_msg = "\nModule ";
-            err_msg += sm->get_username();
-            err_msg += " is a little odd, ";
-            err_msg += *synthmod::get_error_msg();
-            err_msg += jwm.get_stockerrs()->get_prefix_err(et);
-            err_msg += jwm.get_stockerrs()->get_err(et);
+            jwm_err("Module %s is a little odd, %s %s %s",
+                    sm->get_username(), synthmod::get_error_msg(),
+                    jwm.get_stockerrs()->get_prefix_err(et),
+                    jwm.get_stockerrs()->get_err(et));
             return false;
         }
         if (!sm->flag(synthmod::SM_VALID)){
-            err_msg = "\nModule ";
-            err_msg += sm->get_username();
-            err_msg += " had problems initialising...\n";
-            err_msg += *synthmod::get_error_msg();
+            jwm_err("Module %s had problems initialising...",
+                    sm->get_username(), synthmod::get_error_msg());
             return false;
         }
         sm = jwm.get_modlist()->goto_next();
     }
     if (jwm.get_modlist()->get_first_of_type(synthmodnames::WCNTEXIT)==0)
     {
-        err_msg += "\nNo wcnt_exit module created.";
-        err_msg += "\nWithout this module I don't know when to stop.";
+        jwm_err("%s", "No wcnt_exit module created. Without this module "
+                                         "I won't know when to stop.");
         return false;
     }
     return true;
@@ -92,12 +100,12 @@ bool jwmsynth::init_synth()
         sm->init();
         #ifdef IO_DEBUG
         if (!sm->check_inputs()) {
-            err_msg = *synthmod::get_error_msg();
+            jwm_err("%s", synthmod::get_error_msg());
             return false;
         }
         #endif
         if (!sm->flag(synthmod::SM_VALID)){
-            err_msg = *synthmod::get_error_msg();
+            jwm_err("%s", synthmod::get_error_msg());
             return false;
         }
         sm = sml->goto_next();

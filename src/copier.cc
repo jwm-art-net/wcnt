@@ -70,9 +70,9 @@ bool copier::set_param(paramnames::PAR_TYPE pt, void* data)
             get_groupname((const char*)data);
         if (grpname) {
             delete [] grpname;
-            dobjerr("Cannot copy %s to %s because the name %s contains \
-                    a '.' character which is strictly reserved for \
-                    grouped modules only.", from_name, (const char*)data,
+            dobjerr("Cannot copy %s to %s because the name %s contains "
+                    "a '.' character which is strictly reserved for "
+                    "grouped modules only.", from_name, (const char*)data,
                                                        (const char*)data);
             return false;
         }
@@ -119,8 +119,8 @@ stockerrs::ERR_TYPE copier::validate()
             return stockerrs::ERR_ERROR;
         }
         if (!jwm.get_modlist()->add_module(to_mod)) {
-            dobjerr("Could not add module %s copied from %s to module \
-                                                        run list. Bad.",
+            dobjerr("Could not add module %s copied from %s to module "
+                                                       "run list. Bad.",
                         to_mod->get_username(), from_mod->get_username());
             return stockerrs::ERR_ERROR;
         }

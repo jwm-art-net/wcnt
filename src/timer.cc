@@ -100,8 +100,8 @@ dobj* timer::add_dobj(dobj* dbj)
             sm_err("Could not add timing to %s", get_username());
         break;
     default:
-        sm_err("*** MAJOR ERROR *** Bad attempt made to add invalid object \
-                                            type to %s.", get_username());
+        sm_err("*** MAJOR ERROR *** Bad attempt made to add invalid object "
+                                            "type to %s.", get_username());
         retv = 0;
     }
     return retv;

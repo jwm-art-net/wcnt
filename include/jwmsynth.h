@@ -21,17 +21,15 @@ class jwmsynth
     bool init_synth();              // 5 to planned synthmodlist stealing
     bool execute_synth();           // 6 module...
 
-    std::string get_error_msg(){ return err_msg;}
+    const char* get_error_msg(){ return err_msg;}
 
  private:
 //--- dobj and synthmod static member variables ---//
-    std::string* synthmod_err_msg;
-    std::string* dobj_err_msg;
     synthfilereader* synthfile_reader;
 
 //--- validation and error messages ---//
     bool valid;
-    std::string err_msg;
+    char err_msg[STRBUFLEN];
 
 //--- when to stop ---//
     short exit_bar;

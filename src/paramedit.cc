@@ -52,14 +52,14 @@ bool paramedit::do_param_edits()
     synthmod* sm = jwm.get_modlist()->get_synthmod_by_name(name);
     dobj* dbj = jwm.get_dobjlist()->get_dobj_by_name(name);
     if (sm && dbj) {
-        dobjerr("A data object and module share the username %s. Cannot \
-                    edit parameters %s", name, parstr);
+        dobjerr("A data object and module share the username %s. Cannot "
+                    "edit parameters %s", name, parstr);
         invalidate();
         return false;
     }
     if (!sm && !dbj) {
-        dobjerr("There are no data objects or modules named %s. Cannot \
-                    edit parameters.", name);
+        dobjerr("There are no data objects or modules named %s. Cannot "
+                    "edit parameters.", name);
         invalidate();
         return false;
     }
@@ -114,8 +114,8 @@ bool paramedit::mod_param_edit(synthmod* module, const char* parname,
         mp = parlist->goto_next();
     }
     if (confused) {
-        dobjerr("There seems to be more than one parameter named %s \
-                                            - this is a bug.", parname);
+        dobjerr("There seems to be more than one parameter named %s "
+                                            "- this is a bug.", parname);
         invalidate();
         delete parlist;
         return false;
@@ -158,8 +158,8 @@ bool paramedit::dobj_param_edit(dobj* dobject, const char* parname,
         dp = parlist->goto_next();
     }
     if (confused) {
-        dobjerr("There seems to be more than one parameter named %s \
-                                            - this is a bug.", parname);
+        dobjerr("There seems to be more than one parameter named %s "
+                                            "- this is a bug.", parname);
         invalidate();
         delete parlist;
         return false;
@@ -187,8 +187,8 @@ bool paramedit::set_param(paramnames::PAR_TYPE dt, void* data)
     {
     case paramnames::STR_UNNAMED:
         if (!set_name((char*)data)) {
-            dobjerr("There are no data objects or modules named %s \
-                    cannot edit parameters.", (char*)data);
+            dobjerr("There are no data objects or modules named %s "
+                    "cannot edit parameters.", (char*)data);
             invalidate();
             return false;
         }

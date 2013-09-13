@@ -41,8 +41,8 @@ bool dobj::is_named_by_user()
 bool dobj::set_username(const char* un)
 {
     if (!is_named_by_user()) {// should not be given username
-        dobjerr("Tried to set username of object type %s, but %s \
-                                        does not require naming.",
+        dobjerr("Tried to set username of object type %s, but %s "
+                                        "does not require naming.",
                         jwm.get_dobjnames()->get_name(object_type));
         return (valid = false);
     }
@@ -72,29 +72,29 @@ char const* dobj::get_username()
 
 bool dobj::set_param(paramnames::PAR_TYPE, void*)
 {
-    dobjerr("%s", "*** MAJOR ERROR *** Bad attempt made to set parameter \
-                                                        of data object.");
+    dobjerr("%s", "*** MAJOR ERROR *** Bad attempt made to set parameter "
+                                                       "of data object.");
     return 0;
 }
 
 void const* dobj::get_param(paramnames::PAR_TYPE) const
 {
-    dobjerr("%s", "*** MAJOR ERROR *** Bad attempt made to get parameter \
-                                                        of data object.");
+    dobjerr("%s", "*** MAJOR ERROR *** Bad attempt made to get parameter "
+                                                       "of data object.");
     return 0;
 }
 
 dobj const* dobj::add_dobj(dobj*)
 {
-    dobjerr("%s", "*** MAJOR ERROR *** Bad attempt made to add data object \
-                                                        to data object.");
+    dobjerr("%s", "*** MAJOR ERROR *** Bad attempt made to add data object"
+                                                      " to data object.");
     return 0;
 }
 
 dobj* dobj::duplicate_dobj(const char* uname)
 {
-    dobjerr("Data object %s of type %s does not allow copies to be \
-                        made of it.", (username ? username : ""),
+    dobjerr("Data object %s of type %s does not allow copies to be "
+                        "made of it.", (username ? username : ""),
                         jwm.get_dobjnames()->get_name(object_type));
     return 0;
 }

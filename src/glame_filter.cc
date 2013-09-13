@@ -101,8 +101,8 @@ void const* glame_filter::get_param(paramnames::PAR_TYPE pt) const
 stockerrs::ERR_TYPE glame_filter::validate()
 {
     if (cutoff_freq < min_cutoff || cutoff_freq > max_cutoff) {
-        sm_err("%s must be within range 0.0001 * samplerate ~ \
-                0.45 * samplerate.",
+        sm_err("%s must be within range 0.0001 * samplerate ~ "
+               "0.45 * samplerate.",
                 jwm.get_paramnames()->get_name(paramnames::FREQ));
         invalidate();
         return stockerrs::ERR_ERROR;
@@ -133,17 +133,17 @@ void glame_filter::init()
     else
         lp = ll->get_plugin("highpass_iir_1890", "highpass_iir");
     if (lp == 0) {
-        sm_err("%s", ll->get_error_msg().c_str());
+        sm_err("%s", ladspa_loader::get_error_msg());
         invalidate();
         return;
     }
     if ((l_descriptor = lp->get_descriptor()) == 0) {
-        sm_err("%s", lp->get_error_msg().c_str());
+        sm_err("%s", ladspa_loader::get_error_msg());
         invalidate();
         return;
     }
     if ((l_inst_handle = lp->instantiate()) == 0) {
-        sm_err("%s", lp->get_error_msg().c_str());
+        sm_err("%s", ladspa_loader::get_error_msg());
         invalidate();
         return;
     }

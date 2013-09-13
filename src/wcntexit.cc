@@ -84,8 +84,8 @@ stockerrs::ERR_TYPE wcnt_exit::validate()
     if (strcmp(con->get_output_module_name(), "off") == 0
      && exit_bar != 0)
     {
-        sm_err("Input %s is turned off, and parameter %s is not zero. \
-                wcnt would never exit if allowed to run!",
+        sm_err("Input %s is turned off, and parameter %s is not zero. "
+                            "wcnt would never exit if allowed to run!",
                     jwm.get_inputnames()->get_name(inputnames::IN_BAR),
                     jwm.get_paramnames()->get_name(paramnames::EXIT_BAR));
         invalidate();

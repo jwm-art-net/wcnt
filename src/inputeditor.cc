@@ -50,8 +50,8 @@ dobj const* inputeditor::add_dobj(dobj* dbj)
             }
             break;
         default:
-            dobjerr("*** MAJOR ERROR *** Bad attempt made to add \
-                        invalid object type to %s.", get_username());
+            dobjerr("*** MAJOR ERROR *** Bad attempt made to add "
+                       "invalid object type to %s.", get_username());
             retv = 0;
     }
     return retv;

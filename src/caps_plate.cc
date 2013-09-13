@@ -125,17 +125,17 @@ void caps_plate::init()
     ladspa_loader* ll = jwm.get_ladspaloader();
     ladspa_plug* lp = ll->get_plugin("caps", "Plate");
     if (lp == 0) {
-        sm_err("%s", ll->get_error_msg().c_str());
+        sm_err("%s", ladspa_loader::get_error_msg());
         invalidate();
         return;
     }
     if ((l_descriptor = lp->get_descriptor()) == 0) {
-        sm_err("%s", lp->get_error_msg().c_str());
+        sm_err("%s", ladspa_loader::get_error_msg());
         invalidate();
         return;
     }
     if ((l_inst_handle = lp->instantiate()) == 0) {
-        sm_err("%s", lp->get_error_msg().c_str());
+        sm_err("%s", ladspa_loader::get_error_msg());
         invalidate();
         return;
     }

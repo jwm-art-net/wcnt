@@ -105,8 +105,8 @@ dobj* switcher::add_dobj(dobj* dbj)
     if (dbj->get_object_type() == dobjnames::DOBJ_SYNTHMOD) {
         synthmod* sm = ((dobjmod*)dbj)->get_synthmod();
         if (!sm->flag(SM_HAS_OUT_OUTPUT)) {
-            sm_err("%s will not accept the module %s because modules of \
-                                type %s do not have the %s output type.",
+            sm_err("%s will not accept the module %s because modules of "
+                                "type %s do not have the %s output type.",
                     get_username(), sm->get_username(),
                     jwm.get_modnames()->get_name(sm->get_module_type()),
                     jwm.get_outputnames()->get_name(
@@ -123,8 +123,8 @@ dobj* switcher::add_dobj(dobj* dbj)
         jwm.get_dobjlist()->add_dobj(dbj);
         return dbj;
     }
-    sm_err("*** MAJOR ERROR *** Bad attempt made to add invalid object \
-                                            type to %s.", get_username());
+    sm_err("*** MAJOR ERROR *** Bad attempt made to add invalid object "
+                                            "type to %s.", get_username());
     return 0;
 }
 

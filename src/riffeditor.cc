@@ -51,13 +51,13 @@ dobj const* riff_editor::add_dobj(dobj* dbj)
     case dobjnames::SIN_NOTE:
         retv = riff_source->insert_and_position_note((note_data*)dbj);
         if (!retv)
-            dobjerr("Could not add note change to %s by way of \
-                    riff_editor %s.", riff_source->get_username(),
+            dobjerr("Could not add note change to %s by way of "
+                    "riff_editor %s.", riff_source->get_username(),
                                       get_username());
         break;
     default:
-        dobjerr("%s", "*** MAJOR ERROR *** Bad attempt made to add \
-                        invalid object type to %s.", get_username());
+        dobjerr("%s", "*** MAJOR ERROR *** Bad attempt made to add "
+                        "invalid object type to %s.", get_username());
         retv = 0;
     }
     return retv;

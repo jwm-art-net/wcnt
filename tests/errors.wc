@@ -8,7 +8,7 @@ time
         meter   tsig 6/4    bar 0
     meter_map
     bpm_map
-        tempo   bpm 120     bar 0
+        tempo   bpm 120     bar 1
         tempo   bpm 0       bar 4 // @ bar 4, is still 120
         tempo   bpm -50     bar 8 // @ from bar 4, graduates to 70.
     bpm_map

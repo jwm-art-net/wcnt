@@ -45,8 +45,8 @@ void synthmod::set_group_name(const char* const gname)
 const void* synthmod::get_out(outputnames::OUT_TYPE) const
 {
     #ifdef IO_PARANOIA
-    sm_err("*** MAJOR ERROR *** Bad attempt made to get output where \
-                                            none exist.", get_username());
+    sm_err("*** MAJOR ERROR *** Bad attempt made to get output where "
+                                            "none exist.", get_username());
     #endif
     return 0;
 }
@@ -54,8 +54,8 @@ const void* synthmod::get_out(outputnames::OUT_TYPE) const
 const void* synthmod::set_in(inputnames::IN_TYPE, const void*)
 {
     #ifdef IO_PARANOIA
-    sm_err("*** MAJOR ERROR *** Bad attempt made to set input where \
-                                            none exist.", get_username());
+    sm_err("*** MAJOR ERROR *** Bad attempt made to set input where "
+                                            "none exist.", get_username());
     #endif
     return 0;
 }
@@ -63,8 +63,8 @@ const void* synthmod::set_in(inputnames::IN_TYPE, const void*)
 const void* synthmod::get_in(inputnames::IN_TYPE) const
 {
     #ifdef IO_PARANOIA
-    sm_err("*** MAJOR ERROR *** Bad attempt made to get input where \
-                                            none exist.", get_username());
+    sm_err("*** MAJOR ERROR *** Bad attempt made to get input where "
+                                            "none exist.", get_username());
     #endif
     return 0;
 }
@@ -72,8 +72,8 @@ const void* synthmod::get_in(inputnames::IN_TYPE) const
 bool synthmod::set_param(paramnames::PAR_TYPE, const void*)
 {
     #ifdef IO_PARANOIA
-    sm_err("*** MAJOR ERROR *** Bad attempt made to set parameter where \
-                                            none exist.", get_username());
+    sm_err("*** MAJOR ERROR *** Bad attempt made to set parameter where "
+                                            "none exist.", get_username());
     #endif
     return false;
 }
@@ -81,8 +81,8 @@ bool synthmod::set_param(paramnames::PAR_TYPE, const void*)
 const void* synthmod::get_param(paramnames::PAR_TYPE) const
 {
     #ifdef IO_PARANOIA
-    sm_err("*** MAJOR ERROR *** Bad attempt made to get parameter where \
-                                            none exist.", get_username());
+    sm_err("*** MAJOR ERROR *** Bad attempt made to get parameter where "
+                                            "none exist.", get_username());
     #endif
     return 0;
 }
@@ -90,8 +90,8 @@ const void* synthmod::get_param(paramnames::PAR_TYPE) const
 dobj* synthmod::add_dobj(dobj*)
 {
     #ifdef IO_PARANOIA
-    sm_err("*** MAJOR ERROR *** Bad attempt made to add data object to \
-                module unable to contain data objects.", get_username());
+    sm_err("*** MAJOR ERROR *** Bad attempt made to add data object to "
+                "module unable to contain data objects.", get_username());
     #endif
     return 0;
 }
@@ -143,8 +143,8 @@ bool synthmod::check_inputs()
     modinput* modinp = modinps->goto_first();
     while(modinp) {
         if (!get_in(modinp->get_inputtype())) {
-            sm_err("*** MAJOR ERROR *** Module %s does not have its %s \
-                    input set.", get_username(), 
+            sm_err("*** MAJOR ERROR *** Module %s does not have its %s "
+                    "input set.", get_username(), 
                         jwm.get_inputnames()->get_name(
                                         modinp->get_inputtype()));
             delete modinps;

@@ -91,8 +91,8 @@ bool inputedit::create_connectors()
             if (innames->get_category(in_type)
                 != outnames->get_category(out_type))
             {
-                dobjerr("In connection for %s output %s does not match \
-                                category of input %s.", modname,
+                dobjerr("In connection for %s output %s does not match "
+                                "category of input %s.", modname,
                                 output_name.c_str(), input_name.c_str());
                 invalidate();
                 return false;

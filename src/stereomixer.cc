@@ -86,8 +86,8 @@ dobj* stereomixer::add_dobj(dobj* dbj)
         if (sm->get_module_type() != synthmodnames::STEREOCHANNEL
             && !sm->get_out(outputnames::OUT_LEFT))
         {
-            sm_err("%s will not accept the module %s because modules of \
-                    type %s do not have the %s or %s output types.",
+            sm_err("%s will not accept the module %s because modules of "
+                    "type %s do not have the %s or %s output types.",
                     get_username(), sm->get_username(),
                     jwm.get_modnames()->get_name(sm->get_module_type()),
                     jwm.get_outputnames()->get_name(outputnames::OUT_LEFT),
@@ -104,8 +104,8 @@ dobj* stereomixer::add_dobj(dobj* dbj)
         jwm.get_dobjlist()->add_dobj(dbj);
         return dbj;
     }
-    sm_err("*** MAJOR ERROR *** Bad attempt made to add invalid object \
-                                            type to %s.", get_username());
+    sm_err("*** MAJOR ERROR *** Bad attempt made to add invalid object "
+                                            "type to %s.", get_username());
     return 0;
 }
 

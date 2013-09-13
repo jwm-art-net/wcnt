@@ -11,7 +11,26 @@
 #include "../include/jwm_globals.h"
 #include "../include/jwm_init.h"
 
+
+#ifdef DEBUG_MSG
+#define ladspa_err(fmt, ... )                           \
+{                                                       \
+    printf("%40s:%5d %-35s\n",                          \
+                    __FILE__, __LINE__, __FUNCTION__);  \
+    cfmt(ladspa_err_msg, STRBUFLEN, fmt, __VA_ARGS__);  \
+}
+#else
+#define ladspa_err(fmt, ... ) \
+    cfmt(ladspa_err_msg, STRBUFLEN, fmt, __VA_ARGS__)
+#endif
+
+
+
+
 //-------------------------------------------------------------
+
+static char ladspa_err_msg[STRBUFLEN] = "";
+
 
 ladspa_plug::ladspa_plug(const LADSPA_Descriptor* descr) :
  label(0), descriptor(descr)
@@ -39,21 +58,19 @@ const LADSPA_Descriptor* ladspa_plug::get_descriptor()
 LADSPA_Handle ladspa_plug::instantiate()
 {
     if (descriptor == 0 || label == 0){
-        err_msg = "Could not instantiate LADSPA plugin..."
-                  "Fault in all likelyhood lies with wcnt.";
+        ladspa_err("%s", "Could not instantiate LADSPA plugin... "
+                           "Fault in all likelyhood lies with wcnt.");
         return 0;
     }
     if (descriptor->instantiate == 0){
-        err_msg = "LADSPA plugin "; err_msg += label;
-        err_msg += " lacks an instantiate function... Maybe "
-                   "it's not a LADSPA plugin?";
+        ladspa_err("LADSPA plugin %s lacks an instantiate function... "
+                           "Maybe it's not a LADSPA plugin?", label);
         return 0;
     }
     LADSPA_Handle lh;
     if(!(lh = descriptor->instantiate(descriptor, jwm.samplerate())))
     {
-        err_msg = "Failed to instantiate LADSPA plugin ";
-        err_msg += label;
+        ladspa_err("Failed to instantiate LADSPA plugin %s.", label);
         return 0;
     }
     return lh;
@@ -119,9 +136,8 @@ ladspa_plug*
 ladspa_loader::get_plugin(const char* fname, const char* label)
 {
     if(!fname || !label){
-        err_msg = "loading of LADSPA plugin ";
-        err_msg += fname; err_msg += " ";
-        err_msg += label; err_msg += " halted - before it even began...";
+        ladspa_err("Loading of LADSPA plugin %s halted.",
+                    (fname ? fname : (label ? label : "")));
         return 0;
     }
     // see if plugin lib is already loaded...
@@ -134,12 +150,9 @@ ladspa_loader::get_plugin(const char* fname, const char* label)
     // requested plugin lib not yet loaded...
     LADSPA_Handle lhandle;
     if (!(lhandle = dlopen_plugin(fname, RTLD_NOW))){
-        err_msg = "Could not open LADSPA plugin ";
-        err_msg += fname; err_msg += " ";
-        err_msg += label;
-        err_msg += "\nIf your LADSPA plugins are installed in an usual"
-            "location, please ensure the LADSPA_PATH environment"
-            "  variable is set.";
+        ladspa_err("Could not open LADSPA plugin %s %s. Please ensure "
+                    "the LADSPA_PATH environment variable is set.",
+                                                        fname, label);
         return 0;
     }
     lib = 0;
@@ -147,10 +160,8 @@ ladspa_loader::get_plugin(const char* fname, const char* label)
     if (add_at_tail(lib) == 0){
         if (lib)
             delete lib;
-        err_msg = "Library for LADSPA plugin ";
-        err_msg += fname; err_msg += " ";
-        err_msg += label;
-        err_msg += " loaded ok, but now something else has gone wrong!";
+        ladspa_err("Library for LADSPA plugin %s %s loaded ok, but "
+                   "something else has gone wrong!", fname, label);
         return 0;
     }
     return lib->get_plugin(label);
@@ -209,5 +220,12 @@ void* ladspa_loader::dlopen_plugin(const char* fname, int flag)
         return result;
     return dlopen(fname, flag);
 }
+
+
+const char* ladspa_loader::get_error_msg()
+{
+    return ladspa_err_msg;
+}
+
 
 #endif

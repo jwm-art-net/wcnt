@@ -33,12 +33,9 @@ class ladspa_plug
 
     LADSPA_Handle instantiate();
 
-    std::string get_error_msg(){ return err_msg; }
-
  private:
     const char* label;
     const LADSPA_Descriptor* descriptor;
-    std::string err_msg;
 };
 
 //-------------------------------------------------------------
@@ -67,16 +64,16 @@ class ladspa_loader : public linked_list<ladspa_lib>
     ~ladspa_loader();
 
     ladspa_plug* get_plugin(const char* filename, const char* label);
-    std::string get_error_msg(){ return err_msg; }
+
+    static const char* get_error_msg();
 
  private:
-    std::string      err_msg;
-
     void* dlopen_plugin(const char* filename, int flag);
 };
 
 // partially based upon load.c by Richard W.E. Furse, as provided within
 // the LADSPA SDK
+
 
 #endif
 #endif

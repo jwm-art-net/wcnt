@@ -357,8 +357,8 @@ dobj const* riffdata::add_dobj(dobj* dbj)
             dobjerr("Could not add note change to %s.", get_username());
         break;
     default:
-        dobjerr("*** MAJOR ERROR *** bad attempt made to add invalid \
-                                object type to %s.", get_username());
+        dobjerr("*** MAJOR ERROR *** bad attempt made to add invalid "
+                                "object type to %s.", get_username());
         retv = 0;
     }
     return retv;

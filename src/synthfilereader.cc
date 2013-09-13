@@ -142,8 +142,8 @@ bool synthfilereader::read_and_create()
         jwm.samplerate(srate);
     else {
         if (srate != jwm.samplerate()) {
-            wc_err("Warning! Header data in file %s conflicts with header \
-                    data already in use.", wc_filename);
+            wc_err("Warning! Header data in file %s conflicts with header "
+                    "data already in use.", wc_filename);
         }
     }
     string const *com = read_command();
@@ -183,8 +183,8 @@ bool synthfilereader::read_and_create_synthmod(string const* com)
             if (jwm.get_modlist()->
                     get_first_of_type(synthmodnames::WCNTEXIT))
             {
-                wc_err("Cannot create more than one wcnt_exit module. Not \
-                                    creating %s.", mod->get_username());
+                wc_err("Cannot create more than one wcnt_exit module. Not "
+                                    "creating %s.", mod->get_username());
                 delete mod;
                 return 0;
             }
@@ -325,9 +325,9 @@ synthmod* synthfilereader::read_synthmodule(string const *com)
     const char* const grpname = get_groupname(modname.c_str());
     if (grpname) {
         delete [] grpname;
-        wc_err("The %s module name %s uses the '.' character which is \
-                reserved for grouped modules only (use the group data \
-                object if you want to add the module to a group.)",
+        wc_err("The %s module name %s uses the '.' character which is "
+                "reserved for grouped modules only (use the group data "
+                "object if you want to add the module to a group.)",
                 jwm.get_modnames()->get_name(smt), modname.c_str());
         return 0;
     }
@@ -340,8 +340,8 @@ synthmod* synthfilereader::read_synthmodule(string const *com)
         }
         dobj* dbj = jwm.get_dobjlist()->get_dobj_by_name(modname.c_str());
         if (dbj){ // formality because of parameditor.cc workings.
-            wc_err("Cannot not name %s as %s, the name is already in use \
-                    by a data object of type %s.",  com->c_str(),
+            wc_err("Cannot not name %s as %s, the name is already in use "
+                    "by a data object of type %s.",  com->c_str(),
                                                     dbj->get_username(),
                     jwm.get_dobjnames()->get_name(dbj->get_object_type()));
             return 0;
@@ -372,8 +372,8 @@ synthmod* synthfilereader::read_synthmodule(string const *com)
     }
     com = read_command();
     if (*com != modname) {
-        wc_err("In module %s expected definition termination %s, \
-                got %s instead.", sm->get_username(), sm->get_username(),
+        wc_err("In module %s expected definition termination %s, "
+                "got %s instead.", sm->get_username(), sm->get_username(),
                                                             com->c_str());
         delete sm;
         return 0;
@@ -423,8 +423,8 @@ dobj* synthfilereader::read_dobj(string const* com)
     const char* const grpname = get_groupname(dobjname.c_str());
     if (grpname) {
         delete [] grpname;
-        wc_err("The data object %s name %s used the '.' character which is \
-                strictly reserved for use within groups.",
+        wc_err("The data object %s name %s used the '.' character which is "
+                "strictly reserved for use within groups.",
                 dbjnames->get_name(dobjtype), dobjname.c_str());
         return 0;
     }
@@ -437,8 +437,8 @@ dobj* synthfilereader::read_dobj(string const* com)
         synthmod* sm =
             jwm.get_modlist()->get_synthmod_by_name(dobjname.c_str());
         if (sm){ // formality because of parameditor.cc workings.
-            wc_err("Cannot name %s %s, the name is already in use by a \
-                    module of type %s.", com->c_str(), sm->get_username(),
+            wc_err("Cannot name %s %s, the name is already in use by a "
+                    "module of type %s.", com->c_str(), sm->get_username(),
                     jwm.get_modnames()->get_name(sm->get_module_type()));
             return 0;
         }
@@ -482,8 +482,8 @@ dobj* synthfilereader::read_dobj(string const* com)
     }
     com = read_command();
     if (*com != dobjname) {
-        wc_err("In data object %s expected definition termination %s, got \
-                                        %s instead.", dbj->get_username(),
+        wc_err("In data object %s expected definition termination %s, got "
+                                        "%s instead.", dbj->get_username(),
                                         dbj->get_username(), com->c_str());
         delete dbj;
         return 0;
@@ -539,8 +539,8 @@ bool synthfilereader::read_dobjs(dobj* dbj)
                 dobj* sprog =
                     jwm.get_dobjlist()->create_dobj(sprogtype);
                 if (sprog == 0) {
-                    wc_err("*** MAJOR ERROR *** could not create data \
-                            object %s for data object %s.",
+                    wc_err("*** MAJOR ERROR *** could not create data "
+                            "object %s for data object %s.",
                             sprogname, dbj->get_username());
                     delete dd_list;
                     return false;
@@ -569,8 +569,8 @@ bool synthfilereader::read_dobjs(dobj* dbj)
                     }
                     // add sprog to dbj, not dobjlist  . . .
                     if (!dbj->add_dobj(sprog)) {
-                        wc_err("*** MAJOR ERROR *** Could not add data \
-                                object %s to data object %s.", sprogname,
+                        wc_err("*** MAJOR ERROR *** Could not add data "
+                                "object %s to data object %s.", sprogname,
                                 dbj->get_username(),
                                 dobj::get_error_msg());
                         delete sprog;
@@ -640,8 +640,8 @@ bool synthfilereader::read_dobjs(synthmod* sm)
                     cout << "-------- creating " << xsprogname << endl;
                 dobj* dbj = jwm.get_dobjlist()->create_dobj(sprogtype);
                 if (dbj == 0) { // failed to create dobj
-                    wc_err("*** MAJOR ERROR *** Could not create data \
-                            object %s data object %s.", xsprogname,
+                    wc_err("*** MAJOR ERROR *** Could not create data "
+                            "object %s data object %s.", xsprogname,
                                                         xdbjname);
                     return false;
                 }
@@ -665,8 +665,8 @@ bool synthfilereader::read_dobjs(synthmod* sm)
                 if (inc_current) {
                     // add to synthmodule, not dobjlist  . . .
                     if (!sm->add_dobj(dbj)) {
-                        wc_err("*** MAJOR ERROR *** Could not add data \
-                                object %s %s in data object %s.",
+                        wc_err("*** MAJOR ERROR *** Could not add data "
+                                "object %s %s in data object %s.",
                                 xsprogname, sm->get_error_msg(), xdbjname);
                         delete dbj;
                         return false;
@@ -756,8 +756,8 @@ synthfilereader::read_string_list_param
     cout << endl;
     #endif
     if (enda == 0 && endb == 0) {
-        wc_err("%s", "*** MAJOR ERROR *** read_string_list_param(char*, \
-                                    char*) called with NULL arguements.");
+        wc_err("%s", "*** MAJOR ERROR *** read_string_list_param(char*, "
+                                    "char*) called with NULL arguements.");
         invalidate();
         return 0;
     }
@@ -766,8 +766,8 @@ synthfilereader::read_string_list_param
     bool ready_to_finish = false;
     while(true) {
         if (!(com = read_command())) {
-            wc_err("%s", "Unexpected EOF. Data object missing editlist \
-                                                            terminator.");
+            wc_err("%s", "Unexpected EOF. Data object missing editlist "
+                                                            "terminator.");
             invalidate();
             return 0;
         }
@@ -962,8 +962,8 @@ synthfilereader::open_file()
 bool synthfilereader::read_header(unsigned long *samplerate)
 {
     if (filestatus != FILE_OPEN) {
-        wc_err("%s", "*** MAJOR ERROR *** Attempted read of header without \
-                                                                open file");
+        wc_err("%s", "*** MAJOR ERROR *** Attempted read of header without "
+                                                            "open file");
         return 0;
     }
     if (!skip_remarks()) {
@@ -987,8 +987,8 @@ bool synthfilereader::read_header(unsigned long *samplerate)
             else {
                 ostringstream conv;
                 conv << *samplerate;
-                wc_err("Invalid samplerate %s. Valid values between \
-                                    4000 and 200000.", conv.str().c_str());
+                wc_err("Invalid samplerate %s. Valid values between "
+                                    "4000 and 200000.", conv.str().c_str());
                 return false;
             }
         }
@@ -1083,8 +1083,8 @@ bool synthfilereader::eff_ing_header_bodge(unsigned long *samplerate)
         } else {
             ostringstream conv;
             conv << *samplerate;
-            wc_err("In header %d Invalid samplerate %s valid values \
-                    between 4000 and 200000.",  hf_name.c_str(),
+            wc_err("In header %d Invalid samplerate %s valid values "
+                    "between 4000 and 200000.",  hf_name.c_str(),
                                                 conv.str().c_str());
             headerfile.close();
             return false;
@@ -1151,8 +1151,8 @@ dobj const* synthfilereader::add_dobj(dobj* dbj)
             dobjerr("Could not add modname to %s.", get_username());
         break;
     default:
-        dobjerr("*** MAJOR ERROR *** Bad attempt made to add \
-                invalid object type to %s.", get_username());
+        dobjerr("*** MAJOR ERROR *** Bad attempt made to add "
+                "invalid object type to %s.", get_username());
     }
     return retv;
 }

@@ -52,8 +52,7 @@ public:
     bool connect();
     connector* duplicate();
     connector* duplicate(synthmod*);
-    static const std::string* get_connect_err_msg()
-        { return &connect_err_msg;}
+    static const char* get_connect_err_msg() { return err_msg;}
 
     bool operator()(input_module & inmod){
         return (inmod(in_mod));
@@ -68,6 +67,10 @@ private:
     inputnames::IN_TYPE in_type;
     char* out_mod_uname;
     outputnames::OUT_TYPE out_type;
-    static std::string connect_err_msg;
+    static char err_msg[STRBUFLEN];
 };
+
+
+
+
 #endif

@@ -186,8 +186,8 @@ dobj* stepper::add_dobj(dobj* dbj)
                 jwm.get_dobjnames()->get_name(dobjnames::SIN_STEP));
         return 0;
     }
-    sm_err("*** MAJOR ERROR *** Bad attempt made to add invalid object \
-                                            type to %s.", get_username());
+    sm_err("*** MAJOR ERROR *** Bad attempt made to add invalid object "
+                                            "type to %s.", get_username());
     return 0;
 }
 

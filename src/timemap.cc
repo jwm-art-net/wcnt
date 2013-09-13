@@ -84,14 +84,14 @@ stockerrs::ERR_TYPE timemap::validate()
     }
     std::ostringstream conv;
     if (currentmeter->get_bar() > 0) {
-        sm_err("The first added time signature is at bar %d. Should be \
-                                    at bar 0.", currentmeter->get_bar());
+        sm_err("The first added time signature is at bar %d. Should be "
+                                    "at bar 0.", currentmeter->get_bar());
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (currentbpm->get_bar() > 0) {
-        sm_err("The first added tempo is at bar %d. Should start at \
-                                        bar 0.", currentbpm->get_bar());
+        sm_err("The first added tempo is at bar %d. Should start at "
+                                        "bar 0.", currentbpm->get_bar());
         invalidate();
         return stockerrs::ERR_ERROR;
     }
@@ -99,15 +99,15 @@ stockerrs::ERR_TYPE timemap::validate()
     while(currentbpm){
         bpm += currentbpm->get_bpm();
         if (bpm < jwm_init::min_bpm) {
-            sm_err("At bar %d BPM change takes tempo below minimum \
-                                    BPM of %d.", currentbpm->get_bar(),
+            sm_err("At bar %d BPM change takes tempo below minimum "
+                                    "BPM of %d.", currentbpm->get_bar(),
                                                     jwm_init::min_bpm);
             invalidate();
             return stockerrs::ERR_ERROR;
         }
         if (bpm > jwm_init::max_bpm) {
-            sm_err("At bar %d BPM change takes tempo above maximum \
-                                    BPM of %d.", currentbpm->get_bar(),
+            sm_err("At bar %d BPM change takes tempo above maximum "
+                                    "BPM of %d.", currentbpm->get_bar(),
                                                     jwm_init::max_bpm);
             invalidate();
             return stockerrs::ERR_ERROR;
@@ -298,8 +298,8 @@ dobj* timemap::add_dobj(dobj* dbj)
             sm_err("Could not add bpm change to %s.", get_username());
         break;
     default:
-        sm_err("*** MAJOR ERROR *** Bad attempt made to add invalid object \
-                                            type to %s.", get_username());
+        sm_err("*** MAJOR ERROR *** Bad attempt made to add invalid object"
+                                            " type to %s.", get_username());
         retv = 0;
     }
     return retv;
