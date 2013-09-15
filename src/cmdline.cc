@@ -177,7 +177,7 @@ bool cmdline::scan()
                         o = 100;
                         break;
                     default:
-                        if (data[o].type == 0)std::cout << "!*£$*(£*&";
+                        if (data[o].type == 0)std::cout << "!$*%&(@!";
                         data[o].par1 = (arg + 1 < opts_count)? ++arg : 0;
                         data[o].par2 = (arg + 1 < opts_count)? arg+1 : 0;
 #ifdef CMDLINE_DBG
@@ -806,6 +806,7 @@ void cmdline::about()
         "\n  wcnt on the web:"
         "\n    http://wcnt.sourceforge.net"
         "\n    http://www.jwm-art.net/o7.php&p=keywords&k=wcnt"
+        "\n    https://github.com/jwm-art-net/wcnt"
         "\n  Send bug reports, patches, requests, suggestions,"
         "\n  or if you wish to share your .wc creations to:"
         "\n    james@jwm-art.net";

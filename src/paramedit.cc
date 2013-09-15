@@ -128,7 +128,7 @@ bool paramedit::mod_param_edit(synthmod* module, const char* parname,
         return false;
     }
     if (!setpar::set_param(module, parname, pt, valstr, 0)) {
-        dobjerr("%s", setpar::err_msg.c_str());
+        dobjerr("%s", setpar::get_error_msg());
         invalidate();
         delete parlist;
         return false;
@@ -172,7 +172,7 @@ bool paramedit::dobj_param_edit(dobj* dobject, const char* parname,
         return false;
     }
     if (!setpar::set_param(dobject, parname, pt, valstr, 0)) {
-        dobjerr("%s", setpar::err_msg.c_str());
+        dobjerr("%s", setpar::get_error_msg());
         invalidate();
         delete parlist;
         return false;

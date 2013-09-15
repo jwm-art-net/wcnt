@@ -6,14 +6,29 @@
 
 #include <sstream>
 
+#ifdef DEBUG_MSG
+#define iocat_err(fmt, ... )                                \
+{                                                           \
+    printf("%40s:%5d %-35s\n",                              \
+                    __FILE__, __LINE__, __FUNCTION__);      \
+    cfmt(iocatconv::err_msg, STRBUFLEN, fmt, __VA_ARGS__);  \
+}
+#else
+#define iocat_err(fmt, ... ) \
+    cfmt(iocatconv::err_msg, STRBUFLEN, fmt, __VA_ARGS__)
+#endif
+
+
+
 namespace iocatconv
 {
+static char err_msg[STRBUFLEN] = "";
 
 void* cstr_to_iocat(iocat::IOCAT ioc, char const* cstrval,
                     std::ostringstream* result)
 {
     if (!cstrval) {
-        err_msg = ", expected something, got nothing";
+        iocat_err("%s", "Expected something, got nothing!");
         return 0;
     }
     std::stringstream strstr(cstrval);
@@ -24,7 +39,7 @@ void* cstr_to_iocat(iocat::IOCAT ioc, char const* cstrval,
     case iocat::DOUBLE:
         data = new double;
         if (!(strstr >> *(double*)data)) {
-            err_msg = ", expected floating point value";
+            iocat_err("%s", "Expected floating point value.");
             delete (double*)data;
             return 0;
         }
@@ -34,7 +49,7 @@ void* cstr_to_iocat(iocat::IOCAT ioc, char const* cstrval,
     case iocat::SHORT:
         data = new short;
         if (!(strstr >> *(short*)data)) {
-            err_msg = ", expected integer value (hint:32767 max)";
+            iocat_err("%s", "Expected integer value (hint:32767 max).");
             delete (short*)data;
             return 0;
         }
@@ -44,7 +59,7 @@ void* cstr_to_iocat(iocat::IOCAT ioc, char const* cstrval,
     case iocat::ULONG:
         data = new unsigned long;
         if (!(strstr >> *(unsigned long*)data)) {
-            err_msg = ", expected unsigned long integer value";
+            iocat_err("%s", "Expected unsigned long integer value.");
             delete (unsigned long*)data;
             return 0;
         }
@@ -59,9 +74,8 @@ void* cstr_to_iocat(iocat::IOCAT ioc, char const* cstrval,
         else if (strcmp(cstrval, "off") == 0)
             *(STATUS*)data = OFF;
         else {
-            err_msg = ", expected string value on or off, got ";
-            err_msg += cstrval;
-            err_msg += " instead";
+            iocat_err("Expected string value on or off, got %s instead.",
+                                                                cstrval);
             delete (STATUS*)data;
             return 0;
         }
@@ -79,19 +93,19 @@ void* cstr_to_iocat(iocat::IOCAT ioc, char const* cstrval,
     case iocat::METER:
         data = new timesig;
         if (!(strstr >> ((timesig*)data)->beatsperbar)) {
-            err_msg = ", expected integer value for beats per bar";
+            iocat_err("%s", "Expected integer value for beats per bar.");
             delete (timesig*)data;
             return 0;
         }
         char ch;
         while (strstr.get(ch) && ch == ' ');
         if (ch != '/') {
-            err_msg = ", expected seperator /";
+            iocat_err("%s", "Expected seperator '/'.");
             delete (timesig*)data;
             return 0;
         }
         if (!(strstr >> ((timesig*)data)->beatvalue)) {
-            err_msg = ", expected integer value";
+            iocat_err("%s", "Expected integer value.");
             delete (timesig*)data;
             return 0;
         }
@@ -104,9 +118,7 @@ void* cstr_to_iocat(iocat::IOCAT ioc, char const* cstrval,
     case iocat::DOBJ:
         data = jwm.get_dobjlist()->get_dobj_by_name(cstrval);
         if (!data) {
-            err_msg = ", no data object named ";
-            err_msg += cstrval;
-            err_msg += " found";
+            iocat_err("No data object named %s found.", cstrval);
             return 0;
         }
         if (result)
@@ -115,15 +127,14 @@ void* cstr_to_iocat(iocat::IOCAT ioc, char const* cstrval,
     case iocat::SYNTHMOD:
         data = jwm.get_modlist()->get_synthmod_by_name(cstrval);
         if (!data) {
-            err_msg = ", no synth module found named ";
-            err_msg += cstrval;
+            iocat_err("No synthmod named %s found.", cstrval);
             return 0;
         }
         if (result)
             *result << cstrval;
         break;
     default:
-        err_msg = "invalid category";
+        iocat_err("%s", "Invalid category.");
         return 0;
     }
     return data;
@@ -160,6 +171,11 @@ void destroy_iocat_data(iocat::IOCAT ioc, void* data)
     }
 }
 
-std::string err_msg;
+
+const char* get_error_msg()
+{
+    return err_msg;
+}
+
 
 } // namespace iocat

@@ -18,6 +18,7 @@
 //  if unsuccessful, err_msg describes what went wrong.
 */
 
+/*
 // wcnt-1.26.4
 // templatized some of this...
 // and allowed relative param_edits via param_editor....
@@ -25,6 +26,14 @@
 // i suspect..
 //
 // this is something of a bodge.
+*/
+
+/*
+// N.B. I believe this exists mostly to serve the param_editor.
+//      Oh no, my mistake, turns out synthfilereader is quite
+//      smitten too.
+*/
+
 
 namespace setpar
 {
@@ -63,7 +72,7 @@ T comp(T* a, T*b, int op)
     }
 }
 
-extern std::string err_msg;
+const char* get_error_msg();
 
 } // namespace setpar;
 

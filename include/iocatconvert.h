@@ -13,7 +13,7 @@ void* cstr_to_iocat(iocat::IOCAT,   char const* cstrval,
 
 void destroy_iocat_data(iocat::IOCAT iocat, void* data);
 
-extern std::string err_msg;
+const char* get_error_msg();
 
 } // namespace iocat
 

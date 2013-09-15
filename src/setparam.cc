@@ -9,8 +9,23 @@
 
 #include <iostream>
 
+#ifdef DEBUG_MSG
+#define setpar_err(fmt, ... )                           \
+{                                                       \
+    printf("%40s:%5d %-35s\n",                          \
+                    __FILE__, __LINE__, __FUNCTION__);  \
+    cfmt(setpar::err_msg, STRBUFLEN, fmt, __VA_ARGS__); \
+}
+#else
+#define setpar_err(fmt, ... ) \
+    cfmt(setpar::err_msg, STRBUFLEN, fmt, __VA_ARGS__)
+#endif
+
+
 namespace setpar
 {
+
+static char err_msg[STRBUFLEN] = "";
 
 template
 bool set_param<synthmod>
@@ -37,16 +52,13 @@ bool set_param(T* obj, const char* param, paramnames::PAR_TYPE pt,
     if (pt != paramnames::STR_UNNAMED && pt != paramnames::STR_LIST)
     {
         if (strcmp(param, parname) != 0) {
-            err_msg = ", expected ";
-            err_msg += parname;
-            err_msg += " got ";
-            err_msg += param;
-            err_msg += " instead";
-            if (jwm.get_paramnames()->get_type(param)
-                == paramnames::FIRST && (time(0) % 8) == 0)
-            {
-                err_msg += ". just can't get the staff these days...";
-            }
+            setpar_err("Expected %s got %s instead. %s",
+                            parname, param,
+                    ((jwm.get_paramnames()->get_type(param)
+                                                == paramnames::FIRST
+                        && (time(0) % 8) == 0)
+                                ? ". Just can't get the staff these days."
+                                : ""));
             return false;
         }
     }
@@ -57,11 +69,9 @@ bool set_param(T* obj, const char* param, paramnames::PAR_TYPE pt,
 
     void* data = iocatconv::cstr_to_iocat(ioc, value, result);
     if (!data) {
-        err_msg = "\nan error occurred trying to convert ";
-        err_msg += value;
-        err_msg += " to an acceptable form for parameter ";
-        err_msg += param;
-        err_msg += iocatconv::err_msg;
+        setpar_err("Failed to convert %s to an acceptable form for "
+                "parameter %s %s.", value, param,
+                                            iocatconv::get_error_msg());
         return false;
     }
     void* datatmp = data;
@@ -70,20 +80,15 @@ bool set_param(T* obj, const char* param, paramnames::PAR_TYPE pt,
         fsp = jwm.get_fxsparamlist()->get_fix_str_param(pt);
         if (!fsp) {
             iocatconv::destroy_iocat_data(ioc, data);
-            err_msg = ", no registered fixed string for ";
-            err_msg += param;
-            err_msg += " parameter";
+            setpar_err("No registered fixed string for %s parameter.",
+                        param);
             return false;
         }
         int n = fsp->get_substring_index((char const*)data);
         if (n < 0) {
-            err_msg = ", parameter ";
-            err_msg += param;
-            err_msg += " does not understand ";
-            err_msg += ((char const*)data);
-            err_msg += ". try one of '";
-            err_msg += fsp->get_string_list();
-            err_msg += "' instead";
+            setpar_err("Parameter %s does not understand %s. Try one of "
+                       "'%s' instead.", param, ((char const*)data),
+                                                fsp->get_string_list());
             iocatconv::destroy_iocat_data(ioc, data);
             return false;
         }
@@ -91,11 +96,8 @@ bool set_param(T* obj, const char* param, paramnames::PAR_TYPE pt,
     }
     if (op) {
         if (!compute(obj, pt, data, op)) {
-            err_msg  = ", well that's truly screwed it my friend.";
-            err_msg += " can't perform operation on parameter using ";
-            err_msg += "operator ";
-            err_msg += op;
-            err_msg += " hopefully i can be a little clearer soon...";
+            setpar_err("Failed to compute parameter value using operator"
+                                                           " '%s'.", op);
             iocatconv::destroy_iocat_data(ioc, data);
             return false;
         }
@@ -106,15 +108,8 @@ bool set_param(T* obj, const char* param, paramnames::PAR_TYPE pt,
             data = datatmp;
         }
         iocatconv::destroy_iocat_data(ioc, data);
-        err_msg = "module ";
-        err_msg += obj->get_username();
-        err_msg += " refuses to set parameter ";
-        err_msg += param;
-        err_msg += " with value ";
-        err_msg += value;
-        err_msg += ". Either ";
-        err_msg += param;
-        err_msg += " is the wrong type of thing expected, or...";
+        setpar_err("Module %s refuses to set parameter %s with value %s.",
+                                        obj->get_username(), param, value);
         return false;
     }
     if (ioc == iocat::FIX_STR) {
@@ -181,7 +176,10 @@ int get_operator(const char* txt)
 }
 
 
-std::string err_msg;
+const char* get_error_msg()
+{
+    return err_msg;
+}
 
 } // namespace setpar
 

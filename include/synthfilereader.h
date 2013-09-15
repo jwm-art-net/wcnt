@@ -84,21 +84,25 @@ private:
 //--- private member methods ---//
 
     FILE_STATUS open_file();
-    bool read_header(unsigned long* samplerate);
-    std::string const* read_command();
-    synthmod*   read_synthmodule(std::string const* command);
-    dobj*       read_dobj(std::string const* command);
+    bool        read_header(unsigned long* samplerate);
+    const char* read_command();
+    synthmod*   read_synthmodule(const char* command);
+    dobj*       read_dobj(const char* command);
+
     bool include_mod(const char* name);
     bool include_dbj(const char* name);
-    bool read_and_create_synthmod(std::string const* com);
-    bool read_and_create_dobj(std::string const* com);
+    bool read_and_create_synthmod(const char* com);
+    bool read_and_create_dobj(const char* com);
     bool skip_remarks();
+
     // methods to read various parts of a module
     bool read_dobjs(synthmod*);
     bool read_inputs(synthmod*);
     bool read_params(synthmod*);
+
     // method to read sub-parts of standalone dobjs
     bool read_dobjs(dobj*);
+
     // method to read parameters of dobjs
     bool read_dobj_params(dobj*, const char* endterm);
     const std::string*

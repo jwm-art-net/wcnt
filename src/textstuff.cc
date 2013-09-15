@@ -105,14 +105,15 @@ collumnize(const char** textarr,    unsigned int arrsize,
     return str;
 }
 
-size_t cfmt(char* buf, size_t len, const char* fmt, ...)
+size_t cfmt(char* buf, size_t bufsz, const char* fmt, ...)
 {
-    char tmp[len + 1];
+    char tmp[bufsz];
     va_list args;
     va_start(args, fmt);
-    size_t n = vsnprintf(tmp, len, fmt, args);
+    size_t n = vsnprintf(tmp, bufsz - 1, fmt, args);
     va_end(args);
-    strncpy(buf, tmp, len);
+    strncpy(buf, tmp, bufsz - 1);
+    buf[bufsz - 1] = '\0';
     return n;
 }
 

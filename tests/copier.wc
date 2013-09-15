@@ -1,0 +1,95 @@
+wcnt-1.26/jwmsynth
+
+samplerate 44100
+
+timer
+t
+    timings
+        time seconds 0
+        time seconds 1
+    timings
+t
+
+constant_note middle-c name c0 middle-c
+
+osc_clock
+osc
+        in_note_on_trig     t out_trig
+        in_note_slide_trig  off
+        in_play_state       off
+        in_frequency        middle-c out_frequency
+        in_freq_mod1        off
+        in_freq_mod2        off
+        octave_offset       0
+        tuning_semitones    0
+        portamento_time     0
+        response_time       0
+        freq_mod1_size      2
+        freq_mod2_size      1
+osc
+
+wave_phase
+sine
+    in_phase_trig       osc out_phase_trig
+    in_phase_step       osc out_phase_step
+    in_shape_phase_step osc out_phase_step
+    type        sine
+    shape_type  sine
+    on_trig_reset_phase on
+    recycle_mode        off
+    sync_shape          on
+    invert_alt          off
+    phase_cycles        1
+sine
+
+fader
+fade
+    in_bar       t out_count
+    in_bar_trig  t out_trig
+    start_bar      0
+    end_bar        1
+    fade_in_time   100
+    fade_out_time  100
+fade
+
+multiplier
+out
+    in_signal1 sine out_output
+    in_signal2 fade out_output
+out
+
+group
+g1
+    modules
+        synthmod name osc
+        synthmod name sine
+        synthmod name fade
+        synthmod name out
+    modules
+g1
+
+copier cp from g1 to g2 cp
+
+wavfile_out
+wav
+    in_left     g2.out out_output
+    in_right    g2.out out_output
+    in_bar      g2.fade out_bar
+    in_bar_trig g2.fade out_bar_trig
+    snapshot_mode off
+    data_format pcm16
+    filename    copier.wav
+    start_bar   0
+    end_bar     1
+wav
+
+wcnt_exit
+exit
+    in_bar      g2.fade out_bar
+    exit_bar    1
+exit
+
+wcnt-1.26/jwmsynth
+
+
+
