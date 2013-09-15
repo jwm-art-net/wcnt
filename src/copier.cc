@@ -29,8 +29,6 @@ bool copier::set_from_name(const char* name)
         from_name = new char[strlen(name) + 1];
         strcpy(from_name, name); // copy to from_name.
     }
-printf("from name:%s to name:%s\n", from_name, to_name);
-
     if ((from_dobj = jwm.get_dobjlist()->get_dobj_by_name(name)))
         return true;
     if ((from_mod = jwm.get_modlist()->get_synthmod_by_name(name)))
@@ -45,9 +43,6 @@ bool copier::set_to_name(const char* name)
         to_name = new char[strlen(name) + 1];
         strcpy(to_name, name); // copy to to_name
     }
-
-printf("to name:%s from name:%s\n", to_name, from_name);
-
     if (strcmp(name, jwm.get_dobjnames()->get_name(
             dobjnames::LST_EDITS)) == 0)
         return false;
@@ -88,11 +83,6 @@ bool copier::set_param(paramnames::PAR_TYPE pt, void* data)
             const char* e = (strcmp(to_name, d) == 0
                                             ? "is reserved"
                                             : "already in use");
-
-            printf("Cannot copy %s to %s because the name %s is %s.",
-                        from_name, (const char*)data, (const char*)data, e);
-
-
             dobjerr("Cannot copy %s to %s because the name %s is %s.",
                         from_name, (const char*)data, (const char*)data, e);
             return false;
@@ -116,7 +106,6 @@ void const* copier::get_param(paramnames::PAR_TYPE pt) const
 
 stockerrs::ERR_TYPE copier::validate()
 {
-    // use set_param for error messages...
     if (!set_param(paramnames::COPYFROM, from_name))
         return stockerrs::ERR_ERROR;
     if (!set_param(paramnames::COPYTO, to_name))

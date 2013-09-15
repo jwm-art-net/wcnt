@@ -29,4 +29,22 @@ collumnize(const char** textarr,    unsigned int arrsize,
 
 size_t cfmt(char* buf, size_t buffer_size, const char* fmt, ...);
 
+
+
+#if DEBUG_MSG
+/*  debug previously just #define'd itself as errmsg but i want to
+    allow a high-level message routine (ie msg_log in libpetrifui)
+    to #undefine errmsg without damaging debug messages.
+ */
+#define debug(...)                              \
+{                                               \
+    fprintf(stderr, "%40s:%5d  %-35s: ",        \
+            __FILE__, __LINE__, __FUNCTION__);  \
+    fprintf(stderr, __VA_ARGS__);               \
+}
+#else
+#define debug(...)
+#endif
+
+
 #endif

@@ -69,6 +69,7 @@ g1
 g1
 
 copier cp from g1 to g2 cp
+copier c2p from g1 to g2 c2p
 
 wavfile_out
 wav

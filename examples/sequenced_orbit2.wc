@@ -6,6 +6,7 @@ wcnt-1.26/jwmsynth
 //------------------------------------------------------------------------
 
 header header.wch
+//samplerate  44100
 
 //------------------------------------------------------------------------
 
@@ -17,7 +18,7 @@ time1
         meter tsig 4/4 bar 0
     meter_map
     bpm_map
-        tempo bpm 90 bar 0
+        tempo bpm 91 bar 0
     bpm_map
 time1
 
@@ -341,7 +342,7 @@ wav1
 wcnt_exit
 wcnt_exit_module
     in_bar  time1   out_bar
-    exit_bar    25
+    exit_bar    2
 wcnt_exit_module
 
 //------------------------------------------------------------------------

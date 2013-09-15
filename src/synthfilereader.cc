@@ -159,9 +159,6 @@ bool synthfilereader::read_and_create()
                 return false;
         }
         com = read_command();
-
-printf("com:%s\n",com);
-
         if (!com) {
             return false;
         }
@@ -212,12 +209,6 @@ bool synthfilereader::read_and_create_dobj(const char* com)
     dobj* dbj = read_dobj(com);
     if (!dbj)
         return false;
-    if (include_dbj(dbj->get_username())){
-        if (!dbj->validate()) {
-            wc_err("%s", dobj::get_error_msg());
-            return false;
-        }
-    }
     string dbjuname = dbj->get_username();
     if (include_dbj(dbj->get_username())) {
         if (!jwm.get_dobjlist()->add_dobj(dbj)) {
@@ -469,6 +460,9 @@ dobj* synthfilereader::read_dobj(const char* com)
     }
     if (include_dbj(dbj->get_username())) {
         if (jwm.is_verbose()) cout << "---- validating..." << endl;
+        debug("validate %s %s\n",
+                    jwm.get_dobjnames()->get_name(dbj->get_object_type()),
+                                                    dbj->get_username());
         stockerrs::ERR_TYPE et = dbj->validate();
         if (et != stockerrs::ERR_NO_ERROR) {
             wc_err("In data object %s, parameter %s %s %s", 
@@ -555,6 +549,9 @@ bool synthfilereader::read_dobjs(dobj* dbj)
                     return false;
                 }
                 if (include_dbj(dbj->get_username())) {
+                    debug("validate %s %s\n", jwm.get_dobjnames()->get_name(
+                                                sprog->get_object_type()),
+                                                sprog->get_username());
                     stockerrs::ERR_TYPE et = sprog->validate();
                     if (et != stockerrs::ERR_NO_ERROR) {
                         wc_err("Data object %s has error in %s %s %s %s.",
@@ -652,6 +649,9 @@ bool synthfilereader::read_dobjs(synthmod* sm)
                     return false;
                 }
                 if (inc_current) {
+                    debug("validate %s %s\n",
+                      jwm.get_dobjnames()->get_name(dbj->get_object_type()),
+                                                    dbj->get_username());
                     stockerrs::ERR_TYPE et = dbj->validate();
                     if (et!= stockerrs::ERR_NO_ERROR) {
                         wc_err("data object %s %s %s %s.",
