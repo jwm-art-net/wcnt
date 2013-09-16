@@ -34,6 +34,8 @@ class synthmod
         SM_HAS_OUT_TRIG =       0x0040
     };
 
+    static void init_params();
+
     synthmod(   synthmodnames::SYNTH_MOD_TYPE,
                 char const* const uname,
                 int _flags_);
@@ -121,6 +123,7 @@ class synthmod
     void force_abort() { abort_status = ON; }
     void duplicate_inputs_to(synthmod*);
     void duplicate_params_to(synthmod*);
+    bool done_params();
 
     static std::string* err_msg;
 
@@ -137,6 +140,8 @@ class synthmod
     #ifdef MOD_STATS
     STATS_VARS
     #endif
+
+    static bool params_done[synthmodnames::LAST];
 };
 
 #endif

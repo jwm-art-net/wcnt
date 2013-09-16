@@ -96,11 +96,9 @@ void balance::run()
             + *in_signal2 * bias * *in_signal1;
 }
 
-bool balance::done_params = false;
-
 void balance::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
         synthmodnames::BALANCE, paramnames::FUNC);
@@ -108,6 +106,5 @@ void balance::create_params()
         paramnames::FUNC);
     jwm.get_paramlist()->add_param(
         synthmodnames::BALANCE, paramnames::BIAS);
-    done_params = true;
 }
 

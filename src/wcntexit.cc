@@ -104,14 +104,11 @@ void wcnt_exit::init()
     jwm.x_in_bar = in_bar;
 }
 
-bool wcnt_exit::done_params = false;
-
 void wcnt_exit::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
         synthmodnames::WCNTEXIT, paramnames::EXIT_BAR);
-    done_params = true;
 }
 

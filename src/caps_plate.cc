@@ -169,11 +169,9 @@ void caps_plate::run()
     out_right = *l_out_right;
 }
 
-bool caps_plate::done_params = false;
-
 void caps_plate::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(synthmodnames::CAPS_PLATE,
                                paramnames::BANDWIDTH);
@@ -183,7 +181,6 @@ void caps_plate::create_params()
                                paramnames::DAMPING);
     jwm.get_paramlist()->add_param(synthmodnames::CAPS_PLATE,
                                paramnames::WETDRY);
-    done_params = true;
 }
 
 #endif // WITH_LADSPA

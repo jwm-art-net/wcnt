@@ -94,7 +94,7 @@ public:
 private:
     synthmod* synth_mod;
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

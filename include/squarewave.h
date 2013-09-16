@@ -36,7 +36,7 @@ private:
     double target;
     short cycle;
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

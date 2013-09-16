@@ -100,7 +100,7 @@ private:
     short repeat;
     short repeat_stripe;
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

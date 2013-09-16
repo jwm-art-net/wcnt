@@ -50,7 +50,7 @@ private:
     double lower_time;
     double lower_level;
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

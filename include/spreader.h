@@ -40,7 +40,7 @@ private:
     // working
     double seg_lvl;
     double const** sigs;
-    static bool done_params;
+    
     void create_params();
     static bool done_moddobj;
     void create_moddobj();

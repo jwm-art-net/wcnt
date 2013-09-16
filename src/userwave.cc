@@ -278,12 +278,11 @@ void user_wave::run()
     }
 }
 
-bool user_wave::done_params = false;
 bool user_wave::done_dobj = false;
 
 void user_wave::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
         synthmodnames::USERWAVE, paramnames::RECYCLE_MODE);
@@ -291,7 +290,6 @@ void user_wave::create_params()
         synthmodnames::USERWAVE, paramnames::ZERO_RETRIGGER);
     jwm.get_paramlist()->add_param(
         synthmodnames::USERWAVE, paramnames::DROP_CHECK_RANGE);
-    done_params = true;
 }
 
 void user_wave::create_dobj()

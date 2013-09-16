@@ -40,7 +40,7 @@ class copier : public dobj
     dobj* from_dobj;
     dobj* to_dobj;
     void create_params();
-    static bool done_params;
+    
 };
 
 

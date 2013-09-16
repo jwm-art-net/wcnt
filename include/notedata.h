@@ -122,7 +122,7 @@ STATS_FUNCS
     double length;
     double velocity;
     void create_params();
-    static bool done_params;
+    
 
 #ifdef NOTE_STATS
 STATS_VARS

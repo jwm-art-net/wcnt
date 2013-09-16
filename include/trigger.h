@@ -24,7 +24,7 @@ private:
     double trigger_level;
     unsigned long delay_samps;
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

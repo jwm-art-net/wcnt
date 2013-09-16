@@ -112,7 +112,8 @@ stockerrs::ERR_TYPE adsr_scaler::validate()
 
 void adsr_scaler::create_params()
 {
-    if (done_params == true) return;
+    if (done_params())
+        return;
     jwm.get_dparlist()->add_dobjparam(dobjnames::DEF_ADSR_SCALER,
                                     paramnames::ADSR_NAME);
     jwm.get_dparlist()->add_dobjparam(dobjnames::DEF_ADSR_SCALER,
@@ -121,8 +122,5 @@ void adsr_scaler::create_params()
                                     paramnames::DECAY_SCALE);
     jwm.get_dparlist()->add_dobjparam(dobjnames::DEF_ADSR_SCALER,
                                     paramnames::RELEASE_SCALE);
-    done_params = true;
 }
-
-bool adsr_scaler::done_params = false;
 

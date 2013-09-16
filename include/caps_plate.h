@@ -69,7 +69,7 @@ class caps_plate : public synthmod
     LADSPA_Data* l_out_right;
 
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif // WITH_LADSPA

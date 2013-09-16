@@ -54,7 +54,7 @@ private:
     short exit_bar;
     // synthmod stuff
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

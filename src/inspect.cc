@@ -155,11 +155,11 @@ void const* inspect::get_param(paramnames::PAR_TYPE pt) const
     }
 }
 
-bool inspect::done_params = false;
+
 
 void inspect::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
         synthmodnames::INSPECT, paramnames::INSPECT_DF_MSG);
@@ -171,5 +171,4 @@ void inspect::create_params()
         synthmodnames::INSPECT, paramnames::INSPECT_ST_MSG);
     jwm.get_paramlist()->add_param(
         synthmodnames::INSPECT, paramnames::INSPECT_STR_MSG);
-    done_params = true;
 }

@@ -163,6 +163,13 @@ void synthmod::duplicate_params_to(synthmod* to_mod)
     }
 }
 
+bool synthmod::done_params()
+{
+    bool r = params_done[module_type];
+    params_done[module_type] = true;
+    return r;
+}
+
 #ifdef IO_DEBUG
 bool synthmod::check_inputs()
 {
@@ -197,3 +204,5 @@ STATUS synthmod::abort_status = OFF; // don't force an abort just yet.
 STATS_INIT(synthmod)
 #endif
 
+
+bool synthmod::params_done[synthmodnames::LAST] = { false };

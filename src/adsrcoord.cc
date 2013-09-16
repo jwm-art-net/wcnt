@@ -94,7 +94,8 @@ stockerrs::ERR_TYPE adsr_coord::validate()
 
 void adsr_coord::create_params()
 {
-    if (adsr_coord::done_params == true) return;
+    if (done_params())
+        return;
     jwm.get_dparlist()->add_dobjparam(
         dobjnames::SIN_COORD, paramnames::ADSRSECT);
     jwm.get_fxsparamlist()->add_param("attack/decay/sustain/release",
@@ -107,7 +108,5 @@ void adsr_coord::create_params()
         dobjnames::SIN_COORD, paramnames::LOTIME);
     jwm.get_dparlist()->add_dobjparam(
         dobjnames::SIN_COORD, paramnames::LOLEVEL);
-    done_params = true;
 }
 
-bool adsr_coord::done_params = false;

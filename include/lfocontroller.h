@@ -42,7 +42,7 @@ private:
     double level_size;
     double current_level;
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

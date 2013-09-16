@@ -146,11 +146,11 @@ void delay::run()
     out_output = output * wetdry + *in_signal * (1 - wetdry);
 }
 
-bool delay::done_params = false;
+
 
 void delay::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
      synthmodnames::DELAY, paramnames::DELAY_TIME);
@@ -160,6 +160,6 @@ void delay::create_params()
      synthmodnames::DELAY, paramnames::GAIN_MODSIZE);
     jwm.get_paramlist()->add_param(
      synthmodnames::DELAY, paramnames::WETDRY);
-    done_params = true;
+    
 }
 

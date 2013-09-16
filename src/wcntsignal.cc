@@ -68,14 +68,11 @@ void const* wcnt_signal::get_param(paramnames::PAR_TYPE pt) const
     }
 }
 
-bool wcnt_signal::done_params = false;
-
 void wcnt_signal::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
         synthmodnames::WCNTSIGNAL, paramnames::LEVEL);
-    done_params = true;
 }
 

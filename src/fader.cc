@@ -184,11 +184,11 @@ void fader::run()
     }
 }
 
-bool fader::done_params = false;
+
 
 void fader::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
         synthmodnames::FADER, paramnames::START_BAR);
@@ -198,5 +198,4 @@ void fader::create_params()
         synthmodnames::FADER, paramnames::FADE_IN_TIME);
     jwm.get_paramlist()->add_param(
         synthmodnames::FADER, paramnames::FADE_OUT_TIME);
-    done_params = true;
 }

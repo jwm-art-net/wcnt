@@ -57,7 +57,7 @@ private:
     double target_phase_step;
     unsigned long slidesamples;
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

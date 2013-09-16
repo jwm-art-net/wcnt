@@ -159,11 +159,11 @@ void trigcounter::run()
     }
 }
 
-bool trigcounter::done_params = false;
+
 
 void trigcounter::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
         synthmodnames::TRIGCOUNTER, paramnames::PRE_COUNT);
@@ -171,6 +171,5 @@ void trigcounter::create_params()
         synthmodnames::TRIGCOUNTER, paramnames::COUNT);
     jwm.get_paramlist()->add_param(
         synthmodnames::TRIGCOUNTER, paramnames::WRAP);
-    done_params = true;
 }
 

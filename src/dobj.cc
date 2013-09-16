@@ -109,7 +109,17 @@ dobj* dobj::duplicate_dobj(const char* uname)
 
 std::string*  dobj::err_msg = 0;
 
+bool dobj::done_params()
+{
+    bool r = params_done[object_type];
+    params_done[object_type] = true;
+    return r;
+}
+
+
 #ifdef DOBJ_STATS
 STATS_INIT(dobj)
 #endif
+
+bool dobj::params_done[dobjnames::DOBJ_LAST] = { false };
 

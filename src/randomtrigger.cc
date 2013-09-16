@@ -116,16 +116,13 @@ void randomtrigger::run()
     }
 }
 
-bool randomtrigger::done_params = false;
-
 void randomtrigger::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
         synthmodnames::RANDTRIGGER, paramnames::PROBABILITY);
     jwm.get_paramlist()->add_param(
         synthmodnames::RANDTRIGGER, paramnames::NOTPROBABILITY);
-    done_params = true;
 }
 

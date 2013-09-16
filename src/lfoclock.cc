@@ -166,11 +166,9 @@ void lfo_clock::run()
     }
 }
 
-bool lfo_clock::done_params = false;
-
 void lfo_clock::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
      synthmodnames::LFOCLOCK, paramnames::FREQ);
@@ -178,6 +176,5 @@ void lfo_clock::create_params()
      synthmodnames::LFOCLOCK, paramnames::FREQ_MOD1SIZE);
     jwm.get_paramlist()->add_param(
      synthmodnames::LFOCLOCK, paramnames::FREQ_MOD2SIZE);
-    done_params = true;
 }
 

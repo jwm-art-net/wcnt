@@ -171,11 +171,9 @@ void const* orbit::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-bool orbit::done_params = false;
-
 void orbit::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(synthmodnames::ORBIT,
                                paramnames::ORBIT_TYPE);
@@ -189,6 +187,5 @@ void orbit::create_params()
                                paramnames::C);
     jwm.get_paramlist()->add_param(synthmodnames::ORBIT,
                                paramnames::TEST_ITER);
-    done_params = true;
 }
 

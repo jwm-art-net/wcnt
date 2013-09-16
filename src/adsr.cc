@@ -365,10 +365,10 @@ synthmod* adsr::duplicate_module(const char* uname, DUP_IO dupio)
     return dupadsr;
 }
 
-bool adsr::done_params = false;
+
 void adsr::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     modparamlist* mpl = jwm.get_paramlist();
     mpl->add_param(synthmodnames::ADSR, paramnames::UP_THRESH);
@@ -379,7 +379,7 @@ void adsr::create_params()
     mpl->add_param(synthmodnames::ADSR, paramnames::RELEASE_RATIO);
     mpl->add_param(synthmodnames::ADSR, paramnames::SUSTAIN_STATUS);
     mpl->add_param(synthmodnames::ADSR, paramnames::ZERO_RETRIGGER);
-    done_params = true;
+    
 }
 
 bool adsr::done_moddobj = false;

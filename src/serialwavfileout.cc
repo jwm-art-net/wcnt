@@ -272,11 +272,11 @@ void serialwavfileout::write_wav_chunk(
     }
 }
 
-bool serialwavfileout::done_params = false;
+
 
 void serialwavfileout::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
         synthmodnames::SERIALWAVFILEOUT, paramnames::DATA_FMT);
@@ -288,6 +288,5 @@ void serialwavfileout::create_params()
         synthmodnames::SERIALWAVFILEOUT, paramnames::START_BAR);
     jwm.get_paramlist()->add_param(
         synthmodnames::SERIALWAVFILEOUT, paramnames::END_BAR);
-    done_params = true;
 }
 

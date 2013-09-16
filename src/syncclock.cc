@@ -196,11 +196,9 @@ void sync_clock::run()
     phasepos += *in_pos_stepsz;
 }
 
-bool sync_clock::done_params = false;
-
 void sync_clock::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     modparamlist* pl = jwm.get_paramlist();
     pl->add_param(synthmodnames::SYNCCLOCK, paramnames::FREQ_MOD1SIZE);
@@ -208,6 +206,5 @@ void sync_clock::create_params()
     pl->add_param(synthmodnames::SYNCCLOCK, paramnames::QUARTER_VAL);
     pl->add_param(synthmodnames::SYNCCLOCK, paramnames::NOTE_LEN);
     pl->add_param(synthmodnames::SYNCCLOCK, paramnames::SNAP_TO);
-    done_params = true;
 }
 

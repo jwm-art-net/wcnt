@@ -24,7 +24,7 @@ private:
     short atbar;
     double tobpm;
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

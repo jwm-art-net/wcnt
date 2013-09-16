@@ -36,7 +36,7 @@ class orbit : public synthmod
     double cos_b_pc;
     double sin_abc;
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

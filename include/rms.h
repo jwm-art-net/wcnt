@@ -40,7 +40,7 @@ private:
     short arrpos;
     double sqrsum;
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

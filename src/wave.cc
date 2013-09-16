@@ -85,14 +85,13 @@ void wave::run()
 
 void wave::create_params()
 {
-    if (wave::done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(synthmodnames::WAVE,
         paramnames::WAVE_TYPE);
     jwm.get_fxsparamlist()->add_param(jwm.get_wave_tables()->fxstring,
                                       paramnames::WAVE_TYPE);
-    wave::done_params = true;
 }
 
-bool wave::done_params = false;
+
 

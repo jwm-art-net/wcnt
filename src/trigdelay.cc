@@ -96,14 +96,11 @@ void trigdelay::run()
     if (pastpos < 0) pastpos = pastmax - 1;
 }
 
-bool trigdelay::done_params = false;
-
 void trigdelay::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
         synthmodnames::TRIGDELAY, paramnames::DELAY_TIME);
-    done_params = true;
 }
 

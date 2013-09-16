@@ -176,11 +176,9 @@ void glame_filter::run()
     output = *l_output;
 }
 
-bool glame_filter::done_params = false;
-
 void glame_filter::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(synthmodnames::GLAME_FILTER,
                                paramnames::GLAME_FILTER_TYPE);
@@ -192,7 +190,7 @@ void glame_filter::create_params()
                                paramnames::FREQ_MOD1SIZE);
     jwm.get_paramlist()->add_param(synthmodnames::GLAME_FILTER,
                                paramnames::STAGES);
-    done_params = true;
+    
 }
 
 #endif // WITH_LADSPA

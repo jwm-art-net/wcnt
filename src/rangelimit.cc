@@ -88,16 +88,13 @@ void range_limit::run()
         out_output = sigrangehi;
 }
 
-bool range_limit::done_params = false;
-
 void range_limit::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
         synthmodnames::RANGELIMIT, paramnames::SIG_RANGE_HI);
     jwm.get_paramlist()->add_param(
         synthmodnames::RANGELIMIT, paramnames::SIG_RANGE_LO);
-    done_params = true;
 }
 

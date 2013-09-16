@@ -29,12 +29,10 @@ void const* dobjmod::get_param(paramnames::PAR_TYPE pt) const
     }
 }
 
-bool dobjmod::done_params = false;
-
 void dobjmod::create_params()
 {
-    if (done_params == true) return;
+    if (done_params())
+        return;
     jwm.get_dparlist()->add_dobjparam(
         dobjnames::DOBJ_SYNTHMOD, paramnames::MODNAME);
-    done_params = true;
 }

@@ -30,7 +30,7 @@ private:
     double pan_mod;
     double pan_pos;
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

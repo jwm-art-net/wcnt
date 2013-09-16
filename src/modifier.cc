@@ -120,11 +120,9 @@ void modifier::run()
     }
 }
 
-bool modifier::done_params = false;
-
 void modifier::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->
         add_param(synthmodnames::MODIFIER, paramnames::FUNC);
@@ -138,6 +136,5 @@ void modifier::create_params()
     jwm.get_paramlist()->
         add_param(synthmodnames::MODIFIER, paramnames::BIAS);
 */
-    done_params = true;
 }
 

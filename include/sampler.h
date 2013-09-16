@@ -110,8 +110,8 @@ private:
     void ac_mix_rev_mono(double*);
     void ac_mix_rev_stereo(st_data*);
     // synthmod stuff
-    static void create_params();
-    static bool done_params;
+    void create_params();
+    
 };
 
 #endif

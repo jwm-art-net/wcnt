@@ -30,7 +30,7 @@ private:
     double lo_deg;
     double lo_pos;
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

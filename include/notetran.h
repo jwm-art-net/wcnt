@@ -91,7 +91,7 @@ private:
     void set_ns_lo_notename(char const* nsl);
     void set_ns_hi_notename(char const* nsh);
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

@@ -74,14 +74,11 @@ void constant_note::set_note(const char* n)
     note[jwm_init::note_name_len] = '\0';
 }
 
-bool constant_note::done_params = false;
-
 void constant_note::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
         synthmodnames::CONSTANT_NOTE, paramnames::NAME);
-    done_params = true;
 }
 

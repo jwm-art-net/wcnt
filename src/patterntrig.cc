@@ -153,14 +153,14 @@ void patterntrig::run()
     }
 }
 
-bool patterntrig::done_params = false;
+
 
 void patterntrig::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
         synthmodnames::PATTERNTRIG, paramnames::TRIG_STRING);
-    done_params = true;
+    
 }
 

@@ -104,7 +104,7 @@ private:
     // method for ......
     bool eff_ing_header_bodge(unsigned long *samplerate);
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

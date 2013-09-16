@@ -298,11 +298,9 @@ void wavfileout::write_wav_chunk(
     }
 }
 
-bool wavfileout::done_params = false;
-
 void wavfileout::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
         synthmodnames::WAVFILEOUT, paramnames::SNAPSHOT_MODE);
@@ -316,7 +314,5 @@ void wavfileout::create_params()
         synthmodnames::WAVFILEOUT, paramnames::START_BAR);
     jwm.get_paramlist()->add_param(
         synthmodnames::WAVFILEOUT, paramnames::END_BAR);
-
-    done_params = true;
 }
 

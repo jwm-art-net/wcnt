@@ -1205,11 +1205,9 @@ void sampler::ac_mix_rev_stereo(st_data* ac_st_tmp)
     }
 }
 
-bool sampler::done_params = false;
-
 void sampler::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     modparamlist* pl = jwm.get_paramlist();
     pl->add_param(synthmodnames::SAMPLER, paramnames::WAVFILEIN);
@@ -1235,5 +1233,4 @@ void sampler::create_params()
     pl->add_param(synthmodnames::SAMPLER, paramnames::AC_EACH_END);
     pl->add_param(synthmodnames::SAMPLER, paramnames::ZERO_SEARCH_RANGE);
     pl->add_param(synthmodnames::SAMPLER, paramnames::PHASE_STEP_AMOUNT);
-    done_params = true;
 }

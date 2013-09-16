@@ -63,15 +63,13 @@ stockerrs::ERR_TYPE step_data::validate()
 
 void step_data::create_params()
 {
-    if (step_data::done_params == true) return;
+    if (done_params())
+        return;
     jwm.get_dparlist()->add_dobjparam(
         dobjnames::SIN_STEP, paramnames::POS);
     jwm.get_dparlist()->add_dobjparam(
         dobjnames::SIN_STEP, paramnames::UPLEVEL);
     jwm.get_dparlist()->add_dobjparam(
         dobjnames::SIN_STEP, paramnames::LOLEVEL);
-    step_data::done_params = true;
 }
-
-bool step_data::done_params = false;
 

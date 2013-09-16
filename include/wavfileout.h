@@ -59,7 +59,7 @@ private:
     void timestamp_filename();
     // synthmod stuff
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif // WAVFILEOUT

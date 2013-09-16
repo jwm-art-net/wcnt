@@ -47,12 +47,11 @@ void const* dobjnamedobj::get_param(paramnames::PAR_TYPE dt) const
 
 void dobjnamedobj::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_dparlist()->add_dobjparam(
         dobjnames::SIN_DOBJNAME, paramnames::NAME);
-    done_params = true;
 }
 
-bool dobjnamedobj::done_params = false;
+
 

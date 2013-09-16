@@ -1241,11 +1241,9 @@ dobj const* synthfilereader::add_dobj(dobj* dbj)
     return retv;
 }
 
-bool synthfilereader::done_params = false;
-
 void synthfilereader::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     dobjparamlist* dl = jwm.get_dparlist();
     dl->add_dobjparam(dobjnames::DEF_WCFILE, paramnames::FILENAME);
@@ -1263,5 +1261,4 @@ void synthfilereader::create_params()
         dobjnames::DEF_WCFILE, dobjnames::LST_DOBJS)->
             add_dobjdobj(dobjnames::LST_DOBJS,
                 dobjnames::SIN_DOBJNAME);
-    done_params = true;
 }

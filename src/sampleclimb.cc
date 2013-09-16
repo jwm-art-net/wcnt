@@ -89,13 +89,11 @@ void sample_climb::run()
     output += (target - output) * rate;
 }
 
-bool sample_climb::done_params = false;
-
 void sample_climb::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
         synthmodnames::SAMPLECLIMB, paramnames::RATE);
-    done_params = true;
+    
 }

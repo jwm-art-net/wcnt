@@ -26,7 +26,7 @@ class inputeditor : public dobj, public linked_list<inputedit>
 
  private:
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

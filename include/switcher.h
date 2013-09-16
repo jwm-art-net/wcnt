@@ -40,7 +40,7 @@ private:
     double const* sig;
     double const* prevsig;
     double zero;// for initial stuff
-    static bool done_params;
+    
     void create_params();
     static bool done_moddobj;
     void create_moddobj();

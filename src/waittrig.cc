@@ -154,11 +154,11 @@ void waittrig::run()
         out_trig = OFF;
 }
 
-bool waittrig::done_params = false;
+
 
 void waittrig::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
      synthmodnames::WAITTRIG, paramnames::MIN_WAIT);
@@ -166,6 +166,6 @@ void waittrig::create_params()
      synthmodnames::WAITTRIG, paramnames::MAX_WAIT);
     jwm.get_paramlist()->add_param(
      synthmodnames::WAITTRIG, paramnames::COUNT);
-    done_params = true;
+    
 }
 

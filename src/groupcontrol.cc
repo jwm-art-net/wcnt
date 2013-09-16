@@ -191,14 +191,11 @@ bool group_control::set_group_name(char const* name)
 
 }
 
-bool group_control::done_params = false;
-
 void group_control::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
         synthmodnames::GROUPCONTROL, paramnames::GROUP_NAME);
-    done_params = true;
 }
 

@@ -110,7 +110,7 @@ class riffdata : public dobj, public linked_list<note_data>
 
     double calc_note_param(note_data::NOTE_OP, double, double);
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif // RIFF_H

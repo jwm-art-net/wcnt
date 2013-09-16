@@ -47,7 +47,7 @@ private:
     long maxs;
     short counter;
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif
