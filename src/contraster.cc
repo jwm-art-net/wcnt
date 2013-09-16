@@ -145,11 +145,11 @@ void contraster::run()
     out_output = output * wetdry + *in_signal * (1.0 - wetdry);
 }
 
-bool contraster::done_params = false;
+
 
 void contraster::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
      synthmodnames::CONTRASTER, paramnames::POWER_MIN);
@@ -159,6 +159,6 @@ void contraster::create_params()
      synthmodnames::CONTRASTER, paramnames::RUDE_MODE);
     jwm.get_paramlist()->add_param(
      synthmodnames::CONTRASTER, paramnames::WETDRY);
-    done_params = true;
+    
 }
 

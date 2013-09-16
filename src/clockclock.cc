@@ -128,16 +128,13 @@ void clockclock::run()
     else if (out_phase_trig == ON) out_phase_trig = OFF;
 }
 
-bool clockclock::done_params = false;
-
 void clockclock::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
      synthmodnames::CLOCK, paramnames::FREQ);
     jwm.get_paramlist()->add_param(
      synthmodnames::CLOCK, paramnames::FREQ_MOD1SIZE);
-    done_params = true;
 }
 

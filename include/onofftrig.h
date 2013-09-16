@@ -31,7 +31,7 @@ private:
     unsigned long release_samps;
     bool do_attack;// false == do_release
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

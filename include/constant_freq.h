@@ -19,7 +19,7 @@ private:
     double out_freq; /* is param and output */
     double out_phase_step;
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

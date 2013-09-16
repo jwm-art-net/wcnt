@@ -128,15 +128,12 @@ void trigger::run()
     }
 }
 
-bool trigger::done_params = false;
-
 void trigger::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
      synthmodnames::TRIGGER, paramnames::DELAY_TIME);
     jwm.get_paramlist()->add_param(
      synthmodnames::TRIGGER, paramnames::TRIGGER_LEVEL);
-    done_params = true;
 }

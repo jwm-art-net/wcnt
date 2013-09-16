@@ -52,16 +52,16 @@ dobj const* parameditor::add_dobj(dobj* dbj)
     return retv;
 }
 
+
 void parameditor::create_params()
 {
-    if (parameditor::done_params == true)
+    if (done_params())
         return;
     jwm.get_topdobjlist()->create_dobjdobjlist(
         dobjnames::DEF_PARAMEDITOR, dobjnames::LST_EDITS)->
             add_dobjdobj(dobjnames::LST_EDITS,
                 dobjnames::SIN_EDIT_PARAM);
-    parameditor::done_params = true;
 }
 
-bool parameditor::done_params = false;
+
 

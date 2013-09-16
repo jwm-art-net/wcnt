@@ -29,7 +29,7 @@ private:
     freq_step_size;
     short step_count;
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

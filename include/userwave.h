@@ -46,7 +46,7 @@ private:
     double pdegs;
     void create_params();
     void create_dobj();
-    static bool done_params;
+    
     static bool done_dobj;
 };
 

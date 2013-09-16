@@ -69,7 +69,7 @@ class fast_lookahead_limiter : public synthmod
     LADSPA_Data  l_out_latency;
 
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif // WITH_LADSPA

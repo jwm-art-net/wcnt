@@ -166,14 +166,13 @@ void const* inputedit::get_param(paramnames::PAR_TYPE dt) const
 
 void inputedit::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_dparlist()->add_dobjparam(
         dobjnames::SIN_EDIT_INPUT, paramnames::STR_UNNAMED);
     jwm.get_dparlist()->add_dobjparam(
         dobjnames::SIN_EDIT_INPUT, paramnames::STR_LIST);
-    done_params = true;
 }
 
-bool inputedit::done_params = false;
+
 

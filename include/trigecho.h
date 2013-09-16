@@ -34,7 +34,7 @@ private:
     unsigned long pastpos;
     double vel_count_ratio;
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

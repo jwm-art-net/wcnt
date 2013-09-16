@@ -105,14 +105,11 @@ void rms::run()
     out_rms = sqrt(sqrsum / arraymax);
 }
 
-bool rms::done_params = false;
-
 void rms::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(synthmodnames::RMS,
         paramnames::RMS_TIME);
-    done_params = true;
 }
 

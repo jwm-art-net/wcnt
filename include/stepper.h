@@ -77,7 +77,7 @@ private:
     double rtime_stpsz;
     double rtime_size;
 
-    static bool done_params;
+    
     void create_params();
     static bool done_moddobj;
     void create_moddobj();

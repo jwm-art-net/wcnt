@@ -232,12 +232,12 @@ void dynamic::run()
     else out_output = ol * ((use_ratios == OFF) ? insig_sign : isig);
 }
 
-bool dynamic::done_params = false;
+
 bool dynamic::done_dobj = false;
 
 void dynamic::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
      synthmodnames::DYNAMIC, paramnames::UP_THRESH);
@@ -247,7 +247,7 @@ void dynamic::create_params()
      synthmodnames::DYNAMIC, paramnames::POSNEG_MIRROR);
     jwm.get_paramlist()->add_param(
      synthmodnames::DYNAMIC, paramnames::USE_RATIOS);
-    done_params = true;
+    
 }
 
 void dynamic::create_dobj()

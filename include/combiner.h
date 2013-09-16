@@ -36,7 +36,7 @@ private:
     double total;
     double const** sigs;
     int sigcount;
-    static bool done_params;
+    
     void create_params();
     static bool done_moddobj;
     void create_moddobj();

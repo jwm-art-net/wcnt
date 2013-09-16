@@ -34,7 +34,7 @@ private:
     short bar;
     timesig time_sig;
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

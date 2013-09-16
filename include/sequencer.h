@@ -108,7 +108,7 @@ class sequencer : public synthmod, public linked_list<riff_node>
     void init_next_note(ll_item<note_data>* riff_note_item);
     void output_note(note_data* note);
     // synthmod stuff
-    static bool done_params;
+    
     void create_params();
     static bool done_moddobj;
     void create_moddobj();

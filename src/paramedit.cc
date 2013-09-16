@@ -213,14 +213,13 @@ void const* paramedit::get_param(paramnames::PAR_TYPE dt) const
 
 void paramedit::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_dparlist()->add_dobjparam(
         dobjnames::SIN_EDIT_PARAM, paramnames::STR_UNNAMED);
     jwm.get_dparlist()->add_dobjparam(
         dobjnames::SIN_EDIT_PARAM, paramnames::STR_LIST);
-    done_params = true;
 }
 
-bool paramedit::done_params = false;
+
 

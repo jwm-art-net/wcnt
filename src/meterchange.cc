@@ -68,15 +68,15 @@ stockerrs::ERR_TYPE meterchange::validate()
     return stockerrs::ERR_NO_ERROR;
 }
 
-bool meterchange::done_params = false;
+
 
 void meterchange::create_params()
 {
-    if (done_params == true) return;
+    if (done_params())
+        return;
     jwm.get_dparlist()->add_dobjparam(
         dobjnames::SIN_METER, paramnames::METER);
     jwm.get_dparlist()->add_dobjparam(
         dobjnames::SIN_METER, paramnames::BAR);
-    done_params = true;
 }
 

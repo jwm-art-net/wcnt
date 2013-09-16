@@ -29,7 +29,7 @@ private:
     long pastmax;
     long pastpos;
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

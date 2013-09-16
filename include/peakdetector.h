@@ -40,7 +40,7 @@ private:
     bool check; // prevent wrap-around of peak_count.
     void set_message(const char* msg);
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

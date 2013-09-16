@@ -44,7 +44,7 @@ private:
     short fpos;
     double filtertotal;
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

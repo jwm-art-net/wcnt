@@ -28,7 +28,7 @@ private:
     double out_output;
     double level;
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

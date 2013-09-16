@@ -127,11 +127,9 @@ void freq_generator::run()
     out_phase_step = jwm.samplerate() / out_freq;
 }
 
-bool freq_generator::done_params = false;
-
 void freq_generator::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
      synthmodnames::FREQGEN, paramnames::STEP_COUNT);
@@ -143,6 +141,6 @@ void freq_generator::create_params()
      synthmodnames::FREQGEN, paramnames::FREQ_RANGE_LO);
     jwm.get_paramlist()->add_param(
      synthmodnames::FREQGEN, paramnames::FREQ_RANGE_HI);
-    done_params = true;
+    
 }
 

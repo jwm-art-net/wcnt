@@ -101,14 +101,11 @@ void dc_filter::run()
         fpos = 0;
 }
 
-bool dc_filter::done_params = false;
-
 void dc_filter::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
      synthmodnames::DCFILTER, paramnames::DC_TIME);
-    done_params = true;
 }
 

@@ -35,7 +35,7 @@ private:
     double degsize1;
     double degsize2;
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

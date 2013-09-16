@@ -264,11 +264,9 @@ void stepper::run()
     else out_output = output;
 }
 
-bool stepper::done_params = false;
-
 void stepper::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param( synthmodnames::STEPPER,
                                         paramnames::STEP_COUNT);
@@ -280,7 +278,6 @@ void stepper::create_params()
                                         paramnames::RESPONSE_TIME);
     jwm.get_paramlist()->add_param( synthmodnames::STEPPER,
                                         paramnames::RECYCLE_MODE);
-    done_params = true;
 }
 
 bool stepper::done_moddobj = false;

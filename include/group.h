@@ -112,7 +112,7 @@ class group : public dobj
     bool controlled; /* (by the group_control) */
 
     void create_params();
-    static bool done_params;
+    
 };
 
 

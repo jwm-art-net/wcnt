@@ -108,14 +108,11 @@ void sample_hold::run()
     }
 }
 
-bool sample_hold::done_params = false;
-
 void sample_hold::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
         synthmodnames::SAMPLEHOLD, paramnames::DECAY_TIME);
-    done_params = true;
 }
 

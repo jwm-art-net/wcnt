@@ -51,13 +51,13 @@ stockerrs::ERR_TYPE timing::validate()
     return stockerrs::ERR_NO_ERROR;
 }
 
-bool timing::done_params = false;
+
 
 void timing::create_params()
 {
-    if (done_params == true) return;
+    if (done_params()) return;
     jwm.get_dparlist()->add_dobjparam(
         dobjnames::SIN_TIME, paramnames::SECONDS);
-    done_params = true;
+    
 }
 

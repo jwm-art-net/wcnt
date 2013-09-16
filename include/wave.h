@@ -24,7 +24,7 @@ private:
     unsigned long phase;
     const double* table;
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

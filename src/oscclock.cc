@@ -255,11 +255,9 @@ void osc_clock::run()
         out_phase_trig = OFF;
 }
 
-bool osc_clock::done_params = false;
-
 void osc_clock::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
         synthmodnames::OSCCLOCK, paramnames::OCTAVE);
@@ -273,6 +271,5 @@ void osc_clock::create_params()
         synthmodnames::OSCCLOCK, paramnames::FREQ_MOD1SIZE);
     jwm.get_paramlist()->add_param(
         synthmodnames::OSCCLOCK, paramnames::FREQ_MOD2SIZE);
-    done_params = true;
 }
 

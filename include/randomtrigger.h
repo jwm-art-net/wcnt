@@ -23,7 +23,7 @@ private:
     double probability;
     double not_probability;
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

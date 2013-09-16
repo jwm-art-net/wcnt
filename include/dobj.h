@@ -52,6 +52,8 @@ protected:
     static char err_msg[STRBUFLEN];
     virtual void create_params() = 0;
     void invalidate(){ valid = false;}
+    bool done_params();
+
 private:
     dobjnames::DOBJ_TYPE object_type;
     char* username;
@@ -61,6 +63,7 @@ private:
 STATS_VARS
 #endif
 
+    static bool params_done[dobjnames::DOBJ_LAST];
 };
 
 

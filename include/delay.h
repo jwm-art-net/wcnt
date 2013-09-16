@@ -36,7 +36,7 @@ private:
     double filtertotal;
     double gainamount;
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

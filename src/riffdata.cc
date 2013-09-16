@@ -379,7 +379,7 @@ stockerrs::ERR_TYPE riffdata::validate()
 
 void riffdata::create_params()
 {
-    if (riffdata::done_params == true)
+    if (done_params())
         return;
     jwm.get_dparlist()->add_dobjparam(
         dobjnames::DEF_RIFF, paramnames::QUARTER_VAL);
@@ -387,8 +387,7 @@ void riffdata::create_params()
         dobjnames::DEF_RIFF, dobjnames::LST_NOTES)->
             add_dobjdobj(dobjnames::LST_NOTES,
                 dobjnames::SIN_NOTE);
-    riffdata::done_params = true;
 }
 
-bool riffdata::done_params = false;
+
 

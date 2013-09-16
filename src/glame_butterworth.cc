@@ -151,11 +151,9 @@ void glame_butterworth::run()
     output = *l_output;
 }
 
-bool glame_butterworth::done_params = false;
-
 void glame_butterworth::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
             synthmodnames::GLAME_BUTTERWORTH,
@@ -168,7 +166,6 @@ void glame_butterworth::create_params()
     jwm.get_paramlist()->add_param(
             synthmodnames::GLAME_BUTTERWORTH,
             paramnames::RES_MODSIZE);
-    done_params = true;
 }
 
 #endif // WITH_LADSPA

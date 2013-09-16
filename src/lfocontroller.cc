@@ -171,11 +171,9 @@ void lfo_controller::run()
      out_preampmod * ams_r + out_preampmod * *in_amp_mod * amp_modsize;
 }
 
-bool lfo_controller::done_params = false;
-
 void lfo_controller::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
         synthmodnames::LFOCONTROL, paramnames::DELAY_TIME);
@@ -189,6 +187,5 @@ void lfo_controller::create_params()
         synthmodnames::LFOCONTROL, paramnames::RESPONSE_TIME);
     jwm.get_paramlist()->add_param(
         synthmodnames::LFOCONTROL, paramnames::AMP_MODSIZE);
-    done_params = true;
 }
 

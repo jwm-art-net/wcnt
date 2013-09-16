@@ -113,11 +113,9 @@ void mono_amp::run()
         out_output = clip_level;
 }
 
-bool mono_amp::done_params = false;
-
 void mono_amp::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
         synthmodnames::MONOAMP, paramnames::LEVEL);
@@ -125,6 +123,5 @@ void mono_amp::create_params()
         synthmodnames::MONOAMP, paramnames::AMP_MODSIZE);
     jwm.get_paramlist()->add_param(
         synthmodnames::MONOAMP, paramnames::CLIP_LEVEL);
-    done_params = true;
 }
 

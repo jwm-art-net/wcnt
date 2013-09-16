@@ -22,7 +22,7 @@ class parameditor : public dobj, public linked_list<paramedit>
 
  private:
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

@@ -38,7 +38,7 @@ private:
                         const char* valstr);
     bool dobj_param_edit(dobj*, const char* parname, const char* valstr);
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

@@ -71,7 +71,7 @@ class sc1 : public synthmod
     LADSPA_Data* l_output;
 
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif // WITH_LADSPA

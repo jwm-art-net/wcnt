@@ -144,17 +144,14 @@ void bode_freq_shifter::run()
     out_down = *l_out_down;
 }
 
-bool bode_freq_shifter::done_params = false;
-
 void bode_freq_shifter::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(synthmodnames::BODE_FREQ_SHIFTER,
                                paramnames::FREQ_SHIFT);
     jwm.get_paramlist()->add_param(synthmodnames::BODE_FREQ_SHIFTER,
                                paramnames::SHIFT_MODSIZE);
-    done_params = true;
 }
 
 #endif // WITH_LADSPA

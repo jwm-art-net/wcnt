@@ -194,13 +194,12 @@ stockerrs::ERR_TYPE group::validate()
 
 void group::create_params()
 {
-    if (group::done_params == true)
+    if (done_params())
         return;
     jwm.get_topdobjlist()->create_dobjdobjlist(
         dobjnames::DEF_GROUP, dobjnames::LST_MODULES)
             ->add_dobjdobj(dobjnames::LST_MODULES,
                 dobjnames::DOBJ_SYNTHMOD);
-    done_params = true;
 }
 
-bool group::done_params = false;
+

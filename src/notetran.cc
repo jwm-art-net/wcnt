@@ -293,11 +293,9 @@ void notetran::run()
     }
 }
 
-bool notetran::done_params = false;
-
 void notetran::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     // inserted in order to be defined by user
     jwm.get_paramlist()->add_param(
@@ -324,6 +322,5 @@ void notetran::create_params()
         synthmodnames::NOTETRAN, paramnames::DETRAN_NS);
     jwm.get_paramlist()->add_param(
         synthmodnames::NOTETRAN, paramnames::NS_RESPTIME);
-    done_params = true;
 }
 

@@ -140,11 +140,9 @@ void trigecho::run()
     if (pastpos == pastmax) pastpos = 0;
 }
 
-bool trigecho::done_params = false;
-
 void trigecho::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
         synthmodnames::TRIGECHO, paramnames::DELAY_TIME);
@@ -152,6 +150,5 @@ void trigecho::create_params()
         synthmodnames::TRIGECHO, paramnames::COUNT);
     jwm.get_paramlist()->add_param(
         synthmodnames::TRIGECHO, paramnames::SEND_INPUT_OUT);
-    done_params = true;
 }
 

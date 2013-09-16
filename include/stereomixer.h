@@ -31,7 +31,7 @@ private:
     double master_level;
     double const** chans_left;
     double const** chans_right;
-    static bool done_params;
+    
     void create_params();
     static bool done_moddobj;
     void create_moddobj();

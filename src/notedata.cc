@@ -245,7 +245,8 @@ stockerrs::ERR_TYPE note_data::validate()
 
 void note_data::create_params()
 {
-    if (note_data::done_params == true) return;
+    if (done_params())
+        return;
     jwm.get_dparlist()->add_dobjparam(
         dobjnames::SIN_NOTE, paramnames::NAME);
     jwm.get_dparlist()->add_dobjparam(
@@ -254,10 +255,7 @@ void note_data::create_params()
         dobjnames::SIN_NOTE, paramnames::NOTE_LEN);
     jwm.get_dparlist()->add_dobjparam(
         dobjnames::SIN_NOTE, paramnames::NOTE_VEL);
-    note_data::done_params = true;
 }
-
-bool note_data::done_params = false;
 
 #ifdef NOTE_STATS
 STATS_INIT(note_data)

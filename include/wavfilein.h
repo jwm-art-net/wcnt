@@ -51,7 +51,7 @@ private:
     SF_INFO sfinfo;
     WAV_STATUS status;
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

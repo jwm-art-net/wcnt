@@ -43,7 +43,7 @@ class adsr_scaler : public dobj
     double decay_scale;
     double release_scale;
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

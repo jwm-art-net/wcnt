@@ -138,15 +138,12 @@ void stereomixer::run()
     out_right *= master_level;
 }
 
-bool stereomixer::done_params = false;
-
 void stereomixer::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
      synthmodnames::STEREOMIXER, paramnames::MASTER_LEVEL);
-    done_params = true;
 }
 
 bool stereomixer::done_moddobj = false;

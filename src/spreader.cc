@@ -169,17 +169,16 @@ void spreader::run()
     }
 }
 
-bool spreader::done_params = false;
+
 
 void spreader::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
         synthmodnames::SPREADER, paramnames::START_LEVEL);
     jwm.get_paramlist()->add_param(
         synthmodnames::SPREADER, paramnames::END_LEVEL);
-    done_params = true;
 }
 
 bool spreader::done_moddobj = false;

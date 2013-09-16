@@ -64,14 +64,12 @@ void constant_freq::init()
     out_phase_step = freq_to_step(out_freq);
 }
 
-bool constant_freq::done_params = false;
-
 void constant_freq::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
         synthmodnames::CONSTANT_FREQ, paramnames::FREQ);
-    done_params = true;
+    
 }
 

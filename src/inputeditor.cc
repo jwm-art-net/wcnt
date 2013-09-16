@@ -59,14 +59,13 @@ dobj const* inputeditor::add_dobj(dobj* dbj)
 
 void inputeditor::create_params()
 {
-    if (inputeditor::done_params == true)
+    if (done_params())
         return;
     jwm.get_topdobjlist()->create_dobjdobjlist(
         dobjnames::DEF_INPUTEDITOR, dobjnames::LST_EDITS)->
             add_dobjdobj(dobjnames::LST_EDITS,
                 dobjnames::SIN_EDIT_INPUT);
-    inputeditor::done_params = true;
 }
 
-bool inputeditor::done_params = false;
+
 

@@ -43,7 +43,7 @@ private:
     STATUS trig1;
     STATUS trig2;
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

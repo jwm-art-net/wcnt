@@ -40,7 +40,7 @@ private:
     STATUS* trigs;
     void create_params();
     void create_wcnt_triggers();
-    static bool done_params;
+    
 };
 
 #endif

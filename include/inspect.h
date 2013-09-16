@@ -47,7 +47,7 @@ private:
 
     void set_message(char const* msg_from, char** msg_to);
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

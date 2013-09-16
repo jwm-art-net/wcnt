@@ -178,11 +178,9 @@ void echo::run()
     if (fpos < 0) fpos = filterarraymax - 1;
 }
 
-bool echo::done_params = false;
-
 void echo::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
      synthmodnames::ECHO, paramnames::DELAY_TIME);
@@ -196,6 +194,5 @@ void echo::create_params()
      synthmodnames::ECHO, paramnames::FEED_MODSIZE);
     jwm.get_paramlist()->add_param(
      synthmodnames::ECHO, paramnames::WETDRY);
-    done_params = true;
 }
 

@@ -28,7 +28,7 @@ private:
     unsigned long ds;
     double decay_size;
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

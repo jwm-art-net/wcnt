@@ -171,11 +171,9 @@ void wave_phase::run()
         (*in_shape_phase_step * wave_tables::phase_step_base);
 }
 
-bool wave_phase::done_params = false;
-
 void wave_phase::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
         synthmodnames::WAVE_PHASE,
@@ -204,6 +202,5 @@ void wave_phase::create_params()
     jwm.get_paramlist()->add_param(
         synthmodnames::WAVE_PHASE,
             paramnames::CYCLES);
-   done_params = true;
 }
 

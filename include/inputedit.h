@@ -34,7 +34,7 @@ private:
     char* modname;
     char* iostr;
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

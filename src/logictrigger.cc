@@ -176,11 +176,11 @@ void logictrigger::run()
     }
 }
 
-bool logictrigger::done_params = false;
+
 
 void logictrigger::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(synthmodnames::LOGICTRIGGER,
         paramnames::LOGICFUNC);
@@ -188,5 +188,5 @@ void logictrigger::create_params()
         paramnames::LOGICFUNC);
     jwm.get_paramlist()->add_param(synthmodnames::LOGICTRIGGER,
         paramnames::PRECISION);
-    done_params = true;
+    
 }

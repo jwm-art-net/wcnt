@@ -47,7 +47,7 @@ private:
     double up_level;
     double lo_level;
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

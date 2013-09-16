@@ -193,11 +193,9 @@ void onofftrig::run()
     }
 }
 
-bool onofftrig::done_params = false;
-
 void onofftrig::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
         synthmodnames::ONOFFTRIG, paramnames::ATTACK_TIME);
@@ -209,5 +207,4 @@ void onofftrig::create_params()
         synthmodnames::ONOFFTRIG, paramnames::RELEASE_LEVEL);
     jwm.get_paramlist()->add_param(
         synthmodnames::ONOFFTRIG, paramnames::CHECK_LEVELS);
-    done_params = true;
 }

@@ -26,7 +26,7 @@ class clockclock : public synthmod
     double mod1size;
     double degs;
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

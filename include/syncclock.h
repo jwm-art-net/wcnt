@@ -45,7 +45,7 @@ private:
     double phasepos;
     double snapto;
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

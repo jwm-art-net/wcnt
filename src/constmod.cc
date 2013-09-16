@@ -50,14 +50,14 @@ void const* constmod::get_param(paramnames::PAR_TYPE pt) const
     }
 }
 
-bool constmod::done_params = false;
+
 
 void constmod::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
      synthmodnames::CONSTMOD, paramnames::VALUE);
-    done_params = true;
+    
 }
 

@@ -459,17 +459,16 @@ void sequencer::run()
     riff_pos += *in_pos_step_size;
 }
 
-bool sequencer::done_params = false;
+
 
 void sequencer::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
         synthmodnames::SEQUENCER, paramnames::START_BAR);
     jwm.get_paramlist()->add_param(
         synthmodnames::SEQUENCER, paramnames::VELOCITY_RESPONSE);
-    done_params = true;
 }
 
 bool sequencer::done_moddobj = false;

@@ -182,20 +182,17 @@ void triangle_wave2::run()
     }
 }
 
-bool triangle_wave2::done_params = false;
-
 void triangle_wave2::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
         synthmodnames::TRIWAVE2, paramnames::NORM_FREQ);
     jwm.get_paramlist()->add_param(
-     	synthmodnames::TRIWAVE2, paramnames::NORM_MODSIZE);
+        synthmodnames::TRIWAVE2, paramnames::NORM_MODSIZE);
     jwm.get_paramlist()->add_param(
-     	synthmodnames::TRIWAVE2, paramnames::RECYCLE_MODE);
+        synthmodnames::TRIWAVE2, paramnames::RECYCLE_MODE);
     jwm.get_paramlist()->add_param(
         synthmodnames::TRIWAVE2, paramnames::ZERO_RETRIGGER);
-    done_params = true;
 }
 

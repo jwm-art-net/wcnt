@@ -172,11 +172,9 @@ void fast_lookahead_limiter::run()
     out_right = *l_out_right;
 }
 
-bool fast_lookahead_limiter::done_params = false;
-
 void fast_lookahead_limiter::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(synthmodnames::FAST_LOOKAHEAD_LIMITER,
                                paramnames::GAIN_DB);
@@ -184,7 +182,6 @@ void fast_lookahead_limiter::create_params()
                                paramnames::LIMIT_DB);
     jwm.get_paramlist()->add_param(synthmodnames::FAST_LOOKAHEAD_LIMITER,
                                paramnames::RELEASE_SECS);
-    done_params = true;
 }
 
 #endif // WITH_LADSPA

@@ -39,7 +39,7 @@ private:
     double sectsample;
     double counter_ratio;
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

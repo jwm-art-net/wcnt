@@ -65,7 +65,7 @@ private:
     void close_wav();
     // synthmod stuff
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

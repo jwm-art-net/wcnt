@@ -149,16 +149,13 @@ void trigrouter::run()
     }
 }
 
-bool trigrouter::done_params = false;
-
 void trigrouter::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
         synthmodnames::TRIGROUTER, paramnames::COUNT);
     jwm.get_paramlist()->add_param(
         synthmodnames::TRIGROUTER, paramnames::WRAP);
-    done_params = true;
 }
 

@@ -49,7 +49,7 @@ private:
     double uso_level;
     double lso_level;
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

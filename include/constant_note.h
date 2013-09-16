@@ -22,7 +22,7 @@ private:
     double out_phase_step;
     void set_note(const char*);
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

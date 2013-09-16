@@ -101,14 +101,11 @@ void simple_delay::run()
     if (fpos < 0) fpos = filterarraymax - 1;
 }
 
-bool simple_delay::done_params = false;
-
 void simple_delay::create_params()
 {
-    if (done_params == true)
+    if (done_params())
         return;
     jwm.get_paramlist()->add_param(
         synthmodnames::SIMPLEDELAY, paramnames::DELAY_TIME);
-    done_params = true;
 }
 

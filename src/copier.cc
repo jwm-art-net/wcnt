@@ -136,13 +136,13 @@ stockerrs::ERR_TYPE copier::validate()
 
 void copier::create_params()
 {
-    if (done_params == true) return;
+    if (done_params())
+        return;
     jwm.get_dparlist()->add_dobjparam(
         dobjnames::DEF_COPIER, paramnames::COPYFROM);
     jwm.get_dparlist()->add_dobjparam(
         dobjnames::DEF_COPIER, paramnames::COPYTO);
-    done_params = true;
 }
 
-bool copier::done_params = false;
+
 

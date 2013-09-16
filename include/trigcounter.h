@@ -32,7 +32,7 @@ private:
     short count;
     STATUS wrap;
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif

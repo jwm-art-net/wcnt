@@ -42,7 +42,7 @@ private:
     double left;
     double right;
     void create_params();
-    static bool done_params;
+    
 };
 
 #endif
