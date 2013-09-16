@@ -68,7 +68,7 @@ private:
     unsigned long wavlenbi;
     double cur_pos;
     double ac_cpstep;
-    double oldcpstp;
+    double oldcpstep;
     double cp_step;
     double cp_ratio;
     double sr_ratio; //ratio between input and output samplerates
