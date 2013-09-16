@@ -412,7 +412,7 @@ void sampler::run()
         trigger_playback();
     }
     if (play_state == ON) {
-        if (do_ac == OFF) oldcpstp = cp_step;
+        if (do_ac == OFF) oldcpstep = cp_step;
         if (out_loop_trig == ON) out_loop_trig = OFF;
         cp_ratio = *in_phase_step / root_phase_step;
         //sample rate ratio is sr_ratio
@@ -483,7 +483,7 @@ void sampler::run()
         }
         bp_midpoint = (double)((cur_pos - buffer_start_pos) - buff_pos);
         if (do_ac == ON) {
-            //ac_cpstep = oldcpstp * (1 - ac_size) + cp_step * ac_size;
+            //ac_cpstep = oldcpstep * (1 - ac_size) + cp_step * ac_size;
             if (ac_size > 1) do_ac = OFF;
             ac_midpoint 
              = (double)((ac_cur_pos-ac_buf_start_pos)-ac_buf_pos);
@@ -988,7 +988,7 @@ void sampler::anti_clip_fwd()
     ac_out_left = ac_out_right = 0;
     ac_size = 0;
     do_ac = ON;
-    ac_cpstep = oldcpstp;
+    ac_cpstep = oldcpstep;
 }
 
 void sampler::anti_clip_rev()
@@ -1041,7 +1041,7 @@ void sampler::anti_clip_rev()
     ac_size = 0;
     ac_buf_pos = (int)(ac_cur_pos - ac_buf_start_pos);
     do_ac = ON;
-    ac_cpstep = oldcpstp;
+    ac_cpstep = oldcpstep;
 }
 
 // ac_copy... methods are used when anticlip is activated while already

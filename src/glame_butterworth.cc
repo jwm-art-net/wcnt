@@ -10,7 +10,7 @@ glame_butterworth::glame_butterworth(char const* uname) :
  synthmod(synthmodnames::GLAME_BUTTERWORTH, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), in_phase_step(0), in_res_mod(0), output(0), type(LOPASS),
  resonance(0), res_mod_size(0), l_descriptor(0), l_inst_handle(0),
- l_input(0), l_output(0), l_cutoff(0), l_resonance(0)
+ l_input(0), l_output(0), l_cut_off(0), l_resonance(0)
 {
     jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
     jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
