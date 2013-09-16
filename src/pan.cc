@@ -7,7 +7,7 @@
 pan::pan(char const* uname) :
  synthmod(synthmodnames::PAN, uname, SM_HAS_STEREO_OUTPUT),
  in_signal(0), in_pan_mod(0), out_l(0), out_r(0), panpos(0),
- pan_modsize(0), pan_pos(0)
+ pan_modsize(0), pan_mod(0), pan_pos(0)
 {
     jwm.get_outputlist()->add_output(this, outputnames::OUT_LEFT);
     jwm.get_outputlist()->add_output(this, outputnames::OUT_RIGHT);

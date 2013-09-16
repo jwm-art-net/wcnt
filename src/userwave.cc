@@ -11,12 +11,12 @@
 
 user_wave::user_wave(char const* uname) :
  synthmod(synthmodnames::USERWAVE, uname, SM_HAS_OUT_OUTPUT),
- in_phase_trig(0), in_phase_step(0), in_h_mod(0), in_v_mod(0),
+ in_phase_trig(0), in_phase_step(0), in_pwm(0), in_h_mod(0), in_v_mod(0),
  output(0.0), play_state(OFF),
  recycle(OFF), zero_retrigger_mode(OFF), drop_check_range(2),
  vertices(0), vertex(0), vx_ix(0),
  sect_spanlvl(0.0), sect_startlvl(0.0),
- sectdegs(0), degs(360)
+ sectdegs(0), degs(360), pdegs(0)
 {
     jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
     jwm.get_outputlist()->add_output(this, outputnames::OUT_PLAY_STATE);

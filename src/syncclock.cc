@@ -12,7 +12,8 @@ sync_clock::sync_clock(char const* uname) :
  in_bpm(0), in_pos_stepsz(0), in_beats_per_bar(0), in_beat_value(0),
  in_phase_trig(0), in_freq_mod1(0), in_freq_mod2(0), out_phase_trig(OFF),
  out_phase_step(0), freq_mod1size(0), freq_mod2size(0), quarter_val(0),
- note_length(0), snap_to(0), posconv(0), phaselen(0), beatlen(0),
+ note_length(0), snap_to(0), premod_nlen(0), mod1size(0), mod2size(0),
+ posconv(0), phaselen(0), beatlen(0),
  phasepos(0), snapto(0)
 {
 // degs initialised at 360 so immediately triggers if in_phase_trig is off

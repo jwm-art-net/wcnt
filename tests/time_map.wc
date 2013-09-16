@@ -1,0 +1,24 @@
+wcnt-1.26/jwmsynth
+
+samplerate 44100
+
+time_map
+time
+    meter_map
+        meter   tsig 4/4    bar 0
+    meter_map
+    bpm_map
+        tempo   bpm 120     bar 0
+    bpm_map
+time
+
+wcnt_exit
+exit
+    in_bar      time out_bar
+    exit_bar    1
+exit
+
+wcnt-1.26/jwmsynth
+
+
+

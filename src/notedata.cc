@@ -12,6 +12,7 @@ note_data::note_data() :
  dobj(dobjnames::SIN_NOTE),
  note_type(NOTE_TYPE_ERR),position(0), length(0), velocity(0)
 {
+    notename[0] = '\0';
     create_params();
 
 #ifdef NOTE_STATS

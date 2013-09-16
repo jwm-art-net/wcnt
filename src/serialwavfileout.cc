@@ -11,7 +11,8 @@
 serialwavfileout::serialwavfileout(char const* uname) :
  synthmod(synthmodnames::SERIALWAVFILEOUT, uname, SM_DEFAULT),
  in_left_channel(0), in_right_channel(0), in_bar(0), in_bar_trig(0),
- in_write_trig(0), in_stop_trig(0), write_status(OFF), start_bar(0),
+ in_write_trig(0), in_stop_trig(0), write_status(OFF),
+ data_format(FMT_FLT32), start_bar(0),
  end_bar(0), wav_basename(0), wavfilename(0), fileout(0), wavcount(0),
  in_write_region(OFF), status(WAV_STATUS_INIT), 
  st_buffer(NULL), sample_total(0), buff_pos(0)

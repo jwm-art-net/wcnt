@@ -9,7 +9,7 @@
 peak_detector::peak_detector(char const* uname) :
  synthmod(synthmodnames::PEAKDETECTOR, uname, SM_DEFAULT),
  in_signal(0), sig_range_hi(0.0), sig_range_lo(0.0), message(0),
- force_abort(OFF), max_peaks(0), check(true)
+ force_abort(OFF), peak_count(0), max_peaks(0), check(true)
 {
     jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
     create_params();

@@ -7,7 +7,8 @@
 
 sc1::sc1(char const* uname) :
  synthmod(synthmodnames::SC1, uname, SM_HAS_OUT_OUTPUT),
- input(0), output(0),
+ input(0), in_thresh_mod(0), in_ratio_mod(0), in_knee_mod(0),
+ in_makeup_mod(0), output(0),
  attack(101.5), release(401), thresh(0), ratio(1), knee(3.25), makeup(0),
  l_descriptor(0), l_inst_handle(0),
  l_attack(0), l_release(0), l_thresh(0), l_ratio(0), l_knee(0),

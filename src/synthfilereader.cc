@@ -30,7 +30,7 @@ synthfilereader::synthfilereader() :
  modnamelist(0), dobjnamelist(0),
  wc_file_type(WC_INCLUDE_FILE),
  filestatus(NOT_FOUND), synthfile(0), buff(0), command(0),
- synthheader(0), wc_err_msg(0)
+ synthheader(0), wc_err_msg(0), inc_current(false)
 {
     synthfile = new ifstream;
     buff = new string;
@@ -790,7 +790,10 @@ read_dobj_params(dobj* dbj, const char* endterm)
         if (pt == paramnames::STR_LIST) {
             datastr = (string*)read_string_list_param(enda, endterm);
             if (!datastr)
+            {
+                delete parlist;
                 return false;
+            }
         }
         else {
             datastr = new string;

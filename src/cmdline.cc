@@ -237,8 +237,11 @@ bool cmdline::set_jwm_globals()
     }
     const char* filename = 0;
     const char* ptr = 0;
-    const char* fnptr = ptr = filename = opts[data[WC_IX].par1];
+    const char* fnptr;
     char* path = 0;
+
+    fnptr = ptr = filename = opts[data[WC_IX].par1];
+
     while (*ptr != '\0') {
         if (*ptr == '/') fnptr = ptr + 1;
         ptr++;

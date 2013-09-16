@@ -16,15 +16,14 @@ timemap::timemap(char const* uname) :
     uname,
     SM_UNGROUPABLE | SM_UNDUPLICABLE),
 
- out_bar(0), out_pos_in_bar(0), out_pos_step_size(0), out_bpm(0.0),
- out_sample_total(0), out_sample_in_bar(0),
- bpm_map(0), meter_map(0),
- currentbpm(0), targetbpm(0),
- currentmeter(0),
- bpmsampletot(0), bpmchangesamp(0),
- bpmchange_pos(0), bpmrampsize(0), bpmchange_ratio(0), targbpm(0),
- pos_in_bar(0), bpmchange_notelen(0), bpmchangebar(0),
- barlength(0)
+ out_bar(0), out_bar_trig(OFF), out_pos_in_bar(0), out_pos_step_size(0),
+ out_bpm(0.0), out_sample_total(0), out_sample_in_bar(0),
+ out_beats_per_bar(0), out_beat_value(0), out_bpm_change_trig(OFF),
+ out_meter_change_trig(OFF), out_bpm_change_state(OFF), bpm_map(0),
+ meter_map(0),  currentbpm(0), targetbpm(0), currentmeter(0),
+ bpmsampletot(0), bpmchangesamp(0), bpmchange_pos(0), bpmrampsize(0),
+ bpmchange_ratio(0), targbpm(0), pos_in_bar(0), bpmchange_notelen(0),
+ bpmchangebar(0), barlength(0), beatlength(0), meterchangebar(0), p_bpm(0)
 {
     jwm.get_outputlist()->add_output(this,outputnames::OUT_BPM);
     jwm.get_outputlist()->add_output(this,outputnames::OUT_BAR);
@@ -125,7 +124,7 @@ stockerrs::ERR_TYPE timemap::validate()
     }
     return stockerrs::ERR_NO_ERROR;
 }
-
+#include <cstdio>
 void timemap::init()
 {
     currentbpm = bpm_map->goto_first();
@@ -139,11 +138,13 @@ void timemap::init()
     barlength = out_beats_per_bar * beatlength;
     pos_in_bar = barlength; // trig first bar - not favorite sollution
     out_bar = -1;           // ...it just gets worse!
+    printf("init this:%p",this);
 }
 
 void timemap::run()
 {
     if (pos_in_bar >= barlength) {
+    printf("this:%p",this);
         out_bar++;
         pos_in_bar -= barlength;
         out_bar_trig = ON;
