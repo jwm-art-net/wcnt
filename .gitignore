@@ -15,4 +15,5 @@
 wcnt
 examples/*.wav
 tests/*.wav
+err.txt
 

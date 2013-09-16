@@ -1,0 +1,22 @@
+wcnt-1.26/jwmsynth
+
+samplerate 44100
+
+timer
+time
+    timings
+        time seconds 0.0
+        time seconds 1.0
+    timings
+time
+
+wcnt_exit
+exit
+    in_bar      time out_count
+    exit_bar    1
+exit
+
+wcnt-1.26/jwmsynth
+
+
+

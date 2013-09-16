@@ -9,7 +9,8 @@ clockclock::clockclock(char const* uname) :
  synthmod(synthmodnames::CLOCK, uname, SM_DEFAULT),
  out_phase_trig(OFF),
  out_premod_phase_step(0.00), out_phase_step(0.00),
- in_freq_mod1(0), hrtz_freq(0.00), freq_mod1size(0.00), degs(360.00)
+ in_freq_mod1(0), hrtz_freq(0.00), freq_mod1size(0.00),
+ mod1size(0),degs(360.00)
 {
     // degs initialised to 360 so that it immediately triggers
     jwm.get_inputlist()->add_input(this, inputnames::IN_FREQ_MOD1);

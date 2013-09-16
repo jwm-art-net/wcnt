@@ -7,8 +7,8 @@
 contraster::contraster(char const* uname) :
  synthmod(synthmodnames::CONTRASTER, uname, SM_HAS_OUT_OUTPUT),
  out_output(0.0), in_signal(0), in_power_mod(0),
- power_min(1.0), power_max(2.0), rude_mode(OFF),
- power(0.0), powerrad(0.0)
+ in_rude_switch_trig(0), power_min(1.0), power_max(2.0), rude_mode(OFF),
+ wetdry(0), power(0.0), power_mod(0), powerrad(0.0), output(0)
 {
     jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
     jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);

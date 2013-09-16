@@ -6,8 +6,10 @@
 
 freq_generator::freq_generator(char const* uname) :
  synthmod(synthmodnames::FREQGEN, uname, SM_DEFAULT),
- in_signal(0), out_freq(220.00), sig_range_hi(1.00), sig_range_lo(-1.00),
- freq_range_hi(440.00), freq_range_lo(110.00), step_count(24)
+ in_signal(0), out_freq(220.00), out_phase_step(0),
+ sig_range_hi(1.00), sig_range_lo(-1.00),
+ freq_range_hi(440.00), freq_range_lo(110.00), sig_step_size(0),
+ freq_step_size(0), step_count(24)
 {
     jwm.get_outputlist()->add_output(this, outputnames::OUT_FREQ);
     jwm.get_outputlist()->add_output(this, outputnames::OUT_PHASE_STEP);

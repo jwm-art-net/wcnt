@@ -14,9 +14,10 @@
 stepper::stepper(char const* uname) :
  synthmod(synthmodnames::STEPPER, uname, SM_HAS_OUT_OUTPUT),
  in_trig(0), in_restart_trig(0), in_modulation(0),
- step_count(0), rtime(0), recycle(OFF),
+ step_count(0), up_thresh(0), lo_thresh(0), rtime(0), recycle(OFF),
  out_output(0),
- output(0), last_output(0), step_no(0), up_levels(0), lo_levels(0),
+ output(0), last_output(0), step_no(0), next_step_no(0), up_levels(0),
+ lo_levels(0),
  rtime_samp(0), rtime_max_samps(0), rtime_stpsz(0), rtime_size(0)
 {
     jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);

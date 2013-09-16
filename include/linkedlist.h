@@ -259,9 +259,6 @@ ll_item<T>* linked_list<T>::insert_after(llitem* after, T* data)
             return 0;
     }
     llitem* newitem;
-    #ifdef LIST_DEBUG
-    newitem->set_owner(this);
-    #endif
     if (after == tail->get_prev()) {
         newitem = new llitem(data);
         newitem->set_prev(after);
@@ -276,6 +273,9 @@ ll_item<T>* linked_list<T>::insert_after(llitem* after, T* data)
         newitem->set_next(aftnxt);
         aftnxt->set_prev(newitem);
     }
+    #ifdef LIST_DEBUG
+    newitem->set_owner(this);
+    #endif
     count++;
     return current = newitem;
 }

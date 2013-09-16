@@ -11,10 +11,10 @@
 orbit::orbit(char const* uname) :
  synthmod(synthmodnames::ORBIT, uname, SM_DEFAULT),
  out_x(0.0), out_y(0.0),
- in_restart_trig(0), in_trig(0),
+ in_restart_trig(0), in_trig(0), type(ORB_HOPALONG),
  const_a(0.0), const_b(0.0), const_c(0.0),
  test_iter(0),
- x(0.0), y(0.0), scale(1.0)
+ x(0.0), y(0.0), scale(1.0), cos_b_pc(0), sin_abc(0)
 {
     jwm.get_inputlist()->add_input(this, inputnames::IN_RESTART_TRIG);
     jwm.get_inputlist()->add_input(this, inputnames::IN_TRIG);

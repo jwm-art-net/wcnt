@@ -14,7 +14,7 @@ wave_phase::wave_phase(char const* uname) :
  recycle(OFF), reset_phase(OFF),
  invert_alt(OFF), sync_shape(ON), cycles(1.0),
  phase(0), shape_phase(0), degs(0), max_degs(0), invph(1),
- table(0)
+ table(0), shape_table(0)
 {
     jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
     jwm.get_outputlist()->add_output(this, outputnames::OUT_PLAY_STATE);

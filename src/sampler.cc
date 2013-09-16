@@ -11,7 +11,7 @@
 
 sampler::sampler(char const* uname) :
  synthmod(synthmodnames::SAMPLER, uname, SM_HAS_STEREO_OUTPUT),
- in_play_trig(0), in_start_pos_mod(0), in_phase_step(0),
+ in_play_trig(0), in_stop_trig(0), in_start_pos_mod(0), in_phase_step(0),
  out_left(0), out_right(0),
  out_loop_trig(OFF), play_state(OFF),
  wavfile(0),
@@ -21,11 +21,11 @@ sampler::sampler(char const* uname) :
  loop_bi_offset(0),
  anti_clip_size(0), ac_each_end(OFF), search_range(0),
  phase_step_amount(0), root_phase_step(1.0),
- playdir(PLAY_FWD), acplaydir(PLAY_FWD),
+ playdir(PLAY_FWD), acplaydir(PLAY_FWD), loop_yet(false),
  mono_buffer(0), ac_m_buf(0), st_buffer(0), ac_st_buf(0),
  buffer_start_pos(0), buff_pos(0),
  wavstart(1),  wavlength(0), wavstbi(0), wavlenbi(0),
- cur_pos(0), cp_step(0), cp_ratio(0),
+ cur_pos(0), ac_cpstep(0), oldcpstep(0), cp_step(0), cp_ratio(0),
  sr_ratio(1), bp_midpoint(0), start_pos(0), startpos_span(0),
  loopstart(0), loopfinish(0), loop_fits_in_buffer(0),
  loop_loaded(0),

@@ -9,7 +9,7 @@
 
 wave::wave(char const* uname) :
  synthmod(synthmodnames::WAVE, uname, SM_HAS_OUT_OUTPUT),
- output(0.00), in_phase_step(NULL), phase(0), table(0)
+ output(0.00), in_phase_step(NULL), type(ONE),phase(0), table(0)
 {
     jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
     jwm.get_inputlist()->add_input(this, inputnames::IN_PHASE_STEP);

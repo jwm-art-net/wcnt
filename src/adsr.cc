@@ -13,7 +13,7 @@ adsr::adsr(char const* uname) :
  out_off_trig(OFF), play_state(OFF), up_thresh(0), lo_thresh(0),
  start_level(0), min_time(0), max_sus_time(0), sustain_status(OFF),
  release_ratio(OFF), zero_retrigger(OFF), thresh_range(0), end_level(0),
- released(OFF), tsamps(0), min_samps(0), max_sus_samps(0),
+ released(OFF), tsamps(0), min_samps(0), max_samps(0), max_sus_samps(0),
  sect(0), sectsample(0), sectmaxsamples(0), levelsize(0),
  run_coords(0), coord(0), coord_ix(0),
  decay_ix(0), sustain_ix(0), release_ix(0)
