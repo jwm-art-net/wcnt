@@ -104,15 +104,10 @@ void riff_node::create_params()
 {
     if (done_params())
         return;
-    jwm.get_dparlist()->add_dobjparam(dobjnames::SIN_RIFFNODE,
-        paramnames::RIFFNAME);
-    jwm.get_dparlist()->add_dobjparam(dobjnames::SIN_RIFFNODE,
-        paramnames::BAR);
-    jwm.get_dparlist()->add_dobjparam(dobjnames::SIN_RIFFNODE,
-        paramnames::TRANSPOSE);
-    jwm.get_dparlist()->add_dobjparam(dobjnames::SIN_RIFFNODE,
-        paramnames::REPEAT);
-    jwm.get_dparlist()->add_dobjparam(dobjnames::SIN_RIFFNODE,
-        paramnames::REPEAT_STRIPE);
+    relate_param(paramnames::RIFFNAME);
+    relate_param(paramnames::BAR);
+    relate_param(paramnames::TRANSPOSE);
+    relate_param(paramnames::REPEAT);
+    relate_param(paramnames::REPEAT_STRIPE);
 }
 

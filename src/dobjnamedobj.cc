@@ -49,8 +49,7 @@ void dobjnamedobj::create_params()
 {
     if (done_params())
         return;
-    jwm.get_dparlist()->add_dobjparam(
-        dobjnames::SIN_DOBJNAME, paramnames::NAME);
+    relate_param(paramnames::NAME);
 }
 
 

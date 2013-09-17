@@ -56,8 +56,6 @@ stockerrs::ERR_TYPE timing::validate()
 void timing::create_params()
 {
     if (done_params()) return;
-    jwm.get_dparlist()->add_dobjparam(
-        dobjnames::SIN_TIME, paramnames::SECONDS);
-    
+    relate_param(paramnames::SECONDS);
 }
 

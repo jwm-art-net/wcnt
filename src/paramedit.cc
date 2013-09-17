@@ -215,10 +215,8 @@ void paramedit::create_params()
 {
     if (done_params())
         return;
-    jwm.get_dparlist()->add_dobjparam(
-        dobjnames::SIN_EDIT_PARAM, paramnames::STR_UNNAMED);
-    jwm.get_dparlist()->add_dobjparam(
-        dobjnames::SIN_EDIT_PARAM, paramnames::STR_LIST);
+    relate_param(paramnames::STR_UNNAMED);
+    relate_param(paramnames::STR_LIST);
 }
 
 

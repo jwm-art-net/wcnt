@@ -66,11 +66,8 @@ void step_data::create_params()
 {
     if (done_params())
         return;
-    jwm.get_dparlist()->add_dobjparam(
-        dobjnames::SIN_STEP, paramnames::POS);
-    jwm.get_dparlist()->add_dobjparam(
-        dobjnames::SIN_STEP, paramnames::UPLEVEL);
-    jwm.get_dparlist()->add_dobjparam(
-        dobjnames::SIN_STEP, paramnames::LOLEVEL);
+    relate_param(paramnames::POS);
+    relate_param(paramnames::UPLEVEL);
+    relate_param(paramnames::LOLEVEL);
 }
 

@@ -165,10 +165,8 @@ void wavfilein::create_params()
 {
     if (done_params())
         return;
-    jwm.get_dparlist()->add_dobjparam(
-        dobjnames::DEF_WAVFILEIN, paramnames::FILENAME);
-    jwm.get_dparlist()->add_dobjparam(
-        dobjnames::DEF_WAVFILEIN, paramnames::ROOT_NOTE);
+    relate_param(paramnames::FILENAME);
+    relate_param(paramnames::ROOT_NOTE);
 }
 
 

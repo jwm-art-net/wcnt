@@ -33,6 +33,5 @@ void dobjmod::create_params()
 {
     if (done_params())
         return;
-    jwm.get_dparlist()->add_dobjparam(
-        dobjnames::DOBJ_SYNTHMOD, paramnames::MODNAME);
+    relate_param(paramnames::MODNAME);
 }

@@ -97,17 +97,10 @@ void adsr_coord::create_params()
 {
     if (done_params())
         return;
-    jwm.get_dparlist()->add_dobjparam(
-        dobjnames::SIN_COORD, paramnames::ADSRSECT);
-    jwm.get_fxsparamlist()->add_param("attack/decay/sustain/release",
-        paramnames::ADSRSECT);
-    jwm.get_dparlist()->add_dobjparam(
-        dobjnames::SIN_COORD, paramnames::UPTIME);
-    jwm.get_dparlist()->add_dobjparam(
-        dobjnames::SIN_COORD, paramnames::UPLEVEL);
-    jwm.get_dparlist()->add_dobjparam(
-        dobjnames::SIN_COORD, paramnames::LOTIME);
-    jwm.get_dparlist()->add_dobjparam(
-        dobjnames::SIN_COORD, paramnames::LOLEVEL);
+    relate_param(paramnames::ADSRSECT, "attack/decay/sustain/release");
+    relate_param(paramnames::UPTIME);
+    relate_param(paramnames::UPLEVEL);
+    relate_param(paramnames::LOTIME);
+    relate_param(paramnames::LOLEVEL);
 }
 

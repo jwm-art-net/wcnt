@@ -1,6 +1,9 @@
 #include "../include/dobj.h"
 #include "../include/jwm_globals.h"
 #include "../include/dobjlist.h"
+#include "../include/dobjparamlist.h"
+#include "../include/fxsparamlist.h"
+
 
 
 dobj::dobj(dobjnames::DOBJ_TYPE dt) :
@@ -107,6 +110,17 @@ bool dobj::done_params()
 }
 
 char dobj::err_msg[STRBUFLEN] = "";
+
+void dobj::relate_param(paramnames::PAR_TYPE pt)
+{
+    jwm.get_dparlist()->add_dobjparam(object_type, pt);
+}
+
+void dobj::relate_param(paramnames::PAR_TYPE pt, const char* fixstr)
+{
+    jwm.get_dparlist()->add_dobjparam(object_type, pt);
+    jwm.get_fxsparamlist()->add_param(fixstr, pt);
+}
 
 #ifdef DOBJ_STATS
 STATS_INIT(dobj)

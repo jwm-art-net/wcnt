@@ -83,15 +83,12 @@ stockerrs::ERR_TYPE wave_vertex::validate()
 
 void wave_vertex::create_params()
 {
-    if (done_params()) return;
-    jwm.get_dparlist()->add_dobjparam(
-        dobjnames::SIN_VERTEX, paramnames::UPDEG);
-    jwm.get_dparlist()->add_dobjparam(
-        dobjnames::SIN_VERTEX, paramnames::UPLEVEL);
-    jwm.get_dparlist()->add_dobjparam(
-        dobjnames::SIN_VERTEX, paramnames::LODEG);
-    jwm.get_dparlist()->add_dobjparam(
-        dobjnames::SIN_VERTEX, paramnames::LOLEVEL);
+    if (done_params())
+        return;
+    relate_param(paramnames::UPDEG);
+    relate_param(paramnames::UPLEVEL);
+    relate_param(paramnames::LODEG);
+    relate_param(paramnames::LOLEVEL);
 }
 
 
