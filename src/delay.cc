@@ -147,11 +147,6 @@ void delay::run()
     out_output = output * wetdry + *in_signal * (1 - wetdry);
 }
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> master
 void delay::create_params()
 {
     if (done_params())

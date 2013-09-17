@@ -42,17 +42,12 @@ DEFS=-O2 -fomit-frame-pointer -DWITH_LADSPA
 # DEBUG_STRLIST_PAR = displays strings read from file while processing the
 #                     special parameter type used by the input_editor and
 #                     param_editor data objects.
-
-<<<<<<< HEAD
 #---------------------------------------------------
 # show code origin of user error messages
 #
 # DEBUG_MSG
 
 DEFS=-ggdb -fno-inline -DWITH_LADSPA -DNAME_CHECK -DDEBUG_MSG
-=======
-#DEFS=-g3 -fno-inline -DWITH_LADSPA -DNAME_CHECK
->>>>>>> master
 
 # nothing to be modified further:
 PROG=wcnt

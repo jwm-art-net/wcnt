@@ -108,14 +108,6 @@ bool dobj::done_params()
 
 char dobj::err_msg[STRBUFLEN] = "";
 
-bool dobj::done_params()
-{
-    bool r = params_done[object_type];
-    params_done[object_type] = true;
-    return r;
-}
-
-
 #ifdef DOBJ_STATS
 STATS_INIT(dobj)
 #endif
