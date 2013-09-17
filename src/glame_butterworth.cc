@@ -156,17 +156,9 @@ void glame_butterworth::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-            synthmodnames::GLAME_BUTTERWORTH,
-            paramnames::GLAME_FILTER_TYPE);
-    jwm.get_fxsparamlist()->add_param("lowpass/highpass",
-                                  paramnames::GLAME_FILTER_TYPE);
-    jwm.get_paramlist()->add_param(
-            synthmodnames::GLAME_BUTTERWORTH,
-            paramnames::RESONANCE);
-    jwm.get_paramlist()->add_param(
-            synthmodnames::GLAME_BUTTERWORTH,
-            paramnames::RES_MODSIZE);
+    relate_param(paramnames::GLAME_FILTER_TYPE, "lowpass/highpass");
+    relate_param(paramnames::RESONANCE);
+    relate_param(paramnames::RES_MODSIZE);
 }
 
 #endif // WITH_LADSPA

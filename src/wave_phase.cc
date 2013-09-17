@@ -175,32 +175,13 @@ void wave_phase::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-        synthmodnames::WAVE_PHASE,
-            paramnames::WAVE_TYPE);
-    jwm.get_fxsparamlist()->add_param(
-        jwm.get_wave_tables()->fxstring,
-            paramnames::WAVE_TYPE);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::WAVE_PHASE,
-            paramnames::WAVE_SHAPE_TYPE);
-    jwm.get_fxsparamlist()->add_param(
-        jwm.get_wave_tables()->fxstring,
-            paramnames::WAVE_SHAPE_TYPE);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::WAVE_PHASE,
-            paramnames::TRIG_RESET_PHASE);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::WAVE_PHASE,
-            paramnames::RECYCLE_MODE);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::WAVE_PHASE,
-            paramnames::SYNC_SHAPE);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::WAVE_PHASE,
-            paramnames::INVERT_ALT);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::WAVE_PHASE,
-            paramnames::CYCLES);
+    relate_param(paramnames::WAVE_TYPE, jwm.get_wave_tables()->fxstring);
+    relate_param(paramnames::WAVE_SHAPE_TYPE,
+                                        jwm.get_wave_tables()->fxstring);
+    relate_param(paramnames::TRIG_RESET_PHASE);
+    relate_param(paramnames::RECYCLE_MODE);
+    relate_param(paramnames::SYNC_SHAPE);
+    relate_param(paramnames::INVERT_ALT);
+    relate_param(paramnames::CYCLES);
 }
 

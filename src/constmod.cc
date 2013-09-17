@@ -56,8 +56,6 @@ void constmod::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-     synthmodnames::CONSTMOD, paramnames::VALUE);
-    
+    relate_param(paramnames::VALUE);
 }
 

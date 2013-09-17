@@ -174,17 +174,11 @@ void lfo_controller::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-        synthmodnames::LFOCONTROL, paramnames::DELAY_TIME);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::LFOCONTROL, paramnames::RAMP_TIME);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::LFOCONTROL, paramnames::START_LEVEL);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::LFOCONTROL, paramnames::END_LEVEL);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::LFOCONTROL, paramnames::RESPONSE_TIME);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::LFOCONTROL, paramnames::AMP_MODSIZE);
+    relate_param(paramnames::DELAY_TIME);
+    relate_param(paramnames::RAMP_TIME);
+    relate_param(paramnames::START_LEVEL);
+    relate_param(paramnames::END_LEVEL);
+    relate_param(paramnames::RESPONSE_TIME);
+    relate_param(paramnames::AMP_MODSIZE);
 }
 

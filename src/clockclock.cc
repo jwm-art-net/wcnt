@@ -132,9 +132,7 @@ void clockclock::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-     synthmodnames::CLOCK, paramnames::FREQ);
-    jwm.get_paramlist()->add_param(
-     synthmodnames::CLOCK, paramnames::FREQ_MOD1SIZE);
+    relate_param(paramnames::FREQ);
+    relate_param(paramnames::FREQ_MOD1SIZE);
 }
 

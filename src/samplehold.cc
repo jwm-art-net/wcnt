@@ -111,7 +111,6 @@ void sample_hold::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-        synthmodnames::SAMPLEHOLD, paramnames::DECAY_TIME);
+    relate_param(paramnames::DECAY_TIME);
 }
 

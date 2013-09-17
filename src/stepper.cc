@@ -274,16 +274,11 @@ void stepper::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param( synthmodnames::STEPPER,
-                                        paramnames::STEP_COUNT);
-    jwm.get_paramlist()->add_param( synthmodnames::STEPPER,
-                                        paramnames::UP_THRESH);
-    jwm.get_paramlist()->add_param( synthmodnames::STEPPER,
-                                        paramnames::LO_THRESH);
-    jwm.get_paramlist()->add_param( synthmodnames::STEPPER,
-                                        paramnames::RESPONSE_TIME);
-    jwm.get_paramlist()->add_param( synthmodnames::STEPPER,
-                                        paramnames::RECYCLE_MODE);
+    relate_param(paramnames::STEP_COUNT);
+    relate_param(paramnames::UP_THRESH);
+    relate_param(paramnames::LO_THRESH);
+    relate_param(paramnames::RESPONSE_TIME);
+    relate_param(paramnames::RECYCLE_MODE);
 }
 
 bool stepper::done_moddobj = false;

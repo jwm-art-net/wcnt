@@ -179,12 +179,9 @@ void fast_lookahead_limiter::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(synthmodnames::FAST_LOOKAHEAD_LIMITER,
-                               paramnames::GAIN_DB);
-    jwm.get_paramlist()->add_param(synthmodnames::FAST_LOOKAHEAD_LIMITER,
-                               paramnames::LIMIT_DB);
-    jwm.get_paramlist()->add_param(synthmodnames::FAST_LOOKAHEAD_LIMITER,
-                               paramnames::RELEASE_SECS);
+    relate_param(paramnames::GAIN_DB);
+    relate_param(paramnames::LIMIT_DB);
+    relate_param(paramnames::RELEASE_SECS);
 }
 
 #endif // WITH_LADSPA

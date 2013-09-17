@@ -116,7 +116,6 @@ void pan::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(synthmodnames::PAN, paramnames::PAN);
-    jwm.get_paramlist()->add_param(synthmodnames::PAN,
-                                                paramnames::PAN_MODSIZE);
+    relate_param(paramnames::PAN);
+    relate_param(paramnames::PAN_MODSIZE);
 }

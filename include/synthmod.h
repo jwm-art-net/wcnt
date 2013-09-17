@@ -124,6 +124,8 @@ class synthmod
     void duplicate_inputs_to(synthmod*);
     void duplicate_params_to(synthmod*);
     bool done_params();
+    void relate_param(paramnames::PAR_TYPE);
+    void relate_param(paramnames::PAR_TYPE, const char* fixed_string);
 
     static std::string* err_msg;
 

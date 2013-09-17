@@ -173,14 +173,10 @@ void single_band_para::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(synthmodnames::SINGLE_BAND_PARA,
-                                    paramnames::GAIN_DB);
-    jwm.get_paramlist()->add_param(synthmodnames::SINGLE_BAND_PARA,
-                                    paramnames::GAIN_MODSIZE);
-    jwm.get_paramlist()->add_param(synthmodnames::SINGLE_BAND_PARA,
-                                    paramnames::BANDWIDTH);
-    jwm.get_paramlist()->add_param(synthmodnames::SINGLE_BAND_PARA,
-                                    paramnames::BANDWIDTH_MODSIZE);
+    relate_param(paramnames::GAIN_DB);
+    relate_param(paramnames::GAIN_MODSIZE);
+    relate_param(paramnames::BANDWIDTH);
+    relate_param(paramnames::BANDWIDTH_MODSIZE);
 }
 
 #endif // WITH_LADSPA

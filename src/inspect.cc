@@ -161,14 +161,9 @@ void inspect::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-        synthmodnames::INSPECT, paramnames::INSPECT_DF_MSG);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::INSPECT, paramnames::INSPECT_SI_MSG);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::INSPECT, paramnames::INSPECT_UL_MSG);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::INSPECT, paramnames::INSPECT_ST_MSG);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::INSPECT, paramnames::INSPECT_STR_MSG);
+    relate_param(paramnames::INSPECT_DF_MSG);
+    relate_param(paramnames::INSPECT_SI_MSG);
+    relate_param(paramnames::INSPECT_UL_MSG);
+    relate_param(paramnames::INSPECT_ST_MSG);
+    relate_param(paramnames::INSPECT_STR_MSG);
 }

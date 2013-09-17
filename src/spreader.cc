@@ -184,10 +184,8 @@ void spreader::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-        synthmodnames::SPREADER, paramnames::START_LEVEL);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::SPREADER, paramnames::END_LEVEL);
+    relate_param(paramnames::START_LEVEL);
+    relate_param(paramnames::END_LEVEL);
 }
 
 bool spreader::done_moddobj = false;

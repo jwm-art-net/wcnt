@@ -131,16 +131,10 @@ void freq_generator::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-     synthmodnames::FREQGEN, paramnames::STEP_COUNT);
-    jwm.get_paramlist()->add_param(
-     synthmodnames::FREQGEN, paramnames::SIG_RANGE_LO);
-    jwm.get_paramlist()->add_param(
-     synthmodnames::FREQGEN, paramnames::SIG_RANGE_HI);
-    jwm.get_paramlist()->add_param(
-     synthmodnames::FREQGEN, paramnames::FREQ_RANGE_LO);
-    jwm.get_paramlist()->add_param(
-     synthmodnames::FREQGEN, paramnames::FREQ_RANGE_HI);
-    
+    relate_param(paramnames::STEP_COUNT);
+    relate_param(paramnames::SIG_RANGE_LO);
+    relate_param(paramnames::SIG_RANGE_HI);
+    relate_param(paramnames::FREQ_RANGE_LO);
+    relate_param(paramnames::FREQ_RANGE_HI);
 }
 

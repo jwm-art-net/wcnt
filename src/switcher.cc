@@ -185,8 +185,7 @@ void switcher::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-     synthmodnames::SWITCHER, paramnames::XFADE_TIME);
+    relate_param(paramnames::XFADE_TIME);
 }
 
 bool switcher::done_moddobj = false;

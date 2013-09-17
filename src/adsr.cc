@@ -370,16 +370,14 @@ void adsr::create_params()
 {
     if (done_params())
         return;
-    modparamlist* mpl = jwm.get_paramlist();
-    mpl->add_param(synthmodnames::ADSR, paramnames::UP_THRESH);
-    mpl->add_param(synthmodnames::ADSR, paramnames::LO_THRESH);
-    mpl->add_param(synthmodnames::ADSR, paramnames::START_LEVEL);
-    mpl->add_param(synthmodnames::ADSR, paramnames::MIN_TIME);
-    mpl->add_param(synthmodnames::ADSR, paramnames::MAX_SUSTAIN_TIME);
-    mpl->add_param(synthmodnames::ADSR, paramnames::RELEASE_RATIO);
-    mpl->add_param(synthmodnames::ADSR, paramnames::SUSTAIN_STATUS);
-    mpl->add_param(synthmodnames::ADSR, paramnames::ZERO_RETRIGGER);
-    
+    relate_param(paramnames::UP_THRESH);
+    relate_param(paramnames::LO_THRESH);
+    relate_param(paramnames::START_LEVEL);
+    relate_param(paramnames::MIN_TIME);
+    relate_param(paramnames::MAX_SUSTAIN_TIME);
+    relate_param(paramnames::RELEASE_RATIO);
+    relate_param(paramnames::SUSTAIN_STATUS);
+    relate_param(paramnames::ZERO_RETRIGGER);
 }
 
 bool adsr::done_moddobj = false;

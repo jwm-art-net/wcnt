@@ -68,8 +68,7 @@ void constant_freq::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-        synthmodnames::CONSTANT_FREQ, paramnames::FREQ);
+    relate_param(paramnames::FREQ);
     
 }
 

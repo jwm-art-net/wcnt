@@ -175,17 +175,10 @@ void orbit::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(synthmodnames::ORBIT,
-                               paramnames::ORBIT_TYPE);
-    jwm.get_fxsparamlist()->add_param("hopalong/threeply/quadrup",
-                                  paramnames::ORBIT_TYPE);
-    jwm.get_paramlist()->add_param(synthmodnames::ORBIT,
-                               paramnames::A);
-    jwm.get_paramlist()->add_param(synthmodnames::ORBIT,
-                               paramnames::B);
-    jwm.get_paramlist()->add_param(synthmodnames::ORBIT,
-                               paramnames::C);
-    jwm.get_paramlist()->add_param(synthmodnames::ORBIT,
-                               paramnames::TEST_ITER);
+    relate_param(paramnames::ORBIT_TYPE, "hopalong/threeply/quadrup");
+    relate_param(paramnames::A);
+    relate_param(paramnames::B);
+    relate_param(paramnames::C);
+    relate_param(paramnames::TEST_ITER);
 }
 

@@ -143,11 +143,8 @@ void trigecho::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-        synthmodnames::TRIGECHO, paramnames::DELAY_TIME);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::TRIGECHO, paramnames::COUNT);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::TRIGECHO, paramnames::SEND_INPUT_OUT);
+    relate_param(paramnames::DELAY_TIME);
+    relate_param(paramnames::COUNT);
+    relate_param(paramnames::SEND_INPUT_OUT);
 }
 

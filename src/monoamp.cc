@@ -117,11 +117,8 @@ void mono_amp::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-        synthmodnames::MONOAMP, paramnames::LEVEL);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::MONOAMP, paramnames::AMP_MODSIZE);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::MONOAMP, paramnames::CLIP_LEVEL);
+    relate_param(paramnames::LEVEL);
+    relate_param(paramnames::AMP_MODSIZE);
+    relate_param(paramnames::CLIP_LEVEL);
 }
 

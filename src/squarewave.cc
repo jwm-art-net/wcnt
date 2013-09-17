@@ -185,13 +185,9 @@ void square_wave::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-        synthmodnames::SQUAREWAVE, paramnames::RATE);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::SQUAREWAVE, paramnames::PULSE_WIDTH);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::SQUAREWAVE, paramnames::PWM_SIZE);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::SQUAREWAVE, paramnames::RECYCLE_MODE);
+    relate_param(paramnames::RATE);
+    relate_param(paramnames::PULSE_WIDTH);
+    relate_param(paramnames::PWM_SIZE);
+    relate_param(paramnames::RECYCLE_MODE);
 }
 

@@ -173,14 +173,10 @@ void caps_plate::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(synthmodnames::CAPS_PLATE,
-                               paramnames::BANDWIDTH);
-    jwm.get_paramlist()->add_param(synthmodnames::CAPS_PLATE,
-                               paramnames::TAIL);
-    jwm.get_paramlist()->add_param(synthmodnames::CAPS_PLATE,
-                               paramnames::DAMPING);
-    jwm.get_paramlist()->add_param(synthmodnames::CAPS_PLATE,
-                               paramnames::WETDRY);
+    relate_param(paramnames::BANDWIDTH);
+    relate_param(paramnames::TAIL);
+    relate_param(paramnames::DAMPING);
+    relate_param(paramnames::WETDRY);
 }
 
 #endif // WITH_LADSPA

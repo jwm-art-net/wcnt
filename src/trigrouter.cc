@@ -153,9 +153,7 @@ void trigrouter::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-        synthmodnames::TRIGROUTER, paramnames::COUNT);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::TRIGROUTER, paramnames::WRAP);
+    relate_param(paramnames::COUNT);
+    relate_param(paramnames::WRAP);
 }
 

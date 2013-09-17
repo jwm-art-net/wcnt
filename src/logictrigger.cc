@@ -182,11 +182,6 @@ void logictrigger::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(synthmodnames::LOGICTRIGGER,
-        paramnames::LOGICFUNC);
-    jwm.get_fxsparamlist()->add_param("and/or/xor/xornot",
-        paramnames::LOGICFUNC);
-    jwm.get_paramlist()->add_param(synthmodnames::LOGICTRIGGER,
-        paramnames::PRECISION);
-    
+    relate_param(paramnames::LOGICFUNC, "and/or/xor/xornot");
+    relate_param(paramnames::PRECISION);
 }

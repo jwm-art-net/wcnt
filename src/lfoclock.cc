@@ -170,11 +170,8 @@ void lfo_clock::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-     synthmodnames::LFOCLOCK, paramnames::FREQ);
-    jwm.get_paramlist()->add_param(
-     synthmodnames::LFOCLOCK, paramnames::FREQ_MOD1SIZE);
-    jwm.get_paramlist()->add_param(
-     synthmodnames::LFOCLOCK, paramnames::FREQ_MOD2SIZE);
+    relate_param(paramnames::FREQ);
+    relate_param(paramnames::FREQ_MOD1SIZE);
+    relate_param(paramnames::FREQ_MOD2SIZE);
 }
 

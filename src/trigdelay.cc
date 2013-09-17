@@ -100,7 +100,6 @@ void trigdelay::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-        synthmodnames::TRIGDELAY, paramnames::DELAY_TIME);
+    relate_param(paramnames::DELAY_TIME);
 }
 

@@ -130,15 +130,10 @@ void peak_detector::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-        synthmodnames::PEAKDETECTOR, paramnames::SIG_RANGE_HI);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::PEAKDETECTOR, paramnames::SIG_RANGE_LO);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::PEAKDETECTOR, paramnames::MSG);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::PEAKDETECTOR, paramnames::FORCE_ABORT);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::PEAKDETECTOR, paramnames::MAXPEAKS);
+    relate_param(paramnames::SIG_RANGE_HI);
+    relate_param(paramnames::SIG_RANGE_LO);
+    relate_param(paramnames::MSG);
+    relate_param(paramnames::FORCE_ABORT);
+    relate_param(paramnames::MAXPEAKS);
 }
 
