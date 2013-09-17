@@ -124,17 +124,10 @@ void modifier::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->
-        add_param(synthmodnames::MODIFIER, paramnames::FUNC);
-    jwm.get_fxsparamlist()->
-        add_param("add/sub/mul", paramnames::FUNC);
-    jwm.get_paramlist()->
-        add_param(synthmodnames::MODIFIER, paramnames::MODIFIER_TYPE);
-    jwm.get_fxsparamlist()->
-        add_param("m1/m2", paramnames::MODIFIER_TYPE);
+    relate_param(paramnames::FUNC, "add/sub/mul");
+    relate_param(paramnames::MODIFIER_TYPE, "m1/m2");
 /*
-    jwm.get_paramlist()->
-        add_param(synthmodnames::MODIFIER, paramnames::BIAS);
+    relate_param(paramnames::BIAS);
 */
 }
 

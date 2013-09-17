@@ -200,11 +200,10 @@ void sync_clock::create_params()
 {
     if (done_params())
         return;
-    modparamlist* pl = jwm.get_paramlist();
-    pl->add_param(synthmodnames::SYNCCLOCK, paramnames::FREQ_MOD1SIZE);
-    pl->add_param(synthmodnames::SYNCCLOCK, paramnames::FREQ_MOD2SIZE);
-    pl->add_param(synthmodnames::SYNCCLOCK, paramnames::QUARTER_VAL);
-    pl->add_param(synthmodnames::SYNCCLOCK, paramnames::NOTE_LEN);
-    pl->add_param(synthmodnames::SYNCCLOCK, paramnames::SNAP_TO);
+    relate_param(paramnames::FREQ_MOD1SIZE);
+    relate_param(paramnames::FREQ_MOD2SIZE);
+    relate_param(paramnames::QUARTER_VAL);
+    relate_param(paramnames::NOTE_LEN);
+    relate_param(paramnames::SNAP_TO);
 }
 
