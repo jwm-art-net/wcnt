@@ -298,29 +298,17 @@ void notetran::create_params()
     if (done_params())
         return;
     // inserted in order to be defined by user
-    jwm.get_paramlist()->add_param(
-        synthmodnames::NOTETRAN, paramnames::NO_LONOTE);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::NOTETRAN, paramnames::NO_HINOTE);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::NOTETRAN, paramnames::MINNO_OUT);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::NOTETRAN, paramnames::MAXNO_OUT);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::NOTETRAN, paramnames::DETRAN_NO);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::NOTETRAN, paramnames::NO_RESPTIME);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::NOTETRAN, paramnames::NS_LONOTE);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::NOTETRAN, paramnames::NS_HINOTE);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::NOTETRAN, paramnames::MINNS_OUT);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::NOTETRAN, paramnames::MAXNS_OUT);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::NOTETRAN, paramnames::DETRAN_NS);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::NOTETRAN, paramnames::NS_RESPTIME);
+    relate_param(paramnames::NO_LONOTE);
+    relate_param(paramnames::NO_HINOTE);
+    relate_param(paramnames::MINNO_OUT);
+    relate_param(paramnames::MAXNO_OUT);
+    relate_param(paramnames::DETRAN_NO);
+    relate_param(paramnames::NO_RESPTIME);
+    relate_param(paramnames::NS_LONOTE);
+    relate_param(paramnames::NS_HINOTE);
+    relate_param(paramnames::MINNS_OUT);
+    relate_param(paramnames::MAXNS_OUT);
+    relate_param(paramnames::DETRAN_NS);
+    relate_param(paramnames::NS_RESPTIME);
 }
 

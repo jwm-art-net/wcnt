@@ -72,7 +72,6 @@ void wcnt_signal::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-        synthmodnames::WCNTSIGNAL, paramnames::LEVEL);
+    relate_param(paramnames::LEVEL);
 }
 

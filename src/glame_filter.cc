@@ -4,7 +4,6 @@
 #include "../include/modoutputlist.h"
 #include "../include/modinputlist.h"
 #include "../include/modparamlist.h"
-#include "../include/fxsparamlist.h"
 
 glame_filter::glame_filter(char const* uname) :
  synthmod(synthmodnames::GLAME_FILTER, uname, SM_HAS_OUT_OUTPUT),
@@ -178,17 +177,10 @@ void glame_filter::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(synthmodnames::GLAME_FILTER,
-                               paramnames::GLAME_FILTER_TYPE);
-    jwm.get_fxsparamlist()->add_param("lowpass/highpass",
-                                  paramnames::GLAME_FILTER_TYPE);
-    jwm.get_paramlist()->add_param(synthmodnames::GLAME_FILTER,
-                               paramnames::FREQ);
-    jwm.get_paramlist()->add_param(synthmodnames::GLAME_FILTER,
-                               paramnames::FREQ_MOD1SIZE);
-    jwm.get_paramlist()->add_param(synthmodnames::GLAME_FILTER,
-                               paramnames::STAGES);
-    
+    relate_param(paramnames::GLAME_FILTER_TYPE, "lowpass/highpass");
+    relate_param(paramnames::FREQ);
+    relate_param(paramnames::FREQ_MOD1SIZE);
+    relate_param(paramnames::STAGES);
 }
 
 #endif // WITH_LADSPA

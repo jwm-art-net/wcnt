@@ -1198,28 +1198,19 @@ void sampler::create_params()
 {
     if (done_params())
         return;
-    modparamlist* pl = jwm.get_paramlist();
-    pl->add_param(synthmodnames::SAMPLER, paramnames::WAVFILEIN);
-    pl->add_param(synthmodnames::SAMPLER, paramnames::PLAY_DIR);
-    jwm.get_fxsparamlist()->add_param("fwd/rev",
-                                      paramnames::PLAY_DIR);
-    pl->add_param(synthmodnames::SAMPLER, paramnames::PLAY_MODE);
-    jwm.get_fxsparamlist()->add_param("stop/wrap/bounce/jump",
-                                      paramnames::PLAY_MODE);
-    pl->add_param(synthmodnames::SAMPLER, paramnames::JUMP_MODE);
-    jwm.get_fxsparamlist()->add_param("play/loop",
-                                      paramnames::JUMP_MODE);
-    pl->add_param(synthmodnames::SAMPLER, paramnames::START_POS_MIN);
-    pl->add_param(synthmodnames::SAMPLER, paramnames::START_POS_MAX);
-    pl->add_param(synthmodnames::SAMPLER, paramnames::LOOP_MODE);
-    jwm.get_fxsparamlist()->add_param("off/fwd/rev/bi",
-                                      paramnames::LOOP_MODE);
-    pl->add_param(synthmodnames::SAMPLER, paramnames::LOOP_BEGIN);
-    pl->add_param(synthmodnames::SAMPLER, paramnames::LOOP_END);
-    pl->add_param(synthmodnames::SAMPLER, paramnames::LOOP_IS_OFFSET);
-    pl->add_param(synthmodnames::SAMPLER, paramnames::LOOP_BI_OFFSET);
-    pl->add_param(synthmodnames::SAMPLER, paramnames::ANTI_CLIP);
-    pl->add_param(synthmodnames::SAMPLER, paramnames::AC_EACH_END);
-    pl->add_param(synthmodnames::SAMPLER, paramnames::ZERO_SEARCH_RANGE);
-    pl->add_param(synthmodnames::SAMPLER, paramnames::PHASE_STEP_AMOUNT);
+    relate_param(paramnames::WAVFILEIN);
+    relate_param(paramnames::PLAY_DIR,     "fwd/rev");
+    relate_param(paramnames::PLAY_MODE,    "stop/wrap/bounce/jump");
+    relate_param(paramnames::JUMP_MODE,    "play/loop");
+    relate_param(paramnames::START_POS_MIN);
+    relate_param(paramnames::START_POS_MAX);
+    relate_param(paramnames::LOOP_MODE,    "off/fwd/rev/bi");
+    relate_param(paramnames::LOOP_BEGIN);
+    relate_param(paramnames::LOOP_END);
+    relate_param(paramnames::LOOP_IS_OFFSET);
+    relate_param(paramnames::LOOP_BI_OFFSET);
+    relate_param(paramnames::ANTI_CLIP);
+    relate_param(paramnames::AC_EACH_END);
+    relate_param(paramnames::ZERO_SEARCH_RANGE);
+    relate_param(paramnames::PHASE_STEP_AMOUNT);
 }

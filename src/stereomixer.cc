@@ -142,8 +142,7 @@ void stereomixer::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-     synthmodnames::STEREOMIXER, paramnames::MASTER_LEVEL);
+    relate_param(paramnames::MASTER_LEVEL);
 }
 
 bool stereomixer::done_moddobj = false;

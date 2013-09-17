@@ -151,14 +151,9 @@ void contraster::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-     synthmodnames::CONTRASTER, paramnames::POWER_MIN);
-    jwm.get_paramlist()->add_param(
-     synthmodnames::CONTRASTER, paramnames::POWER_MAX);
-    jwm.get_paramlist()->add_param(
-     synthmodnames::CONTRASTER, paramnames::RUDE_MODE);
-    jwm.get_paramlist()->add_param(
-     synthmodnames::CONTRASTER, paramnames::WETDRY);
-    
+    relate_param(paramnames::POWER_MIN);
+    relate_param(paramnames::POWER_MAX);
+    relate_param(paramnames::RUDE_MODE);
+    relate_param(paramnames::WETDRY);
 }
 

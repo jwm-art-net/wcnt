@@ -186,13 +186,9 @@ void triangle_wave2::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-        synthmodnames::TRIWAVE2, paramnames::NORM_FREQ);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::TRIWAVE2, paramnames::NORM_MODSIZE);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::TRIWAVE2, paramnames::RECYCLE_MODE);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::TRIWAVE2, paramnames::ZERO_RETRIGGER);
+    relate_param(paramnames::NORM_FREQ);
+    relate_param(paramnames::NORM_MODSIZE);
+    relate_param(paramnames::RECYCLE_MODE);
+    relate_param(paramnames::ZERO_RETRIGGER);
 }
 

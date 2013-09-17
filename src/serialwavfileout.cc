@@ -272,21 +272,12 @@ void serialwavfileout::write_wav_chunk(
     }
 }
 
-
-
 void serialwavfileout::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-        synthmodnames::SERIALWAVFILEOUT, paramnames::DATA_FMT);
-    jwm.get_fxsparamlist()->add_param(
-        "pcm16/pcm24/pcm32/float32/float64", paramnames::DATA_FMT);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::SERIALWAVFILEOUT, paramnames::WAV_BASENAME);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::SERIALWAVFILEOUT, paramnames::START_BAR);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::SERIALWAVFILEOUT, paramnames::END_BAR);
+    relate_param(paramnames::DATA_FMT, "pcm16/pcm24/pcm32/float32/float64");     relate_param(paramnames::WAV_BASENAME);
+    relate_param(paramnames::START_BAR);
+    relate_param(paramnames::END_BAR);
 }
 

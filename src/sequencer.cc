@@ -465,10 +465,8 @@ void sequencer::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-        synthmodnames::SEQUENCER, paramnames::START_BAR);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::SEQUENCER, paramnames::VELOCITY_RESPONSE);
+    relate_param(paramnames::START_BAR);
+    relate_param(paramnames::VELOCITY_RESPONSE);
 }
 
 bool sequencer::done_moddobj = false;

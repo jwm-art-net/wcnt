@@ -284,12 +284,9 @@ void user_wave::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-        synthmodnames::USERWAVE, paramnames::RECYCLE_MODE);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::USERWAVE, paramnames::ZERO_RETRIGGER);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::USERWAVE, paramnames::DROP_CHECK_RANGE);
+    relate_param(paramnames::RECYCLE_MODE);
+    relate_param(paramnames::ZERO_RETRIGGER);
+    relate_param(paramnames::DROP_CHECK_RANGE);
 }
 
 void user_wave::create_dobj()

@@ -148,10 +148,8 @@ void bode_freq_shifter::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(synthmodnames::BODE_FREQ_SHIFTER,
-                               paramnames::FREQ_SHIFT);
-    jwm.get_paramlist()->add_param(synthmodnames::BODE_FREQ_SHIFTER,
-                               paramnames::SHIFT_MODSIZE);
+    relate_param(paramnames::FREQ_SHIFT);
+    relate_param(paramnames::SHIFT_MODSIZE);
 }
 
 #endif // WITH_LADSPA

@@ -197,14 +197,9 @@ void onofftrig::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-        synthmodnames::ONOFFTRIG, paramnames::ATTACK_TIME);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::ONOFFTRIG, paramnames::ATTACK_LEVEL);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::ONOFFTRIG, paramnames::RELEASE_TIME);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::ONOFFTRIG, paramnames::RELEASE_LEVEL);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::ONOFFTRIG, paramnames::CHECK_LEVELS);
+    relate_param(paramnames::ATTACK_TIME);
+    relate_param(paramnames::ATTACK_LEVEL);
+    relate_param(paramnames::RELEASE_TIME);
+    relate_param(paramnames::RELEASE_LEVEL);
+    relate_param(paramnames::CHECK_LEVELS);
 }

@@ -100,11 +100,7 @@ void balance::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-        synthmodnames::BALANCE, paramnames::FUNC);
-    jwm.get_fxsparamlist()->add_param("add/sub/mul",
-        paramnames::FUNC);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::BALANCE, paramnames::BIAS);
+    relate_param(paramnames::FUNC, "add/sub/mul");
+    relate_param(paramnames::BIAS);
 }
 

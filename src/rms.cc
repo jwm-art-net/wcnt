@@ -109,7 +109,6 @@ void rms::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(synthmodnames::RMS,
-        paramnames::RMS_TIME);
+    relate_param(paramnames::RMS_TIME);
 }
 

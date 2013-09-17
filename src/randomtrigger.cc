@@ -120,9 +120,7 @@ void randomtrigger::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-        synthmodnames::RANDTRIGGER, paramnames::PROBABILITY);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::RANDTRIGGER, paramnames::NOTPROBABILITY);
+    relate_param(paramnames::PROBABILITY);
+    relate_param(paramnames::NOTPROBABILITY);
 }
 

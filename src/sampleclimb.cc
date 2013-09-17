@@ -92,7 +92,5 @@ void sample_climb::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-        synthmodnames::SAMPLECLIMB, paramnames::RATE);
-    
+    relate_param(paramnames::RATE);
 }

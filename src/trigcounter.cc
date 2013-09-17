@@ -165,11 +165,8 @@ void trigcounter::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-        synthmodnames::TRIGCOUNTER, paramnames::PRE_COUNT);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::TRIGCOUNTER, paramnames::COUNT);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::TRIGCOUNTER, paramnames::WRAP);
+    relate_param(paramnames::PRE_COUNT);
+    relate_param(paramnames::COUNT);
+    relate_param(paramnames::WRAP);
 }
 

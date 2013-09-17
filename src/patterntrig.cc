@@ -152,8 +152,6 @@ void patterntrig::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-        synthmodnames::PATTERNTRIG, paramnames::TRIG_STRING);
-    
+    relate_param(paramnames::TRIG_STRING);
 }
 

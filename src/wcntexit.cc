@@ -104,7 +104,6 @@ void wcnt_exit::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-        synthmodnames::WCNTEXIT, paramnames::EXIT_BAR);
+    relate_param(paramnames::EXIT_BAR);
 }
 

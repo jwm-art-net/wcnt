@@ -6,6 +6,7 @@
 #include "../include/modoutputlist.h"
 #include "../include/modparamlist.h"
 #include "../include/groupnames.h"
+#include "../include/fxsparamlist.h"
 
 #include <iostream>
 
@@ -140,6 +141,17 @@ bool synthmod::done_params()
     bool r = params_done[module_type];
     params_done[module_type] = true;
     return r;
+}
+
+void synthmod::relate_param(paramnames::PAR_TYPE pt)
+{
+    jwm.get_paramlist()->add_param(module_type, pt);
+}
+
+void synthmod::relate_param(paramnames::PAR_TYPE pt, const char* fixstr)
+{
+    jwm.get_paramlist()->add_param(module_type, pt);
+    jwm.get_fxsparamlist()->add_param(fixstr, pt);
 }
 
 #ifdef IO_DEBUG

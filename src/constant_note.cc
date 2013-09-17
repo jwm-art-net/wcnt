@@ -78,7 +78,6 @@ void constant_note::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-        synthmodnames::CONSTANT_NOTE, paramnames::NAME);
+    relate_param(paramnames::NAME);
 }
 

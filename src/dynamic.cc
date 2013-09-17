@@ -239,15 +239,10 @@ void dynamic::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-     synthmodnames::DYNAMIC, paramnames::UP_THRESH);
-    jwm.get_paramlist()->add_param(
-     synthmodnames::DYNAMIC, paramnames::LO_THRESH);
-    jwm.get_paramlist()->add_param(
-     synthmodnames::DYNAMIC, paramnames::POSNEG_MIRROR);
-    jwm.get_paramlist()->add_param(
-     synthmodnames::DYNAMIC, paramnames::USE_RATIOS);
-    
+    relate_param(paramnames::UP_THRESH);
+    relate_param(paramnames::LO_THRESH);
+    relate_param(paramnames::POSNEG_MIRROR);
+    relate_param(paramnames::USE_RATIOS);
 }
 
 void dynamic::create_dobj()

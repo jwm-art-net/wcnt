@@ -190,7 +190,6 @@ void group_control::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-        synthmodnames::GROUPCONTROL, paramnames::GROUP_NAME);
+    relate_param(paramnames::GROUP_NAME);
 }
 

@@ -92,9 +92,7 @@ void range_limit::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-        synthmodnames::RANGELIMIT, paramnames::SIG_RANGE_HI);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::RANGELIMIT, paramnames::SIG_RANGE_LO);
+    relate_param(paramnames::SIG_RANGE_HI);
+    relate_param(paramnames::SIG_RANGE_LO);
 }
 

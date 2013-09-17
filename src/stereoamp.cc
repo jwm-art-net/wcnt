@@ -134,13 +134,9 @@ void stereo_amp::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-        synthmodnames::STEREOAMP, paramnames::LEFT_LEVEL);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::STEREOAMP, paramnames::RIGHT_LEVEL);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::STEREOAMP, paramnames::AMP_MODSIZE);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::STEREOAMP, paramnames::CLIP_LEVEL);
+    relate_param(paramnames::LEFT_LEVEL);
+    relate_param(paramnames::RIGHT_LEVEL);
+    relate_param(paramnames::AMP_MODSIZE);
+    relate_param(paramnames::CLIP_LEVEL);
 }
 

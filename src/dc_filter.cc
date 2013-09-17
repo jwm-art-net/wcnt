@@ -105,7 +105,6 @@ void dc_filter::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-     synthmodnames::DCFILTER, paramnames::DC_TIME);
+    relate_param(paramnames::DC_TIME);
 }
 

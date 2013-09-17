@@ -182,17 +182,11 @@ void echo::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-     synthmodnames::ECHO, paramnames::DELAY_TIME);
-    jwm.get_paramlist()->add_param(
-     synthmodnames::ECHO, paramnames::GAIN);
-    jwm.get_paramlist()->add_param(
-     synthmodnames::ECHO, paramnames::GAIN_MODSIZE);
-    jwm.get_paramlist()->add_param(
-     synthmodnames::ECHO, paramnames::FEED_LEVEL);
-    jwm.get_paramlist()->add_param(
-     synthmodnames::ECHO, paramnames::FEED_MODSIZE);
-    jwm.get_paramlist()->add_param(
-     synthmodnames::ECHO, paramnames::WETDRY);
+    relate_param(paramnames::DELAY_TIME);
+    relate_param(paramnames::GAIN);
+    relate_param(paramnames::GAIN_MODSIZE);
+    relate_param(paramnames::FEED_LEVEL);
+    relate_param(paramnames::FEED_MODSIZE);
+    relate_param(paramnames::WETDRY);
 }
 

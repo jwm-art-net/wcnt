@@ -259,17 +259,11 @@ void osc_clock::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->add_param(
-        synthmodnames::OSCCLOCK, paramnames::OCTAVE);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::OSCCLOCK, paramnames::TUNING_SEMITONES);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::OSCCLOCK, paramnames::PORTAMENTO);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::OSCCLOCK, paramnames::RESPONSE_TIME);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::OSCCLOCK, paramnames::FREQ_MOD1SIZE);
-    jwm.get_paramlist()->add_param(
-        synthmodnames::OSCCLOCK, paramnames::FREQ_MOD2SIZE);
+    relate_param(paramnames::OCTAVE);
+    relate_param(paramnames::TUNING_SEMITONES);
+    relate_param(paramnames::PORTAMENTO);
+    relate_param(paramnames::RESPONSE_TIME);
+    relate_param(paramnames::FREQ_MOD1SIZE);
+    relate_param(paramnames::FREQ_MOD2SIZE);
 }
 
