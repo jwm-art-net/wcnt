@@ -114,13 +114,9 @@ void adsr_scaler::create_params()
 {
     if (done_params())
         return;
-    jwm.get_dparlist()->add_dobjparam(dobjnames::DEF_ADSR_SCALER,
-                                    paramnames::ADSR_NAME);
-    jwm.get_dparlist()->add_dobjparam(dobjnames::DEF_ADSR_SCALER,
-                                    paramnames::ATTACK_SCALE);
-    jwm.get_dparlist()->add_dobjparam(dobjnames::DEF_ADSR_SCALER,
-                                    paramnames::DECAY_SCALE);
-    jwm.get_dparlist()->add_dobjparam(dobjnames::DEF_ADSR_SCALER,
-                                    paramnames::RELEASE_SCALE);
+    relate_param(paramnames::ADSR_NAME);
+    relate_param(paramnames::ATTACK_SCALE);
+    relate_param(paramnames::DECAY_SCALE);
+    relate_param(paramnames::RELEASE_SCALE);
 }
 

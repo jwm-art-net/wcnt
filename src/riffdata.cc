@@ -382,8 +382,7 @@ void riffdata::create_params()
 {
     if (done_params())
         return;
-    jwm.get_dparlist()->add_dobjparam(
-        dobjnames::DEF_RIFF, paramnames::QUARTER_VAL);
+    relate_param(paramnames::QUARTER_VAL);
     jwm.get_topdobjlist()->create_dobjdobjlist(
         dobjnames::DEF_RIFF, dobjnames::LST_NOTES)->
             add_dobjdobj(dobjnames::LST_NOTES,

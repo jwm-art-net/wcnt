@@ -180,10 +180,8 @@ void inputedit::create_params()
 {
     if (done_params())
         return;
-    jwm.get_dparlist()->add_dobjparam(
-        dobjnames::SIN_EDIT_INPUT, paramnames::STR_UNNAMED);
-    jwm.get_dparlist()->add_dobjparam(
-        dobjnames::SIN_EDIT_INPUT, paramnames::STR_LIST);
+    relate_param(paramnames::STR_UNNAMED);
+    relate_param(paramnames::STR_LIST);
 }
 
 

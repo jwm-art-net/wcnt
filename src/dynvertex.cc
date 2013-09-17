@@ -55,12 +55,9 @@ void dynvertex::create_params()
 {
     if (done_params())
         return;
-    jwm.get_dparlist()->add_dobjparam(
-        dobjnames::SIN_DVERTEX, paramnames::SIGIN_LEVEL);
-    jwm.get_dparlist()->add_dobjparam(
-        dobjnames::SIN_DVERTEX, paramnames::SIGOUT_UPLEVEL);
-    jwm.get_dparlist()->add_dobjparam(
-        dobjnames::SIN_DVERTEX, paramnames::SIGOUT_LOLEVEL);
+    relate_param(paramnames::SIGIN_LEVEL);
+    relate_param(paramnames::SIGOUT_UPLEVEL);
+    relate_param(paramnames::SIGOUT_LOLEVEL);
 }
 
 

@@ -150,10 +150,8 @@ void copier::create_params()
 {
     if (done_params())
         return;
-    jwm.get_dparlist()->add_dobjparam(
-        dobjnames::DEF_COPIER, paramnames::COPYFROM);
-    jwm.get_dparlist()->add_dobjparam(
-        dobjnames::DEF_COPIER, paramnames::COPYTO);
+    relate_param(paramnames::COPYFROM);
+    relate_param(paramnames::COPYTO);
 }
 
 

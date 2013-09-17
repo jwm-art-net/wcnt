@@ -1245,14 +1245,9 @@ void synthfilereader::create_params()
 {
     if (done_params())
         return;
-    dobjparamlist* dl = jwm.get_dparlist();
-    dl->add_dobjparam(dobjnames::DEF_WCFILE, paramnames::FILENAME);
-    dl->add_dobjparam(dobjnames::DEF_WCFILE, paramnames::MOD_ACTION);
-    jwm.get_fxsparamlist()->add_param("include/exclude",
-                                      paramnames::MOD_ACTION);
-    dl->add_dobjparam(dobjnames::DEF_WCFILE, paramnames::DOBJ_ACTION);
-    jwm.get_fxsparamlist()->add_param("include/exclude",
-                                      paramnames::DOBJ_ACTION);
+    relate_param(paramnames::FILENAME);
+    relate_param(paramnames::MOD_ACTION, "include/exclude");
+    relate_param(paramnames::DOBJ_ACTION, "include/exclude");
     jwm.get_topdobjlist()->create_dobjdobjlist(
         dobjnames::DEF_WCFILE, dobjnames::LST_MODULES)->
             add_dobjdobj(dobjnames::LST_MODULES,

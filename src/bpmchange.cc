@@ -63,9 +63,7 @@ void bpmchange::create_params()
 {
     if (done_params())
         return;
-    jwm.get_dparlist()->add_dobjparam(
-        dobjnames::SIN_BPM, paramnames::BPM);
-    jwm.get_dparlist()->add_dobjparam(
-        dobjnames::SIN_BPM, paramnames::BAR);
+    relate_param(paramnames::BPM);
+    relate_param(paramnames::BAR);
 }
 

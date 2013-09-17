@@ -73,9 +73,7 @@ void meterchange::create_params()
 {
     if (done_params())
         return;
-    jwm.get_dparlist()->add_dobjparam(
-        dobjnames::SIN_METER, paramnames::METER);
-    jwm.get_dparlist()->add_dobjparam(
-        dobjnames::SIN_METER, paramnames::BAR);
+    relate_param(paramnames::METER);
+    relate_param(paramnames::BAR);
 }
 

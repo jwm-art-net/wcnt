@@ -47,6 +47,8 @@ protected:
     static std::string* err_msg;
     virtual void create_params() = 0;
     void invalidate(){ valid = false;}
+    void relate_param(paramnames::PAR_TYPE);
+    void relate_param(paramnames::PAR_TYPE, const char* fixed_string);
     bool done_params();
 
 private:

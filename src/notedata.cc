@@ -246,14 +246,10 @@ void note_data::create_params()
 {
     if (done_params())
         return;
-    jwm.get_dparlist()->add_dobjparam(
-        dobjnames::SIN_NOTE, paramnames::NAME);
-    jwm.get_dparlist()->add_dobjparam(
-        dobjnames::SIN_NOTE, paramnames::NOTE_POS);
-    jwm.get_dparlist()->add_dobjparam(
-        dobjnames::SIN_NOTE, paramnames::NOTE_LEN);
-    jwm.get_dparlist()->add_dobjparam(
-        dobjnames::SIN_NOTE, paramnames::NOTE_VEL);
+    relate_param(paramnames::NAME);
+    relate_param(paramnames::NOTE_POS);
+    relate_param(paramnames::NOTE_LEN);
+    relate_param(paramnames::NOTE_VEL);
 }
 
 #ifdef NOTE_STATS

@@ -74,8 +74,7 @@ void riff_editor::create_params()
 {
     if (done_params())
         return;
-    jwm.get_dparlist()->add_dobjparam(
-        dobjnames::DEF_RIFFEDITOR, paramnames::RIFFNAME);
+    relate_param(paramnames::RIFFNAME);
     jwm.get_topdobjlist()->create_dobjdobjlist(
         dobjnames::DEF_RIFFEDITOR, dobjnames::LST_NOTES)->
             add_dobjdobj(dobjnames::LST_NOTES, dobjnames::SIN_NOTE);
