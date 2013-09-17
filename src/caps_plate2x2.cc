@@ -13,10 +13,10 @@ caps_plate2x2::caps_plate2x2(char const* uname) :
  l_in_left(0), l_in_right(0), l_bandwidth(0), l_tail(0), l_damping(0),
  l_blend(0), l_out_left(0), l_out_right(0)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_LEFT);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_RIGHT);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_LEFT);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_RIGHT);
+    add_output(outputnames::OUT_LEFT);
+    add_output(outputnames::OUT_RIGHT);
+    add_input(inputnames::IN_LEFT);
+    add_input(inputnames::IN_RIGHT);
     create_params();
 }
 

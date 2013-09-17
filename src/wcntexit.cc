@@ -15,7 +15,7 @@ wcnt_exit::wcnt_exit(char const* uname) :
 
  in_bar(0), exit_bar(0)
 {
-    jwm.get_inputlist()->add_input(this, inputnames::IN_BAR);
+    add_input(inputnames::IN_BAR);
     create_params();
 }
 

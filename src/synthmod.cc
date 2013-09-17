@@ -182,6 +182,16 @@ void synthmod::relate_param(paramnames::PAR_TYPE pt, const char* fixstr)
     jwm.get_fxsparamlist()->add_param(fixstr, pt);
 }
 
+void synthmod::add_input(inputnames::IN_TYPE t)
+{
+    jwm.get_inputlist()->add_input(this, t);
+}
+
+void synthmod::add_output(outputnames::OUT_TYPE t)
+{
+    jwm.get_outputlist()->add_output(this, t);
+}
+
 #ifdef IO_DEBUG
 bool synthmod::check_inputs()
 {

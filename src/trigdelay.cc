@@ -14,8 +14,8 @@ trigdelay::trigdelay(char const* uname) :
  in_trig(0), out_trig(OFF), delay_time(0.0),
  past_trigs(0), pastmax(0), pastpos(0)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_TRIG);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_TRIG);
+    add_output(outputnames::OUT_TRIG);
+    add_input(inputnames::IN_TRIG);
     create_params();
 }
 

@@ -13,10 +13,10 @@ bode_freq_shifter::bode_freq_shifter(char const* uname) :
  l_freq_shift(0.0), l_input(0), l_out_down(0), l_out_up(0),
  l_out_latency(0)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_UP);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_DOWN);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_SHIFT_MOD);
+    add_output(outputnames::OUT_UP);
+    add_output(outputnames::OUT_DOWN);
+    add_input(inputnames::IN_SIGNAL);
+    add_input(inputnames::IN_SHIFT_MOD);
     create_params();
 }
 

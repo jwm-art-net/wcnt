@@ -7,7 +7,7 @@ noise_generator::noise_generator(char const* uname) :
  output(0.00)
 {
     srandom(time(0));
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
+    add_output(outputnames::OUT_OUTPUT);
 }
 
 noise_generator::~noise_generator()

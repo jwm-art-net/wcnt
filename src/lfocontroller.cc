@@ -13,11 +13,11 @@ lfo_controller::lfo_controller(char const* uname) :
  ramp_samples(0), resp_size(0), resp_fa_level(0), resp_ac(0),
  level_size(0), current_level(0)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_PRE_AMP_MOD);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_TRIG);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_WAVE);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_AMP_MOD);
+    add_output(outputnames::OUT_OUTPUT);
+    add_output(outputnames::OUT_PRE_AMP_MOD);
+    add_input(inputnames::IN_TRIG);
+    add_input(inputnames::IN_WAVE);
+    add_input(inputnames::IN_AMP_MOD);
     create_params();
 }
 

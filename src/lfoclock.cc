@@ -14,13 +14,12 @@ lfo_clock::lfo_clock(char const* uname) :
  degsize1(0.00), degsize2(0.00)
 {
 // degs initialised at 360 so immediately triggers if in_phase_trig is off
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_PHASE_TRIG);
-    jwm.get_outputlist()->add_output(this,
-        outputnames::OUT_PREMOD_PHASE_STEP);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_PHASE_STEP);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_PHASE_TRIG);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_FREQ_MOD1);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_FREQ_MOD2);
+    add_output(outputnames::OUT_PHASE_TRIG);
+    add_output(outputnames::OUT_PREMOD_PHASE_STEP);
+    add_output(outputnames::OUT_PHASE_STEP);
+    add_input(inputnames::IN_PHASE_TRIG);
+    add_input(inputnames::IN_FREQ_MOD1);
+    add_input(inputnames::IN_FREQ_MOD2);
     create_params();
 }
 

@@ -12,11 +12,10 @@ glame_butterworth::glame_butterworth(char const* uname) :
  resonance(0), res_mod_size(0), l_descriptor(0), l_inst_handle(0),
  l_input(0), l_output(0), l_cut_off(0), l_resonance(0)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
-    jwm.get_inputlist()->add_input(this,
-                                        inputnames::IN_CUTOFF_PHASE_STEP);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_RES_MOD);
+    add_output(outputnames::OUT_OUTPUT);
+    add_input(inputnames::IN_SIGNAL);
+    add_input(inputnames::IN_CUTOFF_PHASE_STEP);
+    add_input(inputnames::IN_RES_MOD);
     create_params();
     type_names[0] = "buttlow_iir";
     type_names[1] = "butthigh_iir";

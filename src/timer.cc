@@ -17,8 +17,8 @@ timer::timer(char const* uname) :
  timings(0), time_ix(0),
  samples(0)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_TRIG);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_COUNT);
+    add_output(outputnames::OUT_TRIG);
+    add_output(outputnames::OUT_COUNT);
     create_moddobj();
 }
 #include <iostream>

@@ -14,12 +14,12 @@ square_wave::square_wave(char const* uname) :
  pulse(OFF), degs(0.00), podeg(0), pwdeg_rad(0), poff_deg(0.00),
  target(0), cycle(0)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_OFF_PULSE);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_PLAY_STATE);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_PHASE_TRIG);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_PHASE_STEP);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_PWM);
+    add_output(outputnames::OUT_OUTPUT);
+    add_output(outputnames::OUT_OFF_PULSE);
+    add_output(outputnames::OUT_PLAY_STATE);
+    add_input(inputnames::IN_PHASE_TRIG);
+    add_input(inputnames::IN_PHASE_STEP);
+    add_input(inputnames::IN_PWM);
     create_params();
 }
 

@@ -33,33 +33,26 @@ sequencer::sequencer(char const* uname) :
  play_item(0), next_in_riff(0), play_note(0), next_note(0), note_ptr(0),
  next_note_on_pos(-1), play_note_off_pos(-1)
 {
-    jwm.get_inputlist()->add_input(this, inputnames::IN_BAR);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_BAR_TRIG);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_POS_STEP_SIZE);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_BEATS_PER_BAR);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_BEAT_VALUE);
+    add_input(inputnames::IN_BAR);
+    add_input(inputnames::IN_BAR_TRIG);
+    add_input(inputnames::IN_POS_STEP_SIZE);
+    add_input(inputnames::IN_BEATS_PER_BAR);
+    add_input(inputnames::IN_BEAT_VALUE);
 
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_NOTE_ON_TRIG);
-    jwm.get_outputlist()->add_output(this,
-                                        outputnames::OUT_NOTE_SLIDE_TRIG);
-    jwm.get_outputlist()->add_output(this,
-                                        outputnames::OUT_NOTE_OFF_TRIG);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_NOTENAME);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_FREQ);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_VELOCITY);
-    jwm.get_outputlist()->add_output(this,
-                                        outputnames::OUT_VELOCITY_RAMP);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_TRANSPOSE);
-    jwm.get_outputlist()->add_output(this,
-                                        outputnames::OUT_RIFF_START_TRIG);
-    jwm.get_outputlist()->add_output(this,
-                                        outputnames::OUT_RIFF_END_TRIG);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_START_TRIG);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_END_TRIG);
-    jwm.get_outputlist()->add_output(this,
-                                        outputnames::OUT_RIFF_PLAY_STATE);
-    jwm.get_outputlist()->add_output(this,
-                                        outputnames::OUT_NOTE_PLAY_STATE);
+    add_output(outputnames::OUT_NOTE_ON_TRIG);
+    add_output(outputnames::OUT_NOTE_SLIDE_TRIG);
+    add_output(outputnames::OUT_NOTE_OFF_TRIG);
+    add_output(outputnames::OUT_NOTENAME);
+    add_output(outputnames::OUT_FREQ);
+    add_output(outputnames::OUT_VELOCITY);
+    add_output(outputnames::OUT_VELOCITY_RAMP);
+    add_output(outputnames::OUT_TRANSPOSE);
+    add_output(outputnames::OUT_RIFF_START_TRIG);
+    add_output(outputnames::OUT_RIFF_END_TRIG);
+    add_output(outputnames::OUT_START_TRIG);
+    add_output(outputnames::OUT_END_TRIG);
+    add_output(outputnames::OUT_RIFF_PLAY_STATE);
+    add_output(outputnames::OUT_NOTE_PLAY_STATE);
     play_list = new linked_list<note_data>;
     create_params();
     create_moddobj();

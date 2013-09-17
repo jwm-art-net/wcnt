@@ -17,15 +17,15 @@ sync_clock::sync_clock(char const* uname) :
  phasepos(0), snapto(0)
 {
 // degs initialised at 360 so immediately triggers if in_phase_trig is off
-    jwm.get_inputlist()->add_input(this, inputnames::IN_BPM);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_POS_STEP_SIZE);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_BEATS_PER_BAR);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_BEAT_VALUE);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_PHASE_TRIG);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_FREQ_MOD1);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_FREQ_MOD2);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_PHASE_TRIG);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_PHASE_STEP);
+    add_input(inputnames::IN_BPM);
+    add_input(inputnames::IN_POS_STEP_SIZE);
+    add_input(inputnames::IN_BEATS_PER_BAR);
+    add_input(inputnames::IN_BEAT_VALUE);
+    add_input(inputnames::IN_PHASE_TRIG);
+    add_input(inputnames::IN_FREQ_MOD1);
+    add_input(inputnames::IN_FREQ_MOD2);
+    add_output(outputnames::OUT_PHASE_TRIG);
+    add_output(outputnames::OUT_PHASE_STEP);
     create_params();
 }
 

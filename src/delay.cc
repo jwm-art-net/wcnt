@@ -10,9 +10,9 @@ delay::delay(char const* uname) :
  gain_modsize(0), wetdry(0), output(0), filter(0), filterarraymax(0),
  fpos(0), filtertotal(0), gainamount(0)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_GAIN_MOD);
+    add_output(outputnames::OUT_OUTPUT);
+    add_input(inputnames::IN_SIGNAL);
+    add_input(inputnames::IN_GAIN_MOD);
     create_params();
 }
 

@@ -11,12 +11,12 @@ stereo_amp::stereo_amp(char const* uname) :
  left_level(0), right_level(0), amp_modsize(0), clip_level(0),
  left(0), right(0)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_LEFT);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_RIGHT);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_LEFT);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_RIGHT);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_EG);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_AMP_MOD);
+    add_output(outputnames::OUT_LEFT);
+    add_output(outputnames::OUT_RIGHT);
+    add_input(inputnames::IN_LEFT);
+    add_input(inputnames::IN_RIGHT);
+    add_input(inputnames::IN_EG);
+    add_input(inputnames::IN_AMP_MOD);
     create_params();
 }
 

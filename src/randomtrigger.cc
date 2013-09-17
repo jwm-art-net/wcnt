@@ -16,9 +16,9 @@ randomtrigger::randomtrigger(char const* uname) :
  in_trig(0), out_trig(OFF), out_not_trig(OFF), probability(0.5),
  not_probability(0.5)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_TRIG);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_NOT_TRIG);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_TRIG);
+    add_output(outputnames::OUT_TRIG);
+    add_output(outputnames::OUT_NOT_TRIG);
+    add_input(inputnames::IN_TRIG);
     create_params();
     srandom(time(0)); //srand(time(0));
 }

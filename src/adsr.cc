@@ -18,12 +18,12 @@ adsr::adsr(char const* uname) :
  run_coords(0), coord(0), coord_ix(0),
  decay_ix(0), sustain_ix(0), release_ix(0)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_OFF_TRIG);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_PLAY_STATE);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_NOTE_ON_TRIG);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_NOTE_OFF_TRIG);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_VELOCITY);
+    add_output(outputnames::OUT_OUTPUT);
+    add_output(outputnames::OUT_OFF_TRIG);
+    add_output(outputnames::OUT_PLAY_STATE);
+    add_input(inputnames::IN_NOTE_ON_TRIG);
+    add_input(inputnames::IN_NOTE_OFF_TRIG);
+    add_input(inputnames::IN_VELOCITY);
 
     add_at_head(new adsr_coord(adsr_coord::ADSR_SUSTAIN, 0 ,0 ,0 ,0));
 

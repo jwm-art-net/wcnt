@@ -13,11 +13,10 @@ clockclock::clockclock(char const* uname) :
  mod1size(0),degs(360.00)
 {
     // degs initialised to 360 so that it immediately triggers
-    jwm.get_inputlist()->add_input(this, inputnames::IN_FREQ_MOD1);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_PHASE_TRIG);
-    jwm.get_outputlist()->add_output(this,
-                                    outputnames::OUT_PREMOD_PHASE_STEP);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_PHASE_STEP);
+    add_input(inputnames::IN_FREQ_MOD1);
+    add_output(outputnames::OUT_PHASE_TRIG);
+    add_output(outputnames::OUT_PREMOD_PHASE_STEP);
+    add_output(outputnames::OUT_PHASE_STEP);
     create_params();
 }
 

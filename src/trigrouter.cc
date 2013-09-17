@@ -15,8 +15,8 @@ trigrouter::trigrouter(char const* uname) :
  count(0), wrap(OFF),
  grp(0), trigs(0)
 {
-    jwm.get_inputlist()->add_input(this, inputnames::IN_TRIG);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_COUNT);
+    add_input(inputnames::IN_TRIG);
+    add_input(inputnames::IN_COUNT);
     create_params();
 }
 

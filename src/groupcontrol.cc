@@ -24,9 +24,9 @@ group_control::group_control(char const* uname) :
  stop_pending(0),
  grp(0), runlist(0), empty_run_list(0)
 {
-    jwm.get_inputlist()->add_input(this, inputnames::IN_PLAY_TRIG);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_STOP_TRIG);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_PLAY_STATE);
+    add_input(inputnames::IN_PLAY_TRIG);
+    add_input(inputnames::IN_STOP_TRIG);
+    add_output(outputnames::OUT_PLAY_STATE);
     create_params();
 }
 

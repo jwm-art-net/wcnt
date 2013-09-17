@@ -25,21 +25,18 @@ timemap::timemap(char const* uname) :
  bpmchange_ratio(0), targbpm(0), pos_in_bar(0), bpmchange_notelen(0),
  bpmchangebar(0), barlength(0), beatlength(0), meterchangebar(0), p_bpm(0)
 {
-    jwm.get_outputlist()->add_output(this,outputnames::OUT_BPM);
-    jwm.get_outputlist()->add_output(this,outputnames::OUT_BAR);
-    jwm.get_outputlist()->add_output(this,outputnames::OUT_BAR_TRIG);
-    jwm.get_outputlist()->add_output(this,outputnames::OUT_POS_IN_BAR);
-    jwm.get_outputlist()->add_output(this,outputnames::OUT_POS_STEP_SIZE);
-    jwm.get_outputlist()->add_output(this,outputnames::OUT_SAMPLE_TOTAL);
-    jwm.get_outputlist()->add_output(this,outputnames::OUT_SAMPLE_IN_BAR);
-    jwm.get_outputlist()->add_output(this,outputnames::OUT_BEATS_PER_BAR);
-    jwm.get_outputlist()->add_output(this,outputnames::OUT_BEAT_VALUE);
-    jwm.get_outputlist()->add_output(this,
-                                    outputnames::OUT_BPM_CHANGE_TRIG);
-    jwm.get_outputlist()->add_output(this,
-                                    outputnames::OUT_METER_CHANGE_TRIG);
-    jwm.get_outputlist()->add_output(this,
-                                    outputnames::OUT_BPM_CHANGE_STATE);
+    add_output(outputnames::OUT_BPM);
+    add_output(outputnames::OUT_BAR);
+    add_output(outputnames::OUT_BAR_TRIG);
+    add_output(outputnames::OUT_POS_IN_BAR);
+    add_output(outputnames::OUT_POS_STEP_SIZE);
+    add_output(outputnames::OUT_SAMPLE_TOTAL);
+    add_output(outputnames::OUT_SAMPLE_IN_BAR);
+    add_output(outputnames::OUT_BEATS_PER_BAR);
+    add_output(outputnames::OUT_BEAT_VALUE);
+    add_output(outputnames::OUT_BPM_CHANGE_TRIG);
+    add_output(outputnames::OUT_METER_CHANGE_TRIG);
+    add_output(outputnames::OUT_BPM_CHANGE_STATE);
 
     bpm_map = new linked_list<bpmchange>;
     meter_map = new linked_list<meterchange>;

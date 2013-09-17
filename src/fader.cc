@@ -17,12 +17,12 @@ fader::fader(char const* uname) :
  fade_in_smps(0), fismp(0), fade_out_smps(0), fosmp(0),
  _end_bar(0), fisz(0), fosz(0)
 {
-    jwm.get_inputlist()->add_input(this, inputnames::IN_BAR);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_BAR_TRIG);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_BAR_TRIG);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_BAR);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_PLAY_STATE);
+    add_input(inputnames::IN_BAR);
+    add_input(inputnames::IN_BAR_TRIG);
+    add_output(outputnames::OUT_OUTPUT);
+    add_output(outputnames::OUT_BAR_TRIG);
+    add_output(outputnames::OUT_BAR);
+    add_output(outputnames::OUT_PLAY_STATE);
 
     create_params();
 

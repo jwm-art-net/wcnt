@@ -17,13 +17,13 @@ serialwavfileout::serialwavfileout(char const* uname) :
  in_write_region(OFF), status(WAV_STATUS_INIT), 
  st_buffer(NULL), sample_total(0), buff_pos(0)
 {
-    jwm.get_inputlist()->add_input(this, inputnames::IN_LEFT);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_RIGHT);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_BAR);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_BAR_TRIG);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_WRITE_TRIG);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_STOP_TRIG);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_WRITE_STATE);
+    add_input(inputnames::IN_LEFT);
+    add_input(inputnames::IN_RIGHT);
+    add_input(inputnames::IN_BAR);
+    add_input(inputnames::IN_BAR_TRIG);
+    add_input(inputnames::IN_WRITE_TRIG);
+    add_input(inputnames::IN_STOP_TRIG);
+    add_output(outputnames::OUT_WRITE_STATE);
     st_buffer = new stereodata[jwm_init::wav_buffer_size];
     for(short i = 0; i < jwm_init::wav_buffer_size; i++){
         st_buffer[i].left = 0;

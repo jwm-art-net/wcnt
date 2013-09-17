@@ -126,6 +126,8 @@ class synthmod
     bool done_params();
     void relate_param(paramnames::PAR_TYPE);
     void relate_param(paramnames::PAR_TYPE, const char* fixed_string);
+    void add_input(inputnames::IN_TYPE);
+    void add_output(outputnames::OUT_TYPE);
 
     static std::string* err_msg;
 

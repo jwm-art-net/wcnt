@@ -12,10 +12,10 @@ stereo_channel::stereo_channel(char const* uname) :
 
  io_left(0), io_right(0)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_LEFT);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_RIGHT);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_LEFT);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_RIGHT);
+    add_output(outputnames::OUT_LEFT);
+    add_output(outputnames::OUT_RIGHT);
+    add_input(inputnames::IN_LEFT);
+    add_input(inputnames::IN_RIGHT);
 }
 
 stereo_channel::~stereo_channel()

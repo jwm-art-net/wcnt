@@ -12,6 +12,7 @@
 #include "../include/fxsparamlist.h"
 
 #include <iostream>
+#include <cstdlib>
 
 void module_iop_checks();
 
@@ -24,7 +25,7 @@ void sanity_checks()
     ladspa_loader* ladspaloader = new ladspa_loader;
     jwm.register_ladspaloader(ladspaloader);
     #endif
-    synthmodlist* modlist = new synthmodlist;
+    synthmodlist* modlist = new synthmodlist(DELETE_DATA);
     jwm.register_modlist(modlist);
 
     std::cout << "\nPerforming sanity checks...";
@@ -55,18 +56,18 @@ void module_iop_checks()
     std::cout << "\nSanity checking module's inputs/outputs/params..."
         "\nNote: Data objects within certain types of module will not be"
         " checked.";
-    synthmodlist & modlist = jwm.get_modlist();
-    const synthmodnames & modnames = jwm.get_modnames();
+    synthmodlist* modlist = jwm.get_modlist();
+    const synthmodnames* modnames = jwm.get_modnames();
     bool sanity = true;
     for (int i = synthmodnames::FIRST + 2; i < synthmodnames::LAST; i++)
     {
         synthmodnames::SYNTH_MOD_TYPE smt =
             (synthmodnames::SYNTH_MOD_TYPE)i;
-        const char* const modname = modnames.get_name(smt);
+        const char* const modname = modnames->get_name(smt);
         std::cout << "\n--------------------------------------------"
             "\nChecking module type: " << modname;
         synthmod* sm = 0;
-        if (!(sm = modlist.create_module(smt, modname))) {
+        if (!(sm = modlist->create_module(smt, modname))) {
             std::cout << "\n***** Could not create module type: "
                 << modname;
             continue;
@@ -78,7 +79,7 @@ void module_iop_checks()
             std::cout << "\n\n***************** FAIL *****************\n";
             sanity = false;
         }
-        modlist.delete_module(sm);
+        modlist->delete_module(sm);
     }
     std::cout << "\n==================================================="
         "\nChecks completed, ";
@@ -91,8 +92,9 @@ void module_iop_checks()
 
 bool mod_check_inputs(synthmod* sm)
 {
-    modinputlist* inlist =
-        jwm.get_inputlist()->getinputlist_for_module(sm);
+    modinputlist::linkedlist* inlist =
+        new_list_of_by(jwm.get_inputlist(), sm);
+
     modinput* input = inlist->goto_first();
     bool fail = false;
     if (input) {
@@ -100,14 +102,14 @@ bool mod_check_inputs(synthmod* sm)
             inputnames::IN_TYPE it = input->get_inputtype();
             const char* const inname = jwm.get_inputnames()->get_name(it);
             std::cout << "\n\tChecking input: " << inname << "... ";
-            iocat::IOCAT ioc = jwm.get_inputnames()->getcategory(it);
+            iocat::IOCAT ioc = jwm.get_inputnames()->get_category(it);
             // the 'outputs' to be used for setting the inputs...
             double          out_double  = 1.23456789;
             short           out_short   = 32154;
             unsigned long   out_ulong   = 6754312;
             STATUS          out_trig    = OFF;
             STATUS          out_state   = ON;
-            char*           out_string  = "What's going on? Well....";
+            const char*     out_string  = "What's going on? Well....";
             const void* in_ret = 0;
             switch(ioc)
             {
@@ -221,15 +223,15 @@ bool mod_check_inputs(synthmod* sm)
 
 bool mod_check_outputs(synthmod* sm)
 {
-    modoutputlist* outlist =
-        jwm.get_outputlist()->getoutputlist_for_module(sm);
+    modoutputlist::linkedlist* outlist =
+        new_list_of_by(jwm.get_outputlist(), sm);
     modoutput* output = outlist->goto_first();
     bool fail = false;
     if (output) {
-        const outputnames & outnames = jwm.get_outputnames();
+        const outputnames* outnames = jwm.get_outputnames();
         while(output) {
             outputnames::OUT_TYPE ot = output->get_outputtype();
-            const char* const outname = outnames.get_name(ot);
+            const char* const outname = outnames->get_name(ot);
             std::cout << "\n\tChecking output: " << outname << "... ";
             if(!sm->get_out(ot)){
                 std::cout << "\n\t\t**** Failed to get output ****";
@@ -248,25 +250,24 @@ bool mod_check_outputs(synthmod* sm)
 
 bool mod_check_params(synthmod * sm)
 {
-    modparamlist* parlist =
-        jwm.get_paramlist()->getparamlist_for_moduletype(
-            sm->get_module_type());
+    modparamlist::linkedlist* parlist =
+        new_list_of_by(jwm.get_paramlist(), sm->get_module_type());
     modparam* param = parlist->goto_first();
     bool fail = false;
     if (param) {
-        const paramnames & parnames = jwm.get_paramnames();
+        const paramnames* parnames = jwm.get_paramnames();
         while(param) {
             // the values to be used for setting the params...
             double          par_double  = -0.789;
             short           par_short   = 15241;
             unsigned long   par_ulong   = 531627;
             STATUS          par_state   = ON;
-            char*           par_string  = "What's going on? Well....";
+            const char*     par_string  = "What's going on? Well....";
             int             par_fixstr_ix = 0;
             paramnames::PAR_TYPE pt = param->get_paramtype();
-            const char* const parname = parnames.get_name(pt);
+            const char* const parname = parnames->get_name(pt);
             std::cout << "\n\tChecking parameter: " << parname << "... ";
-            iocat::IOCAT ioc = jwm.get_paramnames()->getcategory(pt);
+            iocat::IOCAT ioc = parnames->get_category(pt);
             bool set_ret = false;
             switch(ioc)
             {
@@ -343,7 +344,7 @@ bool mod_check_params(synthmod * sm)
 
 int check_mod_param_fixed_string(synthmod* sm, paramnames::PAR_TYPE pt)
 {
-    fixstrparam* fxspar = jwm.get_fxsparamlist()->getfix_str_param(pt);
+    fixstrparam* fxspar = jwm.get_fxsparamlist()->get_fix_str_param(pt);
     int count = fxspar->get_substring_count();
     std::cout << "(multiple choice)... ";
     if (count < 2) {

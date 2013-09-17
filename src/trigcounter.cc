@@ -16,13 +16,13 @@ trigcounter::trigcounter(char const* uname) :
  out_play_state(OFF),
  pre_count(0), count(0), wrap(OFF)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_TRIG);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_NOT_TRIG);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_COUNT);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_PRE_COUNT);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_PLAY_STATE);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_TRIG);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_RESET_TRIG);
+    add_output(outputnames::OUT_TRIG);
+    add_output(outputnames::OUT_NOT_TRIG);
+    add_output(outputnames::OUT_COUNT);
+    add_output(outputnames::OUT_PRE_COUNT);
+    add_output(outputnames::OUT_PLAY_STATE);
+    add_input(inputnames::IN_TRIG);
+    add_input(inputnames::IN_RESET_TRIG);
     create_params();
 }
 

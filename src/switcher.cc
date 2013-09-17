@@ -19,8 +19,8 @@ switcher::switcher(char const* uname) :
  xfade_max_samps(0), xfade_stpsz(0), xfade_size(0),
  sigs(0), sig_ix(0), sig(0), prevsig(0), zero(0)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_TRIG);
+    add_output(outputnames::OUT_OUTPUT);
+    add_input(inputnames::IN_TRIG);
     create_params();
     create_moddobj();
 }
