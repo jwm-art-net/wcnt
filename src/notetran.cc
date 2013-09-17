@@ -22,17 +22,16 @@ notetran::notetran(char const* uname) :
     no_hi_notename = new char[jwm_init::note_array_size];
     ns_lo_notename = new char[jwm_init::note_array_size];
     ns_hi_notename = new char[jwm_init::note_array_size];
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_NOVALUE);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_NSVALUE);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_NOTE_ON_TRIG);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_NOT_NO_TRIG);
-    jwm.get_outputlist()->add_output(this,
-        outputnames::OUT_NOTE_SLIDE_TRIG);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_NOT_NS_TRIG);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_NOTENAME);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_NOTE_ON_TRIG);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_NOTE_SLIDE_TRIG);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_DETRANSPOSE);
+    add_output(outputnames::OUT_NOVALUE);
+    add_output(outputnames::OUT_NSVALUE);
+    add_output(outputnames::OUT_NOTE_ON_TRIG);
+    add_output(outputnames::OUT_NOT_NO_TRIG);
+    add_output(outputnames::OUT_NOTE_SLIDE_TRIG);
+    add_output(outputnames::OUT_NOT_NS_TRIG);
+    add_input(inputnames::IN_NOTENAME);
+    add_input(inputnames::IN_NOTE_ON_TRIG);
+    add_input(inputnames::IN_NOTE_SLIDE_TRIG);
+    add_input(inputnames::IN_DETRANSPOSE);
     create_params();
 }
 

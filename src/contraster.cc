@@ -10,10 +10,10 @@ contraster::contraster(char const* uname) :
  in_rude_switch_trig(0), power_min(1.0), power_max(2.0), rude_mode(OFF),
  wetdry(0), power(0.0), power_mod(0), powerrad(0.0), output(0)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_POWER_MOD);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_RUDE_SWITCH_TRIG);
+    add_output(outputnames::OUT_OUTPUT);
+    add_input(inputnames::IN_SIGNAL);
+    add_input(inputnames::IN_POWER_MOD);
+    add_input(inputnames::IN_RUDE_SWITCH_TRIG);
     create_params();
 }
 

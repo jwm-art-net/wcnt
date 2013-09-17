@@ -34,14 +34,14 @@ sampler::sampler(char const* uname) :
  ac_out_left(0), ac_out_right(0),
  ch(WAV_CH_UNKNOWN)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_LEFT);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_RIGHT);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_LOOP_TRIG);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_PLAY_STATE);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_PLAY_TRIG);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_STOP_TRIG);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_START_POS_MOD);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_PHASE_STEP);
+    add_output(outputnames::OUT_LEFT);
+    add_output(outputnames::OUT_RIGHT);
+    add_output(outputnames::OUT_LOOP_TRIG);
+    add_output(outputnames::OUT_PLAY_STATE);
+    add_input(inputnames::IN_PLAY_TRIG);
+    add_input(inputnames::IN_STOP_TRIG);
+    add_input(inputnames::IN_START_POS_MOD);
+    add_input(inputnames::IN_PHASE_STEP);
     create_params();
     sampletot = 0;
 }

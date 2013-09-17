@@ -129,6 +129,8 @@ class synthmod
 
     void relate_param(paramnames::PAR_TYPE);
     void relate_param(paramnames::PAR_TYPE, const char* fixed_string);
+    void add_input(inputnames::IN_TYPE);
+    void add_output(outputnames::OUT_TYPE);
 
     static char err_msg[STRBUFLEN];
 

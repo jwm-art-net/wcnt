@@ -8,9 +8,9 @@ constant_note::constant_note(char const* uname) :
  synthmod(synthmodnames::CONSTANT_NOTE, uname, SM_EMPTY_RUN),
  out_freq(0.0), out_phase_step(0.0)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_NOTENAME);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_FREQ);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_PHASE_STEP);
+    add_output(outputnames::OUT_NOTENAME);
+    add_output(outputnames::OUT_FREQ);
+    add_output(outputnames::OUT_PHASE_STEP);
     note = new char[jwm_init::note_array_size];
     create_params();
 }

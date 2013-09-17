@@ -47,7 +47,7 @@ DEFS=-O2 -fomit-frame-pointer -DWITH_LADSPA
 #
 # DEBUG_MSG
 
-DEFS=-ggdb -fno-inline -DWITH_LADSPA -DNAME_CHECK -DDEBUG_MSG
+DEFS=-ggdb -fno-inline -DWITH_LADSPA -DNAME_CHECK -DDEBUG_MSG -DSANITY_CHECKS
 
 # nothing to be modified further:
 PROG=wcnt

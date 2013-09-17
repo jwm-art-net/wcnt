@@ -13,10 +13,10 @@ dynamic::dynamic(char const* uname) :
  dynvertices(0), dvc(0), dvn(0),
  thresh_range(0)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_PLAY_STATE);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_MODULATION);
+    add_output(outputnames::OUT_OUTPUT);
+    add_output(outputnames::OUT_PLAY_STATE);
+    add_input(inputnames::IN_SIGNAL);
+    add_input(inputnames::IN_MODULATION);
     create_params();
     create_dobj();
 }

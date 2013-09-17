@@ -10,10 +10,10 @@ mono_amp::mono_amp(char const* uname) :
  out_output(0),
  level(0), amp_modsize(0), clip_level(0), amp_level(0), ampsig(0)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_EG);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_AMP_MOD);
+    add_output(outputnames::OUT_OUTPUT);
+    add_input(inputnames::IN_SIGNAL);
+    add_input(inputnames::IN_EG);
+    add_input(inputnames::IN_AMP_MOD);
     create_params();
 }
 

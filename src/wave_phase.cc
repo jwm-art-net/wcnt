@@ -16,11 +16,11 @@ wave_phase::wave_phase(char const* uname) :
  phase(0), shape_phase(0), degs(0), max_degs(0), invph(1),
  table(0), shape_table(0)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_PLAY_STATE);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_PHASE_TRIG);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_PHASE_STEP);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_SHAPE_PHASE_STEP);
+    add_output(outputnames::OUT_OUTPUT);
+    add_output(outputnames::OUT_PLAY_STATE);
+    add_input(inputnames::IN_PHASE_TRIG);
+    add_input(inputnames::IN_PHASE_STEP);
+    add_input(inputnames::IN_SHAPE_PHASE_STEP);
     create_params();
 }
 

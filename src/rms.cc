@@ -12,8 +12,8 @@ rms::rms(char const* uname) :
  in_signal(0), out_rms(0), rms_time(0), output(0), rmsarr(0),
  arraymax(0), arrpos(0), sqrsum(0)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_RMS);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
+    add_output(outputnames::OUT_RMS);
+    add_input(inputnames::IN_SIGNAL);
     create_params();
 }
 

@@ -11,10 +11,10 @@ modifier::modifier(char const* uname) :
  out_output(0),
  func(ADD), type(M1)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL1);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL2);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_BIAS);
+    add_output(outputnames::OUT_OUTPUT);
+    add_input(inputnames::IN_SIGNAL1);
+    add_input(inputnames::IN_SIGNAL2);
+    add_input(inputnames::IN_BIAS);
     create_params();
 }
 

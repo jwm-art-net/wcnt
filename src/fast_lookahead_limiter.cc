@@ -21,10 +21,10 @@ fast_lookahead_limiter::fast_lookahead_limiter(char const* uname) :
  l_in_left(0), l_in_right(0), l_out_left(0), l_out_right(0),
  l_out_latency(0)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_LEFT);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_RIGHT);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_LEFT);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_RIGHT);
+    add_output(outputnames::OUT_LEFT);
+    add_output(outputnames::OUT_RIGHT);
+    add_input(inputnames::IN_LEFT);
+    add_input(inputnames::IN_RIGHT);
     create_params();
 }
 

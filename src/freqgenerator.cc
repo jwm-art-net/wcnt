@@ -11,9 +11,9 @@ freq_generator::freq_generator(char const* uname) :
  freq_range_hi(440.00), freq_range_lo(110.00), sig_step_size(0),
  freq_step_size(0), step_count(24)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_FREQ);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_PHASE_STEP);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
+    add_output(outputnames::OUT_FREQ);
+    add_output(outputnames::OUT_PHASE_STEP);
+    add_input(inputnames::IN_SIGNAL);
     create_params();
 }
 

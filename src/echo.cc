@@ -11,12 +11,12 @@ echo::echo(char const* uname) :
  feed_modsize(0), wetdry(0), filter(0), filterarraymax(0), fpos(0),
  filtertotal(0), gainamount(0), feedamount(0)
 {
-    jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_GAIN_MOD);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_FEEDBACK);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_FB_MOD);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_WET_OUTPUT);
+    add_input(inputnames::IN_SIGNAL);
+    add_input(inputnames::IN_GAIN_MOD);
+    add_input(inputnames::IN_FEEDBACK);
+    add_input(inputnames::IN_FB_MOD);
+    add_output(outputnames::OUT_OUTPUT);
+    add_output(outputnames::OUT_WET_OUTPUT);
     create_params();
 }
 

@@ -9,9 +9,9 @@ wcnt_signal::wcnt_signal(char const* uname) :
  synthmod(synthmodnames::WCNTSIGNAL, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), out_output(0.0), level(0.0)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_THROUGH);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
+    add_output(outputnames::OUT_OUTPUT);
+    add_output(outputnames::OUT_THROUGH);
+    add_input(inputnames::IN_SIGNAL);
     create_params();
 }
 

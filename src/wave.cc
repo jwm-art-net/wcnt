@@ -12,8 +12,8 @@ wave::wave(char const* uname) :
  output(0.00), in_phase_step(NULL), type(wave_tables::ONE), phase(0),
  table(0)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_PHASE_STEP);
+    add_output(outputnames::OUT_OUTPUT);
+    add_input(inputnames::IN_PHASE_STEP);
     create_params();
 }
 wave::~wave()

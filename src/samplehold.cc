@@ -10,9 +10,9 @@ sample_hold::sample_hold(char const* uname) :
  in_trig(0), in_signal(0), output(0.00), decay_time(0.00), 
  decay_samps(0), ds(0), decay_size(0.00)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_TRIG);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
+    add_output(outputnames::OUT_OUTPUT);
+    add_input(inputnames::IN_TRIG);
+    add_input(inputnames::IN_SIGNAL);
     create_params();
 }
 

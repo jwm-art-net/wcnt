@@ -18,12 +18,12 @@ user_wave::user_wave(char const* uname) :
  sect_spanlvl(0.0), sect_startlvl(0.0),
  sectdegs(0), degs(360), pdegs(0)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_PLAY_STATE);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_PHASE_TRIG);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_PHASE_STEP);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_V_MOD);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_H_MOD);
+    add_output(outputnames::OUT_OUTPUT);
+    add_output(outputnames::OUT_PLAY_STATE);
+    add_input(inputnames::IN_PHASE_TRIG);
+    add_input(inputnames::IN_PHASE_STEP);
+    add_input(inputnames::IN_V_MOD);
+    add_input(inputnames::IN_H_MOD);
     add_at_head(new wave_vertex(  0.0, 0.0,   0.0, 0.0));
     add_at_tail(new wave_vertex(360.0, 0.0, 360.0, 0.0));
     create_params();

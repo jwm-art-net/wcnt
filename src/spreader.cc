@@ -19,8 +19,8 @@ spreader::spreader(char const* uname) :
  in_mod(0), out_output(0), start_level(0), end_level(0), seg_lvl(0),
  sigs(0)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_MODULATION);
+    add_output(outputnames::OUT_OUTPUT);
+    add_input(inputnames::IN_MODULATION);
     create_params();
     create_moddobj();
 

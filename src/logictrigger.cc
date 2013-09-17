@@ -11,9 +11,9 @@ logictrigger::logictrigger(char const* uname) :
  in_trig1(0), in_trig2(0), out_trig(OFF), logicfunc(AND), precision(0),
  next_trig(0), t1_samps(0), t2_samps(0), trig1(OFF), trig2(OFF)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_TRIG);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_TRIG1);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_TRIG2);
+    add_output(outputnames::OUT_TRIG);
+    add_input(inputnames::IN_TRIG1);
+    add_input(inputnames::IN_TRIG2);
     create_params();
 }
 

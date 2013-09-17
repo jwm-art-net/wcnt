@@ -20,12 +20,11 @@ onofftrig::onofftrig(char const* uname) :
  attack_level(0.0), release_level(0.0), check_levels(OFF), 
  attack_samps(0), release_samps(0), do_attack(true)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_TRIG);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_NOT_TRIG);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_ATTACK_STATE);
-    jwm.get_outputlist()->add_output(this,
-        outputnames::OUT_RELEASE_STATE);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
+    add_output(outputnames::OUT_TRIG);
+    add_output(outputnames::OUT_NOT_TRIG);
+    add_output(outputnames::OUT_ATTACK_STATE);
+    add_output(outputnames::OUT_RELEASE_STATE);
+    add_input(inputnames::IN_SIGNAL);
     create_params();
 }
 

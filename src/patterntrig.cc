@@ -14,10 +14,10 @@ patterntrig::patterntrig(char const* uname) :
  in_trig(0), out_trig(OFF), out_start_trig(OFF),
  out_end_trig(OFF), pattern(0), ptr(0)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_TRIG);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_START_TRIG);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_END_TRIG);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_TRIG);
+    add_output(outputnames::OUT_TRIG);
+    add_output(outputnames::OUT_START_TRIG);
+    add_output(outputnames::OUT_END_TRIG);
+    add_input(inputnames::IN_TRIG);
     create_params();
 }
 

@@ -14,11 +14,11 @@ triangle_wave2::triangle_wave2(char const* uname) :
  sect_spanlvl(0), sect_startlvl(0), old_maxsamps(0), sectmaxsamps(1),
  sectsample(0), counter_ratio(0)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_PLAY_STATE);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_PHASE_TRIG);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_PHASE_STEP);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_NORM_MOD);
+    add_output(outputnames::OUT_OUTPUT);
+    add_output(outputnames::OUT_PLAY_STATE);
+    add_input(inputnames::IN_PHASE_TRIG);
+    add_input(inputnames::IN_PHASE_STEP);
+    add_input(inputnames::IN_NORM_MOD);
     create_params();
 }
 

@@ -18,16 +18,15 @@ osc_clock::osc_clock(char const* uname) :
 {
 // degs initialised with 360 so that it 
 // immediately triggers if in_phase_trig is off
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_PHASE_TRIG);
-    jwm.get_outputlist()->add_output(this,
-        outputnames::OUT_PREMOD_PHASE_STEP);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_PHASE_STEP);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_NOTE_ON_TRIG);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_NOTE_SLIDE_TRIG);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_PLAY_STATE);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_FREQ);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_FREQ_MOD1);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_FREQ_MOD2);
+    add_output(outputnames::OUT_PHASE_TRIG);
+    add_output(outputnames::OUT_PREMOD_PHASE_STEP);
+    add_output(outputnames::OUT_PHASE_STEP);
+    add_input(inputnames::IN_NOTE_ON_TRIG);
+    add_input(inputnames::IN_NOTE_SLIDE_TRIG);
+    add_input(inputnames::IN_PLAY_STATE);
+    add_input(inputnames::IN_FREQ);
+    add_input(inputnames::IN_FREQ_MOD1);
+    add_input(inputnames::IN_FREQ_MOD2);
     create_params();
 }
 

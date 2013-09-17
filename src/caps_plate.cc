@@ -13,9 +13,9 @@ caps_plate::caps_plate(char const* uname) :
  l_input(0), l_bandwidth(0), l_tail(0), l_damping(0), l_blend(0),
  l_out_left(0), l_out_right(0)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_LEFT);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_RIGHT);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
+    add_output(outputnames::OUT_LEFT);
+    add_output(outputnames::OUT_RIGHT);
+    add_input(inputnames::IN_SIGNAL);
     create_params();
 }
 

@@ -15,16 +15,16 @@ inspect::inspect(char const* uname) :
  in_str(0), in_str_trig(0),
  df_msg(0), si_msg(0), ul_msg(0), st_msg(0), str_msg(0)
 {
-    jwm.get_inputlist()->add_input(this, inputnames::IN__DF);
-    jwm.get_inputlist()->add_input(this, inputnames::IN__DF_TRIG);
-    jwm.get_inputlist()->add_input(this, inputnames::IN__SI);
-    jwm.get_inputlist()->add_input(this, inputnames::IN__SI_TRIG);
-    jwm.get_inputlist()->add_input(this, inputnames::IN__UL);
-    jwm.get_inputlist()->add_input(this, inputnames::IN__UL_TRIG);
-    jwm.get_inputlist()->add_input(this, inputnames::IN__ST);
-    jwm.get_inputlist()->add_input(this, inputnames::IN__ST_TRIG);
-    jwm.get_inputlist()->add_input(this, inputnames::IN__STR);
-    jwm.get_inputlist()->add_input(this, inputnames::IN__STR_TRIG);
+    add_input(inputnames::IN__DF);
+    add_input(inputnames::IN__DF_TRIG);
+    add_input(inputnames::IN__SI);
+    add_input(inputnames::IN__SI_TRIG);
+    add_input(inputnames::IN__UL);
+    add_input(inputnames::IN__UL_TRIG);
+    add_input(inputnames::IN__ST);
+    add_input(inputnames::IN__ST_TRIG);
+    add_input(inputnames::IN__STR);
+    add_input(inputnames::IN__STR_TRIG);
     create_params();
 }
 

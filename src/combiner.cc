@@ -17,7 +17,7 @@ combiner::combiner(char const* uname) :
  out_output(0), meantotal(OFF),
  total(0), sigs(0), sigcount(0)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
+    add_output(outputnames::OUT_OUTPUT);
     create_params();
     create_moddobj();
 }

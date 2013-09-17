@@ -15,8 +15,8 @@ sc1::sc1(char const* uname) :
  l_makeup(0), l_input(0), l_output(0)
 
 {
-    jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
+    add_input(inputnames::IN_SIGNAL);
+    add_output(outputnames::OUT_OUTPUT);
     create_params();
 
 }

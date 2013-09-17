@@ -16,10 +16,10 @@ orbit::orbit(char const* uname) :
  test_iter(0),
  x(0.0), y(0.0), scale(1.0), cos_b_pc(0), sin_abc(0)
 {
-    jwm.get_inputlist()->add_input(this, inputnames::IN_RESTART_TRIG);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_TRIG);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_X);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_Y);
+    add_input(inputnames::IN_RESTART_TRIG);
+    add_input(inputnames::IN_TRIG);
+    add_output(outputnames::OUT_X);
+    add_output(outputnames::OUT_Y);
     create_params();
 }
 

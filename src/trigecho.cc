@@ -16,10 +16,10 @@ trigecho::trigecho(char const* uname) :
  delay_time(0.0), count(0), send_input_out(OFF),
  past_trigs(0), pastmax(0), pastpos(0), vel_count_ratio(0)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_TRIG);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_COUNT);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_VELOCITY);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_TRIG);
+    add_output(outputnames::OUT_TRIG);
+    add_output(outputnames::OUT_COUNT);
+    add_output(outputnames::OUT_VELOCITY);
+    add_input(inputnames::IN_TRIG);
     create_params();
 }
 

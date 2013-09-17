@@ -14,12 +14,12 @@ nonezero::nonezero(char const* uname) :
 {
     out_none_string = new char[1];
     *out_none_string = '\0';
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_NONE_DOUBLE);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_NONE_SHORT);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_NONE_ULONG);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_NONE_TRIG);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_NONE_STATE);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_NONE_STRING);
+    add_output(outputnames::OUT_NONE_DOUBLE);
+    add_output(outputnames::OUT_NONE_SHORT);
+    add_output(outputnames::OUT_NONE_ULONG);
+    add_output(outputnames::OUT_NONE_TRIG);
+    add_output(outputnames::OUT_NONE_STATE);
+    add_output(outputnames::OUT_NONE_STRING);
 }
 
 nonezero::~nonezero()

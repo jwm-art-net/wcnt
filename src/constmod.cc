@@ -12,7 +12,7 @@ constmod::constmod(char const* uname) :
 
  output(0)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
+    add_output(outputnames::OUT_OUTPUT);
     create_params();
 }
 

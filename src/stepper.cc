@@ -20,10 +20,10 @@ stepper::stepper(char const* uname) :
  lo_levels(0),
  rtime_samp(0), rtime_max_samps(0), rtime_stpsz(0), rtime_size(0)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_TRIG);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_RESTART_TRIG);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_MODULATION);
+    add_output(outputnames::OUT_OUTPUT);
+    add_input(inputnames::IN_TRIG);
+    add_input(inputnames::IN_RESTART_TRIG);
+    add_input(inputnames::IN_MODULATION);
     insert_step(0.0, 0.0, 0.0);
     insert_step(1.0, 1.0, 1.0);
     create_params();

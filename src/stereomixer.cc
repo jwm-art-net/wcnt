@@ -17,8 +17,8 @@ stereomixer::stereomixer(char const* uname) :
  out_left(0), out_right(0), master_level(0.75),
  chans_left(0), chans_right(0)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_LEFT);
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_RIGHT);
+    add_output(outputnames::OUT_LEFT);
+    add_output(outputnames::OUT_RIGHT);
     create_params();
     create_moddobj();
 }

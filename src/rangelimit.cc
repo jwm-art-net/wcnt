@@ -8,8 +8,8 @@ range_limit::range_limit(char const* uname) :
  synthmod(synthmodnames::RANGELIMIT, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), out_output(0), sigrangehi(0), sigrangelo(0)
 {
-    jwm.get_outputlist()->add_output(this, outputnames::OUT_OUTPUT);
-    jwm.get_inputlist()->add_input(this, inputnames::IN_SIGNAL);
+    add_output(outputnames::OUT_OUTPUT);
+    add_input(inputnames::IN_SIGNAL);
     create_params();
 }
 
