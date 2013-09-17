@@ -184,13 +184,12 @@ void sc1::create_params()
 {
     if (done_params())
         return;
-    modparamlist* pl = jwm.get_paramlist();
-    pl->add_param(synthmodnames::SC1, paramnames::ATTACK_TIME);
-    pl->add_param(synthmodnames::SC1, paramnames::RELEASE_TIME);
-    pl->add_param(synthmodnames::SC1, paramnames::THRESH_DB);
-    pl->add_param(synthmodnames::SC1, paramnames::RATIO_1N);
-    pl->add_param(synthmodnames::SC1, paramnames::KNEE_DB);
-    pl->add_param(synthmodnames::SC1, paramnames::MAKEUP_DB);
+    relate_param(paramnames::ATTACK_TIME);
+    relate_param(paramnames::RELEASE_TIME);
+    relate_param(paramnames::THRESH_DB);
+    relate_param(paramnames::RATIO_1N);
+    relate_param(paramnames::KNEE_DB);
+    relate_param(paramnames::MAKEUP_DB);
 }
 
 #endif // WITH_LADSPA

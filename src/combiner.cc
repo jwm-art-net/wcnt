@@ -140,8 +140,7 @@ void combiner::create_params()
 {
     if (done_params())
         return;
-    jwm.get_paramlist()->
-        add_param(synthmodnames::COMBINER, paramnames::MEAN_TOTAL);
+    relate_param(paramnames::MEAN_TOTAL);
 }
 
 bool combiner::done_moddobj = false;
