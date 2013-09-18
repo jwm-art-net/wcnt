@@ -17,14 +17,14 @@ fader::fader(char const* uname) :
  fade_in_smps(0), fismp(0), fade_out_smps(0), fosmp(0),
  _end_bar(0), fisz(0), fosz(0)
 {
-    add_input(inputnames::IN_BAR);
-    add_input(inputnames::IN_BAR_TRIG);
-    add_output(outputnames::OUT_OUTPUT);
-    add_output(outputnames::OUT_BAR_TRIG);
-    add_output(outputnames::OUT_BAR);
-    add_output(outputnames::OUT_PLAY_STATE);
+    register_input(inputnames::IN_BAR);
+    register_input(inputnames::IN_BAR_TRIG);
+    register_output(outputnames::OUT_OUTPUT);
+    register_output(outputnames::OUT_BAR_TRIG);
+    register_output(outputnames::OUT_BAR);
+    register_output(outputnames::OUT_PLAY_STATE);
 
-    create_params();
+    init_first();
 
 }
 
@@ -186,12 +186,12 @@ void fader::run()
 
 
 
-void fader::create_params()
+void fader::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::START_BAR);
-    relate_param(paramnames::END_BAR);
-    relate_param(paramnames::FADE_IN_TIME);
-    relate_param(paramnames::FADE_OUT_TIME);
+    register_param(paramnames::START_BAR);
+    register_param(paramnames::END_BAR);
+    register_param(paramnames::FADE_IN_TIME);
+    register_param(paramnames::FADE_OUT_TIME);
 }

@@ -8,7 +8,7 @@ meterchange::meterchange() :
 {
     time_sig.beatsperbar = 0;
     time_sig.beatvalue = 0;
-    create_params();
+    init_first();
 }
 
 meterchange::meterchange(short br, char btpb, char btval) :
@@ -16,7 +16,7 @@ meterchange::meterchange(short br, char btpb, char btval) :
 {
     time_sig.beatsperbar = btpb;
     time_sig.beatvalue = btval;
-    create_params();
+    init_first();
 }
 
 bool meterchange::set_param(paramnames::PAR_TYPE pt, void* data)
@@ -69,11 +69,11 @@ stockerrs::ERR_TYPE meterchange::validate()
 
 
 
-void meterchange::create_params()
+void meterchange::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::METER);
-    relate_param(paramnames::BAR);
+    register_param(paramnames::METER);
+    register_param(paramnames::BAR);
 }
 

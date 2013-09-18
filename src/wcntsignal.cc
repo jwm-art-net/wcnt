@@ -9,10 +9,10 @@ wcnt_signal::wcnt_signal(char const* uname) :
  synthmod(synthmodnames::WCNTSIGNAL, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), out_output(0.0), level(0.0)
 {
-    add_output(outputnames::OUT_OUTPUT);
-    add_output(outputnames::OUT_THROUGH);
-    add_input(inputnames::IN_SIGNAL);
-    create_params();
+    register_output(outputnames::OUT_OUTPUT);
+    register_output(outputnames::OUT_THROUGH);
+    register_input(inputnames::IN_SIGNAL);
+    init_first();
 }
 
 wcnt_signal::~wcnt_signal()
@@ -68,10 +68,10 @@ void const* wcnt_signal::get_param(paramnames::PAR_TYPE pt) const
     }
 }
 
-void wcnt_signal::create_params()
+void wcnt_signal::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::LEVEL);
+    register_param(paramnames::LEVEL);
 }
 

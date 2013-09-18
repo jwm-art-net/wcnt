@@ -64,7 +64,7 @@ private:
     WAV_STATUS open_wav(char * fname);
     void close_wav();
     // synthmod stuff
-    void create_params();
+    void init_first();
     
 };
 

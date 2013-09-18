@@ -25,7 +25,7 @@ class clockclock : public synthmod
     double freq_mod1size;
     double mod1size;
     double degs;
-    void create_params();
+    void init_first();
     
 };
 

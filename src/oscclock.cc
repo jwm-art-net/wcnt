@@ -18,16 +18,16 @@ osc_clock::osc_clock(char const* uname) :
 {
 // degs initialised with 360 so that it 
 // immediately triggers if in_phase_trig is off
-    add_output(outputnames::OUT_PHASE_TRIG);
-    add_output(outputnames::OUT_PREMOD_PHASE_STEP);
-    add_output(outputnames::OUT_PHASE_STEP);
-    add_input(inputnames::IN_NOTE_ON_TRIG);
-    add_input(inputnames::IN_NOTE_SLIDE_TRIG);
-    add_input(inputnames::IN_PLAY_STATE);
-    add_input(inputnames::IN_FREQ);
-    add_input(inputnames::IN_FREQ_MOD1);
-    add_input(inputnames::IN_FREQ_MOD2);
-    create_params();
+    register_output(outputnames::OUT_PHASE_TRIG);
+    register_output(outputnames::OUT_PREMOD_PHASE_STEP);
+    register_output(outputnames::OUT_PHASE_STEP);
+    register_input(inputnames::IN_NOTE_ON_TRIG);
+    register_input(inputnames::IN_NOTE_SLIDE_TRIG);
+    register_input(inputnames::IN_PLAY_STATE);
+    register_input(inputnames::IN_FREQ);
+    register_input(inputnames::IN_FREQ_MOD1);
+    register_input(inputnames::IN_FREQ_MOD2);
+    init_first();
 }
 
 osc_clock::~osc_clock()
@@ -255,15 +255,15 @@ void osc_clock::run()
         out_phase_trig = OFF;
 }
 
-void osc_clock::create_params()
+void osc_clock::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::OCTAVE);
-    relate_param(paramnames::TUNING_SEMITONES);
-    relate_param(paramnames::PORTAMENTO);
-    relate_param(paramnames::RESPONSE_TIME);
-    relate_param(paramnames::FREQ_MOD1SIZE);
-    relate_param(paramnames::FREQ_MOD2SIZE);
+    register_param(paramnames::OCTAVE);
+    register_param(paramnames::TUNING_SEMITONES);
+    register_param(paramnames::PORTAMENTO);
+    register_param(paramnames::RESPONSE_TIME);
+    register_param(paramnames::FREQ_MOD1SIZE);
+    register_param(paramnames::FREQ_MOD2SIZE);
 }
 

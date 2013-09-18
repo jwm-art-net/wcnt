@@ -14,12 +14,12 @@ nonezero::nonezero(char const* uname) :
 {
     out_none_string = new char[1];
     *out_none_string = '\0';
-    add_output(outputnames::OUT_NONE_DOUBLE);
-    add_output(outputnames::OUT_NONE_SHORT);
-    add_output(outputnames::OUT_NONE_ULONG);
-    add_output(outputnames::OUT_NONE_TRIG);
-    add_output(outputnames::OUT_NONE_STATE);
-    add_output(outputnames::OUT_NONE_STRING);
+    register_output(outputnames::OUT_NONE_DOUBLE);
+    register_output(outputnames::OUT_NONE_SHORT);
+    register_output(outputnames::OUT_NONE_ULONG);
+    register_output(outputnames::OUT_NONE_TRIG);
+    register_output(outputnames::OUT_NONE_STATE);
+    register_output(outputnames::OUT_NONE_STRING);
 }
 
 nonezero::~nonezero()

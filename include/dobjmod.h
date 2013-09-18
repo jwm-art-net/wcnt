@@ -93,7 +93,7 @@ public:
 
 private:
     synthmod* synth_mod;
-    void create_params();
+    void init_first();
     
 };
 

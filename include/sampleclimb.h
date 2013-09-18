@@ -23,7 +23,7 @@ private:
     double output;
     double rate;
     double target;
-    void create_params();
+    void init_first();
     
 };
 

@@ -42,7 +42,7 @@ class adsr_scaler : public dobj
     double attack_scale;
     double decay_scale;
     double release_scale;
-    void create_params();
+    void init_first();
     
 };
 

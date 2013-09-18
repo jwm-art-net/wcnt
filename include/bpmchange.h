@@ -23,7 +23,7 @@ public:
 private:
     short atbar;
     double tobpm;
-    void create_params();
+    void init_first();
     
 };
 

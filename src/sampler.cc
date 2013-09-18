@@ -34,15 +34,15 @@ sampler::sampler(char const* uname) :
  ac_out_left(0), ac_out_right(0),
  ch(WAV_CH_UNKNOWN)
 {
-    add_output(outputnames::OUT_LEFT);
-    add_output(outputnames::OUT_RIGHT);
-    add_output(outputnames::OUT_LOOP_TRIG);
-    add_output(outputnames::OUT_PLAY_STATE);
-    add_input(inputnames::IN_PLAY_TRIG);
-    add_input(inputnames::IN_STOP_TRIG);
-    add_input(inputnames::IN_START_POS_MOD);
-    add_input(inputnames::IN_PHASE_STEP);
-    create_params();
+    register_output(outputnames::OUT_LEFT);
+    register_output(outputnames::OUT_RIGHT);
+    register_output(outputnames::OUT_LOOP_TRIG);
+    register_output(outputnames::OUT_PLAY_STATE);
+    register_input(inputnames::IN_PLAY_TRIG);
+    register_input(inputnames::IN_STOP_TRIG);
+    register_input(inputnames::IN_START_POS_MOD);
+    register_input(inputnames::IN_PHASE_STEP);
+    init_first();
     sampletot = 0;
 }
 
@@ -1205,23 +1205,23 @@ void sampler::ac_mix_rev_stereo(st_data* ac_st_tmp)
     }
 }
 
-void sampler::create_params()
+void sampler::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::WAVFILEIN);
-    relate_param(paramnames::PLAY_DIR,     "fwd/rev");
-    relate_param(paramnames::PLAY_MODE,    "stop/wrap/bounce/jump");
-    relate_param(paramnames::JUMP_MODE,    "play/loop");
-    relate_param(paramnames::START_POS_MIN);
-    relate_param(paramnames::START_POS_MAX);
-    relate_param(paramnames::LOOP_MODE,    "off/fwd/rev/bi");
-    relate_param(paramnames::LOOP_BEGIN);
-    relate_param(paramnames::LOOP_END);
-    relate_param(paramnames::LOOP_IS_OFFSET);
-    relate_param(paramnames::LOOP_BI_OFFSET);
-    relate_param(paramnames::ANTI_CLIP);
-    relate_param(paramnames::AC_EACH_END);
-    relate_param(paramnames::ZERO_SEARCH_RANGE);
-    relate_param(paramnames::PHASE_STEP_AMOUNT);
+    register_param(paramnames::WAVFILEIN);
+    register_param(paramnames::PLAY_DIR,     "fwd/rev");
+    register_param(paramnames::PLAY_MODE,    "stop/wrap/bounce/jump");
+    register_param(paramnames::JUMP_MODE,    "play/loop");
+    register_param(paramnames::START_POS_MIN);
+    register_param(paramnames::START_POS_MAX);
+    register_param(paramnames::LOOP_MODE,    "off/fwd/rev/bi");
+    register_param(paramnames::LOOP_BEGIN);
+    register_param(paramnames::LOOP_END);
+    register_param(paramnames::LOOP_IS_OFFSET);
+    register_param(paramnames::LOOP_BI_OFFSET);
+    register_param(paramnames::ANTI_CLIP);
+    register_param(paramnames::AC_EACH_END);
+    register_param(paramnames::ZERO_SEARCH_RANGE);
+    register_param(paramnames::PHASE_STEP_AMOUNT);
 }

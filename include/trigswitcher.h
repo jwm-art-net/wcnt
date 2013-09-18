@@ -32,8 +32,7 @@ private:
     STATUS const** trigs;
     long trig_ix;
     STATUS const* trig;
-    static bool done_moddobj;
-    void create_moddobj();
+    void init_first();
 };
 
 #endif

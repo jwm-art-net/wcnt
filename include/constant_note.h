@@ -21,7 +21,7 @@ private:
     double out_freq;
     double out_phase_step;
     void set_note(const char*);
-    void create_params();
+    void init_first();
     
 };
 

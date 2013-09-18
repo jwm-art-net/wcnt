@@ -42,7 +42,7 @@ private:
     short t2_samps;
     STATUS trig1;
     STATUS trig2;
-    void create_params();
+    void init_first();
     
 };
 

@@ -45,11 +45,13 @@ STATS_FUNCS
 
 protected:
     static std::string* err_msg;
-    virtual void create_params() = 0;
+    virtual void init_first() = 0;
     void invalidate(){ valid = false;}
-    void relate_param(paramnames::PAR_TYPE);
-    void relate_param(paramnames::PAR_TYPE, const char* fixed_string);
-    bool done_params();
+    void register_param(paramnames::PAR_TYPE);
+    void register_param(paramnames::PAR_TYPE, const char* fixed_string);
+    void register_dobjdobj(dobjnames::DOBJ_TYPE parent,
+                                                dobjnames::DOBJ_TYPE sprog);
+    bool done_first();
 
 private:
     dobjnames::DOBJ_TYPE object_type;
@@ -60,7 +62,7 @@ private:
 STATS_VARS
 #endif
 
-    static bool params_done[dobjnames::DOBJ_LAST];
+    static bool first_done[dobjnames::DOBJ_LAST];
 };
 
 #endif

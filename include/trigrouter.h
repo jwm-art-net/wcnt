@@ -38,7 +38,7 @@ private:
     /* no outputs */
     group* grp;
     STATUS* trigs;
-    void create_params();
+    void init_first();
     void create_wcnt_triggers();
     
 };

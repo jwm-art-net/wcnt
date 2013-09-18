@@ -33,29 +33,28 @@ sequencer::sequencer(char const* uname) :
  play_item(0), next_in_riff(0), play_note(0), next_note(0), note_ptr(0),
  next_note_on_pos(-1), play_note_off_pos(-1)
 {
-    add_input(inputnames::IN_BAR);
-    add_input(inputnames::IN_BAR_TRIG);
-    add_input(inputnames::IN_POS_STEP_SIZE);
-    add_input(inputnames::IN_BEATS_PER_BAR);
-    add_input(inputnames::IN_BEAT_VALUE);
+    register_input(inputnames::IN_BAR);
+    register_input(inputnames::IN_BAR_TRIG);
+    register_input(inputnames::IN_POS_STEP_SIZE);
+    register_input(inputnames::IN_BEATS_PER_BAR);
+    register_input(inputnames::IN_BEAT_VALUE);
 
-    add_output(outputnames::OUT_NOTE_ON_TRIG);
-    add_output(outputnames::OUT_NOTE_SLIDE_TRIG);
-    add_output(outputnames::OUT_NOTE_OFF_TRIG);
-    add_output(outputnames::OUT_NOTENAME);
-    add_output(outputnames::OUT_FREQ);
-    add_output(outputnames::OUT_VELOCITY);
-    add_output(outputnames::OUT_VELOCITY_RAMP);
-    add_output(outputnames::OUT_TRANSPOSE);
-    add_output(outputnames::OUT_RIFF_START_TRIG);
-    add_output(outputnames::OUT_RIFF_END_TRIG);
-    add_output(outputnames::OUT_START_TRIG);
-    add_output(outputnames::OUT_END_TRIG);
-    add_output(outputnames::OUT_RIFF_PLAY_STATE);
-    add_output(outputnames::OUT_NOTE_PLAY_STATE);
+    register_output(outputnames::OUT_NOTE_ON_TRIG);
+    register_output(outputnames::OUT_NOTE_SLIDE_TRIG);
+    register_output(outputnames::OUT_NOTE_OFF_TRIG);
+    register_output(outputnames::OUT_NOTENAME);
+    register_output(outputnames::OUT_FREQ);
+    register_output(outputnames::OUT_VELOCITY);
+    register_output(outputnames::OUT_VELOCITY_RAMP);
+    register_output(outputnames::OUT_TRANSPOSE);
+    register_output(outputnames::OUT_RIFF_START_TRIG);
+    register_output(outputnames::OUT_RIFF_END_TRIG);
+    register_output(outputnames::OUT_START_TRIG);
+    register_output(outputnames::OUT_END_TRIG);
+    register_output(outputnames::OUT_RIFF_PLAY_STATE);
+    register_output(outputnames::OUT_NOTE_PLAY_STATE);
     play_list = new linked_list<note_data>;
-    create_params();
-    create_moddobj();
+    init_first();
 }
 
 sequencer::~sequencer()
@@ -454,27 +453,11 @@ void sequencer::run()
     riff_pos += *in_pos_step_size;
 }
 
-
-
-void sequencer::create_params()
+void sequencer::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::START_BAR);
-    relate_param(paramnames::VELOCITY_RESPONSE);
+    register_param(paramnames::START_BAR);
+    register_param(paramnames::VELOCITY_RESPONSE);
+    register_moddobj(dobjnames::LST_TRACK, dobjnames::SIN_RIFFNODE);
 }
-
-bool sequencer::done_moddobj = false;
-
-void sequencer::create_moddobj()
-{
-    if (done_moddobj == true)
-        return;
-    moddobj* mdbj;
-    mdbj = jwm.get_moddobjlist()->add_moddobj(
-        synthmodnames::SEQUENCER, dobjnames::LST_TRACK);
-    mdbj->get_dobjdobjlist()->add_dobjdobj(
-        dobjnames::LST_TRACK, dobjnames::SIN_RIFFNODE);
-    done_moddobj = true;
-}
-

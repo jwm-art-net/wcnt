@@ -21,7 +21,7 @@ class parameditor : public dobj, public linked_list<paramedit>
     dobj const* add_dobj(dobj* dbj);
 
  private:
-    void create_params();
+    void init_first();
     
 };
 

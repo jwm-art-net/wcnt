@@ -2,7 +2,7 @@
 #include "../include/jwm_globals.h"
 #include "../include/dobjdobj.h"
 
-dobjdobj * dobjdobjlist::add_dobjdobj(
+dobjdobj * dobjdobjlist::register_dobjdobj(
  dobjnames::DOBJ_TYPE dt, dobjnames::DOBJ_TYPE kid)
 {
     if (jwm.get_dobjnames()->check_type(dt) == dobjnames::DOBJ_FIRST
@@ -26,7 +26,7 @@ dobjdobjlist::get_dobjdobjlist_for_dobjtype(dobjnames::DOBJ_TYPE dt)
     dobjdobj* dd = goto_first();
     while(dd) {
         if (dd->get_dobj_type() == dt) {
-            if (!mdl->add_dobjdobj(dd)) {
+            if (!mdl->register_dobjdobj(dd)) {
                 delete mdl;
                 return 0;
             }
@@ -45,7 +45,7 @@ dobjdobjlist * dobjdobjlist::get_dobjdobjlist_of_sprogs(
     dobjdobj* dd = goto_first();
     while(dd != 0) {
         if (dd->get_dobj_sprog() == kid) {
-            if (!mdl->add_dobjdobj(dd)) {
+            if (!mdl->register_dobjdobj(dd)) {
                 delete mdl;
                 return 0;
             }

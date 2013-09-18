@@ -46,7 +46,7 @@ private:
     long mins;
     long maxs;
     short counter;
-    void create_params();
+    void init_first();
     
 };
 

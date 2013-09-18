@@ -16,11 +16,11 @@ trigecho::trigecho(char const* uname) :
  delay_time(0.0), count(0), send_input_out(OFF),
  past_trigs(0), pastmax(0), pastpos(0), vel_count_ratio(0)
 {
-    add_output(outputnames::OUT_TRIG);
-    add_output(outputnames::OUT_COUNT);
-    add_output(outputnames::OUT_VELOCITY);
-    add_input(inputnames::IN_TRIG);
-    create_params();
+    register_output(outputnames::OUT_TRIG);
+    register_output(outputnames::OUT_COUNT);
+    register_output(outputnames::OUT_VELOCITY);
+    register_input(inputnames::IN_TRIG);
+    init_first();
 }
 
 trigecho::~trigecho()
@@ -139,12 +139,12 @@ void trigecho::run()
     if (pastpos == pastmax) pastpos = 0;
 }
 
-void trigecho::create_params()
+void trigecho::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::DELAY_TIME);
-    relate_param(paramnames::COUNT);
-    relate_param(paramnames::SEND_INPUT_OUT);
+    register_param(paramnames::DELAY_TIME);
+    register_param(paramnames::COUNT);
+    register_param(paramnames::SEND_INPUT_OUT);
 }
 

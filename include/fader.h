@@ -42,7 +42,7 @@ class fader: public synthmod
     double fisz;
     double fosz;
 
-    void create_params();
+    void init_first();
     
 };
 

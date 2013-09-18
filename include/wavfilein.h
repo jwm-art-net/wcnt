@@ -50,7 +50,7 @@ private:
     SNDFILE* filein;
     SF_INFO sfinfo;
     WAV_STATUS status;
-    void create_params();
+    void init_first();
     
 };
 

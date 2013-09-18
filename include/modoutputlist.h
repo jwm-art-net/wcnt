@@ -10,7 +10,7 @@ class modoutputlist : public linked_list<modoutput>
     modoutputlist(){};
     modoutputlist(DESTRUCTION);
 
-    modoutput* add_output(synthmod *, outputnames::OUT_TYPE);
+    modoutput* register_output(synthmod *, outputnames::OUT_TYPE);
     void delete_module_outputs(synthmod *);
 
     modoutputlist* list_of_category(iocat::IOCAT);

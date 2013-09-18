@@ -10,10 +10,10 @@ sample_hold::sample_hold(char const* uname) :
  in_trig(0), in_signal(0), output(0.00), decay_time(0.00), 
  decay_samps(0), ds(0), decay_size(0.00)
 {
-    add_output(outputnames::OUT_OUTPUT);
-    add_input(inputnames::IN_TRIG);
-    add_input(inputnames::IN_SIGNAL);
-    create_params();
+    register_output(outputnames::OUT_OUTPUT);
+    register_input(inputnames::IN_TRIG);
+    register_input(inputnames::IN_SIGNAL);
+    init_first();
 }
 
 sample_hold::~sample_hold()
@@ -107,10 +107,10 @@ void sample_hold::run()
     }
 }
 
-void sample_hold::create_params()
+void sample_hold::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::DECAY_TIME);
+    register_param(paramnames::DECAY_TIME);
 }
 

@@ -23,7 +23,7 @@ private:
     wave_tables::WT type;
     unsigned long phase;
     const double* table;
-    void create_params();
+    void init_first();
     
 };
 

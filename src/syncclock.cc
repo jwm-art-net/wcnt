@@ -17,16 +17,16 @@ sync_clock::sync_clock(char const* uname) :
  phasepos(0), snapto(0)
 {
 // degs initialised at 360 so immediately triggers if in_phase_trig is off
-    add_input(inputnames::IN_BPM);
-    add_input(inputnames::IN_POS_STEP_SIZE);
-    add_input(inputnames::IN_BEATS_PER_BAR);
-    add_input(inputnames::IN_BEAT_VALUE);
-    add_input(inputnames::IN_PHASE_TRIG);
-    add_input(inputnames::IN_FREQ_MOD1);
-    add_input(inputnames::IN_FREQ_MOD2);
-    add_output(outputnames::OUT_PHASE_TRIG);
-    add_output(outputnames::OUT_PHASE_STEP);
-    create_params();
+    register_input(inputnames::IN_BPM);
+    register_input(inputnames::IN_POS_STEP_SIZE);
+    register_input(inputnames::IN_BEATS_PER_BAR);
+    register_input(inputnames::IN_BEAT_VALUE);
+    register_input(inputnames::IN_PHASE_TRIG);
+    register_input(inputnames::IN_FREQ_MOD1);
+    register_input(inputnames::IN_FREQ_MOD2);
+    register_output(outputnames::OUT_PHASE_TRIG);
+    register_output(outputnames::OUT_PHASE_STEP);
+    init_first();
 }
 
 sync_clock::~sync_clock()
@@ -196,14 +196,14 @@ void sync_clock::run()
     phasepos += *in_pos_stepsz;
 }
 
-void sync_clock::create_params()
+void sync_clock::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::FREQ_MOD1SIZE);
-    relate_param(paramnames::FREQ_MOD2SIZE);
-    relate_param(paramnames::QUARTER_VAL);
-    relate_param(paramnames::NOTE_LEN);
-    relate_param(paramnames::SNAP_TO);
+    register_param(paramnames::FREQ_MOD1SIZE);
+    register_param(paramnames::FREQ_MOD2SIZE);
+    register_param(paramnames::QUARTER_VAL);
+    register_param(paramnames::NOTE_LEN);
+    register_param(paramnames::SNAP_TO);
 }
 

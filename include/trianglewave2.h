@@ -38,7 +38,7 @@ private:
     double sectmaxsamps;
     double sectsample;
     double counter_ratio;
-    void create_params();
+    void init_first();
     
 };
 

@@ -11,10 +11,10 @@ logictrigger::logictrigger(char const* uname) :
  in_trig1(0), in_trig2(0), out_trig(OFF), logicfunc(AND), precision(0),
  next_trig(0), t1_samps(0), t2_samps(0), trig1(OFF), trig2(OFF)
 {
-    add_output(outputnames::OUT_TRIG);
-    add_input(inputnames::IN_TRIG1);
-    add_input(inputnames::IN_TRIG2);
-    create_params();
+    register_output(outputnames::OUT_TRIG);
+    register_input(inputnames::IN_TRIG1);
+    register_input(inputnames::IN_TRIG2);
+    init_first();
 }
 
 logictrigger::~logictrigger()
@@ -178,10 +178,10 @@ void logictrigger::run()
 
 
 
-void logictrigger::create_params()
+void logictrigger::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::LOGICFUNC, "and/or/xor/xornot");
-    relate_param(paramnames::PRECISION);
+    register_param(paramnames::LOGICFUNC, "and/or/xor/xornot");
+    register_param(paramnames::PRECISION);
 }

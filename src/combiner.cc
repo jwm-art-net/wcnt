@@ -17,9 +17,8 @@ combiner::combiner(char const* uname) :
  out_output(0), meantotal(OFF),
  total(0), sigs(0), sigcount(0)
 {
-    add_output(outputnames::OUT_OUTPUT);
-    create_params();
-    create_moddobj();
+    register_output(outputnames::OUT_OUTPUT);
+    init_first();
 }
 
 combiner::~combiner()
@@ -144,23 +143,11 @@ void combiner::run()
 }
 
 
-void combiner::create_params()
+void combiner::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::MEAN_TOTAL);
-}
-
-bool combiner::done_moddobj = false;
-void combiner::create_moddobj()
-{
-    if (done_moddobj == true)
-        return;
-    moddobj* mdbj;
-    mdbj = jwm.get_moddobjlist()->add_moddobj(
-        synthmodnames::COMBINER, dobjnames::LST_SIGNALS);
-    mdbj->get_dobjdobjlist()->add_dobjdobj(
-        dobjnames::LST_SIGNALS, dobjnames::DOBJ_SYNTHMOD);
-    done_moddobj = true;
+    register_param(paramnames::MEAN_TOTAL);
+    register_moddobj(dobjnames::LST_SIGNALS, dobjnames::DOBJ_SYNTHMOD);
 }
 

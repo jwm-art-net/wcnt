@@ -103,7 +103,7 @@ private:
         read_string_list_param(const char* enda, const char* endb);
     // method for ......
     bool eff_ing_header_bodge(unsigned long *samplerate);
-    void create_params();
+    void init_first();
     
 };
 

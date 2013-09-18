@@ -8,11 +8,11 @@ constant_note::constant_note(char const* uname) :
  synthmod(synthmodnames::CONSTANT_NOTE, uname, SM_EMPTY_RUN),
  out_freq(0.0), out_phase_step(0.0)
 {
-    add_output(outputnames::OUT_NOTENAME);
-    add_output(outputnames::OUT_FREQ);
-    add_output(outputnames::OUT_PHASE_STEP);
+    register_output(outputnames::OUT_NOTENAME);
+    register_output(outputnames::OUT_FREQ);
+    register_output(outputnames::OUT_PHASE_STEP);
     note = new char[jwm_init::note_array_size];
-    create_params();
+    init_first();
 }
 
 constant_note::~constant_note()
@@ -74,10 +74,10 @@ void constant_note::set_note(const char* n)
     note[jwm_init::note_name_len] = '\0';
 }
 
-void constant_note::create_params()
+void constant_note::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::NAME);
+    register_param(paramnames::NAME);
 }
 

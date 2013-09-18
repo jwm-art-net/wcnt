@@ -69,7 +69,7 @@ class glame_butterworth : public synthmod
     float min_cut_off;
     float max_cut_off;
 
-    void create_params();
+    void init_first();
     
 };
 

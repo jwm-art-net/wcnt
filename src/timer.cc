@@ -17,9 +17,9 @@ timer::timer(char const* uname) :
  timings(0), time_ix(0),
  samples(0)
 {
-    add_output(outputnames::OUT_TRIG);
-    add_output(outputnames::OUT_COUNT);
-    create_moddobj();
+    register_output(outputnames::OUT_TRIG);
+    register_output(outputnames::OUT_COUNT);
+    init_first();
 }
 #include <iostream>
 
@@ -108,17 +108,10 @@ dobj* timer::add_dobj(dobj* dbj)
     return retv;
 }
 
-
-bool timer::done_moddobj = false;
-void timer::create_moddobj()
+void timer::init_first()
 {
-    if (done_moddobj == true)
+    if (done_first())
         return;
-    moddobj* mdbj;
-    mdbj = jwm.get_moddobjlist()->add_moddobj(
-        synthmodnames::TIMER, dobjnames::LST_TIMINGS);
-    mdbj->get_dobjdobjlist()->add_dobjdobj(
-        dobjnames::LST_TIMINGS, dobjnames::SIN_TIME);
-    done_moddobj = true;
+    register_moddobj(dobjnames::LST_TIMINGS, dobjnames::SIN_TIME);
 }
 

@@ -13,11 +13,11 @@ bode_freq_shifter::bode_freq_shifter(char const* uname) :
  l_freq_shift(0.0), l_input(0), l_out_down(0), l_out_up(0),
  l_out_latency(0)
 {
-    add_output(outputnames::OUT_UP);
-    add_output(outputnames::OUT_DOWN);
-    add_input(inputnames::IN_SIGNAL);
-    add_input(inputnames::IN_SHIFT_MOD);
-    create_params();
+    register_output(outputnames::OUT_UP);
+    register_output(outputnames::OUT_DOWN);
+    register_input(inputnames::IN_SIGNAL);
+    register_input(inputnames::IN_SHIFT_MOD);
+    init_first();
 }
 
 bode_freq_shifter::~bode_freq_shifter()
@@ -145,12 +145,12 @@ void bode_freq_shifter::run()
     out_down = *l_out_down;
 }
 
-void bode_freq_shifter::create_params()
+void bode_freq_shifter::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::FREQ_SHIFT);
-    relate_param(paramnames::SHIFT_MODSIZE);
+    register_param(paramnames::FREQ_SHIFT);
+    register_param(paramnames::SHIFT_MODSIZE);
 }
 
 #endif // WITH_LADSPA

@@ -22,7 +22,7 @@ dobjdobjlist* topdobjlist::create_dobjdobjlist(
         == dobjnames::DOBJ_FIRST)
         return 0;
     dobjdobjlist* newddlist = new dobjdobjlist;
-    newddlist->add_dobjdobj(parent, child);
+    newddlist->register_dobjdobj(parent, child);
     if (!add_at_tail(newddlist)) {
         delete newddlist;
         return 0;

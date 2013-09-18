@@ -32,7 +32,7 @@ private:
     STATUS out_end_trig;
     char* pattern;
     char* ptr;
-    void create_params();
+    void init_first();
     
 };
 

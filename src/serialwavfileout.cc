@@ -17,19 +17,19 @@ serialwavfileout::serialwavfileout(char const* uname) :
  in_write_region(OFF), status(WAV_STATUS_INIT), 
  st_buffer(NULL), sample_total(0), buff_pos(0)
 {
-    add_input(inputnames::IN_LEFT);
-    add_input(inputnames::IN_RIGHT);
-    add_input(inputnames::IN_BAR);
-    add_input(inputnames::IN_BAR_TRIG);
-    add_input(inputnames::IN_WRITE_TRIG);
-    add_input(inputnames::IN_STOP_TRIG);
-    add_output(outputnames::OUT_WRITE_STATE);
+    register_input(inputnames::IN_LEFT);
+    register_input(inputnames::IN_RIGHT);
+    register_input(inputnames::IN_BAR);
+    register_input(inputnames::IN_BAR_TRIG);
+    register_input(inputnames::IN_WRITE_TRIG);
+    register_input(inputnames::IN_STOP_TRIG);
+    register_output(outputnames::OUT_WRITE_STATE);
     st_buffer = new stereodata[jwm_init::wav_buffer_size];
     for(short i = 0; i < jwm_init::wav_buffer_size; i++){
         st_buffer[i].left = 0;
         st_buffer[i].right = 0;
     }
-    create_params();
+    init_first();
 }
 
 serialwavfileout::~serialwavfileout()
@@ -272,12 +272,12 @@ void serialwavfileout::write_wav_chunk(
     }
 }
 
-void serialwavfileout::create_params()
+void serialwavfileout::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::DATA_FMT, "pcm16/pcm24/pcm32/float32/float64");     relate_param(paramnames::WAV_BASENAME);
-    relate_param(paramnames::START_BAR);
-    relate_param(paramnames::END_BAR);
+    register_param(paramnames::DATA_FMT, "pcm16/pcm24/pcm32/float32/float64");     register_param(paramnames::WAV_BASENAME);
+    register_param(paramnames::START_BAR);
+    register_param(paramnames::END_BAR);
 }
 

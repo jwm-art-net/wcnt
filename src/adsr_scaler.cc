@@ -7,7 +7,7 @@ adsr_scaler::adsr_scaler() :
  padsr(0),
  attack_scale(1.0), decay_scale(1.0), release_scale(1.0)
 {
-    create_params();
+    init_first();
 }
 
 adsr_scaler::~adsr_scaler()
@@ -110,13 +110,13 @@ stockerrs::ERR_TYPE adsr_scaler::validate()
     return stockerrs::ERR_NO_ERROR;
 }
 
-void adsr_scaler::create_params()
+void adsr_scaler::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::ADSR_NAME);
-    relate_param(paramnames::ATTACK_SCALE);
-    relate_param(paramnames::DECAY_SCALE);
-    relate_param(paramnames::RELEASE_SCALE);
+    register_param(paramnames::ADSR_NAME);
+    register_param(paramnames::ATTACK_SCALE);
+    register_param(paramnames::DECAY_SCALE);
+    register_param(paramnames::RELEASE_SCALE);
 }
 

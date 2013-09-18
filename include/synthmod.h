@@ -11,6 +11,7 @@
 #include "stockerrs.h"
 #include "groupnames.h"
 #include "boolfuncobj.h"
+#include "dobjnames.h"
 
 /*
 //  synthmod - pure abstract base class for jwm synth modules.
@@ -33,8 +34,6 @@ class synthmod
         SM_HAS_STEREO_OUTPUT =  0x0020,
         SM_HAS_OUT_TRIG =       0x0040
     };
-
-    static void init_params();
 
     synthmod(   synthmodnames::SYNTH_MOD_TYPE,
                 char const* const uname,
@@ -123,11 +122,16 @@ class synthmod
     void force_abort() { abort_status = ON; }
     void duplicate_inputs_to(synthmod*);
     void duplicate_params_to(synthmod*);
-    bool done_params();
-    void relate_param(paramnames::PAR_TYPE);
-    void relate_param(paramnames::PAR_TYPE, const char* fixed_string);
-    void add_input(inputnames::IN_TYPE);
-    void add_output(outputnames::OUT_TYPE);
+
+    virtual void init_first();
+    bool done_first();
+
+    void register_param(paramnames::PAR_TYPE);
+    void register_param(paramnames::PAR_TYPE, const char* fixed_string);
+    void register_input(inputnames::IN_TYPE);
+    void register_output(outputnames::OUT_TYPE);
+    void register_moddobj(dobjnames::DOBJ_TYPE parent,
+                                                dobjnames::DOBJ_TYPE sprog);
 
     static std::string* err_msg;
 
@@ -145,7 +149,7 @@ class synthmod
     STATS_VARS
     #endif
 
-    static bool params_done[synthmodnames::LAST];
+    static bool first_done[synthmodnames::LAST];
 };
 
 #endif

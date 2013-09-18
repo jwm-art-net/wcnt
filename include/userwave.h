@@ -44,7 +44,7 @@ private:
     double sectdegs;
     double degs;
     double pdegs;
-    void create_params();
+    void init_first();
     void create_dobj();
     
     static bool done_dobj;

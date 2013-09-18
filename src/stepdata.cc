@@ -6,14 +6,14 @@ step_data::step_data() :
  dobj(dobjnames::SIN_STEP),
  position(0), up_level(0), lo_level(0)
 {
-    create_params();
+    init_first();
 }
 
 step_data::step_data(double pos, double ul, double ll) :
  dobj(dobjnames::SIN_STEP),
  position(pos), up_level(ul), lo_level(ll)
 {
-    create_params();
+    init_first();
 }
 
 step_data::~step_data()
@@ -61,12 +61,12 @@ stockerrs::ERR_TYPE step_data::validate()
     return stockerrs::ERR_NO_ERROR;
 }
 
-void step_data::create_params()
+void step_data::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::POS);
-    relate_param(paramnames::UPLEVEL);
-    relate_param(paramnames::LOLEVEL);
+    register_param(paramnames::POS);
+    register_param(paramnames::UPLEVEL);
+    register_param(paramnames::LOLEVEL);
 }
 

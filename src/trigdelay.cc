@@ -14,9 +14,9 @@ trigdelay::trigdelay(char const* uname) :
  in_trig(0), out_trig(OFF), delay_time(0.0),
  past_trigs(0), pastmax(0), pastpos(0)
 {
-    add_output(outputnames::OUT_TRIG);
-    add_input(inputnames::IN_TRIG);
-    create_params();
+    register_output(outputnames::OUT_TRIG);
+    register_input(inputnames::IN_TRIG);
+    init_first();
 }
 
 trigdelay::~trigdelay()
@@ -96,10 +96,10 @@ void trigdelay::run()
     if (pastpos < 0) pastpos = pastmax - 1;
 }
 
-void trigdelay::create_params()
+void trigdelay::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::DELAY_TIME);
+    register_param(paramnames::DELAY_TIME);
 }
 

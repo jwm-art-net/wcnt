@@ -10,10 +10,10 @@ delay::delay(char const* uname) :
  gain_modsize(0), wetdry(0), output(0), filter(0), filterarraymax(0),
  fpos(0), filtertotal(0), gainamount(0)
 {
-    add_output(outputnames::OUT_OUTPUT);
-    add_input(inputnames::IN_SIGNAL);
-    add_input(inputnames::IN_GAIN_MOD);
-    create_params();
+    register_output(outputnames::OUT_OUTPUT);
+    register_input(inputnames::IN_SIGNAL);
+    register_input(inputnames::IN_GAIN_MOD);
+    init_first();
 }
 
 delay::~delay()
@@ -146,13 +146,13 @@ void delay::run()
     out_output = output * wetdry + *in_signal * (1 - wetdry);
 }
 
-void delay::create_params()
+void delay::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::DELAY_TIME);
-    relate_param(paramnames::GAIN);
-    relate_param(paramnames::GAIN_MODSIZE);
-    relate_param(paramnames::WETDRY);
+    register_param(paramnames::DELAY_TIME);
+    register_param(paramnames::GAIN);
+    register_param(paramnames::GAIN_MODSIZE);
+    register_param(paramnames::WETDRY);
 }
 

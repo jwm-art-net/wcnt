@@ -63,7 +63,7 @@ class bode_freq_shifter : public synthmod
     LADSPA_Data* l_out_up;
     LADSPA_Data* l_out_latency;
 
-    void create_params();
+    void init_first();
     
 };
 

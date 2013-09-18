@@ -15,8 +15,8 @@ wcnt_exit::wcnt_exit(char const* uname) :
 
  in_bar(0), exit_bar(0)
 {
-    add_input(inputnames::IN_BAR);
-    create_params();
+    register_input(inputnames::IN_BAR);
+    init_first();
 }
 
 wcnt_exit::~wcnt_exit()
@@ -104,10 +104,10 @@ void wcnt_exit::init()
     jwm.x_in_bar = in_bar;
 }
 
-void wcnt_exit::create_params()
+void wcnt_exit::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::EXIT_BAR);
+    register_param(paramnames::EXIT_BAR);
 }
 

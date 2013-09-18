@@ -18,16 +18,15 @@ user_wave::user_wave(char const* uname) :
  sect_spanlvl(0.0), sect_startlvl(0.0),
  sectdegs(0), degs(360), pdegs(0)
 {
-    add_output(outputnames::OUT_OUTPUT);
-    add_output(outputnames::OUT_PLAY_STATE);
-    add_input(inputnames::IN_PHASE_TRIG);
-    add_input(inputnames::IN_PHASE_STEP);
-    add_input(inputnames::IN_V_MOD);
-    add_input(inputnames::IN_H_MOD);
+    register_output(outputnames::OUT_OUTPUT);
+    register_output(outputnames::OUT_PLAY_STATE);
+    register_input(inputnames::IN_PHASE_TRIG);
+    register_input(inputnames::IN_PHASE_STEP);
+    register_input(inputnames::IN_V_MOD);
+    register_input(inputnames::IN_H_MOD);
     add_at_head(new wave_vertex(  0.0, 0.0,   0.0, 0.0));
     add_at_tail(new wave_vertex(360.0, 0.0, 360.0, 0.0));
-    create_params();
-    create_dobj();
+    init_first();
 }
 
 user_wave::~user_wave()
@@ -278,26 +277,13 @@ void user_wave::run()
     }
 }
 
-bool user_wave::done_dobj = false;
-
-void user_wave::create_params()
+void user_wave::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::RECYCLE_MODE);
-    relate_param(paramnames::ZERO_RETRIGGER);
-    relate_param(paramnames::DROP_CHECK_RANGE);
-}
-
-void user_wave::create_dobj()
-{
-    if (done_dobj == true)
-        return;
-    moddobj* mdbj;
-    mdbj = jwm.get_moddobjlist()->add_moddobj(
-        synthmodnames::USERWAVE, dobjnames::LST_WAVEFORM);
-    mdbj->get_dobjdobjlist()->add_dobjdobj(
-        dobjnames::LST_WAVEFORM, dobjnames::SIN_VERTEX);
-    done_dobj = true;
+    register_param(paramnames::RECYCLE_MODE);
+    register_param(paramnames::ZERO_RETRIGGER);
+    register_param(paramnames::DROP_CHECK_RANGE);
+    register_moddobj(dobjnames::LST_WAVEFORM, dobjnames::SIN_VERTEX);
 }
 

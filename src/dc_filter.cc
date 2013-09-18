@@ -10,9 +10,9 @@ dc_filter::dc_filter(char const* uname) :
  in_signal(0), output(0), dc_time(0), filter(0), filterarraymax(0),
  fpos(0), filtertotal(0)
 {
-    add_output(outputnames::OUT_OUTPUT);
-    add_input(inputnames::IN_SIGNAL);
-    create_params();
+    register_output(outputnames::OUT_OUTPUT);
+    register_input(inputnames::IN_SIGNAL);
+    init_first();
 }
 
 dc_filter::~dc_filter()
@@ -101,10 +101,10 @@ void dc_filter::run()
         fpos = 0;
 }
 
-void dc_filter::create_params()
+void dc_filter::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::DC_TIME);
+    register_param(paramnames::DC_TIME);
 }
 

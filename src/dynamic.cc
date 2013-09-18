@@ -13,12 +13,11 @@ dynamic::dynamic(char const* uname) :
  dynvertices(0), dvc(0), dvn(0),
  thresh_range(0)
 {
-    add_output(outputnames::OUT_OUTPUT);
-    add_output(outputnames::OUT_PLAY_STATE);
-    add_input(inputnames::IN_SIGNAL);
-    add_input(inputnames::IN_MODULATION);
-    create_params();
-    create_dobj();
+    register_output(outputnames::OUT_OUTPUT);
+    register_output(outputnames::OUT_PLAY_STATE);
+    register_input(inputnames::IN_SIGNAL);
+    register_input(inputnames::IN_MODULATION);
+    init_first();
 }
 
 dynamic::~dynamic()
@@ -242,25 +241,13 @@ void dynamic::run()
 
 bool dynamic::done_dobj = false;
 
-void dynamic::create_params()
+void dynamic::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::UP_THRESH);
-    relate_param(paramnames::LO_THRESH);
-    relate_param(paramnames::POSNEG_MIRROR);
-    relate_param(paramnames::USE_RATIOS);
-    
-}
-
-void dynamic::create_dobj()
-{
-    if (done_dobj == true)
-        return;
-    moddobj* mdbj;
-    mdbj = jwm.get_moddobjlist()->add_moddobj(
-        synthmodnames::DYNAMIC, dobjnames::LST_DYNAMICS);
-    mdbj->get_dobjdobjlist()->add_dobjdobj(
-        dobjnames::LST_DYNAMICS, dobjnames::SIN_DVERTEX);
-    done_dobj = true;
+    register_param(paramnames::UP_THRESH);
+    register_param(paramnames::LO_THRESH);
+    register_param(paramnames::POSNEG_MIRROR);
+    register_param(paramnames::USE_RATIOS);
+    register_moddobj(dobjnames::LST_DYNAMICS, dobjnames::SIN_DVERTEX);
 }

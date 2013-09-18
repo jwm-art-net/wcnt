@@ -8,8 +8,8 @@ diff_filter::diff_filter(char const* uname) :
  synthmod(synthmodnames::DIFFFILTER, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), out_output(0.0), oldinsig(0.0)
 {
-    add_output(outputnames::OUT_OUTPUT);
-    add_input(inputnames::IN_SIGNAL);
+    register_output(outputnames::OUT_OUTPUT);
+    register_input(inputnames::IN_SIGNAL);
 }
 
 diff_filter::~diff_filter()

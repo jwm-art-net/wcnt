@@ -22,17 +22,17 @@ notetran::notetran(char const* uname) :
     no_hi_notename = new char[jwm_init::note_array_size];
     ns_lo_notename = new char[jwm_init::note_array_size];
     ns_hi_notename = new char[jwm_init::note_array_size];
-    add_output(outputnames::OUT_NOVALUE);
-    add_output(outputnames::OUT_NSVALUE);
-    add_output(outputnames::OUT_NOTE_ON_TRIG);
-    add_output(outputnames::OUT_NOT_NO_TRIG);
-    add_output(outputnames::OUT_NOTE_SLIDE_TRIG);
-    add_output(outputnames::OUT_NOT_NS_TRIG);
-    add_input(inputnames::IN_NOTENAME);
-    add_input(inputnames::IN_NOTE_ON_TRIG);
-    add_input(inputnames::IN_NOTE_SLIDE_TRIG);
-    add_input(inputnames::IN_DETRANSPOSE);
-    create_params();
+    register_output(outputnames::OUT_NOVALUE);
+    register_output(outputnames::OUT_NSVALUE);
+    register_output(outputnames::OUT_NOTE_ON_TRIG);
+    register_output(outputnames::OUT_NOT_NO_TRIG);
+    register_output(outputnames::OUT_NOTE_SLIDE_TRIG);
+    register_output(outputnames::OUT_NOT_NS_TRIG);
+    register_input(inputnames::IN_NOTENAME);
+    register_input(inputnames::IN_NOTE_ON_TRIG);
+    register_input(inputnames::IN_NOTE_SLIDE_TRIG);
+    register_input(inputnames::IN_DETRANSPOSE);
+    init_first();
 }
 
 notetran::~notetran()
@@ -292,22 +292,22 @@ void notetran::run()
     }
 }
 
-void notetran::create_params()
+void notetran::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
     // inserted in order to be defined by user
-    relate_param(paramnames::NO_LONOTE);
-    relate_param(paramnames::NO_HINOTE);
-    relate_param(paramnames::MINNO_OUT);
-    relate_param(paramnames::MAXNO_OUT);
-    relate_param(paramnames::DETRAN_NO);
-    relate_param(paramnames::NO_RESPTIME);
-    relate_param(paramnames::NS_LONOTE);
-    relate_param(paramnames::NS_HINOTE);
-    relate_param(paramnames::MINNS_OUT);
-    relate_param(paramnames::MAXNS_OUT);
-    relate_param(paramnames::DETRAN_NS);
-    relate_param(paramnames::NS_RESPTIME);
+    register_param(paramnames::NO_LONOTE);
+    register_param(paramnames::NO_HINOTE);
+    register_param(paramnames::MINNO_OUT);
+    register_param(paramnames::MAXNO_OUT);
+    register_param(paramnames::DETRAN_NO);
+    register_param(paramnames::NO_RESPTIME);
+    register_param(paramnames::NS_LONOTE);
+    register_param(paramnames::NS_HINOTE);
+    register_param(paramnames::MINNS_OUT);
+    register_param(paramnames::MAXNS_OUT);
+    register_param(paramnames::DETRAN_NS);
+    register_param(paramnames::NS_RESPTIME);
 }
 

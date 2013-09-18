@@ -30,7 +30,7 @@ private:
     unsigned long attack_samps;
     unsigned long release_samps;
     bool do_attack;// false == do_release
-    void create_params();
+    void init_first();
     
 };
 

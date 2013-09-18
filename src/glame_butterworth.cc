@@ -12,11 +12,11 @@ glame_butterworth::glame_butterworth(char const* uname) :
  resonance(0), res_mod_size(0), l_descriptor(0), l_inst_handle(0),
  l_input(0), l_output(0), l_cut_off(0), l_resonance(0)
 {
-    add_output(outputnames::OUT_OUTPUT);
-    add_input(inputnames::IN_SIGNAL);
-    add_input(inputnames::IN_CUTOFF_PHASE_STEP);
-    add_input(inputnames::IN_RES_MOD);
-    create_params();
+    register_output(outputnames::OUT_OUTPUT);
+    register_input(inputnames::IN_SIGNAL);
+    register_input(inputnames::IN_CUTOFF_PHASE_STEP);
+    register_input(inputnames::IN_RES_MOD);
+    init_first();
     type_names[0] = "buttlow_iir";
     type_names[1] = "butthigh_iir";
     min_cut_off = 0.0001 * jwm.samplerate();
@@ -151,13 +151,13 @@ void glame_butterworth::run()
     output = *l_output;
 }
 
-void glame_butterworth::create_params()
+void glame_butterworth::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::GLAME_FILTER_TYPE, "lowpass/highpass");
-    relate_param(paramnames::RESONANCE);
-    relate_param(paramnames::RES_MODSIZE);
+    register_param(paramnames::GLAME_FILTER_TYPE, "lowpass/highpass");
+    register_param(paramnames::RESONANCE);
+    register_param(paramnames::RES_MODSIZE);
 }
 
 #endif // WITH_LADSPA

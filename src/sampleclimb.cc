@@ -9,10 +9,10 @@ sample_climb::sample_climb(char const* uname) :
  synthmod(synthmodnames::SAMPLECLIMB, uname, SM_HAS_OUT_OUTPUT),
  in_trig(0), in_signal(0), output(0), rate(1), target(0)
 {
-    add_output(outputnames::OUT_OUTPUT);
-    add_input(inputnames::IN_TRIG);
-    add_input(inputnames::IN_SIGNAL);
-    create_params();
+    register_output(outputnames::OUT_OUTPUT);
+    register_input(inputnames::IN_TRIG);
+    register_input(inputnames::IN_SIGNAL);
+    init_first();
 }
 
 sample_climb::~sample_climb()
@@ -89,9 +89,9 @@ void sample_climb::run()
     output += (target - output) * rate;
 }
 
-void sample_climb::create_params()
+void sample_climb::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::RATE);
+    register_param(paramnames::RATE);
 }

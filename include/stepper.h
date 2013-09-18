@@ -77,10 +77,7 @@ private:
     double rtime_stpsz;
     double rtime_size;
 
-    
-    void create_params();
-    static bool done_moddobj;
-    void create_moddobj();
+    void init_first();
 };
 
 #endif

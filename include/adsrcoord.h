@@ -49,7 +49,7 @@ private:
     double upper_level;
     double lower_time;
     double lower_level;
-    void create_params();
+    void init_first();
     
 };
 

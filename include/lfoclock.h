@@ -34,7 +34,7 @@ private:
     double degs;
     double degsize1;
     double degsize2;
-    void create_params();
+    void init_first();
     
 };
 

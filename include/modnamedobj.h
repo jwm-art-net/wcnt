@@ -19,7 +19,7 @@ public:
 
 private:
     char* modname;
-    void create_params();
+    void init_first();
     
 };
 

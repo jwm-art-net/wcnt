@@ -90,7 +90,7 @@ private:
     void set_no_hi_notename(char const* noh);
     void set_ns_lo_notename(char const* nsl);
     void set_ns_hi_notename(char const* nsh);
-    void create_params();
+    void init_first();
     
 };
 

@@ -14,7 +14,7 @@ class modinputlist : public linked_list<modinput>
     modinputlist(){};
     modinputlist(DESTRUCTION);
 
-    modinput* add_input(synthmod*, inputnames::IN_TYPE);
+    modinput* register_input(synthmod*, inputnames::IN_TYPE);
     void delete_module_inputs(synthmod*);
 };
 

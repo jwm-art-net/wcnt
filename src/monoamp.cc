@@ -10,11 +10,11 @@ mono_amp::mono_amp(char const* uname) :
  out_output(0),
  level(0), amp_modsize(0), clip_level(0), amp_level(0), ampsig(0)
 {
-    add_output(outputnames::OUT_OUTPUT);
-    add_input(inputnames::IN_SIGNAL);
-    add_input(inputnames::IN_EG);
-    add_input(inputnames::IN_AMP_MOD);
-    create_params();
+    register_output(outputnames::OUT_OUTPUT);
+    register_input(inputnames::IN_SIGNAL);
+    register_input(inputnames::IN_EG);
+    register_input(inputnames::IN_AMP_MOD);
+    init_first();
 }
 
 mono_amp::~mono_amp()
@@ -113,12 +113,12 @@ void mono_amp::run()
         out_output = clip_level;
 }
 
-void mono_amp::create_params()
+void mono_amp::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::LEVEL);
-    relate_param(paramnames::AMP_MODSIZE);
-    relate_param(paramnames::CLIP_LEVEL);
+    register_param(paramnames::LEVEL);
+    register_param(paramnames::AMP_MODSIZE);
+    register_param(paramnames::CLIP_LEVEL);
 }
 

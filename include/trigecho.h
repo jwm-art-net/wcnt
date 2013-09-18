@@ -33,7 +33,7 @@ private:
     unsigned long pastmax;
     unsigned long pastpos;
     double vel_count_ratio;
-    void create_params();
+    void init_first();
     
 };
 

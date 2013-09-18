@@ -3,7 +3,8 @@
 #include "../include/dobjlist.h"
 #include "../include/dobjparamlist.h"
 #include "../include/fxsparamlist.h"
-
+#include "../include/dobjdobjlist.h"
+#include "../include/topdobjlist.h"
 
 dobj::dobj(dobjnames::DOBJ_TYPE dt) :
  object_type(dt), username(0), valid(true)
@@ -112,27 +113,43 @@ dobj* dobj::duplicate_dobj(const char* uname)
 
 std::string*  dobj::err_msg = 0;
 
-bool dobj::done_params()
+bool dobj::done_first()
 {
-    bool r = params_done[object_type];
-    params_done[object_type] = true;
+    bool r = first_done[object_type];
+    first_done[object_type] = true;
     return r;
 }
 
-void dobj::relate_param(paramnames::PAR_TYPE pt)
+void dobj::register_param(paramnames::PAR_TYPE pt)
 {
     jwm.get_dparlist()->add_dobjparam(object_type, pt);
+    /* FIXME: error handling here */
 }
 
-void dobj::relate_param(paramnames::PAR_TYPE pt, const char* fixstr)
+void dobj::register_param(paramnames::PAR_TYPE pt, const char* fixstr)
 {
     jwm.get_dparlist()->add_dobjparam(object_type, pt);
     jwm.get_fxsparamlist()->add_param(fixstr, pt);
+    /* FIXME: error handling here */
 }
+
+void dobj::register_dobjdobj(dobjnames::DOBJ_TYPE parent,
+                                                dobjnames::DOBJ_TYPE sprog)
+{
+    dobjdobjlist* dd;
+    dd = jwm.get_topdobjlist()->create_dobjdobjlist(object_type, parent);
+    if (!dd
+     || !dd->register_dobjdobj(parent, sprog))
+    {
+        /* FIXME: error message here */
+        valid = false;
+    }
+}
+
 
 #ifdef DOBJ_STATS
 STATS_INIT(dobj)
 #endif
 
-bool dobj::params_done[dobjnames::DOBJ_LAST] = { false };
+bool dobj::first_done[dobjnames::DOBJ_LAST] = { false };
 

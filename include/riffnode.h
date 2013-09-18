@@ -99,7 +99,7 @@ private:
     short transpose;
     short repeat;
     short repeat_stripe;
-    void create_params();
+    void init_first();
     
 };
 

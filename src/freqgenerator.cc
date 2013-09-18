@@ -11,10 +11,10 @@ freq_generator::freq_generator(char const* uname) :
  freq_range_hi(440.00), freq_range_lo(110.00), sig_step_size(0),
  freq_step_size(0), step_count(24)
 {
-    add_output(outputnames::OUT_FREQ);
-    add_output(outputnames::OUT_PHASE_STEP);
-    add_input(inputnames::IN_SIGNAL);
-    create_params();
+    register_output(outputnames::OUT_FREQ);
+    register_output(outputnames::OUT_PHASE_STEP);
+    register_input(inputnames::IN_SIGNAL);
+    init_first();
 }
 
 freq_generator::~freq_generator()
@@ -127,14 +127,14 @@ void freq_generator::run()
     out_phase_step = jwm.samplerate() / out_freq;
 }
 
-void freq_generator::create_params()
+void freq_generator::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::STEP_COUNT);
-    relate_param(paramnames::SIG_RANGE_LO);
-    relate_param(paramnames::SIG_RANGE_HI);
-    relate_param(paramnames::FREQ_RANGE_LO);
-    relate_param(paramnames::FREQ_RANGE_HI);
+    register_param(paramnames::STEP_COUNT);
+    register_param(paramnames::SIG_RANGE_LO);
+    register_param(paramnames::SIG_RANGE_HI);
+    register_param(paramnames::FREQ_RANGE_LO);
+    register_param(paramnames::FREQ_RANGE_HI);
 }
 

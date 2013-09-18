@@ -23,7 +23,7 @@ private:
     double out_output;
     FUNC func;
     double bias;
-    void create_params();
+    void init_first();
     
 };
 

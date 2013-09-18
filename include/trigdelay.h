@@ -28,7 +28,7 @@ private:
     STATUS* past_trigs; //array
     long pastmax;
     long pastpos;
-    void create_params();
+    void init_first();
     
 };
 

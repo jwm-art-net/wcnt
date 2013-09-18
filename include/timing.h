@@ -18,7 +18,7 @@ public:
 
 private:
     double seconds;
-    void create_params();
+    void init_first();
     
 };
 

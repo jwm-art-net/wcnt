@@ -14,12 +14,12 @@ triangle_wave2::triangle_wave2(char const* uname) :
  sect_spanlvl(0), sect_startlvl(0), old_maxsamps(0), sectmaxsamps(1),
  sectsample(0), counter_ratio(0)
 {
-    add_output(outputnames::OUT_OUTPUT);
-    add_output(outputnames::OUT_PLAY_STATE);
-    add_input(inputnames::IN_PHASE_TRIG);
-    add_input(inputnames::IN_PHASE_STEP);
-    add_input(inputnames::IN_NORM_MOD);
-    create_params();
+    register_output(outputnames::OUT_OUTPUT);
+    register_output(outputnames::OUT_PLAY_STATE);
+    register_input(inputnames::IN_PHASE_TRIG);
+    register_input(inputnames::IN_PHASE_STEP);
+    register_input(inputnames::IN_NORM_MOD);
+    init_first();
 }
 
 triangle_wave2::~triangle_wave2()
@@ -182,13 +182,13 @@ void triangle_wave2::run()
     }
 }
 
-void triangle_wave2::create_params()
+void triangle_wave2::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::NORM_FREQ);
-    relate_param(paramnames::NORM_MODSIZE);
-    relate_param(paramnames::RECYCLE_MODE);
-    relate_param(paramnames::ZERO_RETRIGGER);
+    register_param(paramnames::NORM_FREQ);
+    register_param(paramnames::NORM_MODSIZE);
+    register_param(paramnames::RECYCLE_MODE);
+    register_param(paramnames::ZERO_RETRIGGER);
 }
 

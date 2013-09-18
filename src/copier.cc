@@ -12,7 +12,7 @@ copier::copier() :
  from_mod(0), to_mod(0),
  from_dobj(0), to_dobj(0)
 {
-    create_params();
+    init_first();
 }
 
 copier::~copier()
@@ -146,12 +146,12 @@ stockerrs::ERR_TYPE copier::validate()
     return stockerrs::ERR_ERROR;
 }
 
-void copier::create_params()
+void copier::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::COPYFROM);
-    relate_param(paramnames::COPYTO);
+    register_param(paramnames::COPYFROM);
+    register_param(paramnames::COPYTO);
 }
 
 

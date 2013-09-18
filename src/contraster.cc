@@ -10,11 +10,11 @@ contraster::contraster(char const* uname) :
  in_rude_switch_trig(0), power_min(1.0), power_max(2.0), rude_mode(OFF),
  wetdry(0), power(0.0), power_mod(0), powerrad(0.0), output(0)
 {
-    add_output(outputnames::OUT_OUTPUT);
-    add_input(inputnames::IN_SIGNAL);
-    add_input(inputnames::IN_POWER_MOD);
-    add_input(inputnames::IN_RUDE_SWITCH_TRIG);
-    create_params();
+    register_output(outputnames::OUT_OUTPUT);
+    register_input(inputnames::IN_SIGNAL);
+    register_input(inputnames::IN_POWER_MOD);
+    register_input(inputnames::IN_RUDE_SWITCH_TRIG);
+    init_first();
 }
 
 contraster::~contraster()
@@ -147,13 +147,13 @@ void contraster::run()
 
 
 
-void contraster::create_params()
+void contraster::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::POWER_MIN);
-    relate_param(paramnames::POWER_MAX);
-    relate_param(paramnames::RUDE_MODE);
-    relate_param(paramnames::WETDRY);
+    register_param(paramnames::POWER_MIN);
+    register_param(paramnames::POWER_MAX);
+    register_param(paramnames::RUDE_MODE);
+    register_param(paramnames::WETDRY);
 }
 

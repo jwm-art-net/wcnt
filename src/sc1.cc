@@ -15,9 +15,9 @@ sc1::sc1(char const* uname) :
  l_makeup(0), l_input(0), l_output(0)
 
 {
-    add_input(inputnames::IN_SIGNAL);
-    add_output(outputnames::OUT_OUTPUT);
-    create_params();
+    register_input(inputnames::IN_SIGNAL);
+    register_output(outputnames::OUT_OUTPUT);
+    init_first();
 
 }
 
@@ -186,16 +186,16 @@ void sc1::run()
     output = *l_output;
 }
 
-void sc1::create_params()
+void sc1::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::ATTACK_TIME);
-    relate_param(paramnames::RELEASE_TIME);
-    relate_param(paramnames::THRESH_DB);
-    relate_param(paramnames::RATIO_1N);
-    relate_param(paramnames::KNEE_DB);
-    relate_param(paramnames::MAKEUP_DB);
+    register_param(paramnames::ATTACK_TIME);
+    register_param(paramnames::RELEASE_TIME);
+    register_param(paramnames::THRESH_DB);
+    register_param(paramnames::RATIO_1N);
+    register_param(paramnames::KNEE_DB);
+    register_param(paramnames::MAKEUP_DB);
 }
 
 #endif // WITH_LADSPA

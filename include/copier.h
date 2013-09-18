@@ -39,7 +39,7 @@ class copier : public dobj
     synthmod* to_mod;
     dobj* from_dobj;
     dobj* to_dobj;
-    void create_params();
+    void init_first();
     
 };
 

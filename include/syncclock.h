@@ -44,7 +44,7 @@ private:
     double beatlen;
     double phasepos;
     double snapto;
-    void create_params();
+    void init_first();
     
 };
 

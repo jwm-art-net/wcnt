@@ -5,7 +5,7 @@
 dobjmod::dobjmod() :
  dobj(dobjnames::DOBJ_SYNTHMOD), synth_mod(0)
 {
-    create_params();
+    init_first();
 }
 
 bool dobjmod::set_param(paramnames::PAR_TYPE pt, void* data)
@@ -29,9 +29,9 @@ void const* dobjmod::get_param(paramnames::PAR_TYPE pt) const
     }
 }
 
-void dobjmod::create_params()
+void dobjmod::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::MODNAME);
+    register_param(paramnames::MODNAME);
 }

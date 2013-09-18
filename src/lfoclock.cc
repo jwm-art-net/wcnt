@@ -14,13 +14,13 @@ lfo_clock::lfo_clock(char const* uname) :
  degsize1(0.00), degsize2(0.00)
 {
 // degs initialised at 360 so immediately triggers if in_phase_trig is off
-    add_output(outputnames::OUT_PHASE_TRIG);
-    add_output(outputnames::OUT_PREMOD_PHASE_STEP);
-    add_output(outputnames::OUT_PHASE_STEP);
-    add_input(inputnames::IN_PHASE_TRIG);
-    add_input(inputnames::IN_FREQ_MOD1);
-    add_input(inputnames::IN_FREQ_MOD2);
-    create_params();
+    register_output(outputnames::OUT_PHASE_TRIG);
+    register_output(outputnames::OUT_PREMOD_PHASE_STEP);
+    register_output(outputnames::OUT_PHASE_STEP);
+    register_input(inputnames::IN_PHASE_TRIG);
+    register_input(inputnames::IN_FREQ_MOD1);
+    register_input(inputnames::IN_FREQ_MOD2);
+    init_first();
 }
 
 lfo_clock::~lfo_clock()
@@ -165,12 +165,12 @@ void lfo_clock::run()
     }
 }
 
-void lfo_clock::create_params()
+void lfo_clock::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::FREQ);
-    relate_param(paramnames::FREQ_MOD1SIZE);
-    relate_param(paramnames::FREQ_MOD2SIZE);
+    register_param(paramnames::FREQ);
+    register_param(paramnames::FREQ_MOD1SIZE);
+    register_param(paramnames::FREQ_MOD2SIZE);
 }
 

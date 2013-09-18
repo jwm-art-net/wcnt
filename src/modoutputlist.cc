@@ -9,7 +9,7 @@ modoutputlist::modoutputlist(DESTRUCTION d) :
 }
 
 modoutput*
-modoutputlist::add_output(synthmod* sm, outputnames::OUT_TYPE ot)
+modoutputlist::register_output(synthmod* sm, outputnames::OUT_TYPE ot)
 {
     modoutput* mo = new modoutput(sm, ot);
     if (!add_at_tail(mo)){
@@ -44,7 +44,7 @@ modoutputlist* modoutputlist::list_of_category(iocat::IOCAT oc)
     {
         ot = output->get_outputtype();
         if (outnames->get_category(ot) == oc)
-            outcatlist->add_output(output->get_synthmodule(), ot);
+            outcatlist->register_output(output->get_synthmodule(), ot);
         output = goto_next();
     }
     return outcatlist;
@@ -117,7 +117,7 @@ modoutputlist* modoutputlist::list_of_category_orderpref(
                 sm = output->get_synthmodule();
                 if (out_prefs[a] == output->get_outputtype()
                         && sm_prefs[c] == sm->get_module_type())
-                    sorted_outs->add_output(sm, output->get_outputtype());
+                    sorted_outs->register_output(sm, output->get_outputtype());
                 output = pot_outs->goto_next();
             }
         }
@@ -146,7 +146,7 @@ modoutputlist* modoutputlist::list_of_category_orderpref(
                 not_prefchk++;
         }
         if (out_prefchk == 0 && not_prefchk == 0)
-            sorted_outs->add_output(output->get_synthmodule(),
+            sorted_outs->register_output(output->get_synthmodule(),
                                     output->get_outputtype());
         output = pot_outs->goto_next();
     }

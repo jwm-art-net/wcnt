@@ -39,7 +39,7 @@ private:
     short arraymax;
     short arrpos;
     double sqrsum;
-    void create_params();
+    void init_first();
     
 };
 

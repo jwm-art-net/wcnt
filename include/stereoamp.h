@@ -41,7 +41,7 @@ private:
     // working
     double left;
     double right;
-    void create_params();
+    void init_first();
     
 };
 

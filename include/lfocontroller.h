@@ -41,7 +41,7 @@ private:
     double resp_ac;
     double level_size;
     double current_level;
-    void create_params();
+    void init_first();
     
 };
 

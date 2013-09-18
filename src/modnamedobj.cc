@@ -5,7 +5,7 @@ modnamedobj::modnamedobj() :
  dobj(dobjnames::SIN_MODNAME),
  modname(0)
 {
-    create_params();
+    init_first();
 }
 
 modnamedobj::~modnamedobj()
@@ -44,11 +44,11 @@ void const* modnamedobj::get_param(paramnames::PAR_TYPE dt) const
     }
 }
 
-void modnamedobj::create_params()
+void modnamedobj::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::NAME);
+    register_param(paramnames::NAME);
 }
 
 

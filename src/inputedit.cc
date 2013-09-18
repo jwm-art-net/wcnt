@@ -12,7 +12,7 @@ inputedit::inputedit() :
  dobj(dobjnames::SIN_EDIT_INPUT),
  modname(0), iostr(0)
 {
-    create_params();
+    init_first();
 }
 
 inputedit::~inputedit()
@@ -176,12 +176,12 @@ void const* inputedit::get_param(paramnames::PAR_TYPE dt) const
     }
 }
 
-void inputedit::create_params()
+void inputedit::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::STR_UNNAMED);
-    relate_param(paramnames::STR_LIST);
+    register_param(paramnames::STR_UNNAMED);
+    register_param(paramnames::STR_LIST);
 }
 
 

@@ -18,17 +18,16 @@ adsr::adsr(char const* uname) :
  run_coords(0), coord(0), coord_ix(0),
  decay_ix(0), sustain_ix(0), release_ix(0)
 {
-    add_output(outputnames::OUT_OUTPUT);
-    add_output(outputnames::OUT_OFF_TRIG);
-    add_output(outputnames::OUT_PLAY_STATE);
-    add_input(inputnames::IN_NOTE_ON_TRIG);
-    add_input(inputnames::IN_NOTE_OFF_TRIG);
-    add_input(inputnames::IN_VELOCITY);
+    register_output(outputnames::OUT_OUTPUT);
+    register_output(outputnames::OUT_OFF_TRIG);
+    register_output(outputnames::OUT_PLAY_STATE);
+    register_input(inputnames::IN_NOTE_ON_TRIG);
+    register_input(inputnames::IN_NOTE_OFF_TRIG);
+    register_input(inputnames::IN_VELOCITY);
 
     add_at_head(new adsr_coord(adsr_coord::ADSR_SUSTAIN, 0 ,0 ,0 ,0));
 
-    create_params();
-    create_moddobj();
+    init_first();
 }
 
 adsr::~adsr()
@@ -366,29 +365,18 @@ synthmod* adsr::duplicate_module(const char* uname, DUP_IO dupio)
 }
 
 
-void adsr::create_params()
+void adsr::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::UP_THRESH);
-    relate_param(paramnames::LO_THRESH);
-    relate_param(paramnames::START_LEVEL);
-    relate_param(paramnames::MIN_TIME);
-    relate_param(paramnames::MAX_SUSTAIN_TIME);
-    relate_param(paramnames::RELEASE_RATIO);
-    relate_param(paramnames::SUSTAIN_STATUS);
-    relate_param(paramnames::ZERO_RETRIGGER);
-}
+    register_param(paramnames::UP_THRESH);
+    register_param(paramnames::LO_THRESH);
+    register_param(paramnames::START_LEVEL);
+    register_param(paramnames::MIN_TIME);
+    register_param(paramnames::MAX_SUSTAIN_TIME);
+    register_param(paramnames::RELEASE_RATIO);
+    register_param(paramnames::SUSTAIN_STATUS);
+    register_param(paramnames::ZERO_RETRIGGER);
+    register_moddobj(dobjnames::LST_ENVELOPE, dobjnames::SIN_COORD);
 
-bool adsr::done_moddobj = false;
-void adsr::create_moddobj()
-{
-    if (done_moddobj == true)
-        return;
-    moddobj* mdbj;
-    mdbj = jwm.get_moddobjlist()->add_moddobj(
-        synthmodnames::ADSR, dobjnames::LST_ENVELOPE);
-    mdbj->get_dobjdobjlist()->add_dobjdobj(
-        dobjnames::LST_ENVELOPE, dobjnames::SIN_COORD);
-    done_moddobj = true;
 }

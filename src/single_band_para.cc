@@ -14,12 +14,12 @@ single_band_para::single_band_para(char const* uname) :
  l_input(0), l_output(0),
  l_gain_db(0), l_frequency(440), l_bandwidth(1)
 {
-    add_output(outputnames::OUT_OUTPUT);
-    add_input(inputnames::IN_SIGNAL);
-    add_input(inputnames::IN_PHASE_STEP);
-    add_input(inputnames::IN_GAIN_MOD);
-    add_input(inputnames::IN_BANDWIDTH_MOD);
-    create_params();
+    register_output(outputnames::OUT_OUTPUT);
+    register_input(inputnames::IN_SIGNAL);
+    register_input(inputnames::IN_PHASE_STEP);
+    register_input(inputnames::IN_GAIN_MOD);
+    register_input(inputnames::IN_BANDWIDTH_MOD);
+    init_first();
     max_freq = 0.4 * jwm.samplerate();
 }
 
@@ -169,14 +169,14 @@ void single_band_para::run()
     output = *l_output;
 }
 
-void single_band_para::create_params()
+void single_band_para::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::GAIN_DB);
-    relate_param(paramnames::GAIN_MODSIZE);
-    relate_param(paramnames::BANDWIDTH);
-    relate_param(paramnames::BANDWIDTH_MODSIZE);
+    register_param(paramnames::GAIN_DB);
+    register_param(paramnames::GAIN_MODSIZE);
+    register_param(paramnames::BANDWIDTH);
+    register_param(paramnames::BANDWIDTH_MODSIZE);
 }
 
 #endif // WITH_LADSPA

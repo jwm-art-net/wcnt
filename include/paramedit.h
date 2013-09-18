@@ -37,7 +37,7 @@ private:
     bool mod_param_edit(synthmod*, const char* parname, 
                         const char* valstr);
     bool dobj_param_edit(dobj*, const char* parname, const char* valstr);
-    void create_params();
+    void init_first();
     
 };
 

@@ -9,9 +9,9 @@ simple_delay::simple_delay(char const* uname) :
  in_signal(0), out_output(0), delay_time(0), output(0),
  filter(0), filterarraymax(0), fpos(0), filtertotal(0)
 {
-    add_output(outputnames::OUT_OUTPUT);
-    add_input(inputnames::IN_SIGNAL);
-    create_params();
+    register_output(outputnames::OUT_OUTPUT);
+    register_input(inputnames::IN_SIGNAL);
+    init_first();
 }
 
 simple_delay::~simple_delay()
@@ -100,10 +100,10 @@ void simple_delay::run()
     if (fpos < 0) fpos = filterarraymax - 1;
 }
 
-void simple_delay::create_params()
+void simple_delay::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::DELAY_TIME);
+    register_param(paramnames::DELAY_TIME);
 }
 
