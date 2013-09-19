@@ -16,11 +16,11 @@ wave_phase::wave_phase(char const* uname) :
  phase(0), shape_phase(0), degs(0), max_degs(0), invph(1),
  table(0), shape_table(0)
 {
-    register_output(outputnames::OUT_OUTPUT);
-    register_output(outputnames::OUT_PLAY_STATE);
     register_input(inputnames::IN_PHASE_TRIG);
     register_input(inputnames::IN_PHASE_STEP);
     register_input(inputnames::IN_SHAPE_PHASE_STEP);
+    register_output(outputnames::OUT_OUTPUT);
+    register_output(outputnames::OUT_PLAY_STATE);
     init_first();
 }
 

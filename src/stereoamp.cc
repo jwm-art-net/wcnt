@@ -11,12 +11,12 @@ stereo_amp::stereo_amp(char const* uname) :
  left_level(0), right_level(0), amp_modsize(0), clip_level(0),
  left(0), right(0)
 {
-    register_output(outputnames::OUT_LEFT);
-    register_output(outputnames::OUT_RIGHT);
     register_input(inputnames::IN_LEFT);
     register_input(inputnames::IN_RIGHT);
     register_input(inputnames::IN_EG);
     register_input(inputnames::IN_AMP_MOD);
+    register_output(outputnames::OUT_LEFT);
+    register_output(outputnames::OUT_RIGHT);
     init_first();
 }
 

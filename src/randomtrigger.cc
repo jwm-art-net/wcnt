@@ -16,9 +16,9 @@ randomtrigger::randomtrigger(char const* uname) :
  in_trig(0), out_trig(OFF), out_not_trig(OFF), probability(0.5),
  not_probability(0.5)
 {
+    register_input(inputnames::IN_TRIG);
     register_output(outputnames::OUT_TRIG);
     register_output(outputnames::OUT_NOT_TRIG);
-    register_input(inputnames::IN_TRIG);
     init_first();
     srandom(time(0)); //srand(time(0));
 }

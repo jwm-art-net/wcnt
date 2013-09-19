@@ -13,10 +13,10 @@ bode_freq_shifter::bode_freq_shifter(char const* uname) :
  l_freq_shift(0.0), l_input(0), l_out_down(0), l_out_up(0),
  l_out_latency(0)
 {
-    register_output(outputnames::OUT_UP);
-    register_output(outputnames::OUT_DOWN);
     register_input(inputnames::IN_SIGNAL);
     register_input(inputnames::IN_SHIFT_MOD);
+    register_output(outputnames::OUT_UP);
+    register_output(outputnames::OUT_DOWN);
     init_first();
 }
 

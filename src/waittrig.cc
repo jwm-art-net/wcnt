@@ -16,10 +16,10 @@ waittrig::waittrig(char const* uname) :
  min_time(0), max_time(0), count(1), min_samples(0), max_samples(0),
  mins(0), maxs(0), counter(0)
 {
-    register_output(outputnames::OUT_TRIG);
-    register_output(outputnames::OUT_WAIT_STATE);
     register_input(inputnames::IN_TRIG1);
     register_input(inputnames::IN_TRIG2);
+    register_output(outputnames::OUT_TRIG);
+    register_output(outputnames::OUT_WAIT_STATE);
     init_first();
 }
 

@@ -19,8 +19,8 @@ spreader::spreader(char const* uname) :
  in_mod(0), out_output(0), start_level(0), end_level(0), seg_lvl(0),
  sigs(0)
 {
-    register_output(outputnames::OUT_OUTPUT);
     register_input(inputnames::IN_MODULATION);
+    register_output(outputnames::OUT_OUTPUT);
     init_first();
 }
 

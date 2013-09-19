@@ -11,9 +11,9 @@ freq_generator::freq_generator(char const* uname) :
  freq_range_hi(440.00), freq_range_lo(110.00), sig_step_size(0),
  freq_step_size(0), step_count(24)
 {
+    register_input(inputnames::IN_SIGNAL);
     register_output(outputnames::OUT_FREQ);
     register_output(outputnames::OUT_PHASE_STEP);
-    register_input(inputnames::IN_SIGNAL);
     init_first();
 }
 

@@ -13,10 +13,10 @@ caps_plate2x2::caps_plate2x2(char const* uname) :
  l_in_left(0), l_in_right(0), l_bandwidth(0), l_tail(0), l_damping(0),
  l_blend(0), l_out_left(0), l_out_right(0)
 {
-    register_output(outputnames::OUT_LEFT);
-    register_output(outputnames::OUT_RIGHT);
     register_input(inputnames::IN_LEFT);
     register_input(inputnames::IN_RIGHT);
+    register_output(outputnames::OUT_LEFT);
+    register_output(outputnames::OUT_RIGHT);
     init_first();
 }
 

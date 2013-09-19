@@ -9,9 +9,9 @@ wcnt_signal::wcnt_signal(char const* uname) :
  synthmod(synthmodnames::WCNTSIGNAL, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), out_output(0.0), level(0.0)
 {
+    register_input(inputnames::IN_SIGNAL);
     register_output(outputnames::OUT_OUTPUT);
     register_output(outputnames::OUT_THROUGH);
-    register_input(inputnames::IN_SIGNAL);
     init_first();
 }
 

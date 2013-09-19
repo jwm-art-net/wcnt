@@ -34,14 +34,14 @@ sampler::sampler(char const* uname) :
  ac_out_left(0), ac_out_right(0),
  ch(WAV_CH_UNKNOWN)
 {
-    register_output(outputnames::OUT_LEFT);
-    register_output(outputnames::OUT_RIGHT);
-    register_output(outputnames::OUT_LOOP_TRIG);
-    register_output(outputnames::OUT_PLAY_STATE);
     register_input(inputnames::IN_PLAY_TRIG);
     register_input(inputnames::IN_STOP_TRIG);
     register_input(inputnames::IN_START_POS_MOD);
     register_input(inputnames::IN_PHASE_STEP);
+    register_output(outputnames::OUT_LEFT);
+    register_output(outputnames::OUT_RIGHT);
+    register_output(outputnames::OUT_LOOP_TRIG);
+    register_output(outputnames::OUT_PLAY_STATE);
     init_first();
     sampletot = 0;
 }

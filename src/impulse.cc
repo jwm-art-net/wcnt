@@ -7,8 +7,8 @@ impulse::impulse(char const* uname) :
  synthmod(synthmodnames::IMPULSE, uname, SM_HAS_OUT_OUTPUT),
  in_trig(0), out_output(0.0)
 {
-    register_output(outputnames::OUT_OUTPUT);
     register_input(inputnames::IN_TRIG);
+    register_output(outputnames::OUT_OUTPUT);
 }
 
 impulse::~impulse()

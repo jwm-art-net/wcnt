@@ -14,10 +14,10 @@ patterntrig::patterntrig(char const* uname) :
  in_trig(0), out_trig(OFF), out_start_trig(OFF),
  out_end_trig(OFF), pattern(0), ptr(0)
 {
+    register_input(inputnames::IN_TRIG);
     register_output(outputnames::OUT_TRIG);
     register_output(outputnames::OUT_START_TRIG);
     register_output(outputnames::OUT_END_TRIG);
-    register_input(inputnames::IN_TRIG);
     init_first();
 }
 

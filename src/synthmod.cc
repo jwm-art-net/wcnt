@@ -49,7 +49,7 @@ const void* synthmod::get_out(outputnames::OUT_TYPE) const
 {
     #ifdef IO_PARANOIA
     *err_msg = "\n*** Program Error! ***\nmodule ";
-    *err_msg += get_username();
+    *err_msg += username;
     *err_msg += "\nattempt made to get output when none exist\n";
     *err_msg += "\nPlease email james@jwm-art.net";
     *err_msg += " with the .wc file(s) responsible so the issue";
@@ -62,7 +62,7 @@ const void* synthmod::set_in(inputnames::IN_TYPE, const void*)
 {
     #ifdef IO_PARANOIA
     *err_msg = "\n*** Program Error! ***\nmodule ";
-    *err_msg += get_username();
+    *err_msg += username;
     *err_msg += "\nattempt made to set input when none exist\n";
     *err_msg += "\nPlease email james@jwm-art.net";
     *err_msg += " with the .wc file(s) responsible so the issue";
@@ -75,7 +75,7 @@ const void* synthmod::get_in(inputnames::IN_TYPE) const
 {
     #ifdef IO_PARANOIA
     *err_msg = "\n*** Program Error! ***\nmodule ";
-    *err_msg += get_username();
+    *err_msg += username;
     *err_msg += "\nattempt made to get input when none exist\n";
     *err_msg += "\nPlease email james@jwm-art.net";
     *err_msg += " with the .wc file(s) responsible so the issue";
@@ -88,7 +88,7 @@ bool synthmod::set_param(paramnames::PAR_TYPE, const void*)
 {
     #ifdef IO_PARANOIA
     *err_msg = "\n*** Program Error! ***\nmodule ";
-    *err_msg += get_username();
+    *err_msg += username;
     *err_msg += "\nattempt made to set parameter when none exist\n";
     *err_msg += "\nPlease email james@jwm-art.net";
     *err_msg += " with the .wc file(s) responsible so the issue";
@@ -101,7 +101,7 @@ const void* synthmod::get_param(paramnames::PAR_TYPE) const
 {
     #ifdef IO_PARANOIA
     *err_msg = "\n*** Program Error! ***\nmodule ";
-    *err_msg += get_username();
+    *err_msg += username;
     *err_msg += "\nattempt made to get parameter when none exist\n";
     *err_msg += "\nPlease email james@jwm-art.net";
     *err_msg += " with the .wc file(s) responsible so the issue";
@@ -114,7 +114,7 @@ dobj* synthmod::add_dobj(dobj*)
 {
     #ifdef IO_PARANOIA
     *err_msg = "\n*** Program Error! ***\nmodule ";
-    *err_msg += get_username();
+    *err_msg += username;
     *err_msg += "\nattempt made to add data object to";
     *err_msg += "\nmodule lacking ability to accept them\n";
     *err_msg += "\nPlease email james@jwm-art.net";
@@ -168,10 +168,12 @@ void synthmod::duplicate_params_to(synthmod* to_mod)
 
 void synthmod::init_first()
 {
-    /* FIXME: something here for debugging purposes to remind
-              dev that they should implement this method
-              rather than call the base class method.
-    */
+    #ifdef IO_PARANOIA
+    *err_msg = "*** Program Error! ***  Module ";
+    *err_msg += username;
+    *err_msg += ": call to base method synthmod::init_first. This method "
+                "should be implemented in the derived class.";
+    #endif
 }
 
 bool synthmod::done_first()

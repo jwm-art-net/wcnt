@@ -38,7 +38,6 @@ sequencer::sequencer(char const* uname) :
     register_input(inputnames::IN_POS_STEP_SIZE);
     register_input(inputnames::IN_BEATS_PER_BAR);
     register_input(inputnames::IN_BEAT_VALUE);
-
     register_output(outputnames::OUT_NOTE_ON_TRIG);
     register_output(outputnames::OUT_NOTE_SLIDE_TRIG);
     register_output(outputnames::OUT_NOTE_OFF_TRIG);

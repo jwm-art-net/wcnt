@@ -135,13 +135,11 @@ void timemap::init()
     barlength = out_beats_per_bar * beatlength;
     pos_in_bar = barlength; // trig first bar - not favorite sollution
     out_bar = -1;           // ...it just gets worse!
-    printf("init this:%p",this);
 }
 
 void timemap::run()
 {
     if (pos_in_bar >= barlength) {
-    printf("this:%p",this);
         out_bar++;
         pos_in_bar -= barlength;
         out_bar_trig = ON;

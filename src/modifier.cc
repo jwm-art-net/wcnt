@@ -11,10 +11,10 @@ modifier::modifier(char const* uname) :
  out_output(0),
  func(ADD), type(M1)
 {
-    register_output(outputnames::OUT_OUTPUT);
     register_input(inputnames::IN_SIGNAL1);
     register_input(inputnames::IN_SIGNAL2);
     register_input(inputnames::IN_BIAS);
+    register_output(outputnames::OUT_OUTPUT);
     init_first();
 }
 

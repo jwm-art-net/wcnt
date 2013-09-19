@@ -16,10 +16,10 @@ trigecho::trigecho(char const* uname) :
  delay_time(0.0), count(0), send_input_out(OFF),
  past_trigs(0), pastmax(0), pastpos(0), vel_count_ratio(0)
 {
+    register_input(inputnames::IN_TRIG);
     register_output(outputnames::OUT_TRIG);
     register_output(outputnames::OUT_COUNT);
     register_output(outputnames::OUT_VELOCITY);
-    register_input(inputnames::IN_TRIG);
     init_first();
 }
 

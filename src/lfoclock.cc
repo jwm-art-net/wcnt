@@ -14,12 +14,12 @@ lfo_clock::lfo_clock(char const* uname) :
  degsize1(0.00), degsize2(0.00)
 {
 // degs initialised at 360 so immediately triggers if in_phase_trig is off
-    register_output(outputnames::OUT_PHASE_TRIG);
-    register_output(outputnames::OUT_PREMOD_PHASE_STEP);
-    register_output(outputnames::OUT_PHASE_STEP);
     register_input(inputnames::IN_PHASE_TRIG);
     register_input(inputnames::IN_FREQ_MOD1);
     register_input(inputnames::IN_FREQ_MOD2);
+    register_output(outputnames::OUT_PHASE_TRIG);
+    register_output(outputnames::OUT_PREMOD_PHASE_STEP);
+    register_output(outputnames::OUT_PHASE_STEP);
     init_first();
 }
 

@@ -13,10 +13,10 @@ dynamic::dynamic(char const* uname) :
  dynvertices(0), dvc(0), dvn(0),
  thresh_range(0)
 {
-    register_output(outputnames::OUT_OUTPUT);
-    register_output(outputnames::OUT_PLAY_STATE);
     register_input(inputnames::IN_SIGNAL);
     register_input(inputnames::IN_MODULATION);
+    register_output(outputnames::OUT_OUTPUT);
+    register_output(outputnames::OUT_PLAY_STATE);
     init_first();
 }
 

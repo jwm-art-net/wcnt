@@ -14,8 +14,8 @@ trigdelay::trigdelay(char const* uname) :
  in_trig(0), out_trig(OFF), delay_time(0.0),
  past_trigs(0), pastmax(0), pastpos(0)
 {
-    register_output(outputnames::OUT_TRIG);
     register_input(inputnames::IN_TRIG);
+    register_output(outputnames::OUT_TRIG);
     init_first();
 }
 

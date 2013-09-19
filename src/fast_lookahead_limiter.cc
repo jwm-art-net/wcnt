@@ -21,10 +21,10 @@ fast_lookahead_limiter::fast_lookahead_limiter(char const* uname) :
  l_in_left(0), l_in_right(0), l_out_left(0), l_out_right(0),
  l_out_latency(0)
 {
-    register_output(outputnames::OUT_LEFT);
-    register_output(outputnames::OUT_RIGHT);
     register_input(inputnames::IN_LEFT);
     register_input(inputnames::IN_RIGHT);
+    register_output(outputnames::OUT_LEFT);
+    register_output(outputnames::OUT_RIGHT);
     init_first();
 }
 

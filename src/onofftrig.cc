@@ -20,11 +20,11 @@ onofftrig::onofftrig(char const* uname) :
  attack_level(0.0), release_level(0.0), check_levels(OFF), 
  attack_samps(0), release_samps(0), do_attack(true)
 {
+    register_input(inputnames::IN_SIGNAL);
     register_output(outputnames::OUT_TRIG);
     register_output(outputnames::OUT_NOT_TRIG);
     register_output(outputnames::OUT_ATTACK_STATE);
     register_output(outputnames::OUT_RELEASE_STATE);
-    register_input(inputnames::IN_SIGNAL);
     init_first();
 }
 

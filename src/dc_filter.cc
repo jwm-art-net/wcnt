@@ -10,8 +10,8 @@ dc_filter::dc_filter(char const* uname) :
  in_signal(0), output(0), dc_time(0), filter(0), filterarraymax(0),
  fpos(0), filtertotal(0)
 {
-    register_output(outputnames::OUT_OUTPUT);
     register_input(inputnames::IN_SIGNAL);
+    register_output(outputnames::OUT_OUTPUT);
     init_first();
 }
 

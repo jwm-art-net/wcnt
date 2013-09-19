@@ -12,10 +12,10 @@ stereo_channel::stereo_channel(char const* uname) :
 
  io_left(0), io_right(0)
 {
-    register_output(outputnames::OUT_LEFT);
-    register_output(outputnames::OUT_RIGHT);
     register_input(inputnames::IN_LEFT);
     register_input(inputnames::IN_RIGHT);
+    register_output(outputnames::OUT_LEFT);
+    register_output(outputnames::OUT_RIGHT);
 }
 
 stereo_channel::~stereo_channel()

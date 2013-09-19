@@ -17,8 +17,8 @@ trigswitcher::trigswitcher(char const* uname) :
  in_trig(0), out_trig(OFF),
  trigs(0), trig_ix(0), trig(0)
 {
-    register_output(outputnames::OUT_TRIG);
     register_input(inputnames::IN_TRIG);
+    register_output(outputnames::OUT_TRIG);
     init_first();
 }
 

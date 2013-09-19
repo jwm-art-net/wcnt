@@ -18,15 +18,15 @@ osc_clock::osc_clock(char const* uname) :
 {
 // degs initialised with 360 so that it 
 // immediately triggers if in_phase_trig is off
-    register_output(outputnames::OUT_PHASE_TRIG);
-    register_output(outputnames::OUT_PREMOD_PHASE_STEP);
-    register_output(outputnames::OUT_PHASE_STEP);
     register_input(inputnames::IN_NOTE_ON_TRIG);
     register_input(inputnames::IN_NOTE_SLIDE_TRIG);
     register_input(inputnames::IN_PLAY_STATE);
     register_input(inputnames::IN_FREQ);
     register_input(inputnames::IN_FREQ_MOD1);
     register_input(inputnames::IN_FREQ_MOD2);
+    register_output(outputnames::OUT_PHASE_TRIG);
+    register_output(outputnames::OUT_PREMOD_PHASE_STEP);
+    register_output(outputnames::OUT_PHASE_STEP);
     init_first();
 }
 

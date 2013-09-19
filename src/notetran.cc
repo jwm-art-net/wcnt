@@ -22,16 +22,16 @@ notetran::notetran(char const* uname) :
     no_hi_notename = new char[jwm_init::note_array_size];
     ns_lo_notename = new char[jwm_init::note_array_size];
     ns_hi_notename = new char[jwm_init::note_array_size];
+    register_input(inputnames::IN_NOTENAME);
+    register_input(inputnames::IN_NOTE_ON_TRIG);
+    register_input(inputnames::IN_NOTE_SLIDE_TRIG);
+    register_input(inputnames::IN_DETRANSPOSE);
     register_output(outputnames::OUT_NOVALUE);
     register_output(outputnames::OUT_NSVALUE);
     register_output(outputnames::OUT_NOTE_ON_TRIG);
     register_output(outputnames::OUT_NOT_NO_TRIG);
     register_output(outputnames::OUT_NOTE_SLIDE_TRIG);
     register_output(outputnames::OUT_NOT_NS_TRIG);
-    register_input(inputnames::IN_NOTENAME);
-    register_input(inputnames::IN_NOTE_ON_TRIG);
-    register_input(inputnames::IN_NOTE_SLIDE_TRIG);
-    register_input(inputnames::IN_DETRANSPOSE);
     init_first();
 }
 

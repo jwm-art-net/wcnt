@@ -13,11 +13,11 @@ lfo_controller::lfo_controller(char const* uname) :
  ramp_samples(0), resp_size(0), resp_fa_level(0), resp_ac(0),
  level_size(0), current_level(0)
 {
-    register_output(outputnames::OUT_OUTPUT);
-    register_output(outputnames::OUT_PRE_AMP_MOD);
     register_input(inputnames::IN_TRIG);
     register_input(inputnames::IN_WAVE);
     register_input(inputnames::IN_AMP_MOD);
+    register_output(outputnames::OUT_OUTPUT);
+    register_output(outputnames::OUT_PRE_AMP_MOD);
     init_first();
 }
 

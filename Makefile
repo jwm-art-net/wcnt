@@ -43,7 +43,7 @@ DEFS=-O2 -fomit-frame-pointer -DWITH_LADSPA
 #                     special parameter type used by the input_editor and
 #                     param_editor data objects.
 
-DEFS=-ggdb -fno-inline -DWITH_LADSPA -DNAME_CHECK
+DEFS=-ggdb -fno-inline -DWITH_LADSPA -DNAME_CHECK -DDEBUG_MSG
 
 # nothing to be modified further:
 PROG=wcnt

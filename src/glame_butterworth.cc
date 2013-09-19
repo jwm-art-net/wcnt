@@ -12,10 +12,10 @@ glame_butterworth::glame_butterworth(char const* uname) :
  resonance(0), res_mod_size(0), l_descriptor(0), l_inst_handle(0),
  l_input(0), l_output(0), l_cut_off(0), l_resonance(0)
 {
-    register_output(outputnames::OUT_OUTPUT);
     register_input(inputnames::IN_SIGNAL);
     register_input(inputnames::IN_CUTOFF_PHASE_STEP);
     register_input(inputnames::IN_RES_MOD);
+    register_output(outputnames::OUT_OUTPUT);
     init_first();
     type_names[0] = "buttlow_iir";
     type_names[1] = "butthigh_iir";

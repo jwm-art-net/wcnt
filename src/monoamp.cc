@@ -10,10 +10,10 @@ mono_amp::mono_amp(char const* uname) :
  out_output(0),
  level(0), amp_modsize(0), clip_level(0), amp_level(0), ampsig(0)
 {
-    register_output(outputnames::OUT_OUTPUT);
     register_input(inputnames::IN_SIGNAL);
     register_input(inputnames::IN_EG);
     register_input(inputnames::IN_AMP_MOD);
+    register_output(outputnames::OUT_OUTPUT);
     init_first();
 }
 

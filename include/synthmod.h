@@ -123,15 +123,22 @@ class synthmod
     void duplicate_inputs_to(synthmod*);
     void duplicate_params_to(synthmod*);
 
+    /*  first instance initializations (ie parameter and data object
+        registration) should be performed in the init_first method of
+        derived objects.
+     */
     virtual void init_first();
     bool done_first();
-
     void register_param(paramnames::PAR_TYPE);
     void register_param(paramnames::PAR_TYPE, const char* fixed_string);
-    void register_input(inputnames::IN_TYPE);
-    void register_output(outputnames::OUT_TYPE);
     void register_moddobj(dobjnames::DOBJ_TYPE parent,
                                                 dobjnames::DOBJ_TYPE sprog);
+
+    /*  inputs & outputs OTOH, are unique to each instance, so will need
+        registration per instance (ie in derived constructor).
+    */
+    void register_input(inputnames::IN_TYPE);
+    void register_output(outputnames::OUT_TYPE);
 
     static std::string* err_msg;
 

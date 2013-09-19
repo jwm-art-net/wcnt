@@ -13,9 +13,9 @@ caps_plate::caps_plate(char const* uname) :
  l_input(0), l_bandwidth(0), l_tail(0), l_damping(0), l_blend(0),
  l_out_left(0), l_out_right(0)
 {
+    register_input(inputnames::IN_SIGNAL);
     register_output(outputnames::OUT_LEFT);
     register_output(outputnames::OUT_RIGHT);
-    register_input(inputnames::IN_SIGNAL);
     init_first();
 }
 

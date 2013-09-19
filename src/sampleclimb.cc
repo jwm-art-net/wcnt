@@ -9,9 +9,9 @@ sample_climb::sample_climb(char const* uname) :
  synthmod(synthmodnames::SAMPLECLIMB, uname, SM_HAS_OUT_OUTPUT),
  in_trig(0), in_signal(0), output(0), rate(1), target(0)
 {
-    register_output(outputnames::OUT_OUTPUT);
     register_input(inputnames::IN_TRIG);
     register_input(inputnames::IN_SIGNAL);
+    register_output(outputnames::OUT_OUTPUT);
     init_first();
 }
 

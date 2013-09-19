@@ -122,26 +122,59 @@ bool dobj::done_first()
 
 void dobj::register_param(paramnames::PAR_TYPE pt)
 {
-    jwm.get_dparlist()->add_dobjparam(object_type, pt);
-    /* FIXME: error handling here */
+    if (!valid)
+        return;
+    if (!jwm.get_dparlist()->add_dobjparam(object_type, pt))
+    {
+        *err_msg = "Failed to register param ";
+        *err_msg += jwm.get_paramnames()->get_name(pt);
+        *err_msg += " with data object type ";
+        *err_msg += jwm.get_dobjnames()->get_name(object_type);
+        *err_msg += ".";
+        valid = false;
+    }
 }
 
 void dobj::register_param(paramnames::PAR_TYPE pt, const char* fixstr)
 {
-    jwm.get_dparlist()->add_dobjparam(object_type, pt);
-    jwm.get_fxsparamlist()->add_param(fixstr, pt);
-    /* FIXME: error handling here */
+    if (!valid)
+        return;
+    dobjparam* dp = jwm.get_dparlist()->add_dobjparam(object_type, pt);
+    fixstrparam* fsp = 0;
+    if (dp)
+        fsp = jwm.get_fxsparamlist()->add_param(fixstr, pt);
+    if (!dp || !fsp)
+    {
+        *err_msg = "Failed to register fixed string param ";
+        *err_msg += jwm.get_paramnames()->get_name(pt);
+        *err_msg += " (";
+        *err_msg += fixstr;
+        *err_msg += ") with data object type ";
+        *err_msg += jwm.get_dobjnames()->get_name(object_type);
+        *err_msg += ".";
+        valid = false;
+    }
 }
 
 void dobj::register_dobjdobj(dobjnames::DOBJ_TYPE parent,
                                                 dobjnames::DOBJ_TYPE sprog)
 {
-    dobjdobjlist* dd;
-    dd = jwm.get_topdobjlist()->create_dobjdobjlist(object_type, parent);
-    if (!dd
-     || !dd->register_dobjdobj(parent, sprog))
+    if (!valid)
+        return;
+    dobjdobjlist* ddl;
+    ddl = jwm.get_topdobjlist()->create_dobjdobjlist(object_type, parent);
+    dobjdobj* dd = 0;
+    if (ddl)
+        dd = ddl->register_dobjdobj(parent, sprog);
+    if (!ddl || !dd)
     {
-        /* FIXME: error message here */
+        *err_msg = "Failed to register parent data object ";
+        *err_msg += jwm.get_dobjnames()->get_name(parent);
+        *err_msg += " with child data object ";
+        *err_msg += jwm.get_dobjnames()->get_name(sprog);
+        *err_msg += ") as part of data object ";
+        *err_msg += jwm.get_dobjnames()->get_name(object_type);
+        *err_msg += ".";
         valid = false;
     }
 }

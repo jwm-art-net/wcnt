@@ -17,9 +17,9 @@ trigger::trigger(char const* uname) :
  in_signal(0), out_trig(OFF), out_not_trig(OFF), out_wait_state(OFF),
  delay_time(0.0), trigger_level(0.0), delay_samps(0)
 {
+    register_input(inputnames::IN_SIGNAL);
     register_output(outputnames::OUT_TRIG);
     register_output(outputnames::OUT_WAIT_STATE);
-    register_input(inputnames::IN_SIGNAL);
     init_first();
 }
 

@@ -9,10 +9,10 @@ pan::pan(char const* uname) :
  in_signal(0), in_pan_mod(0), out_l(0), out_r(0), panpos(0),
  pan_modsize(0), pan_mod(0), pan_pos(0)
 {
-    register_output(outputnames::OUT_LEFT);
-    register_output(outputnames::OUT_RIGHT);
     register_input(inputnames::IN_SIGNAL);
     register_input(inputnames::IN_PAN_MOD);
+    register_output(outputnames::OUT_LEFT);
+    register_output(outputnames::OUT_RIGHT);
     init_first();
 }
 

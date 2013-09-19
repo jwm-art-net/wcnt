@@ -10,10 +10,10 @@ contraster::contraster(char const* uname) :
  in_rude_switch_trig(0), power_min(1.0), power_max(2.0), rude_mode(OFF),
  wetdry(0), power(0.0), power_mod(0), powerrad(0.0), output(0)
 {
-    register_output(outputnames::OUT_OUTPUT);
     register_input(inputnames::IN_SIGNAL);
     register_input(inputnames::IN_POWER_MOD);
     register_input(inputnames::IN_RUDE_SWITCH_TRIG);
+    register_output(outputnames::OUT_OUTPUT);
     init_first();
 }
 

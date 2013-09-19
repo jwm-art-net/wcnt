@@ -16,13 +16,13 @@ trigcounter::trigcounter(char const* uname) :
  out_play_state(OFF),
  pre_count(0), count(0), wrap(OFF)
 {
+    register_input(inputnames::IN_TRIG);
+    register_input(inputnames::IN_RESET_TRIG);
     register_output(outputnames::OUT_TRIG);
     register_output(outputnames::OUT_NOT_TRIG);
     register_output(outputnames::OUT_COUNT);
     register_output(outputnames::OUT_PRE_COUNT);
     register_output(outputnames::OUT_PLAY_STATE);
-    register_input(inputnames::IN_TRIG);
-    register_input(inputnames::IN_RESET_TRIG);
     init_first();
 }
 

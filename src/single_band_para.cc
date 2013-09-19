@@ -14,11 +14,11 @@ single_band_para::single_band_para(char const* uname) :
  l_input(0), l_output(0),
  l_gain_db(0), l_frequency(440), l_bandwidth(1)
 {
-    register_output(outputnames::OUT_OUTPUT);
     register_input(inputnames::IN_SIGNAL);
     register_input(inputnames::IN_PHASE_STEP);
     register_input(inputnames::IN_GAIN_MOD);
     register_input(inputnames::IN_BANDWIDTH_MOD);
+    register_output(outputnames::OUT_OUTPUT);
     init_first();
     max_freq = 0.4 * jwm.samplerate();
 }

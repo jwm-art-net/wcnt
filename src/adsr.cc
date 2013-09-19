@@ -18,12 +18,12 @@ adsr::adsr(char const* uname) :
  run_coords(0), coord(0), coord_ix(0),
  decay_ix(0), sustain_ix(0), release_ix(0)
 {
-    register_output(outputnames::OUT_OUTPUT);
-    register_output(outputnames::OUT_OFF_TRIG);
-    register_output(outputnames::OUT_PLAY_STATE);
     register_input(inputnames::IN_NOTE_ON_TRIG);
     register_input(inputnames::IN_NOTE_OFF_TRIG);
     register_input(inputnames::IN_VELOCITY);
+    register_output(outputnames::OUT_OUTPUT);
+    register_output(outputnames::OUT_OFF_TRIG);
+    register_output(outputnames::OUT_PLAY_STATE);
 
     add_at_head(new adsr_coord(adsr_coord::ADSR_SUSTAIN, 0 ,0 ,0 ,0));
 

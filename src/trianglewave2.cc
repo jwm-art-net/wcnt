@@ -14,11 +14,11 @@ triangle_wave2::triangle_wave2(char const* uname) :
  sect_spanlvl(0), sect_startlvl(0), old_maxsamps(0), sectmaxsamps(1),
  sectsample(0), counter_ratio(0)
 {
-    register_output(outputnames::OUT_OUTPUT);
-    register_output(outputnames::OUT_PLAY_STATE);
     register_input(inputnames::IN_PHASE_TRIG);
     register_input(inputnames::IN_PHASE_STEP);
     register_input(inputnames::IN_NORM_MOD);
+    register_output(outputnames::OUT_OUTPUT);
+    register_output(outputnames::OUT_PLAY_STATE);
     init_first();
 }
 

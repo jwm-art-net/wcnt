@@ -12,8 +12,8 @@ wave::wave(char const* uname) :
  output(0.00), in_phase_step(NULL), type(wave_tables::ONE), phase(0),
  table(0)
 {
-    register_output(outputnames::OUT_OUTPUT);
     register_input(inputnames::IN_PHASE_STEP);
+    register_output(outputnames::OUT_OUTPUT);
     init_first();
 }
 wave::~wave()

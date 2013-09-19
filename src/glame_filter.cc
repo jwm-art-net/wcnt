@@ -13,9 +13,9 @@ glame_filter::glame_filter(char const* uname) :
  l_cutoff_freq(440.0), l_stages(1),
  l_input(0), l_output(0)
 {
-    register_output(outputnames::OUT_OUTPUT);
     register_input(inputnames::IN_SIGNAL);
     register_input(inputnames::IN_FREQ_MOD1);
+    register_output(outputnames::OUT_OUTPUT);
     init_first();
     type_names[0] = "lowpass_iir";
     type_names[1] = "highpass_iir";

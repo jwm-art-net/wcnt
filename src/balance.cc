@@ -9,9 +9,9 @@ balance::balance(char const* uname) :
  synthmod(synthmodnames::BALANCE, uname, SM_HAS_OUT_OUTPUT),
  in_signal1(0), in_signal2(0),out_output(0), func(ADD), bias(0)
 {
-    register_output(outputnames::OUT_OUTPUT);
     register_input(inputnames::IN_SIGNAL1);
     register_input(inputnames::IN_SIGNAL2);
+    register_output(outputnames::OUT_OUTPUT);
     init_first();
 }
 

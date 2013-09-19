@@ -11,9 +11,9 @@ logictrigger::logictrigger(char const* uname) :
  in_trig1(0), in_trig2(0), out_trig(OFF), logicfunc(AND), precision(0),
  next_trig(0), t1_samps(0), t2_samps(0), trig1(OFF), trig2(OFF)
 {
-    register_output(outputnames::OUT_TRIG);
     register_input(inputnames::IN_TRIG1);
     register_input(inputnames::IN_TRIG2);
+    register_output(outputnames::OUT_TRIG);
     init_first();
 }
 

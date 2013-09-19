@@ -14,12 +14,12 @@ square_wave::square_wave(char const* uname) :
  pulse(OFF), degs(0.00), podeg(0), pwdeg_rad(0), poff_deg(0.00),
  target(0), cycle(0)
 {
-    register_output(outputnames::OUT_OUTPUT);
-    register_output(outputnames::OUT_OFF_PULSE);
-    register_output(outputnames::OUT_PLAY_STATE);
     register_input(inputnames::IN_PHASE_TRIG);
     register_input(inputnames::IN_PHASE_STEP);
     register_input(inputnames::IN_PWM);
+    register_output(outputnames::OUT_OUTPUT);
+    register_output(outputnames::OUT_OFF_PULSE);
+    register_output(outputnames::OUT_PLAY_STATE);
     init_first();
 }
 

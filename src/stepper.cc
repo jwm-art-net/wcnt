@@ -20,10 +20,10 @@ stepper::stepper(char const* uname) :
  lo_levels(0),
  rtime_samp(0), rtime_max_samps(0), rtime_stpsz(0), rtime_size(0)
 {
-    register_output(outputnames::OUT_OUTPUT);
     register_input(inputnames::IN_TRIG);
     register_input(inputnames::IN_RESTART_TRIG);
     register_input(inputnames::IN_MODULATION);
+    register_output(outputnames::OUT_OUTPUT);
     insert_step(0.0, 0.0, 0.0);
     insert_step(1.0, 1.0, 1.0);
     init_first();

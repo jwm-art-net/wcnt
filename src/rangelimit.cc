@@ -8,8 +8,8 @@ range_limit::range_limit(char const* uname) :
  synthmod(synthmodnames::RANGELIMIT, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), out_output(0), sigrangehi(0), sigrangelo(0)
 {
-    register_output(outputnames::OUT_OUTPUT);
     register_input(inputnames::IN_SIGNAL);
+    register_output(outputnames::OUT_OUTPUT);
     init_first();
 }
 

@@ -10,9 +10,9 @@ delay::delay(char const* uname) :
  gain_modsize(0), wetdry(0), output(0), filter(0), filterarraymax(0),
  fpos(0), filtertotal(0), gainamount(0)
 {
-    register_output(outputnames::OUT_OUTPUT);
     register_input(inputnames::IN_SIGNAL);
     register_input(inputnames::IN_GAIN_MOD);
+    register_output(outputnames::OUT_OUTPUT);
     init_first();
 }
 
