@@ -5,7 +5,6 @@
 #include "../include/dobjdobjlist.h"
 
 #include <iostream>
-#include <string>
 #include <cstdio>
 
 parameditor::parameditor() :

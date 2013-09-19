@@ -5,8 +5,6 @@
 #include "../include/dobjdobjlist.h"
 
 #include <iostream>
-#include <string>
-
 
 inputeditor::inputeditor() :
  dobj(dobjnames::DEF_INPUTEDITOR)

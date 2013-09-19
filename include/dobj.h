@@ -1,8 +1,6 @@
 #ifndef DOBJ_H
 #define DOBJ_H
 
-#include <string>
-
 #include "stockerrs.h"
 #include "types.h"
 #include "paramnames.h"

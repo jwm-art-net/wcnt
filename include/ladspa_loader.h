@@ -2,8 +2,6 @@
 #ifdef WITH_LADSPA
 #define LADSPA_LOADER_H
 
-#include <string>
-
 #include "ladspa.h"
 #include "linkedlist.h"
 

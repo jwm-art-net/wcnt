@@ -1,8 +1,6 @@
 #ifndef SYNTHMODULE_H
 #define SYNTHMODULE_H
 
-#include <string>
-
 #include "types.h"
 #include "synthmodnames.h"
 #include "outputnames.h"

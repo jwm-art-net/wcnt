@@ -1,8 +1,6 @@
 #ifndef JWMSYNTH
 #define JWMSYNTH
 
-#include <string>
-
 #include "types.h"
 
 class synthfilereader;

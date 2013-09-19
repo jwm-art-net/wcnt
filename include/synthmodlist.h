@@ -7,8 +7,6 @@
 #include "namefuncobj.h"
 #include "boolfuncobj.h"
 
-#include <string>
-
 class synthmod;
 class nonezero;
 #include "synthmod.h"

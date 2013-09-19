@@ -5,8 +5,6 @@
 #include "outputnames.h"
 #include "namefuncobj.h"
 
-#include <string>
-
 /*
 //  duplicate() duplicates the connector exactly and returns the new
 //  connector.

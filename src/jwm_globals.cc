@@ -16,8 +16,6 @@
 #include "../include/wave_tables.h"
 #include "../include/conversions.h"
 
-#include <string>
-
 #ifdef MOD_STATS
 #define SHOWCOUNTS
 #endif
