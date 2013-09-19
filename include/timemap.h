@@ -74,10 +74,10 @@ private:
     short meterchangebar;
     // working methods
     double p_bpm;
-    unsigned long notelen_to_samples(short);
-    unsigned long ms_to_samples(double);
-    double notelen_to_frequency(short);
-    double notelen_to_ms(short);
+    unsigned long notelen_to_samples(short) const;
+    unsigned long ms_to_samples(double) const;
+    double notelen_to_frequency(short) const;
+    double notelen_to_ms(short) const;
     // synthmod stuff for keeping things cushdy.
     void init_first();
 };

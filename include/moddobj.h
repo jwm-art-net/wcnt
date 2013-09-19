@@ -19,11 +19,11 @@ class moddobj
  public:
     moddobj(synthmodnames::SYNTH_MOD_TYPE, dobjnames::DOBJ_TYPE);
     ~moddobj();
-    synthmodnames::SYNTH_MOD_TYPE get_moduletype() {
+    synthmodnames::SYNTH_MOD_TYPE get_moduletype() const {
         return (this) ? synthmodule_type : synthmodnames::FIRST;
     }
-    dobjnames::DOBJ_TYPE get_first_child() { return first_child; }
-    dobjdobjlist* get_dobjdobjlist() { return (this) ? dd_list : 0;}
+    dobjnames::DOBJ_TYPE get_first_child() const { return first_child; }
+    dobjdobjlist* get_dobjdobjlist() const { return (this) ? dd_list : 0;}
 
     bool operator()(synthmodnames::SYNTH_MOD_TYPE & smt) const {
         return this->synthmodule_type == smt;

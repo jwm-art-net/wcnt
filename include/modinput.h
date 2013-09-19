@@ -12,11 +12,11 @@ class modinput
     modinput(synthmod*, inputnames::IN_TYPE);
     ~modinput(){};
 
-    synthmod* get_synthmodule() { return synthmodule; }
+    synthmod* get_synthmodule() const { return synthmodule; }
 
-    synthmodnames::SYNTH_MOD_TYPE get_moduletype();
-    inputnames::IN_TYPE get_inputtype();
-    iocat::IOCAT get_inputcategory();
+    synthmodnames::SYNTH_MOD_TYPE get_moduletype() const;
+    inputnames::IN_TYPE get_inputtype() const;
+    iocat::IOCAT get_inputcategory() const;
 
     bool operator()(synthmod* sm) const {
         return synthmodule == sm;

@@ -257,7 +257,7 @@ bool cmdline::set_jwm_globals()
     return true;
 }
 
-const char* cmdline::get_message()
+const char* cmdline::get_message() const
 {
     return msg.c_str();
 }

@@ -23,12 +23,12 @@ class fixstrparam
  public:
     fixstrparam(char const* str_list, paramnames::PAR_TYPE par_type);
     ~fixstrparam();
-    const char* get_string_list(){ return string_list; }
-    paramnames::PAR_TYPE get_param_type(){return param_type; }
-    int get_substring_count();
-    int get_substring_index(const char* substr);
-    const char* get_substring(int index);
-    bool operator()(paramnames::PAR_TYPE & pt) {
+    const char* get_string_list() const         { return string_list; }
+    paramnames::PAR_TYPE get_param_type() const {return param_type; }
+    int get_substring_count() const;
+    int get_substring_index(const char* substr) const;
+    const char* get_substring(int index) const;
+    bool operator()(paramnames::PAR_TYPE & pt) const {
         return param_type == pt;
     }
  private:

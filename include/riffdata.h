@@ -76,9 +76,8 @@ class riffdata : public dobj, public linked_list<note_data>
     /*
     // needed (kinda, atleast for ease of...)
     */
-    void set_quartervalue(short qv)
-                            { quarter_val = qv;}
-    short get_quartervalue(){ return quarter_val;}
+    void set_quartervalue(short qv) { quarter_val = qv;}
+    short get_quartervalue() const  { return quarter_val;}
 
     note_data* insert_and_position_note(note_data*);
     note_data* add_edit_note(note_data* en) {

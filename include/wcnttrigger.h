@@ -9,7 +9,7 @@ public:
     wcnt_trigger(char const*);
     ~wcnt_trigger();
     // this method needed by trigswitcher (etc?)...
-    const STATUS* get_out_trig() { return in_trig; }
+    const STATUS* get_out_trig() const { return in_trig; }
     void run(){};
     void const* get_out(outputnames::OUT_TYPE) const;
     void const* set_in(inputnames::IN_TYPE, void const*);

@@ -53,24 +53,24 @@ void note_data::set_name(const char *name)
     get_note_type();
 }
 
-note_data::NOTE_SEL_OP note_data::get_note_sel_op()
+note_data::NOTE_SEL_OP note_data::get_note_sel_op() const
 {
     if (note_type != NOTE_TYPE_EDIT)
         return NOTE_SEL_OP_ERR;
     const char* ptr = notename + NOTE_CHR_SEL_OP;
     switch(*ptr)
     {
-        case '=':   return NOTE_SEL_OP_EQU;
-        case '<':  return NOTE_SEL_OP_LESS;
-        case '>':  return NOTE_SEL_OP_MORE;
-        case 'I':    return NOTE_SEL_OP_IN;
-        case 'O':   return NOTE_SEL_OP_OUT;
+        case '=': return NOTE_SEL_OP_EQU;
+        case '<': return NOTE_SEL_OP_LESS;
+        case '>': return NOTE_SEL_OP_MORE;
+        case 'I': return NOTE_SEL_OP_IN;
+        case 'O': return NOTE_SEL_OP_OUT;
         default:
             return NOTE_SEL_OP_ERR;
     };
 }
 
-note_data::NOTE_SEL note_data::get_note_sel()
+note_data::NOTE_SEL note_data::get_note_sel() const
 {
     if (note_type != NOTE_TYPE_EDIT)
         return NOTE_SEL_ERR;
@@ -86,7 +86,7 @@ note_data::NOTE_SEL note_data::get_note_sel()
     };
 }
 
-note_data::NOTE_OP note_data::get_note_op()
+note_data::NOTE_OP note_data::get_note_op() const
 {
     if (note_type != NOTE_TYPE_EDIT)
         return NOTE_OP_ERR;
@@ -102,7 +102,7 @@ note_data::NOTE_OP note_data::get_note_op()
     };
 }
 
-note_data::NOTE_PAR note_data::get_note_par()
+note_data::NOTE_PAR note_data::get_note_par() const
 {
     if (note_type != NOTE_TYPE_EDIT)
         return NOTE_PAR_ERR;
@@ -121,7 +121,7 @@ note_data::NOTE_PAR note_data::get_note_par()
 }
 
 note_data::NOTE_TYPE note_data::get_note_type()
-{
+{/* FIXME: de-tangle & make const */
     NOTE_TYPE retv = NOTE_TYPE_ERR;
     if (check_notename(notename) == true)
         return (note_type = NOTE_TYPE_NORMAL);
@@ -155,7 +155,7 @@ note_data::NOTE_TYPE note_data::get_note_type()
     return (note_type = retv);
 }
 
-const char* note_data::get_note_name()
+const char* note_data::get_note_name() const
 {
     const char* ptr = notename;
     if (note_type == NOTE_TYPE_ERR)
@@ -164,7 +164,7 @@ const char* note_data::get_note_name()
     return ptr;
 }
 
-double note_data::get_note_number()
+double note_data::get_note_number() const
 {
     const char* ptr = notename;
     if (note_type == NOTE_TYPE_ERR)
@@ -175,7 +175,7 @@ double note_data::get_note_number()
     return noteno;
 }
 
-double note_data::get_note_frequency()
+double note_data::get_note_frequency() const
 {
     const char* ptr = notename;
     if (note_type == NOTE_TYPE_ERR)

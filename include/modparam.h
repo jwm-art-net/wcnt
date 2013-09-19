@@ -12,10 +12,10 @@ class modparam
  public:
     modparam(synthmodnames::SYNTH_MOD_TYPE, paramnames::PAR_TYPE);
     ~modparam(){};
-    synthmodnames::SYNTH_MOD_TYPE get_moduletype() {
+    synthmodnames::SYNTH_MOD_TYPE get_moduletype() const {
         return (this) ? synthmodule_type : synthmodnames::FIRST;
     }
-    paramnames::PAR_TYPE get_paramtype() {
+    paramnames::PAR_TYPE get_paramtype() const {
         return (this) ? param_type: paramnames::FIRST;
     }
     iocat::IOCAT get_paramcategory();

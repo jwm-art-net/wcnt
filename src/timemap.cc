@@ -225,24 +225,24 @@ void timemap::run()
     pos_in_bar += out_pos_step_size;
 }
 
-unsigned long timemap::notelen_to_samples(short nl)
+unsigned long timemap::notelen_to_samples(short nl) const
 {
     return (unsigned long)(jwm.samplerate()
      * ((double) 60 / out_bpm) * ((double)nl / beatlength));
 }
 
-double timemap::notelen_to_ms(short nl)
+double timemap::notelen_to_ms(short nl) const
 {
     return ((double)60 / out_bpm) * ((double)nl / beatlength) * 1000;
 }
 
-double timemap::notelen_to_frequency(short nl)
+double timemap::notelen_to_frequency(short nl) const
 {
     return 1000 / (((double)60 / out_bpm) *
                    ((double)nl / beatlength) * 1000);
 }
 
-unsigned long timemap::ms_to_samples(double ms)
+unsigned long timemap::ms_to_samples(double ms) const
 {
     return (unsigned long)(jwm.samplerate() * (ms / 1000));
 }

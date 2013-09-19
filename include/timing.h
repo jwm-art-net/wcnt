@@ -10,8 +10,8 @@ class timing : public dobj
 public:
     timing();
     timing(double s);
-    void set_time(double s){seconds = s;}
-    double get_time(){ return seconds;}
+    void set_time(double s) { seconds = s;}
+    double get_time() const { return seconds;}
     stockerrs::ERR_TYPE validate();
     bool set_param(paramnames::PAR_TYPE, void*);
     void const* get_param(paramnames::PAR_TYPE pt) const;

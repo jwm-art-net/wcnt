@@ -88,22 +88,23 @@ class note_data : public dobj
     void set_length(double l) { length = l; }
     void set_position(double p) { position = p; }
     void set_velocity(double v) { velocity = v; }
-    const char* get_name() { return (this == NULL) ? NULL : notename; }
-    double get_length() { return (this == NULL) ? 0 : length; }
-    double get_position() { return (this == NULL) ? 0 : position; }
-    double get_velocity() { return (this == NULL) ? 0.00 : velocity; }
+
+    const char* get_name() const{ return (this == NULL) ? NULL : notename; }
+    double get_length() const   { return (this == NULL) ? 0 : length; }
+    double get_position()const  { return (this == NULL) ? 0 : position; }
+    double get_velocity() const { return (this == NULL) ? 0.00 : velocity; }
     // the following only used with edit notes...
-    NOTE_SEL_OP get_note_sel_op();
-    NOTE_SEL get_note_sel();
-    NOTE_OP get_note_op();
-    NOTE_PAR get_note_par();
+    NOTE_SEL_OP get_note_sel_op() const;
+    NOTE_SEL    get_note_sel() const;
+    NOTE_OP     get_note_op() const;
+    NOTE_PAR    get_note_par() const;
     // helpful functions...
-    NOTE_TYPE get_note_type();
-    NOTE_TYPE get_note_type(const char* notename);
+    NOTE_TYPE   get_note_type(); /* FIXME: de-tangle & make const */
+    NOTE_TYPE   get_note_type(const char* notename) const;
     // get_note_name only returns, if applicable, the note portion.
-    const char* get_note_name();
-    double get_note_frequency();
-    double get_note_number();
+    const char* get_note_name() const;
+    double      get_note_frequency() const;
+    double      get_note_number() const;
     // virtuals from dobj
     char const* get_username(){ return notename;}
     // virtuals from dobj

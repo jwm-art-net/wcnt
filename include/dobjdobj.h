@@ -22,10 +22,10 @@ public:
     dobjdobj(dobjnames::DOBJ_TYPE, dobjnames::DOBJ_TYPE);
     dobjdobj(dobjdobj &);
     ~dobjdobj();
-    dobjnames::DOBJ_TYPE get_dobj_type() {
+    dobjnames::DOBJ_TYPE get_dobj_type() const {
         return (this) ? dobj_type : dobjnames::DOBJ_FIRST;
     }
-    dobjnames::DOBJ_TYPE get_dobj_sprog() {
+    dobjnames::DOBJ_TYPE get_dobj_sprog() const {
         return (this) ? sprog : dobjnames::DOBJ_FIRST;
     }
 

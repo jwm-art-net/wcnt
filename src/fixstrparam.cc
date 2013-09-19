@@ -13,7 +13,7 @@ fixstrparam::~fixstrparam()
 }
 //  "apple/pear/banana" apple = 0, pear = 1, banana = 2
 
-int fixstrparam::get_substring_count()
+int fixstrparam::get_substring_count() const
 {
     if (!string_list)
         return 0;
@@ -27,7 +27,7 @@ int fixstrparam::get_substring_count()
     return substrcount;
 }
 
-int fixstrparam::get_substring_index(char const* substr)
+int fixstrparam::get_substring_index(char const* substr) const
 {
     if (substr == 0 || string_list == 0)
         return -1;
@@ -55,7 +55,7 @@ int fixstrparam::get_substring_index(char const* substr)
     return -1;
 }
 
-const char* fixstrparam::get_substring(int index)
+const char* fixstrparam::get_substring(int index) const
 {
     if (!string_list || index < 0)
         return 0;

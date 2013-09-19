@@ -7,21 +7,21 @@ modinput::modinput(synthmod * sm, inputnames::IN_TYPE it) :
 {
 }
 
-synthmodnames::SYNTH_MOD_TYPE modinput::get_moduletype()
+synthmodnames::SYNTH_MOD_TYPE modinput::get_moduletype() const
 {
     return (this != 0)
      ? synthmodule->get_module_type()
      : synthmodnames::FIRST;
 }
 
-inputnames::IN_TYPE modinput::get_inputtype()
+inputnames::IN_TYPE modinput::get_inputtype() const
 {
     return (this != 0)
      ? input_type
      : inputnames::IN_FIRST;
 }
 
-iocat::IOCAT modinput::get_inputcategory()
+iocat::IOCAT modinput::get_inputcategory() const
 {
     return (this != 0)
      ? jwm.get_inputnames()->get_category(input_type)

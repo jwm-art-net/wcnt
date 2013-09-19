@@ -20,7 +20,7 @@
 
 class step_data : public dobj
 {
-public:
+ public:
     step_data();
     step_data(double pos, double upperlevel, double lowerlevel);
     ~step_data();
@@ -29,9 +29,9 @@ public:
     void set_upper_level(double ul) { up_level = ul; }
     void set_lower_level(double ll) { lo_level = ll; }
 
-    double get_position() { return position; }
-    double get_upper_level() { return up_level; }
-    double get_lower_level() { return lo_level; }
+    double get_position() const    { return position; }
+    double get_upper_level() const { return up_level; }
+    double get_lower_level() const { return lo_level; }
 
     // virtuals from dobj
     bool set_param(paramnames::PAR_TYPE, void*);
@@ -42,12 +42,11 @@ public:
         return n(position);
     }
 
-private:
+ private:
     double position;
     double up_level;
     double lo_level;
     void init_first();
-    
 };
 
 #endif

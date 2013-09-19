@@ -26,8 +26,8 @@ class ladspa_plug
     ladspa_plug(const LADSPA_Descriptor*);
     ~ladspa_plug();
 
-    const char* get_label();
-    const LADSPA_Descriptor* get_descriptor();
+    const char* get_label() const { return label; }
+    const LADSPA_Descriptor* get_descriptor() const { return descriptor; }
 
     LADSPA_Handle instantiate();
 
@@ -43,8 +43,8 @@ class ladspa_lib : public linked_list<ladspa_plug>
  public:
     ladspa_lib(const char*, LADSPA_Handle);
     ~ladspa_lib();
-    const char* get_filename() { return filename; }
-    LADSPA_Handle get_handle() { return lib_handle; }
+    const char* get_filename() const { return filename; }
+    LADSPA_Handle get_handle() const { return lib_handle; }
 
     ladspa_plug* get_plugin(const char* name);
 

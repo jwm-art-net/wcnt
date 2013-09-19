@@ -75,16 +75,17 @@ public:
     riff_node(riffdata*, short barpos);
     ~riff_node();
     riff_node* duplicate_for_bar(short barpos);
-    void set_start_bar(short bp){ start_bar = bp; }
-    void set_riff_source(riffdata* rs){ riff_source = rs; }
-    void set_transpose(short t){ transpose = t; }
-    void set_repeat(short r){ repeat = r;}
-    void set_repeat_stripe(short rs){ repeat_stripe = rs;}
-    short get_start_bar(){ return start_bar; }
-    riffdata* get_riff_source(){ return riff_source; }
-    short get_transpose(){ return transpose; }
-    short get_repeat(){ return repeat;}
-    short get_repeat_stripe(){ return repeat_stripe;}
+    void set_start_bar(short bp)        { start_bar = bp; }
+    void set_riff_source(riffdata* rs)  { riff_source = rs; }
+    void set_transpose(short t)         { transpose = t; }
+    void set_repeat(short r)            { repeat = r;}
+    void set_repeat_stripe(short rs)    { repeat_stripe = rs;}
+
+    short get_start_bar() const         { return start_bar; }
+    riffdata* get_riff_source() const   { return riff_source; }
+    short get_transpose() const         { return transpose; }
+    short get_repeat() const            { return repeat;}
+    short get_repeat_stripe() const     { return repeat_stripe;}
     virtual stockerrs::ERR_TYPE validate();
     bool set_param(paramnames::PAR_TYPE, void*);
     void const* get_param(paramnames::PAR_TYPE pt) const;

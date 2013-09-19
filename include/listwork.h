@@ -5,7 +5,7 @@
 
 template <typename T, typename R>
 ll_item<T>*
-ordered_insert(linked_list<T>* list, T* data, R(T::*func)())
+ordered_insert(linked_list<T>* list, T* data, R(T::*func)() const)
 {
     ll_item<T>* tmp = list->sneak_first();
     if (!tmp)
@@ -27,7 +27,7 @@ ordered_insert(linked_list<T>* list, T* data, R(T::*func)())
 
 template <typename T, typename R>
 ll_item<T>*
-ordered_insert_replace(linked_list<T>* list, T* data, R(T::*func)())
+ordered_insert_replace(linked_list<T>* list, T* data, R(T::*func)() const)
 {
     ll_item<T>* tmp = list->sneak_first();
     if (!tmp)
@@ -67,7 +67,8 @@ find_in_data(ll_item<T>* from, R needle)
 
 template <typename T, typename R>
 ll_item<T>*
-find_in_data_or_last_less_than(ll_item<T>* from, T* data, R(T::*func)())
+find_in_data_or_last_less_than(ll_item<T>* from, T* data,
+                                                    R(T::*func)() const)
 {
     R dvalue = (data->*func)();
     while (from) {
