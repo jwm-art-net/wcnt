@@ -28,7 +28,7 @@ private:
     sig_step_size,
     freq_step_size;
     short step_count;
-    void create_params();
+    void init_first();
     
 };
 

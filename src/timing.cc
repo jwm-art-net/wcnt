@@ -6,14 +6,14 @@
 timing::timing():
  dobj(dobjnames::SIN_TIME), seconds(0.0)
 {
-    create_params();
+    init_first();
 }
 
 timing::timing(double s):
  dobj(dobjnames::SIN_BPM),
  seconds(s)
 {
-    create_params();
+    init_first();
 }
 
 bool timing::set_param(paramnames::PAR_TYPE pt, void* data)
@@ -53,9 +53,9 @@ stockerrs::ERR_TYPE timing::validate()
 
 
 
-void timing::create_params()
+void timing::init_first()
 {
-    if (done_params()) return;
-    relate_param(paramnames::SECONDS);
+    if (done_first()) return;
+    register_param(paramnames::SECONDS);
 }
 

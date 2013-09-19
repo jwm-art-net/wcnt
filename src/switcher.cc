@@ -19,10 +19,9 @@ switcher::switcher(char const* uname) :
  xfade_max_samps(0), xfade_stpsz(0), xfade_size(0),
  sigs(0), sig_ix(0), sig(0), prevsig(0), zero(0)
 {
-    add_output(outputnames::OUT_OUTPUT);
-    add_input(inputnames::IN_TRIG);
-    create_params();
-    create_moddobj();
+    register_input(inputnames::IN_TRIG);
+    register_output(outputnames::OUT_OUTPUT);
+    init_first();
 }
 
 switcher::~switcher()
@@ -171,24 +170,11 @@ void switcher::run()
     }
 }
 
-void switcher::create_params()
+void switcher::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::XFADE_TIME);
-}
-
-bool switcher::done_moddobj = false;
-
-void switcher::create_moddobj()
-{
-    if (done_moddobj == true)
-        return;
-    moddobj* mdbj;
-    mdbj = jwm.get_moddobjlist()->add_moddobj(
-        synthmodnames::SWITCHER, dobjnames::LST_SIGNALS);
-    mdbj->get_dobjdobjlist()->add_dobjdobj(
-        dobjnames::LST_SIGNALS, dobjnames::DOBJ_SYNTHMOD);
-    done_moddobj = true;
+    register_param(paramnames::XFADE_TIME);
+    register_moddobj(dobjnames::LST_SIGNALS, dobjnames::DOBJ_SYNTHMOD);
 }
 

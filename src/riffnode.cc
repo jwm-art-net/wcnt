@@ -8,14 +8,14 @@ riff_node::riff_node() :
  dobj(dobjnames::SIN_RIFFNODE), start_bar(0), riff_source(0),
  transpose(0), repeat(0), repeat_stripe(0)
 {
-    create_params();
+    init_first();
 }
 
 riff_node::riff_node(riffdata* rd, short barpos) :
  dobj(dobjnames::SIN_RIFFNODE), start_bar(barpos), riff_source(rd),
  transpose(0), repeat(0), repeat_stripe(0)
 {
-    create_params();
+    init_first();
 }
 
 riff_node::~riff_node()
@@ -100,14 +100,14 @@ stockerrs::ERR_TYPE riff_node::validate()
     return stockerrs::ERR_NO_ERROR;
 }
 
-void riff_node::create_params()
+void riff_node::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::RIFFNAME);
-    relate_param(paramnames::BAR);
-    relate_param(paramnames::TRANSPOSE);
-    relate_param(paramnames::REPEAT);
-    relate_param(paramnames::REPEAT_STRIPE);
+    register_param(paramnames::RIFFNAME);
+    register_param(paramnames::BAR);
+    register_param(paramnames::TRANSPOSE);
+    register_param(paramnames::REPEAT);
+    register_param(paramnames::REPEAT_STRIPE);
 }
 

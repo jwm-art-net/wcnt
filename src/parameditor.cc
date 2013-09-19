@@ -11,7 +11,7 @@
 parameditor::parameditor() :
  dobj(dobjnames::DEF_PARAMEDITOR)
 {
-    create_params();
+    init_first();
 }
 
 bool parameditor::do_param_edits()
@@ -53,14 +53,11 @@ dobj const* parameditor::add_dobj(dobj* dbj)
 }
 
 
-void parameditor::create_params()
+void parameditor::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    jwm.get_topdobjlist()->create_dobjdobjlist(
-        dobjnames::DEF_PARAMEDITOR, dobjnames::LST_EDITS)->
-            add_dobjdobj(dobjnames::LST_EDITS,
-                dobjnames::SIN_EDIT_PARAM);
+    register_dobjdobj(dobjnames::LST_EDITS, dobjnames::SIN_EDIT_PARAM);
 }
 
 

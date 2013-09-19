@@ -17,10 +17,10 @@ trigger::trigger(char const* uname) :
  in_signal(0), out_trig(OFF), out_not_trig(OFF), out_wait_state(OFF),
  delay_time(0.0), trigger_level(0.0), delay_samps(0)
 {
-    add_output(outputnames::OUT_TRIG);
-    add_output(outputnames::OUT_WAIT_STATE);
-    add_input(inputnames::IN_SIGNAL);
-    create_params();
+    register_input(inputnames::IN_SIGNAL);
+    register_output(outputnames::OUT_TRIG);
+    register_output(outputnames::OUT_WAIT_STATE);
+    init_first();
 }
 
 trigger::~trigger()
@@ -128,10 +128,10 @@ void trigger::run()
     }
 }
 
-void trigger::create_params()
+void trigger::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::DELAY_TIME);
-    relate_param(paramnames::TRIGGER_LEVEL);
+    register_param(paramnames::DELAY_TIME);
+    register_param(paramnames::TRIGGER_LEVEL);
 }

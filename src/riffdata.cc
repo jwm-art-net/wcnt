@@ -19,7 +19,7 @@ riffdata::riffdata() :
  quarter_val(0),
  editlist(0)
 {
-    create_params();
+    init_first();
 }
 
 riffdata::~riffdata()
@@ -377,15 +377,12 @@ stockerrs::ERR_TYPE riffdata::validate()
     return stockerrs::ERR_NO_ERROR;
 }
 
-void riffdata::create_params()
+void riffdata::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::QUARTER_VAL);
-    jwm.get_topdobjlist()->create_dobjdobjlist(
-        dobjnames::DEF_RIFF, dobjnames::LST_NOTES)->
-            add_dobjdobj(dobjnames::LST_NOTES,
-                dobjnames::SIN_NOTE);
+    register_param(paramnames::QUARTER_VAL);
+    register_dobjdobj(dobjnames::LST_NOTES, dobjnames::SIN_NOTE);
 }
 
 

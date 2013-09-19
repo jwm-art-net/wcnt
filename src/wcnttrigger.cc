@@ -12,8 +12,8 @@ wcnt_trigger::wcnt_trigger(char const* uname) :
 
  in_trig(0)
 {
-    add_output(outputnames::OUT_TRIG);
-    add_input(inputnames::IN_TRIG);
+    register_input(inputnames::IN_TRIG);
+    register_output(outputnames::OUT_TRIG);
 }
 
 wcnt_trigger::~wcnt_trigger()

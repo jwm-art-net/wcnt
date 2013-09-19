@@ -13,10 +13,10 @@ glame_filter::glame_filter(char const* uname) :
  l_cutoff_freq(440.0), l_stages(1),
  l_input(0), l_output(0)
 {
-    add_output(outputnames::OUT_OUTPUT);
-    add_input(inputnames::IN_SIGNAL);
-    add_input(inputnames::IN_FREQ_MOD1);
-    create_params();
+    register_input(inputnames::IN_SIGNAL);
+    register_input(inputnames::IN_FREQ_MOD1);
+    register_output(outputnames::OUT_OUTPUT);
+    init_first();
     type_names[0] = "lowpass_iir";
     type_names[1] = "highpass_iir";
     min_cutoff = 0.0001 * jwm.samplerate();
@@ -173,14 +173,14 @@ void glame_filter::run()
     output = *l_output;
 }
 
-void glame_filter::create_params()
+void glame_filter::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::GLAME_FILTER_TYPE, "lowpass/highpass");
-    relate_param(paramnames::FREQ);
-    relate_param(paramnames::FREQ_MOD1SIZE);
-    relate_param(paramnames::STAGES);
+    register_param(paramnames::GLAME_FILTER_TYPE, "lowpass/highpass");
+    register_param(paramnames::FREQ);
+    register_param(paramnames::FREQ_MOD1SIZE);
+    register_param(paramnames::STAGES);
 }
 
 #endif // WITH_LADSPA

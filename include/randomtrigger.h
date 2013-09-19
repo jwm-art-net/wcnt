@@ -22,7 +22,7 @@ private:
     STATUS out_not_trig;
     double probability;
     double not_probability;
-    void create_params();
+    void init_first();
     
 };
 

@@ -35,7 +35,7 @@ class orbit : public synthmod
     double scale;
     double cos_b_pc;
     double sin_abc;
-    void create_params();
+    void init_first();
     
 };
 

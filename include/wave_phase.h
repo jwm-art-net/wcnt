@@ -38,7 +38,7 @@ private:
     int invph;
     const double* table;
     const double* shape_table;
-    void create_params();
+    void init_first();
     
 };
 

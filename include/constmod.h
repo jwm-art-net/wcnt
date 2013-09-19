@@ -15,7 +15,7 @@ public:
 
 private:
     double output;
-    void create_params();
+    void init_first();
     
 };
 

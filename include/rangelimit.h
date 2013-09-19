@@ -25,7 +25,7 @@ class range_limit : public synthmod
     // params
     double sigrangehi;
     double sigrangelo;
-    void create_params();
+    void init_first();
     
 };
 #endif

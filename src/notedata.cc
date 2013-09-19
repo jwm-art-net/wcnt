@@ -15,7 +15,7 @@ note_data::note_data() :
  note_type(NOTE_TYPE_ERR),position(0), length(0), velocity(0)
 {
     notename[0] = '\0';
-    create_params();
+    init_first();
 
 #ifdef NOTE_STATS
 STATS_INC
@@ -29,7 +29,7 @@ note_data::note_data(const char *name, double pos, double len, double vel)
  note_type(NOTE_TYPE_ERR), position(pos), length(len), velocity(vel)
 {
     set_name(name);
-    create_params();
+    init_first();
 
 #ifdef NOTE_STATS
 STATS_INC
@@ -243,14 +243,14 @@ stockerrs::ERR_TYPE note_data::validate()
     return stockerrs::ERR_NO_ERROR;
 }
 
-void note_data::create_params()
+void note_data::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::NAME);
-    relate_param(paramnames::NOTE_POS);
-    relate_param(paramnames::NOTE_LEN);
-    relate_param(paramnames::NOTE_VEL);
+    register_param(paramnames::NAME);
+    register_param(paramnames::NOTE_POS);
+    register_param(paramnames::NOTE_LEN);
+    register_param(paramnames::NOTE_VEL);
 }
 
 #ifdef NOTE_STATS

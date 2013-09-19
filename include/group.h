@@ -111,7 +111,7 @@ class group : public dobj
     bool is_duplicate;
     bool controlled; /* (by the group_control) */
 
-    void create_params();
+    void init_first();
     
 };
 

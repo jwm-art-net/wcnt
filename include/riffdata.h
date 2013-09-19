@@ -109,7 +109,7 @@ class riffdata : public dobj, public linked_list<note_data>
     linkedlist* editlist;
 
     double calc_note_param(note_data::NOTE_OP, double, double);
-    void create_params();
+    void init_first();
     
 };
 

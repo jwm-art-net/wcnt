@@ -30,7 +30,7 @@ private:
     long filterarraymax;
     long fpos;
     double filtertotal;
-    void create_params();
+    void init_first();
     
 };
 

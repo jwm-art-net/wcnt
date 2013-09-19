@@ -68,7 +68,7 @@ class fast_lookahead_limiter : public synthmod
     LADSPA_Data* l_out_right;
     LADSPA_Data  l_out_latency;
 
-    void create_params();
+    void init_first();
     
 };
 

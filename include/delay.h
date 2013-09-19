@@ -35,7 +35,7 @@ private:
     long fpos;
     double filtertotal;
     double gainamount;
-    void create_params();
+    void init_first();
     
 };
 

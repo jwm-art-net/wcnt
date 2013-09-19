@@ -34,8 +34,7 @@ class timer : public synthmod, public linked_list<timing>
     long time_ix;
     unsigned long samples;
 
-    static bool done_moddobj;
-    void create_moddobj();
+    void init_first();
 };
 
 #endif

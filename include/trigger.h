@@ -23,7 +23,7 @@ private:
     double delay_time;
     double trigger_level;
     unsigned long delay_samps;
-    void create_params();
+    void init_first();
     
 };
 

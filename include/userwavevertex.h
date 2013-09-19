@@ -29,7 +29,7 @@ private:
     double up_pos;
     double lo_deg;
     double lo_pos;
-    void create_params();
+    void init_first();
     
 };
 

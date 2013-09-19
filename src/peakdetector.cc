@@ -11,8 +11,8 @@ peak_detector::peak_detector(char const* uname) :
  in_signal(0), sig_range_hi(0.0), sig_range_lo(0.0), message(0),
  force_abort(OFF), peak_count(0), max_peaks(0), check(true)
 {
-    add_input(inputnames::IN_SIGNAL);
-    create_params();
+    register_input(inputnames::IN_SIGNAL);
+    init_first();
 }
 
 peak_detector::~peak_detector()
@@ -126,14 +126,14 @@ void const* peak_detector::get_param(paramnames::PAR_TYPE pt) const
     }
 }
 
-void peak_detector::create_params()
+void peak_detector::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::SIG_RANGE_HI);
-    relate_param(paramnames::SIG_RANGE_LO);
-    relate_param(paramnames::MSG);
-    relate_param(paramnames::FORCE_ABORT);
-    relate_param(paramnames::MAXPEAKS);
+    register_param(paramnames::SIG_RANGE_HI);
+    register_param(paramnames::SIG_RANGE_LO);
+    register_param(paramnames::MSG);
+    register_param(paramnames::FORCE_ABORT);
+    register_param(paramnames::MAXPEAKS);
 }
 

@@ -27,7 +27,7 @@ private:
     unsigned long decay_samps;
     unsigned long ds;
     double decay_size;
-    void create_params();
+    void init_first();
     
 };
 

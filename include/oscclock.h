@@ -56,7 +56,7 @@ private:
     double slide_size;
     double target_phase_step;
     unsigned long slidesamples;
-    void create_params();
+    void init_first();
     
 };
 

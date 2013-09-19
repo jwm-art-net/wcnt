@@ -39,7 +39,7 @@ private:
     short peak_count;
     bool check; // prevent wrap-around of peak_count.
     void set_message(const char* msg);
-    void create_params();
+    void init_first();
     
 };
 

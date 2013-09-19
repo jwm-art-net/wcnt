@@ -13,11 +13,11 @@ clockclock::clockclock(char const* uname) :
  mod1size(0),degs(360.00)
 {
     // degs initialised to 360 so that it immediately triggers
-    add_input(inputnames::IN_FREQ_MOD1);
-    add_output(outputnames::OUT_PHASE_TRIG);
-    add_output(outputnames::OUT_PREMOD_PHASE_STEP);
-    add_output(outputnames::OUT_PHASE_STEP);
-    create_params();
+    register_input(inputnames::IN_FREQ_MOD1);
+    register_output(outputnames::OUT_PHASE_TRIG);
+    register_output(outputnames::OUT_PREMOD_PHASE_STEP);
+    register_output(outputnames::OUT_PHASE_STEP);
+    init_first();
 }
 
 clockclock::~clockclock()
@@ -127,11 +127,11 @@ void clockclock::run()
     else if (out_phase_trig == ON) out_phase_trig = OFF;
 }
 
-void clockclock::create_params()
+void clockclock::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::FREQ);
-    relate_param(paramnames::FREQ_MOD1SIZE);
+    register_param(paramnames::FREQ);
+    register_param(paramnames::FREQ_MOD1SIZE);
 }
 

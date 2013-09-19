@@ -70,7 +70,7 @@ class sc1 : public synthmod
     LADSPA_Data* l_input;
     LADSPA_Data* l_output;
 
-    void create_params();
+    void init_first();
     
 };
 

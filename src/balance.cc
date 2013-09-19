@@ -9,10 +9,10 @@ balance::balance(char const* uname) :
  synthmod(synthmodnames::BALANCE, uname, SM_HAS_OUT_OUTPUT),
  in_signal1(0), in_signal2(0),out_output(0), func(ADD), bias(0)
 {
-    add_output(outputnames::OUT_OUTPUT);
-    add_input(inputnames::IN_SIGNAL1);
-    add_input(inputnames::IN_SIGNAL2);
-    create_params();
+    register_input(inputnames::IN_SIGNAL1);
+    register_input(inputnames::IN_SIGNAL2);
+    register_output(outputnames::OUT_OUTPUT);
+    init_first();
 }
 
 balance::~balance()
@@ -96,11 +96,11 @@ void balance::run()
             + *in_signal2 * bias * *in_signal1;
 }
 
-void balance::create_params()
+void balance::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::FUNC, "add/sub/mul");
-    relate_param(paramnames::BIAS);
+    register_param(paramnames::FUNC, "add/sub/mul");
+    register_param(paramnames::BIAS);
 }
 

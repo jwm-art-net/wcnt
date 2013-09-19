@@ -7,14 +7,14 @@ dynvertex::dynvertex() :
  dobj(dobjnames::SIN_DVERTEX),
  si_level(0), uso_level(0), lso_level(0)
 {
-    create_params();
+    init_first();
 }
 
 dynvertex::dynvertex(double sil, double usol, double lsol) :
         dobj(dobjnames::SIN_DVERTEX),
         si_level(sil), uso_level(usol), lso_level(lsol)
 {
-    create_params();
+    init_first();
 }
 
 stockerrs::ERR_TYPE dynvertex::validate()
@@ -51,13 +51,13 @@ void const* dynvertex::get_param(paramnames::PAR_TYPE pt) const
     }
 }
 
-void dynvertex::create_params()
+void dynvertex::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::SIGIN_LEVEL);
-    relate_param(paramnames::SIGOUT_UPLEVEL);
-    relate_param(paramnames::SIGOUT_LOLEVEL);
+    register_param(paramnames::SIGIN_LEVEL);
+    register_param(paramnames::SIGOUT_UPLEVEL);
+    register_param(paramnames::SIGOUT_LOLEVEL);
 }
 
 

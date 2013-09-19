@@ -6,14 +6,14 @@
 bpmchange::bpmchange() : 
  dobj(dobjnames::SIN_BPM), atbar(0), tobpm(0)
 {
-    create_params();
+    init_first();
 }
 
 bpmchange::bpmchange(short bar, double bpm) :
  dobj(dobjnames::SIN_BPM),
  atbar(bar), tobpm(bpm)
 {
-    create_params();
+    init_first();
 }
 
 bool bpmchange::set_param(paramnames::PAR_TYPE pt, void* data)
@@ -60,11 +60,11 @@ stockerrs::ERR_TYPE bpmchange::validate()
     return stockerrs::ERR_NO_ERROR;
 }
 
-void bpmchange::create_params()
+void bpmchange::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::BPM);
-    relate_param(paramnames::BAR);
+    register_param(paramnames::BPM);
+    register_param(paramnames::BAR);
 }
 

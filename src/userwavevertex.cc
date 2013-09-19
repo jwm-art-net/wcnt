@@ -7,7 +7,7 @@ wave_vertex::wave_vertex() :
  dobj(dobjnames::SIN_VERTEX), out_deg(0), out_pos(0),
  up_deg(0), up_pos(0), lo_deg(0), lo_pos(0)
 {
-    create_params();
+    init_first();
 }
 
 wave_vertex::wave_vertex(
@@ -15,7 +15,7 @@ wave_vertex::wave_vertex(
  dobj(dobjnames::SIN_VERTEX), out_deg(0), out_pos(0),
  up_deg(udeg), up_pos(upos), lo_deg(ldeg), lo_pos(lpos)
 {
-    create_params();
+    init_first();
 }
 
 void wave_vertex::modulate(double vmod, double hmod)
@@ -81,14 +81,14 @@ stockerrs::ERR_TYPE wave_vertex::validate()
     return stockerrs::ERR_NO_ERROR;
 }
 
-void wave_vertex::create_params()
+void wave_vertex::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::UPDEG);
-    relate_param(paramnames::UPLEVEL);
-    relate_param(paramnames::LODEG);
-    relate_param(paramnames::LOLEVEL);
+    register_param(paramnames::UPDEG);
+    register_param(paramnames::UPLEVEL);
+    register_param(paramnames::LODEG);
+    register_param(paramnames::LOLEVEL);
 }
 
 

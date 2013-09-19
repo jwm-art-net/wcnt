@@ -46,7 +46,7 @@ private:
     double position;
     double up_level;
     double lo_level;
-    void create_params();
+    void init_first();
     
 };
 

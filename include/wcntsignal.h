@@ -27,7 +27,7 @@ private:
     const double* in_signal;
     double out_output;
     double level;
-    void create_params();
+    void init_first();
     
 };
 

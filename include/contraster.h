@@ -39,7 +39,7 @@ private:
     double power_mod;
     double powerrad;
     double output;
-    void create_params();
+    void init_first();
     
 };
 

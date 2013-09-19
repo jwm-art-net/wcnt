@@ -21,11 +21,11 @@ fast_lookahead_limiter::fast_lookahead_limiter(char const* uname) :
  l_in_left(0), l_in_right(0), l_out_left(0), l_out_right(0),
  l_out_latency(0)
 {
-    add_output(outputnames::OUT_LEFT);
-    add_output(outputnames::OUT_RIGHT);
-    add_input(inputnames::IN_LEFT);
-    add_input(inputnames::IN_RIGHT);
-    create_params();
+    register_input(inputnames::IN_LEFT);
+    register_input(inputnames::IN_RIGHT);
+    register_output(outputnames::OUT_LEFT);
+    register_output(outputnames::OUT_RIGHT);
+    init_first();
 }
 
 fast_lookahead_limiter::~fast_lookahead_limiter()
@@ -172,13 +172,13 @@ void fast_lookahead_limiter::run()
     out_right = *l_out_right;
 }
 
-void fast_lookahead_limiter::create_params()
+void fast_lookahead_limiter::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::GAIN_DB);
-    relate_param(paramnames::LIMIT_DB);
-    relate_param(paramnames::RELEASE_SECS);
+    register_param(paramnames::GAIN_DB);
+    register_param(paramnames::LIMIT_DB);
+    register_param(paramnames::RELEASE_SECS);
 }
 
 #endif // WITH_LADSPA

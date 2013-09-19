@@ -49,7 +49,7 @@ synthfilereader::synthfilereader() :
     synthfile = new ifstream;
     buff = new string;
     synthheader = new string;
-    create_params();
+    init_first();
     modnamelist = new  linked_list<modnamedobj>;
     dobjnamelist = new linked_list<dobjnamedobj>;
     wc_err_msg[0] = '\0';
@@ -66,7 +66,7 @@ synthfilereader::synthfilereader(WC_FILE_TYPE ft) :
     synthfile = new ifstream;
     buff = new string;
     synthheader = new string;
-    create_params();
+    init_first();
     modnamelist = new  linked_list<modnamedobj>;
     dobjnamelist = new linked_list<dobjnamedobj>;
     wc_err_msg[0] = '\0';
@@ -1156,19 +1156,13 @@ dobj const* synthfilereader::add_dobj(dobj* dbj)
     return retv;
 }
 
-void synthfilereader::create_params()
+void synthfilereader::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::FILENAME);
-    relate_param(paramnames::MOD_ACTION, "include/exclude");
-    relate_param(paramnames::DOBJ_ACTION, "include/exclude");
-    jwm.get_topdobjlist()->create_dobjdobjlist(
-        dobjnames::DEF_WCFILE, dobjnames::LST_MODULES)->
-            add_dobjdobj(dobjnames::LST_MODULES,
-                dobjnames::SIN_MODNAME);
-    jwm.get_topdobjlist()->create_dobjdobjlist(
-        dobjnames::DEF_WCFILE, dobjnames::LST_DOBJS)->
-            add_dobjdobj(dobjnames::LST_DOBJS,
-                dobjnames::SIN_DOBJNAME);
+    register_param(paramnames::FILENAME);
+    register_param(paramnames::MOD_ACTION, "include/exclude");
+    register_param(paramnames::DOBJ_ACTION, "include/exclude");
+    register_dobjdobj(dobjnames::LST_MODULES, dobjnames::SIN_MODNAME);
+    register_dobjdobj(dobjnames::LST_DOBJS, dobjnames::SIN_DOBJNAME);
 }

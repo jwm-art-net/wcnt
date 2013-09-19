@@ -12,18 +12,14 @@
 
 trigswitcher::trigswitcher(char const* uname) :
 
- synthmod(
-    synthmodnames::TRIGSWITCHER,
-    uname,
-    SM_HAS_OUT_TRIG),
-
+ synthmod(synthmodnames::TRIGSWITCHER, uname, SM_HAS_OUT_TRIG),
  linkedlist(MULTIREF_ON, PRESERVE_DATA),
  in_trig(0), out_trig(OFF),
  trigs(0), trig_ix(0), trig(0)
 {
-    add_output(outputnames::OUT_TRIG);
-    add_input(inputnames::IN_TRIG);
-    create_moddobj();
+    register_input(inputnames::IN_TRIG);
+    register_output(outputnames::OUT_TRIG);
+    init_first();
 }
 
 trigswitcher::~trigswitcher()
@@ -124,17 +120,10 @@ void trigswitcher::run()
     out_trig = *trig;
 }
 
-bool trigswitcher::done_moddobj = false;
-
-void trigswitcher::create_moddobj()
+void trigswitcher::init_first()
 {
-    if (done_moddobj == true)
+    if (done_first())
         return;
-    moddobj* mdbj;
-    mdbj = jwm.get_moddobjlist()->add_moddobj(
-        synthmodnames::TRIGSWITCHER, dobjnames::LST_TRIGGERS);
-    mdbj->get_dobjdobjlist()->add_dobjdobj(
-        dobjnames::LST_TRIGGERS, dobjnames::DOBJ_SYNTHMOD);
-    done_moddobj = true;
+    register_moddobj(dobjnames::LST_TRIGGERS, dobjnames::DOBJ_SYNTHMOD);
 }
 

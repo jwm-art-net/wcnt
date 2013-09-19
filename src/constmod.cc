@@ -12,8 +12,8 @@ constmod::constmod(char const* uname) :
 
  output(0)
 {
-    add_output(outputnames::OUT_OUTPUT);
-    create_params();
+    register_output(outputnames::OUT_OUTPUT);
+    init_first();
 }
 
 constmod::~constmod()
@@ -52,10 +52,10 @@ void const* constmod::get_param(paramnames::PAR_TYPE pt) const
 
 
 
-void constmod::create_params()
+void constmod::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::VALUE);
+    register_param(paramnames::VALUE);
 }
 

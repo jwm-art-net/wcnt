@@ -17,8 +17,6 @@ private:
     const double* in_signal1;
     const double* in_signal2;
     double out_output;
-    void create_params();
-    
 };
 
 #endif

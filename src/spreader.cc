@@ -19,11 +19,9 @@ spreader::spreader(char const* uname) :
  in_mod(0), out_output(0), start_level(0), end_level(0), seg_lvl(0),
  sigs(0)
 {
-    add_output(outputnames::OUT_OUTPUT);
-    add_input(inputnames::IN_MODULATION);
-    create_params();
-    create_moddobj();
-
+    register_input(inputnames::IN_MODULATION);
+    register_output(outputnames::OUT_OUTPUT);
+    init_first();
 }
 
 spreader::~spreader()
@@ -171,25 +169,12 @@ void spreader::run()
 
 
 
-void spreader::create_params()
+void spreader::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::START_LEVEL);
-    relate_param(paramnames::END_LEVEL);
-}
-
-bool spreader::done_moddobj = false;
-
-void spreader::create_moddobj()
-{
-    if (done_moddobj == true)
-        return;
-    moddobj* mdbj;
-    mdbj = jwm.get_moddobjlist()->add_moddobj(
-        synthmodnames::SPREADER, dobjnames::LST_SIGNALS);
-    mdbj->get_dobjdobjlist()->add_dobjdobj(
-        dobjnames::LST_SIGNALS, dobjnames::DOBJ_SYNTHMOD);
-    done_moddobj = true;
+    register_param(paramnames::START_LEVEL);
+    register_param(paramnames::END_LEVEL);
+    register_moddobj(dobjnames::LST_SIGNALS, dobjnames::DOBJ_SYNTHMOD);
 }
 

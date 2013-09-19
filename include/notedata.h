@@ -121,7 +121,7 @@ STATS_FUNCS
     double position;
     double length;
     double velocity;
-    void create_params();
+    void init_first();
     
 
 #ifdef NOTE_STATS

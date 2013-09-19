@@ -11,11 +11,11 @@ modifier::modifier(char const* uname) :
  out_output(0),
  func(ADD), type(M1)
 {
-    add_output(outputnames::OUT_OUTPUT);
-    add_input(inputnames::IN_SIGNAL1);
-    add_input(inputnames::IN_SIGNAL2);
-    add_input(inputnames::IN_BIAS);
-    create_params();
+    register_input(inputnames::IN_SIGNAL1);
+    register_input(inputnames::IN_SIGNAL2);
+    register_input(inputnames::IN_BIAS);
+    register_output(outputnames::OUT_OUTPUT);
+    init_first();
 }
 
 modifier::~modifier()
@@ -120,14 +120,14 @@ void modifier::run()
     }
 }
 
-void modifier::create_params()
+void modifier::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::FUNC, "add/sub/mul");
-    relate_param(paramnames::MODIFIER_TYPE, "m1/m2");
+    register_param(paramnames::FUNC, "add/sub/mul");
+    register_param(paramnames::MODIFIER_TYPE, "m1/m2");
 /*
-    relate_param(paramnames::BIAS);
+    register_param(paramnames::BIAS);
 */
 }
 

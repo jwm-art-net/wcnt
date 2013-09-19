@@ -33,7 +33,7 @@ public:
 private:
     char* modname;
     char* iostr;
-    void create_params();
+    void init_first();
     
 };
 

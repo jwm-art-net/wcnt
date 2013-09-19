@@ -17,10 +17,9 @@ stereomixer::stereomixer(char const* uname) :
  out_left(0), out_right(0), master_level(0.75),
  chans_left(0), chans_right(0)
 {
-    add_output(outputnames::OUT_LEFT);
-    add_output(outputnames::OUT_RIGHT);
-    create_params();
-    create_moddobj();
+    register_output(outputnames::OUT_LEFT);
+    register_output(outputnames::OUT_RIGHT);
+    init_first();
 }
 
 stereomixer::~stereomixer()
@@ -138,24 +137,11 @@ void stereomixer::run()
     out_right *= master_level;
 }
 
-void stereomixer::create_params()
+void stereomixer::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::MASTER_LEVEL);
-}
-
-bool stereomixer::done_moddobj = false;
-
-void stereomixer::create_moddobj()
-{
-    if (done_moddobj == true)
-        return;
-    moddobj* mdbj;
-    mdbj = jwm.get_moddobjlist()->add_moddobj(
-        synthmodnames::STEREOMIXER, dobjnames::LST_MIX);
-    mdbj->get_dobjdobjlist()->add_dobjdobj(
-        dobjnames::LST_MIX, dobjnames::DOBJ_SYNTHMOD);
-    done_moddobj = true;
+    register_param(paramnames::MASTER_LEVEL);
+    register_moddobj(dobjnames::LST_MIX, dobjnames::DOBJ_SYNTHMOD);
 }
 

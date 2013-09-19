@@ -58,7 +58,7 @@ private:
     void write_wav_chunk(st_data* buf, unsigned long smp, int bsize);
     void timestamp_filename();
     // synthmod stuff
-    void create_params();
+    void init_first();
     
 };
 

@@ -24,10 +24,10 @@ group_control::group_control(char const* uname) :
  stop_pending(0),
  grp(0), runlist(0), empty_run_list(0)
 {
-    add_input(inputnames::IN_PLAY_TRIG);
-    add_input(inputnames::IN_STOP_TRIG);
-    add_output(outputnames::OUT_PLAY_STATE);
-    create_params();
+    register_input(inputnames::IN_PLAY_TRIG);
+    register_input(inputnames::IN_STOP_TRIG);
+    register_output(outputnames::OUT_PLAY_STATE);
+    init_first();
 }
 
 group_control::~group_control()
@@ -186,10 +186,10 @@ bool group_control::set_group_name(char const* name)
 
 }
 
-void group_control::create_params()
+void group_control::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::GROUP_NAME);
+    register_param(paramnames::GROUP_NAME);
 }
 

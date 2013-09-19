@@ -53,7 +53,7 @@ private:
     // params
     short exit_bar;
     // synthmod stuff
-    void create_params();
+    void init_first();
     
 };
 

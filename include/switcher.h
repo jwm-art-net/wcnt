@@ -41,9 +41,7 @@ private:
     double const* prevsig;
     double zero;// for initial stuff
     
-    void create_params();
-    static bool done_moddobj;
-    void create_moddobj();
+    void init_first();
 };
 
 #endif

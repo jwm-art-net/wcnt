@@ -68,7 +68,7 @@ class caps_plate : public synthmod
     LADSPA_Data* l_out_left;
     LADSPA_Data* l_out_right;
 
-    void create_params();
+    void init_first();
     
 };
 

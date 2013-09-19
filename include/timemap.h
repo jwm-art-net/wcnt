@@ -79,8 +79,7 @@ private:
     double notelen_to_frequency(short);
     double notelen_to_ms(short);
     // synthmod stuff for keeping things cushdy.
-    static bool done_moddobj;
-    void create_moddobj();
+    void init_first();
 };
 
 #endif

@@ -36,7 +36,7 @@ class mono_amp : public synthmod
     // working
     double amp_level;
     double ampsig;
-    void create_params();
+    void init_first();
     
 };
 

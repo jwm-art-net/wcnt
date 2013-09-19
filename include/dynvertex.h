@@ -48,7 +48,7 @@ private:
     double si_level;
     double uso_level;
     double lso_level;
-    void create_params();
+    void init_first();
     
 };
 

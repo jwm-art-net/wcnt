@@ -11,13 +11,13 @@ stereo_amp::stereo_amp(char const* uname) :
  left_level(0), right_level(0), amp_modsize(0), clip_level(0),
  left(0), right(0)
 {
-    add_output(outputnames::OUT_LEFT);
-    add_output(outputnames::OUT_RIGHT);
-    add_input(inputnames::IN_LEFT);
-    add_input(inputnames::IN_RIGHT);
-    add_input(inputnames::IN_EG);
-    add_input(inputnames::IN_AMP_MOD);
-    create_params();
+    register_input(inputnames::IN_LEFT);
+    register_input(inputnames::IN_RIGHT);
+    register_input(inputnames::IN_EG);
+    register_input(inputnames::IN_AMP_MOD);
+    register_output(outputnames::OUT_LEFT);
+    register_output(outputnames::OUT_RIGHT);
+    init_first();
 }
 
 stereo_amp::~stereo_amp()
@@ -130,13 +130,13 @@ void stereo_amp::run()
         out_right = clip_level;
 }
 
-void stereo_amp::create_params()
+void stereo_amp::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::LEFT_LEVEL);
-    relate_param(paramnames::RIGHT_LEVEL);
-    relate_param(paramnames::AMP_MODSIZE);
-    relate_param(paramnames::CLIP_LEVEL);
+    register_param(paramnames::LEFT_LEVEL);
+    register_param(paramnames::RIGHT_LEVEL);
+    register_param(paramnames::AMP_MODSIZE);
+    register_param(paramnames::CLIP_LEVEL);
 }
 

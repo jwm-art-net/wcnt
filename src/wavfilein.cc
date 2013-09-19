@@ -10,7 +10,7 @@ wavfilein::wavfilein() :
  fname(0), rootnote(0),
  filein(0), status(WAV_STATUS_INIT)
 {
-    create_params();
+    init_first();
 }
 
 wavfilein::~wavfilein()
@@ -161,12 +161,12 @@ stockerrs::ERR_TYPE wavfilein::validate()
     return stockerrs::ERR_NO_ERROR;
 }
 
-void wavfilein::create_params()
+void wavfilein::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::FILENAME);
-    relate_param(paramnames::ROOT_NOTE);
+    register_param(paramnames::FILENAME);
+    register_param(paramnames::ROOT_NOTE);
 }
 
 

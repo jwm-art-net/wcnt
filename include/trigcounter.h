@@ -31,7 +31,7 @@ private:
     short pre_count;
     short count;
     STATUS wrap;
-    void create_params();
+    void init_first();
     
 };
 

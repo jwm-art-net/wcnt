@@ -65,7 +65,7 @@ class glame_filter : public synthmod
     float min_cutoff;
     float max_cutoff;
 
-    void create_params();
+    void init_first();
     
 };
 

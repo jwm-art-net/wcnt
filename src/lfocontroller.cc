@@ -13,12 +13,12 @@ lfo_controller::lfo_controller(char const* uname) :
  ramp_samples(0), resp_size(0), resp_fa_level(0), resp_ac(0),
  level_size(0), current_level(0)
 {
-    add_output(outputnames::OUT_OUTPUT);
-    add_output(outputnames::OUT_PRE_AMP_MOD);
-    add_input(inputnames::IN_TRIG);
-    add_input(inputnames::IN_WAVE);
-    add_input(inputnames::IN_AMP_MOD);
-    create_params();
+    register_input(inputnames::IN_TRIG);
+    register_input(inputnames::IN_WAVE);
+    register_input(inputnames::IN_AMP_MOD);
+    register_output(outputnames::OUT_OUTPUT);
+    register_output(outputnames::OUT_PRE_AMP_MOD);
+    init_first();
 }
 
 lfo_controller::~lfo_controller()
@@ -171,15 +171,15 @@ void lfo_controller::run()
      out_preampmod * ams_r + out_preampmod * *in_amp_mod * amp_modsize;
 }
 
-void lfo_controller::create_params()
+void lfo_controller::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::DELAY_TIME);
-    relate_param(paramnames::RAMP_TIME);
-    relate_param(paramnames::START_LEVEL);
-    relate_param(paramnames::END_LEVEL);
-    relate_param(paramnames::RESPONSE_TIME);
-    relate_param(paramnames::AMP_MODSIZE);
+    register_param(paramnames::DELAY_TIME);
+    register_param(paramnames::RAMP_TIME);
+    register_param(paramnames::START_LEVEL);
+    register_param(paramnames::END_LEVEL);
+    register_param(paramnames::RESPONSE_TIME);
+    register_param(paramnames::AMP_MODSIZE);
 }
 

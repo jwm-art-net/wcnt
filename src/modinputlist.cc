@@ -8,7 +8,7 @@ modinputlist::modinputlist(DESTRUCTION d) :
 {
 }
 
-modinput* modinputlist::add_input(synthmod* sm, inputnames::IN_TYPE ot)
+modinput* modinputlist::register_input(synthmod* sm, inputnames::IN_TYPE ot)
 {
     modinput* mi = new modinput(sm, ot);
     llitem* tmp = add_at_tail(mi);
@@ -43,7 +43,7 @@ modinputlist* modinputlist::get_list_of_category(iocat::IOCAT oc)
     while(input) {
         ot = input->get_inputtype();
         if (innames.get_category(ot) == oc)
-            incatlist->add_input(input->get_synthmodule(), ot);
+            incatlist->register_input(input->get_synthmodule(), ot);
         input = goto_next();
     }
     return incatlist;
@@ -107,7 +107,7 @@ modinputlist::get_list_of_category_orderpref(iocat::IOCAT in_cat,
                 sm = input->get_synthmodule();
                 if (in_prefs[a] == input->get_inputtype()
                         && sm_prefs[c] == sm->get_module_type())
-                    sorted_ins->add_input(sm, input->get_inputtype());
+                    sorted_ins->register_input(sm, input->get_inputtype());
                 input = pot_ins->goto_next();
             }
         }
@@ -136,7 +136,7 @@ modinputlist::get_list_of_category_orderpref(iocat::IOCAT in_cat,
                 not_prefchk++;
         }
         if (in_prefchk == 0 && not_prefchk == 0)
-            sorted_ins->add_input(input->get_synthmodule(),
+            sorted_ins->register_input(input->get_synthmodule(),
                                   input->get_inputtype());
         input = pot_ins->goto_next();
     }

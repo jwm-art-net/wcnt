@@ -16,11 +16,11 @@ orbit::orbit(char const* uname) :
  test_iter(0),
  x(0.0), y(0.0), scale(1.0), cos_b_pc(0), sin_abc(0)
 {
-    add_input(inputnames::IN_RESTART_TRIG);
-    add_input(inputnames::IN_TRIG);
-    add_output(outputnames::OUT_X);
-    add_output(outputnames::OUT_Y);
-    create_params();
+    register_input(inputnames::IN_RESTART_TRIG);
+    register_input(inputnames::IN_TRIG);
+    register_output(outputnames::OUT_X);
+    register_output(outputnames::OUT_Y);
+    init_first();
 }
 
 orbit::~orbit()
@@ -171,14 +171,14 @@ void const* orbit::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void orbit::create_params()
+void orbit::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::ORBIT_TYPE, "hopalong/threeply/quadrup");
-    relate_param(paramnames::A);
-    relate_param(paramnames::B);
-    relate_param(paramnames::C);
-    relate_param(paramnames::TEST_ITER);
+    register_param(paramnames::ORBIT_TYPE, "hopalong/threeply/quadrup");
+    register_param(paramnames::A);
+    register_param(paramnames::B);
+    register_param(paramnames::C);
+    register_param(paramnames::TEST_ITER);
 }
 

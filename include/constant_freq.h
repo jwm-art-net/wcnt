@@ -18,7 +18,7 @@ public:
 private:
     double out_freq; /* is param and output */
     double out_phase_step;
-    void create_params();
+    void init_first();
     
 };
 

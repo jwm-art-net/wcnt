@@ -12,9 +12,9 @@ rms::rms(char const* uname) :
  in_signal(0), out_rms(0), rms_time(0), output(0), rmsarr(0),
  arraymax(0), arrpos(0), sqrsum(0)
 {
-    add_output(outputnames::OUT_RMS);
-    add_input(inputnames::IN_SIGNAL);
-    create_params();
+    register_input(inputnames::IN_SIGNAL);
+    register_output(outputnames::OUT_RMS);
+    init_first();
 }
 
 rms::~rms()
@@ -105,10 +105,10 @@ void rms::run()
     out_rms = sqrt(sqrsum / arraymax);
 }
 
-void rms::create_params()
+void rms::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::RMS_TIME);
+    register_param(paramnames::RMS_TIME);
 }
 

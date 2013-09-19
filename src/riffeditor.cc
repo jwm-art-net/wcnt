@@ -9,7 +9,7 @@
 riff_editor::riff_editor() :
  dobj(dobjnames::DEF_RIFFEDITOR), riff_source(0)
 {
-    create_params();
+    init_first();
 }
 
 riff_editor::~riff_editor()
@@ -68,14 +68,12 @@ stockerrs::ERR_TYPE riff_editor::validate()
     return stockerrs::ERR_NO_ERROR;
 }
 
-void riff_editor::create_params()
+void riff_editor::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::RIFFNAME);
-    jwm.get_topdobjlist()->create_dobjdobjlist(
-        dobjnames::DEF_RIFFEDITOR, dobjnames::LST_NOTES)->
-            add_dobjdobj(dobjnames::LST_NOTES, dobjnames::SIN_NOTE);
+    register_param(paramnames::RIFFNAME);
+    register_dobjdobj(dobjnames::LST_NOTES, dobjnames::SIN_NOTE);
 }
 
 

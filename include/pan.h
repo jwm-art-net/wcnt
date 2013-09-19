@@ -29,7 +29,7 @@ private:
     // working
     double pan_mod;
     double pan_pos;
-    void create_params();
+    void init_first();
     
 };
 

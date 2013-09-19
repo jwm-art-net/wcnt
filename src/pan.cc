@@ -9,11 +9,11 @@ pan::pan(char const* uname) :
  in_signal(0), in_pan_mod(0), out_l(0), out_r(0), panpos(0),
  pan_modsize(0), pan_mod(0), pan_pos(0)
 {
-    add_output(outputnames::OUT_LEFT);
-    add_output(outputnames::OUT_RIGHT);
-    add_input(inputnames::IN_SIGNAL);
-    add_input(inputnames::IN_PAN_MOD);
-    create_params();
+    register_input(inputnames::IN_SIGNAL);
+    register_input(inputnames::IN_PAN_MOD);
+    register_output(outputnames::OUT_LEFT);
+    register_output(outputnames::OUT_RIGHT);
+    init_first();
 }
 
 pan::~pan()
@@ -112,10 +112,10 @@ void pan::run()
 
 
 
-void pan::create_params()
+void pan::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::PAN);
-    relate_param(paramnames::PAN_MODSIZE);
+    register_param(paramnames::PAN);
+    register_param(paramnames::PAN_MODSIZE);
 }

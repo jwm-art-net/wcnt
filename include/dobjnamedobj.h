@@ -19,7 +19,7 @@ public:
 
 private:
     char* dobjname;
-    void create_params();
+    void init_first();
     
 };
 

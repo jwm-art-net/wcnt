@@ -33,7 +33,7 @@ public:
 private:
     short bar;
     timesig time_sig;
-    void create_params();
+    void init_first();
     
 };
 

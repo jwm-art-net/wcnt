@@ -9,7 +9,7 @@ adsr_coord::adsr_coord() :
  output_time(0), output_level(0),
  upper_time(0), upper_level(0), lower_time(0), lower_level(0)
 {
-    create_params();
+    init_first();
 }
 
 adsr_coord::adsr_coord
@@ -19,7 +19,7 @@ adsr_coord::adsr_coord
  upper_time(ut), upper_level(ul),
  lower_time(lt), lower_level(ll)
 {
-    create_params();
+    init_first();
 }
 
 adsr_coord::~adsr_coord()
@@ -93,14 +93,14 @@ stockerrs::ERR_TYPE adsr_coord::validate()
     return stockerrs::ERR_NO_ERROR;
 }
 
-void adsr_coord::create_params()
+void adsr_coord::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::ADSRSECT, "attack/decay/sustain/release");
-    relate_param(paramnames::UPTIME);
-    relate_param(paramnames::UPLEVEL);
-    relate_param(paramnames::LOTIME);
-    relate_param(paramnames::LOLEVEL);
+    register_param(paramnames::ADSRSECT, "attack/decay/sustain/release");
+    register_param(paramnames::UPTIME);
+    register_param(paramnames::UPLEVEL);
+    register_param(paramnames::LOTIME);
+    register_param(paramnames::LOLEVEL);
 }
 

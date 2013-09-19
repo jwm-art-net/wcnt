@@ -14,11 +14,11 @@ patterntrig::patterntrig(char const* uname) :
  in_trig(0), out_trig(OFF), out_start_trig(OFF),
  out_end_trig(OFF), pattern(0), ptr(0)
 {
-    add_output(outputnames::OUT_TRIG);
-    add_output(outputnames::OUT_START_TRIG);
-    add_output(outputnames::OUT_END_TRIG);
-    add_input(inputnames::IN_TRIG);
-    create_params();
+    register_input(inputnames::IN_TRIG);
+    register_output(outputnames::OUT_TRIG);
+    register_output(outputnames::OUT_START_TRIG);
+    register_output(outputnames::OUT_END_TRIG);
+    init_first();
 }
 
 patterntrig::~patterntrig()
@@ -148,10 +148,10 @@ void patterntrig::run()
 
 
 
-void patterntrig::create_params()
+void patterntrig::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::TRIG_STRING);
+    register_param(paramnames::TRIG_STRING);
 }
 

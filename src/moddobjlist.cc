@@ -5,8 +5,8 @@ moddobjlist::moddobjlist() :
 {
 }
 
-moddobj* moddobjlist::add_moddobj(synthmodnames::SYNTH_MOD_TYPE smt,
-    dobjnames::DOBJ_TYPE fc)
+moddobj* moddobjlist::register_moddobj(synthmodnames::SYNTH_MOD_TYPE smt,
+                                                    dobjnames::DOBJ_TYPE fc)
 {
     if (smt <= synthmodnames::FIRST || smt >= synthmodnames::LAST)
         return 0;

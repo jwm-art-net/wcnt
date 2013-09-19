@@ -14,7 +14,7 @@ paramedit::paramedit() :
  dobj(dobjnames::SIN_EDIT_PARAM),
  name(0), parstr(0)
 {
-    create_params();
+    init_first();
 }
 
 paramedit::~paramedit()
@@ -211,12 +211,12 @@ void const* paramedit::get_param(paramnames::PAR_TYPE dt) const
     }
 }
 
-void paramedit::create_params()
+void paramedit::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::STR_UNNAMED);
-    relate_param(paramnames::STR_LIST);
+    register_param(paramnames::STR_UNNAMED);
+    register_param(paramnames::STR_LIST);
 }
 
 

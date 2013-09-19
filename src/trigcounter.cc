@@ -16,14 +16,14 @@ trigcounter::trigcounter(char const* uname) :
  out_play_state(OFF),
  pre_count(0), count(0), wrap(OFF)
 {
-    add_output(outputnames::OUT_TRIG);
-    add_output(outputnames::OUT_NOT_TRIG);
-    add_output(outputnames::OUT_COUNT);
-    add_output(outputnames::OUT_PRE_COUNT);
-    add_output(outputnames::OUT_PLAY_STATE);
-    add_input(inputnames::IN_TRIG);
-    add_input(inputnames::IN_RESET_TRIG);
-    create_params();
+    register_input(inputnames::IN_TRIG);
+    register_input(inputnames::IN_RESET_TRIG);
+    register_output(outputnames::OUT_TRIG);
+    register_output(outputnames::OUT_NOT_TRIG);
+    register_output(outputnames::OUT_COUNT);
+    register_output(outputnames::OUT_PRE_COUNT);
+    register_output(outputnames::OUT_PLAY_STATE);
+    init_first();
 }
 
 trigcounter::~trigcounter()
@@ -161,12 +161,12 @@ void trigcounter::run()
 
 
 
-void trigcounter::create_params()
+void trigcounter::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::PRE_COUNT);
-    relate_param(paramnames::COUNT);
-    relate_param(paramnames::WRAP);
+    register_param(paramnames::PRE_COUNT);
+    register_param(paramnames::COUNT);
+    register_param(paramnames::WRAP);
 }
 

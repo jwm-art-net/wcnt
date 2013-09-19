@@ -7,7 +7,7 @@ noise_generator::noise_generator(char const* uname) :
  output(0.00)
 {
     srandom(time(0));
-    add_output(outputnames::OUT_OUTPUT);
+    register_output(outputnames::OUT_OUTPUT);
 }
 
 noise_generator::~noise_generator()

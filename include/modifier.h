@@ -25,7 +25,7 @@ private:
     double out_output;
     FUNC func;
     TYPE type;
-    void create_params();
+    void init_first();
     
 };
 

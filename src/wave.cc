@@ -12,9 +12,9 @@ wave::wave(char const* uname) :
  output(0.00), in_phase_step(NULL), type(wave_tables::ONE), phase(0),
  table(0)
 {
-    add_output(outputnames::OUT_OUTPUT);
-    add_input(inputnames::IN_PHASE_STEP);
-    create_params();
+    register_input(inputnames::IN_PHASE_STEP);
+    register_output(outputnames::OUT_OUTPUT);
+    init_first();
 }
 wave::~wave()
 {
@@ -83,11 +83,11 @@ void wave::run()
         (*in_phase_step * wave_tables::phase_step_base);
 }
 
-void wave::create_params()
+void wave::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::WAVE_TYPE, jwm.get_wave_tables()->fxstring);
+    register_param(paramnames::WAVE_TYPE, jwm.get_wave_tables()->fxstring);
 }
 
 

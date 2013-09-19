@@ -16,11 +16,11 @@ waittrig::waittrig(char const* uname) :
  min_time(0), max_time(0), count(1), min_samples(0), max_samples(0),
  mins(0), maxs(0), counter(0)
 {
-    add_output(outputnames::OUT_TRIG);
-    add_output(outputnames::OUT_WAIT_STATE);
-    add_input(inputnames::IN_TRIG1);
-    add_input(inputnames::IN_TRIG2);
-    create_params();
+    register_input(inputnames::IN_TRIG1);
+    register_input(inputnames::IN_TRIG2);
+    register_output(outputnames::OUT_TRIG);
+    register_output(outputnames::OUT_WAIT_STATE);
+    init_first();
 }
 
 waittrig::~waittrig()
@@ -154,12 +154,12 @@ void waittrig::run()
         out_trig = OFF;
 }
 
-void waittrig::create_params()
+void waittrig::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::MIN_WAIT);
-    relate_param(paramnames::MAX_WAIT);
-    relate_param(paramnames::COUNT);
+    register_param(paramnames::MIN_WAIT);
+    register_param(paramnames::MAX_WAIT);
+    register_param(paramnames::COUNT);
 }
 

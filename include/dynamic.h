@@ -74,7 +74,7 @@ class dynamic : public synthmod, public linked_list<dynvertex>
     */
     dynvertex* goto_dvertex(double sil);
 
-    void create_params();
+    void init_first();
     void create_dobj();
     
     static bool done_dobj;

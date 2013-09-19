@@ -42,7 +42,7 @@ private:
     double gainamount;
     double feedamount;
     // synthmod kind of stuff
-    void create_params();
+    void init_first();
     
 };
 

@@ -57,7 +57,7 @@ class group_control: public synthmod
     synthmod** runlist;
     synthmod** empty_run_list;
     bool set_group_name(char const*);
-    void create_params();
+    void init_first();
     
 };
 

@@ -11,13 +11,13 @@ echo::echo(char const* uname) :
  feed_modsize(0), wetdry(0), filter(0), filterarraymax(0), fpos(0),
  filtertotal(0), gainamount(0), feedamount(0)
 {
-    add_input(inputnames::IN_SIGNAL);
-    add_input(inputnames::IN_GAIN_MOD);
-    add_input(inputnames::IN_FEEDBACK);
-    add_input(inputnames::IN_FB_MOD);
-    add_output(outputnames::OUT_OUTPUT);
-    add_output(outputnames::OUT_WET_OUTPUT);
-    create_params();
+    register_input(inputnames::IN_SIGNAL);
+    register_input(inputnames::IN_GAIN_MOD);
+    register_input(inputnames::IN_FEEDBACK);
+    register_input(inputnames::IN_FB_MOD);
+    register_output(outputnames::OUT_OUTPUT);
+    register_output(outputnames::OUT_WET_OUTPUT);
+    init_first();
 }
 
 echo::~echo()
@@ -178,15 +178,15 @@ void echo::run()
     if (fpos < 0) fpos = filterarraymax - 1;
 }
 
-void echo::create_params()
+void echo::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::DELAY_TIME);
-    relate_param(paramnames::GAIN);
-    relate_param(paramnames::GAIN_MODSIZE);
-    relate_param(paramnames::FEED_LEVEL);
-    relate_param(paramnames::FEED_MODSIZE);
-    relate_param(paramnames::WETDRY);
+    register_param(paramnames::DELAY_TIME);
+    register_param(paramnames::GAIN);
+    register_param(paramnames::GAIN_MODSIZE);
+    register_param(paramnames::FEED_LEVEL);
+    register_param(paramnames::FEED_MODSIZE);
+    register_param(paramnames::WETDRY);
 }
 

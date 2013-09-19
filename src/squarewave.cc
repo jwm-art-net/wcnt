@@ -14,13 +14,13 @@ square_wave::square_wave(char const* uname) :
  pulse(OFF), degs(0.00), podeg(0), pwdeg_rad(0), poff_deg(0.00),
  target(0), cycle(0)
 {
-    add_output(outputnames::OUT_OUTPUT);
-    add_output(outputnames::OUT_OFF_PULSE);
-    add_output(outputnames::OUT_PLAY_STATE);
-    add_input(inputnames::IN_PHASE_TRIG);
-    add_input(inputnames::IN_PHASE_STEP);
-    add_input(inputnames::IN_PWM);
-    create_params();
+    register_input(inputnames::IN_PHASE_TRIG);
+    register_input(inputnames::IN_PHASE_STEP);
+    register_input(inputnames::IN_PWM);
+    register_output(outputnames::OUT_OUTPUT);
+    register_output(outputnames::OUT_OFF_PULSE);
+    register_output(outputnames::OUT_PLAY_STATE);
+    init_first();
 }
 
 square_wave::~square_wave()
@@ -179,13 +179,13 @@ void square_wave::run()
     output += (target - output) * rate;
 }
 
-void square_wave::create_params()
+void square_wave::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::RATE);
-    relate_param(paramnames::PULSE_WIDTH);
-    relate_param(paramnames::PWM_SIZE);
-    relate_param(paramnames::RECYCLE_MODE);
+    register_param(paramnames::RATE);
+    register_param(paramnames::PULSE_WIDTH);
+    register_param(paramnames::PWM_SIZE);
+    register_param(paramnames::RECYCLE_MODE);
 }
 

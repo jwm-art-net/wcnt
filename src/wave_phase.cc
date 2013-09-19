@@ -16,12 +16,12 @@ wave_phase::wave_phase(char const* uname) :
  phase(0), shape_phase(0), degs(0), max_degs(0), invph(1),
  table(0), shape_table(0)
 {
-    add_output(outputnames::OUT_OUTPUT);
-    add_output(outputnames::OUT_PLAY_STATE);
-    add_input(inputnames::IN_PHASE_TRIG);
-    add_input(inputnames::IN_PHASE_STEP);
-    add_input(inputnames::IN_SHAPE_PHASE_STEP);
-    create_params();
+    register_input(inputnames::IN_PHASE_TRIG);
+    register_input(inputnames::IN_PHASE_STEP);
+    register_input(inputnames::IN_SHAPE_PHASE_STEP);
+    register_output(outputnames::OUT_OUTPUT);
+    register_output(outputnames::OUT_PLAY_STATE);
+    init_first();
 }
 
 wave_phase::~wave_phase()
@@ -171,17 +171,17 @@ void wave_phase::run()
         (*in_shape_phase_step * wave_tables::phase_step_base);
 }
 
-void wave_phase::create_params()
+void wave_phase::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::WAVE_TYPE, jwm.get_wave_tables()->fxstring);
-    relate_param(paramnames::WAVE_SHAPE_TYPE,
-                                        jwm.get_wave_tables()->fxstring);
-    relate_param(paramnames::TRIG_RESET_PHASE);
-    relate_param(paramnames::RECYCLE_MODE);
-    relate_param(paramnames::SYNC_SHAPE);
-    relate_param(paramnames::INVERT_ALT);
-    relate_param(paramnames::CYCLES);
+    register_param(paramnames::WAVE_TYPE, jwm.get_wave_tables()->fxstring);
+    register_param(paramnames::WAVE_SHAPE_TYPE,
+                                          jwm.get_wave_tables()->fxstring);
+    register_param(paramnames::TRIG_RESET_PHASE);
+    register_param(paramnames::RECYCLE_MODE);
+    register_param(paramnames::SYNC_SHAPE);
+    register_param(paramnames::INVERT_ALT);
+    register_param(paramnames::CYCLES);
 }
 

@@ -13,10 +13,10 @@ caps_plate::caps_plate(char const* uname) :
  l_input(0), l_bandwidth(0), l_tail(0), l_damping(0), l_blend(0),
  l_out_left(0), l_out_right(0)
 {
-    add_output(outputnames::OUT_LEFT);
-    add_output(outputnames::OUT_RIGHT);
-    add_input(inputnames::IN_SIGNAL);
-    create_params();
+    register_input(inputnames::IN_SIGNAL);
+    register_output(outputnames::OUT_LEFT);
+    register_output(outputnames::OUT_RIGHT);
+    init_first();
 }
 
 caps_plate::~caps_plate()
@@ -165,14 +165,14 @@ void caps_plate::run()
     out_right = *l_out_right;
 }
 
-void caps_plate::create_params()
+void caps_plate::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::BANDWIDTH);
-    relate_param(paramnames::TAIL);
-    relate_param(paramnames::DAMPING);
-    relate_param(paramnames::WETDRY);
+    register_param(paramnames::BANDWIDTH);
+    register_param(paramnames::TAIL);
+    register_param(paramnames::DAMPING);
+    register_param(paramnames::WETDRY);
 }
 
 #endif // WITH_LADSPA

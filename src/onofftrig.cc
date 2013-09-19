@@ -20,12 +20,12 @@ onofftrig::onofftrig(char const* uname) :
  attack_level(0.0), release_level(0.0), check_levels(OFF), 
  attack_samps(0), release_samps(0), do_attack(true)
 {
-    add_output(outputnames::OUT_TRIG);
-    add_output(outputnames::OUT_NOT_TRIG);
-    add_output(outputnames::OUT_ATTACK_STATE);
-    add_output(outputnames::OUT_RELEASE_STATE);
-    add_input(inputnames::IN_SIGNAL);
-    create_params();
+    register_input(inputnames::IN_SIGNAL);
+    register_output(outputnames::OUT_TRIG);
+    register_output(outputnames::OUT_NOT_TRIG);
+    register_output(outputnames::OUT_ATTACK_STATE);
+    register_output(outputnames::OUT_RELEASE_STATE);
+    init_first();
 }
 
 onofftrig::~onofftrig()
@@ -192,13 +192,13 @@ void onofftrig::run()
     }
 }
 
-void onofftrig::create_params()
+void onofftrig::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::ATTACK_TIME);
-    relate_param(paramnames::ATTACK_LEVEL);
-    relate_param(paramnames::RELEASE_TIME);
-    relate_param(paramnames::RELEASE_LEVEL);
-    relate_param(paramnames::CHECK_LEVELS);
+    register_param(paramnames::ATTACK_TIME);
+    register_param(paramnames::ATTACK_LEVEL);
+    register_param(paramnames::RELEASE_TIME);
+    register_param(paramnames::RELEASE_LEVEL);
+    register_param(paramnames::CHECK_LEVELS);
 }

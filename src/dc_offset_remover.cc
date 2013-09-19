@@ -9,8 +9,8 @@ dc_offset_remover::dc_offset_remover(char const* uname) :
  input(0), output(0),
  l_descriptor(0), l_inst_handle(0), l_input(0), l_output(0)
 {
-    add_output(outputnames::OUT_OUTPUT);
-    add_input(inputnames::IN_SIGNAL);
+    register_input(inputnames::IN_SIGNAL);
+    register_output(outputnames::OUT_OUTPUT);
 }
 
 dc_offset_remover::~dc_offset_remover()

@@ -20,14 +20,13 @@ stepper::stepper(char const* uname) :
  lo_levels(0),
  rtime_samp(0), rtime_max_samps(0), rtime_stpsz(0), rtime_size(0)
 {
-    add_output(outputnames::OUT_OUTPUT);
-    add_input(inputnames::IN_TRIG);
-    add_input(inputnames::IN_RESTART_TRIG);
-    add_input(inputnames::IN_MODULATION);
+    register_input(inputnames::IN_TRIG);
+    register_input(inputnames::IN_RESTART_TRIG);
+    register_input(inputnames::IN_MODULATION);
+    register_output(outputnames::OUT_OUTPUT);
     insert_step(0.0, 0.0, 0.0);
     insert_step(1.0, 1.0, 1.0);
-    create_params();
-    create_moddobj();
+    init_first();
 }
 
 stepper::~stepper()
@@ -264,28 +263,15 @@ void stepper::run()
     else out_output = output;
 }
 
-void stepper::create_params()
+void stepper::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::STEP_COUNT);
-    relate_param(paramnames::UP_THRESH);
-    relate_param(paramnames::LO_THRESH);
-    relate_param(paramnames::RESPONSE_TIME);
-    relate_param(paramnames::RECYCLE_MODE);
-}
-
-bool stepper::done_moddobj = false;
-
-void stepper::create_moddobj()
-{
-    if (done_moddobj == true)
-        return;
-    moddobj* mdbj;
-    mdbj = jwm.get_moddobjlist()->add_moddobj(
-        synthmodnames::STEPPER, dobjnames::LST_STEPS);
-    mdbj->get_dobjdobjlist()->add_dobjdobj(
-        dobjnames::LST_STEPS, dobjnames::SIN_STEP);
-    done_moddobj = true;
+    register_param(paramnames::STEP_COUNT);
+    register_param(paramnames::UP_THRESH);
+    register_param(paramnames::LO_THRESH);
+    register_param(paramnames::RESPONSE_TIME);
+    register_param(paramnames::RECYCLE_MODE);
+    register_moddobj(dobjnames::LST_STEPS, dobjnames::SIN_STEP);
 }
 

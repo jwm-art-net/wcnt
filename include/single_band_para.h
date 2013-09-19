@@ -63,7 +63,7 @@ class single_band_para : public synthmod
     // float min_freq;
     float max_freq;
 
-    void create_params();
+    void init_first();
     
 };
 

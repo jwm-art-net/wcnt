@@ -15,14 +15,14 @@ group::group() :
  dobj(dobjnames::DEF_GROUP),
  is_duplicate(false), controlled(false)
 {
-    create_params();
+    init_first();
 }
 
 group::group(CLONE) :
  dobj(dobjnames::DEF_GROUP),
  is_duplicate(true), controlled(false)
 {
-    create_params();
+    init_first();
 }
 
 group::~group()
@@ -192,14 +192,11 @@ stockerrs::ERR_TYPE group::validate()
     return stockerrs::ERR_NO_ERROR;
 }
 
-void group::create_params()
+void group::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    jwm.get_topdobjlist()->create_dobjdobjlist(
-        dobjnames::DEF_GROUP, dobjnames::LST_MODULES)
-            ->add_dobjdobj(dobjnames::LST_MODULES,
-                dobjnames::DOBJ_SYNTHMOD);
+    register_dobjdobj(dobjnames::LST_MODULES, dobjnames::DOBJ_SYNTHMOD);
 }
 
 

@@ -18,11 +18,11 @@ class dobjdobjlist : public linked_list<dobjdobj>
     dobjdobjlist(DESTRUCTION d): linkedlist(MULTIREF_OFF, d) {};
 
 
-    dobjdobj* add_dobjdobj(dobjdobj* dd) {
+    dobjdobj* register_dobjdobj(dobjdobj* dd) {
         return add_at_tail(dd)->get_data();
     }
 
-    dobjdobj* add_dobjdobj(dobjnames::DOBJ_TYPE, dobjnames::DOBJ_TYPE);
+    dobjdobj* register_dobjdobj(dobjnames::DOBJ_TYPE, dobjnames::DOBJ_TYPE);
 
     dobjdobjlist* get_dobjdobjlist_for_dobjtype(dobjnames::DOBJ_TYPE);
     dobjdobjlist* get_dobjdobjlist_of_sprogs(dobjnames::DOBJ_TYPE);

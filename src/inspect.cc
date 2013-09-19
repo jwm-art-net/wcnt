@@ -15,17 +15,17 @@ inspect::inspect(char const* uname) :
  in_str(0), in_str_trig(0),
  df_msg(0), si_msg(0), ul_msg(0), st_msg(0), str_msg(0)
 {
-    add_input(inputnames::IN__DF);
-    add_input(inputnames::IN__DF_TRIG);
-    add_input(inputnames::IN__SI);
-    add_input(inputnames::IN__SI_TRIG);
-    add_input(inputnames::IN__UL);
-    add_input(inputnames::IN__UL_TRIG);
-    add_input(inputnames::IN__ST);
-    add_input(inputnames::IN__ST_TRIG);
-    add_input(inputnames::IN__STR);
-    add_input(inputnames::IN__STR_TRIG);
-    create_params();
+    register_input(inputnames::IN__DF);
+    register_input(inputnames::IN__DF_TRIG);
+    register_input(inputnames::IN__SI);
+    register_input(inputnames::IN__SI_TRIG);
+    register_input(inputnames::IN__UL);
+    register_input(inputnames::IN__UL_TRIG);
+    register_input(inputnames::IN__ST);
+    register_input(inputnames::IN__ST_TRIG);
+    register_input(inputnames::IN__STR);
+    register_input(inputnames::IN__STR_TRIG);
+    init_first();
 }
 
 inspect::~inspect()
@@ -157,13 +157,13 @@ void const* inspect::get_param(paramnames::PAR_TYPE pt) const
 
 
 
-void inspect::create_params()
+void inspect::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::INSPECT_DF_MSG);
-    relate_param(paramnames::INSPECT_SI_MSG);
-    relate_param(paramnames::INSPECT_UL_MSG);
-    relate_param(paramnames::INSPECT_ST_MSG);
-    relate_param(paramnames::INSPECT_STR_MSG);
+    register_param(paramnames::INSPECT_DF_MSG);
+    register_param(paramnames::INSPECT_SI_MSG);
+    register_param(paramnames::INSPECT_UL_MSG);
+    register_param(paramnames::INSPECT_ST_MSG);
+    register_param(paramnames::INSPECT_STR_MSG);
 }

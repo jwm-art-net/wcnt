@@ -12,10 +12,10 @@ stategatetrig::stategatetrig(char const* uname) :
 
  in_trig(0), in_state(0), out_trig(OFF), out_not_trig(OFF)
 {
-    add_output(outputnames::OUT_TRIG);
-    add_output(outputnames::OUT_NOT_TRIG);
-    add_input(inputnames::IN_TRIG);
-    add_input(inputnames::IN_STATE);
+    register_input(inputnames::IN_TRIG);
+    register_input(inputnames::IN_STATE);
+    register_output(outputnames::OUT_TRIG);
+    register_output(outputnames::OUT_NOT_TRIG);
 }
 
 stategatetrig::~stategatetrig()

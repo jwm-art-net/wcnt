@@ -35,7 +35,7 @@ private:
     double poff_deg;
     double target;
     short cycle;
-    void create_params();
+    void init_first();
     
 };
 

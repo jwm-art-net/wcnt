@@ -25,22 +25,22 @@ timemap::timemap(char const* uname) :
  bpmchange_ratio(0), targbpm(0), pos_in_bar(0), bpmchange_notelen(0),
  bpmchangebar(0), barlength(0), beatlength(0), meterchangebar(0), p_bpm(0)
 {
-    add_output(outputnames::OUT_BPM);
-    add_output(outputnames::OUT_BAR);
-    add_output(outputnames::OUT_BAR_TRIG);
-    add_output(outputnames::OUT_POS_IN_BAR);
-    add_output(outputnames::OUT_POS_STEP_SIZE);
-    add_output(outputnames::OUT_SAMPLE_TOTAL);
-    add_output(outputnames::OUT_SAMPLE_IN_BAR);
-    add_output(outputnames::OUT_BEATS_PER_BAR);
-    add_output(outputnames::OUT_BEAT_VALUE);
-    add_output(outputnames::OUT_BPM_CHANGE_TRIG);
-    add_output(outputnames::OUT_METER_CHANGE_TRIG);
-    add_output(outputnames::OUT_BPM_CHANGE_STATE);
+    register_output(outputnames::OUT_BPM);
+    register_output(outputnames::OUT_BAR);
+    register_output(outputnames::OUT_BAR_TRIG);
+    register_output(outputnames::OUT_POS_IN_BAR);
+    register_output(outputnames::OUT_POS_STEP_SIZE);
+    register_output(outputnames::OUT_SAMPLE_TOTAL);
+    register_output(outputnames::OUT_SAMPLE_IN_BAR);
+    register_output(outputnames::OUT_BEATS_PER_BAR);
+    register_output(outputnames::OUT_BEAT_VALUE);
+    register_output(outputnames::OUT_BPM_CHANGE_TRIG);
+    register_output(outputnames::OUT_METER_CHANGE_TRIG);
+    register_output(outputnames::OUT_BPM_CHANGE_STATE);
 
     bpm_map = new linked_list<bpmchange>;
     meter_map = new linked_list<meterchange>;
-    create_moddobj();
+    init_first();
 }
 
 timemap::~timemap()
@@ -126,13 +126,11 @@ void timemap::init()
     barlength = out_beats_per_bar * beatlength;
     pos_in_bar = barlength; // trig first bar - not favorite sollution
     out_bar = -1;           // ...it just gets worse!
-    printf("init this:%p",this);
 }
 
 void timemap::run()
 {
     if (pos_in_bar >= barlength) {
-    printf("this:%p",this);
         out_bar++;
         pos_in_bar -= barlength;
         out_bar_trig = ON;
@@ -309,20 +307,11 @@ synthmod* timemap::duplicate_module(const char* uname, DUP_IO dupio)
     return 0;
 }
 
-bool timemap::done_moddobj = false;
-void timemap::create_moddobj()
+void timemap::init_first()
 {
-    if (done_moddobj == true)
+    if (done_first())
         return;
-    moddobj* mdbj;
-    mdbj = jwm.get_moddobjlist()->add_moddobj(
-        synthmodnames::TIMEMAP, dobjnames::LST_METER);
-    mdbj->get_dobjdobjlist()->add_dobjdobj(
-        dobjnames::LST_METER, dobjnames::SIN_METER);
-    mdbj = jwm.get_moddobjlist()->add_moddobj(
-        synthmodnames::TIMEMAP, dobjnames::LST_BPM);
-    mdbj->get_dobjdobjlist()->add_dobjdobj(
-        dobjnames::LST_BPM, dobjnames::SIN_BPM);
-    done_moddobj = true;
+    register_moddobj(dobjnames::LST_METER, dobjnames::SIN_METER);
+    register_moddobj(dobjnames::LST_BPM, dobjnames::SIN_BPM);
 }
 

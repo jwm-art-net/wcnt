@@ -25,7 +25,7 @@ class inputeditor : public dobj, public linked_list<inputedit>
     dobj const* add_dobj(dobj* dbj);
 
  private:
-    void create_params();
+    void init_first();
     
 };
 

@@ -15,9 +15,9 @@ trigrouter::trigrouter(char const* uname) :
  count(0), wrap(OFF),
  grp(0), trigs(0)
 {
-    add_input(inputnames::IN_TRIG);
-    add_input(inputnames::IN_COUNT);
-    create_params();
+    register_input(inputnames::IN_TRIG);
+    register_input(inputnames::IN_COUNT);
+    init_first();
 }
 
 trigrouter::~trigrouter()
@@ -149,11 +149,11 @@ void trigrouter::run()
     }
 }
 
-void trigrouter::create_params()
+void trigrouter::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    relate_param(paramnames::COUNT);
-    relate_param(paramnames::WRAP);
+    register_param(paramnames::COUNT);
+    register_param(paramnames::WRAP);
 }
 

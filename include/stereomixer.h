@@ -32,9 +32,7 @@ private:
     double const** chans_left;
     double const** chans_right;
     
-    void create_params();
-    static bool done_moddobj;
-    void create_moddobj();
+    void init_first();
 };
 
 #endif

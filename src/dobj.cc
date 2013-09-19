@@ -3,7 +3,8 @@
 #include "../include/dobjlist.h"
 #include "../include/dobjparamlist.h"
 #include "../include/fxsparamlist.h"
-
+#include "../include/dobjdobjlist.h"
+#include "../include/topdobjlist.h"
 
 
 dobj::dobj(dobjnames::DOBJ_TYPE dt) :
@@ -102,29 +103,71 @@ dobj* dobj::duplicate_dobj(const char* uname)
     return 0;
 }
 
-bool dobj::done_params()
+bool dobj::done_first()
 {
-    bool r = params_done[object_type];
-    params_done[object_type] = true;
+    bool r = first_done[object_type];
+    first_done[object_type] = true;
     return r;
 }
 
 char dobj::err_msg[STRBUFLEN] = "";
 
-void dobj::relate_param(paramnames::PAR_TYPE pt)
+void dobj::register_param(paramnames::PAR_TYPE pt)
 {
-    jwm.get_dparlist()->add_dobjparam(object_type, pt);
+    if (!valid)
+        return;
+    if (!jwm.get_dparlist()->add_dobjparam(object_type, pt))
+    {
+        dobjerr("Failed to register param %s with data object type %s.",
+                            jwm.get_paramnames()->get_name(pt),
+                            jwm.get_dobjnames()->get_name(object_type));
+        valid = false;
+    }
 }
 
-void dobj::relate_param(paramnames::PAR_TYPE pt, const char* fixstr)
+void dobj::register_param(paramnames::PAR_TYPE pt, const char* fixstr)
 {
-    jwm.get_dparlist()->add_dobjparam(object_type, pt);
-    jwm.get_fxsparamlist()->add_param(fixstr, pt);
+    if (!valid)
+        return;
+    dobjparam* dp = jwm.get_dparlist()->add_dobjparam(object_type, pt);
+    fixstrparam* fsp = 0;
+    if (dp)
+        fsp = jwm.get_fxsparamlist()->add_param(fixstr, pt);
+    if (!dp || !fsp)
+    {
+        dobjerr("Failed to register fixed string param %s (%s) "
+                            "with data object type %s.",
+                            jwm.get_paramnames()->get_name(pt), fixstr,
+                            jwm.get_dobjnames()->get_name(object_type));
+        valid = false;
+    }
 }
+
+void dobj::register_dobjdobj(dobjnames::DOBJ_TYPE parent,
+                                                dobjnames::DOBJ_TYPE sprog)
+{
+    if (!valid)
+        return;
+    dobjdobjlist* ddl;
+    ddl = jwm.get_topdobjlist()->create_dobjdobjlist(object_type, parent);
+    dobjdobj* dd = 0;
+    if (ddl)
+        dd = ddl->register_dobjdobj(parent, sprog);
+    if (!ddl || !dd)
+    {
+        dobjerr("Failed to register parent data object %s with child data "
+                            "object %s as part of data object %s",
+                            jwm.get_dobjnames()->get_name(parent),
+                            jwm.get_dobjnames()->get_name(sprog),
+                            jwm.get_dobjnames()->get_name(object_type));
+        valid = false;
+    }
+}
+
 
 #ifdef DOBJ_STATS
 STATS_INIT(dobj)
 #endif
 
-bool dobj::params_done[dobjnames::DOBJ_LAST] = { false };
+bool dobj::first_done[dobjnames::DOBJ_LAST] = { false };
 

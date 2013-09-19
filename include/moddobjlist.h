@@ -14,7 +14,7 @@ public:
     moddobjlist();
     ~moddobjlist(){};
 
-    moddobj* add_moddobj(
+    moddobj* register_moddobj(
         synthmodnames::SYNTH_MOD_TYPE, dobjnames::DOBJ_TYPE);
 
     moddobj* get_first_of_type(synthmodnames::SYNTH_MOD_TYPE smt) {

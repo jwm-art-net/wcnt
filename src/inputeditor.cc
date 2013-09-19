@@ -11,7 +11,7 @@
 inputeditor::inputeditor() :
  dobj(dobjnames::DEF_INPUTEDITOR)
 {
-    create_params();
+    init_first();
 }
 
 inputeditor::~inputeditor()
@@ -57,14 +57,11 @@ dobj const* inputeditor::add_dobj(dobj* dbj)
     return retv;
 }
 
-void inputeditor::create_params()
+void inputeditor::init_first()
 {
-    if (done_params())
+    if (done_first())
         return;
-    jwm.get_topdobjlist()->create_dobjdobjlist(
-        dobjnames::DEF_INPUTEDITOR, dobjnames::LST_EDITS)->
-            add_dobjdobj(dobjnames::LST_EDITS,
-                dobjnames::SIN_EDIT_INPUT);
+    register_dobjdobj(dobjnames::LST_EDITS, dobjnames::SIN_EDIT_INPUT);
 }
 
 
