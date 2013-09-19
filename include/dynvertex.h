@@ -28,28 +28,27 @@ get_out_level(height)
 */
 class dynvertex : public dobj
 {
-public:
+ public:
     dynvertex();
     dynvertex(double sil, double usol, double lsol);
     ~dynvertex(){};
-    void set_signal_in_level(double sil){ si_level = sil;}
+    void set_signal_in_level(double sil)        { si_level = sil;}
     void set_upper_signal_out_level(double usol){ uso_level = usol;}
     void set_lower_signal_out_level(double lsol){ lso_level = lsol;}
-    double get_signal_in_level(){ return si_level;}
-    double get_upper_signal_out_level(){ return uso_level;}
-    double get_lower_signal_out_level(){ return lso_level;}
-    double get_out_level(double height) {
+    double get_signal_in_level() const          { return si_level;}
+    double get_upper_signal_out_level() const   { return uso_level;}
+    double get_lower_signal_out_level() const   { return lso_level;}
+    double get_out_level(double height) const {
         return lso_level * (1 - height) + uso_level * height; }
     stockerrs::ERR_TYPE validate();
     bool set_param(paramnames::PAR_TYPE, void*);
     void const* get_param(paramnames::PAR_TYPE pt) const;
 
-private:
+ private:
     double si_level;
     double uso_level;
     double lso_level;
     void init_first();
-    
 };
 
 #endif

@@ -102,8 +102,8 @@ class linked_list
     STATS_FUNCS
     #endif
 
-    MULTIREF get_multiref()      { return multiref;}
-    DESTRUCTION get_destruction(){ return destruction; }
+    MULTIREF get_multiref() const       { return multiref;}
+    DESTRUCTION get_destruction() const { return destruction; }
 
     llitem* add_at_head(T* data);
     llitem* add_at_tail(T* data);
@@ -150,7 +150,7 @@ class linked_list
 
     llitem* find_data(llitem*from , T* data);
 
-    long get_count() { return count; }
+    long get_count() const  { return count; }
 
  private:
     llitem* head;

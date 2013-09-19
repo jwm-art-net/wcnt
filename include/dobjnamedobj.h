@@ -9,7 +9,7 @@ public:
     dobjnamedobj();
     ~dobjnamedobj();
     void set_dobjname(const char* name);
-    const char* get_dobjname() { return dobjname; }
+    const char* get_dobjname() const { return dobjname; }
     // virtuals from dobj
     virtual stockerrs::ERR_TYPE validate(){
         return stockerrs::ERR_NO_ERROR;

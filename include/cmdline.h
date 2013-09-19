@@ -56,11 +56,11 @@ class cmdline
 
     bool scan();
 
-    bool is_good_opts() { return good_opts; }
+    bool is_good_opts() const { return good_opts; }
 
     bool set_jwm_globals();
 
-    const char* get_message();
+    const char* get_message() const;
 
  private:
     int const           opts_count;

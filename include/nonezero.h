@@ -28,13 +28,15 @@ class nonezero: public synthmod
 public:
     nonezero(char const*);
     ~nonezero();
-    const double* get_output_none_double(){ return &out_none_double; }
-    const short* get_output_none_short(){ return &out_none_short; }
-    const unsigned long* get_output_none_ulong() {
+    const double* get_output_none_double() const {
+            return &out_none_double;
+        }
+    const short* get_output_none_short() const  { return &out_none_short; }
+    const unsigned long* get_output_none_ulong() const {
         return &out_none_ulong;
     }
-    const STATUS* get_output_none_trig(){ return &out_none_STATUS; }
-    const STATUS* get_output_none_state(){ return &out_none_STATUS; }
+    const STATUS* get_output_none_trig() const  { return &out_none_STATUS; }
+    const STATUS* get_output_none_state() const { return &out_none_STATUS; }
     // virtual funcs
     void run(){};
     void const* get_out(outputnames::OUT_TYPE) const;

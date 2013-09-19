@@ -22,7 +22,7 @@ wavfilein::~wavfilein()
         delete [] rootnote;
 }
 
-WAV_CHANNELS wavfilein::get_channel_status()
+WAV_CHANNELS wavfilein::get_channel_status() const
 {
     if (status == WAV_STATUS_OPEN) {
         if (sfinfo.channels == 1)
@@ -33,7 +33,7 @@ WAV_CHANNELS wavfilein::get_channel_status()
     return WAV_CH_UNKNOWN;
 }
 
-WAV_BITRATE wavfilein::get_bitrate()
+WAV_BITRATE wavfilein::get_bitrate() const
 {
     /*
     if (header->GetResolution() == 8)
@@ -45,7 +45,7 @@ WAV_BITRATE wavfilein::get_bitrate()
     return WAV_BIT_OTHER;
 }
 
-unsigned long wavfilein::get_length()
+unsigned long wavfilein::get_length() const
 {
     if (status == WAV_STATUS_OPEN)
         return sfinfo.frames;
@@ -54,7 +54,7 @@ unsigned long wavfilein::get_length()
 }
 
 
-unsigned long wavfilein::get_sample_rate()
+unsigned long wavfilein::get_sample_rate() const
 {
     if (status == WAV_STATUS_OPEN)
         return sfinfo.samplerate;
@@ -100,7 +100,7 @@ void wavfilein::set_root_note(const char* rn)
     rootnote[jwm_init::note_name_len] = '\0';
 }
 
-double wavfilein::get_root_phase_step()
+double wavfilein::get_root_phase_step() const
 {
     return note_to_step(rootnote, 0);
 }

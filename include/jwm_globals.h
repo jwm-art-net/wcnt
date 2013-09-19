@@ -43,22 +43,22 @@ class jwm_globals
     bool friend cmdline::set_jwm_globals();
     void friend wcnt_exit::init();
 
-    short get_exit_bar(){ return x_exit_bar; }
-    short const* get_exit_in_bar(){ return x_in_bar; }
+    short get_exit_bar() const { return x_exit_bar; }
+    short const* get_exit_in_bar() const { return x_in_bar; }
 
-    const char* path()  { return wc_path;   }
-    const char* file()  { return wc_file;   }
-    bool is_verbose()   { return verbose;   }
-    bool is_dont_run()  { return dont_run;  }
-    bool is_no_title()  { return no_title;  }
+    const char* path() const    { return wc_path;   }
+    const char* file() const    { return wc_file;   }
+    bool is_verbose() const     { return verbose;   }
+    bool is_dont_run() const    { return dont_run;  }
+    bool is_no_title() const    { return no_title;  }
 
     void set_verbose(bool v)    { verbose = v; }
 
-    unsigned long samplerate()  { return sample_rate;   }
+    unsigned long samplerate() const        { return sample_rate;   }
 
     void    samplerate(unsigned long sr);
 
-    double & get_mid_a_phase_step() { return mid_a_phase_step; }
+    double get_mid_a_phase_step() const { return mid_a_phase_step; }
 
     const iocat*            get_iocatnames() const  { return iocatnames;}
     const synthmodnames*    get_modnames() const    { return modnames;  }

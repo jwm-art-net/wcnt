@@ -20,13 +20,13 @@ class dobjparam
 public:
     dobjparam(dobjnames::DOBJ_TYPE dt, paramnames::PAR_TYPE pt);
     ~dobjparam(){};
-    dobjnames::DOBJ_TYPE get_dobjtype() {
+    dobjnames::DOBJ_TYPE get_dobjtype() const {
         return (this) ? dobjtype : dobjnames::DOBJ_FIRST;
     }
-    paramnames::PAR_TYPE get_partype() {
+    paramnames::PAR_TYPE get_partype() const {
         return (this) ? partype : paramnames::FIRST;
     }
-    iocat::IOCAT get_dparam_category() {
+    iocat::IOCAT get_dparam_category() const {
         return (this) 
             ? jwm.get_paramnames()->get_category(partype)
             : iocat::FIRST;

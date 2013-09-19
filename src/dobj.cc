@@ -113,7 +113,7 @@ dobj* dobj::duplicate_dobj(const char* uname)
 
 std::string*  dobj::err_msg = 0;
 
-bool dobj::done_first()
+bool dobj::done_first() const
 {
     bool r = first_done[object_type];
     first_done[object_type] = true;

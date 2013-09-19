@@ -9,14 +9,14 @@ public:
     wave_vertex();
     wave_vertex(double udeg, double upos, double ldeg, double lpos);
     ~wave_vertex(){};
-    double get_updeg(){return up_deg;}
-    double get_uppos(){return up_pos;}
-    double get_lodeg(){return lo_deg;}
-    double get_lopos(){return lo_pos;}
-    void set_updeg(double n){ up_deg = n;}
-    void set_uppos(double n){ up_pos = n;}
-    void set_lodeg(double n){ lo_deg = n;}
-    void set_lopos(double n){ lo_pos = n;}
+    double get_updeg() const {return up_deg;}
+    double get_uppos() const {return up_pos;}
+    double get_lodeg() const {return lo_deg;}
+    double get_lopos() const {return lo_pos;}
+    void set_updeg(double n) { up_deg = n;}
+    void set_uppos(double n) { up_pos = n;}
+    void set_lodeg(double n) { lo_deg = n;}
+    void set_lopos(double n) { lo_pos = n;}
     void modulate(double vmod, double hmod);
     virtual stockerrs::ERR_TYPE validate();
     bool set_param(paramnames::PAR_TYPE, void*);

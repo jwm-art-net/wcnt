@@ -15,7 +15,7 @@ connectorlist::~connectorlist()
 }
 
 connector*
-connectorlist::get_connector_by_input(synthmod* sm,
+connectorlist::get_connector_by_input(const synthmod* sm,
                                       inputnames::IN_TYPE it)
 {
     if (!sm)
@@ -51,7 +51,7 @@ bool connectorlist::delete_connector(connector* c)
 
 bool
 connectorlist::duplicate_connections(
-    synthmod* from_mod, synthmod* to_mod)
+    const synthmod* from_mod, synthmod* to_mod)
 {
     if (from_mod->get_module_type() != to_mod->get_module_type())
         return false;
@@ -66,7 +66,7 @@ connectorlist::duplicate_connections(
 
 connectorlist::linkedlist*
 connectorlist::duplicate_connections_for_module(
-    synthmod* from_mod, synthmod* to_mod)
+    const synthmod* from_mod, synthmod* to_mod)
 {
     if (from_mod->get_module_type() != to_mod->get_module_type())
         return 0;

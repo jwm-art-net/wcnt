@@ -12,11 +12,11 @@ class modoutput
     modoutput(synthmod*, outputnames::OUT_TYPE);
     ~modoutput(){};
 
-    synthmod* get_synthmodule() { return synthmodule; }
+    synthmod* get_synthmodule() const { return synthmodule; }
 
-    synthmodnames::SYNTH_MOD_TYPE get_moduletype();
-    outputnames::OUT_TYPE get_outputtype();
-    iocat::IOCAT get_outputcategory();
+    synthmodnames::SYNTH_MOD_TYPE get_moduletype() const;
+    outputnames::OUT_TYPE get_outputtype() const;
+    iocat::IOCAT get_outputcategory() const;
 
     bool operator()(synthmod* sm) const {
         return synthmodule == sm;

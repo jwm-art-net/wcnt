@@ -43,8 +43,6 @@ class synthmod
 
     synthmodnames::SYNTH_MOD_TYPE get_module_type() const
         { return module_type; }
-    synthmodnames::SYNTH_MOD_TYPE get_module_type()
-        { return module_type; }
 
     const char* get_username() const
         { return username; }
@@ -78,7 +76,8 @@ class synthmod
         NO_CONNECT
     };
 
-    virtual synthmod* duplicate_module(const char* const uname, DUP_IO);
+    virtual synthmod*
+        duplicate_module(const char* const uname, DUP_IO) const;
 
     // validation
     virtual stockerrs::ERR_TYPE validate()
@@ -110,8 +109,8 @@ class synthmod
         delete [] grpname;
         return retv;
     }
-    int flag(SM_FLAGS _flags) { return _flags & flags; }
-    int operator()(SM_FLAGS & _flags) { return _flags & flags; }
+    int flag(SM_FLAGS _flags) const { return _flags & flags; }
+    int operator()(SM_FLAGS & _flags) const { return _flags & flags; }
 
     #ifdef MOD_STATS
     STATS_FUNCS
@@ -120,15 +119,15 @@ class synthmod
  protected:
     void invalidate()  { flags ^= SM_VALID; }
     void force_abort() { abort_status = ON; }
-    void duplicate_inputs_to(synthmod*);
-    void duplicate_params_to(synthmod*);
+    void duplicate_inputs_to(synthmod*) const;
+    void duplicate_params_to(synthmod*) const;
 
     /*  first instance initializations (ie parameter and data object
         registration) should be performed in the init_first method of
         derived objects.
      */
     virtual void init_first();
-    bool done_first();
+    bool done_first() const;
     void register_param(paramnames::PAR_TYPE);
     void register_param(paramnames::PAR_TYPE, const char* fixed_string);
     void register_moddobj(dobjnames::DOBJ_TYPE parent,

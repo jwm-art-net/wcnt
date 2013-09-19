@@ -15,7 +15,7 @@ public:
     // copies filenames & processes path:
     void set_wav_filename(char* fname);
     WAV_STATUS open_wav();
-    WAV_STATUS get_status() { return status; }
+    WAV_STATUS get_status() const { return status; }
     void close_wav();
 
     // virtual funcs

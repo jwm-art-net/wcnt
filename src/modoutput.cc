@@ -7,21 +7,21 @@ modoutput::modoutput(synthmod * sm, outputnames::OUT_TYPE ot) :
 {
 }
 
-synthmodnames::SYNTH_MOD_TYPE modoutput::get_moduletype()
+synthmodnames::SYNTH_MOD_TYPE modoutput::get_moduletype() const
 {
     return (this != 0)
      ? synthmodule->get_module_type()
      : synthmodnames::FIRST;
 }
 
-outputnames::OUT_TYPE modoutput::get_outputtype()
+outputnames::OUT_TYPE modoutput::get_outputtype() const
 {
     return (this != 0)
      ? output_type
      : outputnames::OUT_FIRST;
 }
 
-iocat::IOCAT modoutput::get_outputcategory()
+iocat::IOCAT modoutput::get_outputcategory() const
 {
     return (this != 0)
      ? jwm.get_outputnames()->get_category(output_type)

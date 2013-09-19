@@ -15,22 +15,22 @@ struct timesig
 
 class meterchange : public dobj
 {
-public:
+ public:
     meterchange();
     meterchange(short br, char btpb, char btval);
     // these accessor methods are used by timemap
-    void set_bar(short br){bar = br;}
-    void set_beatsperbar(char bpb){time_sig.beatsperbar = bpb;}
-    void set_beatvalue(char bv){time_sig.beatvalue = bv;}
-    short get_bar(){ return bar;}
-    char get_beatsperbar(){return time_sig.beatsperbar;}
-    char get_beatvalue(){return time_sig.beatvalue;}
+    void set_bar(short br)          { bar = br; }
+    void set_beatsperbar(char bpb)  { time_sig.beatsperbar = bpb; }
+    void set_beatvalue(char bv)     { time_sig.beatvalue = bv; }
+    short get_bar() const           { return bar; }
+    char get_beatsperbar() const    { return time_sig.beatsperbar; }
+    char get_beatvalue() const      { return time_sig.beatvalue; }
     // virtuals from dobj
     stockerrs::ERR_TYPE validate();
     bool set_param(paramnames::PAR_TYPE, void*);
     void const* get_param(paramnames::PAR_TYPE pt) const;
 
-private:
+ private:
     short bar;
     timesig time_sig;
     void init_first();

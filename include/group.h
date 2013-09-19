@@ -93,7 +93,7 @@ class group : public dobj
     group();
     ~group();
 
-    bool is_controlled()  { return controlled; }
+    bool is_controlled()  const { return controlled; }
     void set_controlled() { controlled = true; }
 
     synthmod* group_module(synthmod* s);

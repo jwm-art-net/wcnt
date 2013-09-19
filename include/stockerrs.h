@@ -78,8 +78,8 @@ public:
     };
     stockerrs();
     ~stockerrs();
-    char const* get_err(ERR_TYPE);
-    char const* get_prefix_err(ERR_TYPE);
+    char const* get_err(ERR_TYPE) const;
+    char const* get_prefix_err(ERR_TYPE) const;
     static bool check_type(ERR_TYPE);
 private:
     const char* errmsg[ERR_LAST];

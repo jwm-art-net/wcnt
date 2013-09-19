@@ -125,7 +125,7 @@ dobj* synthmod::add_dobj(dobj*)
 }
 
 synthmod*
-synthmod::duplicate_module(const char* uname, DUP_IO iocon)
+synthmod::duplicate_module(const char* uname, DUP_IO iocon) const
 {
     if (flag(SM_UNDUPLICABLE)) {
         *err_msg = "\nmodule ";
@@ -146,12 +146,12 @@ synthmod::duplicate_module(const char* uname, DUP_IO iocon)
 // protected member methods
 //------------------------------------------------------------------------
 
-void synthmod::duplicate_inputs_to(synthmod* to_mod)
+void synthmod::duplicate_inputs_to(synthmod* to_mod) const
 {
     jwm.get_connectlist()->duplicate_connections(this, to_mod);
 }
 
-void synthmod::duplicate_params_to(synthmod* to_mod)
+void synthmod::duplicate_params_to(synthmod* to_mod) const
 {
     modparamlist::linkedlist* mplist =
         new_list_of_by(jwm.get_paramlist(), to_mod->get_module_type());
@@ -176,7 +176,7 @@ void synthmod::init_first()
     #endif
 }
 
-bool synthmod::done_first()
+bool synthmod::done_first() const
 {
     bool r = first_done[module_type];
     first_done[module_type] = true;

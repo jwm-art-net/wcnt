@@ -70,7 +70,7 @@ note_data* riffdata::edit_notes(note_data* editnote)
     if (!editlist) {
         editlist = new linkedlist;
     }
-    double (note_data::*note_get_funcs[])() = {
+    double (note_data::*note_get_funcs[])() const = {
                         &note_data::get_note_number,
                         &note_data::get_position,
                         &note_data::get_length,
@@ -85,10 +85,10 @@ note_data* riffdata::edit_notes(note_data* editnote)
     if (note_sel_op < note_data::NOTE_SEL_OP_IN)
         rhs_ix2 = lhs_ix2; // lhs_ix2 unused in this instance
 
-    double (note_data::*edno_sel_func1)() = note_get_funcs[lhs_ix1];
-    double (note_data::*edno_sel_func2)() = note_get_funcs[lhs_ix2];
-    double (note_data::*rhs_func1)() = note_get_funcs[rhs_ix1];
-    double (note_data::*rhs_func2)() = note_get_funcs[rhs_ix2];
+    double (note_data::*edno_sel_func1)() const = note_get_funcs[lhs_ix1];
+    double (note_data::*edno_sel_func2)() const = note_get_funcs[lhs_ix2];
+    double (note_data::*rhs_func1)() const = note_get_funcs[rhs_ix1];
+    double (note_data::*rhs_func2)() const = note_get_funcs[rhs_ix2];
     double n_f1, en_f1 = 0, en_f2 = 0;
     bool pronote, delnote;
     note_data* en =

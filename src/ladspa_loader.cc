@@ -23,19 +23,6 @@ ladspa_plug::~ladspa_plug()
 {
 }
 
-const char* ladspa_plug::get_label()
-{
-    if (label == 0) return 0;
-    return label;
-}
-
-const LADSPA_Descriptor* ladspa_plug::get_descriptor()
-{
-    if(descriptor == 0) return 0;
-    return descriptor;
-}
-
-
 LADSPA_Handle ladspa_plug::instantiate()
 {
     if (descriptor == 0 || label == 0){

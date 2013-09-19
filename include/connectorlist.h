@@ -26,7 +26,7 @@ public:
     connectorlist(DESTRUCTION);
     ~connectorlist();
 
-    connector* get_connector_by_input(synthmod*, inputnames::IN_TYPE);
+    connector* get_connector_by_input(const synthmod*, inputnames::IN_TYPE);
 
     connector* add_connector(connector* rd);
 
@@ -36,14 +36,14 @@ public:
     // duplicate_connections
     //  duplicates and adds the connections
     */
-    bool duplicate_connections(synthmod* from, synthmod* to);
+    bool duplicate_connections(const synthmod* from, synthmod* to);
 
     /*
     // duplicates_connections_for_module
     //  duplicates connections into a new list for further processing
     */
     linkedlist*
-    duplicate_connections_for_module(synthmod* from, synthmod* to);
+    duplicate_connections_for_module(const synthmod* from, synthmod* to);
 
     /*
     // duplicate_connections_for_group

@@ -50,7 +50,7 @@ public:
 
     bool read_and_create();
 
-    std::string get_wc_error_msg(){ return *wc_err_msg;}
+    std::string get_wc_error_msg() const { return *wc_err_msg;}
 
     virtual stockerrs::ERR_TYPE validate();
     bool set_param(paramnames::PAR_TYPE, void*);
