@@ -49,13 +49,8 @@ STATS_FUNCS
 #endif
 
 protected:
-<<<<<<< HEAD
     static char err_msg[STRBUFLEN];
-    virtual void create_params() = 0;
-=======
-    static std::string* err_msg;
     virtual void init_first() = 0;
->>>>>>> master
     void invalidate(){ valid = false;}
     void register_param(paramnames::PAR_TYPE);
     void register_param(paramnames::PAR_TYPE, const char* fixed_string);

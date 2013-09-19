@@ -235,9 +235,9 @@ void dynamic::init_first()
 {
     if (done_first())
         return;
-    relate_param(paramnames::UP_THRESH);
-    relate_param(paramnames::LO_THRESH);
-    relate_param(paramnames::POSNEG_MIRROR);
-    relate_param(paramnames::USE_RATIOS);
+    register_param(paramnames::UP_THRESH);
+    register_param(paramnames::LO_THRESH);
+    register_param(paramnames::POSNEG_MIRROR);
+    register_param(paramnames::USE_RATIOS);
     register_moddobj(dobjnames::LST_DYNAMICS, dobjnames::SIN_DVERTEX);
 }

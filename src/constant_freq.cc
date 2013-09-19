@@ -68,6 +68,6 @@ void constant_freq::init_first()
 {
     if (done_first())
         return;
-    relate_param(paramnames::FREQ);
+    register_param(paramnames::FREQ);
 }
 
