@@ -112,7 +112,7 @@ class note_data : public dobj
     void const* get_param(paramnames::PAR_TYPE) const;
     stockerrs::ERR_TYPE validate();
 
-#ifdef NOTE_STATS
+#ifdef DATA_STATS
 STATS_FUNCS
 #endif
 
@@ -125,7 +125,7 @@ STATS_FUNCS
     void init_first();
     
 
-#ifdef NOTE_STATS
+#ifdef DATA_STATS
 STATS_VARS
 #endif
 

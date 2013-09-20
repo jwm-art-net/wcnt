@@ -112,7 +112,7 @@ class synthmod
     int flag(SM_FLAGS _flags) const { return _flags & flags; }
     int operator()(SM_FLAGS & _flags) const { return _flags & flags; }
 
-    #ifdef MOD_STATS
+    #ifdef DATA_STATS
     STATS_FUNCS
     #endif
 
@@ -151,7 +151,7 @@ class synthmod
     synthmod();
     synthmod(const synthmod &);
 
-    #ifdef MOD_STATS
+    #ifdef DATA_STATS
     STATS_VARS
     #endif
 

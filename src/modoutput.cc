@@ -5,6 +5,16 @@
 modoutput::modoutput(synthmod * sm, outputnames::OUT_TYPE ot) :
  synthmodule(sm), output_type(ot)
 {
+    #ifdef DATA_STATS
+    STATS_INC
+    #endif
+}
+
+modoutput::~modoutput()
+{
+    #ifdef DATA_STATS
+    STATS_DEC
+    #endif
 }
 
 synthmodnames::SYNTH_MOD_TYPE modoutput::get_moduletype() const
@@ -28,4 +38,8 @@ iocat::IOCAT modoutput::get_outputcategory() const
      
      : iocat::FIRST;
 }
+
+#ifdef DATA_STATS
+STATS_INIT(modoutput)
+#endif
 

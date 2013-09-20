@@ -18,27 +18,12 @@
 
 #include <string>
 
-#ifdef MOD_STATS
-#define SHOWCOUNTS
-#endif
-
-#ifdef DOBJ_STATS
-#define SHOWCOUNTS
-#endif
-
-#ifdef LIST_STATS
-#define SHOWCOUNTS
+#ifdef DATA_STATS
 #include "../include/linkedlist.h"
-#endif
-
-#ifdef NOTE_STATS
-#define SHOWCOUNTS
 #include "../include/notedata.h"
-#endif
-
-#ifdef SHOWCOUNTS
 #include <iostream>
 #endif
+
 
 jwm_globals::jwm_globals() :
  wc_path(0),    wc_file(0),
@@ -102,24 +87,15 @@ jwm_globals::~jwm_globals()
     delete synthmod::get_error_msg();
     delete dobj::get_error_msg();
 
-#ifdef SHOWCOUNTS
-#ifdef LIST_STATS
-STATS_DISPLAY(ll_item)
-STATS_DISPLAY(linkedlist)
-#endif
-
-#ifdef MOD_STATS
+#ifdef DATA_STATS
 STATS_DISPLAY(synthmod)
-#endif
-
-#ifdef DOBJ_STATS
+STATS_DISPLAY(modinput)
+STATS_DISPLAY(modoutput)
+STATS_DISPLAY(connector)
+STATS_DISPLAY(modparam)
 STATS_DISPLAY(dobj)
-#endif
-
-#ifdef NOTE_STATS
 STATS_DISPLAY(note_data)
-#endif
-    std::cout << std::endl;
+std::cout << std::endl;
 #endif
 }
 

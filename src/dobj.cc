@@ -11,9 +11,9 @@ dobj::dobj(dobjnames::DOBJ_TYPE dt) :
 {
     *err_msg = ""; // hmmm
 
-#ifdef DOBJ_STATS
-STATS_INC
-#endif
+    #ifdef DATA_STATS
+    STATS_INC
+    #endif
 
 }
 
@@ -22,9 +22,9 @@ dobj::~dobj()
     if (username)
         delete [] username;
 
-#ifdef DOBJ_STATS
-STATS_DEC
-#endif
+    #ifdef DATA_STATS
+    STATS_DEC
+    #endif
 
 }
 
@@ -180,7 +180,7 @@ void dobj::register_dobjdobj(dobjnames::DOBJ_TYPE parent,
 }
 
 
-#ifdef DOBJ_STATS
+#ifdef DATA_STATS
 STATS_INIT(dobj)
 #endif
 

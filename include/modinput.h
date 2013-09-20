@@ -10,7 +10,7 @@ class modinput
 {
  public:
     modinput(synthmod*, inputnames::IN_TYPE);
-    ~modinput(){};
+    ~modinput();
 
     synthmod* get_synthmodule() const { return synthmodule; }
 
@@ -26,9 +26,17 @@ class modinput
         return input_type == it;
     }
 
-private:
+    #ifdef DATA_STATS
+    STATS_FUNCS
+    #endif
+
+ private:
     synthmod* synthmodule;
     inputnames::IN_TYPE input_type;
+
+    #ifdef DATA_STATS
+    STATS_VARS
+    #endif
 };
 
 #endif
