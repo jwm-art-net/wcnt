@@ -10,9 +10,9 @@
 dobj::dobj(dobjnames::DOBJ_TYPE dt) :
  object_type(dt), username(0), valid(true)
 {
-#ifdef DOBJ_STATS
-STATS_INC
-#endif
+    #ifdef DATA_STATS
+    STATS_INC
+    #endif
 }
 
 dobj::~dobj()
@@ -20,9 +20,9 @@ dobj::~dobj()
     if (username)
         delete [] username;
 
-#ifdef DOBJ_STATS
-STATS_DEC
-#endif
+    #ifdef DATA_STATS
+    STATS_DEC
+    #endif
 
 }
 
@@ -165,7 +165,7 @@ void dobj::register_dobjdobj(dobjnames::DOBJ_TYPE parent,
 }
 
 
-#ifdef DOBJ_STATS
+#ifdef DATA_STATS
 STATS_INIT(dobj)
 #endif
 

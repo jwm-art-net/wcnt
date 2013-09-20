@@ -23,10 +23,7 @@ DEFS=-O2 -fomit-frame-pointer -DWITH_LADSPA
 #---------------------------------------------------
 # new 1.26 development/debugging/statistics #DEFINES
 #---------------------------------------------------
-# MOD_STATS     = counts of synthmod created/destroyed
-# DOBJ_STATS    = counts of dobj created/destroyed
-# NOTE_STATS    = counts of note_data created/destroyed
-# LIST_STATS	= counts of ll_item and linkedlist created/destroyed
+# DATA_STATS    = show counts of various data classes used
 
 # NAME_CHECK    = checks that the inputnames/outputnames etc are created
 #                 properly - that they're not created in the wrong order.
@@ -37,8 +34,6 @@ DEFS=-O2 -fomit-frame-pointer -DWITH_LADSPA
 #                 are returned by the get methods. Also checks that all the
 #                 outputs created for a module can be accessed.
 
-# ie add -DLIST_STATS to DEFS to show statistics about lists created
-
 # DEBUG_STRLIST_PAR = displays strings read from file while processing the
 #                     special parameter type used by the input_editor and
 #                     param_editor data objects.
@@ -47,7 +42,7 @@ DEFS=-O2 -fomit-frame-pointer -DWITH_LADSPA
 #
 # DEBUG_MSG
 
-#DEFS=-ggdb -fno-inline -DWITH_LADSPA -DNAME_CHECK -DDEBUG_MSG
+DEFS=-ggdb -fno-inline -DWITH_LADSPA -DNAME_CHECK -DDEBUG_MSG -DDATA_STATS
 
 # nothing to be modified further:
 PROG=wcnt

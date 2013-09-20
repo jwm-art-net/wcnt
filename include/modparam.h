@@ -11,7 +11,7 @@ class modparam
 {
  public:
     modparam(synthmodnames::SYNTH_MOD_TYPE, paramnames::PAR_TYPE);
-    ~modparam(){};
+    ~modparam();
     synthmodnames::SYNTH_MOD_TYPE get_moduletype() const {
         return (this) ? synthmodule_type : synthmodnames::FIRST;
     }
@@ -29,9 +29,17 @@ class modparam
         return param_type == pt;
     }
 
+    #ifdef DATA_STATS
+    STATS_FUNCS
+    #endif
+
  private:
     synthmodnames::SYNTH_MOD_TYPE synthmodule_type;
     paramnames::PAR_TYPE param_type;
+
+    #ifdef DATA_STATS
+    STATS_VARS
+    #endif
 };
 
 #endif

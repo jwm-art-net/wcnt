@@ -15,7 +15,7 @@
 
 class dobj
 {
-public:
+ public:
     dobj(dobjnames::DOBJ_TYPE objtype);
     virtual ~dobj();
 
@@ -43,9 +43,9 @@ public:
         return n(username);
     }
 
-#ifdef DOBJ_STATS
-STATS_FUNCS
-#endif
+    #ifdef DATA_STATS
+    STATS_FUNCS
+    #endif
 
 protected:
     static char err_msg[STRBUFLEN];
@@ -57,14 +57,14 @@ protected:
                                                 dobjnames::DOBJ_TYPE sprog);
     bool done_first() const;
 
-private:
+ private:
     dobjnames::DOBJ_TYPE object_type;
     char* username;
     bool valid;
 
-#ifdef DOBJ_STATS
-STATS_VARS
-#endif
+    #ifdef DATA_STATS
+    STATS_VARS
+    #endif
 
     static bool first_done[dobjnames::DOBJ_LAST];
 };

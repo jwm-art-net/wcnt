@@ -145,7 +145,7 @@ stockerrs::ERR_TYPE adsr::validate()
         invalidate();
         return stockerrs::ERR_ERROR;
     }
-    ;
+
     if (!jwm.get_paramlist()->validate(this, paramnames::MIN_TIME,
                                             stockerrs::ERR_NEGATIVE))
     {

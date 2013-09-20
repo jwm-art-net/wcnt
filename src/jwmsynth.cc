@@ -143,10 +143,7 @@ bool jwmsynth::execute_synth()
     synthmod** runlist = jwm.get_modlist()->get_run_list();
     long count;
 
-    short obar = *bar;
-
     std::cout << "samplerate: " << jwm.samplerate() << std::endl;
-    std::cout << "bar: " << *bar << std::endl;
 
     while (*bar < exit_bar && *force_abort == OFF)
     {
@@ -167,13 +164,6 @@ bool jwmsynth::execute_synth()
             std::cout.flush();
             counter = 0;
         }
-
-        if (*bar != obar) {
-            obar = *bar;
-            std::cout << "sample: " << sample << "bar: " << *bar << std::endl;
-        }
-
-
     }
     if (runlist)
         destroy_array_moved_from_list(runlist);

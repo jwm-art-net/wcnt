@@ -7,10 +7,9 @@ enum STATUS
     ON  = 0x1
 };
 
-
 #define STRBUFLEN 4000
 
-
+#ifdef DATA_STATS
 //------------------------------------------------------------------------
 // Use the following macros for generating basic statistics about
 // a class: number created, destroyed, most at once, and existing.
@@ -53,9 +52,10 @@ int class::total_destroyed   = 0;
     std::cout << #class ;\
     std::cout << " statistics:";\
     std::cout << "\n\ttotal created    : "<<class::get_total_created();\
-    std::cout << "\n\ttotal destroyed  : "<<class::get_total_destroyed();\
+    std::cout << "\ttotal destroyed  : "<<class::get_total_destroyed();\
     std::cout << "\n\tcurrent count    : "<<class::get_current_count();\
-    std::cout << "\n\tmost at one time : "<<class::get_most_count();\
+    std::cout << "\tmost at one time : "<<class::get_most_count();\
     std::cout << "\n\tsizeof           : "<<sizeof(class);
 
+#endif // DATA_STATS
 #endif // TYPES_H
