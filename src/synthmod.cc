@@ -100,7 +100,7 @@ dobj* synthmod::add_dobj(dobj*)
 }
 
 synthmod*
-synthmod::duplicate_module(const char* uname, DUP_IO iocon) const
+synthmod::duplicate_module(const char* uname, DUP_IO iocon)
 {
     if (flag(SM_UNDUPLICABLE)) {
         sm_err("Duplication of module %s is forbidden due to type %s.",

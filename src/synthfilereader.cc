@@ -209,6 +209,15 @@ bool synthfilereader::read_and_create_dobj(const char* com)
     dobj* dbj = read_dobj(com);
     if (!dbj)
         return false;
+<<<<<<< HEAD
+=======
+    /*if (include_dbj(dbj->get_username())){
+        if (!dbj->validate()) {
+        *wc_err_msg = *dbj->get_error_msg();
+        return false;
+        }
+    }*/
+>>>>>>> master
     string dbjuname = dbj->get_username();
     if (include_dbj(dbj->get_username())) {
         if (!jwm.get_dobjlist()->add_dobj(dbj)) {
