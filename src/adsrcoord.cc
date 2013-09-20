@@ -4,8 +4,8 @@
 #include "../include/fxsparamlist.h"
 
 adsr_coord::adsr_coord() :
- dobj(dobjnames::SIN_COORD), sect(ADSR_ATTACK),
- output_time(0), output_level(0),
+ dobj(dobjnames::SIN_COORD),
+ output_time(0), output_level(0), sect(ADSR_ATTACK),
  upper_time(0), upper_level(0), lower_time(0), lower_level(0)
 {
     init_first();
@@ -13,8 +13,8 @@ adsr_coord::adsr_coord() :
 
 adsr_coord::adsr_coord
  (adsr_coord::SECT s, double ut, double ul, double lt, double ll) :
- output_time(0), output_level(0),
- dobj(dobjnames::SIN_COORD), sect(s), 
+ dobj(dobjnames::SIN_COORD),
+ output_time(0), output_level(0), sect(s),
  upper_time(ut), upper_level(ul),
  lower_time(lt), lower_level(ll)
 {

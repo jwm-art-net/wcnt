@@ -125,7 +125,7 @@ dobj* synthmod::add_dobj(dobj*)
 }
 
 synthmod*
-synthmod::duplicate_module(const char* uname, DUP_IO iocon) const
+synthmod::duplicate_module(const char* uname, DUP_IO iocon)
 {
     if (flag(SM_UNDUPLICABLE)) {
         *err_msg = "\nmodule ";

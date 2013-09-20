@@ -76,8 +76,8 @@ class synthmod
         NO_CONNECT
     };
 
-    virtual synthmod*
-        duplicate_module(const char* const uname, DUP_IO) const;
+    /* duplicate module can't be const due to my linked_list impl. */
+    virtual synthmod* duplicate_module(const char* const uname, DUP_IO);
 
     // validation
     virtual stockerrs::ERR_TYPE validate()
