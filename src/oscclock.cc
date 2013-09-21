@@ -138,7 +138,7 @@ stockerrs::ERR_TYPE osc_clock::validate()
     if (!pl->validate(this, paramnames::PORTAMENTO,
             stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::PORTAMENTO);
+        *err_msg = paramnames::get_name(paramnames::PORTAMENTO);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -146,7 +146,7 @@ stockerrs::ERR_TYPE osc_clock::validate()
             stockerrs::ERR_NEGATIVE))
     {
         *err_msg
-         = jwm.get_paramnames()->get_name(paramnames::RESPONSE_TIME);
+         = paramnames::get_name(paramnames::RESPONSE_TIME);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -154,7 +154,7 @@ stockerrs::ERR_TYPE osc_clock::validate()
             stockerrs::ERR_RANGE_FMOD))
     {
         *err_msg
-         = jwm.get_paramnames()->get_name(paramnames::FREQ_MOD1SIZE);
+         = paramnames::get_name(paramnames::FREQ_MOD1SIZE);
         invalidate();
         return stockerrs::ERR_RANGE_FMOD;
     }
@@ -162,7 +162,7 @@ stockerrs::ERR_TYPE osc_clock::validate()
             stockerrs::ERR_RANGE_FMOD))
     {
         *err_msg
-         = jwm.get_paramnames()->get_name(paramnames::FREQ_MOD2SIZE);
+         = paramnames::get_name(paramnames::FREQ_MOD2SIZE);
         invalidate();
         return stockerrs::ERR_RANGE_FMOD;
     }
@@ -170,7 +170,7 @@ stockerrs::ERR_TYPE osc_clock::validate()
             stockerrs::ERR_RANGE_SEMI))
     {
         *err_msg
-         = jwm.get_paramnames()->get_name(paramnames::TUNING_SEMITONES);
+         = paramnames::get_name(paramnames::TUNING_SEMITONES);
         invalidate();
         return stockerrs::ERR_RANGE_SEMI;
     }
@@ -178,7 +178,7 @@ stockerrs::ERR_TYPE osc_clock::validate()
             stockerrs::ERR_RANGE_OCT))
     {
         *err_msg
-         = jwm.get_paramnames()->get_name(paramnames::OCTAVE);
+         = paramnames::get_name(paramnames::OCTAVE);
         invalidate();
         return stockerrs::ERR_RANGE_OCT;
     }

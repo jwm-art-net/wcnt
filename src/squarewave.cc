@@ -99,7 +99,7 @@ stockerrs::ERR_TYPE square_wave::validate()
             stockerrs::ERR_RANGE_0_1))
     {
         *err_msg =
-         jwm.get_paramnames()->get_name(paramnames::RATE);
+         paramnames::get_name(paramnames::RATE);
         invalidate();
         return stockerrs::ERR_RANGE_0_1;
     }
@@ -107,7 +107,7 @@ stockerrs::ERR_TYPE square_wave::validate()
             stockerrs::ERR_RANGE_0_1_IN))
     {
         *err_msg =
-         jwm.get_paramnames()->get_name(paramnames::PULSE_WIDTH);
+         paramnames::get_name(paramnames::PULSE_WIDTH);
         invalidate();
         return stockerrs::ERR_RANGE_0_1_IN;
     }
@@ -115,7 +115,7 @@ stockerrs::ERR_TYPE square_wave::validate()
             stockerrs::ERR_RANGE_0_1))
     {
         *err_msg =
-         jwm.get_paramnames()->get_name(paramnames::PWM_SIZE);
+         paramnames::get_name(paramnames::PWM_SIZE);
         invalidate();
         return stockerrs::ERR_RANGE_0_1;
     }

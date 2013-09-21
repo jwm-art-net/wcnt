@@ -42,7 +42,7 @@ bool copier::set_to_name(const char* name)
         to_name = new char[strlen(name) + 1];
         strcpy(to_name, name); // copy to to_name
     }
-    if (strcmp(name, jwm.get_dobjnames()->get_name(
+    if (strcmp(name, dobjnames::get_name(
             dobjnames::LST_EDITS)) == 0)
         return false;
     if (jwm.get_dobjlist()->get_dobj_by_name(name))
@@ -89,7 +89,7 @@ bool copier::set_param(paramnames::PAR_TYPE pt, void* data)
             *err_msg += (const char*)data;
             *err_msg += " because the name ";
             *err_msg += (const char*)data;
-            if (strcmp(to_name, jwm.get_dobjnames()->get_name(
+            if (strcmp(to_name, dobjnames::get_name(
                     dobjnames::LST_EDITS))==0)
                 *err_msg += " is reserved.";
             else

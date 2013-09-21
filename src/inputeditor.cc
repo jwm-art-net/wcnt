@@ -28,7 +28,7 @@ bool inputeditor::create_connectors()
         if (!ie->create_connectors()) {
             std::string errmsg = *err_msg;
             *err_msg = "\nIn ";
-            *err_msg += jwm.get_dobjnames()->get_name(get_object_type());
+            *err_msg += dobjnames::get_name(get_object_type());
             *err_msg += " ";
             *err_msg += get_username();
             *err_msg += ", connection attempt failed, ";

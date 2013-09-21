@@ -53,7 +53,7 @@ synthmod* group::group_module(synthmod* sm)
             *err_msg += get_username();
             *err_msg += ".\nit is forbidden to add a ";
             *err_msg +=
-                jwm.get_modnames()->get_name(sm->get_module_type());
+                synthmodnames::get_name(sm->get_module_type());
             *err_msg += " module to a group.";
             invalidate();
             return 0;
@@ -160,12 +160,11 @@ dobj* group::duplicate_dobj(const char* new_group_name)
                     con->set_output_module_name(new_mod_name);
                     if (jwm.is_verbose()) {
                         std::cout << new_mod_name << " "
-                            << jwm.get_outputnames()
-                              ->  get_name(con->get_output_type())
+                            << outputnames::get_name(con->get_output_type())
                             << " --> "
                             << con->get_input_module()->get_username()
-                            << " " << jwm.get_inputnames()
-                              ->  get_name(con->get_input_type());
+                            << " " << inputnames::get_name(
+                                                    con->get_input_type());
                     }
                     delete [] new_mod_name;
                 }

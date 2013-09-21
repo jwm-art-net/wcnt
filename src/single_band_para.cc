@@ -107,14 +107,14 @@ stockerrs::ERR_TYPE single_band_para::validate()
 {
     if (gain_db < -70 || gain_db > 30) {
         *err_msg +=
-         jwm.get_paramnames()->get_name(paramnames::GAIN_DB);
+         paramnames::get_name(paramnames::GAIN_DB);
         *err_msg += " must be within range -70 to 30";
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (bandwidth < 0 || bandwidth > 4) {
         *err_msg +=
-         jwm.get_paramnames()->get_name(paramnames::BANDWIDTH);
+         paramnames::get_name(paramnames::BANDWIDTH);
         *err_msg += " must be within range 0 to 4";
         invalidate();
         return stockerrs::ERR_ERROR;

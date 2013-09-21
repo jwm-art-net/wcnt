@@ -371,7 +371,7 @@ stockerrs::ERR_TYPE riffdata::validate()
         this, paramnames::QUARTER_VAL, stockerrs::ERR_NEGATIVE))
     {
         *err_msg =
-            jwm.get_paramnames()->get_name(paramnames::QUARTER_VAL);
+            paramnames::get_name(paramnames::QUARTER_VAL);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }

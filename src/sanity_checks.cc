@@ -100,9 +100,9 @@ bool mod_check_inputs(synthmod* sm)
     if (input) {
         while(input) {
             inputnames::IN_TYPE it = input->get_inputtype();
-            const char* const inname = jwm.get_inputnames()->get_name(it);
+            const char* const inname = inputnames::get_name(it);
             std::cout << "\n\tChecking input: " << inname << "... ";
-            iocat::IOCAT ioc = jwm.get_inputnames()->get_category(it);
+            iocat::IOCAT ioc = inputnames::get_category(it);
             // the 'outputs' to be used for setting the inputs...
             double          out_double  = 1.23456789;
             short           out_short   = 32154;

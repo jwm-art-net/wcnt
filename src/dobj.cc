@@ -30,13 +30,13 @@ dobj::~dobj()
 
 bool dobj::is_named_by_user()
 {
-    if (jwm.get_dobjnames()->check_type(object_type)
+    if (dobjnames::check_type(object_type)
         == dobjnames::DOBJ_FIRST)
     {
         *err_msg = "\nError in object ";
         if (username) *err_msg += username;
         *err_msg += " type ";
-        *err_msg += jwm.get_dobjnames()->get_name(object_type);
+        *err_msg += dobjnames::get_name(object_type);
         return (valid = false);
     }
     // check_type(object_type) means need only check for 1 condition...
@@ -49,18 +49,18 @@ bool dobj::set_username(const char* un)
 {
     if (!is_named_by_user()) {// should not be given username
         *err_msg = "\ntried to set username of object type ";
-        *err_msg += jwm.get_dobjnames()->get_name(object_type);
+        *err_msg += dobjnames::get_name(object_type);
         *err_msg += " - does not required naming";
         return (valid = false);
     }
     if (un == 0) {
         *err_msg = "\nNULL username specified for object type ";
-        *err_msg += jwm.get_dobjnames()->get_name(object_type);
+        *err_msg += dobjnames::get_name(object_type);
         return (valid = false);
     }
     if (strlen(un) == 0) {
         *err_msg = "\nNULL length username specified for object type ";
-        *err_msg += jwm.get_dobjnames()->get_name(object_type);
+        *err_msg += dobjnames::get_name(object_type);
         return (valid = false);
     }
     if (username) delete [] username;
@@ -71,7 +71,7 @@ bool dobj::set_username(const char* un)
 
 char const* dobj::get_username()
 {
-    if (jwm.get_dobjnames()->check_type(object_type)
+    if (dobjnames::check_type(object_type)
         == dobjnames::DOBJ_FIRST)
         return 0;
     return username;
@@ -103,10 +103,11 @@ dobj const* dobj::add_dobj(dobj*)
 
 dobj* dobj::duplicate_dobj(const char* uname)
 {
+    (void)uname;
     *err_msg = "from:\ndata object ";
     if (username) *err_msg += username;
     *err_msg += " of data type ";
-    *err_msg += jwm.get_dobjnames()->get_name(object_type);
+    *err_msg += dobjnames::get_name(object_type);
     *err_msg += " does not allow copies to be made of it.";
     return 0;
 }
@@ -127,9 +128,9 @@ void dobj::register_param(paramnames::PAR_TYPE pt)
     if (!jwm.get_dparlist()->add_dobjparam(object_type, pt))
     {
         *err_msg = "Failed to register param ";
-        *err_msg += jwm.get_paramnames()->get_name(pt);
+        *err_msg += paramnames::get_name(pt);
         *err_msg += " with data object type ";
-        *err_msg += jwm.get_dobjnames()->get_name(object_type);
+        *err_msg += dobjnames::get_name(object_type);
         *err_msg += ".";
         valid = false;
     }
@@ -146,11 +147,11 @@ void dobj::register_param(paramnames::PAR_TYPE pt, const char* fixstr)
     if (!dp || !fsp)
     {
         *err_msg = "Failed to register fixed string param ";
-        *err_msg += jwm.get_paramnames()->get_name(pt);
+        *err_msg += paramnames::get_name(pt);
         *err_msg += " (";
         *err_msg += fixstr;
         *err_msg += ") with data object type ";
-        *err_msg += jwm.get_dobjnames()->get_name(object_type);
+        *err_msg += dobjnames::get_name(object_type);
         *err_msg += ".";
         valid = false;
     }
@@ -169,11 +170,11 @@ void dobj::register_dobjdobj(dobjnames::DOBJ_TYPE parent,
     if (!ddl || !dd)
     {
         *err_msg = "Failed to register parent data object ";
-        *err_msg += jwm.get_dobjnames()->get_name(parent);
+        *err_msg += dobjnames::get_name(parent);
         *err_msg += " with child data object ";
-        *err_msg += jwm.get_dobjnames()->get_name(sprog);
+        *err_msg += dobjnames::get_name(sprog);
         *err_msg += ") as part of data object ";
-        *err_msg += jwm.get_dobjnames()->get_name(object_type);
+        *err_msg += dobjnames::get_name(object_type);
         *err_msg += ".";
         valid = false;
     }

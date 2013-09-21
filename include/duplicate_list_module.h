@@ -31,9 +31,8 @@ duplicate_list_module(T* sm, D* _data,
     if (dupio == synthmod::AUTO_CONNECT)
         sm->duplicate_inputs_to(dup);
     sm->duplicate_params_to(dup);
-    const char* const
-        module_type_name =
-            jwm.get_modnames()->get_name(sm->get_module_type());
+    const char* const module_type_name =
+                    synthmodnames::get_name(sm->get_module_type());
     const char* const current_grp = get_groupname(sm->get_username());
     const char* const new_grp = get_groupname(uname);
     bool regroup = false;

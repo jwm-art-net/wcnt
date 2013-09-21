@@ -78,21 +78,21 @@ stockerrs::ERR_TYPE riff_node::validate()
     if (!jwm.get_dparlist()->validate(this,
         paramnames::BAR, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::BAR);
+        *err_msg = paramnames::get_name(paramnames::BAR);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (!jwm.get_dparlist()->validate(this,
         paramnames::REPEAT, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::REPEAT);
+        *err_msg = paramnames::get_name(paramnames::REPEAT);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (!jwm.get_dparlist()->validate(this,
         paramnames::REPEAT_STRIPE, stockerrs::ERR_NEG_ZERO))
     {
-        *err_msg = jwm.get_paramnames()->get_name(
+        *err_msg = paramnames::get_name(
             paramnames::REPEAT_STRIPE);
         invalidate();
         return stockerrs::ERR_NEG_ZERO;

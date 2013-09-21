@@ -140,10 +140,10 @@ stockerrs::ERR_TYPE adsr::validate()
     }
     if (up_thresh < lo_thresh) {
         *err_msg =
-         jwm.get_paramnames()->get_name(paramnames::UP_THRESH);
+         paramnames::get_name(paramnames::UP_THRESH);
         *err_msg += " must not be less than ";
         *err_msg +=
-         jwm.get_paramnames()->get_name(paramnames::LO_THRESH);
+         paramnames::get_name(paramnames::LO_THRESH);
         invalidate();
         return stockerrs::ERR_ERROR;
     }
@@ -151,7 +151,7 @@ stockerrs::ERR_TYPE adsr::validate()
     if (!jwm.get_paramlist()->validate(this, paramnames::MIN_TIME,
             stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::MIN_TIME);
+        *err_msg = paramnames::get_name(paramnames::MIN_TIME);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -159,7 +159,7 @@ stockerrs::ERR_TYPE adsr::validate()
             stockerrs::ERR_NEGATIVE))
     {
         *err_msg =
-            jwm.get_paramnames()->get_name(paramnames::MAX_SUSTAIN_TIME);
+            paramnames::get_name(paramnames::MAX_SUSTAIN_TIME);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }

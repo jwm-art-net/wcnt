@@ -48,19 +48,19 @@ void const* meterchange::get_param(paramnames::PAR_TYPE pt) const
 stockerrs::ERR_TYPE meterchange::validate()
 {
     if (time_sig.beatsperbar <= 2 || time_sig.beatsperbar > 32) {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::METER);
+        *err_msg = paramnames::get_name(paramnames::METER);
         invalidate();
         return stockerrs::ERR_RANGE_BEAT;
     }
     if (time_sig.beatvalue <= 2 || time_sig.beatvalue > 32) {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::METER);
+        *err_msg = paramnames::get_name(paramnames::METER);
         invalidate();
         return stockerrs::ERR_RANGE_BEAT;
     }
     if (!jwm.get_dparlist()->validate(
         this, paramnames::BAR, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::BAR);
+        *err_msg = paramnames::get_name(paramnames::BAR);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }

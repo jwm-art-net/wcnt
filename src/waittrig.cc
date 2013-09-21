@@ -92,21 +92,21 @@ stockerrs::ERR_TYPE waittrig::validate()
     if (!pl->validate(this, paramnames::MIN_WAIT,
             stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::MIN_WAIT);
+        *err_msg = paramnames::get_name(paramnames::MIN_WAIT);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (!pl->validate(this, paramnames::MAX_WAIT,
             stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::MAX_WAIT);
+        *err_msg = paramnames::get_name(paramnames::MAX_WAIT);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (!pl->validate(this, paramnames::COUNT,
             stockerrs::ERR_NEG_ZERO))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::COUNT);
+        *err_msg = paramnames::get_name(paramnames::COUNT);
         invalidate();
         return stockerrs::ERR_NEG_ZERO;
     }

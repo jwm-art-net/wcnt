@@ -29,7 +29,9 @@
 
 class stockerrs
 {
-public:
+ public:
+    static const char* major;
+
     enum ERR_TYPE
     {
       ERR_FIRST = 0,      // cause:
@@ -78,12 +80,17 @@ public:
     };
     stockerrs();
     ~stockerrs();
-    char const* get_err(ERR_TYPE) const;
-    char const* get_prefix_err(ERR_TYPE) const;
+    static char const* get_err(ERR_TYPE);
+    static char const* get_prefix_err(ERR_TYPE);
     static bool check_type(ERR_TYPE);
 private:
-    const char* errmsg[ERR_LAST];
-    const char* prefixmsg[6];/* secret number do not alter */
+    struct err_msg_data
+    {
+        ERR_TYPE type;
+        const char* const msg;
+    };
+    static const err_msg_data data[ERR_LAST];
+    static const char* prefixmsg[6];/* secret number do not alter */
 };
 
 #endif

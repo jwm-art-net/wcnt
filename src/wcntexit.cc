@@ -77,7 +77,7 @@ stockerrs::ERR_TYPE wcnt_exit::validate()
             stockerrs::ERR_NEGATIVE))
     {
         *err_msg =
-         jwm.get_paramnames()->get_name(paramnames::EXIT_BAR);
+         paramnames::get_name(paramnames::EXIT_BAR);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -88,9 +88,9 @@ stockerrs::ERR_TYPE wcnt_exit::validate()
         && exit_bar != 0)
     {
         *err_msg += "input ";
-        *err_msg += jwm.get_inputnames()->get_name(inputnames::IN_BAR);
+        *err_msg += inputnames::get_name(inputnames::IN_BAR);
         *err_msg += " is turned off, and parameter ";
-        *err_msg += jwm.get_paramnames()->get_name(paramnames::EXIT_BAR);
+        *err_msg += paramnames::get_name(paramnames::EXIT_BAR);
         *err_msg += " is not zero. wcnt would never exit if "
             "it were allowed to run!";
         invalidate();

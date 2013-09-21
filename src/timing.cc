@@ -43,7 +43,7 @@ stockerrs::ERR_TYPE timing::validate()
     if (!jwm.get_dparlist()->validate(
         this, paramnames::SECONDS, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::BAR);
+        *err_msg = paramnames::get_name(paramnames::BAR);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }

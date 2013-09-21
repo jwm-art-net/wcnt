@@ -97,7 +97,7 @@ stockerrs::ERR_TYPE stereo_amp::validate()
             stockerrs::ERR_RANGE_0_1))
     {
         *err_msg =
-         jwm.get_paramnames()->get_name(paramnames::AMP_MODSIZE);
+         paramnames::get_name(paramnames::AMP_MODSIZE);
         invalidate();
         return stockerrs::ERR_RANGE_0_1;
     }
@@ -105,7 +105,7 @@ stockerrs::ERR_TYPE stereo_amp::validate()
             stockerrs::ERR_NEG_ZERO))
     {
         *err_msg =
-         jwm.get_paramnames()->get_name(paramnames::CLIP_LEVEL);
+         paramnames::get_name(paramnames::CLIP_LEVEL);
         invalidate();
         return stockerrs::ERR_NEG_ZERO;
     }

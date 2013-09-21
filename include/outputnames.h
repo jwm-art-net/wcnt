@@ -6,7 +6,7 @@
 #include "iocat.h"
 
 class outputnames {
-public:
+ public:
     enum OUT_TYPE
     {
         OUT_FIRST, // used in error situations also
@@ -85,11 +85,11 @@ public:
     };
     outputnames();
     ~outputnames(){};
-    const char*     get_name(OUT_TYPE type) const;
-    iocat::IOCAT    get_category(OUT_TYPE type) const;
-    OUT_TYPE        get_type(char const* const name) const;
-    OUT_TYPE        get_nonezerotype(iocat::IOCAT cat) const;
-private:
+    static const char*  get_name(OUT_TYPE type);
+    static iocat::IOCAT get_category(OUT_TYPE type);
+    static OUT_TYPE     get_type(char const* const name);
+    static OUT_TYPE     get_nonezerotype(iocat::IOCAT cat);
+ private:
     struct output_data
     {
         OUT_TYPE type;

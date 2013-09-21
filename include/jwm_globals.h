@@ -60,13 +60,6 @@ class jwm_globals
 
     double get_mid_a_phase_step() const { return mid_a_phase_step; }
 
-    const iocat*            get_iocatnames() const  { return iocatnames;}
-    const synthmodnames*    get_modnames() const    { return modnames;  }
-    const inputnames*       get_inputnames() const  { return innames;   }
-    const outputnames*      get_outputnames() const { return outnames;  }
-    const paramnames*       get_paramnames() const  { return parnames;  }
-    const dobjnames*        get_dobjnames() const   { return dbjnames;  }
-
     modinputlist*   get_inputlist() const   { return inputlist;    }
     modoutputlist*  get_outputlist() const  { return outputlist;   }
     modparamlist*   get_paramlist() const   { return paramlist;    }
@@ -103,12 +96,6 @@ class jwm_globals
 
     double mid_a_phase_step;
 
-    iocat*          iocatnames;
-    synthmodnames*  modnames;
-    inputnames*     innames;
-    outputnames*    outnames;
-    paramnames*     parnames;
-    dobjnames*      dbjnames;
     synthmodlist*   modlist;
     modinputlist*   inputlist;
     modoutputlist*  outputlist;

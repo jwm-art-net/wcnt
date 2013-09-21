@@ -45,14 +45,14 @@ stockerrs::ERR_TYPE bpmchange::validate()
     if (!jwm.get_dparlist()->validate(
         this, paramnames::BPM, stockerrs::ERR_RANGE_BPM))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::BPM);
+        *err_msg = paramnames::get_name(paramnames::BPM);
         invalidate();
         return stockerrs::ERR_RANGE_BPM;
     }
     if (!jwm.get_dparlist()->validate(
         this, paramnames::BAR, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::BAR);
+        *err_msg = paramnames::get_name(paramnames::BAR);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }

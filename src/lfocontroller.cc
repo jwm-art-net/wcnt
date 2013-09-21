@@ -103,14 +103,14 @@ stockerrs::ERR_TYPE lfo_controller::validate()
     if (!jwm.get_paramlist()->validate(this, paramnames::DELAY_TIME,
             stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::DELAY_TIME);
+        *err_msg = paramnames::get_name(paramnames::DELAY_TIME);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (!jwm.get_paramlist()->validate(this, paramnames::RAMP_TIME,
             stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::RAMP_TIME);
+        *err_msg = paramnames::get_name(paramnames::RAMP_TIME);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -118,13 +118,13 @@ stockerrs::ERR_TYPE lfo_controller::validate()
             stockerrs::ERR_NEGATIVE))
     {
         *err_msg =
-         jwm.get_paramnames()->get_name(paramnames::RESPONSE_TIME);
+         paramnames::get_name(paramnames::RESPONSE_TIME);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (response_time < 0) {
         *err_msg
-         += jwm.get_paramnames()->get_name(paramnames::RESPONSE_TIME);
+         += paramnames::get_name(paramnames::RESPONSE_TIME);
         *err_msg += " less than zero";
         invalidate();
     }

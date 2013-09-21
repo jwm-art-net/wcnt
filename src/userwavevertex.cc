@@ -66,14 +66,14 @@ stockerrs::ERR_TYPE wave_vertex::validate()
     if (!jwm.get_dparlist()->validate(this,
         paramnames::UPDEG, stockerrs::ERR_RANGE_DEGS))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::UPDEG);
+        *err_msg = paramnames::get_name(paramnames::UPDEG);
         invalidate();
         return stockerrs::ERR_RANGE_DEGS;
     }
     if (!jwm.get_dparlist()->validate(this,
         paramnames::LODEG, stockerrs::ERR_RANGE_DEGS))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::LODEG);
+        *err_msg = paramnames::get_name(paramnames::LODEG);
         invalidate();
         return stockerrs::ERR_RANGE_DEGS;
     }

@@ -84,10 +84,10 @@ dobj* trigswitcher::add_dobj(dobj* dbj)
             *err_msg += " will not accept the module ";
             *err_msg += sm->get_username();
             *err_msg += " because modules of type ";
-            *err_msg += jwm.get_modnames()->
+            *err_msg += synthmodnames::
                 get_name(sm->get_module_type());
             *err_msg += " do not have the ";
-            *err_msg += jwm.get_outputnames()->
+            *err_msg += outputnames::
                 get_name(outputnames::OUT_TRIG);
             *err_msg += " output type.";
             return 0;

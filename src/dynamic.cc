@@ -135,10 +135,10 @@ stockerrs::ERR_TYPE dynamic::validate()
     }
     if (up_thresh < lo_thresh) {
         *err_msg =
-         jwm.get_paramnames()->get_name(paramnames::UP_THRESH);
+         paramnames::get_name(paramnames::UP_THRESH);
         *err_msg += " must not be less than ";
         *err_msg +=
-         jwm.get_paramnames()->get_name(paramnames::LO_THRESH);
+         paramnames::get_name(paramnames::LO_THRESH);
         invalidate();
         return stockerrs::ERR_ERROR;
     }

@@ -107,7 +107,7 @@ bool paramedit::mod_param_edit(synthmod* module, const char* parname,
     bool confused = false;
     while(mp) {
         paramnames::PAR_TYPE mpt = mp->get_paramtype();
-        char const* mparname = jwm.get_paramnames()->get_name(mpt);
+        char const* mparname = paramnames::get_name(mpt);
         if (strcmp(parname, mparname) == 0) {
             if (pt != paramnames::FIRST)
                 confused = true;
@@ -155,7 +155,7 @@ bool paramedit::dobj_param_edit(dobj* dobject, const char* parname,
     bool confused = false;
     while(dp) {
         paramnames::PAR_TYPE dpt = dp->get_partype();
-        char const* mparname = jwm.get_paramnames()->get_name(dpt);
+        char const* mparname = paramnames::get_name(dpt);
         if (strcmp(parname, mparname) == 0) {
             if (pt != paramnames::FIRST)
                 confused = true;

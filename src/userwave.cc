@@ -146,7 +146,7 @@ stockerrs::ERR_TYPE user_wave::validate()
         paramnames::DROP_CHECK_RANGE, stockerrs::ERR_NEGATIVE))
     {
         *err_msg =
-         jwm.get_paramnames()->get_name(paramnames::DROP_CHECK_RANGE);
+         paramnames::get_name(paramnames::DROP_CHECK_RANGE);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }

@@ -18,7 +18,12 @@ paramnames::paramnames()
 #endif
 }
 
-char const* paramnames::get_name(PAR_TYPE id) const
+#ifdef DEBUG
+static paramnames pnames;
+#endif
+
+
+char const* paramnames::get_name(PAR_TYPE id)
 {
     if (id >= FIRST && id < LAST)
         return data[id].name;
@@ -26,7 +31,7 @@ char const* paramnames::get_name(PAR_TYPE id) const
         return data[FIRST].name;
 }
 
-iocat::IOCAT paramnames::get_category(PAR_TYPE id) const
+iocat::IOCAT paramnames::get_category(PAR_TYPE id)
 {
     if (id >= FIRST && id < LAST)
         return data[id].cat;
@@ -34,7 +39,7 @@ iocat::IOCAT paramnames::get_category(PAR_TYPE id) const
         return data[FIRST].cat;
 }
 
-paramnames::PAR_TYPE paramnames::get_type(char const* const pname) const
+paramnames::PAR_TYPE paramnames::get_type(char const* const pname)
 {
     for (int i = FIRST + 1; i < LAST; i++) {
         if (strcmp(data[i].name, pname) == 0)

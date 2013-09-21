@@ -122,14 +122,14 @@ connectorlist::reconnect_output_module_by_name(
                 cmsg = "\nreforming connection: ";
                 cmsg += connect->get_input_module()->get_username();
                 cmsg += " ";
-                cmsg += jwm.get_inputnames()->get_name(
+                cmsg += inputnames::get_name(
                     connect->get_input_type());
                 int i = cmsg.length();
                 if (i > 40) i = 40;
                 cmsg.append(spaces, 40 - i);
                 std::cout << cmsg << "<-- ";
                 std::cout << "from " << from << " to " << to << " ";
-                std::cout << jwm.get_outputnames()->get_name(
+                std::cout << outputnames::get_name(
                     connect->get_output_type());
             }
         }
@@ -149,14 +149,14 @@ bool connectorlist::make_connections()
         if (jwm.is_verbose()) {
             cmsg = connect->get_output_module_name();
             cmsg += " ";
-            cmsg += jwm.get_outputnames()->get_name(
+            cmsg += outputnames::get_name(
                 connect->get_output_type());
             int i = cmsg.length();
             if (i > 30) i = 30;
             cmsg.append(spaces, 30 - i);
             std::cout << "\n" << cmsg << "-->  ";
             std::cout << connect->get_input_module()->get_username();
-            std::cout << " " << jwm.get_inputnames()->get_name(
+            std::cout << " " << inputnames::get_name(
                 connect->get_input_type());
         }
         connect = goto_next();

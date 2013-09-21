@@ -152,7 +152,7 @@ void const* wavfilein::get_param(paramnames::PAR_TYPE dt) const
 stockerrs::ERR_TYPE wavfilein::validate()
 {
     if (!check_notename(rootnote)) {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::ROOT_NOTE);
+        *err_msg = paramnames::get_name(paramnames::ROOT_NOTE);
         *err_msg += ", ";
         *err_msg += rootnote;
         invalidate();

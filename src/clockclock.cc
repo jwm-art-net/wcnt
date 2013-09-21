@@ -86,7 +86,7 @@ stockerrs::ERR_TYPE clockclock::validate()
     if (!jwm.get_paramlist()->validate(this, paramnames::FREQ,
             stockerrs::ERR_RANGE_FREQ))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::FREQ);
+        *err_msg = paramnames::get_name(paramnames::FREQ);
         invalidate();
         return stockerrs::ERR_RANGE_FREQ;
     }
@@ -94,7 +94,7 @@ stockerrs::ERR_TYPE clockclock::validate()
             stockerrs::ERR_RANGE_FMOD))
     {
         *err_msg
-         = jwm.get_paramnames()->get_name(paramnames::FREQ_MOD1SIZE);
+         = paramnames::get_name(paramnames::FREQ_MOD1SIZE);
         invalidate();
         return stockerrs::ERR_RANGE_FMOD;
     }

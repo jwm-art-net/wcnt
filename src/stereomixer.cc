@@ -70,7 +70,7 @@ stockerrs::ERR_TYPE stereomixer::validate()
 {
     if (master_level == 0) {
         *err_msg
-         = jwm.get_paramnames()->get_name(paramnames::MASTER_LEVEL);
+         = paramnames::get_name(paramnames::MASTER_LEVEL);
         *err_msg += " is zero, all will be very quiet!";
         invalidate();
         return stockerrs::ERR_ERROR;
@@ -89,13 +89,13 @@ dobj* stereomixer::add_dobj(dobj* dbj)
             *err_msg += " will not accept the module ";
             *err_msg += sm->get_username();
             *err_msg += " because modules of type ";
-            *err_msg += jwm.get_modnames()->
+            *err_msg += synthmodnames::
                 get_name(sm->get_module_type());
             *err_msg += " do not have the ";
-            *err_msg += jwm.get_outputnames()->
+            *err_msg += outputnames::
                 get_name(outputnames::OUT_LEFT);
             *err_msg += " or ";
-            *err_msg += jwm.get_outputnames()->
+            *err_msg += outputnames::
                 get_name(outputnames::OUT_RIGHT);
             *err_msg += " output types.";
             return 0;

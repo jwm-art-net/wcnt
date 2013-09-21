@@ -55,7 +55,7 @@ void const* constant_note::get_param(paramnames::PAR_TYPE pt) const
 stockerrs::ERR_TYPE constant_note::validate()
 {
     if (!check_notename(note)){
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::NAME);
+        *err_msg = paramnames::get_name(paramnames::NAME);
         invalidate();
         return stockerrs::ERR_NOTENAME;
     }

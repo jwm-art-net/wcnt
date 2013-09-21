@@ -89,7 +89,7 @@ void const* freq_generator::get_param(paramnames::PAR_TYPE pt) const
 stockerrs::ERR_TYPE freq_generator::validate()
 {
     if (step_count <= 1) {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::STEP_COUNT);
+        *err_msg = paramnames::get_name(paramnames::STEP_COUNT);
         *err_msg += "must be of a larger value than 1";
         invalidate();
         return stockerrs::ERR_ERROR;
@@ -98,7 +98,7 @@ stockerrs::ERR_TYPE freq_generator::validate()
             stockerrs::ERR_RANGE_FREQ))
     {
         *err_msg =
-         jwm.get_paramnames()->get_name(paramnames::FREQ_RANGE_HI);
+         paramnames::get_name(paramnames::FREQ_RANGE_HI);
         invalidate();
         return stockerrs::ERR_RANGE_FREQ;
     }
@@ -106,7 +106,7 @@ stockerrs::ERR_TYPE freq_generator::validate()
             stockerrs::ERR_RANGE_FREQ))
     {
         *err_msg =
-         jwm.get_paramnames()->get_name(paramnames::FREQ_RANGE_LO);
+         paramnames::get_name(paramnames::FREQ_RANGE_LO);
         invalidate();
         return stockerrs::ERR_RANGE_FREQ;
     }

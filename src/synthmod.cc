@@ -131,7 +131,7 @@ synthmod::duplicate_module(const char* uname, DUP_IO iocon)
         *err_msg = "\nmodule ";
         *err_msg += username;
         *err_msg += " of type ";
-        *err_msg += jwm.get_modnames()->get_name(module_type);
+        *err_msg += synthmodnames::get_name(module_type);
         *err_msg += " is forbidden from being copied.";
         return 0;
     }
@@ -190,9 +190,9 @@ void synthmod::register_param(paramnames::PAR_TYPE pt)
     if (!jwm.get_paramlist()->add_param(module_type, pt))
     {
         *err_msg = "Failed to register param ";
-        *err_msg += jwm.get_paramnames()->get_name(pt);
+        *err_msg += paramnames::get_name(pt);
         *err_msg += " with module type ";
-        *err_msg += jwm.get_modnames()->get_name(module_type);
+        *err_msg += synthmodnames::get_name(module_type);
         *err_msg += ".";
         invalidate();
     }
@@ -210,11 +210,11 @@ void synthmod::register_param(paramnames::PAR_TYPE pt, const char* fixstr)
     if (!mp || !fsp)
     {
         *err_msg = "Failed to register fixed string param ";
-        *err_msg += jwm.get_paramnames()->get_name(pt);
+        *err_msg += paramnames::get_name(pt);
         *err_msg += " (";
         *err_msg += fixstr;
         *err_msg += ") with module type ";
-        *err_msg += jwm.get_modnames()->get_name(module_type);
+        *err_msg += synthmodnames::get_name(module_type);
         *err_msg += ".";
         invalidate();
     }
@@ -227,7 +227,7 @@ void synthmod::register_input(inputnames::IN_TYPE t)
     if (!jwm.get_inputlist()->register_input(this, t))
     {
         *err_msg = "Failed to register input ";
-        *err_msg += jwm.get_inputnames()->get_name(t);
+        *err_msg += inputnames::get_name(t);
         *err_msg += " with module ";
         *err_msg += username;
         *err_msg += ".";
@@ -242,7 +242,7 @@ void synthmod::register_output(outputnames::OUT_TYPE t)
     if (!jwm.get_outputlist()->register_output(this, t))
     {
         *err_msg = "Failed to register output ";
-        *err_msg += jwm.get_outputnames()->get_name(t);
+        *err_msg += outputnames::get_name(t);
         *err_msg += " with module ";
         *err_msg += username;
         *err_msg += ".";
@@ -263,11 +263,11 @@ void synthmod::register_moddobj(dobjnames::DOBJ_TYPE parent,
     if (!mdbj || !ddbj)
     {
         *err_msg = "Failed to register data object ";
-        *err_msg += jwm.get_dobjnames()->get_name(parent);
+        *err_msg += dobjnames::get_name(parent);
         *err_msg += " (child ";
-        *err_msg += jwm.get_dobjnames()->get_name(sprog);
+        *err_msg += dobjnames::get_name(sprog);
         *err_msg += ") with module type ";
-        *err_msg += jwm.get_modnames()->get_name(module_type);
+        *err_msg += synthmodnames::get_name(module_type);
         *err_msg += ".";
         invalidate();
     }
@@ -286,7 +286,7 @@ bool synthmod::check_inputs()
             *err_msg += get_username();
             *err_msg += " has not had its input ";
             *err_msg +=
-                jwm.get_inputnames()->get_name(
+                inputnames::get_name(
                     modinp->get_inputtype());
             *err_msg += " set.\n Please email james@jwm-art.net";
             *err_msg += " with the .wc file(s) responsible so the issue";

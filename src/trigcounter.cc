@@ -97,14 +97,14 @@ stockerrs::ERR_TYPE trigcounter::validate()
     if (!jwm.get_paramlist()->validate(this, paramnames::PRE_COUNT,
             stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::PRE_COUNT);
+        *err_msg = paramnames::get_name(paramnames::PRE_COUNT);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (!jwm.get_paramlist()->validate(this, paramnames::COUNT,
             stockerrs::ERR_ABOVE1))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::COUNT);
+        *err_msg = paramnames::get_name(paramnames::COUNT);
         invalidate();
         return stockerrs::ERR_ABOVE1;
     }

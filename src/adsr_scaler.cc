@@ -28,7 +28,7 @@ bool adsr_scaler::set_param(paramnames::PAR_TYPE pt, void* data)
             *err_msg = "\n";
             *err_msg += ((synthmod*)data)->get_username();
             *err_msg += " is not an ";
-            *err_msg += jwm.get_modnames()->get_name(synthmodnames::ADSR);
+            *err_msg += synthmodnames::get_name(synthmodnames::ADSR);
             *err_msg += "!";
             return false;
         case paramnames::ATTACK_SCALE:
@@ -65,7 +65,7 @@ stockerrs::ERR_TYPE adsr_scaler::validate()
     if (!jwm.get_dparlist()->validate(
         this, paramnames::ATTACK_SCALE, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames()->get_name(
+        *err_msg = paramnames::get_name(
                                         paramnames::ATTACK_SCALE);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
@@ -73,7 +73,7 @@ stockerrs::ERR_TYPE adsr_scaler::validate()
     if (!jwm.get_dparlist()->validate(
         this, paramnames::DECAY_SCALE, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames()->get_name(
+        *err_msg = paramnames::get_name(
                                         paramnames::DECAY_SCALE);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
@@ -81,7 +81,7 @@ stockerrs::ERR_TYPE adsr_scaler::validate()
     if (!jwm.get_dparlist()->validate(
         this, paramnames::RELEASE_SCALE, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames()->get_name(
+        *err_msg = paramnames::get_name(
                                         paramnames::RELEASE_SCALE);
         invalidate();
         return stockerrs::ERR_NEGATIVE;

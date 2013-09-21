@@ -100,7 +100,7 @@ stockerrs::ERR_TYPE glame_butterworth::validate()
 {
     if (resonance < 0.1 || resonance > 1.41) {
         *err_msg +=
-         jwm.get_paramnames()->get_name(paramnames::RESONANCE);
+         paramnames::get_name(paramnames::RESONANCE);
         *err_msg += " must be within range 0.1 to 1.41";
         invalidate();
         return stockerrs::ERR_ERROR;

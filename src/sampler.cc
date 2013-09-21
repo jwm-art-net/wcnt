@@ -187,7 +187,7 @@ stockerrs::ERR_TYPE sampler::validate()
 {
     WAV_STATUS wavstatus = wavfile->open_wav();
     if (wavstatus == WAV_STATUS_NOT_FOUND) {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::FILENAME);
+        *err_msg = paramnames::get_name(paramnames::FILENAME);
         *err_msg += ", using wavfilein ";
         *err_msg += wavfile->get_username();
         *err_msg += " the file ";
@@ -197,7 +197,7 @@ stockerrs::ERR_TYPE sampler::validate()
         return stockerrs::ERR_ERROR;
     }
     if (wavstatus == WAV_STATUS_WAVERR) {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::FILENAME);
+        *err_msg = paramnames::get_name(paramnames::FILENAME);
         *err_msg += ", using wavfilein ";
         *err_msg += wavfile->get_username();
         *err_msg += " the file ";
@@ -207,7 +207,7 @@ stockerrs::ERR_TYPE sampler::validate()
         return stockerrs::ERR_ERROR;
     }
     if (wavstatus != WAV_STATUS_OPEN) {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::FILENAME);
+        *err_msg = paramnames::get_name(paramnames::FILENAME);
         *err_msg += ", using wavfilein ";
         *err_msg += wavfile->get_username();
         *err_msg = ", an unspecified error occurred trying to open ";
@@ -220,7 +220,7 @@ stockerrs::ERR_TYPE sampler::validate()
             stockerrs::ERR_NEGATIVE))
     {
         *err_msg =
-         jwm.get_paramnames()->get_name(paramnames::START_POS_MIN);
+         paramnames::get_name(paramnames::START_POS_MIN);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -228,16 +228,16 @@ stockerrs::ERR_TYPE sampler::validate()
             stockerrs::ERR_NEGATIVE))
     {
         *err_msg =
-         jwm.get_paramnames()->get_name(paramnames::START_POS_MAX);
+         paramnames::get_name(paramnames::START_POS_MAX);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (max_start_pos < min_start_pos) {
         *err_msg =
-         jwm.get_paramnames()->get_name(paramnames::START_POS_MAX);
+         paramnames::get_name(paramnames::START_POS_MAX);
         *err_msg += " must not be less than ";
         *err_msg +=
-         jwm.get_paramnames()->get_name(paramnames::START_POS_MIN);
+         paramnames::get_name(paramnames::START_POS_MIN);
         invalidate();
         return stockerrs::ERR_ERROR;
     }
@@ -246,7 +246,7 @@ stockerrs::ERR_TYPE sampler::validate()
                 stockerrs::ERR_NEGATIVE))
         {
             *err_msg =
-             jwm.get_paramnames()->get_name(paramnames::LOOP_BEGIN);
+             paramnames::get_name(paramnames::LOOP_BEGIN);
             *err_msg += " of absolute value";
             invalidate();
             return stockerrs::ERR_NEGATIVE;
@@ -255,24 +255,24 @@ stockerrs::ERR_TYPE sampler::validate()
                 stockerrs::ERR_NEGATIVE))
         {
             *err_msg =
-             jwm.get_paramnames()->get_name(paramnames::LOOP_END);
+             paramnames::get_name(paramnames::LOOP_END);
             *err_msg += " of absolute value";
             invalidate();
             return stockerrs::ERR_NEGATIVE;
         }
     }
     if (loop_end <= loop_begin) {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::LOOP_END);
+        *err_msg = paramnames::get_name(paramnames::LOOP_END);
         *err_msg += " must be more than ";
         *err_msg +=
-            jwm.get_paramnames()->get_name(paramnames::LOOP_BEGIN);
+            paramnames::get_name(paramnames::LOOP_BEGIN);
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (anti_clip_size < 0
         || anti_clip_size > jwm_init::max_anti_clip_samples)
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::ANTI_CLIP);
+        *err_msg = paramnames::get_name(paramnames::ANTI_CLIP);
         *err_msg += " out of range 0 ~ 2048";
         invalidate();
         return stockerrs::ERR_ERROR;
@@ -281,7 +281,7 @@ stockerrs::ERR_TYPE sampler::validate()
             stockerrs::ERR_NEGATIVE))
     {
         *err_msg =
-         jwm.get_paramnames()->get_name(paramnames::ZERO_SEARCH_RANGE);
+         paramnames::get_name(paramnames::ZERO_SEARCH_RANGE);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }

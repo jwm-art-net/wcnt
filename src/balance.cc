@@ -78,7 +78,7 @@ stockerrs::ERR_TYPE balance::validate()
     if (!jwm.get_paramlist()->validate(this, paramnames::BIAS,
                                         stockerrs::ERR_RANGE_0_1))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::BIAS);
+        *err_msg = paramnames::get_name(paramnames::BIAS);
         invalidate();
         return stockerrs::ERR_RANGE_0_1;
     }

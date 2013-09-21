@@ -18,7 +18,12 @@ inputnames::inputnames()
 #endif
 }
 
-const char* inputnames::get_name(IN_TYPE id) const
+#ifdef DEBUG
+static inputnames inames;
+#endif
+
+
+const char* inputnames::get_name(IN_TYPE id)
 {
     if (id >= IN_FIRST && id < IN_LAST)
         return data[id].name;
@@ -26,7 +31,7 @@ const char* inputnames::get_name(IN_TYPE id) const
         return data[IN_FIRST].name;
 }
 
-iocat::IOCAT inputnames::get_category(IN_TYPE id) const
+iocat::IOCAT inputnames::get_category(IN_TYPE id)
 {
     if (id >= IN_FIRST && id < IN_LAST)
         return data[id].cat;
@@ -34,7 +39,7 @@ iocat::IOCAT inputnames::get_category(IN_TYPE id) const
         return data[IN_FIRST].cat;
 }
 
-inputnames::IN_TYPE inputnames::get_type(const char* const iname) const
+inputnames::IN_TYPE inputnames::get_type(const char* const iname)
 {
     for (int i = IN_FIRST + 1; i < IN_LAST; i++)
         if (strcmp(data[i].name, iname) == 0)

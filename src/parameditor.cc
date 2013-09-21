@@ -24,7 +24,7 @@ bool parameditor::do_param_edits()
         if (!pe->do_param_edits()) {
             std::string errmsg = *err_msg;
             *err_msg = "\nIn ";
-            *err_msg += jwm.get_dobjnames()->get_name(get_object_type());
+            *err_msg += dobjnames::get_name(get_object_type());
             *err_msg += " ";
             *err_msg += get_username();
             *err_msg += ", set parameter attempt failed, ";

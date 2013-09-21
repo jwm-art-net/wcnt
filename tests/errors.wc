@@ -18,7 +18,7 @@ riff
 riff1
     quarter_value   64
     notelist
-        note name c0    pos 0   len 80      vel 1.0
+        note name c20    pos 0   len 80      vel 1.0
         note name f0    pos 64  len 20      vel 1.0
         note name e0    pos 96  len 8       vel 1.0
         note name c0    pos 128 len 80      vel 1.0

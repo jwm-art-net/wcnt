@@ -30,8 +30,7 @@ jwm_globals::jwm_globals() :
  x_exit_bar(0), x_in_bar(0),
  verbose(false), dont_run(false), no_title(false),
  sample_rate(   jwm_init::default_samplerate),
- iocatnames(0), modnames(0), innames(0), outnames(0), parnames(0),
- dbjnames(0), modlist(0), inputlist(0), outputlist(0), paramlist(0),
+ modlist(0), inputlist(0), outputlist(0), paramlist(0),
  connectlist(0), moddbjlist(0), fxsparlist(0), dbjlist(0), dparlist(0),
  topdbjlist(0),
  #ifdef WITH_LADSPA
@@ -39,12 +38,6 @@ jwm_globals::jwm_globals() :
  #endif
  stock_errs(0)
 {
-    iocatnames  = new iocat;
-    modnames    = new synthmodnames;
-    innames     = new inputnames;
-    outnames    = new outputnames;
-    parnames    = new paramnames;
-    dbjnames    = new dobjnames;
     inputlist   = new modinputlist;
     outputlist  = new modoutputlist;
     paramlist   = new modparamlist;
@@ -63,12 +56,6 @@ jwm_globals::jwm_globals() :
 
 jwm_globals::~jwm_globals()
 {
-    delete iocatnames;
-    delete modnames;
-    delete innames;
-    delete outnames;
-    delete parnames;
-    delete dbjnames;
     delete inputlist;
     delete outputlist;
     delete paramlist;

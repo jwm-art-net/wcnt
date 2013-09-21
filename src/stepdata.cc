@@ -54,7 +54,7 @@ stockerrs::ERR_TYPE step_data::validate()
     if (!jwm.get_dparlist()->validate(
         this, paramnames::POS, stockerrs::ERR_RANGE_0_1))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::POS);
+        *err_msg = paramnames::get_name(paramnames::POS);
         invalidate();
         return stockerrs::ERR_RANGE_0_1;
     }

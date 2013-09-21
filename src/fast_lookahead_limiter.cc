@@ -105,21 +105,21 @@ stockerrs::ERR_TYPE fast_lookahead_limiter::validate()
 {
     if (gain_db < -20 || gain_db > 20) {
         *err_msg +=
-         jwm.get_paramnames()->get_name(paramnames::GAIN_DB);
+         paramnames::get_name(paramnames::GAIN_DB);
         *err_msg += " must be within range -20.0 to +20.0";
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (limit_db < -20 || limit_db > 0) {
         *err_msg +=
-         jwm.get_paramnames()->get_name(paramnames::LIMIT_DB);
+         paramnames::get_name(paramnames::LIMIT_DB);
         *err_msg += " must be within range -20.0 to 0.0";
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (release_secs < 0.01 || release_secs > 2.0) {
         *err_msg +=
-         jwm.get_paramnames()->get_name(paramnames::RELEASE_SECS);
+         paramnames::get_name(paramnames::RELEASE_SECS);
         *err_msg += " must be within range 0.01 to 2.0";
         invalidate();
         return stockerrs::ERR_ERROR;

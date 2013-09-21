@@ -96,42 +96,42 @@ stockerrs::ERR_TYPE sc1::validate()
 {
     if (attack  < 2 || attack > 400) {
         *err_msg +=
-         jwm.get_paramnames()->get_name(paramnames::ATTACK_TIME);
+         paramnames::get_name(paramnames::ATTACK_TIME);
         *err_msg += " must be within range 2 to 400";
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (release  < 2 || release > 800) {
         *err_msg +=
-         jwm.get_paramnames()->get_name(paramnames::RELEASE_TIME);
+         paramnames::get_name(paramnames::RELEASE_TIME);
         *err_msg += " must be within range 2 to 800";
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (thresh  < -30 || thresh > 0) {
         *err_msg +=
-         jwm.get_paramnames()->get_name(paramnames::THRESH_DB);
+         paramnames::get_name(paramnames::THRESH_DB);
         *err_msg += " must be within range -30 to 0";
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (ratio  < 1 || ratio > 10) {
         *err_msg +=
-         jwm.get_paramnames()->get_name(paramnames::RATIO_1N);
+         paramnames::get_name(paramnames::RATIO_1N);
         *err_msg += " must be within range 1 to 10";
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (knee  < 1 || knee > 10) {
         *err_msg +=
-         jwm.get_paramnames()->get_name(paramnames::KNEE_DB);
+         paramnames::get_name(paramnames::KNEE_DB);
         *err_msg += " must be within range 1 to 10";
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (makeup  < 0 || makeup > 24) {
         *err_msg +=
-         jwm.get_paramnames()->get_name(paramnames::MAKEUP_DB);
+         paramnames::get_name(paramnames::MAKEUP_DB);
         *err_msg += " must be within range 1 to 10";
         invalidate();
         return stockerrs::ERR_ERROR;

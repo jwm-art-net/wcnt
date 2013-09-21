@@ -104,7 +104,7 @@ stockerrs::ERR_TYPE fader::validate()
             stockerrs::ERR_NEGATIVE))
     {
         *err_msg =
-            jwm.get_paramnames()->get_name(paramnames::START_BAR);
+            paramnames::get_name(paramnames::START_BAR);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -113,7 +113,7 @@ stockerrs::ERR_TYPE fader::validate()
             stockerrs::ERR_NEGATIVE))
     {
         *err_msg =
-            jwm.get_paramnames()->get_name(paramnames::END_BAR);
+            paramnames::get_name(paramnames::END_BAR);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -122,7 +122,7 @@ stockerrs::ERR_TYPE fader::validate()
             stockerrs::ERR_NEGATIVE))
     {
         *err_msg =
-            jwm.get_paramnames()->get_name(paramnames::FADE_IN_TIME);
+            paramnames::get_name(paramnames::FADE_IN_TIME);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -131,7 +131,7 @@ stockerrs::ERR_TYPE fader::validate()
             stockerrs::ERR_NEGATIVE))
     {
         *err_msg =
-            jwm.get_paramnames()->get_name(paramnames::FADE_OUT_TIME);
+            paramnames::get_name(paramnames::FADE_OUT_TIME);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }

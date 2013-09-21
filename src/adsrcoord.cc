@@ -78,14 +78,14 @@ stockerrs::ERR_TYPE adsr_coord::validate()
     if (!dpl->validate(
         this, paramnames::UPTIME, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::UPTIME);
+        *err_msg = paramnames::get_name(paramnames::UPTIME);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (!dpl->validate(
         this, paramnames::LOTIME, stockerrs::ERR_NEGATIVE))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::LOTIME);
+        *err_msg = paramnames::get_name(paramnames::LOTIME);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }

@@ -199,7 +199,7 @@ stockerrs::ERR_TYPE sequencer::validate()
             stockerrs::ERR_NEGATIVE))
     {
         *err_msg =
-         jwm.get_paramnames()->get_name(paramnames::VELOCITY_RESPONSE);
+         paramnames::get_name(paramnames::VELOCITY_RESPONSE);
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }

@@ -54,7 +54,7 @@ stockerrs::ERR_TYPE trigrouter::validate()
     if (!jwm.get_paramlist()->validate(this,
         paramnames::COUNT, stockerrs::ERR_ABOVE1))
     {
-        *err_msg = jwm.get_paramnames()->get_name(paramnames::COUNT);
+        *err_msg = paramnames::get_name(paramnames::COUNT);
         invalidate();
         return stockerrs::ERR_ABOVE1;
     }
@@ -91,7 +91,7 @@ void const* trigrouter::get_param(paramnames::PAR_TYPE pt) const
 void trigrouter::create_wcnt_triggers()
 {
     char const* wtn =
-        jwm.get_modnames()->get_name(synthmodnames::WCNTTRIGGER);
+        synthmodnames::get_name(synthmodnames::WCNTTRIGGER);
     char const* un = get_username();
     bool verbose = jwm.is_verbose();
     if (verbose){

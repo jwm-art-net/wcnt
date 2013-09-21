@@ -93,11 +93,11 @@ public:
     };
     dobjnames();
     ~dobjnames(){};
-    const char* get_name(DOBJ_TYPE) const;
-    DOBJ_TYPE   get_type(const char* const) const;
-    DOBJ_TYPE   check_type(DOBJ_TYPE) const;
-    DOBJ_TYPE   get_sub_type(DOBJ_TYPE) const;
-    const char* get_sub_name(DOBJ_TYPE) const;
+    static const char* get_name(DOBJ_TYPE);
+    static DOBJ_TYPE   get_type(const char* const);
+    static DOBJ_TYPE   check_type(DOBJ_TYPE);
+    static DOBJ_TYPE   get_sub_type(DOBJ_TYPE);
+    static const char* get_sub_name(DOBJ_TYPE);
 
 private:
     struct dobj_data

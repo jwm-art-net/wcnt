@@ -18,17 +18,20 @@ dobjnames::dobjnames()
         }
     }
 #endif
-
 }
 
+#ifdef DEBUG
+static dobjnames dnames;
+#endif
+
 const char*
-dobjnames::get_name(dobjnames::DOBJ_TYPE dt) const
+dobjnames::get_name(dobjnames::DOBJ_TYPE dt)
 {
     return data[check_type(dt)].name;
 }
 
 dobjnames::DOBJ_TYPE
-dobjnames::get_type(const char* const dname) const
+dobjnames::get_type(const char* const dname)
 {
     if (dname == 0) return DOBJ_FIRST;
     for (int dt = DOBJ_FIRST + 1; dt < DOBJ_LAST; dt++) {
@@ -41,7 +44,7 @@ dobjnames::get_type(const char* const dname) const
 }
 
 dobjnames::DOBJ_TYPE
-dobjnames::check_type(dobjnames::DOBJ_TYPE dt) const
+dobjnames::check_type(dobjnames::DOBJ_TYPE dt)
 {
     if (dt <= DOBJ_FIRST ||
         dt == DOBJ_NONE ||
@@ -54,7 +57,7 @@ dobjnames::check_type(dobjnames::DOBJ_TYPE dt) const
 }
 
 dobjnames::DOBJ_TYPE
-dobjnames::get_sub_type(dobjnames::DOBJ_TYPE dt) const
+dobjnames::get_sub_type(dobjnames::DOBJ_TYPE dt)
 {
     if (dt >= DOBJ_LAST)     return DOBJ_FIRST;
     if (dt == DOBJ_SYNTHMOD) return DOBJ_SYNTHMOD;
@@ -66,7 +69,7 @@ dobjnames::get_sub_type(dobjnames::DOBJ_TYPE dt) const
 }
 
 char const*
-dobjnames::get_sub_name(dobjnames::DOBJ_TYPE dt) const
+dobjnames::get_sub_name(dobjnames::DOBJ_TYPE dt)
 {
     return data[get_sub_type(dt)].name;
 }

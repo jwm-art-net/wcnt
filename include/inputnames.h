@@ -86,9 +86,9 @@ public:
     };
     inputnames();
     ~inputnames(){};
-    const char*     get_name(IN_TYPE) const;
-    iocat::IOCAT    get_category(IN_TYPE) const;
-    IN_TYPE         get_type(const char* const) const;
+    static const char*  get_name(IN_TYPE);
+    static iocat::IOCAT get_category(IN_TYPE);
+    static IN_TYPE      get_type(const char* const);
 
 private:
     struct input_data

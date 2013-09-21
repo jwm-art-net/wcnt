@@ -34,7 +34,7 @@ outputnames::OUT_TYPE modoutput::get_outputtype() const
 iocat::IOCAT modoutput::get_outputcategory() const
 {
     return (this != 0)
-     ? jwm.get_outputnames()->get_category(output_type)
+     ? outputnames::get_category(output_type)
      
      : iocat::FIRST;
 }
