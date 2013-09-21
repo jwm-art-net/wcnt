@@ -36,19 +36,9 @@ template <typename T>
 class ll_item
 {
  public:
-    ll_item(T* d) : data(d), prev(0), next(0)
-    {
-        #ifdef LIST_STATS
-        STATS_INC
-        #endif
-    }
+    ll_item(T* d) : data(d), prev(0), next(0) {}
 
-    ~ll_item()
-    {
-        #ifdef LIST_STATS
-        STATS_DEC
-        #endif
-    }
+    ~ll_item() {}
 
     void set_prev(ll_item* p) { prev = p; }
     void set_next(ll_item* n) { next = n; }
@@ -57,18 +47,10 @@ class ll_item
     ll_item* get_prev() { return (this ? prev : 0); }
     ll_item* get_next() { return (this ? next : 0); }
 
-    #ifdef LIST_STATS
-    STATS_FUNCS
-    #endif
-
  private:
     T*       data;
     ll_item* prev;
     ll_item* next;
-
-    #ifdef LIST_STATS
-    STATS_VARS
-    #endif
 };
 
 template <typename T>
@@ -110,10 +92,6 @@ class linked_list
     }
 
     bool is_empty(){ return (head->get_next() ? false : true); }
-
-    #ifdef LIST_STATS
-    STATS_FUNCS
-    #endif
 
     MULTIREF get_multiref() const       { return multiref;}
     DESTRUCTION get_destruction() const { return destruction; }
@@ -174,15 +152,8 @@ class linked_list
     DESTRUCTION destruction;
 
     long count;
-
-    #ifdef LIST_STATS
-    STATS_VARS
-    #endif
 };
 
-#ifdef LIST_STATS
-STATS_INIT(linkedlist)
-#endif
 
 template <typename T>
 linked_list<T>::linked_list(MULTIREF m, DESTRUCTION d) :
@@ -193,9 +164,6 @@ linked_list<T>::linked_list(MULTIREF m, DESTRUCTION d) :
 {
     head = new llitem(0);
     tail = new llitem(0);
-    #ifdef LIST_STATS
-    STATS_INC
-    #endif
 }
 
 template <typename T>
@@ -204,9 +172,6 @@ linked_list<T>::~linked_list()
     empty_list();
     delete head;
     delete tail;
-    #ifdef LIST_STATS
-    STATS_DEC
-    #endif
 }
 
 template <typename T>

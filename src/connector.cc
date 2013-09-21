@@ -10,11 +10,17 @@ connector::connector(
   out_type(output_type)
 {
     set_output_module_name(output_module_name);
+    #ifdef DATA_STATS
+    STATS_INC
+    #endif
 }
 
 connector::~connector()
 {
     delete [] out_mod_uname;
+    #ifdef DATA_STATS
+    STATS_DEC
+    #endif
 }
 
 void connector::set_output_module_name(const char* output_module_name)
@@ -93,4 +99,8 @@ bool connector::connect()
 }
 
 std::string connector::connect_err_msg;
+
+#ifdef DATA_STATS
+STATS_INIT(connector)
+#endif
 

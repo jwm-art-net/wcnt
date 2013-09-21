@@ -147,7 +147,7 @@ stockerrs::ERR_TYPE adsr::validate()
         invalidate();
         return stockerrs::ERR_ERROR;
     }
-    ;
+
     if (!jwm.get_paramlist()->validate(this, paramnames::MIN_TIME,
             stockerrs::ERR_NEGATIVE))
     {
@@ -342,15 +342,15 @@ void adsr::ready_section()
             levelsize = (coord->output_level - output) / sectmaxsamples;
     }
 }
-
+#include <iostream>
 synthmod* adsr::duplicate_module(const char* uname, DUP_IO dupio)
-{
+{std::cout << "duplicating ADSR " << get_username() << std::endl;
     adsr* dupadsr = new adsr(uname);
     if (dupio == AUTO_CONNECT)
         duplicate_inputs_to(dupadsr);
     duplicate_params_to(dupadsr);
     coord = goto_first();
-    while (coord) {
+    while (coord) { std::cout << "duplicating ADSR coord...\n";
         if (coord->get_adsr_section() != adsr_coord::ADSR_SUSTAIN)
         {
             dupadsr->insert_coord(  coord->get_adsr_section(),

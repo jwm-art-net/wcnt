@@ -5,6 +5,16 @@
 modinput::modinput(synthmod * sm, inputnames::IN_TYPE it) :
  synthmodule(sm), input_type(it)
 {
+    #ifdef DATA_STATS
+    STATS_INC
+    #endif
+}
+
+modinput::~modinput()
+{
+    #ifdef DATA_STATS
+    STATS_DEC
+    #endif
 }
 
 synthmodnames::SYNTH_MOD_TYPE modinput::get_moduletype() const
@@ -27,4 +37,8 @@ iocat::IOCAT modinput::get_inputcategory() const
      ? jwm.get_inputnames()->get_category(input_type)
      : iocat::FIRST;
 }
+
+#ifdef DATA_STATS
+STATS_INIT(modinput)
+#endif
 

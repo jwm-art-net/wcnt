@@ -30,7 +30,7 @@ class input_module
 
 class connector
 {
-public:
+ public:
     connector(synthmod* input_module,
               inputnames::IN_TYPE input_type,
               const char* output_module_name,
@@ -63,11 +63,20 @@ public:
         return (outname(out_mod_uname));
     }
 
-private:
+    #ifdef DATA_STATS
+    STATS_FUNCS
+    #endif
+
+ private:
     synthmod* in_mod;
     inputnames::IN_TYPE in_type;
     char* out_mod_uname;
     outputnames::OUT_TYPE out_type;
     static std::string connect_err_msg;
+
+    #ifdef DATA_STATS
+    STATS_VARS
+    #endif
+
 };
 #endif

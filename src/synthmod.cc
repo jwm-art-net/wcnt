@@ -23,7 +23,7 @@ synthmod::synthmod(
     flags = _flags_ | SM_VALID;
     username = new char[strlen(uname) + 1];
     strcpy(username, uname);
-    #ifdef MOD_STATS
+    #ifdef DATA_STATS
     STATS_INC
     #endif
 }
@@ -33,7 +33,7 @@ synthmod::~synthmod()
     jwm.get_outputlist()->delete_module_outputs(this);
     jwm.get_inputlist()->delete_module_inputs(this);
     delete [] username;
-    #ifdef MOD_STATS
+    #ifdef DATA_STATS
     STATS_DEC
     #endif
 }
@@ -304,7 +304,7 @@ bool synthmod::check_inputs()
 std::string* synthmod::err_msg = 0;
 STATUS synthmod::abort_status = OFF; // don't force an abort just yet.
 
-#ifdef MOD_STATS
+#ifdef DATA_STATS
 STATS_INIT(synthmod)
 #endif
 

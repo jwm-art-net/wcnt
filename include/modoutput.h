@@ -10,7 +10,7 @@ class modoutput
 {
  public:
     modoutput(synthmod*, outputnames::OUT_TYPE);
-    ~modoutput(){};
+    ~modoutput();
 
     synthmod* get_synthmodule() const { return synthmodule; }
 
@@ -26,9 +26,17 @@ class modoutput
         return output_type == ot;
     }
 
+    #ifdef DATA_STATS
+    STATS_FUNCS
+    #endif
+
  private:
     synthmod* synthmodule;
     outputnames::OUT_TYPE output_type;
+
+    #ifdef DATA_STATS
+    STATS_VARS
+    #endif
 };
 
 #endif

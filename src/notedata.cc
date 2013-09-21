@@ -15,7 +15,7 @@ note_data::note_data() :
     notename[0] = '\0';
     init_first();
 
-#ifdef NOTE_STATS
+#ifdef DATA_STATS
 STATS_INC
 #endif
 
@@ -29,7 +29,7 @@ note_data::note_data(const char *name, double pos, double len, double vel)
     set_name(name);
     init_first();
 
-#ifdef NOTE_STATS
+#ifdef DATA_STATS
 STATS_INC
 #endif
 
@@ -38,7 +38,7 @@ STATS_INC
 note_data::~note_data()
 {
 
-#ifdef NOTE_STATS
+#ifdef DATA_STATS
 STATS_DEC
 #endif
 
@@ -252,7 +252,7 @@ void note_data::init_first()
     register_param(paramnames::NOTE_VEL);
 }
 
-#ifdef NOTE_STATS
+#ifdef DATA_STATS
 STATS_INIT(note_data)
 #endif
 
