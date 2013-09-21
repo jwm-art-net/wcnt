@@ -29,7 +29,7 @@ class wave_tables;
 
 class synthfilereader;
 
-const char* const wcnt_version = "1.26.5";
+const char* const wcnt_version = "1.26.5 ";
 const char* const wcnt_id = "wcnt-1.26/jwmsynth";
 
 class jwm_globals

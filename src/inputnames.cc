@@ -1,12 +1,12 @@
 #include "../include/inputnames.h"
 
-#ifdef NAME_CHECK
+#ifdef DEBUG
 #include <iostream>
 #endif
 
 inputnames::inputnames()
 {
-#ifdef NAME_CHECK
+#ifdef DEBUG
     for (int i = IN_FIRST; i < IN_LAST; i++){
         if (data[i].type != i) {
             std::cout << "\n***** inputnames error *****\n";
