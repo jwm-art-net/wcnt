@@ -185,6 +185,7 @@ dobj* sequencer::add_dobj(dobj* dbj)
 
 synthmod* sequencer::duplicate_module(const char* uname, DUP_IO dupio)
 {
+    (void)uname; (void)dupio; // stop unused param warns
     sm_err("%s", "sequencer does not allow copies to be made of it.");
     return 0;
 }

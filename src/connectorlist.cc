@@ -85,6 +85,7 @@ connector*
 connectorlist::duplicate_connections_for_group(
     char const* from, char const* to)
 {
+    /* FIXME: "nothing here codes be doing.." */
 /*
     synthmodlist::linkedlist* fromlist =
         new_list_of_by(jwm.get_modlist(), from);

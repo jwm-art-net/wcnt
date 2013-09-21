@@ -303,6 +303,7 @@ dobj* timemap::add_dobj(dobj* dbj)
 
 synthmod* timemap::duplicate_module(const char* uname, DUP_IO dupio)
 {
+    (void)uname; (void)dupio; // stop unused param warns
     sm_err("%s", "The time_map module does not allow duplication.");
     return 0;
 }
