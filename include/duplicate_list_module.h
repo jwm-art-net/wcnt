@@ -26,6 +26,7 @@ synthmod*
 duplicate_list_module(T* sm, D* _data,
     const char* uname, synthmod::DUP_IO dupio)
 {
+    (void)_data;
     T* dup = new T(uname);
     if (dupio == synthmod::AUTO_CONNECT)
         sm->duplicate_inputs_to(dup);

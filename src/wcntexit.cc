@@ -64,6 +64,7 @@ void const* wcnt_exit::get_param(paramnames::PAR_TYPE pt) const
 
 synthmod* wcnt_exit::duplicate_module(const char* uname, DUP_IO dupio)
 {
+    (void)uname; (void)dupio; // stop unused param warns
     *err_msg = "wcnt_exit module does not allow copies of it to be made.";
     return 0;
 }
