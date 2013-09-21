@@ -1,12 +1,12 @@
 #include "../include/synthmodnames.h"
 
-#ifdef NAME_CHECK
+#ifdef DEBUG
 #include <iostream>
 #endif
 
 synthmodnames::synthmodnames()
 {
-#ifdef NAME_CHECK
+#ifdef DEBUG
     for (int i = FIRST; i < LAST; i++){
         if (data[i].type != i) {
             std::cout << "\n***** synthmodnames error *****\n";

@@ -11,7 +11,7 @@ bool mod_check_inputs(synthmod*);
 bool mod_check_outputs(synthmod*);
 bool mod_check_params(synthmod*);
 
-#endif
+#endif // SANITY_CHECKS
 
 
 #endif

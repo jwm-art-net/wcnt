@@ -1,12 +1,12 @@
 #include "../include/outputnames.h"
 
-#ifdef NAME_CHECK
+#ifdef DEBUG
 #include <iostream>
 #endif
 
 outputnames::outputnames()
 {
-#ifdef NAME_CHECK
+#ifdef DEBUG
     for (int i = OUT_FIRST; i < OUT_LAST; i++){
         if (data[i].type != i) {
             std::cout << "\n***** outputnames error *****\n";

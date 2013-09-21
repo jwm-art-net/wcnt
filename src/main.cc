@@ -17,6 +17,7 @@
 //----------------------------------------------------------------------*/
 
 #include <iostream>
+#include <iomanip>
 
 #include "../include/cmdline.h"
 #include "../include/jwmsynth.h"
@@ -55,7 +56,7 @@ int main(const int argc, const char** const argv)
     if (!jwm.is_no_title())
         title();
     if (!cmd->is_good_opts()) {
-        std::cout << cmd->get_message() << "\n";
+        std::cout << cmd->get_message() << std::endl;
         delete cmd;
         delete modlist;
         #ifdef WITH_LADSPA
@@ -81,7 +82,7 @@ int main(const int argc, const char** const argv)
     delete thesynth;
     delete cmd;
     if (jwm.is_no_title())
-        std::cout << "\n";
+        std::cout << std::endl;
     else
         exitramblings();
     delete modlist;
@@ -93,10 +94,12 @@ int main(const int argc, const char** const argv)
 
 void title()
 {
-    std::cout << "\n  \\,  wcnt_\\\\.\\\\...\\.\\..  .       ^";
-    std::cout << "\n-   )< Wav Composer Not Toilet  >(";
-    std::cout << "\n  /'    '/'''/''///'  '   " << wcnt_version;
-    std::cout << "!-" << std::endl;
+    std::cout << "O---\\      [:::>  <:::]      /---O" << std::endl;
+    std::cout << "\\ ----------   wcnt   ---------- /" << std::endl;
+    std::cout << "     Wav Composer Not Toilet!     " << std::endl;
+    std::cout << "/ ---------- " << std::setw(8) << wcnt_version
+              << " ---------- \\" << std::endl;
+    std::cout << "O---/      [::>    <::]      \\---O" << std::endl;
 }
 
 void exitramblings()
