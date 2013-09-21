@@ -38,7 +38,7 @@ DEFS=-O2 -fomit-frame-pointer -DWITH_LADSPA
 #                     special parameter type used by the input_editor and
 #                     param_editor data objects.
 
-DEFS=-ggdb -fno-inline -DWITH_LADSPA -DNAME_CHECK -DDEBUG_MSG # -DDATA_STATS
+#DEFS=-ggdb -fno-inline -DWITH_LADSPA -DNAME_CHECK -DDEBUG_MSG # -DDATA_STATS
 
 # nothing to be modified further:
 PROG=wcnt
@@ -69,7 +69,7 @@ main.o: main.c $(HEADERS)
 examples: $(WAVS)
 
 %.wav :  %.wc $(PROG)
-	@./$(PROG) --no-title $<
+	@./$(PROG) --no-title --dont-run $<
 
 clean:
 	@rm -vf $(OBJS) $(PROG)
