@@ -1,12 +1,12 @@
 #include "../include/paramnames.h"
 
-#ifdef NAME_CHECK
+#ifdef DEBUG
 #include <iostream>
 #endif
 
 paramnames::paramnames()
 {
-#ifdef NAME_CHECK
+#ifdef DEBUG
     for (int i = FIRST; i < LAST; i++){
         if (data[i].type != i) {
             std::cout << "\n***** paramnames error *****\n";

@@ -127,7 +127,7 @@ cmdline::cmd_opts_data cmdline::data[OPTS_COUNT] =
 
 bool cmdline::scan()
 {
-#ifdef CMDLINE_DBG
+#ifdef DEBUG
     std::cout << "\ncmdline::scan()";
     std::cout << "\ncommandline arguements count: " << opts_count;
     for(int i = 0; i < opts_count; i++){
@@ -140,12 +140,12 @@ bool cmdline::scan()
     }
     bool extraneous = false;
     for (int arg = 1; arg < opts_count; arg++){
-#ifdef CMDLINE_DBG
+#ifdef DEBUG
         std::cout << "\nprocessing arg: " << opts[arg];
 #endif
         int o;
         for (o = 1; o < OPTS_COUNT; o++){
-#ifdef CMDLINE_DBG
+#ifdef DEBUG
             std::cout << "\n    comparing with: " << data[o].olong;
 #endif
             if (((data[o].olong) ?
@@ -154,11 +154,11 @@ bool cmdline::scan()
                 ((data[o].oshort) ?
                     strcmp(opts[arg], data[o].oshort) == 0 : false))
             {
-#ifdef CMDLINE_DBG
+#ifdef DEBUG
                 std::cout << "\n    adding: " << data[o].type;
 #endif
                 opts_flags += data[o].type;
-#ifdef CMDLINE_DBG
+#ifdef DEBUG
                 std::cout << " to flags ( now: " << opts_flags << " )";
 #endif
                 switch(data[o].type){
@@ -169,7 +169,7 @@ bool cmdline::scan()
                     case HELP:
                     case LONGHELP:
                         data[o].par1 = 1;
-#ifdef CMDLINE_DBG
+#ifdef DEBUG
                         std::cout << "\n    arg ";
                         std::cout << data[o].olong;
                         std::cout << " set to 1 : " << data[o].par1;
@@ -180,7 +180,7 @@ bool cmdline::scan()
                         if (data[o].type == 0)std::cout << "!$*%&(@!";
                         data[o].par1 = (arg + 1 < opts_count)? ++arg : 0;
                         data[o].par2 = (arg + 1 < opts_count)? arg+1 : 0;
-#ifdef CMDLINE_DBG
+#ifdef DEBUG
                         std::cout << "\n    arg may require two params: ";
                         std::cout << data[o].par1 << " and "
                             << data[o].par2;
@@ -191,11 +191,11 @@ bool cmdline::scan()
         }
             if(o == OPTS_COUNT)
             {
-#ifdef CMDLINE_DBG
+#ifdef DEBUG
                 std::cout << "\n    comparison failed.";
 #endif
                 if(data[WC_IX].par1 == 0) {
-#ifdef CMDLINE_DBG
+#ifdef DEBUG
                     std::cout << "\n    using '" << opts[arg] << "'";
                     std::cout << " as .wc file.";
 #endif

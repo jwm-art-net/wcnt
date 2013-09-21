@@ -49,7 +49,7 @@ bool jwmsynth::connect_synth()
 {
     if (jwm.is_verbose()) {
         std::cout << "\n\nWill now attempt to connect inputs and outputs";
-        std::cout << ", hold your horses:\n";
+        std::cout << ", hold your horses:" << std::endl;
     }
     if (!jwm.get_connectlist()->make_connections()) {
         jwm_err("%s", connector::get_connect_err_msg());
@@ -61,7 +61,7 @@ bool jwmsynth::connect_synth()
 bool jwmsynth::validate_synth()
 {
     if (jwm.is_verbose())
-        std::cout << "\nValidating modules...";
+        std::cout << "\nValidating modules..." << std::endl;
     stockerrs::ERR_TYPE et;
     synthmod* sm;
     sm = jwm.get_modlist()->goto_first();
@@ -92,13 +92,13 @@ bool jwmsynth::validate_synth()
 bool jwmsynth::init_synth()
 {
     if (jwm.is_verbose())
-        std::cout << "\nInitialising modules...";
+        std::cout << "\nInitialising modules..." << std::endl;
     synthmod* sm;
     synthmodlist* sml = jwm.get_modlist();
     sm = sml->goto_first();
     while(sm) {
         sm->init();
-        #ifdef IO_DEBUG
+        #ifdef DEBUG
         if (!sm->check_inputs()) {
             jwm_err("%s", synthmod::get_error_msg());
             return false;
@@ -116,7 +116,7 @@ bool jwmsynth::init_synth()
 bool jwmsynth::execute_synth()
 {
     if (jwm.is_dont_run()) {
-        std::cout << "\nNot running synth, as instructed.";
+        std::cout << "Not running synth, as instructed." << std::endl;
         return true;
     }
     synthmod* sm;
@@ -125,7 +125,8 @@ bool jwmsynth::execute_synth()
     // unlink any constant modules from list as it's pointless
     // calling run() on them...
     if (jwm.is_verbose())
-        std::cout << "\nUnlinking empty-run modules from run list:";
+        std::cout << "\nUnlinking empty-run modules from run list:"
+                                                        << std::endl;
     jwm.get_modlist()->remove_empty_run_modules();
     unsigned long sample = 0;
     char bigcount = '|';
@@ -137,8 +138,8 @@ bool jwmsynth::execute_synth()
     int divcounter = 0;
     if (jwm.is_verbose())
         std::cout << "\n";
-    std::cout << "\nRunning synth (one '";
-    std::cout << bigcount << "' per second done)\n";
+    std::cout << "Running synth (one '" << bigcount
+              << "' per second done)" << std::endl;
     const STATUS* force_abort = synthmod::get_abort_status();
     synthmod** runlist = jwm.get_modlist()->get_run_list();
     long count;

@@ -87,7 +87,7 @@ class synthmod
     virtual stockerrs::ERR_TYPE validate()
         { return stockerrs::ERR_NO_ERROR; }
 
-    #ifdef IO_DEBUG
+    #ifdef DEBUG
     bool check_inputs();
     #endif
 

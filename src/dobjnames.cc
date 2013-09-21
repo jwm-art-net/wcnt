@@ -2,13 +2,13 @@
 
 #include <string.h>
 
-#ifdef NAME_CHECK
+#ifdef DEBUG
 #include <iostream>
 #endif
 
 dobjnames::dobjnames()
 {
-#ifdef NAME_CHECK
+#ifdef DEBUG
     for (int i = DOBJ_FIRST; i < DOBJ_LAST; i++){
         if (data[i].type != i) {
             std::cout << "\n***** dobjnames error *****\n";

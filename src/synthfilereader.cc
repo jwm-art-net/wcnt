@@ -742,7 +742,7 @@ const string*
 synthfilereader::read_string_list_param
     (const char* enda, const char* endb)
 {
-    #ifdef DEBUG_STRLIST_PAR
+    #ifdef DEBUG
     cout << "read_string_list_param:";
     if (enda) cout << " enda = " << enda;
     if (endb) cout << " endb = " << endb;
@@ -764,7 +764,7 @@ synthfilereader::read_string_list_param
             invalidate();
             return 0;
         }
-        #ifdef DEBUG_STRLIST_PAR
+        #ifdef DEBUG
         cout << "read_string_list_param got " << com << endl;
         #endif
         if (enda) {
@@ -777,7 +777,7 @@ synthfilereader::read_string_list_param
                 // tell read_command() the next command it should
                 // return has already been read and it is enda:
                 command = new string(enda);
-                #ifdef DEBUG_STRLIST_PAR
+                #ifdef DEBUG
                 cout << "command set to " << enda << endl;
                 cout << "returning : " << strlist << endl;
                 #endif
@@ -792,7 +792,7 @@ synthfilereader::read_string_list_param
                     return 0;
                 }
                 command = new string(endb);
-                #ifdef DEBUG_STRLIST_PAR
+                #ifdef DEBUG
                 cout << "command set to " << endb << endl;
                 cout << "returning : " << strlist << endl;
                 #endif

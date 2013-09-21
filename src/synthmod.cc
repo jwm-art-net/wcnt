@@ -231,7 +231,7 @@ void synthmod::register_moddobj(dobjnames::DOBJ_TYPE parent,
 }
 
 
-#ifdef IO_DEBUG
+#ifdef DEBUG
 bool synthmod::check_inputs()
 {
     modinputlist::linkedlist* modinps =

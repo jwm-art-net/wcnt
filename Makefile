@@ -11,38 +11,17 @@ DEFS=-O2 -fomit-frame-pointer -DWITH_LADSPA
 
 
 #---------------------------------------------------
-# development/debugging #DEFINES  (pretty ugly)
+# development/debugging #DEFINES 
 #---------------------------------------------------
-# add -DSEQ_NOTE_DEBUG and/or -DNOTE_EDIT_DEBUG to DEFS to display
-#   (might be broken) note_data info whenever one is created/deleted.
+# DEBUG		= show various information supposedly to aid debugging.
+# DATA_STATS    = show counts of the construction/destruction of select
+# 		  classes.
+# CRAZY_SAMPLER = to see far too much infomation concerning the sampler.
 #
-# add -DDEBUG_STRLIST_PAR to show what synthfileread::read_string_list_param
-#						has encountered.
-# add -DCRAZY_SAMPLER if you want to see far too much information.
+# NOTE_EDIT_DEBUG=display note_data debugging info.
+# SANITY_CHECKS = Some sort of half assed check for program sanity.
 
-#---------------------------------------------------
-# new 1.26 development/debugging/statistics #DEFINES
-#---------------------------------------------------
-# DATA_STATS    = show counts of various data classes used
-
-# NAME_CHECK    = checks that the inputnames/outputnames etc are created
-#                 properly - that they're not created in the wrong order.
-
-# CMDLINE_DBG   = displays random information while processing commandline.
-
-# SANITY_CHECKS = checks that when inputs and params are set, the same values
-#                 are returned by the get methods. Also checks that all the
-#                 outputs created for a module can be accessed.
-
-# DEBUG_STRLIST_PAR = displays strings read from file while processing the
-#                     special parameter type used by the input_editor and
-#                     param_editor data objects.
-#---------------------------------------------------
-# show code origin of user error messages
-#
-# DEBUG_MSG
-
-DEFS=-ggdb -fno-inline -DWITH_LADSPA -DNAME_CHECK -DDEBUG_MSG -DDATA_STATS
+#DEFS=-ggdb -fno-inline -DWITH_LADSPA -DDEBUG -DDATA_STATS
 
 # nothing to be modified further:
 PROG=wcnt
@@ -73,7 +52,7 @@ main.o: main.c $(HEADERS)
 examples: $(WAVS)
 
 %.wav :  %.wc $(PROG)
-	@./$(PROG) --no-title $<
+	@./$(PROG) --no-title --dont-run $<
 
 clean:
 	@rm -vf $(OBJS) $(PROG)

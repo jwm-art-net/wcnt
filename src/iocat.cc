@@ -1,13 +1,13 @@
 #include "../include/iocat.h"
 
 
-#ifdef NAME_CHECK
+#ifdef DEBUG
 #include <iostream>
 #endif
 
 iocat::iocat()
 {
-#ifdef NAME_CHECK
+#ifdef DEBUG
     for (int i = FIRST; i < LAST; i++){
         if (data[i].cat != i) {
             std::cout << "\n***** iocat error *****\n";
