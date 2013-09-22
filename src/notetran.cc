@@ -155,25 +155,25 @@ stockerrs::ERR_TYPE notetran::validate()
 {
     if (!check_notename(no_lo_notename)) {
         sm_err("%s %s",
-                jwm.get_paramnames()->get_name(paramnames::NO_LONOTE),
+                paramnames::get_name(paramnames::NO_LONOTE),
                 no_lo_notename);
         invalidate();
     }
     if (!check_notename(no_hi_notename)) {
         sm_err("%s %s",
-                jwm.get_paramnames()->get_name(paramnames::NO_HINOTE),
+                paramnames::get_name(paramnames::NO_HINOTE),
                 no_hi_notename);
         invalidate();
     }
     if (!check_notename(ns_lo_notename)) {
         sm_err("%s %s",
-                jwm.get_paramnames()->get_name(paramnames::NS_LONOTE),
+                paramnames::get_name(paramnames::NS_LONOTE),
                 ns_lo_notename);
         invalidate();
     }
     if (!check_notename(ns_hi_notename)) {
         sm_err("%s %s",
-                jwm.get_paramnames()->get_name(paramnames::NS_HINOTE),
+                paramnames::get_name(paramnames::NS_HINOTE),
                 ns_hi_notename);
         invalidate();
     }
@@ -181,7 +181,7 @@ stockerrs::ERR_TYPE notetran::validate()
             stockerrs::ERR_NEGATIVE))
     {
         sm_err("%s",
-                jwm.get_paramnames()->get_name(paramnames::NO_RESPTIME));
+                paramnames::get_name(paramnames::NO_RESPTIME));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -189,7 +189,7 @@ stockerrs::ERR_TYPE notetran::validate()
             stockerrs::ERR_NEGATIVE))
     {
         sm_err("%s",
-                jwm.get_paramnames()->get_name(paramnames::NS_RESPTIME));
+                paramnames::get_name(paramnames::NS_RESPTIME));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }

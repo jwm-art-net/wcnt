@@ -294,8 +294,8 @@ dobj* timemap::add_dobj(dobj* dbj)
             sm_err("Could not add bpm change to %s.", get_username());
         break;
     default:
-        sm_err("*** MAJOR ERROR *** Bad attempt made to add invalid object"
-                                            " type to %s.", get_username());
+        sm_err("%sBad attempt made to add invalid object type to %s.",
+                                    stockerrs::major, get_username());
         retv = 0;
     }
     return retv;

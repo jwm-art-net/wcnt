@@ -68,14 +68,14 @@ bool connector::connect()
     if (!in_mod) {
         connerr("Connection error! Input module not set, nothing to "
                 "connect to. FYI input type is set as %s and out module "
-                "name is %s.", jwm.get_inputnames()->get_name(in_type),
+                "name is %s.", inputnames::get_name(in_type),
                                                         out_mod_uname);
         return false;
     }
     if (!outmod) {
         connerr("In module %s cannot connect input %s, module %s does "
                 "not exist.", in_mod->get_username(),
-                jwm.get_inputnames()->get_name(in_type), out_mod_uname);
+                inputnames::get_name(in_type), out_mod_uname);
         return false;
     }
     const void* const out_data = outmod->get_out(out_type);
@@ -84,14 +84,14 @@ bool connector::connect()
     if (!out_data) {
         connerr("In module %s cannot connect input %s. Module %s does not "
                 "have any %s output.", in_mod->get_username(),
-                jwm.get_inputnames()->get_name(in_type), out_mod_uname,
-                jwm.get_outputnames()->get_name(out_type));
+                inputnames::get_name(in_type), out_mod_uname,
+                outputnames::get_name(out_type));
         return false;
     }
     if (!in_mod->set_in(in_type, out_data)) {
         connerr("*** MODULE ERROR *** In module %s not programmed to "
                 "accept connections for input %s.", *in_mod->get_username(),
-                                jwm.get_inputnames()->get_name(in_type));
+                                inputnames::get_name(in_type));
         return false;
     }
     return true;

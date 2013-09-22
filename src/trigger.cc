@@ -87,7 +87,7 @@ stockerrs::ERR_TYPE trigger::validate()
             stockerrs::ERR_NEGATIVE))
     {
         sm_err("%s",
-                jwm.get_paramnames()->get_name(paramnames::DELAY_TIME));
+                paramnames::get_name(paramnames::DELAY_TIME));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -95,7 +95,7 @@ stockerrs::ERR_TYPE trigger::validate()
             stockerrs::ERR_NEG_ZERO))
     {
         sm_err("%s",
-             jwm.get_paramnames()->get_name(paramnames::TRIGGER_LEVEL));
+             paramnames::get_name(paramnames::TRIGGER_LEVEL));
         invalidate();
         return stockerrs::ERR_NEG_ZERO;
     }

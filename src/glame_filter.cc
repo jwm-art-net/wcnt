@@ -102,20 +102,20 @@ stockerrs::ERR_TYPE glame_filter::validate()
     if (cutoff_freq < min_cutoff || cutoff_freq > max_cutoff) {
         sm_err("%s must be within range 0.0001 * samplerate ~ "
                "0.45 * samplerate.",
-                jwm.get_paramnames()->get_name(paramnames::FREQ));
+                paramnames::get_name(paramnames::FREQ));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (stages < 1 || stages > 10){
         sm_err("%s must be within range 1 ~ 10",
-                    jwm.get_paramnames()->get_name(paramnames::FREQ));
+                    paramnames::get_name(paramnames::FREQ));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (!jwm.get_paramlist()->validate(this, paramnames::FREQ_MOD1SIZE,
             stockerrs::ERR_RANGE_FMOD))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(
+        sm_err("%s", paramnames::get_name(
                                             paramnames::FREQ_MOD1SIZE));
         invalidate();
         return stockerrs::ERR_RANGE_FMOD;

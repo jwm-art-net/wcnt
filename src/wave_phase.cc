@@ -124,7 +124,7 @@ stockerrs::ERR_TYPE wave_phase::validate()
     if (!jwm.get_paramlist()->validate(this, paramnames::CYCLES,
             stockerrs::ERR_NEG_ZERO))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(paramnames::CYCLES));
+        sm_err("%s", paramnames::get_name(paramnames::CYCLES));
         invalidate();
         return stockerrs::ERR_NEG_ZERO;
     }

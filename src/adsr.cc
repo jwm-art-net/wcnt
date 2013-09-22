@@ -140,8 +140,8 @@ stockerrs::ERR_TYPE adsr::validate()
     }
     if (up_thresh < lo_thresh) {
         sm_err("%s must not be less than %s.",
-                jwm.get_paramnames()->get_name(paramnames::UP_THRESH),
-                jwm.get_paramnames()->get_name(paramnames::LO_THRESH));
+                paramnames::get_name(paramnames::UP_THRESH),
+                paramnames::get_name(paramnames::LO_THRESH));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
@@ -149,14 +149,14 @@ stockerrs::ERR_TYPE adsr::validate()
     if (!jwm.get_paramlist()->validate(this, paramnames::MIN_TIME,
                                             stockerrs::ERR_NEGATIVE))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(paramnames::MIN_TIME));
+        sm_err("%s", paramnames::get_name(paramnames::MIN_TIME));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (!jwm.get_paramlist()->validate(this, paramnames::MAX_SUSTAIN_TIME,
                                             stockerrs::ERR_NEGATIVE))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(
+        sm_err("%s", paramnames::get_name(
                                             paramnames::MAX_SUSTAIN_TIME));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
@@ -175,8 +175,8 @@ dobj* adsr::add_dobj(dobj* dbj)
             sm_err("Could not add section to %s.", get_username());
         break;
     default:
-        sm_err("*** MAJOR ERROR *** Bad attempt made to add invalid object "
-                                           "type to %s.", get_username());
+        sm_err("%s Bad attempt made to add invalid object type to %s.",
+                                    stockerrs::major, get_username());
         retv = 0;
     }
     return retv;

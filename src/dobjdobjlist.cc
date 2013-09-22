@@ -5,8 +5,8 @@
 dobjdobj * dobjdobjlist::register_dobjdobj(
  dobjnames::DOBJ_TYPE dt, dobjnames::DOBJ_TYPE kid)
 {
-    if (jwm.get_dobjnames()->check_type(dt) == dobjnames::DOBJ_FIRST
-     || jwm.get_dobjnames()->check_type(kid) == dobjnames::DOBJ_FIRST)
+    if (dobjnames::check_type(dt) == dobjnames::DOBJ_FIRST
+     || dobjnames::check_type(kid) == dobjnames::DOBJ_FIRST)
         return 0;
     dobjdobj* dd = new dobjdobj(dt, kid);
     llitem* tmp = add_at_tail(dd);
@@ -20,7 +20,7 @@ dobjdobj * dobjdobjlist::register_dobjdobj(
 dobjdobjlist *
 dobjdobjlist::get_dobjdobjlist_for_dobjtype(dobjnames::DOBJ_TYPE dt)
 {
-    if (jwm.get_dobjnames()->check_type(dt) == dobjnames::DOBJ_FIRST)
+    if (dobjnames::check_type(dt) == dobjnames::DOBJ_FIRST)
         return 0;
     dobjdobjlist* mdl = new dobjdobjlist(PRESERVE_DATA);
     dobjdobj* dd = goto_first();
@@ -39,7 +39,7 @@ dobjdobjlist::get_dobjdobjlist_for_dobjtype(dobjnames::DOBJ_TYPE dt)
 dobjdobjlist * dobjdobjlist::get_dobjdobjlist_of_sprogs(
  dobjnames::DOBJ_TYPE kid)
 {
-    if (jwm.get_dobjnames()->check_type(kid) == dobjnames::DOBJ_FIRST)
+    if (dobjnames::check_type(kid) == dobjnames::DOBJ_FIRST)
         return 0; // check_type returns DOBJ_FIRST if dt not user type
     dobjdobjlist* mdl = new dobjdobjlist(PRESERVE_DATA);
     dobjdobj* dd = goto_first();

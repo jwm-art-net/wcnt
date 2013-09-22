@@ -103,7 +103,7 @@ stockerrs::ERR_TYPE trigecho::validate()
     if (!jwm.get_paramlist()->validate(this, paramnames::DELAY_TIME,
                                             stockerrs::ERR_NEG_ZERO))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(
+        sm_err("%s", paramnames::get_name(
                                             paramnames::DELAY_TIME));
         invalidate();
         return stockerrs::ERR_NEG_ZERO;
@@ -111,7 +111,7 @@ stockerrs::ERR_TYPE trigecho::validate()
     if (!jwm.get_paramlist()->validate(this, paramnames::COUNT,
                                             stockerrs::ERR_NEGATIVE))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(paramnames::COUNT));
+        sm_err("%s", paramnames::get_name(paramnames::COUNT));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }

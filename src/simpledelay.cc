@@ -85,7 +85,7 @@ stockerrs::ERR_TYPE simple_delay::validate()
     if (!jwm.get_paramlist()->validate(this, paramnames::DELAY_TIME,
             stockerrs::ERR_NEGATIVE))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(
+        sm_err("%s", paramnames::get_name(
                                             paramnames::DELAY_TIME));
         invalidate();
         return stockerrs::ERR_NEGATIVE;

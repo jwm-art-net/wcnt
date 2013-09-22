@@ -12,7 +12,7 @@ bool dobjparam::validate(dobj* d, stockerrs::ERR_TYPE et)
 {
     void const* data = d->get_param(partype);
     if (!data) return false;
-    switch(jwm.get_paramnames()->get_category(partype))
+    switch(paramnames::get_category(partype))
     {
         case iocat::DOUBLE:
             return check_value(*(double const*)data, et);

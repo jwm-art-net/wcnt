@@ -106,7 +106,7 @@ stockerrs::ERR_TYPE echo::validate()
     if (!pl->validate(this, paramnames::DELAY_TIME,
                                             stockerrs::ERR_NEGATIVE))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(
+        sm_err("%s", paramnames::get_name(
                                             paramnames::DELAY_TIME));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
@@ -114,14 +114,14 @@ stockerrs::ERR_TYPE echo::validate()
     if (!pl->validate(this, paramnames::GAIN,
                                             stockerrs::ERR_RANGE_M1_1))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(paramnames::GAIN));
+        sm_err("%s", paramnames::get_name(paramnames::GAIN));
         invalidate();
         return stockerrs::ERR_RANGE_M1_1;
     }
     if (!pl->validate(this, paramnames::GAIN_MODSIZE,
                                             stockerrs::ERR_RANGE_0_1))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(
+        sm_err("%s", paramnames::get_name(
                                             paramnames::GAIN_MODSIZE));
         invalidate();
         return stockerrs::ERR_RANGE_0_1;
@@ -129,7 +129,7 @@ stockerrs::ERR_TYPE echo::validate()
     if (!pl->validate(this, paramnames::FEED_LEVEL,
                                             stockerrs::ERR_RANGE_FEED))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(
+        sm_err("%s", paramnames::get_name(
                                             paramnames::FEED_LEVEL));
         invalidate();
         return stockerrs::ERR_RANGE_FEED;
@@ -137,7 +137,7 @@ stockerrs::ERR_TYPE echo::validate()
     if (!pl->validate(this, paramnames::FEED_MODSIZE,
                                             stockerrs::ERR_RANGE_0_1))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(
+        sm_err("%s", paramnames::get_name(
                                             paramnames::FEED_MODSIZE));
         invalidate();
         return stockerrs::ERR_RANGE_0_1;
@@ -145,7 +145,7 @@ stockerrs::ERR_TYPE echo::validate()
     if (!pl->validate(this, paramnames::WETDRY,
             stockerrs::ERR_RANGE_0_1))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(paramnames::WETDRY));
+        sm_err("%s", paramnames::get_name(paramnames::WETDRY));
         invalidate();
         return stockerrs::ERR_RANGE_0_1;
     }

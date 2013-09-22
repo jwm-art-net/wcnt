@@ -74,7 +74,7 @@ stockerrs::ERR_TYPE sample_climb::validate()
     if (!jwm.get_paramlist()->validate(this, paramnames::RATE,
             stockerrs::ERR_RANGE_0_1_IN))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(paramnames::RATE));
+        sm_err("%s", paramnames::get_name(paramnames::RATE));
         invalidate();
         return stockerrs::ERR_RANGE_0_1_IN;
     }

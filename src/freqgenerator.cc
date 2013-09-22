@@ -90,14 +90,14 @@ stockerrs::ERR_TYPE freq_generator::validate()
 {
     if (step_count <= 1) {
         sm_err("%s must be of a higher count than 1",
-                jwm.get_paramnames()->get_name(paramnames::STEP_COUNT));
+                paramnames::get_name(paramnames::STEP_COUNT));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (!jwm.get_paramlist()->validate(this, paramnames::FREQ_RANGE_HI,
             stockerrs::ERR_RANGE_FREQ))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(
+        sm_err("%s", paramnames::get_name(
                                             paramnames::FREQ_RANGE_HI));
         invalidate();
         return stockerrs::ERR_RANGE_FREQ;
@@ -105,7 +105,7 @@ stockerrs::ERR_TYPE freq_generator::validate()
     if (!jwm.get_paramlist()->validate(this, paramnames::FREQ_RANGE_LO,
             stockerrs::ERR_RANGE_FREQ))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(
+        sm_err("%s", paramnames::get_name(
                                             paramnames::FREQ_RANGE_LO));
         invalidate();
         return stockerrs::ERR_RANGE_FREQ;

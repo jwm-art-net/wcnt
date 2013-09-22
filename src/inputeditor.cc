@@ -26,7 +26,7 @@ bool inputeditor::create_connectors()
         }
         if (!ie->create_connectors()) {
             dobjerr("In %s %s connection attempt failed %s.",
-                        jwm.get_dobjnames()->get_name(get_object_type()),
+                        dobjnames::get_name(get_object_type()),
                         get_username(), err_msg);
             return false;
         }
@@ -48,8 +48,8 @@ dobj const* inputeditor::add_dobj(dobj* dbj)
             }
             break;
         default:
-            dobjerr("*** MAJOR ERROR *** Bad attempt made to add "
-                       "invalid object type to %s.", get_username());
+        dobjerr("%s %s to %s", stockerrs::major, stockerrs::bad_add,
+                                                    get_username());
             retv = 0;
     }
     return retv;

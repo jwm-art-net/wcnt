@@ -4,7 +4,7 @@
 
 dobj* dobjlist::create_dobj(dobjnames::DOBJ_TYPE dt)
 {
-    if (jwm.get_dobjnames()->check_type(dt) == dobjnames::DOBJ_FIRST)
+    if (dobjnames::check_type(dt) == dobjnames::DOBJ_FIRST)
         return 0;
     dobj* dobjy = 0;
     switch(dt) {

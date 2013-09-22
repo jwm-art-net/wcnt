@@ -106,40 +106,39 @@ void const* onofftrig::get_param(paramnames::PAR_TYPE pt) const
 stockerrs::ERR_TYPE onofftrig::validate()
 {
     modparamlist* pl = jwm.get_paramlist();
-    const paramnames* pns = jwm.get_paramnames();
     if (!pl->validate(this, paramnames::ATTACK_TIME,
             stockerrs::ERR_NEG_ZERO))
     {
-        sm_err("%s", pns->get_name(paramnames::ATTACK_TIME));
+        sm_err("%s", paramnames::get_name(paramnames::ATTACK_TIME));
         invalidate();
         return stockerrs::ERR_NEG_ZERO;
     }
     if (!pl->validate(this, paramnames::ATTACK_LEVEL,
             stockerrs::ERR_NEG_ZERO))
     {
-        sm_err("%s", pns->get_name(paramnames::ATTACK_LEVEL));
+        sm_err("%s", paramnames::get_name(paramnames::ATTACK_LEVEL));
         invalidate();
         return stockerrs::ERR_NEG_ZERO;
     }
     if (!pl->validate(this, paramnames::RELEASE_TIME,
             stockerrs::ERR_NEG_ZERO))
     {
-        sm_err("%s", pns->get_name(paramnames::RELEASE_TIME));
+        sm_err("%s", paramnames::get_name(paramnames::RELEASE_TIME));
         invalidate();
         return stockerrs::ERR_NEG_ZERO;
     }
     if (!pl->validate(this, paramnames::RELEASE_LEVEL,
             stockerrs::ERR_NEG_ZERO))
     {
-        sm_err("%s", pns->get_name(paramnames::RELEASE_LEVEL));
+        sm_err("%s", paramnames::get_name(paramnames::RELEASE_LEVEL));
         invalidate();
         return stockerrs::ERR_NEG_ZERO;
     }
     if (check_levels == ON && attack_level <= release_level) {
         sm_err("When %s is set on %s must be higher than %s.",
-                        pns->get_name(paramnames::CHECK_LEVELS),
-                        pns->get_name(paramnames::ATTACK_LEVEL),
-                        pns->get_name(paramnames::RELEASE_LEVEL));
+                        paramnames::get_name(paramnames::CHECK_LEVELS),
+                        paramnames::get_name(paramnames::ATTACK_LEVEL),
+                        paramnames::get_name(paramnames::RELEASE_LEVEL));
         invalidate();
         return stockerrs::ERR_ERROR;
     }

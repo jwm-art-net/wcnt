@@ -54,7 +54,7 @@ stockerrs::ERR_TYPE trigrouter::validate()
     if (!jwm.get_paramlist()->validate(this,
         paramnames::COUNT, stockerrs::ERR_ABOVE1))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(paramnames::COUNT));
+        sm_err("%s", paramnames::get_name(paramnames::COUNT));
         invalidate();
         return stockerrs::ERR_ABOVE1;
     }
@@ -91,7 +91,7 @@ void const* trigrouter::get_param(paramnames::PAR_TYPE pt) const
 void trigrouter::create_wcnt_triggers()
 {
     char const* wtn =
-        jwm.get_modnames()->get_name(synthmodnames::WCNTTRIGGER);
+        synthmodnames::get_name(synthmodnames::WCNTTRIGGER);
     char const* un = get_username();
     bool verbose = jwm.is_verbose();
     if (verbose){
@@ -122,9 +122,9 @@ void trigrouter::create_wcnt_triggers()
             std::cout << "\n      connecting to trigger " << i;
         }
         if (!sm->set_in(inputnames::IN_TRIG, &trigs[i])) {
-            std::cout << "\n***** MAJOR ERROR *****";
-            std::cout << "\nin " << un << " could not set input for "
-                "dynamically created " << wtn << "! bad, bad, bad";
+            sm_err("%s in %s could not set input for "
+                            "dynamically created %s.", stockerrs::major,
+                                                                un, wtn);
         }
     }
     if (verbose)

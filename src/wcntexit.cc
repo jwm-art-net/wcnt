@@ -76,7 +76,7 @@ stockerrs::ERR_TYPE wcnt_exit::validate()
     if (!jwm.get_paramlist()->validate(this, paramnames::EXIT_BAR,
             stockerrs::ERR_NEGATIVE))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(paramnames::EXIT_BAR));
+        sm_err("%s", paramnames::get_name(paramnames::EXIT_BAR));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -87,8 +87,8 @@ stockerrs::ERR_TYPE wcnt_exit::validate()
     {
         sm_err("Input %s is turned off, and parameter %s is not zero. "
                             "wcnt would never exit if allowed to run!",
-                    jwm.get_inputnames()->get_name(inputnames::IN_BAR),
-                    jwm.get_paramnames()->get_name(paramnames::EXIT_BAR));
+                    inputnames::get_name(inputnames::IN_BAR),
+                    paramnames::get_name(paramnames::EXIT_BAR));
         invalidate();
         return stockerrs::ERR_ERROR;
     }

@@ -28,7 +28,7 @@ public:
     }
     iocat::IOCAT get_dparam_category() const {
         return (this) 
-            ? jwm.get_paramnames()->get_category(partype)
+            ? paramnames::get_category(partype)
             : iocat::FIRST;
     }
     bool validate(dobj*, stockerrs::ERR_TYPE);

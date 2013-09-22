@@ -91,7 +91,7 @@ stockerrs::ERR_TYPE switcher::validate()
     if (!jwm.get_paramlist()->validate(this, paramnames::XFADE_TIME,
                                             stockerrs::ERR_NEGATIVE))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(
+        sm_err("%s", paramnames::get_name(
                                             paramnames::XFADE_TIME));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
@@ -107,8 +107,8 @@ dobj* switcher::add_dobj(dobj* dbj)
             sm_err("%s will not accept the module %s because modules of "
                                 "type %s do not have the %s output type.",
                     get_username(), sm->get_username(),
-                    jwm.get_modnames()->get_name(sm->get_module_type()),
-                    jwm.get_outputnames()->get_name(
+                    synthmodnames::get_name(sm->get_module_type()),
+                    outputnames::get_name(
                                                 outputnames::OUT_OUTPUT));
             return 0;
         }
@@ -122,8 +122,8 @@ dobj* switcher::add_dobj(dobj* dbj)
         jwm.get_dobjlist()->add_dobj(dbj);
         return dbj;
     }
-    sm_err("*** MAJOR ERROR *** Bad attempt made to add invalid object "
-                                            "type to %s.", get_username());
+    sm_err("%s %s to %s", stockerrs::major, stockerrs::bad_add,
+                                                    get_username());
     return 0;
 }
 

@@ -136,14 +136,14 @@ stockerrs::ERR_TYPE serialwavfileout::validate()
     if (!jwm.get_paramlist()->validate(this, paramnames::START_BAR,
             stockerrs::ERR_NEGATIVE))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(paramnames::START_BAR));
+        sm_err("%s", paramnames::get_name(paramnames::START_BAR));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (end_bar <= start_bar) {
         sm_err("%s should be after %s.", 
-                jwm.get_paramnames()->get_name(paramnames::END_BAR),
-                jwm.get_paramnames()->get_name(paramnames::START_BAR));
+                paramnames::get_name(paramnames::END_BAR),
+                paramnames::get_name(paramnames::START_BAR));
         invalidate();
         return stockerrs::ERR_ERROR;
     }

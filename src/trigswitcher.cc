@@ -78,8 +78,8 @@ dobj* trigswitcher::add_dobj(dobj* dbj)
             sm_err("%s will not accept the module %s because modules of "
                     "type %s do not have the %s output type.",
                     get_username(), sm->get_username(),
-                    jwm.get_modnames()->get_name(sm->get_module_type()),
-                    jwm.get_outputnames()->get_name(outputnames::OUT_TRIG));
+                    synthmodnames::get_name(sm->get_module_type()),
+                    outputnames::get_name(outputnames::OUT_TRIG));
             return 0;
         }
         if (!add_at_tail(sm)) {
@@ -90,8 +90,8 @@ dobj* trigswitcher::add_dobj(dobj* dbj)
         jwm.get_dobjlist()->add_dobj(dbj);
         return dbj;
     }
-    sm_err("*** MAJOR ERROR *** Bad attempt made to add invalid object "
-                                            "type to %s.", get_username());
+    sm_err("%s %s to %s", stockerrs::major, stockerrs::bad_add,
+                                                    get_username());
     return 0;
 }
 

@@ -109,8 +109,8 @@ dobj* user_wave::add_dobj(dobj* dbj)
             sm_err("Could not add vertex to %s.", get_username());
         break;
     default:
-        sm_err("*** MAJOR ERROR *** Bad attempt made to add "
-                "invalid object type to %s.", get_username());
+        sm_err("%s Bad attempt made to add invalid object type to %s.",
+                                    stockerrs::major, get_username());
         retv = 0;
     }
     return retv;
@@ -145,7 +145,7 @@ stockerrs::ERR_TYPE user_wave::validate()
     if (!jwm.get_paramlist()->validate(this,
         paramnames::DROP_CHECK_RANGE, stockerrs::ERR_NEGATIVE))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(
+        sm_err("%s", paramnames::get_name(
                                         paramnames::DROP_CHECK_RANGE));
         invalidate();
         return stockerrs::ERR_NEGATIVE;

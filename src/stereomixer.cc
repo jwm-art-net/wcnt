@@ -71,7 +71,7 @@ stockerrs::ERR_TYPE stereomixer::validate()
     if (master_level == 0) {
         // should probably allow zero amplitude...
         sm_err("%s is zero, all will be very quiet!",
-                jwm.get_paramnames()->get_name(paramnames::MASTER_LEVEL));
+                paramnames::get_name(paramnames::MASTER_LEVEL));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
@@ -88,9 +88,9 @@ dobj* stereomixer::add_dobj(dobj* dbj)
             sm_err("%s will not accept the module %s because modules of "
                     "type %s do not have the %s or %s output types.",
                     get_username(), sm->get_username(),
-                    jwm.get_modnames()->get_name(sm->get_module_type()),
-                    jwm.get_outputnames()->get_name(outputnames::OUT_LEFT),
-                    jwm.get_outputnames()->get_name(
+                    synthmodnames::get_name(sm->get_module_type()),
+                    outputnames::get_name(outputnames::OUT_LEFT),
+                    outputnames::get_name(
                                                 outputnames::OUT_RIGHT));
             return 0;
         }
@@ -103,8 +103,8 @@ dobj* stereomixer::add_dobj(dobj* dbj)
         jwm.get_dobjlist()->add_dobj(dbj);
         return dbj;
     }
-    sm_err("*** MAJOR ERROR *** Bad attempt made to add invalid object "
-                                            "type to %s.", get_username());
+    sm_err("%s %s to %s", stockerrs::major, stockerrs::bad_add,
+                                                    get_username());
     return 0;
 }
 

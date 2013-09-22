@@ -99,8 +99,8 @@ dobj* dynamic::add_dobj(dobj* dbj)
             sm_err("Could not add vertex to %s.", get_username());
         break;
     default:
-        sm_err("*** MAJOR ERROR *** Bad attempt made to add invalid object "
-                                           "type to %s.", get_username());
+    sm_err("%s %s to %s", stockerrs::major, stockerrs::bad_add,
+                                                    get_username());
     }
     return retv;
 }
@@ -130,8 +130,8 @@ stockerrs::ERR_TYPE dynamic::validate()
     }
     if (up_thresh < lo_thresh) {
         sm_err("%s must not be less than %s.",
-                jwm.get_paramnames()->get_name(paramnames::UP_THRESH),
-                jwm.get_paramnames()->get_name(paramnames::LO_THRESH));
+                paramnames::get_name(paramnames::UP_THRESH),
+                paramnames::get_name(paramnames::LO_THRESH));
         invalidate();
         return stockerrs::ERR_ERROR;
     }

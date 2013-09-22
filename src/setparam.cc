@@ -48,13 +48,13 @@ template <typename T>
 bool set_param(T* obj, const char* param, paramnames::PAR_TYPE pt,
     const char* value, std::ostringstream* result)
 {
-    char const* parname = jwm.get_paramnames()->get_name(pt);
+    char const* parname = paramnames::get_name(pt);
     if (pt != paramnames::STR_UNNAMED && pt != paramnames::STR_LIST)
     {
         if (strcmp(param, parname) != 0) {
             setpar_err("Expected %s got %s instead. %s",
                             parname, param,
-                    ((jwm.get_paramnames()->get_type(param)
+                    ((paramnames::get_type(param)
                                                 == paramnames::FIRST
                         && (time(0) % 8) == 0)
                                 ? ". Just can't get the staff these days."
@@ -62,7 +62,7 @@ bool set_param(T* obj, const char* param, paramnames::PAR_TYPE pt,
             return false;
         }
     }
-    iocat::IOCAT ioc = jwm.get_paramnames()->get_category(pt);
+    iocat::IOCAT ioc = paramnames::get_category(pt);
     int op = get_operator(value);
     if (op)
         value += 2; // value == ptr to txt-representation of value ;-)
@@ -125,7 +125,7 @@ void* compute(T* obj, paramnames::PAR_TYPE pt, void* data, int op)
 {
     if (!obj || pt == paramnames::FIRST || !data || op == 0)
         return 0;
-    switch(jwm.get_paramnames()->get_category(pt)){
+    switch(paramnames::get_category(pt)){
         case iocat::DOUBLE:
             if (op == '/' && *(double*)data == 0)
                 return 0;

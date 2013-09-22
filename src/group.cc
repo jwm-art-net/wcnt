@@ -47,7 +47,7 @@ synthmod* group::group_module(synthmod* sm)
             dobjerr("Could not add %s to group %s. It is forbidden to add "
                                                 "a %s module to a group.",
                      sm->get_username(), get_username(),
-                     jwm.get_modnames()->get_name(sm->get_module_type()));
+                     synthmodnames::get_name(sm->get_module_type()));
             invalidate();
             return 0;
         }
@@ -84,8 +84,8 @@ dobj* group::add_dobj(dobj* dbj)
         return dbj;
     }
 
-    dobjerr("*** MAJOR ERROR *** bad attempt made to add invalid object "
-                                           "type to %s.", get_username());
+    dobjerr("%s %s to %s", stockerrs::major, stockerrs::bad_add,
+                                                    get_username());
     return 0;
 }
 
@@ -149,12 +149,11 @@ dobj* group::duplicate_dobj(const char* new_group_name)
                     con->set_output_module_name(new_mod_name);
                     if (jwm.is_verbose()) {
                         std::cout << new_mod_name << " "
-                            << jwm.get_outputnames()
-                              ->  get_name(con->get_output_type())
+                            << outputnames::get_name(con->get_output_type())
                             << " --> "
                             << con->get_input_module()->get_username()
-                            << " " << jwm.get_inputnames()
-                              ->  get_name(con->get_input_type());
+                            << " " << inputnames::get_name(
+                                                    con->get_input_type());
                     }
                     delete [] new_mod_name;
                 }

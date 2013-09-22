@@ -18,7 +18,12 @@ outputnames::outputnames()
 #endif
 }
 
-char const* outputnames::get_name(OUT_TYPE id) const
+#ifdef DEBUG
+static outputnames onames;
+#endif
+
+
+char const* outputnames::get_name(OUT_TYPE id)
 {
     if (id >= OUT_FIRST && id < OUT_LAST)
         return data[id].name;
@@ -26,7 +31,7 @@ char const* outputnames::get_name(OUT_TYPE id) const
         return data[OUT_FIRST].name;
 }
 
-iocat::IOCAT outputnames::get_category(OUT_TYPE id) const
+iocat::IOCAT outputnames::get_category(OUT_TYPE id)
 {
     if (id >= OUT_FIRST && id < OUT_LAST)
         return data[id].cat;
@@ -34,7 +39,7 @@ iocat::IOCAT outputnames::get_category(OUT_TYPE id) const
         return data[OUT_FIRST].cat;
 }
 
-outputnames::OUT_TYPE outputnames::get_type(char const* const oname) const
+outputnames::OUT_TYPE outputnames::get_type(char const* const oname)
 {
     for (int i = OUT_FIRST + 1; i < OUT_LAST; i++)
         if (strcmp(data[i].name, oname) == 0)
@@ -43,7 +48,7 @@ outputnames::OUT_TYPE outputnames::get_type(char const* const oname) const
 }
 
 outputnames::OUT_TYPE
-outputnames::get_nonezerotype(iocat::IOCAT iocat) const
+outputnames::get_nonezerotype(iocat::IOCAT iocat)
 {
     OUT_TYPE ot;
     switch(iocat)

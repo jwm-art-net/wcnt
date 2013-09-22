@@ -93,7 +93,7 @@ stockerrs::ERR_TYPE bode_freq_shifter::validate()
 {
     if (freq_shift < 0 || freq_shift > 5000) {
         sm_err("%s must be within range 0 ~ 5000.",
-                jwm.get_paramnames()->get_name(paramnames::FREQ_SHIFT));
+                paramnames::get_name(paramnames::FREQ_SHIFT));
         invalidate();
         return stockerrs::ERR_ERROR;
     }

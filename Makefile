@@ -21,7 +21,7 @@ DEFS=-O2 -fomit-frame-pointer -DWITH_LADSPA
 # NOTE_EDIT_DEBUG=display note_data debugging info.
 # SANITY_CHECKS = Some sort of half assed check for program sanity.
 
-#DEFS=-ggdb -fno-inline -DWITH_LADSPA -DDEBUG -DDATA_STATS
+DEFS=-ggdb -fno-inline -DWITH_LADSPA -DDEBUG -DDATA_STATS
 
 # nothing to be modified further:
 PROG=wcnt
@@ -52,7 +52,7 @@ main.o: main.c $(HEADERS)
 examples: $(WAVS)
 
 %.wav :  %.wc $(PROG)
-	@./$(PROG) --no-title --dont-run $<
+	@./$(PROG) --no-title $<
 
 clean:
 	@rm -vf $(OBJS) $(PROG)

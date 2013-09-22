@@ -221,7 +221,7 @@ stockerrs::ERR_TYPE note_data::validate()
 {
     if (note_type == NOTE_TYPE_ERR) {
         dobjerr("%s is problematically set with %s.",
-                jwm.get_paramnames()->get_name(paramnames::NAME), notename);
+                paramnames::get_name(paramnames::NAME), notename);
         invalidate();
         return stockerrs::ERR_NOTENAME;
     } else if (note_type == NOTE_TYPE_EDIT)
@@ -229,14 +229,14 @@ stockerrs::ERR_TYPE note_data::validate()
     if (!jwm.get_dparlist()->validate(this,
         paramnames::NOTE_POS, stockerrs::ERR_NEGATIVE))
     {
-        dobjerr("%s", jwm.get_paramnames()->get_name(paramnames::NOTE_POS));
+        dobjerr("%s", paramnames::get_name(paramnames::NOTE_POS));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (!jwm.get_dparlist()->validate(this,
         paramnames::NOTE_LEN, stockerrs::ERR_NEGATIVE))
     {
-        dobjerr("%s", jwm.get_paramnames()->get_name(paramnames::NOTE_LEN));
+        dobjerr("%s", paramnames::get_name(paramnames::NOTE_LEN));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }

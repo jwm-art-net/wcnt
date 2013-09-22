@@ -137,15 +137,15 @@ stockerrs::ERR_TYPE stepper::validate()
     if (!jwm.get_paramlist()->validate(this, paramnames::RESPONSE_TIME,
                                             stockerrs::ERR_NEGATIVE))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(
+        sm_err("%s", paramnames::get_name(
                                             paramnames::RESPONSE_TIME));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (up_thresh < lo_thresh) {
         sm_err("%s must not be less than %s.",
-                jwm.get_paramnames()->get_name(paramnames::UP_THRESH),
-                jwm.get_paramnames()->get_name(paramnames::LO_THRESH));
+                paramnames::get_name(paramnames::UP_THRESH),
+                paramnames::get_name(paramnames::LO_THRESH));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
@@ -183,11 +183,11 @@ dobj* stepper::add_dobj(dobj* dbj)
         if (insert_step((step_data*)dbj))
             return dbj;
         sm_err("Could not insert %s into stepper.",
-                jwm.get_dobjnames()->get_name(dobjnames::SIN_STEP));
+                dobjnames::get_name(dobjnames::SIN_STEP));
         return 0;
     }
-    sm_err("*** MAJOR ERROR *** Bad attempt made to add invalid object "
-                                            "type to %s.", get_username());
+    sm_err("%s Bad attempt made to add invalid object type to %s.",
+                                    stockerrs::major, get_username());
     return 0;
 }
 

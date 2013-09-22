@@ -80,7 +80,7 @@ stockerrs::ERR_TYPE pan::validate()
     if (!jwm.get_paramlist()->validate(this, paramnames::PAN,
             stockerrs::ERR_RANGE_M1_1))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(paramnames::PAN));
+        sm_err("%s", paramnames::get_name(paramnames::PAN));
         invalidate();
         return stockerrs::ERR_RANGE_M1_1;
     }
@@ -88,7 +88,7 @@ stockerrs::ERR_TYPE pan::validate()
             stockerrs::ERR_RANGE_0_1))
     {
         sm_err("%s", 
-                jwm.get_paramnames()->get_name(paramnames::PAN_MODSIZE));
+                paramnames::get_name(paramnames::PAN_MODSIZE));
         invalidate();
         return stockerrs::ERR_RANGE_0_1;
     }

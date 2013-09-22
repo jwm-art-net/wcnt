@@ -73,7 +73,7 @@ stockerrs::ERR_TYPE dc_filter::validate()
     if (!jwm.get_paramlist()->validate(this, paramnames::DC_TIME,
             stockerrs::ERR_NEG_ZERO))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(paramnames::DC_TIME));
+        sm_err("%s", paramnames::get_name(paramnames::DC_TIME));
         invalidate();
         return stockerrs::ERR_NEG_ZERO;
     }

@@ -55,14 +55,13 @@ bool inputedit::create_connectors()
         invalidate();
         return false;
     }
-    const inputnames* innames = jwm.get_inputnames();
     std::stringstream strm;
     strm << iostr;
     std::string input_name;
     strm >> input_name;
     do{
         inputnames::IN_TYPE in_type;
-        in_type = innames->get_type(input_name.c_str());
+        in_type = inputnames::get_type(input_name.c_str());
         if (in_type == inputnames::IN_FIRST) {
             dobjerr("Unrecognised input type %s, in connection for %s.",
                                             input_name.c_str(), modname);
@@ -71,25 +70,24 @@ bool inputedit::create_connectors()
         }
         std::string out_modname;
         std::string output_name;
-        const outputnames* outnames = jwm.get_outputnames();
         outputnames::OUT_TYPE out_type;
         strm >> out_modname;
         if (strcmp(out_modname.c_str(), "off") == 0) {
-            out_type = outnames->get_nonezerotype(
-                                innames->get_category(in_type));
+            out_type = outputnames::get_nonezerotype(
+                                inputnames::get_category(in_type));
         }
         else {
             // allow output module to not exist yet.
             strm >> output_name;
-            out_type = outnames->get_type(output_name.c_str());
+            out_type = outputnames::get_type(output_name.c_str());
             if (out_type == outputnames::OUT_FIRST) {
                 dobjerr("Unrecognised output type %s in connection for %s.",
                                             output_name.c_str(), modname);
                 invalidate();
                 return false;
             }
-            if (innames->get_category(in_type)
-                != outnames->get_category(out_type))
+            if (inputnames::get_category(in_type)
+                != outputnames::get_category(out_type))
             {
                 dobjerr("In connection for %s output %s does not match "
                                 "category of input %s.", modname,

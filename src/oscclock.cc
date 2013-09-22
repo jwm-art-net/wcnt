@@ -138,7 +138,7 @@ stockerrs::ERR_TYPE osc_clock::validate()
     if (!pl->validate(this, paramnames::PORTAMENTO,
                                             stockerrs::ERR_NEGATIVE))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(
+        sm_err("%s", paramnames::get_name(
                                             paramnames::PORTAMENTO));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
@@ -146,7 +146,7 @@ stockerrs::ERR_TYPE osc_clock::validate()
     if (!pl->validate(this, paramnames::RESPONSE_TIME,
                                             stockerrs::ERR_NEGATIVE))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(
+        sm_err("%s", paramnames::get_name(
                                             paramnames::RESPONSE_TIME));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
@@ -154,7 +154,7 @@ stockerrs::ERR_TYPE osc_clock::validate()
     if (!pl->validate(this, paramnames::FREQ_MOD1SIZE,
                                             stockerrs::ERR_RANGE_FMOD))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(
+        sm_err("%s", paramnames::get_name(
                                             paramnames::FREQ_MOD1SIZE));
         invalidate();
         return stockerrs::ERR_RANGE_FMOD;
@@ -162,7 +162,7 @@ stockerrs::ERR_TYPE osc_clock::validate()
     if (!pl->validate(this, paramnames::FREQ_MOD2SIZE,
                                             stockerrs::ERR_RANGE_FMOD))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(
+        sm_err("%s", paramnames::get_name(
                                             paramnames::FREQ_MOD2SIZE));
         invalidate();
         return stockerrs::ERR_RANGE_FMOD;
@@ -170,14 +170,14 @@ stockerrs::ERR_TYPE osc_clock::validate()
     if (!pl->validate(this, paramnames::TUNING_SEMITONES,
                                             stockerrs::ERR_RANGE_SEMI))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(
+        sm_err("%s", paramnames::get_name(
                                             paramnames::TUNING_SEMITONES));
         invalidate();
         return stockerrs::ERR_RANGE_SEMI;
     }
     if (!pl->validate(this, paramnames::OCTAVE, stockerrs::ERR_RANGE_OCT))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(paramnames::OCTAVE));
+        sm_err("%s", paramnames::get_name(paramnames::OCTAVE));
         invalidate();
         return stockerrs::ERR_RANGE_OCT;
     }

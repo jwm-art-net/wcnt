@@ -103,7 +103,7 @@ stockerrs::ERR_TYPE lfo_controller::validate()
     if (!jwm.get_paramlist()->validate(this, paramnames::DELAY_TIME,
                                                 stockerrs::ERR_NEGATIVE))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(
+        sm_err("%s", paramnames::get_name(
                                                 paramnames::DELAY_TIME));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
@@ -111,7 +111,7 @@ stockerrs::ERR_TYPE lfo_controller::validate()
     if (!jwm.get_paramlist()->validate(this, paramnames::RAMP_TIME,
                                                 stockerrs::ERR_NEGATIVE))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(
+        sm_err("%s", paramnames::get_name(
                                                 paramnames::RAMP_TIME));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
@@ -119,13 +119,13 @@ stockerrs::ERR_TYPE lfo_controller::validate()
     if (!jwm.get_paramlist()->validate(this, paramnames::RESPONSE_TIME,
                                                 stockerrs::ERR_NEGATIVE))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(
+        sm_err("%s", paramnames::get_name(
                                                 paramnames::RESPONSE_TIME));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (response_time < 0) {
-        sm_err("%s less than zero.", jwm.get_paramnames()->get_name(
+        sm_err("%s less than zero.", paramnames::get_name(
                                                 paramnames::RESPONSE_TIME));
         invalidate();
     }

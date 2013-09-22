@@ -52,7 +52,7 @@ stockerrs::ERR_TYPE constant_freq::validate()
     if (!jwm.get_paramlist()->validate(this, paramnames::FREQ,
             stockerrs::ERR_RANGE_FREQ))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(paramnames::FREQ));
+        sm_err("%s", paramnames::get_name(paramnames::FREQ));
         invalidate();
         return stockerrs::ERR_RANGE_FREQ;
     }

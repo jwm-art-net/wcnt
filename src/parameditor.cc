@@ -23,7 +23,7 @@ bool parameditor::do_param_edits()
         }
         if (!pe->do_param_edits()) {
             dobjerr("In %s %s, parameter set attempt failed %s",
-                    jwm.get_dobjnames()->get_name(get_object_type()),
+                    dobjnames::get_name(get_object_type()),
                                             get_username(), err_msg);
             invalidate();
             return false;
@@ -44,8 +44,8 @@ dobj const* parameditor::add_dobj(dobj* dbj)
             dobjerr("Could not add parameter edit to %s", get_username());
         break;
     default:
-        dobjerr("*** MAJOR ERROR *** bad attempt to add invalid object "
-                                           "type to %s", get_username());
+        dobjerr("%s %s to %s", stockerrs::major, stockerrs::bad_add,
+                                                        get_username());
         retv = 0;
     }
     return retv;

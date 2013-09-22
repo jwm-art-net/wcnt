@@ -5,7 +5,7 @@
 
 class synthmodnames
 {
-public:
+ public:
     enum SYNTH_MOD_TYPE
     {
         FIRST,
@@ -95,10 +95,9 @@ public:
     };
     synthmodnames();
     ~synthmodnames(){};
-    const char*     get_name(SYNTH_MOD_TYPE id) const;
-    SYNTH_MOD_TYPE  get_type(const char* const name) const;
-
-private:
+    static const char*    get_name(SYNTH_MOD_TYPE id);
+    static SYNTH_MOD_TYPE get_type(const char* const name);
+ private:
     struct mod_data
     {
         SYNTH_MOD_TYPE type;

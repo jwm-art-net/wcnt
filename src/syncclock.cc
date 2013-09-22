@@ -131,7 +131,7 @@ stockerrs::ERR_TYPE sync_clock::validate()
     if (!jwm.get_paramlist()->validate(this,
         paramnames::QUARTER_VAL, stockerrs::ERR_NEGATIVE))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(
+        sm_err("%s", paramnames::get_name(
                                             paramnames::QUARTER_VAL));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
@@ -139,7 +139,7 @@ stockerrs::ERR_TYPE sync_clock::validate()
     if (!jwm.get_paramlist()->validate(this,
         paramnames::NOTE_LEN, stockerrs::ERR_NEGATIVE))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(paramnames::NOTE_LEN));
+        sm_err("%s", paramnames::get_name(paramnames::NOTE_LEN));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }

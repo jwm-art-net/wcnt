@@ -15,10 +15,10 @@ topdobjlist::~topdobjlist()
 dobjdobjlist* topdobjlist::create_dobjdobjlist(
     dobjnames::DOBJ_TYPE parent, dobjnames::DOBJ_TYPE child)
 {
-    if (jwm.get_dobjnames()->check_type(parent)
+    if (dobjnames::check_type(parent)
         == dobjnames::DOBJ_FIRST)
         return 0;
-    if (jwm.get_dobjnames()->check_type(child)
+    if (dobjnames::check_type(child)
         == dobjnames::DOBJ_FIRST)
         return 0;
     dobjdobjlist* newddlist = new dobjdobjlist;

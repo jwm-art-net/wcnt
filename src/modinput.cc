@@ -34,7 +34,7 @@ inputnames::IN_TYPE modinput::get_inputtype() const
 iocat::IOCAT modinput::get_inputcategory() const
 {
     return (this != 0)
-     ? jwm.get_inputnames()->get_category(input_type)
+     ? inputnames::get_category(input_type)
      : iocat::FIRST;
 }
 

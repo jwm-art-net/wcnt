@@ -56,8 +56,8 @@ dobj const* riff_editor::add_dobj(dobj* dbj)
                                       get_username());
         break;
     default:
-        dobjerr("%s", "*** MAJOR ERROR *** Bad attempt made to add "
-                        "invalid object type to %s.", get_username());
+        dobjerr("%s %s to %s", stockerrs::major, stockerrs::bad_add,
+                                                        get_username());
         retv = 0;
     }
     return retv;

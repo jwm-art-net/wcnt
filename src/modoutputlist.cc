@@ -38,12 +38,11 @@ modoutputlist* modoutputlist::list_of_category(iocat::IOCAT oc)
     modoutput* output = goto_first();
     modoutputlist*
         outcatlist = new modoutputlist;
-    const outputnames* outnames = jwm.get_outputnames();
     outputnames::OUT_TYPE ot;
     while(output != 0)
     {
         ot = output->get_outputtype();
-        if (outnames->get_category(ot) == oc)
+        if (outputnames::get_category(ot) == oc)
             outcatlist->register_output(output->get_synthmodule(), ot);
         output = goto_next();
     }

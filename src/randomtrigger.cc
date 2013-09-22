@@ -85,7 +85,7 @@ stockerrs::ERR_TYPE randomtrigger::validate()
     if (!jwm.get_paramlist()->validate(this, paramnames::PROBABILITY,
             stockerrs::ERR_RANGE_0_1))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(
+        sm_err("%s", paramnames::get_name(
                                             paramnames::PROBABILITY));
         invalidate();
         return stockerrs::ERR_RANGE_0_1;
@@ -93,7 +93,7 @@ stockerrs::ERR_TYPE randomtrigger::validate()
     if (!jwm.get_paramlist()->validate(this, paramnames::NOTPROBABILITY,
             stockerrs::ERR_RANGE_0_1))
     {
-        sm_err("%s", jwm.get_paramnames()->get_name(
+        sm_err("%s", paramnames::get_name(
                                             paramnames::NOTPROBABILITY));
         invalidate();
         return stockerrs::ERR_RANGE_0_1;

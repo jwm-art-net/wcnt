@@ -101,25 +101,25 @@ stockerrs::ERR_TYPE caps_plate2x2::validate()
 {
     if (bandwidth < 0.005 || bandwidth > 0.999) {
         sm_err("%s must be within range 0.005 ~ 0.999,",
-                jwm.get_paramnames()->get_name(paramnames::BANDWIDTH));
+                paramnames::get_name(paramnames::BANDWIDTH));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (tail < 0.0 || tail > 0.749) {
         sm_err("%s must be within range 0.0 ~ 0.749.",
-                jwm.get_paramnames()->get_name(paramnames::TAIL));
+                paramnames::get_name(paramnames::TAIL));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (damping < 0.0005 || damping > 1.0) {
         sm_err("%s must be within range 0.0005 ~ 1.0.",
-                jwm.get_paramnames()->get_name(paramnames::DAMPING));
+                paramnames::get_name(paramnames::DAMPING));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (blend < 0.0 || blend > 1.0) {
         sm_err("%s must be within range 0.0 ~ 1.0.",
-                jwm.get_paramnames()->get_name(paramnames::WETDRY));
+                paramnames::get_name(paramnames::WETDRY));
         invalidate();
         return stockerrs::ERR_ERROR;
     }

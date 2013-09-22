@@ -222,9 +222,9 @@ class paramnames
     };
     paramnames();
     ~paramnames(){};
-    const char*     get_name(PAR_TYPE type) const;
-    iocat::IOCAT    get_category(PAR_TYPE type) const;
-    PAR_TYPE        get_type(char const* const name) const;
+    static const char*  get_name(PAR_TYPE type);
+    static iocat::IOCAT get_category(PAR_TYPE type);
+    static PAR_TYPE     get_type(char const* const name);
  private:
     struct param_data
     {
