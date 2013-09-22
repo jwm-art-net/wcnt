@@ -2,7 +2,7 @@ wcnt-1.26/jwmsynth
 
 // examples/lp_filter_test.wc
 
-samplerate 44100
+header header.wch
 
 constant one value 1.0 one
 

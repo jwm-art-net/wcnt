@@ -76,15 +76,15 @@ char const* dobj::get_username()
 
 bool dobj::set_param(paramnames::PAR_TYPE, void*)
 {
-    dobjerr("%s", "*** MAJOR ERROR *** Bad attempt made to set parameter "
-                                                       "of data object.");
+    dobjerr("%s %s set parameter of data object.", stockerrs::major,
+                                                   stockerrs::bad);
     return 0;
 }
 
 void const* dobj::get_param(paramnames::PAR_TYPE) const
 {
-    dobjerr("%s", "*** MAJOR ERROR *** Bad attempt made to get parameter "
-                                                       "of data object.");
+    dobjerr("%s %s get parameter of data object.", stockerrs::major,
+                                                   stockerrs::bad);
     return 0;
 }
 

@@ -175,8 +175,8 @@ dobj* adsr::add_dobj(dobj* dbj)
             sm_err("Could not add section to %s.", get_username());
         break;
     default:
-        sm_err("%s Bad attempt made to add invalid object type to %s.",
-                                    stockerrs::major, get_username());
+        sm_err("%s %s to %s.", stockerrs::major, stockerrs::bad_add,
+                                                    get_username());
         retv = 0;
     }
     return retv;

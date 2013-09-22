@@ -357,8 +357,8 @@ dobj const* riffdata::add_dobj(dobj* dbj)
             dobjerr("Could not add note change to %s.", get_username());
         break;
     default:
-        dobjerr("%s bad attempt made to add invalid object type to %s.",
-                                    stockerrs::major, get_username());
+        dobjerr("%s %s to %s.", stockerrs::major, stockerrs::bad_add,
+                                                    get_username());
         retv = 0;
     }
     return retv;
@@ -369,8 +369,7 @@ stockerrs::ERR_TYPE riffdata::validate()
     if (!jwm.get_dparlist()->validate(
         this, paramnames::QUARTER_VAL, stockerrs::ERR_NEGATIVE))
     {
-        dobjerr("%s", paramnames::get_name(
-                                            paramnames::QUARTER_VAL));
+        dobjerr("%s", paramnames::get_name(paramnames::QUARTER_VAL));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }

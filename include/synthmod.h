@@ -118,8 +118,8 @@ class synthmod
     #endif
 
  protected:
-    void invalidate()  { flags ^= SM_VALID; }
-    void force_abort() { abort_status = ON; }
+    void invalidate()           { flags &=~ SM_VALID; }
+    static void force_abort()   { abort_status = ON; }
     void duplicate_inputs_to(synthmod*) const;
     void duplicate_params_to(synthmod*) const;
 

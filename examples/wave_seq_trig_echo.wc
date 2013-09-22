@@ -4,7 +4,7 @@ wcnt-1.26/jwmsynth
 // example of using the trig_echo and trig_counter modules.
 
 
-samplerate 44100
+header header.wch
 
 constant one value 1.0 one
 

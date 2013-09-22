@@ -12,7 +12,7 @@ wcnt-1.26/jwmsynth
 // http://www.jwm-art.net/o7.php?p=price_crash
 //
 
-samplerate 44100
+header header.wch
 
 constant one value 1.0 one
 

@@ -1,9 +1,10 @@
 #include "../include/stockerrs.h"
 #include <iostream>
 
-const char* stockerrs::major = "*** MAJOR ERROR ***";
-const char* stockerrs::bad_add =
-                        "Bad attempt made to add invalid object type";
+const char* stockerrs::major =      "*** MAJOR ERROR ***";
+const char* stockerrs::bad =        "Bad attempt made to";
+const char* stockerrs::bad_add =    "Bad attempt made to add "
+                                    "invalid object type";
 
 stockerrs::stockerrs()
 {

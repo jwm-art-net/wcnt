@@ -1,6 +1,6 @@
 wcnt-1.26/jwmsynth
 
-samplerate 44100
+header header.wch
 
 timer
 t

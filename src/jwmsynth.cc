@@ -132,7 +132,7 @@ bool jwmsynth::execute_synth()
     char bigcount = '|';
     char littlecount = '~';
     int samplesperbig = jwm.samplerate();
-    int divisions = 5;
+    int divisions = 4;
     int samplespersmall = samplesperbig / divisions;
     int counter = 0;
     int divcounter = 0;

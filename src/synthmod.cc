@@ -48,8 +48,8 @@ void synthmod::set_group_name(const char* const gname)
 const void* synthmod::get_out(outputnames::OUT_TYPE) const
 {
     #ifdef IO_PARANOIA
-    sm_err("%s Bad attempt made to get output where none exist.",
-                                stockerrs::major, username);
+    sm_err("%s %s get output where none exist.", stockerrs::major,
+                                                 stockerrs::bad, username);
     #endif
     return 0;
 }
@@ -57,8 +57,8 @@ const void* synthmod::get_out(outputnames::OUT_TYPE) const
 const void* synthmod::set_in(inputnames::IN_TYPE, const void*)
 {
     #ifdef IO_PARANOIA
-    sm_err("%s Bad attempt made to set input where none exist.", 
-                                stockerrs::major, username);
+    sm_err("%s %s set input where none exist.", stockerrs::major,
+                                                stockerrs::bad, username);
     #endif
     return 0;
 }
@@ -66,8 +66,8 @@ const void* synthmod::set_in(inputnames::IN_TYPE, const void*)
 const void* synthmod::get_in(inputnames::IN_TYPE) const
 {
     #ifdef IO_PARANOIA
-    sm_err("%s Bad attempt made to get input where none exist.",
-                                stockerrs::major, username);
+    sm_err("%s %s get input where none exist.", stockerrs::major,
+                                                stockerrs::bad, username);
     #endif
     return 0;
 }
@@ -75,8 +75,8 @@ const void* synthmod::get_in(inputnames::IN_TYPE) const
 bool synthmod::set_param(paramnames::PAR_TYPE, const void*)
 {
     #ifdef IO_PARANOIA
-    sm_err("%s Bad attempt made to set parameter where none exist.",
-                                stockerrs::major, username);
+    sm_err("%s %s set parameter where none exist.", stockerrs::major,
+                                                stockerrs::bad, username);
     #endif
     return false;
 }
@@ -84,8 +84,8 @@ bool synthmod::set_param(paramnames::PAR_TYPE, const void*)
 const void* synthmod::get_param(paramnames::PAR_TYPE) const
 {
     #ifdef IO_PARANOIA
-    sm_err("%s Bad attempt made to get parameter where none exist.",
-                                stockerrs::major, username);
+    sm_err("%s %s get parameter where none exist.", stockerrs::major,
+                                                stockerrs::bad, username);
     #endif
     return 0;
 }
@@ -93,8 +93,8 @@ const void* synthmod::get_param(paramnames::PAR_TYPE) const
 dobj* synthmod::add_dobj(dobj*)
 {
     #ifdef IO_PARANOIA
-    sm_err("%s Bad attempt made to add data object to module unable to"
-                "contain data objects.", stockerrs::major, username);
+    sm_err("%s %s module unable to contain data objects.", stockerrs::major,
+                                              stockerrs::bad_add, username);
     #endif
     return 0;
 }

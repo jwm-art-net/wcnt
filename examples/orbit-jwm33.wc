@@ -12,7 +12,7 @@ wcnt-1.26/jwmsynth
 //       intended - as it does not edit those parameters which
 //       _were_ unchanged.
 
-samplerate 44100
+header header.wch
 
 // **-----------............._________>>>
 // duration of sound

@@ -1137,8 +1137,8 @@ dobj const* synthfilereader::add_dobj(dobj* dbj)
             dobjerr("Could not add modname to %s.", get_username());
         break;
     default:
-        dobjerr("%s Bad attempt made to add invalid object type to %s.",
-                                    stockerrs::major, get_username());
+        dobjerr("%s %s to %s.", stockerrs::major, stockerrs::bad_add,
+                                                    get_username());
     }
     return retv;
 }

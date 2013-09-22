@@ -186,8 +186,8 @@ dobj* stepper::add_dobj(dobj* dbj)
                 dobjnames::get_name(dobjnames::SIN_STEP));
         return 0;
     }
-    sm_err("%s Bad attempt made to add invalid object type to %s.",
-                                    stockerrs::major, get_username());
+    sm_err("%s %s to %s.", stockerrs::major, stockerrs::bad_add,
+                                                get_username());
     return 0;
 }
 

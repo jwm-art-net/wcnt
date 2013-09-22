@@ -176,8 +176,8 @@ dobj* sequencer::add_dobj(dobj* dbj)
             sm_err("Could not add riff node to %s", get_username());
         break;
     default:
-        sm_err("%s Bad attempt made to add invalid object type to %s.",
-                                        stockerrs::major, get_username());
+        sm_err("%s %s to %s.", stockerrs::major, stockerrs::bad_add, 
+                                                    get_username());
         retv = 0;
     }
     return retv;
@@ -196,8 +196,7 @@ stockerrs::ERR_TYPE sequencer::validate()
             paramnames::VELOCITY_RESPONSE,
             stockerrs::ERR_NEGATIVE))
     {
-        sm_err("%s", paramnames::get_name(
-                                        paramnames::VELOCITY_RESPONSE));
+        sm_err("%s", paramnames::get_name(paramnames::VELOCITY_RESPONSE));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
