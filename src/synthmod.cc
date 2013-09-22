@@ -93,7 +93,7 @@ const void* synthmod::get_param(paramnames::PAR_TYPE) const
 dobj* synthmod::add_dobj(dobj*)
 {
     #ifdef IO_PARANOIA
-    sm_err("%s Bad attempt made to add data object to module unable to
+    sm_err("%s Bad attempt made to add data object to module unable to"
                 "contain data objects.", stockerrs::major, username);
     #endif
     return 0;
