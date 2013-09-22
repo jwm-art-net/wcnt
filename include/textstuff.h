@@ -31,7 +31,7 @@ size_t cfmt(char* buf, size_t buffer_size, const char* fmt, ...);
 
 
 
-#if DEBUG_MSG
+#if DEBUG
 /*  debug previously just #define'd itself as errmsg but i want to
     allow a high-level message routine (ie msg_log in libpetrifui)
     to #undefine errmsg without damaging debug messages.

@@ -8,7 +8,7 @@
 #include "namefuncobj.h"
 #include "textstuff.h"
 
-#ifdef DEBUG_MSG
+#ifdef DEBUG
 #include <cstdio>
 #endif
 
@@ -70,7 +70,7 @@ protected:
 };
 
 
-#ifdef DEBUG_MSG
+#ifdef DEBUG
 #define dobjerr(fmt, ... )                              \
 {                                                       \
     printf("%40s:%5d %-35s\n",                          \

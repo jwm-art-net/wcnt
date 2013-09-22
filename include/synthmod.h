@@ -11,7 +11,7 @@
 #include "boolfuncobj.h"
 #include "textstuff.h"
 
-#ifdef DEBUG_MSG
+#ifdef DEBUG
 #include <cstdio>
 #endif
 
@@ -159,7 +159,7 @@ class synthmod
     static bool first_done[synthmodnames::LAST];
 };
 
-#ifdef DEBUG_MSG
+#ifdef DEBUG
 #define sm_err(fmt, ... )                              \
 {                                                       \
     printf("%40s:%5d %-35s\n",                          \
