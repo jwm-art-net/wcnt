@@ -12,7 +12,7 @@
 #include "../include/jwm_init.h"
 
 
-#ifdef DEBUG_MSG
+#ifdef DEBUG
 #define ladspa_err(fmt, ... )                           \
 {                                                       \
     printf("%40s:%5d %-35s\n",                          \

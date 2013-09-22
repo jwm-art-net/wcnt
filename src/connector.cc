@@ -4,7 +4,7 @@
 #include "../include/jwm_globals.h"
 
 
-#ifdef DEBUG_MSG
+#ifdef DEBUG
 #define connerr(fmt, ... )                              \
 {                                                       \
     printf("%40s:%5d %-35s\n",                          \

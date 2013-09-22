@@ -26,7 +26,7 @@
 using namespace std; // just this once as it's used so much in here...
 
 
-#ifdef DEBUG_MSG
+#ifdef DEBUG
 #define wc_err(fmt, ... )                               \
 {                                                       \
     printf("%40s:%5d %-35s\n",                          \

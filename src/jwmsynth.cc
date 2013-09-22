@@ -9,7 +9,7 @@
 
 #include <iostream>
 
-#ifdef DEBUG_MSG
+#ifdef DEBUG
 #define jwm_err(fmt, ... )                           \
 {                                                       \
     printf("%40s:%5d %-35s\n",                          \
