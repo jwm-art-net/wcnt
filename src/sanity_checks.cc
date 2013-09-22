@@ -331,6 +331,14 @@ bool mod_check_params(synthmod * sm)
                 default:
                     std::cout << "\n\t\t*******";
             }
+            if (mismatched) {
+                std::cout << "Value mismatch between set and get of "
+                             "parameter %s in synthmod %s.",
+                             paramnames::get_name(pt),
+                             synthmodnames::get_name(sm->get_module_type())
+                                                            << std::endl;
+                fail = true;
+            }
             if (!fail)
                 std::cout << "Ok.";
             param = parlist->goto_next();

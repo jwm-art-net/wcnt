@@ -78,7 +78,6 @@ stockerrs::ERR_TYPE timemap::validate()
         invalidate();
         return stockerrs::ERR_ERROR;
     }
-    std::ostringstream conv;
     if (currentmeter->get_bar() > 0) {
         sm_err("The first added time signature is at bar %d. Should be "
                                     "at bar 0.", currentmeter->get_bar());
@@ -203,19 +202,17 @@ void timemap::run()
                 bpmchange_pos = 0;
                 bpmsampletot = notelen_to_samples(bpmchange_notelen);
                 bpmrampsize = (targbpm - out_bpm) / (double) bpmsampletot;
-                out_pos_step_size = barlength / (jwm.samplerate() *
-                 (60.0 / out_bpm) * out_beats_per_bar);
+                out_pos_step_size = barlength / (jwm.samplerate()
+                                  * (60.0 / out_bpm) * out_beats_per_bar);
             }
             out_bpm += bpmrampsize;
             bpmchange_ratio = (double) bpmchange_pos / bpmchange_notelen;
-            bpmsampletot
-             = (unsigned long)(jwm.samplerate() * (60 / out_bpm)
-             * ((double) (bpmchange_notelen - bpmchange_pos) 
-             / beatlength));
+            bpmsampletot = (unsigned long)(jwm.samplerate() * (60 / out_bpm)
+                         * ((double) (bpmchange_notelen - bpmchange_pos) 
+                         / beatlength));
             bpmrampsize = (targbpm - out_bpm) / (double) bpmsampletot;
-            out_pos_step_size
-             = barlength / (jwm.samplerate() * (60 / out_bpm) 
-             * out_beats_per_bar);
+            out_pos_step_size = barlength / (jwm.samplerate()
+                              * (60 / out_bpm) * out_beats_per_bar);
             bpmchange_pos += out_pos_step_size;
         } else out_bpm_change_state = OFF;
     }
@@ -231,9 +228,10 @@ unsigned long timemap::notelen_to_samples(short nl) const
      * ((double) 60 / out_bpm) * ((double)nl / beatlength));
 }
 
-double timemap::notelen_to_ms(short nl) const
+#ifdef UNUSED
+unsigned long timemap::ms_to_samples(double ms) const
 {
-    return ((double)60 / out_bpm) * ((double)nl / beatlength) * 1000;
+    return (unsigned long)(jwm.samplerate() * (ms / 1000));
 }
 
 double timemap::notelen_to_frequency(short nl) const
@@ -242,10 +240,11 @@ double timemap::notelen_to_frequency(short nl) const
                    ((double)nl / beatlength) * 1000);
 }
 
-unsigned long timemap::ms_to_samples(double ms) const
+double timemap::notelen_to_ms(short nl) const
 {
-    return (unsigned long)(jwm.samplerate() * (ms / 1000));
+    return ((double)60 / out_bpm) * ((double)nl / beatlength) * 1000;
 }
+#endif
 
 void const* timemap::get_out(outputnames::OUT_TYPE ot) const
 {

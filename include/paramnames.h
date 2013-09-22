@@ -1,7 +1,6 @@
 #ifndef PARAMNAMES_H
 #define PARAMNAMES_H
 
-#include <string.h>
 #include "iocat.h"
 
 class paramnames

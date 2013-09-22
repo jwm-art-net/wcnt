@@ -38,10 +38,9 @@ modoutputlist* modoutputlist::list_of_category(iocat::IOCAT oc)
     modoutput* output = goto_first();
     modoutputlist*
         outcatlist = new modoutputlist;
-    outputnames::OUT_TYPE ot;
     while(output != 0)
     {
-        ot = output->get_outputtype();
+        outputnames::OUT_TYPE ot = output->get_outputtype();
         if (outputnames::get_category(ot) == oc)
             outcatlist->register_output(output->get_synthmodule(), ot);
         output = goto_next();
@@ -49,6 +48,7 @@ modoutputlist* modoutputlist::list_of_category(iocat::IOCAT oc)
     return outcatlist;
 }
 
+#ifdef UNUSED
 bool modoutputlist::is_registered(synthmod* mod)
 {
     if (!mod)
@@ -62,11 +62,11 @@ bool modoutputlist::is_registered(synthmod* mod)
     return false;
 }
 
-/*
 modoutputlist* modoutputlist::list_of_category_orderpref(
- iocat::IOCAT out_cat, synthmodnames::SYNTH_MOD_TYPE* sm_prefs,
- outputnames::OUT_TYPE* out_prefs,
- outputnames::OUT_TYPE* not_out_prefs )
+                                    iocat::IOCAT out_cat,
+                                    synthmodnames::SYNTH_MOD_TYPE* sm_prefs,
+                                    outputnames::OUT_TYPE* out_prefs,
+                                    outputnames::OUT_TYPE* not_out_prefs);
 {
     if (is_empty())
         return 0;
@@ -152,5 +152,5 @@ modoutputlist* modoutputlist::list_of_category_orderpref(
     delete pot_outs;
     return sorted_outs;
 }
-*/
+#endif
 

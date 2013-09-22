@@ -4,8 +4,6 @@
 #include "../include/modparamlist.h"
 #include "../include/connectorlist.h"
 
-#include <string.h>
-
 wcnt_exit::wcnt_exit(char const* uname) :
 
  synthmod(
@@ -68,8 +66,6 @@ synthmod* wcnt_exit::duplicate_module(const char* uname, DUP_IO dupio)
     sm_err("%s", "wcnt_exit module does not allow duplication.");
     return 0;
 }
-
-#include <iostream>
 
 stockerrs::ERR_TYPE wcnt_exit::validate()
 {

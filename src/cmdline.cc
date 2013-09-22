@@ -240,7 +240,10 @@ bool cmdline::set_jwm_globals()
     const char* fnptr;
     char* path = 0;
 
-    fnptr = ptr = filename = opts[data[WC_IX].par1];
+    if (!(fnptr = ptr = filename = opts[data[WC_IX].par1])) {
+        msg = "\nFilename not set.";
+        return false;
+    }
 
     while (*ptr != '\0') {
         if (*ptr == '/') fnptr = ptr + 1;

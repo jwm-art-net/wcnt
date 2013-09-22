@@ -100,7 +100,6 @@ ladspa_plug* ladspa_lib::get_plugin(const char* name)
         if(strcmp(ldescr->Label, name) == 0)
             break;
     }
-    plug = 0;
     plug = new ladspa_plug(ldescr);
     if(add_at_tail(plug) == 0){
         if(plug) delete plug;
@@ -142,7 +141,6 @@ ladspa_loader::get_plugin(const char* fname, const char* label)
                                                         fname, label);
         return 0;
     }
-    lib = 0;
     lib = new ladspa_lib(fname, lhandle);
     if (add_at_tail(lib) == 0){
         if (lib)
@@ -160,7 +158,6 @@ void* ladspa_loader::dlopen_plugin(const char* fname, int flag)
     const char * start;
     const char * end;
     int end_in_so;
-    int need_slash;
     int fnlen = strlen(fname);
     void* result = 0;
     if (fname[0] == '/') {
@@ -177,7 +174,7 @@ void* ladspa_loader::dlopen_plugin(const char* fname, int flag)
             buf = new char[fnlen + 2 + (end - start)];
             if (end > start)
                 strncpy(buf, start, end - start);
-            need_slash = 0;
+            int need_slash = 0;
             if (end > start)
                 if (*(end - 1) != '/') {
                     need_slash = 1;

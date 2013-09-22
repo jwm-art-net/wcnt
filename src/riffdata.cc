@@ -90,8 +90,7 @@ note_data* riffdata::edit_notes(note_data* editnote)
     double (note_data::*edno_sel_func2)() const = note_get_funcs[lhs_ix2];
     double (note_data::*rhs_func1)() const = note_get_funcs[rhs_ix1];
     double (note_data::*rhs_func2)() const = note_get_funcs[rhs_ix2];
-    double n_f1, en_f1 = 0, en_f2 = 0;
-    bool pronote, delnote;
+    double en_f1 = 0, en_f2 = 0;
     note_data* en =
         (note_data*)editlist->add_at_tail(editnote)->get_data();
     if (edno_sel_func1) en_f1 = (editnote->*edno_sel_func1)();
@@ -99,8 +98,9 @@ note_data* riffdata::edit_notes(note_data* editnote)
     note_data* note = goto_first();
     while(note)
     {
-        pronote = delnote = false;
-        n_f1 = (note->*edno_sel_func1)();
+        bool pronote = false;
+        bool delnote = false;
+        double n_f1 = (note->*edno_sel_func1)();
         switch (note_sel_op)
         {
             case note_data::NOTE_SEL_OP_EQU:
@@ -268,8 +268,8 @@ note_data* riffdata::edit_notes(note_data* editnote)
     return en;
 }
 
-double riffdata::calc_note_param(
-    note_data::NOTE_OP op, double n1, double n2)
+double riffdata::calc_note_param(note_data::NOTE_OP op, double n1,
+                                                        double n2)
 {
     switch(op) {
         case note_data::NOTE_OP_ADD: return n1 + n2;
@@ -281,6 +281,7 @@ double riffdata::calc_note_param(
     }
 }
 
+#ifdef UNUSED
 double riffdata::calc_riff_length(char beats_per_bar, char beat_value)
 {
     note_data* note = goto_last();
@@ -288,15 +289,15 @@ double riffdata::calc_riff_length(char beats_per_bar, char beat_value)
         return 0;
     double note_off_pos = note->get_position() + note->get_length();
     short bars = 1;
-    double beatlen = 0;
     double rifflen = 0;
     while (rifflen < note_off_pos){
-        beatlen = (get_quartervalue() * (4.0 / (double)beat_value));
+        double beatlen = (get_quartervalue() * (4.0 / (double)beat_value));
         rifflen = beats_per_bar * beatlen * bars;
         bars++;
     }
     return rifflen;
 }
+#endif
 
 bool riffdata::set_param(paramnames::PAR_TYPE dt, void* data)
 {

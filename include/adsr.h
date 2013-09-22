@@ -46,7 +46,9 @@ public:
     adsr_coord* insert_coord_after(
         adsr_coord*, double ut, double ul, double lt, double ll);
 
+    #ifdef UNUSED
     void scale_section(adsr_coord::SECT, double ratio);
+    #endif
 
     adsr_coord* goto_section(adsr_coord::SECT sect) {
         return find_in_data(sneak_first(), sect)->get_data();

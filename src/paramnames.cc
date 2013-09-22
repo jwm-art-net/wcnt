@@ -1,5 +1,7 @@
 #include "../include/paramnames.h"
 
+#include <cstring>
+
 #ifdef DEBUG
 #include <iostream>
 #endif

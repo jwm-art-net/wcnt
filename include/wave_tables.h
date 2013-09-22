@@ -18,19 +18,21 @@ class wave_tables
         SAW_01,
         WT_LAST
     };
-    const char* const fxstring; /* for fixed string param type */
     wave_tables();
     ~wave_tables();
-    void calc_phase_step_scalar(unsigned long samplerate);
-    const double* get_table(WT);
+    static void calc_phase_step_scalar(unsigned long samplerate);
+    static const double* get_table(WT);
+
+    static const char* const fxstring; /* for fixed string param type */
     static const int table_bits;
     static const int table_shift;
     static double phase_step_base;
     static double phase_step_scalar;
+
   private:
-    unsigned long table_size;
-    double* table[WT_LAST];
-    void create_table(WT);
+    static unsigned long table_size;
+    static double* table[WT_LAST];
+    static void create_table(WT);
 };
 
 #endif

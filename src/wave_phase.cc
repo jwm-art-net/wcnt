@@ -112,8 +112,8 @@ void const* wave_phase::get_param(paramnames::PAR_TYPE pt) const
 
 void wave_phase::init()
 {
-    table = jwm.get_wave_tables()->get_table(type);
-    shape_table = jwm.get_wave_tables()->get_table(shape_type);
+    table = wave_tables::get_table(type);
+    shape_table = wave_tables::get_table(shape_type);
     max_degs = 360 * cycles;
     if (invert_alt == ON)
         invph = -1;
@@ -175,9 +175,8 @@ void wave_phase::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::WAVE_TYPE, jwm.get_wave_tables()->fxstring);
-    register_param(paramnames::WAVE_SHAPE_TYPE,
-                                          jwm.get_wave_tables()->fxstring);
+    register_param(paramnames::WAVE_TYPE, wave_tables::fxstring);
+    register_param(paramnames::WAVE_SHAPE_TYPE, wave_tables::fxstring);
     register_param(paramnames::TRIG_RESET_PHASE);
     register_param(paramnames::RECYCLE_MODE);
     register_param(paramnames::SYNC_SHAPE);

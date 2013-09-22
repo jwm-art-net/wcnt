@@ -152,6 +152,8 @@ stockerrs::ERR_TYPE serialwavfileout::validate()
 
 void serialwavfileout::set_wav_basename(char * fname)
 {
+    if (wav_basename)
+        delete [] wav_basename;
     wav_basename = new char[strlen(fname) + 1];
     strcpy(wav_basename, fname);
 }

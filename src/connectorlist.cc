@@ -80,33 +80,6 @@ connectorlist::duplicate_connections_for_module(
     return conlist;
 }
 
-
-connector*
-connectorlist::duplicate_connections_for_group(
-    char const* from, char const* to)
-{
-    /* FIXME: "nothing here codes be doing.." */
-/*
-    synthmodlist::linkedlist* fromlist =
-        new_list_of_by(jwm.get_modlist(), from);
-
-    synthmodlist::linkedlist* tolist =
-        new_list_of_by(jwm.get_modlist(), to);
-
-    if (!grpmodlist)
-        return 0;
-
-    synthmod* mod = fromlist->goto_first();
-    synthmod* to_mod = tolist->goto_first();
-    while(mod) {
-        connectorlist*
-            conlist = duplicate_connections_for_module(mod, to_mod);
-        connector* con = conlist->goto_first();
-    }
-*/
-    return 0;
-}
-
 void
 connectorlist::reconnect_output_module_by_name(
     const char* from, const char* to)
@@ -165,6 +138,33 @@ bool connectorlist::make_connections()
     return true;
 }
 
+#ifdef UNUSED
+connector*
+connectorlist::duplicate_connections_for_group(
+    char const* from, char const* to)
+{
+    /* FIXME: "nothing here codes be doing.." */
+/*
+    synthmodlist::linkedlist* fromlist =
+        new_list_of_by(jwm.get_modlist(), from);
+
+    synthmodlist::linkedlist* tolist =
+        new_list_of_by(jwm.get_modlist(), to);
+
+    if (!grpmodlist)
+        return 0;
+
+    synthmod* mod = fromlist->goto_first();
+    synthmod* to_mod = tolist->goto_first();
+    while(mod) {
+        connectorlist*
+            conlist = duplicate_connections_for_module(mod, to_mod);
+        connector* con = conlist->goto_first();
+    }
+*/
+    return 0;
+}
+
 bool
 connectorlist::remake_connections(
     synthmod* sm, outputnames::OUT_TYPE ot, outputnames::OUT_TYPE new_ot)
@@ -187,4 +187,4 @@ connectorlist::remake_connections(
     }
     return true;
 }
-
+#endif

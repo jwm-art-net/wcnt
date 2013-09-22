@@ -70,7 +70,7 @@ void const* wave::get_param(paramnames::PAR_TYPE pt) const
 
 void wave::init()
 {
-    if (!(table = jwm.get_wave_tables()->get_table(type))){
+    if (!(table = wave_tables::get_table(type))){
         invalidate();
         return;
     }
@@ -87,7 +87,7 @@ void wave::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::WAVE_TYPE, jwm.get_wave_tables()->fxstring);
+    register_param(paramnames::WAVE_TYPE, wave_tables::fxstring);
 }
 
 

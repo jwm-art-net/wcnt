@@ -97,7 +97,9 @@ public:
     static DOBJ_TYPE   get_type(const char* const);
     static DOBJ_TYPE   check_type(DOBJ_TYPE);
     static DOBJ_TYPE   get_sub_type(DOBJ_TYPE);
+    #ifdef UNUSED
     static const char* get_sub_name(DOBJ_TYPE);
+    #endif
 
 private:
     struct dobj_data

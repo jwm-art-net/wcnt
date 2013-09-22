@@ -18,7 +18,9 @@ class modparam
     paramnames::PAR_TYPE get_paramtype() const {
         return (this) ? param_type: paramnames::FIRST;
     }
+    #ifdef UNUSED
     iocat::IOCAT get_paramcategory();
+    #endif
     bool validate(synthmod* sm, stockerrs::ERR_TYPE et);
 
     bool operator()(synthmodnames::SYNTH_MOD_TYPE & smt) const {

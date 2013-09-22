@@ -209,7 +209,6 @@ bool synthfilereader::read_and_create_dobj(const char* com)
     dobj* dbj = read_dobj(com);
     if (!dbj)
         return false;
-    string dbjuname = dbj->get_username();
     if (include_dbj(dbj->get_username())) {
         if (!jwm.get_dobjlist()->add_dobj(dbj)) {
             wc_err("Could not add data object %s to list.",
@@ -463,8 +462,7 @@ dobj* synthfilereader::read_dobj(const char* com)
         if (et != stockerrs::ERR_NO_ERROR) {
             wc_err("In data object %s, parameter %s %s %s", 
                     dbj->get_username(), dobj::get_error_msg(),
-                    jwm.get_stockerrs()->get_prefix_err(et),
-                    jwm.get_stockerrs()->get_err(et));
+                    stockerrs::get_prefix_err(et), stockerrs::get_err(et));
             delete dbj;
             return 0;
         }
@@ -550,8 +548,8 @@ bool synthfilereader::read_dobjs(dobj* dbj)
                                 dbj->get_username(),
                                 sprogname,
                                 dobj::get_error_msg(),
-                                jwm.get_stockerrs()->get_prefix_err(et),
-                                jwm.get_stockerrs()->get_err(et));
+                                stockerrs::get_prefix_err(et),
+                                stockerrs::get_err(et));
                         delete sprog;
                         delete dd_list;
                         return false;
@@ -644,8 +642,8 @@ bool synthfilereader::read_dobjs(synthmod* sm)
                     if (et!= stockerrs::ERR_NO_ERROR) {
                         wc_err("data object %s %s %s %s.",
                                 xdbjname, dobj::get_error_msg(),
-                                jwm.get_stockerrs()->get_prefix_err(et),
-                                jwm.get_stockerrs()->get_err(et));
+                                stockerrs::get_prefix_err(et),
+                                stockerrs::get_err(et));
                         delete dbj;
                         return false;
                     }
@@ -752,10 +750,10 @@ synthfilereader::read_string_list_param
         return 0;
     }
     string strlist;
-    const char* com;
     bool ready_to_finish = false;
     while(true) {
-        if (!(com = read_command())) {
+        const char* com = read_command();
+        if (!com) {
             wc_err("%s", "Unexpected EOF. Data object missing editlist "
                                                             "terminator.");
             invalidate();
@@ -817,12 +815,11 @@ bool synthfilereader::read_inputs(synthmod* sm)
         new_list_of_by(jwm.get_inputlist(), sm);
 
     modinput* inp = inlist->goto_first();
-    const char* inputname;
     if (jwm.is_verbose() && inp)
         cout << "--------" << endl;
     while(inp) { // step through each  input for module
         inputnames::IN_TYPE it = inp->get_inputtype();
-        inputname = read_command();
+        const char* inputname = read_command();
         if (strcmp(inputnames::get_name(it), inputname) != 0) {
             wc_err("expected input type %s got %s instead.", 
                     inputnames::get_name(it), inputname);

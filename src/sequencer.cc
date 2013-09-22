@@ -241,6 +241,7 @@ riff_node* sequencer::add_riff_node(riff_node* rn)
     return rn;
 }
 
+#ifdef UNUSED
 bool sequencer::delete_riff_node(riff_node* rn)
 {
     if (!rn)
@@ -252,6 +253,7 @@ bool sequencer::delete_riff_node(riff_node* rn)
     delete unlink_item(tmp);
     return true;
 }
+#endif
 
 void sequencer::init()
 {

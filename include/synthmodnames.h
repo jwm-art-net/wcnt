@@ -1,8 +1,6 @@
 #ifndef SYNTHMODNAMES_H
 #define SYNTHMODNAMES_H
 
-#include <string.h>
-
 class synthmodnames
 {
  public:

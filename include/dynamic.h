@@ -34,7 +34,9 @@ class dynamic : public synthmod, public linked_list<dynvertex>
     }
     dynvertex* add_dvertex(double sil, double usol, double lsol);
 
+    #ifdef UNUSED
     bool delete_dvertex(dynvertex* dv);
+    #endif
 
     /*
     // virtual funcs

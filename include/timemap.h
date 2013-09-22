@@ -75,9 +75,11 @@ private:
     // working methods
     double p_bpm;
     unsigned long notelen_to_samples(short) const;
+    #ifdef UNUSED
     unsigned long ms_to_samples(double) const;
     double notelen_to_frequency(short) const;
     double notelen_to_ms(short) const;
+    #endif
     // synthmod stuff for keeping things cushdy.
     void init_first();
 };

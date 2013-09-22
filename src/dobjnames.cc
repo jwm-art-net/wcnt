@@ -1,6 +1,6 @@
 #include "../include/dobjnames.h"
 
-#include <string.h>
+#include <cstring>
 
 #ifdef DEBUG
 #include <iostream>
@@ -68,11 +68,13 @@ dobjnames::get_sub_type(dobjnames::DOBJ_TYPE dt)
     return DOBJ_FIRST;
 }
 
+#ifdef UNUSED
 char const*
 dobjnames::get_sub_name(dobjnames::DOBJ_TYPE dt)
 {
     return data[get_sub_type(dt)].name;
 }
+#endif
 
 const dobjnames::dobj_data dobjnames::data[DOBJ_LAST] =
 {

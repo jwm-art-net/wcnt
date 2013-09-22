@@ -1,8 +1,6 @@
 #ifndef INPUTNAMES_H
 #define INPUTNAMES_H
 
-#include <string.h>
-
 #include "iocat.h"
 
 class inputnames

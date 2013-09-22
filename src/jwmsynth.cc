@@ -29,6 +29,7 @@ jwmsynth::jwmsynth() :
     synthfile_reader = new synthfilereader(synthfilereader::WC_MAIN_FILE);
     synthfile_reader->set_wc_filename(jwm.file());
     valid = true;
+    err_msg[0] = '\0';
 }
 
 jwmsynth::~jwmsynth()
@@ -62,15 +63,14 @@ bool jwmsynth::validate_synth()
 {
     if (jwm.is_verbose())
         std::cout << "\nValidating modules..." << std::endl;
-    stockerrs::ERR_TYPE et;
     synthmod* sm;
     sm = jwm.get_modlist()->goto_first();
     while(sm) {
-        if ((et = sm->validate()) != stockerrs::ERR_NO_ERROR) {
+        stockerrs::ERR_TYPE et = sm->validate();
+        if (et != stockerrs::ERR_NO_ERROR) {
             jwm_err("Module %s is a little odd, %s %s %s",
                     sm->get_username(), synthmod::get_error_msg(),
-                    jwm.get_stockerrs()->get_prefix_err(et),
-                    jwm.get_stockerrs()->get_err(et));
+                    stockerrs::get_prefix_err(et), stockerrs::get_err(et));
             return false;
         }
         if (!sm->flag(synthmod::SM_VALID)){
@@ -119,7 +119,6 @@ bool jwmsynth::execute_synth()
         std::cout << "Not running synth, as instructed." << std::endl;
         return true;
     }
-    synthmod* sm;
     const short* bar = jwm.get_exit_in_bar();
     short exit_bar = jwm.get_exit_bar();
     // unlink any constant modules from list as it's pointless
@@ -142,13 +141,13 @@ bool jwmsynth::execute_synth()
               << "' per second done)" << std::endl;
     const STATUS* force_abort = synthmod::get_abort_status();
     synthmod** runlist = jwm.get_modlist()->get_run_list();
-    long count;
 
     std::cout << "samplerate: " << jwm.samplerate() << std::endl;
 
     while (*bar < exit_bar && *force_abort == OFF)
     {
-        sm = runlist[count = 0];
+        int count = 0;
+        synthmod* sm = runlist[count];
         while(sm) {
             sm->run();
             sm = runlist[++count];

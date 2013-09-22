@@ -1,5 +1,7 @@
 #include "../include/synthmodnames.h"
 
+#include <cstring>
+
 #ifdef DEBUG
 #include <iostream>
 #endif

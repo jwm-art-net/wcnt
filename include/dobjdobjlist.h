@@ -25,7 +25,9 @@ class dobjdobjlist : public linked_list<dobjdobj>
     dobjdobj* register_dobjdobj(dobjnames::DOBJ_TYPE, dobjnames::DOBJ_TYPE);
 
     dobjdobjlist* get_dobjdobjlist_for_dobjtype(dobjnames::DOBJ_TYPE);
+    #ifdef UNUSED
     dobjdobjlist* get_dobjdobjlist_of_sprogs(dobjnames::DOBJ_TYPE);
+    #endif
 };
 
 #endif

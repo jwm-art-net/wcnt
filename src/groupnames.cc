@@ -1,7 +1,7 @@
 #include "../include/groupnames.h"
 
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+#include <cstring>
 
 const char* get_groupname(char const* const name)
 {

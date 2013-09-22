@@ -131,12 +131,12 @@ void orbit::init()
 
 void orbit::run()
 {
-    double ox = x, oy = y, fcxb;
     if(*in_restart_trig == ON) {
         out_x = x = 0;
         out_y = y = 0;
     }
     if(*in_trig == ON) {
+        double ox = x, oy = y, fcxb;
         switch(type){
             case ORB_THREEPLY:
                 x = oy - (ox > 0 ? 1 : (ox < 0 ? -1 : 0)) *

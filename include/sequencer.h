@@ -35,14 +35,12 @@ class sequencer : public synthmod, public linked_list<riff_node>
  public:
     sequencer(char const*);
     ~sequencer();
-/*
-    unused:
-    riff_node* add_riff(const char* const riffname, short barpos);
-    riff_node* add_riff(riffdata*, short barpos);
-*/
+
     riff_node* add_riff_node(riff_node*);
 
+    #ifdef UNUSED
     bool delete_riff_node(riff_node* rn);
+    #endif
 
     // virtual funcs
     void run();

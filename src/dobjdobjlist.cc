@@ -36,6 +36,7 @@ dobjdobjlist::get_dobjdobjlist_for_dobjtype(dobjnames::DOBJ_TYPE dt)
     return mdl;
 }
 
+#ifdef UNUSED
 dobjdobjlist * dobjdobjlist::get_dobjdobjlist_of_sprogs(
  dobjnames::DOBJ_TYPE kid)
 {
@@ -54,3 +55,4 @@ dobjdobjlist * dobjdobjlist::get_dobjdobjlist_of_sprogs(
     }
     return mdl;
 }
+#endif

@@ -101,10 +101,14 @@ class note_data : public dobj
     // helpful functions...
     NOTE_TYPE   get_note_type(); /* FIXME: de-tangle & make const */
     NOTE_TYPE   get_note_type(const char* notename) const;
+    double      get_note_number() const;
+
+    #ifdef UNUSED
     // get_note_name only returns, if applicable, the note portion.
     const char* get_note_name() const;
     double      get_note_frequency() const;
-    double      get_note_number() const;
+    #endif
+
     // virtuals from dobj
     char const* get_username(){ return notename;}
     // virtuals from dobj
@@ -112,9 +116,9 @@ class note_data : public dobj
     void const* get_param(paramnames::PAR_TYPE) const;
     stockerrs::ERR_TYPE validate();
 
-#ifdef DATA_STATS
-STATS_FUNCS
-#endif
+    #ifdef DATA_STATS
+    STATS_FUNCS
+    #endif
 
  private:
     NOTE_TYPE note_type;
@@ -125,10 +129,9 @@ STATS_FUNCS
     void init_first();
     
 
-#ifdef DATA_STATS
-STATS_VARS
-#endif
-
+    #ifdef DATA_STATS
+    STATS_VARS
+    #endif
 };
 
 #endif

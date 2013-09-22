@@ -16,7 +16,9 @@ class modinput
 
     synthmodnames::SYNTH_MOD_TYPE get_moduletype() const;
     inputnames::IN_TYPE get_inputtype() const;
+    #ifdef UNUSED
     iocat::IOCAT get_inputcategory() const;
+    #endif
 
     bool operator()(synthmod* sm) const {
         return synthmodule == sm;

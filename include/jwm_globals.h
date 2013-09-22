@@ -69,8 +69,6 @@ class jwm_globals
     dobjlist*       get_dobjlist() const    { return dbjlist;      }
     dobjparamlist*  get_dparlist() const    { return dparlist;     }
     topdobjlist*    get_topdobjlist() const { return topdbjlist;   }
-    stockerrs*      get_stockerrs() const   { return stock_errs;   }
-    wave_tables*    get_wave_tables() const { return wavetables;   }
 
 /* these two dislike global space */
     void register_modlist(synthmodlist* sml)        { modlist = sml;   }

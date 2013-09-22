@@ -31,7 +31,9 @@ class wavfilein : public dobj
     void set_root_note(const char * rn);
     WAV_STATUS get_status() const{ return status; }
     WAV_CHANNELS get_channel_status() const;
+    #ifdef UNUSED // usage of libsamplerate makes bitrate transparent
     WAV_BITRATE get_bitrate() const; /* FIXME: used?? */
+    #endif
     unsigned long get_length() const;
     unsigned long get_sample_rate() const;
     void read_wav_at(void* buf, unsigned long smp);

@@ -1,5 +1,7 @@
 #include "../include/outputnames.h"
 
+#include <cstring>
+
 #ifdef DEBUG
 #include <iostream>
 #endif

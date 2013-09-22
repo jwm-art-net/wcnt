@@ -87,11 +87,13 @@ class riffdata : public dobj, public linked_list<note_data>
     };
     note_data* edit_notes(note_data* editnote);
 
+    #ifdef UNUSED
     /*
     // beats per bar grabbed from output of
     // time map module, input into sequencer.
     */
     double calc_riff_length(char beats_per_bar, char beat_value);
+    #endif
 
     /*
     // virtuals from dobj
@@ -107,7 +109,7 @@ class riffdata : public dobj, public linked_list<note_data>
 
     linkedlist* editlist;
 
-    double calc_note_param(note_data::NOTE_OP, double, double);
+    static double calc_note_param(note_data::NOTE_OP, double, double);
     void init_first();
     
 };

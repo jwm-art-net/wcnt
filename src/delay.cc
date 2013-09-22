@@ -134,12 +134,15 @@ void delay::init()
 
 void delay::run()
 {
+    #ifdef DUPLICATE_BRANCHES
     if (*in_gainmod >= 0)
         gainamount = gain - gain * gain_modsize
                      + (gain * gain_modsize * *in_gainmod);
     else
-        gainamount = gain - gain * gain_modsize
+    #endif
+    gainamount = gain - gain * gain_modsize
                      + (gain * gain_modsize * *in_gainmod);
+
     output = filter[fpos];
     filter[fpos] = *in_signal * gainamount;
     fpos--;

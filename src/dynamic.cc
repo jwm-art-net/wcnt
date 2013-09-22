@@ -148,6 +148,7 @@ dynvertex* dynamic::add_dvertex(double sil, double usol, double lsol)
     return dvc;
 }
 
+#ifdef UNUSED
 bool dynamic::delete_dvertex(dynvertex* dv)
 {
     if (!dv)
@@ -163,6 +164,7 @@ bool dynamic::delete_dvertex(dynvertex* dv)
     delete dv;
     return true;
 }
+#endif
 
 void dynamic::init()
 {

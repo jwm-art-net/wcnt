@@ -1,8 +1,6 @@
 #ifndef OUTPUTNAMES_H
 #define OUTPUTNAMES_H
 
-#include <string.h>
-
 #include "iocat.h"
 
 class outputnames {

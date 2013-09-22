@@ -34,6 +34,7 @@ WAV_CHANNELS wavfilein::get_channel_status() const
     return WAV_CH_UNKNOWN;
 }
 
+#ifdef UNUSED
 WAV_BITRATE wavfilein::get_bitrate() const
 {
     /*
@@ -45,6 +46,7 @@ WAV_BITRATE wavfilein::get_bitrate() const
     */
     return WAV_BIT_OTHER;
 }
+#endif
 
 unsigned long wavfilein::get_length() const
 {

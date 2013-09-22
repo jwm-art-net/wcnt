@@ -104,7 +104,6 @@ void trigrouter::create_wcnt_triggers()
         delete [] trigs;
     trigs = new STATUS[count + 1];
     synthmodlist* sml = jwm.get_modlist();
-    synthmod* sm = 0;
     for (int i = 0; i <= count; i++){
         if (verbose){
             std::cout << "\n    creating " << wtn << "...";
@@ -112,7 +111,7 @@ void trigrouter::create_wcnt_triggers()
         }
         std::ostringstream ostr;
         ostr << i;
-        sm = sml->create_module(
+        synthmod* sm = sml->create_module(
             synthmodnames::WCNTTRIGGER, ostr.str().c_str());
         sml->add_module(sm);
         grp->group_module(sm);

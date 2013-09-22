@@ -31,12 +31,14 @@ inputnames::IN_TYPE modinput::get_inputtype() const
      : inputnames::IN_FIRST;
 }
 
+#ifdef UNUSED
 iocat::IOCAT modinput::get_inputcategory() const
 {
     return (this != 0)
      ? inputnames::get_category(input_type)
      : iocat::FIRST;
 }
+#endif
 
 #ifdef DATA_STATS
 STATS_INIT(modinput)

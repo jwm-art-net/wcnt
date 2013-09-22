@@ -203,8 +203,8 @@ void stepper::init()
         invalidate();
         return;
     }
-    double cur_pos = 0, cur_lvl = 0, next_pos = 0, next_lvl = 0;
-    double pos = 0, pos_ratio;
+    double cur_pos = 0, next_pos = 0;
+    double pos = 0;
     double stz = 1.0 / (double)step_count;
     step_data* step = goto_first();
     step_data* next_step = 0;
@@ -221,9 +221,9 @@ void stepper::init()
             if (pos >= next_pos)
                 step = goto_next();
         }while (pos >= next_pos);
-        pos_ratio = (pos - cur_pos) / (next_pos - cur_pos);
-        cur_lvl = step->get_upper_level();
-        next_lvl = next_step->get_upper_level();
+        double pos_ratio = (pos - cur_pos) / (next_pos - cur_pos);
+        double cur_lvl = step->get_upper_level();
+        double next_lvl = next_step->get_upper_level();
         up_levels[i] = cur_lvl + (next_lvl - cur_lvl) * pos_ratio;
         cur_lvl = step->get_lower_level();
         next_lvl = next_step->get_lower_level();

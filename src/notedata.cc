@@ -155,15 +155,6 @@ note_data::NOTE_TYPE note_data::get_note_type()
     return (note_type = retv);
 }
 
-const char* note_data::get_note_name() const
-{
-    const char* ptr = notename;
-    if (note_type == NOTE_TYPE_ERR)
-        return 0;
-    if (note_type==NOTE_TYPE_EDIT) ptr += NOTE_CHR_NAME;
-    return ptr;
-}
-
 double note_data::get_note_number() const
 {
     const char* ptr = notename;
@@ -175,6 +166,16 @@ double note_data::get_note_number() const
     return noteno;
 }
 
+#ifdef UNUSED
+const char* note_data::get_note_name() const
+{
+    const char* ptr = notename;
+    if (note_type == NOTE_TYPE_ERR)
+        return 0;
+    if (note_type==NOTE_TYPE_EDIT) ptr += NOTE_CHR_NAME;
+    return ptr;
+}
+
 double note_data::get_note_frequency() const
 {
     const char* ptr = notename;
@@ -183,6 +184,7 @@ double note_data::get_note_frequency() const
     if (note_type==NOTE_TYPE_EDIT) ptr += NOTE_CHR_NAME;
     return note_to_freq(ptr);
 }
+#endif
 
 bool note_data::set_param(paramnames::PAR_TYPE dt, void* data)
 {

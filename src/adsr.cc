@@ -203,6 +203,7 @@ adsr_coord* adsr::insert_coord(
     return nc;
 }
 
+#ifdef UNUSED
 void adsr::scale_section(adsr_coord::SECT n, double ratio)
 {
     if (ratio <= 0.00)
@@ -219,6 +220,7 @@ void adsr::scale_section(adsr_coord::SECT n, double ratio)
             return;
     }
 }
+#endif
 
 void adsr::init()
 {

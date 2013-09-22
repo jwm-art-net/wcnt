@@ -2,9 +2,7 @@
 
 #include <math.h>
 
-wave_tables::wave_tables() :
-  fxstring("one/sine/tri/saw/sine_01/tri_01/saw_01"),
-  table_size(0)
+wave_tables::wave_tables()
 {
     for(int i = 0; i < WT_LAST; i++)
         table[i] = 0;
@@ -98,8 +96,13 @@ void wave_tables::create_table(WT type)
     }
 }
 
+const char* const wave_tables::fxstring =
+                                "one/sine/tri/saw/sine_01/tri_01/saw_01";
+
 const int wave_tables::table_bits = TABLE_BITS;
 const int wave_tables::table_shift = TABLE_SHIFT;
 double wave_tables::phase_step_base = 0;
 double wave_tables::phase_step_scalar = 0;
 
+unsigned long wave_tables::table_size = 0;
+double* wave_tables::table[WT_LAST] = { 0 };

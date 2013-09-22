@@ -19,12 +19,14 @@ modparam::~modparam()
     #endif
 }
 
+#ifdef UNUSED
 iocat::IOCAT modparam::get_paramcategory()
 {
     return (this)
         ? paramnames::get_category(param_type)
         : iocat::FIRST;
 }
+#endif
 
 bool modparam::validate(synthmod* sm, stockerrs::ERR_TYPE et)
 {

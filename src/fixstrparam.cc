@@ -1,5 +1,7 @@
 #include "../include/fixstrparam.h"
 
+#include <cstring>
+
 fixstrparam::
 fixstrparam(char const* str_list, paramnames::PAR_TYPE par_type)
  : string_list(str_list), param_type(par_type)

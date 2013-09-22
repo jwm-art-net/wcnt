@@ -45,16 +45,17 @@ public:
     linkedlist*
     duplicate_connections_for_module(const synthmod* from, synthmod* to);
 
+    void reconnect_output_module_by_name(const char*from, const char*to);
+
+    bool make_connections();
+
+    #ifdef UNUSED
     /*
     // duplicate_connections_for_group
     //  returns 0 on sucess, or the connector which failed.
     */
     connector*
     duplicate_connections_for_group(char const* from, char const* to);
-
-    void reconnect_output_module_by_name(const char*from, const char*to);
-
-    bool make_connections();
 
     // wcnt_signal uses output = input * level.
     // when level is 1.0, output == input, and the run method
@@ -65,6 +66,7 @@ public:
     // also utilise this method if possible.
     bool remake_connections(
         synthmod*, outputnames::OUT_TYPE, outputnames::OUT_TYPE new_ot);
+    #endif
 };
 
 #endif
