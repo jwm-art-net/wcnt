@@ -5,7 +5,7 @@
 #include "../include/modinputlist.h"
 #include "../include/modparamlist.h"
 
-trigecho::trigecho(char const* uname) :
+trigecho::trigecho(const char* uname) :
 
  synthmod(
     synthmodnames::TRIGECHO,
@@ -42,7 +42,7 @@ void trigecho::init()
     vel_count_ratio = 1.0 / (double)count;
 }
 
-void const* trigecho::get_out(outputnames::OUT_TYPE ot) const
+const void* trigecho::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -53,7 +53,7 @@ void const* trigecho::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* trigecho::set_in(inputnames::IN_TYPE it, void const* o)
+const void* trigecho::set_in(inputnames::IN_TYPE it, const void* o)
 {
     if (it == inputnames::IN_TRIG) {
         in_trig = (STATUS*)o;
@@ -62,14 +62,14 @@ void const* trigecho::set_in(inputnames::IN_TYPE it, void const* o)
     return  0;
 }
 
-void const* trigecho::get_in(inputnames::IN_TYPE it) const
+const void* trigecho::get_in(inputnames::IN_TYPE it) const
 {
     if (it == inputnames::IN_TRIG)
         return in_trig;
     return  0;
 }
 
-bool trigecho::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool trigecho::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -87,7 +87,7 @@ bool trigecho::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* trigecho::get_param(paramnames::PAR_TYPE pt) const
+const void* trigecho::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

@@ -16,7 +16,7 @@ bpmchange::bpmchange(short bar, double bpm) :
     init_first();
 }
 
-bool bpmchange::set_param(paramnames::PAR_TYPE pt, void* data)
+bool bpmchange::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -31,7 +31,7 @@ bool bpmchange::set_param(paramnames::PAR_TYPE pt, void* data)
     }
 }
 
-void const* bpmchange::get_param(paramnames::PAR_TYPE pt) const
+const void* bpmchange::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

@@ -40,16 +40,16 @@
 class notetran: public synthmod
 {
 public:
-    notetran(char const*);
+    notetran(const char*);
     ~notetran();
     void run();
     void init();
     stockerrs::ERR_TYPE validate();
-    void const* get_out(outputnames::OUT_TYPE) const;
-    void const* set_in(inputnames::IN_TYPE, void const*);
+    const void* get_out(outputnames::OUT_TYPE) const;
+    const void* set_in(inputnames::IN_TYPE, const void*);
     const void* get_in(inputnames::IN_TYPE it) const;
-    bool set_param(paramnames::PAR_TYPE, void const*);
-    void const* get_param(paramnames::PAR_TYPE) const;
+    bool set_param(paramnames::PAR_TYPE, const void*);
+    const void* get_param(paramnames::PAR_TYPE) const;
 
 private:
     // inputs
@@ -86,10 +86,10 @@ private:
     unsigned long nsrt_samples;
     double no_respsize;
     double ns_respsize;
-    void set_no_lo_notename(char const* nol);
-    void set_no_hi_notename(char const* noh);
-    void set_ns_lo_notename(char const* nsl);
-    void set_ns_hi_notename(char const* nsh);
+    void set_no_lo_notename(const char* nol);
+    void set_no_hi_notename(const char* noh);
+    void set_ns_lo_notename(const char* nsl);
+    void set_ns_hi_notename(const char* nsh);
     void init_first();
     
 };

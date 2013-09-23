@@ -40,7 +40,7 @@ class synthmod
     };
 
     synthmod(   synthmodnames::SYNTH_MOD_TYPE,
-                char const* const uname,
+                const char* const uname,
                 int _flags_);
 
     virtual ~synthmod();
@@ -66,11 +66,11 @@ class synthmod
     virtual void init(){};
 
     /* input/output/param access */
-    virtual void const* set_in(inputnames::IN_TYPE, void const*);
-    virtual bool        set_param(paramnames::PAR_TYPE, void const*);
-    virtual void const* get_out(outputnames::OUT_TYPE) const;
-    virtual void const* get_in(inputnames::IN_TYPE) const;
-    virtual void const* get_param(paramnames::PAR_TYPE) const;
+    virtual const void* set_in(inputnames::IN_TYPE, const void*);
+    virtual bool        set_param(paramnames::PAR_TYPE, const void*);
+    virtual const void* get_out(outputnames::OUT_TYPE) const;
+    virtual const void* get_in(inputnames::IN_TYPE) const;
+    virtual const void* get_param(paramnames::PAR_TYPE) const;
 
     virtual dobj*       add_dobj(dobj*);
 

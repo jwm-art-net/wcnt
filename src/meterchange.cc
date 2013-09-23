@@ -20,7 +20,7 @@ meterchange::meterchange(short br, char btpb, char btval) :
     init_first();
 }
 
-bool meterchange::set_param(paramnames::PAR_TYPE pt, void* data)
+bool meterchange::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -36,7 +36,7 @@ bool meterchange::set_param(paramnames::PAR_TYPE pt, void* data)
     }
 }
 
-void const* meterchange::get_param(paramnames::PAR_TYPE pt) const
+const void* meterchange::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

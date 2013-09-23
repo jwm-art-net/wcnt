@@ -5,7 +5,7 @@
 #include "../include/modparamlist.h"
 #include "../include/fxsparamlist.h"
 
-balance::balance(char const* uname) :
+balance::balance(const char* uname) :
  synthmod(synthmodnames::BALANCE, uname, SM_HAS_OUT_OUTPUT),
  in_signal1(0), in_signal2(0),out_output(0), func(ADD), bias(0)
 {
@@ -19,7 +19,7 @@ balance::~balance()
 {
 }
 
-void const* balance::get_out(outputnames::OUT_TYPE ot) const
+const void* balance::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -28,7 +28,7 @@ void const* balance::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* balance::set_in(inputnames::IN_TYPE it, void const* o)
+const void* balance::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -38,7 +38,7 @@ void const* balance::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* balance::get_in(inputnames::IN_TYPE it) const
+const void* balance::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -48,7 +48,7 @@ void const* balance::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool balance::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool balance::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -63,7 +63,7 @@ bool balance::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* balance::get_param(paramnames::PAR_TYPE pt) const
+const void* balance::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

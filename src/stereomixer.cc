@@ -11,7 +11,7 @@
 #include "../include/dobjdobjlist.h"
 #include "../include/duplicate_list_module.h"
 
-stereomixer::stereomixer(char const* uname) :
+stereomixer::stereomixer(const char* uname) :
  synthmod(synthmodnames::STEREOMIXER, uname, SM_HAS_STEREO_OUTPUT),
  linkedlist(MULTIREF_ON, PRESERVE_DATA),
  out_left(0), out_right(0), master_level(0.75),
@@ -30,7 +30,7 @@ stereomixer::~stereomixer()
         delete [] chans_right;
 }
 
-void const* stereomixer::get_out(outputnames::OUT_TYPE ot) const
+const void* stereomixer::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -40,7 +40,7 @@ void const* stereomixer::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-bool stereomixer::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool stereomixer::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -52,7 +52,7 @@ bool stereomixer::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* stereomixer::get_param(paramnames::PAR_TYPE pt) const
+const void* stereomixer::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

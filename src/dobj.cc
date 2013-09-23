@@ -66,7 +66,7 @@ bool dobj::set_username(const char* un)
     return true;
 }
 
-char const* dobj::get_username()
+const char* dobj::get_username()
 {
     if (dobjnames::check_type(object_type)
         == dobjnames::DOBJ_FIRST)
@@ -74,14 +74,14 @@ char const* dobj::get_username()
     return username;
 }
 
-bool dobj::set_param(paramnames::PAR_TYPE, void*)
+bool dobj::set_param(paramnames::PAR_TYPE, const void*)
 {
     dobjerr("%s %s set parameter of data object.", stockerrs::major,
                                                    stockerrs::bad);
     return 0;
 }
 
-void const* dobj::get_param(paramnames::PAR_TYPE) const
+const void* dobj::get_param(paramnames::PAR_TYPE) const
 {
     dobjerr("%s %s get parameter of data object.", stockerrs::major,
                                                    stockerrs::bad);

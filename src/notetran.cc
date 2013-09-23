@@ -6,7 +6,7 @@
 #include "../include/modparamlist.h"
 #include "../include/conversions.h"
 
-notetran::notetran(char const* uname) :
+notetran::notetran(const char* uname) :
  synthmod(synthmodnames::NOTETRAN, uname, SM_DEFAULT),
  in_notename(0), in_detranspose(0), in_note_on_trig(0),
  in_note_slide_trig(0), out_no_value(0), out_ns_value(0),
@@ -43,7 +43,7 @@ notetran::~notetran()
     delete [] ns_hi_notename;
 }
 
-void const* notetran::get_out(outputnames::OUT_TYPE ot) const
+const void* notetran::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -57,12 +57,12 @@ void const* notetran::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* notetran::set_in(inputnames::IN_TYPE it, void const* o)
+const void* notetran::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
     case inputnames::IN_NOTENAME:
-        return in_notename = (char const**)o;
+        return in_notename = (const char**)o;
     case inputnames::IN_DETRANSPOSE:
         return in_detranspose = (short*)o;
     case inputnames::IN_NOTE_ON_TRIG:
@@ -74,7 +74,7 @@ void const* notetran::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* notetran::get_in(inputnames::IN_TYPE it) const
+const void* notetran::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -86,21 +86,21 @@ void const* notetran::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool notetran::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool notetran::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
     case paramnames::NO_LONOTE:
-        set_no_lo_notename((char*)data);
+        set_no_lo_notename((const char*)data);
         return true;
     case paramnames::NO_HINOTE:
-        set_no_hi_notename((char*)data);
+        set_no_hi_notename((const char*)data);
         return true;
     case paramnames::NS_LONOTE:
-        set_ns_lo_notename((char*)data);
+        set_ns_lo_notename((const char*)data);
         return true;
     case paramnames::NS_HINOTE:
-        set_ns_hi_notename((char*)data);
+        set_ns_hi_notename((const char*)data);
         return true;
     case paramnames::MINNO_OUT:
         min_no_out = *(double*)data;
@@ -131,7 +131,7 @@ bool notetran::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* notetran::get_param(paramnames::PAR_TYPE pt) const
+const void* notetran::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {
@@ -196,7 +196,7 @@ stockerrs::ERR_TYPE notetran::validate()
     return stockerrs::ERR_NO_ERROR;
 }
 
-void notetran::set_no_lo_notename(char const* nol)
+void notetran::set_no_lo_notename(const char* nol)
 {
     int n = strlen(nol);
     if (n > jwm_init::note_name_len)
@@ -205,7 +205,7 @@ void notetran::set_no_lo_notename(char const* nol)
     no_lo_notename[n] = '\0';
 }
 
-void notetran::set_no_hi_notename(char const* noh)
+void notetran::set_no_hi_notename(const char* noh)
 {
     int n = strlen(noh);
     if (n > jwm_init::note_name_len)
@@ -214,7 +214,7 @@ void notetran::set_no_hi_notename(char const* noh)
     no_hi_notename[n] = '\0';
 }
 
-void notetran::set_ns_lo_notename(char const* nsl)
+void notetran::set_ns_lo_notename(const char* nsl)
 {
     int n = strlen(nsl);
     if (n > jwm_init::note_name_len)
@@ -223,7 +223,7 @@ void notetran::set_ns_lo_notename(char const* nsl)
     ns_lo_notename[n] = '\0';
 }
 
-void notetran::set_ns_hi_notename(char const* nsh)
+void notetran::set_ns_hi_notename(const char* nsh)
 {
     int n = strlen(nsh);
     if (n > jwm_init::note_name_len)

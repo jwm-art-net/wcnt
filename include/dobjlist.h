@@ -18,7 +18,7 @@ class dobjlist : public linked_list<dobj>
     // create_dobj does not add to list.
     dobj* create_dobj(dobjnames::DOBJ_TYPE);
 
-    dobj* get_dobj_by_name(char const* n) {
+    dobj* get_dobj_by_name(const char* n) {
         return find_in_data(sneak_first(), name(n))->get_data();
     }
 

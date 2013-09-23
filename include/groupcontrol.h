@@ -31,17 +31,17 @@ class synthmodlist;
 class group_control: public synthmod
 {
  public:
-    group_control(char const*);
+    group_control(const char*);
     ~group_control();
     // virtual funcs
     void init();
     void run();
     stockerrs::ERR_TYPE validate();
-    void const* set_in(inputnames::IN_TYPE, void const*);
+    const void* set_in(inputnames::IN_TYPE, const void*);
     const void* get_in(inputnames::IN_TYPE it) const;
-    void const* get_out(outputnames::OUT_TYPE) const;
-    bool set_param(paramnames::PAR_TYPE, void const*);
-    void const* get_param(paramnames::PAR_TYPE) const;
+    const void* get_out(outputnames::OUT_TYPE) const;
+    bool set_param(paramnames::PAR_TYPE, const void*);
+    const void* get_param(paramnames::PAR_TYPE) const;
 
  private:
     /* inputs */
@@ -56,7 +56,7 @@ class group_control: public synthmod
     group* grp;
     synthmod** runlist;
     synthmod** empty_run_list;
-    bool set_group_name(char const*);
+    bool set_group_name(const char*);
     void init_first();
     
 };

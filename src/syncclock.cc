@@ -7,7 +7,7 @@
 
 #include <math.h>
 
-sync_clock::sync_clock(char const* uname) :
+sync_clock::sync_clock(const char* uname) :
  synthmod(synthmodnames::SYNCCLOCK, uname, SM_DEFAULT),
  in_bpm(0), in_pos_stepsz(0), in_beats_per_bar(0), in_beat_value(0),
  in_phase_trig(0), in_freq_mod1(0), in_freq_mod2(0), out_phase_trig(OFF),
@@ -33,7 +33,7 @@ sync_clock::~sync_clock()
 {
 }
 
-void const* sync_clock::get_out(outputnames::OUT_TYPE ot) const
+const void* sync_clock::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -43,7 +43,7 @@ void const* sync_clock::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* sync_clock::set_in(inputnames::IN_TYPE it, void const* o)
+const void* sync_clock::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -66,7 +66,7 @@ void const* sync_clock::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* sync_clock::get_in(inputnames::IN_TYPE it) const
+const void* sync_clock::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -89,7 +89,7 @@ void const* sync_clock::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool sync_clock::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool sync_clock::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -113,7 +113,7 @@ bool sync_clock::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* sync_clock::get_param(paramnames::PAR_TYPE pt) const
+const void* sync_clock::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

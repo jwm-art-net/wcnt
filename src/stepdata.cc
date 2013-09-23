@@ -21,7 +21,7 @@ step_data::~step_data()
 {
 }
 
-bool step_data::set_param(paramnames::PAR_TYPE dt, void* data)
+bool step_data::set_param(paramnames::PAR_TYPE dt, const void* data)
 {
     switch(dt)
     {
@@ -39,7 +39,7 @@ bool step_data::set_param(paramnames::PAR_TYPE dt, void* data)
     }
 }
 
-void const* step_data::get_param(paramnames::PAR_TYPE dt) const
+const void* step_data::get_param(paramnames::PAR_TYPE dt) const
 {
     switch(dt)
     {

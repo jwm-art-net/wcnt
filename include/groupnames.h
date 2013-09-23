@@ -15,7 +15,7 @@ const char* get_groupname(const char* name);
 //  adds or changes the group name.
 //  returns the new name as a new char[].
 */
-char* set_groupname(char const* const groupname, char const* constname);
+char* set_groupname(const char* const groupname, const char* constname);
 
 
 #endif

@@ -4,7 +4,7 @@
 #include "../include/modparamlist.h"
 #include "../include/connectorlist.h"
 
-wcnt_exit::wcnt_exit(char const* uname) :
+wcnt_exit::wcnt_exit(const char* uname) :
 
  synthmod(
     synthmodnames::WCNTEXIT,
@@ -21,7 +21,7 @@ wcnt_exit::~wcnt_exit()
 {
 }
 
-void const* wcnt_exit::set_in(inputnames::IN_TYPE it, void const* o)
+const void* wcnt_exit::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -30,7 +30,7 @@ void const* wcnt_exit::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* wcnt_exit::get_in(inputnames::IN_TYPE it) const
+const void* wcnt_exit::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -39,7 +39,7 @@ void const* wcnt_exit::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool wcnt_exit::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool wcnt_exit::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -51,7 +51,7 @@ bool wcnt_exit::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* wcnt_exit::get_param(paramnames::PAR_TYPE pt) const
+const void* wcnt_exit::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

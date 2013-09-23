@@ -5,7 +5,7 @@
 #include "../include/modparamlist.h"
 #include "../include/fxsparamlist.h"
 
-logictrigger::logictrigger(char const* uname) :
+logictrigger::logictrigger(const char* uname) :
 
  synthmod(synthmodnames::LOGICTRIGGER, uname, SM_HAS_OUT_TRIG),
  in_trig1(0), in_trig2(0), out_trig(OFF), logicfunc(AND), precision(0),
@@ -21,7 +21,7 @@ logictrigger::~logictrigger()
 {
 }
 
-void const* logictrigger::get_out(outputnames::OUT_TYPE ot) const
+const void* logictrigger::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -30,7 +30,7 @@ void const* logictrigger::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* logictrigger::set_in(inputnames::IN_TYPE it, void const* o)
+const void* logictrigger::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -40,7 +40,7 @@ void const* logictrigger::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* logictrigger::get_in(inputnames::IN_TYPE it) const
+const void* logictrigger::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -50,7 +50,7 @@ void const* logictrigger::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool logictrigger::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool logictrigger::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -65,7 +65,7 @@ bool logictrigger::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* logictrigger::get_param(paramnames::PAR_TYPE pt) const
+const void* logictrigger::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

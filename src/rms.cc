@@ -7,7 +7,7 @@
 
 #include <math.h>
 
-rms::rms(char const* uname) :
+rms::rms(const char* uname) :
  synthmod(synthmodnames::RMS, uname, SM_DEFAULT),
  in_signal(0), out_rms(0), rms_time(0), output(0), rmsarr(0),
  arraymax(0), arrpos(0), sqrsum(0)
@@ -23,7 +23,7 @@ rms::~rms()
         delete [] rmsarr;
 }
 
-void const* rms::get_out(outputnames::OUT_TYPE ot) const
+const void* rms::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -32,7 +32,7 @@ void const* rms::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* rms::set_in(inputnames::IN_TYPE it, void const* o)
+const void* rms::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -41,7 +41,7 @@ void const* rms::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* rms::get_in(inputnames::IN_TYPE it) const
+const void* rms::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -50,7 +50,7 @@ void const* rms::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool rms::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool rms::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -62,7 +62,7 @@ bool rms::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* rms::get_param(paramnames::PAR_TYPE pt) const
+const void* rms::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

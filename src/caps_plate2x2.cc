@@ -5,7 +5,7 @@
 #include "../include/modinputlist.h"
 #include "../include/modparamlist.h"
 
-caps_plate2x2::caps_plate2x2(char const* uname) :
+caps_plate2x2::caps_plate2x2(const char* uname) :
  synthmod(synthmodnames::CAPS_PLATE2X2, uname, SM_HAS_STEREO_OUTPUT),
  in_left(0), in_right(0), out_left(0), out_right(0),
  bandwidth(0.502), tail(0.3745), damping(0.250375), blend(0.25),
@@ -29,7 +29,7 @@ caps_plate2x2::~caps_plate2x2()
     if (l_out_right) delete [] l_out_right;
 }
 
-void const* caps_plate2x2::get_out(outputnames::OUT_TYPE ot) const
+const void* caps_plate2x2::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -39,8 +39,8 @@ void const* caps_plate2x2::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const*
-caps_plate2x2::set_in(inputnames::IN_TYPE it, void const* o)
+const void*
+caps_plate2x2::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -53,7 +53,7 @@ caps_plate2x2::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* caps_plate2x2::get_in(inputnames::IN_TYPE it) const
+const void* caps_plate2x2::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -64,7 +64,7 @@ void const* caps_plate2x2::get_in(inputnames::IN_TYPE it) const
 }
 
 bool
-caps_plate2x2::set_param(paramnames::PAR_TYPE pt, void const* data)
+caps_plate2x2::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -85,7 +85,7 @@ caps_plate2x2::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* caps_plate2x2::get_param(paramnames::PAR_TYPE pt) const
+const void* caps_plate2x2::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

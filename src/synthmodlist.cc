@@ -32,7 +32,7 @@ synthmodlist::~synthmodlist()
 
 synthmod* 
 synthmodlist::create_module(
-    synthmodnames::SYNTH_MOD_TYPE smt, char const* uname)
+    synthmodnames::SYNTH_MOD_TYPE smt, const char* uname)
 {
     switch (smt) {
     case synthmodnames::WCNTEXIT:       return new wcnt_exit(uname);
@@ -144,7 +144,7 @@ synthmodlist::delete_module(synthmod * const sm)
 }
 
 synthmodlist::linkedlist*
-synthmodlist::duplicate_group(char const* from, char const* to)
+synthmodlist::duplicate_group(const char* from, const char* to)
 {
     linkedlist* grplist = new linkedlist(MULTIREF_OFF, PRESERVE_DATA);
     llitem* i = find_in_data(sneak_first(), groupname(from));

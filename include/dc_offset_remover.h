@@ -25,12 +25,12 @@ Ports:  "Input" input, audio
 class dc_offset_remover : public synthmod
 {
 public:
-    dc_offset_remover(char const*);
+    dc_offset_remover(const char*);
     ~dc_offset_remover();
     void run();
     void init();
-    void const* get_out(outputnames::OUT_TYPE) const;
-    void const* set_in(inputnames::IN_TYPE, void const*);
+    const void* get_out(outputnames::OUT_TYPE) const;
+    const void* set_in(inputnames::IN_TYPE, const void*);
     const void* get_in(inputnames::IN_TYPE it) const;
 
 private:

@@ -8,7 +8,7 @@
 #include <iostream>
 #include <math.h>
 
-orbit::orbit(char const* uname) :
+orbit::orbit(const char* uname) :
  synthmod(synthmodnames::ORBIT, uname, SM_DEFAULT),
  out_x(0.0), out_y(0.0),
  in_restart_trig(0), in_trig(0), type(ORB_HOPALONG),
@@ -27,7 +27,7 @@ orbit::~orbit()
 {
 }
 
-void const* orbit::set_in(inputnames::IN_TYPE it, void const* o)
+const void* orbit::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -40,7 +40,7 @@ void const* orbit::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* orbit::get_in(inputnames::IN_TYPE it) const
+const void* orbit::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -50,7 +50,7 @@ void const* orbit::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool orbit::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool orbit::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -74,7 +74,7 @@ bool orbit::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* orbit::get_param(paramnames::PAR_TYPE pt) const
+const void* orbit::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {
@@ -161,7 +161,7 @@ void orbit::run()
     }
 }
 
-void const* orbit::get_out(outputnames::OUT_TYPE ot) const
+const void* orbit::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {

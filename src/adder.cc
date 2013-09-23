@@ -3,7 +3,7 @@
 #include "../include/modoutputlist.h"
 #include "../include/modinputlist.h"
 
-adder::adder(char const* uname) :
+adder::adder(const char* uname) :
  synthmod(synthmodnames::ADDER, uname, SM_HAS_OUT_OUTPUT),
  in_signal1(0), in_signal2(0), out_output(0.00)
 {
@@ -16,14 +16,14 @@ adder::~adder()
 {
 }
 
-void const* adder::get_out(outputnames::OUT_TYPE ot) const
+const void* adder::get_out(outputnames::OUT_TYPE ot) const
 {
     if (ot == outputnames::OUT_OUTPUT)
         return &out_output;
     return 0;
 }
 
-void const* adder::set_in(inputnames::IN_TYPE it, void const* o)
+const void* adder::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -33,7 +33,7 @@ void const* adder::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* adder::get_in(inputnames::IN_TYPE it) const
+const void* adder::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {

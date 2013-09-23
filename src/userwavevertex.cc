@@ -24,7 +24,7 @@ void wave_vertex::modulate(double vmod, double hmod)
     out_pos = lo_pos + (up_pos - lo_pos) * (( vmod < 0) ? -vmod : vmod);
 }
 
-bool wave_vertex::set_param(paramnames::PAR_TYPE pt, void* data)
+bool wave_vertex::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -45,7 +45,7 @@ bool wave_vertex::set_param(paramnames::PAR_TYPE pt, void* data)
     }
 }
 
-void const* wave_vertex::get_param(paramnames::PAR_TYPE pt) const
+const void* wave_vertex::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

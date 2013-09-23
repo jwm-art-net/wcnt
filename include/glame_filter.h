@@ -25,7 +25,7 @@ Ports:  "Cutoff Frequency" input, control, 1e-04*srate to 0.45*srate, default 0.
 class glame_filter : public synthmod
 {
  public:
-    glame_filter(char const*);
+    glame_filter(const char*);
     ~glame_filter();
 
     enum F_TYPE{ LOPASS, HIPASS };
@@ -34,11 +34,11 @@ class glame_filter : public synthmod
     void run();
     void init();
     stockerrs::ERR_TYPE validate();
-    void const* get_out(outputnames::OUT_TYPE) const;
-    void const* set_in(inputnames::IN_TYPE, void const*);
+    const void* get_out(outputnames::OUT_TYPE) const;
+    const void* set_in(inputnames::IN_TYPE, const void*);
     const void* get_in(inputnames::IN_TYPE it) const;
-    bool        set_param(paramnames::PAR_TYPE, void const*);
-    void const* get_param(paramnames::PAR_TYPE) const;
+    bool        set_param(paramnames::PAR_TYPE, const void*);
+    const void* get_param(paramnames::PAR_TYPE) const;
  private:
     // inputs
     const double* in_signal;

@@ -10,7 +10,7 @@ dobjparam::dobjparam(dobjnames::DOBJ_TYPE dt, paramnames::PAR_TYPE pt):
 
 bool dobjparam::validate(dobj* d, stockerrs::ERR_TYPE et)
 {
-    void const* data = d->get_param(partype);
+    const void* data = d->get_param(partype);
     if (!data) return false;
     switch(paramnames::get_category(partype))
     {

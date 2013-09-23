@@ -4,7 +4,7 @@
 #include "../include/modinputlist.h"
 #include "../include/modparamlist.h"
 
-simple_delay::simple_delay(char const* uname) :
+simple_delay::simple_delay(const char* uname) :
  synthmod(synthmodnames::SIMPLEDELAY, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), out_output(0), delay_time(0), output(0),
  filter(0), filterarraymax(0), fpos(0), filtertotal(0)
@@ -32,7 +32,7 @@ void simple_delay::init()
     fpos = filterarraymax - 1;
 }
 
-void const* simple_delay::get_out(outputnames::OUT_TYPE ot) const
+const void* simple_delay::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -41,7 +41,7 @@ void const* simple_delay::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* simple_delay::set_in(inputnames::IN_TYPE it, void const* o)
+const void* simple_delay::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -50,7 +50,7 @@ void const* simple_delay::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* simple_delay::get_in(inputnames::IN_TYPE it) const
+const void* simple_delay::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -59,7 +59,7 @@ void const* simple_delay::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool simple_delay::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool simple_delay::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -71,7 +71,7 @@ bool simple_delay::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* simple_delay::get_param(paramnames::PAR_TYPE pt) const
+const void* simple_delay::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

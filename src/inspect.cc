@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-inspect::inspect(char const* uname) :
+inspect::inspect(const char* uname) :
  synthmod(synthmodnames::INSPECT, uname, SM_DEFAULT),
  in_df(0),  in_df_trig(0),
  in_si(0),  in_si_trig(0),
@@ -42,7 +42,7 @@ inspect::~inspect()
         delete [] str_msg;
 }
 
-void inspect::set_message(char const* msg_from, char** msg_to)
+void inspect::set_message(const char* msg_from, char** msg_to)
 {
     if (*msg_to) {
         delete [] *msg_to;
@@ -52,7 +52,7 @@ void inspect::set_message(char const* msg_from, char** msg_to)
     strcpy(*msg_to, msg_from);
 }
 
-void const* inspect::set_in(inputnames::IN_TYPE it, void const* o)
+const void* inspect::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -80,7 +80,7 @@ void const* inspect::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* inspect::get_in(inputnames::IN_TYPE it) const
+const void* inspect::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -118,7 +118,7 @@ void inspect::run()
     }
 }
 
-bool inspect::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool inspect::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -142,15 +142,15 @@ bool inspect::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* inspect::get_param(paramnames::PAR_TYPE pt) const
+const void* inspect::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::INSPECT_DF_MSG:  return &df_msg;
-        case paramnames::INSPECT_SI_MSG:  return &si_msg;
-        case paramnames::INSPECT_UL_MSG:  return &ul_msg;
-        case paramnames::INSPECT_ST_MSG:  return &st_msg;
-        case paramnames::INSPECT_STR_MSG: return &str_msg;
+        case paramnames::INSPECT_DF_MSG:  return df_msg;
+        case paramnames::INSPECT_SI_MSG:  return si_msg;
+        case paramnames::INSPECT_UL_MSG:  return ul_msg;
+        case paramnames::INSPECT_ST_MSG:  return st_msg;
+        case paramnames::INSPECT_STR_MSG: return str_msg;
         default: return 0;
     }
 }

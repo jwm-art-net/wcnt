@@ -6,7 +6,7 @@
 #include "../include/modparamlist.h"
 #include "../include/fxsparamlist.h"
 
-glame_butterworth::glame_butterworth(char const* uname) :
+glame_butterworth::glame_butterworth(const char* uname) :
  synthmod(synthmodnames::GLAME_BUTTERWORTH, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), in_phase_step(0), in_res_mod(0), output(0), type(LOPASS),
  resonance(0), res_mod_size(0), l_descriptor(0), l_inst_handle(0),
@@ -30,7 +30,7 @@ glame_butterworth::~glame_butterworth()
     if (l_output) delete [] l_output;
 }
 
-void const* glame_butterworth::get_out(outputnames::OUT_TYPE ot) const
+const void* glame_butterworth::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -39,8 +39,8 @@ void const* glame_butterworth::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const*
-glame_butterworth::set_in(inputnames::IN_TYPE it, void const* o)
+const void*
+glame_butterworth::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -55,7 +55,7 @@ glame_butterworth::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* glame_butterworth::get_in(inputnames::IN_TYPE it) const
+const void* glame_butterworth::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -67,7 +67,7 @@ void const* glame_butterworth::get_in(inputnames::IN_TYPE it) const
 }
 
 bool
-glame_butterworth::set_param(paramnames::PAR_TYPE pt, void const* data)
+glame_butterworth::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -85,7 +85,7 @@ glame_butterworth::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* glame_butterworth::get_param(paramnames::PAR_TYPE pt) const
+const void* glame_butterworth::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

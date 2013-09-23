@@ -22,7 +22,7 @@ stockerrs::ERR_TYPE dynvertex::validate()
     return stockerrs::ERR_NO_ERROR;
 }
 
-bool dynvertex::set_param(paramnames::PAR_TYPE pt, void* data)
+bool dynvertex::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -40,7 +40,7 @@ bool dynvertex::set_param(paramnames::PAR_TYPE pt, void* data)
     }
 }
 
-void const* dynvertex::get_param(paramnames::PAR_TYPE pt) const
+const void* dynvertex::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

@@ -3,7 +3,7 @@
 #include "../include/modoutputlist.h"
 #include "../include/modinputlist.h"
 
-stereo_channel::stereo_channel(char const* uname) :
+stereo_channel::stereo_channel(const char* uname) :
 
  synthmod(
     synthmodnames::STEREOCHANNEL,
@@ -22,7 +22,7 @@ stereo_channel::~stereo_channel()
 {
 }
 
-void const* stereo_channel::get_out(outputnames::OUT_TYPE ot) const
+const void* stereo_channel::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -32,7 +32,7 @@ void const* stereo_channel::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* stereo_channel::set_in(inputnames::IN_TYPE it, void const* o)
+const void* stereo_channel::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -42,7 +42,7 @@ void const* stereo_channel::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* stereo_channel::get_in(inputnames::IN_TYPE it) const
+const void* stereo_channel::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {

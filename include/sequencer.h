@@ -33,7 +33,7 @@
 class sequencer : public synthmod, public linked_list<riff_node>
 {
  public:
-    sequencer(char const*);
+    sequencer(const char*);
     ~sequencer();
 
     riff_node* add_riff_node(riff_node*);
@@ -46,11 +46,11 @@ class sequencer : public synthmod, public linked_list<riff_node>
     void run();
     void init();
     stockerrs::ERR_TYPE validate();
-    void const* get_out(outputnames::OUT_TYPE) const;
-    void const* set_in(inputnames::IN_TYPE, void const*);
+    const void* get_out(outputnames::OUT_TYPE) const;
+    const void* set_in(inputnames::IN_TYPE, const void*);
     const void* get_in(inputnames::IN_TYPE it) const;
-    bool set_param(paramnames::PAR_TYPE, void const*);
-    void const* get_param(paramnames::PAR_TYPE) const;
+    bool set_param(paramnames::PAR_TYPE, const void*);
+    const void* get_param(paramnames::PAR_TYPE) const;
     synthmod* duplicate_module(const char* uname, DUP_IO dupio);
     dobj* add_dobj(dobj*);
  private:

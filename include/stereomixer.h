@@ -8,7 +8,7 @@
 class stereomixer: public synthmod, public linked_list<synthmod>
 {
 public:
-    stereomixer(char const*);
+    stereomixer(const char*);
     ~stereomixer();
 
     friend synthmod*
@@ -20,9 +20,9 @@ public:
     void run();
     void init();
     stockerrs::ERR_TYPE validate();
-    void const* get_out(outputnames::OUT_TYPE) const;
-    bool set_param(paramnames::PAR_TYPE, void const*);
-    void const* get_param(paramnames::PAR_TYPE) const;
+    const void* get_out(outputnames::OUT_TYPE) const;
+    bool set_param(paramnames::PAR_TYPE, const void*);
+    const void* get_param(paramnames::PAR_TYPE) const;
     synthmod* duplicate_module(const char* uname, DUP_IO);
     dobj* add_dobj(dobj*);
 private:

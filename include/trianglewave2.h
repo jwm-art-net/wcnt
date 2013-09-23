@@ -6,16 +6,16 @@
 class triangle_wave2 : public synthmod
 {
 public:
-    triangle_wave2(char const*);
+    triangle_wave2(const char*);
     ~triangle_wave2();
     void run();
     void init();
     stockerrs::ERR_TYPE validate();
-    void const* get_out(outputnames::OUT_TYPE) const;
-    void const* set_in(inputnames::IN_TYPE, void const*);
+    const void* get_out(outputnames::OUT_TYPE) const;
+    const void* set_in(inputnames::IN_TYPE, const void*);
     const void* get_in(inputnames::IN_TYPE it) const;
-    bool set_param(paramnames::PAR_TYPE, void const*);
-    void const* get_param(paramnames::PAR_TYPE) const;
+    bool set_param(paramnames::PAR_TYPE, const void*);
+    const void* get_param(paramnames::PAR_TYPE) const;
 private:
     STATUS const* in_phase_trig;
     double const* in_phase_step;

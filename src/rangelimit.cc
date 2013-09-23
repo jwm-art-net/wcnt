@@ -4,7 +4,7 @@
 #include "../include/modinputlist.h"
 #include "../include/modparamlist.h"
 
-range_limit::range_limit(char const* uname) :
+range_limit::range_limit(const char* uname) :
  synthmod(synthmodnames::RANGELIMIT, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), out_output(0), sigrangehi(0), sigrangelo(0)
 {
@@ -17,7 +17,7 @@ range_limit::~range_limit()
 {
 }
 
-void const* range_limit::get_out(outputnames::OUT_TYPE ot) const
+const void* range_limit::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -26,7 +26,7 @@ void const* range_limit::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* range_limit::set_in(inputnames::IN_TYPE it, void const* o)
+const void* range_limit::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -37,7 +37,7 @@ void const* range_limit::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* range_limit::get_in(inputnames::IN_TYPE it) const
+const void* range_limit::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -46,7 +46,7 @@ void const* range_limit::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool range_limit::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool range_limit::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -61,7 +61,7 @@ bool range_limit::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* range_limit::get_param(paramnames::PAR_TYPE pt) const
+const void* range_limit::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

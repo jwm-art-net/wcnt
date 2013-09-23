@@ -6,7 +6,7 @@
 #include "../include/moddobjlist.h"
 #include "../include/dobjdobjlist.h"
 
-timer::timer(char const* uname) :
+timer::timer(const char* uname) :
 
  synthmod(
     synthmodnames::TIMER,
@@ -79,7 +79,7 @@ void timer::run()
     }
 }
 
-void const* timer::get_out(outputnames::OUT_TYPE ot) const
+const void* timer::get_out(outputnames::OUT_TYPE ot) const
 {
     switch (ot)
     {

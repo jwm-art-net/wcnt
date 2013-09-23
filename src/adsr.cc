@@ -7,7 +7,7 @@
 #include "../include/dobjdobjlist.h"
 #include "../include/conversions.h"
 
-adsr::adsr(char const* uname) :
+adsr::adsr(const char* uname) :
  synthmod(synthmodnames::ADSR, uname, SM_HAS_OUT_OUTPUT),
  in_note_on_trig(0), in_note_off_trig(0), in_velocity(0), output(0),
  out_off_trig(OFF), play_state(OFF), up_thresh(0), lo_thresh(0),
@@ -72,7 +72,7 @@ const void * adsr::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool adsr::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool adsr::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -105,7 +105,7 @@ bool adsr::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* adsr::get_param(paramnames::PAR_TYPE pt) const
+const void* adsr::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

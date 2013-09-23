@@ -3,7 +3,7 @@
 #include "../include/modoutputlist.h"
 #include "../include/modinputlist.h"
 
-invert::invert(char const* uname) :
+invert::invert(const char* uname) :
  synthmod(synthmodnames::INVERT, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), out_output(0.00)
 {
@@ -15,7 +15,7 @@ invert::~invert()
 {
 }
 
-void const* invert::get_out(outputnames::OUT_TYPE ot) const
+const void* invert::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -24,7 +24,7 @@ void const* invert::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* invert::set_in(inputnames::IN_TYPE it, void const* o)
+const void* invert::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -33,7 +33,7 @@ void const* invert::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* invert::get_in(inputnames::IN_TYPE it) const
+const void* invert::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {

@@ -8,7 +8,7 @@
 class trigswitcher: public synthmod, public linked_list<synthmod>
 {
 public:
-    trigswitcher(char const*);
+    trigswitcher(const char*);
     ~trigswitcher();
 
     friend synthmod*
@@ -20,8 +20,8 @@ public:
     void run();
     void init();
     stockerrs::ERR_TYPE validate();
-    void const* get_out(outputnames::OUT_TYPE) const;
-    void const* set_in(inputnames::IN_TYPE, void const*);
+    const void* get_out(outputnames::OUT_TYPE) const;
+    const void* set_in(inputnames::IN_TYPE, const void*);
     const void* get_in(inputnames::IN_TYPE it) const;
     synthmod* duplicate_module(const char* uname, DUP_IO);
     dobj* add_dobj(dobj*);

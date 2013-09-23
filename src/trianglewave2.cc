@@ -5,7 +5,7 @@
 #include "../include/modparamlist.h"
 #include "../include/conversions.h"
 
-triangle_wave2::triangle_wave2(char const* uname) :
+triangle_wave2::triangle_wave2(const char* uname) :
  synthmod(synthmodnames::TRIWAVE2, uname, SM_HAS_OUT_OUTPUT),
  in_phase_trig(0), in_phase_step(0), in_normal_mod(0), output(0.00),
  play_state(OFF), normal_freq(440.00), norm_modsize(0), recycle(OFF),
@@ -26,7 +26,7 @@ triangle_wave2::~triangle_wave2()
 {
 }
 
-void const* triangle_wave2::get_out(outputnames::OUT_TYPE ot) const
+const void* triangle_wave2::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -36,7 +36,7 @@ void const* triangle_wave2::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* triangle_wave2::set_in(inputnames::IN_TYPE it, void const* o)
+const void* triangle_wave2::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -47,7 +47,7 @@ void const* triangle_wave2::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* triangle_wave2::get_in(inputnames::IN_TYPE it) const
+const void* triangle_wave2::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -58,7 +58,7 @@ void const* triangle_wave2::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool triangle_wave2::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool triangle_wave2::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -79,7 +79,7 @@ bool triangle_wave2::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* triangle_wave2::get_param(paramnames::PAR_TYPE pt) const
+const void* triangle_wave2::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

@@ -5,7 +5,7 @@
 #include "../include/modparamlist.h"
 #include "../include/dtr.h"
 
-dc_filter::dc_filter(char const* uname) :
+dc_filter::dc_filter(const char* uname) :
  synthmod(synthmodnames::DCFILTER, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), output(0), dc_time(0), filter(0), filterarraymax(0),
  fpos(0), filtertotal(0)
@@ -20,7 +20,7 @@ dc_filter::~dc_filter()
     delete [] filter;
 }
 
-void const* dc_filter::get_out(outputnames::OUT_TYPE ot) const
+const void* dc_filter::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -29,7 +29,7 @@ void const* dc_filter::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* dc_filter::set_in(inputnames::IN_TYPE it, void const* o)
+const void* dc_filter::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -38,7 +38,7 @@ void const* dc_filter::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* dc_filter::get_in(inputnames::IN_TYPE it) const
+const void* dc_filter::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -47,7 +47,7 @@ void const* dc_filter::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool dc_filter::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool dc_filter::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -59,7 +59,7 @@ bool dc_filter::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* dc_filter::get_param(paramnames::PAR_TYPE pt) const
+const void* dc_filter::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

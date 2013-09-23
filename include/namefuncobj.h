@@ -15,7 +15,7 @@ class name
 {
  public:
     name(char* n) : _name(n) {};
-    name(char const* n) : _name(n) {};
+    name(const char* n) : _name(n) {};
 
     bool operator ()(char* n) const {
         if (!n)
@@ -23,21 +23,21 @@ class name
         return strcmp(_name, n) == 0;
     }
 
-    bool operator ()(char const* n) const {
+    bool operator ()(const char* n) const {
         if (n == 0)
             return false;
         return strcmp(_name, n) == 0;
     }
 
  private:
-    char const* _name;
+    const char* _name;
 };
 
 class groupname
 {
  public:
     groupname(char* n) : _name(n) {};
-    groupname(char const* n) : _name(n) {};
+    groupname(const char* n) : _name(n) {};
 
     bool operator ()(char* n) const {
         if (!n)
@@ -45,14 +45,14 @@ class groupname
         return strcmp(_name, n) == 0;
     }
 
-    bool operator ()(char const* n) const {
+    bool operator ()(const char* n) const {
         if (!n)
             return false;
         return strcmp(_name, n) == 0;
     }
 
  private:
-    char const* _name;
+    const char* _name;
 };
 
 #endif

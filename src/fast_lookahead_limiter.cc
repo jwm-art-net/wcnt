@@ -5,7 +5,7 @@
 #include "../include/modinputlist.h"
 #include "../include/modparamlist.h"
 
-fast_lookahead_limiter::fast_lookahead_limiter(char const* uname) :
+fast_lookahead_limiter::fast_lookahead_limiter(const char* uname) :
 
  synthmod(
     synthmodnames::FAST_LOOKAHEAD_LIMITER,
@@ -37,7 +37,7 @@ fast_lookahead_limiter::~fast_lookahead_limiter()
     if (l_out_right)delete [] l_out_right;
 }
 
-void const*
+const void*
 fast_lookahead_limiter::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
@@ -48,8 +48,8 @@ fast_lookahead_limiter::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const*
-fast_lookahead_limiter::set_in(inputnames::IN_TYPE it, void const* o)
+const void*
+fast_lookahead_limiter::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -59,7 +59,7 @@ fast_lookahead_limiter::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* fast_lookahead_limiter::get_in(inputnames::IN_TYPE it) const
+const void* fast_lookahead_limiter::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -71,7 +71,7 @@ void const* fast_lookahead_limiter::get_in(inputnames::IN_TYPE it) const
 
 bool
 fast_lookahead_limiter::set_param(paramnames::PAR_TYPE pt,
-                                  void const* data)
+                                  const void* data)
 {
     switch(pt)
     {
@@ -89,7 +89,7 @@ fast_lookahead_limiter::set_param(paramnames::PAR_TYPE pt,
     }
 }
 
-void const*
+const void*
 fast_lookahead_limiter::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)

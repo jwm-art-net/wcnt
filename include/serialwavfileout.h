@@ -21,17 +21,17 @@ the code yourself then!                             */
 class serialwavfileout: public synthmod
 {
 public:
-    serialwavfileout(char const*);
+    serialwavfileout(const char*);
     ~serialwavfileout();
-    void set_wav_basename(char * fname);
+    void set_wav_basename(const char* fname);
     // virtual funcs
     void run();
     stockerrs::ERR_TYPE validate();
-    void const* get_out(outputnames::OUT_TYPE) const;
-    void const* set_in(inputnames::IN_TYPE, void const*);
+    const void* get_out(outputnames::OUT_TYPE) const;
+    const void* set_in(inputnames::IN_TYPE, const void*);
     const void* get_in(inputnames::IN_TYPE it) const;
-    bool set_param(paramnames::PAR_TYPE, void const*);
-    void const* get_param(paramnames::PAR_TYPE) const;
+    bool set_param(paramnames::PAR_TYPE, const void*);
+    const void* get_param(paramnames::PAR_TYPE) const;
 
 private:
     // inputs
@@ -48,20 +48,20 @@ private:
     short start_bar;
     short end_bar;
     // other/working
-    char * wav_basename;
+    char* wav_basename;
     char* wavfilename;
-    SNDFILE * fileout;
+    SNDFILE* fileout;
     SF_INFO sfinfo;
     short wavcount;
     STATUS in_write_region; // no it's not an input
     WAV_STATUS status;
-    stereodata * st_buffer;
+    stereodata* st_buffer;
     unsigned long sample_total;
     unsigned short buff_pos;
-    void write_wav_at(stereodata * buf, unsigned long smp);
-    void write_wav_chunk(stereodata * buf, unsigned long smp, int bsize);
+    void write_wav_at(stereodata* buf, unsigned long smp);
+    void write_wav_chunk(stereodata* buf, unsigned long smp, int bsize);
     // other
-    WAV_STATUS open_wav(char * fname);
+    WAV_STATUS open_wav(const char* fname);
     void close_wav();
     // synthmod stuff
     void init_first();

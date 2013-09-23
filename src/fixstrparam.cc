@@ -3,7 +3,7 @@
 #include <cstring>
 
 fixstrparam::
-fixstrparam(char const* str_list, paramnames::PAR_TYPE par_type)
+fixstrparam(const char* str_list, paramnames::PAR_TYPE par_type)
  : string_list(str_list), param_type(par_type)
 {
 }
@@ -29,14 +29,14 @@ int fixstrparam::get_substring_count() const
     return substrcount;
 }
 
-int fixstrparam::get_substring_index(char const* substr) const
+int fixstrparam::get_substring_index(const char* substr) const
 {
     if (substr == 0 || string_list == 0)
         return -1;
     int index = 0;
     char buf[80];
     char* bptr;
-    char const* ptr = string_list;
+    const char* ptr = string_list;
     while(*ptr) {
         if (*ptr != '/') {
             bptr = buf;

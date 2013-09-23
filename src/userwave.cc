@@ -9,7 +9,7 @@
 #include <iostream>
 #include <math.h>
 
-user_wave::user_wave(char const* uname) :
+user_wave::user_wave(const char* uname) :
  synthmod(synthmodnames::USERWAVE, uname, SM_HAS_OUT_OUTPUT),
  in_phase_trig(0), in_phase_step(0), in_pwm(0), in_h_mod(0), in_v_mod(0),
  output(0.0), play_state(OFF),
@@ -35,7 +35,7 @@ user_wave::~user_wave()
         destroy_array_moved_from_list(vertices);
 }
 
-void const* user_wave::get_out(outputnames::OUT_TYPE ot) const
+const void* user_wave::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -45,7 +45,7 @@ void const* user_wave::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* user_wave::set_in(inputnames::IN_TYPE it, void const* o)
+const void* user_wave::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -57,7 +57,7 @@ void const* user_wave::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* user_wave::get_in(inputnames::IN_TYPE it) const
+const void* user_wave::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -69,7 +69,7 @@ void const* user_wave::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool user_wave::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool user_wave::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -87,7 +87,7 @@ bool user_wave::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* user_wave::get_param(paramnames::PAR_TYPE pt) const
+const void* user_wave::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

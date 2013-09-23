@@ -21,7 +21,7 @@
 class fixstrparam
 {
  public:
-    fixstrparam(char const* str_list, paramnames::PAR_TYPE par_type);
+    fixstrparam(const char* str_list, paramnames::PAR_TYPE par_type);
     ~fixstrparam();
     const char* get_string_list() const         { return string_list; }
     paramnames::PAR_TYPE get_param_type() const {return param_type; }

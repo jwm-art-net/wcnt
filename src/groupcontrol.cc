@@ -11,7 +11,7 @@
 #include <iostream>
 #include <sstream>
 
-group_control::group_control(char const* uname) :
+group_control::group_control(const char* uname) :
 
  synthmod(
     synthmodnames::GROUPCONTROL,
@@ -49,7 +49,7 @@ const void* group_control::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* group_control::set_in(inputnames::IN_TYPE it, void const* o)
+const void* group_control::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -62,7 +62,7 @@ void const* group_control::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* group_control::get_in(inputnames::IN_TYPE it) const
+const void* group_control::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -72,22 +72,22 @@ void const* group_control::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool group_control::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool group_control::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
         case paramnames::GROUP_NAME:
-            return set_group_name((char const*)data);
+            return set_group_name((const char*)data);
         default:
             return false;
     }
 }
 
-void const* group_control::get_param(paramnames::PAR_TYPE pt) const
+const void* group_control::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::GROUP_NAME: return &group_name;
+        case paramnames::GROUP_NAME: return group_name;
         default: return 0;
     }
 }
@@ -153,7 +153,7 @@ void group_control::run()
     }
 }
 
-bool group_control::set_group_name(char const* name)
+bool group_control::set_group_name(const char* name)
 {
     if (group_name)
         delete [] group_name;

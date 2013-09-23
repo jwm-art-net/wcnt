@@ -11,7 +11,7 @@
 #include "../include/listwork.h"
 #include "../include/miscfuncobj.h"
 
-stepper::stepper(char const* uname) :
+stepper::stepper(const char* uname) :
  synthmod(synthmodnames::STEPPER, uname, SM_HAS_OUT_OUTPUT),
  in_trig(0), in_restart_trig(0), in_modulation(0),
  step_count(0), up_thresh(0), lo_thresh(0), rtime(0), recycle(OFF),
@@ -35,7 +35,7 @@ stepper::~stepper()
     if (lo_levels) delete [] lo_levels;
 }
 
-void const* stepper::get_out(outputnames::OUT_TYPE ot) const
+const void* stepper::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -44,7 +44,7 @@ void const* stepper::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* stepper::set_in(inputnames::IN_TYPE it, void const* o)
+const void* stepper::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -59,7 +59,7 @@ void const* stepper::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* stepper::get_in(inputnames::IN_TYPE it) const
+const void* stepper::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -70,7 +70,7 @@ void const* stepper::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool stepper::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool stepper::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -94,7 +94,7 @@ bool stepper::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* stepper::get_param(paramnames::PAR_TYPE pt) const
+const void* stepper::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

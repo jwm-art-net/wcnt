@@ -6,12 +6,12 @@
 class constmod : public synthmod
 {
 public:
-    constmod(char const*);
+    constmod(const char*);
     ~constmod();
     void run(){};
-    void const* get_out(outputnames::OUT_TYPE) const;
-    bool set_param(paramnames::PAR_TYPE, void const*);
-    void const* get_param(paramnames::PAR_TYPE) const;
+    const void* get_out(outputnames::OUT_TYPE) const;
+    bool set_param(paramnames::PAR_TYPE, const void*);
+    const void* get_param(paramnames::PAR_TYPE) const;
 
 private:
     double output;

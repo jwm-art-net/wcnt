@@ -4,7 +4,7 @@
 #include "../include/modparamlist.h"
 #include "../include/conversions.h"
 
-constant_note::constant_note(char const* uname) :
+constant_note::constant_note(const char* uname) :
  synthmod(synthmodnames::CONSTANT_NOTE, uname, SM_EMPTY_RUN),
  out_freq(0.0), out_phase_step(0.0)
 {
@@ -21,7 +21,7 @@ constant_note::~constant_note()
         delete [] note;
 }
 
-void const* constant_note::get_out(outputnames::OUT_TYPE ot) const
+const void* constant_note::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot) 
     {
@@ -32,7 +32,7 @@ void const* constant_note::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-bool constant_note::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool constant_note::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt) {
         case paramnames::NAME:
@@ -43,7 +43,7 @@ bool constant_note::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* constant_note::get_param(paramnames::PAR_TYPE pt) const
+const void* constant_note::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

@@ -5,7 +5,7 @@
 #include "../include/modparamlist.h"
 #include "../include/conversions.h"
 
-fader::fader(char const* uname) :
+fader::fader(const char* uname) :
  synthmod(
     synthmodnames::FADER,
     uname,
@@ -30,7 +30,7 @@ fader::~fader()
 {
 }
 
-void const* fader::set_in(inputnames::IN_TYPE it, void const* o)
+const void* fader::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -40,7 +40,7 @@ void const* fader::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* fader::get_in(inputnames::IN_TYPE it) const
+const void* fader::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -50,7 +50,7 @@ void const* fader::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-void const* fader::get_out(outputnames::OUT_TYPE ot) const
+const void* fader::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -62,7 +62,7 @@ void const* fader::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-bool fader::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool fader::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -83,7 +83,7 @@ bool fader::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* fader::get_param(paramnames::PAR_TYPE pt) const
+const void* fader::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

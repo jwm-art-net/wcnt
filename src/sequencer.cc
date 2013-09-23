@@ -10,7 +10,7 @@
 
 #include <iostream>
 
-sequencer::sequencer(char const* uname) :
+sequencer::sequencer(const char* uname) :
 
  synthmod(
     synthmodnames::SEQUENCER,
@@ -66,7 +66,7 @@ sequencer::~sequencer()
         delete [] out_notename;
 }
 
-void const* sequencer::get_out(outputnames::OUT_TYPE ot) const
+const void* sequencer::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -103,7 +103,7 @@ void const* sequencer::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* sequencer::set_in(inputnames::IN_TYPE it, void const* o)
+const void* sequencer::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -122,7 +122,7 @@ void const* sequencer::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* sequencer::get_in(inputnames::IN_TYPE it) const
+const void* sequencer::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -141,7 +141,7 @@ void const* sequencer::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool sequencer::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool sequencer::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -156,7 +156,7 @@ bool sequencer::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* sequencer::get_param(paramnames::PAR_TYPE pt) const
+const void* sequencer::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

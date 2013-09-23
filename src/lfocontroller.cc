@@ -5,7 +5,7 @@
 #include "../include/modparamlist.h"
 #include "../include/conversions.h"
 
-lfo_controller::lfo_controller(char const* uname) :
+lfo_controller::lfo_controller(const char* uname) :
  synthmod(synthmodnames::LFOCONTROL, uname, SM_HAS_OUT_OUTPUT),
  in_trig(0), in_wave(0), in_amp_mod(0), out_preampmod(0), output(0),
  delay_time(0), ramp_time(0), start_level(0), end_level(0),
@@ -25,7 +25,7 @@ lfo_controller::~lfo_controller()
 {
 }
 
-void const* lfo_controller::get_out(outputnames::OUT_TYPE ot) const
+const void* lfo_controller::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -35,7 +35,7 @@ void const* lfo_controller::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* lfo_controller::set_in(inputnames::IN_TYPE it, void const* o)
+const void* lfo_controller::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -46,7 +46,7 @@ void const* lfo_controller::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* lfo_controller::get_in(inputnames::IN_TYPE it) const
+const void* lfo_controller::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -57,7 +57,7 @@ void const* lfo_controller::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool lfo_controller::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool lfo_controller::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -84,7 +84,7 @@ bool lfo_controller::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* lfo_controller::get_param(paramnames::PAR_TYPE pt) const
+const void* lfo_controller::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

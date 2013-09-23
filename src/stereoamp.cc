@@ -4,7 +4,7 @@
 #include "../include/modinputlist.h"
 #include "../include/modparamlist.h"
 
-stereo_amp::stereo_amp(char const* uname) :
+stereo_amp::stereo_amp(const char* uname) :
  synthmod(synthmodnames::STEREOAMP, uname, SM_HAS_STEREO_OUTPUT),
  in_left(0), in_right(0), in_amp_eg(0), in_amp_mod(0),
  out_left(0), out_right(0),
@@ -24,7 +24,7 @@ stereo_amp::~stereo_amp()
 {
 }
 
-void const* stereo_amp::get_out(outputnames::OUT_TYPE ot) const
+const void* stereo_amp::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -34,7 +34,7 @@ void const* stereo_amp::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* stereo_amp::set_in(inputnames::IN_TYPE it, void const* o)
+const void* stereo_amp::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -46,7 +46,7 @@ void const* stereo_amp::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* stereo_amp::get_in(inputnames::IN_TYPE it) const
+const void* stereo_amp::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -58,7 +58,7 @@ void const* stereo_amp::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool stereo_amp::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool stereo_amp::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -79,7 +79,7 @@ bool stereo_amp::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* stereo_amp::get_param(paramnames::PAR_TYPE pt) const
+const void* stereo_amp::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

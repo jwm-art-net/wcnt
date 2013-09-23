@@ -8,7 +8,7 @@
 #include <iostream>
 #include <sstream>
 
-trigrouter::trigrouter(char const* uname) :
+trigrouter::trigrouter(const char* uname) :
 
  synthmod(synthmodnames::TRIGROUTER, uname, SM_UNGROUPABLE),
  in_trig(0), in_count(0),
@@ -28,7 +28,7 @@ trigrouter::~trigrouter()
         delete [] trigs;
 }
 
-void const* trigrouter::set_in(inputnames::IN_TYPE it, void const* o)
+const void* trigrouter::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -38,7 +38,7 @@ void const* trigrouter::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* trigrouter::get_in(inputnames::IN_TYPE it) const
+const void* trigrouter::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -61,7 +61,7 @@ stockerrs::ERR_TYPE trigrouter::validate()
     return stockerrs::ERR_NO_ERROR;
 }
 
-bool trigrouter::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool trigrouter::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -78,7 +78,7 @@ bool trigrouter::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* trigrouter::get_param(paramnames::PAR_TYPE pt) const
+const void* trigrouter::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {
@@ -90,9 +90,9 @@ void const* trigrouter::get_param(paramnames::PAR_TYPE pt) const
 
 void trigrouter::create_wcnt_triggers()
 {
-    char const* wtn =
+    const char* wtn =
         synthmodnames::get_name(synthmodnames::WCNTTRIGGER);
-    char const* un = get_username();
+    const char* un = get_username();
     bool verbose = jwm.is_verbose();
     if (verbose){
         std::cout << "\nPre-initialising " << un << " module...";

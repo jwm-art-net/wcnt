@@ -5,7 +5,7 @@
 #include "../include/modparamlist.h"
 #include "../include/conversions.h"
 
-osc_clock::osc_clock(char const* uname) :
+osc_clock::osc_clock(const char* uname) :
  synthmod(synthmodnames::OSCCLOCK, uname, SM_DEFAULT),
  out_phase_trig(OFF), out_phase_step(0.00), out_premod_phase_step(0.00),
  in_freq(NULL), in_note_on_trig(NULL), in_note_slide_trig(NULL),
@@ -34,7 +34,7 @@ osc_clock::~osc_clock()
 {
 }
 
-void const* osc_clock::get_out(outputnames::OUT_TYPE ot) const
+const void* osc_clock::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -49,7 +49,7 @@ void const* osc_clock::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* osc_clock::set_in(inputnames::IN_TYPE it, void const* o)
+const void* osc_clock::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -70,7 +70,7 @@ void const* osc_clock::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* osc_clock::get_in(inputnames::IN_TYPE it) const
+const void* osc_clock::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -91,7 +91,7 @@ void const* osc_clock::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool osc_clock::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool osc_clock::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -118,7 +118,7 @@ bool osc_clock::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* osc_clock::get_param(paramnames::PAR_TYPE pt) const
+const void* osc_clock::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

@@ -46,15 +46,15 @@ public:
     synthfilereader(WC_FILE_TYPE);
     ~synthfilereader();
 
-    void set_wc_filename(char const* filename);
+    void set_wc_filename(const char* filename);
 
     bool read_and_create();
 
     const char* get_wc_error_msg() const { return wc_err_msg; }
 
     virtual stockerrs::ERR_TYPE validate();
-    bool set_param(paramnames::PAR_TYPE, void*);
-    void const* get_param(paramnames::PAR_TYPE pt) const;
+    bool set_param(paramnames::PAR_TYPE, const void*);
+    const void* get_param(paramnames::PAR_TYPE pt) const;
     dobj const* add_dobj(dobj*);
 
 private:

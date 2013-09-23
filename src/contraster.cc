@@ -4,7 +4,7 @@
 #include "../include/modinputlist.h"
 #include "../include/modparamlist.h"
 
-contraster::contraster(char const* uname) :
+contraster::contraster(const char* uname) :
  synthmod(synthmodnames::CONTRASTER, uname, SM_HAS_OUT_OUTPUT),
  out_output(0.0), in_signal(0), in_power_mod(0),
  in_rude_switch_trig(0), power_min(1.0), power_max(2.0), rude_mode(OFF),
@@ -21,7 +21,7 @@ contraster::~contraster()
 {
 }
 
-void const* contraster::get_out(outputnames::OUT_TYPE ot) const
+const void* contraster::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -30,7 +30,7 @@ void const* contraster::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* contraster::set_in(inputnames::IN_TYPE it, void const* o)
+const void* contraster::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -45,7 +45,7 @@ void const* contraster::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* contraster::get_in(inputnames::IN_TYPE it) const
+const void* contraster::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -60,7 +60,7 @@ void const* contraster::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool contraster::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool contraster::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -81,7 +81,7 @@ bool contraster::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* contraster::get_param(paramnames::PAR_TYPE pt) const
+const void* contraster::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

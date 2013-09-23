@@ -16,7 +16,7 @@ timing::timing(double s):
     init_first();
 }
 
-bool timing::set_param(paramnames::PAR_TYPE pt, void* data)
+bool timing::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -28,7 +28,7 @@ bool timing::set_param(paramnames::PAR_TYPE pt, void* data)
     }
 }
 
-void const* timing::get_param(paramnames::PAR_TYPE pt) const
+const void* timing::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

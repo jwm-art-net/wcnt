@@ -3,7 +3,7 @@
 #include "../include/modoutputlist.h"
 #include "../include/modinputlist.h"
 
-wcnt_trigger::wcnt_trigger(char const* uname) :
+wcnt_trigger::wcnt_trigger(const char* uname) :
 
  synthmod(
     synthmodnames::WCNTTRIGGER,
@@ -20,7 +20,7 @@ wcnt_trigger::~wcnt_trigger()
 {
 }
 
-void const* wcnt_trigger::get_out(outputnames::OUT_TYPE ot) const
+const void* wcnt_trigger::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -29,7 +29,7 @@ void const* wcnt_trigger::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* wcnt_trigger::set_in(inputnames::IN_TYPE it, void const* o)
+const void* wcnt_trigger::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -38,7 +38,7 @@ void const* wcnt_trigger::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* wcnt_trigger::get_in(inputnames::IN_TYPE it) const
+const void* wcnt_trigger::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {

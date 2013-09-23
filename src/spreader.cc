@@ -13,7 +13,7 @@
 
 #include <math.h>
 
-spreader::spreader(char const* uname) :
+spreader::spreader(const char* uname) :
  synthmod(synthmodnames::SPREADER, uname, SM_HAS_OUT_OUTPUT),
  linkedlist(MULTIREF_ON, PRESERVE_DATA),
  in_mod(0), out_output(0), start_level(0), end_level(0), seg_lvl(0),
@@ -30,7 +30,7 @@ spreader::~spreader()
         delete [] sigs;
 }
 
-void const* spreader::get_out(outputnames::OUT_TYPE ot) const
+const void* spreader::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -39,7 +39,7 @@ void const* spreader::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* spreader::set_in(inputnames::IN_TYPE it, void const* o)
+const void* spreader::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -48,7 +48,7 @@ void const* spreader::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* spreader::get_in(inputnames::IN_TYPE it) const
+const void* spreader::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -57,7 +57,7 @@ void const* spreader::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool spreader::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool spreader::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -72,7 +72,7 @@ bool spreader::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* spreader::get_param(paramnames::PAR_TYPE pt) const
+const void* spreader::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

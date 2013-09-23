@@ -40,7 +40,7 @@ class connector
 
     const synthmod*       get_input_module()const { return in_mod;}
     inputnames::IN_TYPE   get_input_type()  const { return in_type;}
-    char const* get_output_module_name()    const { return out_mod_uname;}
+    const char* get_output_module_name()    const { return out_mod_uname;}
     outputnames::OUT_TYPE get_output_type() const { return out_type;}
 /*
 //  only do this once all synth modules have been created.

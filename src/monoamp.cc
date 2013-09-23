@@ -4,7 +4,7 @@
 #include "../include/modinputlist.h"
 #include "../include/modparamlist.h"
 
-mono_amp::mono_amp(char const* uname) :
+mono_amp::mono_amp(const char* uname) :
  synthmod(synthmodnames::MONOAMP, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), in_amp_eg(0), in_amp_mod(0),
  out_output(0),
@@ -21,7 +21,7 @@ mono_amp::~mono_amp()
 {
 }
 
-void const* mono_amp::get_out(outputnames::OUT_TYPE ot) const
+const void* mono_amp::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -30,7 +30,7 @@ void const* mono_amp::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* mono_amp::set_in(inputnames::IN_TYPE it, void const* o)
+const void* mono_amp::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -41,7 +41,7 @@ void const* mono_amp::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* mono_amp::get_in(inputnames::IN_TYPE it) const
+const void* mono_amp::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -52,7 +52,7 @@ void const* mono_amp::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool mono_amp::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool mono_amp::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -70,7 +70,7 @@ bool mono_amp::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* mono_amp::get_param(paramnames::PAR_TYPE pt) const
+const void* mono_amp::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

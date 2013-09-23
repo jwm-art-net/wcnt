@@ -19,15 +19,15 @@
 class peak_detector : public synthmod
 {
 public:
-    peak_detector(char const*);
+    peak_detector(const char*);
     ~peak_detector();
     void run();
     void init();
-    void const* get_out(outputnames::OUT_TYPE) { return 0; }
-    void const* set_in(inputnames::IN_TYPE, void const*);
+    const void* get_out(outputnames::OUT_TYPE) { return 0; }
+    const void* set_in(inputnames::IN_TYPE, const void*);
     const void* get_in(inputnames::IN_TYPE it) const;
-    bool set_param(paramnames::PAR_TYPE, void const*);
-    void const* get_param(paramnames::PAR_TYPE) const;
+    bool set_param(paramnames::PAR_TYPE, const void*);
+    const void* get_param(paramnames::PAR_TYPE) const;
 
 private:
     const double* in_signal;

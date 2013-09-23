@@ -86,7 +86,7 @@ synthfilereader::~synthfilereader()
     delete dobjnamelist;
 }
 
-void synthfilereader::set_wc_filename(char const* filename)
+void synthfilereader::set_wc_filename(const char* filename)
 {
     if (wc_filename) {
         delete [] wc_filename;
@@ -501,7 +501,7 @@ bool synthfilereader::read_dobjs(dobj* dbj)
         dobjdobj* enc_dobj = enc_list->goto_first();
         string enc_com = read_command();
         dobjnames::DOBJ_TYPE enc_type = enc_dobj->get_dobj_sprog();
-        char const* enc_name = dobjnames::get_name(enc_type);
+        const char* enc_name = dobjnames::get_name(enc_type);
         if (enc_com != enc_name) {
             wc_err("In data object %s expected %s got %s instead.",
                     dbj->get_username(), enc_name, enc_com.c_str());
@@ -515,7 +515,7 @@ bool synthfilereader::read_dobjs(dobj* dbj)
         while(dd) {
             const char* com = read_command();
             dobjnames::DOBJ_TYPE sprogtype = dd->get_dobj_sprog();
-            char const* sprogname = dobjnames::get_name(sprogtype);
+            const char* sprogname = dobjnames::get_name(sprogtype);
             while (strcmp(com, enc_name) != 0) {
                 if (strcmp(com, sprogname) != 0) {
                     wc_err("In data object %s expected %s got %s instead.",
@@ -601,7 +601,7 @@ bool synthfilereader::read_dobjs(synthmod* sm)
     while(mdbj) { // module may contain more than one list (ie timemap)
         string dbjname = read_command();//one of envelope/track etc
         dobjnames::DOBJ_TYPE dt = mdbj->get_first_child();
-        char const* xdbjname = dobjnames::get_name(dt);
+        const char* xdbjname = dobjnames::get_name(dt);
         if (dbjname != xdbjname) {
             wc_err("expected %s got %s instead", xdbjname, dbjname.c_str());
             return false;
@@ -612,7 +612,7 @@ bool synthfilereader::read_dobjs(synthmod* sm)
         dobjdobj* dd = ddlist->goto_first();
         while(dd) {//maybe the dobj has one or more dobjies inside?
             dobjnames::DOBJ_TYPE sprogtype = dd->get_dobj_sprog();
-            char const* xsprogname = dobjnames::get_name(sprogtype);
+            const char* xsprogname = dobjnames::get_name(sprogtype);
             const char* com = read_command();
             // now read the list of items (each item's type is sprogtype)
             while (dbjname != com) {
@@ -691,7 +691,7 @@ read_dobj_params(dobj* dbj, const char* endterm)
         parlist = new_list_of_by(jwm.get_dparlist(), dobjtype);
 
     dobjparam* param = parlist->goto_first();
-    char const* enda = dobjnames::get_name(dobjtype);
+    const char* enda = dobjnames::get_name(dobjtype);
     while(param) {
         ostringstream conv;
         paramnames::PAR_TYPE pt = param->get_partype();
@@ -715,7 +715,7 @@ read_dobj_params(dobj* dbj, const char* endterm)
             *synthfile >> *datastr;
         }
         if (inc_current) {
-            char const* val = datastr->c_str();
+            const char* val = datastr->c_str();
             if (!setpar::set_param(dbj, parname, pt, val, &conv)) {
                 wc_err("%s", setpar::get_error_msg());
                 delete datastr;
@@ -908,8 +908,8 @@ bool synthfilereader::read_params(synthmod* sm)
         string datastr;
         *synthfile >> datastr;
         if (inc_current) {
-            char const* par = paramname.c_str();
-            char const* val = datastr.c_str();
+            const char* par = paramname.c_str();
+            const char* val = datastr.c_str();
             if (!setpar::set_param(sm, par, pt, val, &conv)) {
                 wc_err("%s", setpar::get_error_msg());
                 delete parlist;
@@ -1037,7 +1037,7 @@ bool synthfilereader::eff_ing_header_bodge(unsigned long *samplerate)
     string hf_name;
     *synthfile >> hf_name;
     // stop reading from that (synthfile) for mo now we got header name.
-    char const* path = jwm.path();
+    const char* path = jwm.path();
     if (!(hf_name[0] == '/' || path == NULL)) {
         string tmp = hf_name;
         hf_name = path + tmp;
@@ -1088,12 +1088,12 @@ stockerrs::ERR_TYPE synthfilereader::validate()
     return stockerrs::ERR_NO_ERROR;
 }
 
-bool synthfilereader::set_param(paramnames::PAR_TYPE pt, void* data)
+bool synthfilereader::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     { // PAR_ADSRSECT is iocat::CAT_FIX_STR.
         case paramnames::FILENAME:
-            set_wc_filename((char*)data);
+            set_wc_filename((const char*)data);
             return true;
         case paramnames::MOD_ACTION:
             mod_action = (ACTION)(*(int*)data);
@@ -1106,7 +1106,7 @@ bool synthfilereader::set_param(paramnames::PAR_TYPE pt, void* data)
     }
 }
 
-void const* synthfilereader::get_param(paramnames::PAR_TYPE pt) const
+const void* synthfilereader::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

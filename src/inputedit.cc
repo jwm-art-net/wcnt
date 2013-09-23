@@ -133,26 +133,27 @@ bool inputedit::create_connectors()
     return true;
 }
 
-bool inputedit::set_param(paramnames::PAR_TYPE dt, void* data)
+bool inputedit::set_param(paramnames::PAR_TYPE dt, const void* data)
 {
     switch(dt)
     {
         case paramnames::STR_UNNAMED:
-            if (!set_modname((char*)data)) {
-                dobjerr("Input module %s does not exist.", (char*)data);
+            if (!set_modname((const char*)data)) {
+                dobjerr("Input module %s does not exist.",
+                                            (const char*)data);
                 invalidate();
                 return false;
             }
             return true;
         case paramnames::STR_LIST:
-            set_iostr((char*)data);
+            set_iostr((const char*)data);
             return true;
         default:
             return false;
     }
 }
 
-void const* inputedit::get_param(paramnames::PAR_TYPE dt) const
+const void* inputedit::get_param(paramnames::PAR_TYPE dt) const
 {
     switch(dt)
     {

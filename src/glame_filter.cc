@@ -5,7 +5,7 @@
 #include "../include/modinputlist.h"
 #include "../include/modparamlist.h"
 
-glame_filter::glame_filter(char const* uname) :
+glame_filter::glame_filter(const char* uname) :
  synthmod(synthmodnames::GLAME_FILTER, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), in_freq_mod1(0), output(0),
  type(LOPASS), cutoff_freq(440.0), freq_mod1size(1.0), stages(1),
@@ -30,7 +30,7 @@ glame_filter::~glame_filter()
     if (l_output) delete [] l_output;
 }
 
-void const* glame_filter::get_out(outputnames::OUT_TYPE ot) const
+const void* glame_filter::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -39,8 +39,8 @@ void const* glame_filter::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const*
-glame_filter::set_in(inputnames::IN_TYPE it, void const* o)
+const void*
+glame_filter::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -53,7 +53,7 @@ glame_filter::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* glame_filter::get_in(inputnames::IN_TYPE it) const
+const void* glame_filter::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -64,7 +64,7 @@ void const* glame_filter::get_in(inputnames::IN_TYPE it) const
 }
 
 bool
-glame_filter::set_param(paramnames::PAR_TYPE pt, void const* data)
+glame_filter::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -85,7 +85,7 @@ glame_filter::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* glame_filter::get_param(paramnames::PAR_TYPE pt) const
+const void* glame_filter::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

@@ -5,7 +5,7 @@
 #include "../include/modparamlist.h"
 #include "../include/conversions.h"
 
-sample_climb::sample_climb(char const* uname) :
+sample_climb::sample_climb(const char* uname) :
  synthmod(synthmodnames::SAMPLECLIMB, uname, SM_HAS_OUT_OUTPUT),
  in_trig(0), in_signal(0), output(0), rate(1), target(0)
 {
@@ -19,7 +19,7 @@ sample_climb::~sample_climb()
 {
 }
 
-void const* sample_climb::get_out(outputnames::OUT_TYPE ot) const
+const void* sample_climb::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -28,7 +28,7 @@ void const* sample_climb::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* sample_climb::set_in(inputnames::IN_TYPE it, void const* o)
+const void* sample_climb::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -38,7 +38,7 @@ void const* sample_climb::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* sample_climb::get_in(inputnames::IN_TYPE it) const
+const void* sample_climb::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -48,7 +48,7 @@ void const* sample_climb::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool sample_climb::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool sample_climb::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -60,7 +60,7 @@ bool sample_climb::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* sample_climb::get_param(paramnames::PAR_TYPE pt) const
+const void* sample_climb::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

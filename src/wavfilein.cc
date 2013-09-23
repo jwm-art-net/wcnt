@@ -127,22 +127,22 @@ void wavfilein::read_wav_chunk(void * buf, unsigned long smp, int bsize)
     }
 }
 
-bool wavfilein::set_param(paramnames::PAR_TYPE dt, void* data)
+bool wavfilein::set_param(paramnames::PAR_TYPE dt, const void* data)
 {
     switch(dt)
     {
         case paramnames::FILENAME:
-            set_wav_filename((char*)data);
+            set_wav_filename((const char*)data);
             return true;
         case paramnames::ROOT_NOTE:
-            set_root_note((char*)data);
+            set_root_note((const char*)data);
             return true;
         default:
             return false;
     }
 }
 
-void const* wavfilein::get_param(paramnames::PAR_TYPE dt) const
+const void* wavfilein::get_param(paramnames::PAR_TYPE dt) const
 {
     switch(dt)
     {

@@ -4,7 +4,7 @@
 #include "../include/modinputlist.h"
 #include "../include/modparamlist.h"
 
-pan::pan(char const* uname) :
+pan::pan(const char* uname) :
  synthmod(synthmodnames::PAN, uname, SM_HAS_STEREO_OUTPUT),
  in_signal(0), in_pan_mod(0), out_l(0), out_r(0), panpos(0),
  pan_modsize(0), pan_mod(0), pan_pos(0)
@@ -20,7 +20,7 @@ pan::~pan()
 {
 }
 
-void const* pan::get_out(outputnames::OUT_TYPE ot) const
+const void* pan::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -30,7 +30,7 @@ void const* pan::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* pan::set_in(inputnames::IN_TYPE it, void const* o)
+const void* pan::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -40,7 +40,7 @@ void const* pan::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* pan::get_in(inputnames::IN_TYPE it) const
+const void* pan::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -50,7 +50,7 @@ void const* pan::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool pan::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool pan::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -65,11 +65,11 @@ bool pan::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* pan::get_param(paramnames::PAR_TYPE pt) const
+const void* pan::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::PAN:        return &pan_pos;
+        case paramnames::PAN:        return &panpos;
         case paramnames::PAN_MODSIZE:return &pan_modsize;
         default: return 0;
     }

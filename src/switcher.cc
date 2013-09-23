@@ -12,7 +12,7 @@
 #include "../include/dobjdobjlist.h"
 #include "../include/duplicate_list_module.h"
 
-switcher::switcher(char const* uname) :
+switcher::switcher(const char* uname) :
  synthmod(synthmodnames::SWITCHER, uname, SM_HAS_OUT_OUTPUT),
  linkedlist(MULTIREF_ON, PRESERVE_DATA),
  in_trig(0), xfadetime(25), out_output(0), xfade_samp(0),
@@ -30,7 +30,7 @@ switcher::~switcher()
         delete [] sigs;
 }
 
-void const* switcher::get_out(outputnames::OUT_TYPE ot) const
+const void* switcher::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -39,7 +39,7 @@ void const* switcher::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* switcher::set_in(inputnames::IN_TYPE it, void const* o)
+const void* switcher::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -48,7 +48,7 @@ void const* switcher::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* switcher::get_in(inputnames::IN_TYPE it) const
+const void* switcher::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -57,7 +57,7 @@ void const* switcher::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool switcher::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool switcher::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -68,7 +68,7 @@ bool switcher::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* switcher::get_param(paramnames::PAR_TYPE pt) const
+const void* switcher::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

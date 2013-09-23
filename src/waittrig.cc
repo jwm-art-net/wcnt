@@ -5,7 +5,7 @@
 #include "../include/modparamlist.h"
 #include "../include/conversions.h"
 
-waittrig::waittrig(char const* uname) :
+waittrig::waittrig(const char* uname) :
 
  synthmod(
     synthmodnames::WAITTRIG,
@@ -27,7 +27,7 @@ waittrig::~waittrig()
 {
 }
 
-void const* waittrig::get_out(outputnames::OUT_TYPE ot) const
+const void* waittrig::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -37,7 +37,7 @@ void const* waittrig::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* waittrig::set_in(inputnames::IN_TYPE it, void const* o)
+const void* waittrig::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -47,7 +47,7 @@ void const* waittrig::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* waittrig::get_in(inputnames::IN_TYPE it) const
+const void* waittrig::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -57,7 +57,7 @@ void const* waittrig::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool waittrig::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool waittrig::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -75,7 +75,7 @@ bool waittrig::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* waittrig::get_param(paramnames::PAR_TYPE pt) const
+const void* waittrig::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

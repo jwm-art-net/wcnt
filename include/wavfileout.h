@@ -9,7 +9,7 @@
 class wavfileout: public synthmod
 {
 public:
-    wavfileout(char const*);
+    wavfileout(const char*);
     ~wavfileout();
 
     // copies filenames & processes path:
@@ -21,11 +21,11 @@ public:
     // virtual funcs
     void run();
     stockerrs::ERR_TYPE validate(); // opens the wav
-    void const* get_out(outputnames::OUT_TYPE) const;
-    void const* set_in(inputnames::IN_TYPE, void const*);
+    const void* get_out(outputnames::OUT_TYPE) const;
+    const void* set_in(inputnames::IN_TYPE, const void*);
     const void* get_in(inputnames::IN_TYPE it) const;
-    bool set_param(paramnames::PAR_TYPE, void const*);
-    void const* get_param(paramnames::PAR_TYPE) const;
+    bool set_param(paramnames::PAR_TYPE, const void*);
+    const void* get_param(paramnames::PAR_TYPE) const;
 
 private:
     // inputs

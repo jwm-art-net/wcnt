@@ -105,7 +105,7 @@ bool paramedit::mod_param_edit(synthmod* module, const char* parname,
     bool confused = false;
     while(mp) {
         paramnames::PAR_TYPE mpt = mp->get_paramtype();
-        char const* mparname = paramnames::get_name(mpt);
+        const char* mparname = paramnames::get_name(mpt);
         if (strcmp(parname, mparname) == 0) {
             if (pt != paramnames::FIRST)
                 confused = true;
@@ -149,7 +149,7 @@ bool paramedit::dobj_param_edit(dobj* dobject, const char* parname,
     bool confused = false;
     while(dp) {
         paramnames::PAR_TYPE dpt = dp->get_partype();
-        char const* mparname = paramnames::get_name(dpt);
+        const char* mparname = paramnames::get_name(dpt);
         if (strcmp(parname, mparname) == 0) {
             if (pt != paramnames::FIRST)
                 confused = true;
@@ -181,27 +181,27 @@ bool paramedit::dobj_param_edit(dobj* dobject, const char* parname,
     return true;
 }
 
-bool paramedit::set_param(paramnames::PAR_TYPE dt, void* data)
+bool paramedit::set_param(paramnames::PAR_TYPE dt, const void* data)
 {
     switch(dt)
     {
     case paramnames::STR_UNNAMED:
-        if (!set_name((char*)data)) {
+        if (!set_name((const char*)data)) {
             dobjerr("There are no data objects or modules named %s "
-                    "cannot edit parameters.", (char*)data);
+                    "cannot edit parameters.", (const char*)data);
             invalidate();
             return false;
         }
         return true;
     case paramnames::STR_LIST:
-        set_parstr((char*)data);
+        set_parstr((const char*)data);
         return true;
     default:
         return false;
     }
 }
 
-void const* paramedit::get_param(paramnames::PAR_TYPE dt) const
+const void* paramedit::get_param(paramnames::PAR_TYPE dt) const
 {
     switch(dt)
     {

@@ -4,7 +4,7 @@
 #include "../include/modinputlist.h"
 #include "../include/modparamlist.h"
 
-dc_offset_remover::dc_offset_remover(char const* uname) :
+dc_offset_remover::dc_offset_remover(const char* uname) :
  synthmod(synthmodnames::DC_OFFSET_REMOVER, uname, SM_HAS_OUT_OUTPUT),
  input(0), output(0),
  l_descriptor(0), l_inst_handle(0), l_input(0), l_output(0)
@@ -47,7 +47,7 @@ void dc_offset_remover::init()
     l_descriptor->activate(l_inst_handle);
 }
 
-void const* dc_offset_remover::get_out(outputnames::OUT_TYPE ot) const
+const void* dc_offset_remover::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -56,8 +56,8 @@ void const* dc_offset_remover::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const*
-dc_offset_remover::set_in(inputnames::IN_TYPE it, void const* o)
+const void*
+dc_offset_remover::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -66,7 +66,7 @@ dc_offset_remover::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* dc_offset_remover::get_in(inputnames::IN_TYPE it) const
+const void* dc_offset_remover::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {

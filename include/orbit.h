@@ -6,7 +6,7 @@
 class orbit : public synthmod
 {
  public:
-    orbit(char const*);
+    orbit(const char*);
     ~orbit();
     enum ORBIT_TYPE{
         ORB_HOPALONG,
@@ -15,11 +15,11 @@ class orbit : public synthmod
     };
     void init(); // performs iteration test if (test_iter > 0)
     void run();
-    void const* set_in(inputnames::IN_TYPE, void const*);
+    const void* set_in(inputnames::IN_TYPE, const void*);
     const void* get_in(inputnames::IN_TYPE it) const;
-    void const* get_out(outputnames::OUT_TYPE) const;
-    bool set_param(paramnames::PAR_TYPE, void const*);
-    void const* get_param(paramnames::PAR_TYPE) const;
+    const void* get_out(outputnames::OUT_TYPE) const;
+    bool set_param(paramnames::PAR_TYPE, const void*);
+    const void* get_param(paramnames::PAR_TYPE) const;
  private:
     double out_x;
     double out_y;

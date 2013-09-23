@@ -4,7 +4,7 @@
 #include "../include/modinputlist.h"
 #include "../include/modparamlist.h"
 
-diff_filter::diff_filter(char const* uname) :
+diff_filter::diff_filter(const char* uname) :
  synthmod(synthmodnames::DIFFFILTER, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), out_output(0.0), oldinsig(0.0)
 {
@@ -23,21 +23,21 @@ void diff_filter::run()
     oldinsig = insig;
 }
 
-void const* diff_filter::get_out(outputnames::OUT_TYPE ot) const
+const void* diff_filter::get_out(outputnames::OUT_TYPE ot) const
 {
     if (ot == outputnames::OUT_OUTPUT)
         return &out_output;
     return 0;
 }
 
-void const* diff_filter::set_in(inputnames::IN_TYPE it, void const* o)
+const void* diff_filter::set_in(inputnames::IN_TYPE it, const void* o)
 {
     if (it == inputnames::IN_SIGNAL)
         return in_signal = (double*)o;
     return 0;
 }
 
-void const* diff_filter::get_in(inputnames::IN_TYPE it) const
+const void* diff_filter::get_in(inputnames::IN_TYPE it) const
 {
     if (it == inputnames::IN_SIGNAL)
         return in_signal;

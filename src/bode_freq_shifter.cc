@@ -5,7 +5,7 @@
 #include "../include/modinputlist.h"
 #include "../include/modparamlist.h"
 
-bode_freq_shifter::bode_freq_shifter(char const* uname) :
+bode_freq_shifter::bode_freq_shifter(const char* uname) :
  synthmod(synthmodnames::BODE_FREQ_SHIFTER, uname, SM_DEFAULT),
  in_signal(0), in_shift_mod(0), out_up(0), out_down(0),
  freq_shift(0), shift_modsize(0.0),
@@ -29,7 +29,7 @@ bode_freq_shifter::~bode_freq_shifter()
     if (l_out_latency) delete [] l_out_latency;
 }
 
-void const* bode_freq_shifter::get_out(outputnames::OUT_TYPE ot) const
+const void* bode_freq_shifter::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -39,8 +39,8 @@ void const* bode_freq_shifter::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const*
-bode_freq_shifter::set_in(inputnames::IN_TYPE it, void const* o)
+const void*
+bode_freq_shifter::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -53,7 +53,7 @@ bode_freq_shifter::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* bode_freq_shifter::get_in(inputnames::IN_TYPE it) const
+const void* bode_freq_shifter::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -64,7 +64,7 @@ void const* bode_freq_shifter::get_in(inputnames::IN_TYPE it) const
 }
 
 bool
-bode_freq_shifter::set_param(paramnames::PAR_TYPE pt, void const* data)
+bode_freq_shifter::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -79,7 +79,7 @@ bode_freq_shifter::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* bode_freq_shifter::get_param(paramnames::PAR_TYPE pt) const
+const void* bode_freq_shifter::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

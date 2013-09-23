@@ -8,7 +8,7 @@ dobjmod::dobjmod() :
     init_first();
 }
 
-bool dobjmod::set_param(paramnames::PAR_TYPE pt, void* data)
+bool dobjmod::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -20,7 +20,7 @@ bool dobjmod::set_param(paramnames::PAR_TYPE pt, void* data)
     }
 }
 
-void const* dobjmod::get_param(paramnames::PAR_TYPE pt) const
+const void* dobjmod::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

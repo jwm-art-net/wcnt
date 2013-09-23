@@ -15,7 +15,7 @@
 class timer : public synthmod, public linked_list<timing>
 {
  public:
-    timer(char const*);
+    timer(const char*);
     ~timer();
 
     timing* add_timing(double secs);
@@ -23,7 +23,7 @@ class timer : public synthmod, public linked_list<timing>
 
     void run();
     void init();
-    void const* get_out(outputnames::OUT_TYPE) const;
+    const void* get_out(outputnames::OUT_TYPE) const;
     dobj* add_dobj(dobj*);
 
  private:

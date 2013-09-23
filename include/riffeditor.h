@@ -31,8 +31,8 @@ class riff_editor : public dobj
     riffdata* get_riff_source()         { return riff_source;   }
 
     // virtuals from dobj
-    bool set_param(paramnames::PAR_TYPE, void*);
-    void const* get_param(paramnames::PAR_TYPE) const;
+    bool set_param(paramnames::PAR_TYPE, const void*);
+    const void* get_param(paramnames::PAR_TYPE) const;
     dobj const* add_dobj(dobj*);
     stockerrs::ERR_TYPE validate();
 

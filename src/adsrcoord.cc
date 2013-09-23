@@ -36,7 +36,7 @@ void adsr_coord::run(double velocity)
     output_level = lower_level + (upper_level - lower_level) * velocity;
 }
 
-bool adsr_coord::set_param(paramnames::PAR_TYPE pt, void* data)
+bool adsr_coord::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     { // PAR_ADSRSECT is iocat::CAT_FIX_STR.
@@ -60,7 +60,7 @@ bool adsr_coord::set_param(paramnames::PAR_TYPE pt, void* data)
     }
 }
 
-void const* adsr_coord::get_param(paramnames::PAR_TYPE pt) const
+const void* adsr_coord::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

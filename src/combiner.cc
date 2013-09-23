@@ -11,7 +11,7 @@
 #include "../include/wcntsignal.h"
 #include "../include/duplicate_list_module.h"
 
-combiner::combiner(char const* uname) :
+combiner::combiner(const char* uname) :
  synthmod(synthmodnames::COMBINER, uname, SM_HAS_OUT_OUTPUT),
  linkedlist(MULTIREF_OFF, PRESERVE_DATA),
  out_output(0), meantotal(OFF),
@@ -27,7 +27,7 @@ combiner::~combiner()
         delete [] sigs;
 }
 
-void const* combiner::get_out(outputnames::OUT_TYPE ot) const
+const void* combiner::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -36,7 +36,7 @@ void const* combiner::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-bool combiner::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool combiner::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -48,7 +48,7 @@ bool combiner::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* combiner::get_param(paramnames::PAR_TYPE pt) const
+const void* combiner::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

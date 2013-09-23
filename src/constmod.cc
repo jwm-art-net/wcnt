@@ -3,7 +3,7 @@
 #include "../include/modoutputlist.h"
 #include "../include/modparamlist.h"
 
-constmod::constmod(char const* uname) :
+constmod::constmod(const char* uname) :
 
  synthmod(
     synthmodnames::CONSTMOD,
@@ -20,7 +20,7 @@ constmod::~constmod()
 {
 }
 
-void const* constmod::get_out(outputnames::OUT_TYPE ot) const
+const void* constmod::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot) 
     {
@@ -29,7 +29,7 @@ void const* constmod::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-bool constmod::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool constmod::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt) {
         case paramnames::VALUE:
@@ -40,7 +40,7 @@ bool constmod::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* constmod::get_param(paramnames::PAR_TYPE pt) const
+const void* constmod::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

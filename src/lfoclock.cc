@@ -5,7 +5,7 @@
 #include "../include/modparamlist.h"
 #include "../include/conversions.h"
 
-lfo_clock::lfo_clock(char const* uname) :
+lfo_clock::lfo_clock(const char* uname) :
  synthmod(synthmodnames::LFOCLOCK, uname, SM_HAS_OUT_OUTPUT),
  out_phase_trig(OFF), out_phase_step(0.00), out_premod_phase_step(0.00),
  note_length_freq(0), hrtz_freq(0.00), in_phase_trig(NULL), 
@@ -27,7 +27,7 @@ lfo_clock::~lfo_clock()
 {
 }
 
-void const* lfo_clock::get_out(outputnames::OUT_TYPE ot) const
+const void* lfo_clock::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -42,7 +42,7 @@ void const* lfo_clock::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* lfo_clock::set_in(inputnames::IN_TYPE it, void const* o)
+const void* lfo_clock::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -57,7 +57,7 @@ void const* lfo_clock::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* lfo_clock::get_in(inputnames::IN_TYPE it) const
+const void* lfo_clock::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -68,7 +68,7 @@ void const* lfo_clock::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool lfo_clock::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool lfo_clock::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt) {
     case paramnames::FREQ_MOD1SIZE:
@@ -85,7 +85,7 @@ bool lfo_clock::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* lfo_clock::get_param(paramnames::PAR_TYPE pt) const
+const void* lfo_clock::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

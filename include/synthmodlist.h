@@ -26,7 +26,7 @@ public:
 
     bool delete_module(synthmod* sm);
 
-    synthmod* get_synthmod_by_name(char const* const n) {
+    synthmod* get_synthmod_by_name(const char* const n) {
         return find_in_data(sneak_first(), name(n))->get_data();
     }
 
@@ -47,7 +47,7 @@ public:
     // duplicated modules on sucess.
     // it is assumed there are modules grouped as 'from'.
     */
-    linkedlist* duplicate_group(char const* from, char const* to);
+    linkedlist* duplicate_group(const char* from, const char* to);
 
     /* remove_empty_run_modules
     //  this should only be called before running the synth:
@@ -69,7 +69,7 @@ public:
     //  removes a specific group's modules from this, into a new
     //  synthmodlist.
     */
-    linkedlist* remove_modules_of_group(char const* const n) {
+    linkedlist* remove_modules_of_group(const char* const n) {
         return move_to_new_list_of_by(this, groupname(n));
     }
 

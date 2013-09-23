@@ -8,7 +8,7 @@
 class user_wave : public synthmod, public linked_list<wave_vertex>
 {
 public:
-    user_wave(char const*);
+    user_wave(const char*);
     ~user_wave();
 
     wave_vertex* add_vertex(wave_vertex* wv);
@@ -18,11 +18,11 @@ public:
     void init();
     void run();
     stockerrs::ERR_TYPE validate();
-    void const* get_out(outputnames::OUT_TYPE) const;
-    void const* set_in(inputnames::IN_TYPE, void const*);
-    void const* get_in(inputnames::IN_TYPE it) const;
-    bool set_param(paramnames::PAR_TYPE, void const*);
-    void const* get_param(paramnames::PAR_TYPE) const;
+    const void* get_out(outputnames::OUT_TYPE) const;
+    const void* set_in(inputnames::IN_TYPE, const void*);
+    const void* get_in(inputnames::IN_TYPE it) const;
+    bool set_param(paramnames::PAR_TYPE, const void*);
+    const void* get_param(paramnames::PAR_TYPE) const;
     dobj* add_dobj(dobj*);
     synthmod* duplicate_module(const char* uname, DUP_IO);
 private:

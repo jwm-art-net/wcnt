@@ -3,7 +3,7 @@
 #include "../include/modoutputlist.h"
 #include "../include/modinputlist.h"
 
-multiplier::multiplier(char const* uname) :
+multiplier::multiplier(const char* uname) :
  synthmod(synthmodnames::MULTIPLIER, uname, SM_HAS_OUT_OUTPUT),
  in_signal1(0), in_signal2(0), out_output(0.00)
 {
@@ -16,7 +16,7 @@ multiplier::~multiplier()
 {
 }
 
-void const* multiplier::get_out(outputnames::OUT_TYPE ot) const
+const void* multiplier::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -25,7 +25,7 @@ void const* multiplier::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* multiplier::set_in(inputnames::IN_TYPE it, void const* o)
+const void* multiplier::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -35,7 +35,7 @@ void const* multiplier::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* multiplier::get_in(inputnames::IN_TYPE it) const
+const void* multiplier::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {

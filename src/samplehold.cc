@@ -5,7 +5,7 @@
 #include "../include/modparamlist.h"
 #include "../include/conversions.h"
 
-sample_hold::sample_hold(char const* uname) :
+sample_hold::sample_hold(const char* uname) :
  synthmod(synthmodnames::SAMPLEHOLD, uname, SM_HAS_OUT_OUTPUT),
  in_trig(0), in_signal(0), output(0.00), decay_time(0.00), 
  decay_samps(0), ds(0), decay_size(0.00)
@@ -20,7 +20,7 @@ sample_hold::~sample_hold()
 {
 }
 
-void const* sample_hold::get_out(outputnames::OUT_TYPE ot) const
+const void* sample_hold::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -29,7 +29,7 @@ void const* sample_hold::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* sample_hold::set_in(inputnames::IN_TYPE it, void const* o)
+const void* sample_hold::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -39,7 +39,7 @@ void const* sample_hold::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* sample_hold::get_in(inputnames::IN_TYPE it) const
+const void* sample_hold::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -49,7 +49,7 @@ void const* sample_hold::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool sample_hold::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool sample_hold::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -61,7 +61,7 @@ bool sample_hold::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* sample_hold::get_param(paramnames::PAR_TYPE pt) const
+const void* sample_hold::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

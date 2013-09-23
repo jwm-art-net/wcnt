@@ -2,7 +2,7 @@
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
 
-noise_generator::noise_generator(char const* uname) :
+noise_generator::noise_generator(const char* uname) :
  synthmod(synthmodnames::NOISEGEN, uname, SM_HAS_OUT_OUTPUT),
  output(0.00)
 {
@@ -14,7 +14,7 @@ noise_generator::~noise_generator()
 {
 }
 
-void const* noise_generator::get_out(outputnames::OUT_TYPE ot) const
+const void* noise_generator::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {

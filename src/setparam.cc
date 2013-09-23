@@ -48,7 +48,7 @@ template <typename T>
 bool set_param(T* obj, const char* param, paramnames::PAR_TYPE pt,
     const char* value, std::ostringstream* result)
 {
-    char const* parname = paramnames::get_name(pt);
+    const char* parname = paramnames::get_name(pt);
     if (pt != paramnames::STR_UNNAMED && pt != paramnames::STR_LIST)
     {
         if (strcmp(param, parname) != 0) {
@@ -84,10 +84,10 @@ bool set_param(T* obj, const char* param, paramnames::PAR_TYPE pt,
                         param);
             return false;
         }
-        int n = fsp->get_substring_index((char const*)data);
+        int n = fsp->get_substring_index((const char*)data);
         if (n < 0) {
             setpar_err("Parameter %s does not understand %s. Try one of "
-                       "'%s' instead.", param, ((char const*)data),
+                       "'%s' instead.", param, ((const char*)data),
                                                 fsp->get_string_list());
             iocatconv::destroy_iocat_data(ioc, data);
             return false;

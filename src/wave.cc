@@ -7,7 +7,7 @@
 #include "../include/modparamlist.h"
 #include "../include/fxsparamlist.h"
 
-wave::wave(char const* uname) :
+wave::wave(const char* uname) :
  synthmod(synthmodnames::WAVE, uname, SM_HAS_OUT_OUTPUT),
  output(0.00), in_phase_step(NULL), type(wave_tables::ONE), phase(0),
  table(0)
@@ -20,7 +20,7 @@ wave::~wave()
 {
 }
 
-void const* wave::get_out(outputnames::OUT_TYPE ot) const
+const void* wave::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -29,7 +29,7 @@ void const* wave::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* wave::set_in(inputnames::IN_TYPE it, void const* o)
+const void* wave::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -38,7 +38,7 @@ void const* wave::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* wave::get_in(inputnames::IN_TYPE it) const
+const void* wave::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -47,7 +47,7 @@ void const* wave::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool wave::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool wave::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -59,7 +59,7 @@ bool wave::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* wave::get_param(paramnames::PAR_TYPE pt) const
+const void* wave::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

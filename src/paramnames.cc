@@ -25,7 +25,7 @@ static paramnames pnames;
 #endif
 
 
-char const* paramnames::get_name(PAR_TYPE id)
+const char* paramnames::get_name(PAR_TYPE id)
 {
     if (id >= FIRST && id < LAST)
         return data[id].name;
@@ -41,7 +41,7 @@ iocat::IOCAT paramnames::get_category(PAR_TYPE id)
         return data[FIRST].cat;
 }
 
-paramnames::PAR_TYPE paramnames::get_type(char const* const pname)
+paramnames::PAR_TYPE paramnames::get_type(const char* const pname)
 {
     for (int i = FIRST + 1; i < LAST; i++) {
         if (strcmp(data[i].name, pname) == 0)

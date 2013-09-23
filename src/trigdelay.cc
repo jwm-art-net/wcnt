@@ -4,7 +4,7 @@
 #include "../include/modinputlist.h"
 #include "../include/modparamlist.h"
 
-trigdelay::trigdelay(char const* uname) :
+trigdelay::trigdelay(const char* uname) :
 
  synthmod(
     synthmodnames::TRIGDELAY,
@@ -37,14 +37,14 @@ void trigdelay::init()
     pastpos = pastmax - 1;
 }
 
-void const* trigdelay::get_out(outputnames::OUT_TYPE ot) const
+const void* trigdelay::get_out(outputnames::OUT_TYPE ot) const
 {
     if (ot == outputnames::OUT_TRIG)
         return &out_trig;
     return 0;
 }
 
-void const* trigdelay::set_in(inputnames::IN_TYPE it, void const* o)
+const void* trigdelay::set_in(inputnames::IN_TYPE it, const void* o)
 {
     if (it == inputnames::IN_TRIG) {
         in_trig = (STATUS*)o;
@@ -53,14 +53,14 @@ void const* trigdelay::set_in(inputnames::IN_TYPE it, void const* o)
     return  0;
 }
 
-void const* trigdelay::get_in(inputnames::IN_TYPE it) const
+const void* trigdelay::get_in(inputnames::IN_TYPE it) const
 {
     if (it == inputnames::IN_TRIG)
         return in_trig;
     return  0;
 }
 
-bool trigdelay::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool trigdelay::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     if (pt == paramnames::DELAY_TIME) {
         delay_time = *(double*)data;
@@ -69,7 +69,7 @@ bool trigdelay::set_param(paramnames::PAR_TYPE pt, void const* data)
     return false;
 }
 
-void const* trigdelay::get_param(paramnames::PAR_TYPE pt) const
+const void* trigdelay::get_param(paramnames::PAR_TYPE pt) const
 {
     if (pt == paramnames::DELAY_TIME)
         return &delay_time;

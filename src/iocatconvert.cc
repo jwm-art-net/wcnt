@@ -24,7 +24,7 @@ namespace iocatconv
 {
 static char err_msg[STRBUFLEN] = "";
 
-void* cstr_to_iocat(iocat::IOCAT ioc, char const* cstrval,
+void* cstr_to_iocat(iocat::IOCAT ioc, const char* cstrval,
                     std::ostringstream* result)
 {
     if (!cstrval) {
@@ -140,7 +140,7 @@ void* cstr_to_iocat(iocat::IOCAT ioc, char const* cstrval,
     return data;
 }
 
-void destroy_iocat_data(iocat::IOCAT ioc, void* data)
+void destroy_iocat_data(iocat::IOCAT ioc, const void* data)
 {
     switch(ioc)
     {

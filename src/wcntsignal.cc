@@ -5,7 +5,7 @@
 #include "../include/modparamlist.h"
 #include "../include/connectorlist.h"
 
-wcnt_signal::wcnt_signal(char const* uname) :
+wcnt_signal::wcnt_signal(const char* uname) :
  synthmod(synthmodnames::WCNTSIGNAL, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), out_output(0.0), level(0.0)
 {
@@ -19,7 +19,7 @@ wcnt_signal::~wcnt_signal()
 {
 }
 
-void const* wcnt_signal::get_out(outputnames::OUT_TYPE ot) const
+const void* wcnt_signal::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -29,7 +29,7 @@ void const* wcnt_signal::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* wcnt_signal::set_in(inputnames::IN_TYPE it, void const* o)
+const void* wcnt_signal::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -38,7 +38,7 @@ void const* wcnt_signal::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* wcnt_signal::get_in(inputnames::IN_TYPE it) const
+const void* wcnt_signal::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -47,7 +47,7 @@ void const* wcnt_signal::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool wcnt_signal::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool wcnt_signal::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -59,7 +59,7 @@ bool wcnt_signal::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* wcnt_signal::get_param(paramnames::PAR_TYPE pt) const
+const void* wcnt_signal::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

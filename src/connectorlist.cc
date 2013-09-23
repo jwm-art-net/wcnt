@@ -141,7 +141,7 @@ bool connectorlist::make_connections()
 #ifdef UNUSED
 connector*
 connectorlist::duplicate_connections_for_group(
-    char const* from, char const* to)
+    const char* from, const char* to)
 {
     /* FIXME: "nothing here codes be doing.." */
 /*
@@ -169,7 +169,7 @@ bool
 connectorlist::remake_connections(
     synthmod* sm, outputnames::OUT_TYPE ot, outputnames::OUT_TYPE new_ot)
 {
-    char const* smname = sm->get_username();
+    const char* smname = sm->get_username();
     llitem* i = find_in_data(sneak_first(), name(smname));
     if (!i)
         return false;

@@ -2,7 +2,7 @@
 #include "../include/jwm_globals.h"
 #include "../include/modoutputlist.h"
 
-nonezero::nonezero(char const* uname) :
+nonezero::nonezero(const char* uname) :
 
  synthmod(
     synthmodnames::NONEZERO,
@@ -28,7 +28,7 @@ nonezero::~nonezero()
         delete [] out_none_string;
 }
 
-void const* nonezero::get_out(outputnames::OUT_TYPE ot) const
+const void* nonezero::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {

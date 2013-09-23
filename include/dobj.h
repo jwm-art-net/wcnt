@@ -25,11 +25,11 @@ class dobj
     // some dobj are unamed by user, but contain another string which
     // is helpful when identifying errors, which is why get_username()
     // is now virtual.
-    virtual char const* get_username();
+    virtual const char* get_username();
     bool is_valid() const   { return valid; }
     virtual stockerrs::ERR_TYPE validate() = 0;
-    virtual bool set_param(paramnames::PAR_TYPE, void*);
-    virtual void const* get_param(paramnames::PAR_TYPE) const;
+    virtual bool set_param(paramnames::PAR_TYPE, const void*);
+    virtual const void* get_param(paramnames::PAR_TYPE) const;
     virtual dobj const* add_dobj(dobj*); // don't be fooled...
     virtual dobj* duplicate_dobj(const char*);
 

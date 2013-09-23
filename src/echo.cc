@@ -4,7 +4,7 @@
 #include "../include/modinputlist.h"
 #include "../include/modparamlist.h"
 
-echo::echo(char const* uname) :
+echo::echo(const char* uname) :
  synthmod(synthmodnames::ECHO, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), in_gainmod(0), in_feedback(0), in_feed_mod(0), output(0),
  wet_output(0), delay_time(0), gain(0), gain_modsize(0), feed_level(0),
@@ -25,7 +25,7 @@ echo::~echo()
     delete [] filter;
 }
 
-void const* echo::get_out(outputnames::OUT_TYPE ot) const
+const void* echo::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -35,7 +35,7 @@ void const* echo::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* echo::set_in(inputnames::IN_TYPE it, void const* o)
+const void* echo::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -47,7 +47,7 @@ void const* echo::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* echo::get_in(inputnames::IN_TYPE it) const
+const void* echo::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -59,7 +59,7 @@ void const* echo::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool echo::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool echo::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -86,7 +86,7 @@ bool echo::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* echo::get_param(paramnames::PAR_TYPE pt) const
+const void* echo::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

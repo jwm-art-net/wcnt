@@ -8,7 +8,7 @@
 
 #include <iostream>
 
-serialwavfileout::serialwavfileout(char const* uname) :
+serialwavfileout::serialwavfileout(const char* uname) :
  synthmod(synthmodnames::SERIALWAVFILEOUT, uname, SM_DEFAULT),
  in_left_channel(0), in_right_channel(0), in_bar(0), in_bar_trig(0),
  in_write_trig(0), in_stop_trig(0), write_status(OFF),
@@ -45,7 +45,7 @@ serialwavfileout::~serialwavfileout()
     if (wav_basename) delete [] wav_basename;
 }
 
-void const* serialwavfileout::get_out(outputnames::OUT_TYPE ot) const
+const void* serialwavfileout::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -54,8 +54,8 @@ void const* serialwavfileout::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const*
-serialwavfileout::set_in(inputnames::IN_TYPE it, void const* o)
+const void*
+serialwavfileout::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -76,7 +76,7 @@ serialwavfileout::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* serialwavfileout::get_in(inputnames::IN_TYPE it) const
+const void* serialwavfileout::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -98,7 +98,7 @@ void const* serialwavfileout::get_in(inputnames::IN_TYPE it) const
 }
 
 bool
-serialwavfileout::set_param(paramnames::PAR_TYPE pt, void const* data)
+serialwavfileout::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -106,7 +106,7 @@ serialwavfileout::set_param(paramnames::PAR_TYPE pt, void const* data)
             data_format = *(DATA_FMT*)data;
             return true;
         case paramnames::WAV_BASENAME:
-            set_wav_basename((char*)data);
+            set_wav_basename((const char*)data);
             return true;
         case paramnames::START_BAR:
             start_bar = *(short*)data;
@@ -119,7 +119,7 @@ serialwavfileout::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* serialwavfileout::get_param(paramnames::PAR_TYPE pt) const
+const void* serialwavfileout::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {
@@ -150,7 +150,7 @@ stockerrs::ERR_TYPE serialwavfileout::validate()
     return stockerrs::ERR_NO_ERROR;
 }
 
-void serialwavfileout::set_wav_basename(char * fname)
+void serialwavfileout::set_wav_basename(const char* fname)
 {
     if (wav_basename)
         delete [] wav_basename;
@@ -158,7 +158,7 @@ void serialwavfileout::set_wav_basename(char * fname)
     strcpy(wav_basename, fname);
 }
 
-WAV_STATUS serialwavfileout::open_wav(char * fname)
+WAV_STATUS serialwavfileout::open_wav(const char* fname)
 {
     sfinfo.frames = 0;
     sfinfo.samplerate = jwm.samplerate();

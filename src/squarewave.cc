@@ -6,7 +6,7 @@
 
 #include <cstdlib>
 
-square_wave::square_wave(char const* uname) :
+square_wave::square_wave(const char* uname) :
  synthmod(synthmodnames::SQUAREWAVE, uname, SM_HAS_OUT_OUTPUT),
  output(0.00), out_offpulse(OFF), play_state(OFF),
  in_phase_trig(NULL), in_phase_step(NULL), in_pwm(NULL),
@@ -27,7 +27,7 @@ square_wave::~square_wave()
 {
 }
 
-void const* square_wave::get_out(outputnames::OUT_TYPE ot) const
+const void* square_wave::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -38,7 +38,7 @@ void const* square_wave::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* square_wave::set_in(inputnames::IN_TYPE it, void const* o)
+const void* square_wave::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -49,7 +49,7 @@ void const* square_wave::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* square_wave::get_in(inputnames::IN_TYPE it) const
+const void* square_wave::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -60,7 +60,7 @@ void const* square_wave::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool square_wave::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool square_wave::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -81,7 +81,7 @@ bool square_wave::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* square_wave::get_param(paramnames::PAR_TYPE pt) const
+const void* square_wave::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

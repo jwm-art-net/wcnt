@@ -3,7 +3,7 @@
 #include "../include/modoutputlist.h"
 #include "../include/modinputlist.h"
 
-subtracter::subtracter(char const* uname) :
+subtracter::subtracter(const char* uname) :
  synthmod(synthmodnames::SUBTRACTER, uname, SM_HAS_OUT_OUTPUT),
  in_signal1(0), in_signal2(0), out_output(0)
 {
@@ -16,14 +16,14 @@ subtracter::~subtracter()
 {
 }
 
-void const* subtracter::get_out(outputnames::OUT_TYPE ot) const
+const void* subtracter::get_out(outputnames::OUT_TYPE ot) const
 {
     if (ot == outputnames::OUT_OUTPUT)
         return &out_output;
     return 0;
 }
 
-void const* subtracter::set_in(inputnames::IN_TYPE it, void const* o)
+const void* subtracter::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -33,7 +33,7 @@ void const* subtracter::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* subtracter::get_in(inputnames::IN_TYPE it) const
+const void* subtracter::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {

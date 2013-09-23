@@ -26,7 +26,7 @@ needed a better solution so created the nonezero module.......*/
 class nonezero: public synthmod
 {
 public:
-    nonezero(char const*);
+    nonezero(const char*);
     ~nonezero();
     const double* get_output_none_double() const {
             return &out_none_double;
@@ -39,7 +39,7 @@ public:
     const STATUS* get_output_none_state() const { return &out_none_STATUS; }
     // virtual funcs
     void run(){};
-    void const* get_out(outputnames::OUT_TYPE) const;
+    const void* get_out(outputnames::OUT_TYPE) const;
 
 private:
     const double out_none_double;

@@ -10,7 +10,7 @@
 #include "../include/dobjdobjlist.h"
 #include "../include/duplicate_list_module.h"
 
-trigswitcher::trigswitcher(char const* uname) :
+trigswitcher::trigswitcher(const char* uname) :
 
  synthmod(synthmodnames::TRIGSWITCHER, uname, SM_HAS_OUT_TRIG),
  linkedlist(MULTIREF_ON, PRESERVE_DATA),
@@ -28,7 +28,7 @@ trigswitcher::~trigswitcher()
         delete [] trigs;
 }
 
-void const* trigswitcher::get_out(outputnames::OUT_TYPE ot) const
+const void* trigswitcher::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -37,7 +37,7 @@ void const* trigswitcher::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* trigswitcher::set_in(inputnames::IN_TYPE it, void const* o)
+const void* trigswitcher::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -46,7 +46,7 @@ void const* trigswitcher::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* trigswitcher::get_in(inputnames::IN_TYPE it) const
+const void* trigswitcher::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {

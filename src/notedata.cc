@@ -186,12 +186,12 @@ double note_data::get_note_frequency() const
 }
 #endif
 
-bool note_data::set_param(paramnames::PAR_TYPE dt, void* data)
+bool note_data::set_param(paramnames::PAR_TYPE dt, const void* data)
 {
     switch(dt)
     {
     case paramnames::NAME:
-        set_name((char*)data); // pass pointer
+        set_name((const char*)data);
         return true;
     case paramnames::NOTE_POS:
         set_position(*(double*)data);
@@ -207,7 +207,7 @@ bool note_data::set_param(paramnames::PAR_TYPE dt, void* data)
     }
 }
 
-void const* note_data::get_param(paramnames::PAR_TYPE dt) const
+const void* note_data::get_param(paramnames::PAR_TYPE dt) const
 {
     switch(dt)
     {

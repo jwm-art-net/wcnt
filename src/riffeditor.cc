@@ -16,7 +16,7 @@ riff_editor::~riff_editor()
 {
 }
 
-bool riff_editor::set_param(paramnames::PAR_TYPE pt, void* data)
+bool riff_editor::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -33,7 +33,7 @@ bool riff_editor::set_param(paramnames::PAR_TYPE pt, void* data)
     }
 }
 
-void const* riff_editor::get_param(paramnames::PAR_TYPE pt) const
+const void* riff_editor::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

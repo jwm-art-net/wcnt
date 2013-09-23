@@ -14,7 +14,7 @@ adsr_scaler::~adsr_scaler()
 {
 }
 
-bool adsr_scaler::set_param(paramnames::PAR_TYPE pt, void* data)
+bool adsr_scaler::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -41,7 +41,7 @@ bool adsr_scaler::set_param(paramnames::PAR_TYPE pt, void* data)
     }
 }
 
-void const* adsr_scaler::get_param(paramnames::PAR_TYPE pt) const
+const void* adsr_scaler::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

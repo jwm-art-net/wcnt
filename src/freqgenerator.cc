@@ -4,7 +4,7 @@
 #include "../include/modinputlist.h"
 #include "../include/modparamlist.h"
 
-freq_generator::freq_generator(char const* uname) :
+freq_generator::freq_generator(const char* uname) :
  synthmod(synthmodnames::FREQGEN, uname, SM_DEFAULT),
  in_signal(0), out_freq(220.00), out_phase_step(0),
  sig_range_hi(1.00), sig_range_lo(-1.00),
@@ -21,7 +21,7 @@ freq_generator::~freq_generator()
 {
 }
 
-void const* freq_generator::get_out(outputnames::OUT_TYPE ot) const
+const void* freq_generator::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -31,7 +31,7 @@ void const* freq_generator::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* freq_generator::set_in(inputnames::IN_TYPE it, void const* o)
+const void* freq_generator::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -40,7 +40,7 @@ void const* freq_generator::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* freq_generator::get_in(inputnames::IN_TYPE it) const
+const void* freq_generator::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -49,7 +49,7 @@ void const* freq_generator::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool freq_generator::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool freq_generator::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -73,7 +73,7 @@ bool freq_generator::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* freq_generator::get_param(paramnames::PAR_TYPE pt) const
+const void* freq_generator::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

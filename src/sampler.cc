@@ -9,7 +9,7 @@
 
 #include <iostream>
 
-sampler::sampler(char const* uname) :
+sampler::sampler(const char* uname) :
  synthmod(synthmodnames::SAMPLER, uname, SM_HAS_STEREO_OUTPUT),
  in_play_trig(0), in_stop_trig(0), in_start_pos_mod(0), in_phase_step(0),
  out_left(0), out_right(0),
@@ -58,7 +58,7 @@ sampler::~sampler()
         delete [] ac_st_buf;
 }
 
-void const* sampler::get_out(outputnames::OUT_TYPE ot) const
+const void* sampler::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -70,7 +70,7 @@ void const* sampler::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* sampler::set_in(inputnames::IN_TYPE it, void const* o)
+const void* sampler::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -87,7 +87,7 @@ void const* sampler::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* sampler::get_in(inputnames::IN_TYPE it) const
+const void* sampler::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -99,7 +99,7 @@ void const* sampler::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool sampler::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool sampler::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -160,7 +160,7 @@ bool sampler::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* sampler::get_param(paramnames::PAR_TYPE pt) const
+const void* sampler::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

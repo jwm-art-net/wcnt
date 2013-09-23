@@ -26,7 +26,7 @@
 class dynamic : public synthmod, public linked_list<dynvertex>
 {
  public:
-    dynamic(char const*);
+    dynamic(const char*);
     ~dynamic();
     dynvertex* add_dvertex(dynvertex* dv) {
         return ordered_insert(
@@ -44,11 +44,11 @@ class dynamic : public synthmod, public linked_list<dynvertex>
     void run();
     void init();
     stockerrs::ERR_TYPE validate();
-    void const* get_out(outputnames::OUT_TYPE) const;
-    void const* set_in(inputnames::IN_TYPE, void const*);
+    const void* get_out(outputnames::OUT_TYPE) const;
+    const void* set_in(inputnames::IN_TYPE, const void*);
     const void* get_in(inputnames::IN_TYPE it) const;
-    bool set_param(paramnames::PAR_TYPE, void const*);
-    void const* get_param(paramnames::PAR_TYPE) const;
+    bool set_param(paramnames::PAR_TYPE, const void*);
+    const void* get_param(paramnames::PAR_TYPE) const;
     dobj* add_dobj(dobj*);
     synthmod* duplicate_module(const char* uname, DUP_IO);
 

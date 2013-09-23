@@ -55,7 +55,7 @@ public:
     //  returns 0 on sucess, or the connector which failed.
     */
     connector*
-    duplicate_connections_for_group(char const* from, char const* to);
+    duplicate_connections_for_group(const char* from, const char* to);
 
     // wcnt_signal uses output = input * level.
     // when level is 1.0, output == input, and the run method

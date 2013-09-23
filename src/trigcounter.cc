@@ -4,7 +4,7 @@
 #include "../include/modinputlist.h"
 #include "../include/modparamlist.h"
 
-trigcounter::trigcounter(char const* uname) :
+trigcounter::trigcounter(const char* uname) :
 
  synthmod(
     synthmodnames::TRIGCOUNTER,
@@ -30,7 +30,7 @@ trigcounter::~trigcounter()
 {
 }
 
-void const* trigcounter::get_out(outputnames::OUT_TYPE ot) const
+const void* trigcounter::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -43,7 +43,7 @@ void const* trigcounter::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* trigcounter::set_in(inputnames::IN_TYPE it, void const* o)
+const void* trigcounter::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -53,7 +53,7 @@ void const* trigcounter::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* trigcounter::get_in(inputnames::IN_TYPE it) const
+const void* trigcounter::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -63,7 +63,7 @@ void const* trigcounter::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool trigcounter::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool trigcounter::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -81,7 +81,7 @@ bool trigcounter::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* trigcounter::get_param(paramnames::PAR_TYPE pt) const
+const void* trigcounter::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

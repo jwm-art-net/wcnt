@@ -5,7 +5,7 @@
 #include "../include/modinputlist.h"
 #include "../include/modparamlist.h"
 
-sc1::sc1(char const* uname) :
+sc1::sc1(const char* uname) :
  synthmod(synthmodnames::SC1, uname, SM_HAS_OUT_OUTPUT),
  input(0), in_thresh_mod(0), in_ratio_mod(0), in_knee_mod(0),
  in_makeup_mod(0), output(0),
@@ -28,7 +28,7 @@ sc1::~sc1()
     if (l_output) delete [] l_output;
 }
 
-void const* sc1::get_out(outputnames::OUT_TYPE ot) const
+const void* sc1::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot) {
         case outputnames::OUT_OUTPUT: return &output;
@@ -36,7 +36,7 @@ void const* sc1::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* sc1::set_in(inputnames::IN_TYPE it, void const* o)
+const void* sc1::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it){
         case inputnames::IN_SIGNAL: return input = (double*)o;
@@ -44,7 +44,7 @@ void const* sc1::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* sc1::get_in(inputnames::IN_TYPE it) const
+const void* sc1::get_in(inputnames::IN_TYPE it) const
 {
     switch(it) {
         case inputnames::IN_SIGNAL: return input;
@@ -52,7 +52,7 @@ void const* sc1::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool sc1::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool sc1::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt) {
         case paramnames::ATTACK_TIME:
@@ -78,7 +78,7 @@ bool sc1::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* sc1::get_param(paramnames::PAR_TYPE pt) const
+const void* sc1::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

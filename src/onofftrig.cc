@@ -8,7 +8,7 @@
 
 #include <math.h>
 
-onofftrig::onofftrig(char const* uname) :
+onofftrig::onofftrig(const char* uname) :
 
  synthmod(
     synthmodnames::ONOFFTRIG,
@@ -32,7 +32,7 @@ onofftrig::~onofftrig()
 {
 }
 
-void const* onofftrig::get_out(outputnames::OUT_TYPE ot) const
+const void* onofftrig::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -48,7 +48,7 @@ void const* onofftrig::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* onofftrig::set_in(inputnames::IN_TYPE it, void const* o)
+const void* onofftrig::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -57,7 +57,7 @@ void const* onofftrig::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* onofftrig::get_in(inputnames::IN_TYPE it) const
+const void* onofftrig::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -66,7 +66,7 @@ void const* onofftrig::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool onofftrig::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool onofftrig::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -90,7 +90,7 @@ bool onofftrig::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* onofftrig::get_param(paramnames::PAR_TYPE pt) const
+const void* onofftrig::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

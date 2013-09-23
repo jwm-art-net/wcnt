@@ -4,7 +4,7 @@
 #include "../include/modinputlist.h"
 #include "../include/modparamlist.h"
 
-patterntrig::patterntrig(char const* uname) :
+patterntrig::patterntrig(const char* uname) :
 
  synthmod(
     synthmodnames::PATTERNTRIG,
@@ -26,7 +26,7 @@ patterntrig::~patterntrig()
     if (pattern) delete [] pattern;
 }
 
-void patterntrig::set_pattern_string(char* pat)
+void patterntrig::set_pattern_string(const char* pat)
 {
     if (!pat) return;
     if (pattern) delete [] pattern;
@@ -74,7 +74,7 @@ stockerrs::ERR_TYPE patterntrig::validate()
             : stockerrs::ERR_ERROR;
 }
 
-void const* patterntrig::get_out(outputnames::OUT_TYPE ot) const
+const void* patterntrig::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -85,7 +85,7 @@ void const* patterntrig::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* patterntrig::set_in(inputnames::IN_TYPE it, void const* o)
+const void* patterntrig::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -94,7 +94,7 @@ void const* patterntrig::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* patterntrig::get_in(inputnames::IN_TYPE it) const
+const void* patterntrig::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -103,19 +103,19 @@ void const* patterntrig::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool patterntrig::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool patterntrig::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
         case paramnames::TRIG_STRING:
-            set_pattern_string((char*)data);
+            set_pattern_string((const char*)data);
             return true;
         default:
             return false;
     }
 }
 
-void const* patterntrig::get_param(paramnames::PAR_TYPE pt) const
+const void* patterntrig::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

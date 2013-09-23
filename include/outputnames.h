@@ -85,7 +85,7 @@ class outputnames {
     ~outputnames(){};
     static const char*  get_name(OUT_TYPE type);
     static iocat::IOCAT get_category(OUT_TYPE type);
-    static OUT_TYPE     get_type(char const* const name);
+    static OUT_TYPE     get_type(const char* const name);
     static OUT_TYPE     get_nonezerotype(iocat::IOCAT cat);
  private:
     struct output_data

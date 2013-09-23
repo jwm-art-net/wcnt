@@ -5,7 +5,7 @@
 #include "../include/modparamlist.h"
 #include "../include/fxsparamlist.h"
 
-modifier::modifier(char const* uname) :
+modifier::modifier(const char* uname) :
  synthmod(synthmodnames::MODIFIER, uname, SM_HAS_OUT_OUTPUT),
  in_signal1(0), in_signal2(0), in_bias(0),
  out_output(0),
@@ -22,7 +22,7 @@ modifier::~modifier()
 {
 }
 
-void const* modifier::get_out(outputnames::OUT_TYPE ot) const
+const void* modifier::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -31,7 +31,7 @@ void const* modifier::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* modifier::set_in(inputnames::IN_TYPE it, void const* o)
+const void* modifier::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -42,7 +42,7 @@ void const* modifier::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* modifier::get_in(inputnames::IN_TYPE it) const
+const void* modifier::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -53,7 +53,7 @@ void const* modifier::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool modifier::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool modifier::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -73,7 +73,7 @@ bool modifier::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* modifier::get_param(paramnames::PAR_TYPE pt) const
+const void* modifier::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

@@ -6,7 +6,7 @@
 
 #include <cstdlib>
 
-randomtrigger::randomtrigger(char const* uname) :
+randomtrigger::randomtrigger(const char* uname) :
 
  synthmod(
     synthmodnames::RANDTRIGGER,
@@ -27,7 +27,7 @@ randomtrigger::~randomtrigger()
 {
 }
 
-void const* randomtrigger::get_out(outputnames::OUT_TYPE ot) const
+const void* randomtrigger::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -37,7 +37,7 @@ void const* randomtrigger::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* randomtrigger::set_in(inputnames::IN_TYPE it, void const* o)
+const void* randomtrigger::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -46,7 +46,7 @@ void const* randomtrigger::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* randomtrigger::get_in(inputnames::IN_TYPE it) const
+const void* randomtrigger::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -55,7 +55,7 @@ void const* randomtrigger::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool randomtrigger::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool randomtrigger::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -70,7 +70,7 @@ bool randomtrigger::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* randomtrigger::get_param(paramnames::PAR_TYPE pt) const
+const void* randomtrigger::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

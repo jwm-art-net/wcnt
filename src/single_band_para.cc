@@ -5,7 +5,7 @@
 #include "../include/modinputlist.h"
 #include "../include/modparamlist.h"
 
-single_band_para::single_band_para(char const* uname) :
+single_band_para::single_band_para(const char* uname) :
  synthmod(synthmodnames::SINGLE_BAND_PARA, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), in_phase_step(0), in_gain_mod(0), in_bandwidth_mod(0),
  output(0),
@@ -30,7 +30,7 @@ single_band_para::~single_band_para()
     if (l_output) delete [] l_output;
 }
 
-void const* single_band_para::get_out(outputnames::OUT_TYPE ot) const
+const void* single_band_para::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -39,8 +39,8 @@ void const* single_band_para::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const*
-single_band_para::set_in(inputnames::IN_TYPE it, void const* o)
+const void*
+single_band_para::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -57,7 +57,7 @@ single_band_para::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* single_band_para::get_in(inputnames::IN_TYPE it) const
+const void* single_band_para::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -70,7 +70,7 @@ void const* single_band_para::get_in(inputnames::IN_TYPE it) const
 }
 
 bool
-single_band_para::set_param(paramnames::PAR_TYPE pt, void const* data)
+single_band_para::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -91,7 +91,7 @@ single_band_para::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* single_band_para::get_param(paramnames::PAR_TYPE pt) const
+const void* single_band_para::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

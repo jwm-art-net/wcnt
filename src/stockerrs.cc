@@ -28,7 +28,7 @@ stockerrs::~stockerrs()
 {
 }
 
-char const* stockerrs::get_err(stockerrs::ERR_TYPE et)
+const char* stockerrs::get_err(stockerrs::ERR_TYPE et)
 {
     if (et > ERR_FIRST && et < ERR_LAST)
         return data[et].msg;
@@ -36,7 +36,7 @@ char const* stockerrs::get_err(stockerrs::ERR_TYPE et)
         return data[ERR_FIRST].msg;
 }
 
-char const* stockerrs::get_prefix_err(stockerrs::ERR_TYPE et)
+const char* stockerrs::get_prefix_err(stockerrs::ERR_TYPE et)
 {
     if (et > ERR_RANGE_TYPE1 && et < ERR_RANGE_TYPE2)
         return prefixmsg[1];

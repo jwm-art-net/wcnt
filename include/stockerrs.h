@@ -83,8 +83,8 @@ class stockerrs
     };
     stockerrs();
     ~stockerrs();
-    static char const* get_err(ERR_TYPE);
-    static char const* get_prefix_err(ERR_TYPE);
+    static const char* get_err(ERR_TYPE);
+    static const char* get_prefix_err(ERR_TYPE);
     static bool check_type(ERR_TYPE);
 private:
     struct err_msg_data

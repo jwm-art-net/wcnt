@@ -12,7 +12,7 @@
 #include <sstream>
 #include <sys/timeb.h>
 
-wavfileout::wavfileout(char const* uname) :
+wavfileout::wavfileout(const char* uname) :
  synthmod(synthmodnames::WAVFILEOUT, uname, SM_DEFAULT),
  in_l(0), in_r(0), in_bar(0), in_bar_trig(0),
  out_write_start_trig(OFF), out_write_end_trig(OFF),
@@ -49,7 +49,7 @@ wavfileout::~wavfileout()
     delete [] st_buffer;
 }
 
-void const* wavfileout::get_out(outputnames::OUT_TYPE ot) const
+const void* wavfileout::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -64,7 +64,7 @@ void const* wavfileout::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* wavfileout::set_in(inputnames::IN_TYPE it, void const* o)
+const void* wavfileout::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -76,7 +76,7 @@ void const* wavfileout::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* wavfileout::get_in(inputnames::IN_TYPE it) const
+const void* wavfileout::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -88,7 +88,7 @@ void const* wavfileout::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool wavfileout::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool wavfileout::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -112,7 +112,7 @@ bool wavfileout::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* wavfileout::get_param(paramnames::PAR_TYPE pt) const
+const void* wavfileout::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {
@@ -146,7 +146,7 @@ stockerrs::ERR_TYPE wavfileout::validate()
 
 void wavfileout::set_wav_filename(char* fname)
 {
-    char const* path = jwm.path();
+    const char* path = jwm.path();
     if (_filename)
         delete [] _filename;
     if (*fname == '/' || path == NULL) {

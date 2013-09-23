@@ -1,4 +1,4 @@
-samplerate 96000
+samplerate 22050
 
 This file is a Wav Composer Not Toilet header file (.wch). A header file
 is used to tell wcnt what samplerate is should operate at. By doing this

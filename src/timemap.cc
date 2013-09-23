@@ -9,7 +9,7 @@
 
 #include <sstream>
 
-timemap::timemap(char const* uname) :
+timemap::timemap(const char* uname) :
 
  synthmod(
     synthmodnames::TIMEMAP,
@@ -246,7 +246,7 @@ double timemap::notelen_to_ms(short nl) const
 }
 #endif
 
-void const* timemap::get_out(outputnames::OUT_TYPE ot) const
+const void* timemap::get_out(outputnames::OUT_TYPE ot) const
 {
     switch (ot) {
     case outputnames::OUT_BPM:

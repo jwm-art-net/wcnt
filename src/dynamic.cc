@@ -6,7 +6,7 @@
 #include "../include/moddobjlist.h"
 #include "../include/dobjdobjlist.h"
 
-dynamic::dynamic(char const* uname) :
+dynamic::dynamic(const char* uname) :
  synthmod(synthmodnames::DYNAMIC, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), in_mod(0), out_output(0), play_state(OFF),
  up_thresh(0), lo_thresh(0), posnegmirror(OFF), use_ratios(OFF),
@@ -26,7 +26,7 @@ dynamic::~dynamic()
         destroy_array_moved_from_list(dynvertices);
 }
 
-void const* dynamic::get_out(outputnames::OUT_TYPE ot) const
+const void* dynamic::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot)
     {
@@ -36,7 +36,7 @@ void const* dynamic::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-void const* dynamic::set_in(inputnames::IN_TYPE it, void const* o)
+const void* dynamic::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -46,7 +46,7 @@ void const* dynamic::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* dynamic::get_in(inputnames::IN_TYPE it) const
+const void* dynamic::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -56,7 +56,7 @@ void const* dynamic::get_in(inputnames::IN_TYPE it) const
     }
 }
 
-bool dynamic::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool dynamic::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -77,7 +77,7 @@ bool dynamic::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* dynamic::get_param(paramnames::PAR_TYPE pt) const
+const void* dynamic::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

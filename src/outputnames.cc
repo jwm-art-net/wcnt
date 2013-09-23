@@ -25,7 +25,7 @@ static outputnames onames;
 #endif
 
 
-char const* outputnames::get_name(OUT_TYPE id)
+const char* outputnames::get_name(OUT_TYPE id)
 {
     if (id >= OUT_FIRST && id < OUT_LAST)
         return data[id].name;
@@ -41,7 +41,7 @@ iocat::IOCAT outputnames::get_category(OUT_TYPE id)
         return data[OUT_FIRST].cat;
 }
 
-outputnames::OUT_TYPE outputnames::get_type(char const* const oname)
+outputnames::OUT_TYPE outputnames::get_type(const char* const oname)
 {
     for (int i = OUT_FIRST + 1; i < OUT_LAST; i++)
         if (strcmp(data[i].name, oname) == 0)

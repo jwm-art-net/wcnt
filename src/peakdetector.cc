@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-peak_detector::peak_detector(char const* uname) :
+peak_detector::peak_detector(const char* uname) :
  synthmod(synthmodnames::PEAKDETECTOR, uname, SM_DEFAULT),
  in_signal(0), sig_range_hi(0.0), sig_range_lo(0.0), message(0),
  force_abort(OFF), max_peaks(0), peak_count(0), check(true)
@@ -29,7 +29,7 @@ void peak_detector::set_message(const char* msg)
     strcpy(message, msg);
 }
 
-void const* peak_detector::set_in(inputnames::IN_TYPE it, void const* o)
+const void* peak_detector::set_in(inputnames::IN_TYPE it, const void* o)
 {
     switch(it)
     {
@@ -38,7 +38,7 @@ void const* peak_detector::set_in(inputnames::IN_TYPE it, void const* o)
     }
 }
 
-void const* peak_detector::get_in(inputnames::IN_TYPE it) const
+const void* peak_detector::get_in(inputnames::IN_TYPE it) const
 {
     switch(it)
     {
@@ -89,7 +89,7 @@ void peak_detector::init()
     if (max_peaks < 0) max_peaks = 0;
 }
 
-bool peak_detector::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool peak_detector::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt)
     {
@@ -100,7 +100,7 @@ bool peak_detector::set_param(paramnames::PAR_TYPE pt, void const* data)
             sig_range_lo = *(double*)data;
             return true;
         case paramnames::MSG:
-            set_message((char*)data);
+            set_message((const char*)data);
             return true;
         case paramnames::FORCE_ABORT:
             force_abort = *(STATUS*)data;
@@ -113,7 +113,7 @@ bool peak_detector::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* peak_detector::get_param(paramnames::PAR_TYPE pt) const
+const void* peak_detector::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {

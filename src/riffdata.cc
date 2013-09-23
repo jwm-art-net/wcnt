@@ -299,7 +299,7 @@ double riffdata::calc_riff_length(char beats_per_bar, char beat_value)
 }
 #endif
 
-bool riffdata::set_param(paramnames::PAR_TYPE dt, void* data)
+bool riffdata::set_param(paramnames::PAR_TYPE dt, const void* data)
 {
     switch(dt)
     {
@@ -311,7 +311,7 @@ bool riffdata::set_param(paramnames::PAR_TYPE dt, void* data)
     }
 }
 
-void const* riffdata::get_param(paramnames::PAR_TYPE dt) const
+const void* riffdata::get_param(paramnames::PAR_TYPE dt) const
 {
     switch(dt)
     {

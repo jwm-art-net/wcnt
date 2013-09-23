@@ -4,7 +4,7 @@
 #include "../include/modparamlist.h"
 #include "../include/conversions.h"
 
-constant_freq::constant_freq(char const* uname) :
+constant_freq::constant_freq(const char* uname) :
  synthmod(synthmodnames::CONSTANT_FREQ, uname, SM_EMPTY_RUN),
  out_freq(0.0), out_phase_step(0.0)
 {
@@ -17,7 +17,7 @@ constant_freq::~constant_freq()
 {
 }
 
-void const* constant_freq::get_out(outputnames::OUT_TYPE ot) const
+const void* constant_freq::get_out(outputnames::OUT_TYPE ot) const
 {
     switch(ot) 
     {
@@ -27,7 +27,7 @@ void const* constant_freq::get_out(outputnames::OUT_TYPE ot) const
     }
 }
 
-bool constant_freq::set_param(paramnames::PAR_TYPE pt, void const* data)
+bool constant_freq::set_param(paramnames::PAR_TYPE pt, const void* data)
 {
     switch(pt) {
         case paramnames::FREQ:
@@ -38,7 +38,7 @@ bool constant_freq::set_param(paramnames::PAR_TYPE pt, void const* data)
     }
 }
 
-void const* constant_freq::get_param(paramnames::PAR_TYPE pt) const
+const void* constant_freq::get_param(paramnames::PAR_TYPE pt) const
 {
     switch(pt)
     {
