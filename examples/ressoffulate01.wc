@@ -40,7 +40,7 @@ riff_editor
 re1
     riff riff2
     notelist
-        note name >P+Q  pos 0   len 32      vel 0.0
+     //   note name >P+Q  pos 0   len 32      vel 0.0
     notelist
 re1
 

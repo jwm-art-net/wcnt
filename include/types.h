@@ -7,6 +7,11 @@ enum STATUS
     ON  = 0x1
 };
 
+typedef long samp_t;
+
+#define SAMP_T_MAX ((long)(((unsigned long)-1) >> 2) - 1)
+
+
 #define STRBUFLEN 4000
 
 #ifdef DATA_STATS

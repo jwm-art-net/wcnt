@@ -56,15 +56,15 @@ void* cstr_to_iocat(iocat::IOCAT ioc, const char* cstrval,
         if (result)
             *result << *(short*)data;
         break;
-    case iocat::ULONG:
-        data = new unsigned long;
-        if (!(strstr >> *(unsigned long*)data)) {
-            iocat_err("%s", "Expected unsigned long integer value.");
-            delete (unsigned long*)data;
+    case iocat::SAMP_T:
+        data = new samp_t;
+        if (!(strstr >> *(samp_t*)data)) {
+            iocat_err("%s", "Expected integer value.");
+            delete (samp_t*)data;
             return 0;
         }
         if (result)
-            *result << *(unsigned long*)data;
+            *result << *(samp_t*)data;
         break;
     case iocat::TRIG: // iocat::TRIG same as iocat::STATE
     case iocat::STATE:// except in behaviour
@@ -150,8 +150,8 @@ void destroy_iocat_data(iocat::IOCAT ioc, const void* data)
     case iocat::SHORT:
         delete (short*)data;
         break;
-    case iocat::ULONG:
-        delete (unsigned long*)data;
+    case iocat::SAMP_T:
+        delete (samp_t*)data;
         break;
     case iocat::TRIG:  // iocat::trig same as
     case iocat::STATE: // iocat::state

@@ -37,7 +37,7 @@ void trigecho::init()
         invalidate();
         return;
     }
-    for (unsigned long i = 0; i < pastmax; i++) past_trigs[i] = 0;
+    for (int i = 0; i < pastmax; i++) past_trigs[i] = 0;
     pastpos = pastmax - 1;
     vel_count_ratio = 1.0 / (double)count;
 }

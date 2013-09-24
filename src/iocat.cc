@@ -36,7 +36,7 @@ const iocat::iocat_data iocat::data[LAST] =
     { FIRST,    "Error Cat"                     },
     { DOUBLE,   "float_value"                   },
     { SHORT,    "integer_value"                 },
-    { ULONG,    "integer_value"                 },
+    { SAMP_T,   "integer_value"                 },
     { TRIG,     "on/off"                        },
     { STATE,    "on/off"                        },
     { STRING,   "text_string"                   },

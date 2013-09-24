@@ -86,8 +86,8 @@ class sequencer : public synthmod, public linked_list<riff_node>
     double riff_pos;
     double riff_len;
     double posconv;
-    unsigned long velrsp_max_samps;
-    unsigned long velrsp_samp;
+    samp_t velrsp_max_samps;
+    samp_t velrsp_samp;
     double vel_stpsize;
     STATUS start_pending;
     STATUS end_pending;

@@ -27,8 +27,8 @@ private:
     double attack_level;
     double release_level;
     STATUS check_levels;
-    unsigned long attack_samps;
-    unsigned long release_samps;
+    samp_t attack_samps;
+    samp_t release_samps;
     bool do_attack;// false == do_release
     void init_first();
     

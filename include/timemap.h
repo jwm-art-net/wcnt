@@ -43,11 +43,11 @@ private:
     // outputs
     short out_bar;
     STATUS out_bar_trig;
-    unsigned long out_pos_in_bar;
+    samp_t out_pos_in_bar;
     double out_pos_step_size;
     double out_bpm;
-    unsigned long out_sample_total;
-    unsigned long out_sample_in_bar;
+    samp_t out_sample_total;
+    samp_t out_sample_in_bar;
     short out_beats_per_bar;
     short out_beat_value;
     STATUS out_bpm_change_trig;
@@ -60,23 +60,23 @@ private:
     bpmchange* currentbpm;
     bpmchange* targetbpm;
     meterchange* currentmeter;
-    unsigned long bpmsampletot;
-    unsigned long bpmchangesamp;
+    samp_t bpmsampletot;
+    samp_t bpmchangesamp;
     double bpmchange_pos;
     double bpmrampsize;
     double bpmchange_ratio;
     double targbpm;
     double pos_in_bar;
-    unsigned long bpmchange_notelen;
+    samp_t bpmchange_notelen;
     short bpmchangebar;
     double barlength;
     short beatlength;
     short meterchangebar;
     // working methods
     double p_bpm;
-    unsigned long notelen_to_samples(short) const;
+    samp_t notelen_to_samples(short) const;
     #ifdef UNUSED
-    unsigned long ms_to_samples(double) const;
+    samp_t ms_to_samples(double) const;
     double notelen_to_frequency(short) const;
     double notelen_to_ms(short) const;
     #endif

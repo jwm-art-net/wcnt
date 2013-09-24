@@ -29,7 +29,7 @@ class orbit : public synthmod
     double const_a;
     double const_b;
     double const_c;
-    unsigned long test_iter;
+    samp_t test_iter;
     double x;
     double y;
     double scale;

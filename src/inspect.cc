@@ -64,7 +64,7 @@ const void* inspect::set_in(inputnames::IN_TYPE it, const void* o)
         case inputnames::IN__SI_TRIG:
             return in_si_trig = (const STATUS*)o;
 
-        case inputnames::IN__UL: return in_ul = (const unsigned long*)o;
+        case inputnames::IN__UL: return in_ul = (const samp_t*)o;
         case inputnames::IN__UL_TRIG:
             return in_ul_trig = (const STATUS*)o;
 

@@ -67,7 +67,7 @@ bool orbit::set_param(paramnames::PAR_TYPE pt, const void* data)
         const_c = *(double*)data;
         return true;
     case paramnames::TEST_ITER:
-        test_iter = *(unsigned long*)data;
+        test_iter = *(samp_t*)data;
         return true;
     default:
         return false;
@@ -97,7 +97,7 @@ void orbit::init()
     in_trig = &trig;
     if(test_iter == 0)
         return;
-    for(unsigned long i = 0; i < test_iter; i++){
+    for(samp_t i = 0; i < test_iter; i++){
         run();
         if (out_x > 0){ if(out_x > max_px) max_px = out_x; }
         else if (out_x < 0){ if (out_x < max_nx) max_nx = out_x; }

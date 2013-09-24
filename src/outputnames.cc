@@ -61,8 +61,8 @@ outputnames::get_nonezerotype(iocat::IOCAT iocat)
     case iocat::SHORT:
         ot = OUT_NONE_SHORT;
         break;
-    case iocat::ULONG:
-        ot = OUT_NONE_ULONG;
+    case iocat::SAMP_T:
+        ot = OUT_NONE_SAMP_T;
         break;
     case iocat::TRIG:
         ot = OUT_NONE_TRIG;
@@ -84,7 +84,7 @@ const outputnames::output_data outputnames::data[OUT_LAST] =
     { OUT_FIRST,            "BAD_OUTPUT_TYPE",      iocat::FIRST   },
     { OUT_NONE_DOUBLE,      "off",                  iocat::DOUBLE  },
     { OUT_NONE_SHORT,       "off",                  iocat::SHORT   },
-    { OUT_NONE_ULONG,       "off",                  iocat::ULONG   },
+    { OUT_NONE_SAMP_T,       "off",                  iocat::SAMP_T   },
     { OUT_NONE_TRIG,        "off",                  iocat::TRIG    },
     { OUT_NONE_STATE,       "off",                  iocat::STATE   },
     { OUT_NONE_STRING,      "off",                  iocat::STATE   },
@@ -105,7 +105,7 @@ const outputnames::output_data outputnames::data[OUT_LAST] =
     { OUT_START_TRIG,       "out_start_trig",       iocat::TRIG    },
     { OUT_END_TRIG,         "out_end_trig",         iocat::TRIG    },
     { OUT_VELOCITY,         "out_velocity",         iocat::DOUBLE  },
-    { OUT_TOTAL_SAMPLE_POS, "out_total_sample_pos", iocat::ULONG   },
+    { OUT_TOTAL_SAMPLE_POS, "out_total_sample_pos", iocat::SAMP_T   },
     { OUT_RIFF_PLAY_STATE,  "out_riff_play_state",  iocat::STATE   },
     { OUT_NOTE_PLAY_STATE,  "out_note_play_state",  iocat::STATE   },
     { OUT_OFF_PULSE,        "out_pulse_off_trig",   iocat::TRIG    },
@@ -118,10 +118,10 @@ const outputnames::output_data outputnames::data[OUT_LAST] =
     { OUT_BPM,              "out_bpm",              iocat::DOUBLE  },
     { OUT_BAR,              "out_bar",              iocat::SHORT   },
     { OUT_BAR_TRIG,         "out_bar_trig",         iocat::TRIG    },
-    { OUT_POS_IN_BAR,       "out_pos_in_bar",       iocat::ULONG   },
+    { OUT_POS_IN_BAR,       "out_pos_in_bar",       iocat::SAMP_T   },
     { OUT_POS_STEP_SIZE,    "out_pos_step_size",    iocat::DOUBLE  },
-    { OUT_SAMPLE_TOTAL,     "out_sample_total",     iocat::ULONG   },
-    { OUT_SAMPLE_IN_BAR,    "out_sample_in_bar",    iocat::ULONG   },
+    { OUT_SAMPLE_TOTAL,     "out_sample_total",     iocat::SAMP_T   },
+    { OUT_SAMPLE_IN_BAR,    "out_sample_in_bar",    iocat::SAMP_T   },
     { OUT_BEATS_PER_BAR,    "out_beats_per_bar",    iocat::SHORT   },
     { OUT_BEAT_VALUE,       "out_beat_value",       iocat::SHORT   },
     { OUT_BPM_CHANGE_TRIG,  "out_bpm_change_trig",  iocat::TRIG    },

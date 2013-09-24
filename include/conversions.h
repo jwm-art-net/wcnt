@@ -1,6 +1,8 @@
 #ifndef CONVERSIONS_H
 #define CONVERSIONS_H
 
+#include "types.h"
+
 /*----------------------------------------------------------------
     conversion of note names to frequencies have been adapted 
     from code contained in a book by Ian Waugh, entitled:
@@ -35,7 +37,7 @@ char note_to_noteno(const char* note_name);
 char extract_octave(const char* note_name);
 
 // miscellaneous conversions
-unsigned long freq_to_samples(double f);
-unsigned long ms_to_samples(double t);
+samp_t freq_to_samples(double f);
+samp_t ms_to_samples(double t);
 
 #endif

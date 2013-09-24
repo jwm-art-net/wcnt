@@ -54,9 +54,8 @@ class jwm_globals
 
     void set_verbose(bool v)    { verbose = v; }
 
-    unsigned long samplerate() const        { return sample_rate;   }
-
-    void    samplerate(unsigned long sr);
+    samp_t  samplerate() const  { return sample_rate;   }
+    void    samplerate(samp_t);
 
     double get_mid_a_phase_step() const { return mid_a_phase_step; }
 
@@ -90,7 +89,7 @@ class jwm_globals
     bool dont_run;
     bool no_title;
 
-    unsigned long sample_rate;
+    samp_t sample_rate;
 
     double mid_a_phase_step;
 

@@ -55,7 +55,7 @@ private:
 // working
     double slide_size;
     double target_phase_step;
-    unsigned long slidesamples;
+    samp_t slidesamples;
     void init_first();
     
 };

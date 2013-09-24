@@ -31,15 +31,16 @@ iocat::IOCAT modparam::get_paramcategory()
 bool modparam::validate(synthmod* sm, stockerrs::ERR_TYPE et)
 {
     const void* data = sm->get_param(param_type);
-    if (!data) return false;
+    if (!data)
+        return false;
     switch(paramnames::get_category(param_type))
     {
         case iocat::DOUBLE:
-            return check_value(*(double const*)data, et);
+            return check_value(*(const double*)data, et);
         case iocat::SHORT:
-            return check_value(*(short const*)data, et);
-        case iocat::ULONG:
-            return check_value(*(unsigned long const*)data, et);
+            return check_value(*(const short*)data, et);
+        case iocat::SAMP_T:
+            return check_value(*(const samp_t*)data, et);
         default:
             return false;
     }

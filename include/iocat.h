@@ -26,7 +26,7 @@ class iocat
         //----------------------------------------------------------------
         DOUBLE,     // signal, bpm, etc
         SHORT,      // bar count, etc
-        ULONG,      // sample positions etc
+        SAMP_T,     // sample positions etc
         TRIG,       // trigger      - ON/OFF - on for one sample only
         STATE,      // power/status - ON/OFF
         STRING,     // note_tran & sequencer employ this as input/output

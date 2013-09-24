@@ -127,7 +127,7 @@ bool jwmsynth::execute_synth()
         std::cout << "\nUnlinking empty-run modules from run list:"
                                                         << std::endl;
     jwm.get_modlist()->remove_empty_run_modules();
-    unsigned long sample = 0;
+    samp_t sample = 0;
     char bigcount = '|';
     char littlecount = '~';
     int samplesperbig = jwm.samplerate();

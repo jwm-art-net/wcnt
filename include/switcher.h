@@ -31,8 +31,8 @@ private:
     STATUS const* in_trig;
     double xfadetime;
     double out_output;
-    unsigned long xfade_samp;
-    unsigned long xfade_max_samps;
+    samp_t xfade_samp;
+    samp_t xfade_max_samps;
     double xfade_stpsz;
     double xfade_size;
     double const** sigs;

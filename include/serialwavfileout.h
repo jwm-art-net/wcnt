@@ -56,10 +56,10 @@ private:
     STATUS in_write_region; // no it's not an input
     WAV_STATUS status;
     stereodata* st_buffer;
-    unsigned long sample_total;
-    unsigned short buff_pos;
-    void write_wav_at(stereodata* buf, unsigned long smp);
-    void write_wav_chunk(stereodata* buf, unsigned long smp, int bsize);
+    samp_t sample_total;
+    short buff_pos;
+    void write_wav_at(stereodata* buf, samp_t smp);
+    void write_wav_chunk(stereodata* buf, samp_t smp, int bsize);
     // other
     WAV_STATUS open_wav(const char* fname);
     void close_wav();

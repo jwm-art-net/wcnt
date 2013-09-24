@@ -254,7 +254,7 @@ void serialwavfileout::run()
     } // endif (write_region == ON)
 }
 
-void serialwavfileout::write_wav_at(stereodata* buf, unsigned long smp)
+void serialwavfileout::write_wav_at(stereodata* buf, samp_t smp)
 {
     if (status == WAV_STATUS_OPEN)
     {
@@ -265,7 +265,7 @@ void serialwavfileout::write_wav_at(stereodata* buf, unsigned long smp)
 }
 
 void serialwavfileout::write_wav_chunk(
- stereodata * buf, unsigned long smp, int bsize)
+ stereodata * buf, samp_t smp, int bsize)
 {
     if (status == WAV_STATUS_OPEN)
     {

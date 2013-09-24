@@ -22,8 +22,8 @@
 */
 
 std::string*
-collumnize(const char** textarr,    unsigned int arrsize,
-           unsigned int colwidth,   unsigned int colcount,  bool sort);
+collumnize(const char** textarr, int arrsize, int colwidth, int colcount,
+                                                                bool sort);
 
 
 

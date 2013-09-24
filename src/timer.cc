@@ -52,10 +52,9 @@ void timer::init()
     time_ix = 0;
     timing* t = timings[time_ix];
     if (t)
-        samples = (unsigned long)
-            (t->get_time() * jwm.samplerate());
+        samples = (samp_t)(t->get_time() * jwm.samplerate());
     else
-        samples = (unsigned long) -1;
+        samples = SAMP_T_MAX;
     out_count = -1;
 }
 
@@ -67,10 +66,9 @@ void timer::run()
         time_ix++;
         timing* t = timings[time_ix];
         if (t)
-            samples = (unsigned long)
-                (t->get_time() * jwm.samplerate());
+            samples = (samp_t)(t->get_time() * jwm.samplerate());
         else
-            samples = (unsigned long)-1;
+            samples = SAMP_T_MAX;
     }
     else {
         if (out_trig == ON)

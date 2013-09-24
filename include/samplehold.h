@@ -24,8 +24,8 @@ private:
     const double* in_signal;
     double output;
     double decay_time;
-    unsigned long decay_samps;
-    unsigned long ds;
+    samp_t decay_samps;
+    samp_t ds;
     double decay_size;
     void init_first();
     

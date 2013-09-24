@@ -78,7 +78,7 @@ std::cout << std::endl;
 #endif
 }
 
-void jwm_globals::samplerate(unsigned long sr)
+void jwm_globals::samplerate(samp_t sr)
 {
     sample_rate = sr;
     mid_a_phase_step = freq_to_step(440);

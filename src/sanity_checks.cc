@@ -105,7 +105,7 @@ bool mod_check_inputs(synthmod* sm)
             // the 'outputs' to be used for setting the inputs...
             double          out_double  = 1.23456789;
             short           out_short   = 32154;
-            unsigned long   out_ulong   = 6754312;
+            samp_t   out_ulong   = 6754312;
             STATUS          out_trig    = OFF;
             STATUS          out_state   = ON;
             const char*     out_string  = "What's going on? Well....";
@@ -118,7 +118,7 @@ bool mod_check_inputs(synthmod* sm)
                 case iocat::SHORT:
                     in_ret = sm->set_in(it, &out_short);
                     break;
-                case iocat::ULONG:
+                case iocat::SAMP_T:
                     in_ret = sm->set_in(it, &out_ulong);
                     break;
                 case iocat::TRIG:
@@ -145,8 +145,8 @@ bool mod_check_inputs(synthmod* sm)
                     if (*(short*)in_ret != out_short)
                         mismatched = true;
                     break;
-                case iocat::ULONG:
-                    if (*(unsigned long*)in_ret != out_ulong)
+                case iocat::SAMP_T:
+                    if (*(samp_t*)in_ret != out_ulong)
                         mismatched = true;
                     break;
                 case iocat::TRIG:
@@ -185,8 +185,8 @@ bool mod_check_inputs(synthmod* sm)
                     if (*(short*)sm->get_in(it) != out_short)
                         mismatched = true;
                     break;
-                case iocat::ULONG:
-                    if (*(unsigned long*)sm->get_in(it) != out_ulong)
+                case iocat::SAMP_T:
+                    if (*(samp_t*)sm->get_in(it) != out_ulong)
                         mismatched = true;
                     break;
                 case iocat::TRIG:
@@ -257,7 +257,7 @@ bool mod_check_params(synthmod * sm)
             // the values to be used for setting the params...
             double          par_double  = -0.789;
             short           par_short   = 15241;
-            unsigned long   par_ulong   = 531627;
+            samp_t   par_ulong   = 531627;
             STATUS          par_state   = ON;
             const char*     par_string  = "c#-1";
             int             par_fixstr_ix = 0;
@@ -274,7 +274,7 @@ bool mod_check_params(synthmod * sm)
                 case iocat::SHORT:
                     set_ret = sm->set_param(pt, &par_short);
                     break;
-                case iocat::ULONG:
+                case iocat::SAMP_T:
                     set_ret = sm->set_param(pt, &par_ulong);
                     break;
                 case iocat::STATE:
@@ -309,8 +309,8 @@ bool mod_check_params(synthmod * sm)
                     if (*(short*)sm->get_param(pt) != par_short)
                         mismatched = true;
                     break;
-                case iocat::ULONG:
-                    if (*(unsigned long*)sm->get_param(pt) != par_ulong)
+                case iocat::SAMP_T:
+                    if (*(samp_t*)sm->get_param(pt) != par_ulong)
                         mismatched = true;
                     break;
                 case iocat::STATE:

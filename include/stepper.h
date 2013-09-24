@@ -72,8 +72,8 @@ private:
     short next_step_no;
     double* up_levels; // two arrays of size step_count
     double* lo_levels; // hold the step shape split even.
-    unsigned long rtime_samp;
-    unsigned long rtime_max_samps;
+    samp_t rtime_samp;
+    samp_t rtime_max_samps;
     double rtime_stpsz;
     double rtime_size;
 

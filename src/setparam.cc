@@ -138,12 +138,11 @@ void* compute(T* obj, paramnames::PAR_TYPE pt, void* data, int op)
             *(short*)data =
                 comp((short*)obj->get_param(pt), (short*)data, op);
             break;
-        case iocat::ULONG:
-            if (op == '/' && *(unsigned long*)data == 0)
+        case iocat::SAMP_T:
+            if (op == '/' && *(samp_t*)data == 0)
                 return 0;
-            *(unsigned long*)data =
-                comp((unsigned long*)obj->get_param(pt),
-                     (unsigned long*)data, op);
+            *(samp_t*)data = comp((samp_t*)obj->get_param(pt),
+                                            (samp_t*)data, op);
             break;
         default:
             return 0;

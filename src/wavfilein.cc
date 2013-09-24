@@ -48,7 +48,7 @@ WAV_BITRATE wavfilein::get_bitrate() const
 }
 #endif
 
-unsigned long wavfilein::get_length() const
+samp_t wavfilein::get_length() const
 {
     if (status == WAV_STATUS_OPEN)
         return sfinfo.frames;
@@ -57,7 +57,7 @@ unsigned long wavfilein::get_length() const
 }
 
 
-unsigned long wavfilein::get_sample_rate() const
+samp_t wavfilein::get_sample_rate() const
 {
     if (status == WAV_STATUS_OPEN)
         return sfinfo.samplerate;
@@ -108,7 +108,7 @@ double wavfilein::get_root_phase_step() const
     return note_to_step(rootnote, 0);
 }
 
-void wavfilein::read_wav_at(void * buf, unsigned long smp)
+void wavfilein::read_wav_at(void * buf, samp_t smp)
 {
     if (status == WAV_STATUS_OPEN)
     {
@@ -118,7 +118,7 @@ void wavfilein::read_wav_at(void * buf, unsigned long smp)
     }
 }
 
-void wavfilein::read_wav_chunk(void * buf, unsigned long smp, int bsize)
+void wavfilein::read_wav_chunk(void * buf, samp_t smp, int bsize)
 {
     if (status == WAV_STATUS_OPEN)
     {

@@ -122,16 +122,16 @@ bool sampler::set_param(paramnames::PAR_TYPE pt, const void* data)
         jump_mode = (JUMP_DIR)(*(int*)data);
         return true;
     case paramnames::START_POS_MIN:
-        min_start_pos = *(unsigned long*)data;
+        min_start_pos = *(samp_t*)data;
         return true;
     case paramnames::START_POS_MAX:
-        max_start_pos = *(unsigned long*)data;
+        max_start_pos = *(samp_t*)data;
         return true;
     case paramnames::LOOP_BEGIN:
-        loop_begin = *(unsigned long*)data;
+        loop_begin = *(samp_t*)data;
         return true;
     case paramnames::LOOP_END:
-        loop_end = *(unsigned long*)data;
+        loop_end = *(samp_t*)data;
         return true;
     case paramnames::LOOP_MODE:
         loop_mode = (LOOP_MODE)(*(int*)data);
@@ -374,7 +374,7 @@ void sampler::init()
 }
 
 // read data from wav file into buffer
-inline void sampler::fill_buffer(unsigned long pos)
+inline void sampler::fill_buffer(samp_t pos)
 {
     if (ch == WAV_CH_MONO)
         wavfile->read_wav_at(mono_buffer, pos);
@@ -406,7 +406,7 @@ void sampler::run()
         cp_ratio = *in_phase_step / root_phase_step;
         //sample rate ratio is sr_ratio
         cp_step = (1 + (cp_ratio - 1) * phase_step_amount) * sr_ratio;
-        buff_pos = (unsigned int)cur_pos - buffer_start_pos;
+        buff_pos = (int)cur_pos - buffer_start_pos;
         #ifdef CRAZY_SAMPLER
         if (buff_pos < 0 || buff_pos >= jwm_init::wav_buffer_size) {
             std::cout << "\n" << get_username() << "::run buff_pos = cur_pos(";
@@ -418,7 +418,7 @@ void sampler::run()
         if (playdir == PLAY_FWD) {
             if (cur_pos >= wavlength) {
                 pos_wavlen();
-                buff_pos = (unsigned int)cur_pos - buffer_start_pos;
+                buff_pos = (int)cur_pos - buffer_start_pos;
                 #ifdef CRAZY_SAMPLER
                 if (buff_pos < 0 || buff_pos >= jwm_init::wav_buffer_size)
                 {
@@ -433,7 +433,7 @@ void sampler::run()
             }
             else if (loop_yet && cur_pos > loopfinish) {
                 pos_loopend();
-                buff_pos = (unsigned int)cur_pos - buffer_start_pos;
+                buff_pos = (int)cur_pos - buffer_start_pos;
                 #ifdef CRAZY_SAMPLER
                 std::cout << "\n" << get_username() << "::run ";
                 std::cout << "(playdir == PLAY_FWD && loopyet && cur_pos";
@@ -444,22 +444,22 @@ void sampler::run()
                 #endif
             }
             if (buff_pos >= jwm_init::wav_buffer_size - 1) {
-                buffer_start_pos = (unsigned long)cur_pos;
+                buffer_start_pos = (samp_t)cur_pos;
                 fill_buffer(buffer_start_pos);
                 buff_pos = 0;
             }
         } else { // playdir == PLAY_REV
             if (cur_pos <= wavstart) {
                 pos_wavstart();
-                buff_pos = (unsigned int)cur_pos - buffer_start_pos;
+                buff_pos = (int)cur_pos - buffer_start_pos;
             }
             else if (loop_yet && cur_pos < loopstart) {
                 pos_loopbegin();
-                buff_pos = (unsigned int)cur_pos - buffer_start_pos;
+                buff_pos = (int)cur_pos - buffer_start_pos;
             }
             if (buff_pos <= 0) {
                 if (cur_pos - (jwm_init::wav_buffer_size - 2) >= 0) {
-                    buffer_start_pos = (unsigned long)
+                    buffer_start_pos = (samp_t)
                         (cur_pos - (jwm_init::wav_buffer_size -2));
                     fill_buffer(buffer_start_pos);
                     buff_pos = jwm_init::wav_buffer_size - 2;
@@ -474,18 +474,18 @@ void sampler::run()
         if (do_ac == ON) {
             //ac_cpstep = oldcpstep * (1 - ac_size) + cp_step * ac_size;
             if (ac_size > 1) do_ac = OFF;
-            ac_midpoint 
-             = (double)((ac_cur_pos-ac_buf_start_pos)-ac_buf_pos);
+            ac_midpoint = (double)((ac_cur_pos - ac_buf_start_pos)
+                                                        - ac_buf_pos);
             #ifdef CRAZY_SAMPLER
-            if ((ac_buf_pos > jwm_init::max_anti_clip_size - 1 
-                || ac_buf_pos < 0) && do_ac == ON)
+            if ((ac_buf_pos > jwm_init::max_anti_clip_size - 1
+              || ac_buf_pos < 0) && do_ac == ON)
             {
                 std::cout << "\n" << get_username() << "::run ";
                 std::cout << "anti_clipping out of bounds of AC buffer ";
                 std::cout << ac_buf_pos;
-                std::cout << "\n(unsigned long)-1 = " << (unsigned long)-1;
-                std::cout << "\n(unsigned long)ac_buf_pos = ";
-                std::cout << (unsigned long)ac_buf_pos;
+                std::cout << "\n(samp_t)-1 = " << (samp_t)-1;
+                std::cout << "\n(samp_t)ac_buf_pos = ";
+                std::cout << (samp_t)ac_buf_pos;
                 std::cout << "\nmodule responsible " << get_username();
                 std::cout << "\nPlease report this to james@jwm-art.net";
                 std::cout << " specifying";
@@ -511,9 +511,9 @@ void sampler::run()
                             mono_buffer[buff_pos + 1], bp_midpoint);
             if (do_ac == ON)  {
                 ac_out_left = calc_midpoint(ac_m_buf[ac_buf_pos],
-                 ac_m_buf[ac_buf_pos + 1], ac_midpoint);
-                out_left = out_left * ac_size + ac_out_left *
-                           (1 - ac_size);
+                                            ac_m_buf[ac_buf_pos + 1],
+                                            ac_midpoint);
+                out_left = out_left * ac_size + ac_out_left * (1 - ac_size);
             }
             out_right = out_left;
         }
@@ -524,13 +524,13 @@ void sampler::run()
              st_buffer[buff_pos + 1].right, bp_midpoint);
             if (do_ac == ON) {
                 ac_out_left = calc_midpoint(ac_st_buf[ac_buf_pos].left,
-                        ac_st_buf[ac_buf_pos + 1].left, ac_midpoint);
-                ac_out_right = calc_midpoint(ac_st_buf[ac_buf_pos].right,
-                        ac_st_buf[ac_buf_pos + 1].right, ac_midpoint);
-                out_left = out_left * ac_size +
-                           ac_out_left * (1 - ac_size);
-                out_right = out_right * ac_size +
-                            ac_out_right * (1 - ac_size);
+                                            ac_st_buf[ac_buf_pos + 1].left,
+                                            ac_midpoint);
+                ac_out_right= calc_midpoint(ac_st_buf[ac_buf_pos].right,
+                                            ac_st_buf[ac_buf_pos + 1].right,
+                                            ac_midpoint);
+                out_left = out_left * ac_size + ac_out_left * (1 - ac_size);
+                out_right= out_right * ac_size + ac_out_right * (1-ac_size);
             }
         } // endif ch == MONO/STEREO
         if (do_ac == ON) {
@@ -545,7 +545,7 @@ void sampler::run()
                 double ac_buf_posf = ac_cur_pos - ac_buf_start_pos;
                 ac_buf_pos = (int)ac_buf_posf;
                 ac_size = (double)(anti_clip_size - ac_buf_posf)
-                          / anti_clip_size;
+                                            / anti_clip_size;
             }
         }
         if (playdir == PLAY_FWD) {
@@ -571,7 +571,7 @@ void sampler::trigger_playback()
     double spm = *in_start_pos_mod; // make input positive only
     spm = (spm > 0) ? spm : -spm;
     if (playdir == PLAY_FWD) {
-        start_pos=(unsigned long)(min_start_pos + startpos_span * spm);
+        start_pos=(samp_t)(min_start_pos + startpos_span * spm);
         if (start_pos < wavstart) start_pos = wavstart;
         else if (start_pos > wavlength) start_pos = wavlength;
         cur_pos = start_pos = zero_search(start_pos, search_range);
@@ -579,9 +579,9 @@ void sampler::trigger_playback()
         std::cout << "\n" << get_username();
         std::cout << "(PLAY_FWD) cur_pos = " << cur_pos;
         #endif
-        buffer_start_pos = (unsigned long)cur_pos;
+        buffer_start_pos = (samp_t)cur_pos;
     } else {
-        start_pos=(unsigned long)(max_start_pos - startpos_span * spm);
+        start_pos=(samp_t)(max_start_pos - startpos_span * spm);
         if (start_pos < wavstart) start_pos = wavstart;
         else if (start_pos > wavlength) start_pos = wavlength;
         cur_pos = start_pos = zero_search(start_pos, search_range);
@@ -592,7 +592,7 @@ void sampler::trigger_playback()
         if (cur_pos - (jwm_init::wav_buffer_size - 2) < 0)
             buffer_start_pos = 0;
         else buffer_start_pos 
-          = (unsigned long)(cur_pos - (jwm_init::wav_buffer_size -2));
+          = (samp_t)(cur_pos - (jwm_init::wav_buffer_size -2));
     }
     fill_buffer(buffer_start_pos);
     if (loop_mode == LOOP_OFF)
@@ -623,16 +623,16 @@ void sampler::trigger_playback()
     play_state = ON;
 }
 
-unsigned long sampler::zero_search(unsigned long pos, short range)
+samp_t sampler::zero_search(samp_t pos, short range)
 {
     if (range <= 0) return pos;
     double smallest1 = 10;
     double smallest2 = 10;
-    unsigned long smallest_pos1 = 0;
-    unsigned long smallest_pos2 = 0;
+    samp_t smallest_pos1 = 0;
+    samp_t smallest_pos2 = 0;
     int halfsr = range / 2;
-    unsigned long buf_st_pos = pos - halfsr;
-    unsigned long buf_end_pos = buf_st_pos + range;
+    samp_t buf_st_pos = pos - halfsr;
+    samp_t buf_end_pos = buf_st_pos + range;
     if (ch == WAV_CH_MONO) {
         double* sm_buf = new double[jwm_init::wav_buffer_size];
         wavfile->read_wav_at(sm_buf, buf_st_pos);
@@ -720,7 +720,7 @@ void sampler::pos_wavlen()
             #endif
             if (loop_fits_in_buffer) loop_loaded = 1;
         }
-        buffer_start_pos = (unsigned long)cur_pos;
+        buffer_start_pos = (samp_t)cur_pos;
         fill_buffer(buffer_start_pos);
         return;
     } // play_bounce/loop_rev/loop_bi/(play_jump && jump_loop_dir):
@@ -744,7 +744,7 @@ void sampler::pos_wavlen()
     if (cur_pos - (jwm_init::wav_buffer_size - 2) < 0)
         buffer_start_pos = 0;
     else buffer_start_pos 
-     = (unsigned long)(cur_pos - (jwm_init::wav_buffer_size -2));
+     = (samp_t)(cur_pos - (jwm_init::wav_buffer_size -2));
     fill_buffer(buffer_start_pos);
 }
 
@@ -764,7 +764,7 @@ void sampler::pos_loopend()
         #endif
         if (loop_fits_in_buffer && loop_loaded) return;
         else loop_loaded = 1;
-        buffer_start_pos = (unsigned long)cur_pos;
+        buffer_start_pos = (samp_t)cur_pos;
         fill_buffer(buffer_start_pos);
         return;
     }
@@ -789,7 +789,7 @@ void sampler::pos_loopend()
         loop_loaded = 0; // no longer in loop
     }
     if (cur_pos != wavstart) {
-        cur_pos = zero_search((unsigned long)cur_pos, bisr);
+        cur_pos = zero_search((samp_t)cur_pos, bisr);
         #ifdef CRAZY_SAMPLER
         std::cout << "\n" << get_username();
         std::cout << "(cur_pos != wavstart)cur_pos = " << cur_pos;
@@ -799,7 +799,7 @@ void sampler::pos_loopend()
     else loop_loaded = 1;
     if (cur_pos - (jwm_init::wav_buffer_size -2) < 0)
         buffer_start_pos = 0;
-    else buffer_start_pos = (unsigned long)
+    else buffer_start_pos = (samp_t)
         (cur_pos - (jwm_init::wav_buffer_size -2));
     fill_buffer(buffer_start_pos);
     return;
@@ -845,7 +845,7 @@ void sampler::pos_wavstart()
         }
         if (cur_pos - (jwm_init::wav_buffer_size - 2) < 0)
             buffer_start_pos = 0;
-        else buffer_start_pos = (unsigned long)
+        else buffer_start_pos = (samp_t)
              (cur_pos - (jwm_init::wav_buffer_size -2));
         fill_buffer(buffer_start_pos);
         return;
@@ -867,7 +867,7 @@ void sampler::pos_wavstart()
         out_loop_trig = ON;
         if (loop_fits_in_buffer) loop_loaded = 1;
     }
-    buffer_start_pos = (unsigned long)cur_pos;
+    buffer_start_pos = (samp_t)cur_pos;
     fill_buffer(buffer_start_pos);
 }
 
@@ -889,7 +889,7 @@ void sampler::pos_loopbegin()
         else loop_loaded = 1;
         if (cur_pos - (jwm_init::wav_buffer_size - 2) < 0) 
             buffer_start_pos = 0;
-        else buffer_start_pos = (unsigned long)
+        else buffer_start_pos = (samp_t)
             (cur_pos - (jwm_init::wav_buffer_size -2));
         fill_buffer(buffer_start_pos);
         return;
@@ -915,7 +915,7 @@ void sampler::pos_loopbegin()
         loop_loaded = 0; // no longer in loop.
     }
     if (cur_pos != wavlength) {
-        cur_pos = zero_search((unsigned long)cur_pos, bisr);
+        cur_pos = zero_search((samp_t)cur_pos, bisr);
         #ifdef CRAZY_SAMPLER
         std::cout << "\n" << get_username();
         std::cout << "(cur_pos != wavlength)cur_pos = " << cur_pos;
@@ -923,7 +923,7 @@ void sampler::pos_loopbegin()
     }
     if (loop_fits_in_buffer && loop_loaded) return;
     else loop_loaded = 1;
-    buffer_start_pos = (unsigned long)cur_pos;
+    buffer_start_pos = (samp_t)cur_pos;
     fill_buffer(buffer_start_pos);
 }
 
@@ -940,14 +940,14 @@ void sampler::anti_clip_fwd()
             ac_copy_fwd_stereo(ac_st_tmp);
         }
     } // could use buff_pos, but recalculating gives better result:
-    int abp = (unsigned long)(cur_pos - buffer_start_pos);
+    int abp = (samp_t)(cur_pos - buffer_start_pos);
     if (abp + anti_clip_size > jwm_init::wav_buffer_size - 1) {
         if (ch == WAV_CH_MONO)
             wavfile->read_wav_chunk(
-             ac_m_buf, (unsigned long)cur_pos, anti_clip_size + 1);
+             ac_m_buf, (samp_t)cur_pos, anti_clip_size + 1);
         else
             wavfile->read_wav_chunk(
-             ac_st_buf,(unsigned long) cur_pos, anti_clip_size + 1);
+             ac_st_buf,(samp_t) cur_pos, anti_clip_size + 1);
     }
     else {   // get from wav buffer
         if (ch == WAV_CH_MONO) {
@@ -973,7 +973,7 @@ void sampler::anti_clip_fwd()
     acplaydir = PLAY_FWD;
     ac_cur_pos = cur_pos;
     ac_buf_pos = 0;
-    ac_buf_start_pos = (unsigned long)cur_pos;
+    ac_buf_start_pos = (samp_t)cur_pos;
     ac_out_left = ac_out_right = 0;
     ac_size = 0;
     do_ac = ON;
@@ -994,7 +994,7 @@ void sampler::anti_clip_rev()
         }
     }
     if (cur_pos - (anti_clip_size - 1) < 0) ac_buf_start_pos = 0;
-    else ac_buf_start_pos=(unsigned long)(cur_pos - (anti_clip_size - 1));
+    else ac_buf_start_pos=(samp_t)(cur_pos - (anti_clip_size - 1));
     ac_cur_pos = cur_pos;
     int acbp = (int)(cur_pos - buffer_start_pos) - (anti_clip_size - 1);
     if (acbp <= 0) {

@@ -32,9 +32,7 @@ public:
             return &out_none_double;
         }
     const short* get_output_none_short() const  { return &out_none_short; }
-    const unsigned long* get_output_none_ulong() const {
-        return &out_none_ulong;
-    }
+    const samp_t* get_output_none_samp_t() const{ return &out_none_samp_t; }
     const STATUS* get_output_none_trig() const  { return &out_none_STATUS; }
     const STATUS* get_output_none_state() const { return &out_none_STATUS; }
     // virtual funcs
@@ -44,7 +42,7 @@ public:
 private:
     const double out_none_double;
     const short out_none_short;
-    const unsigned long out_none_ulong;
+    const samp_t out_none_samp_t;
     const STATUS out_none_STATUS;
     char* out_none_string;
 };

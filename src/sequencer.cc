@@ -305,7 +305,7 @@ void sequencer::init_next_note(ll_item<note_data>* riff_note_item)
     else {
         next_in_riff = 0;
         next_note = 0;
-        next_note_on_pos = (unsigned long)-1;
+        next_note_on_pos = SAMP_T_MAX;
     }
 }
 

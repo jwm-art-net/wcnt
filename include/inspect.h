@@ -31,7 +31,7 @@ private:
     STATUS const* in_df_trig;
     short  const* in_si;            /* short int */
     STATUS const* in_si_trig;
-    unsigned long const* in_ul;     /* unisnged long */
+    samp_t const* in_ul;            /* samp_t */
     STATUS const* in_ul_trig;
     STATUS const* in_st;            /* state */
     STATUS const* in_st_trig;

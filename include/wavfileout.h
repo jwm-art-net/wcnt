@@ -52,10 +52,10 @@ private:
     SF_INFO sfinfo;
     WAV_STATUS status;
     st_data * st_buffer;
-    unsigned long sample_total;
-    unsigned short buff_pos;
-    void write_wav_at(st_data* buf, unsigned long smp);
-    void write_wav_chunk(st_data* buf, unsigned long smp, int bsize);
+    samp_t sample_total;
+    short buff_pos;
+    void write_wav_at(st_data* buf, samp_t smp);
+    void write_wav_chunk(st_data* buf, samp_t smp, int bsize);
     void timestamp_filename();
     // synthmod stuff
     void init_first();

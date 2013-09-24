@@ -11,13 +11,13 @@
 
 
 std::string*
-collumnize(const char** textarr,    unsigned int arrsize,
-           unsigned int colwidth,   unsigned int colcount,  bool sort)
+collumnize(const char** textarr, int arrsize, int colwidth, int colcount,
+                                                                bool sort)
 {
-    unsigned int aix, i;
-    unsigned int cw = 0;
-    unsigned long len = 0;
-    unsigned long maxlen = 0;
+    int aix, i;
+    int cw = 0;
+    int len = 0;
+    int maxlen = 0;
     for(aix = 0; aix < arrsize; aix++)
         if ((len = strlen(textarr[aix])) > maxlen)
             maxlen = len;
@@ -45,10 +45,10 @@ collumnize(const char** textarr,    unsigned int arrsize,
     if (sort == true) {
         std::sort(list, list + arrsize, std::less<std::string>());
         // and arrange in collumns:
-        unsigned int colheight = (arrsize / colcount) + 1;
-        unsigned int gridsize = colheight * colcount;
+        int colheight = (arrsize / colcount) + 1;
+        int gridsize = colheight * colcount;
         char*** collumn = new char**[colcount];
-        unsigned int row = 0, col = 0;
+        int row = 0, col = 0;
         for(col = 0; col < colcount; col++){
             collumn[col] = new char*[colheight];
         }
@@ -87,7 +87,7 @@ collumnize(const char** textarr,    unsigned int arrsize,
     }
     std::string* str = new std::string;
     *str = "\n";
-    unsigned int col = 1;
+    int col = 1;
     for (aix = 0; aix < arrsize; aix++) {
         if (list[aix]) {
             len = strlen(list[aix]);

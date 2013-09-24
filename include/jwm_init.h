@@ -4,7 +4,7 @@
 namespace jwm_init
 {
 
-const unsigned long default_samplerate          = 44100UL;
+const samp_t default_samplerate          = 44100UL;
 const unsigned short min_bpm                    = 10;
 const unsigned short max_bpm                    = 1000;
 const unsigned short default_beats_per_measure  = 4;

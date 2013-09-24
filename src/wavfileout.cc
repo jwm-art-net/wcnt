@@ -274,7 +274,7 @@ void wavfileout::run()
         out_write_end_trig = OFF;
 }
 
-void wavfileout::write_wav_at(st_data* buf, unsigned long smp)
+void wavfileout::write_wav_at(st_data* buf, samp_t smp)
 {
     if (status == WAV_STATUS_OPEN)
     {
@@ -284,8 +284,7 @@ void wavfileout::write_wav_at(st_data* buf, unsigned long smp)
     }
 }
 
-void wavfileout::write_wav_chunk(
-    st_data* buf, unsigned long smp, int bsize)
+void wavfileout::write_wav_chunk(st_data* buf, samp_t smp, int bsize)
 {
     if (status == WAV_STATUS_OPEN)
     {

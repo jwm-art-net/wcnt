@@ -32,7 +32,7 @@ class timer : public synthmod, public linked_list<timing>
 
     timing** timings;
     long time_ix;
-    unsigned long samples;
+    samp_t samples;
 
     void init_first();
 };

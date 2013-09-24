@@ -250,7 +250,7 @@ void adsr::run()
         play_state = ON;
         released = OFF;
         tsamps = 0;
-        max_samps = (unsigned long)-1;
+        max_samps = SAMP_T_MAX;
         coord = run_coords[coord_ix = 0];
         if (zero_retrigger == ON)
             output = start_level;
@@ -294,7 +294,7 @@ void adsr::run()
                 if (max_sus_samps > 0) 
                     sectmaxsamples = max_sus_samps;
                 else
-                    sectmaxsamples = (unsigned long)-1;
+                    sectmaxsamples = SAMP_T_MAX;
                 levelsize = 0;
             }
             else {

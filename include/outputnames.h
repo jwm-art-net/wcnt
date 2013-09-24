@@ -10,7 +10,7 @@ class outputnames {
         OUT_FIRST, // used in error situations also
         OUT_NONE_DOUBLE,
         OUT_NONE_SHORT,
-        OUT_NONE_ULONG,
+        OUT_NONE_SAMP_T,
         OUT_NONE_TRIG,
         OUT_NONE_STATE,
         OUT_NONE_STRING,

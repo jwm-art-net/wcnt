@@ -22,7 +22,7 @@ private:
     STATUS out_wait_state; // waiting for signal to drop back down
     double delay_time;
     double trigger_level;
-    unsigned long delay_samps;
+    samp_t delay_samps;
     void init_first();
     
 };

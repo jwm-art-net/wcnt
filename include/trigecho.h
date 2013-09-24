@@ -30,8 +30,8 @@ private:
     STATUS send_input_out;
     // working
     short* past_trigs; //array
-    unsigned long pastmax;
-    unsigned long pastpos;
+    samp_t pastmax;
+    samp_t pastpos;
     double vel_count_ratio;
     void init_first();
     

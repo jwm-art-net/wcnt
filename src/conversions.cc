@@ -152,13 +152,13 @@ char extract_octave(const char* note_name)
         return atoi(&note_name[1]);
 }
 
-unsigned long freq_to_samples(double f)
+samp_t freq_to_samples(double f)
 {
-    return (unsigned long)(jwm.samplerate() / f);
+    return (samp_t)(jwm.samplerate() / f);
 }
 
-unsigned long ms_to_samples(double t)
+samp_t ms_to_samples(double t)
 {
-    return (unsigned long)(jwm.samplerate() * (t / 1000));
+    return (samp_t)(jwm.samplerate() * (t / 1000));
 }
 

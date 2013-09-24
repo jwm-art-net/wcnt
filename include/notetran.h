@@ -82,8 +82,8 @@ private:
     double nohi_freq;
     double nslo_freq;
     double nshi_freq;
-    unsigned long nort_samples;
-    unsigned long nsrt_samples;
+    samp_t nort_samples;
+    samp_t nsrt_samples;
     double no_respsize;
     double ns_respsize;
     void set_no_lo_notename(const char* nol);

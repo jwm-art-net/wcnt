@@ -180,7 +180,7 @@ void timemap::run()
             }
             else {
                 bpmchangebar = targetbpm->get_bar();
-                bpmchange_notelen = (unsigned long)
+                bpmchange_notelen = (samp_t)
                     ((bpmchangebar - currentbpm->get_bar()) * barlength);
                 targbpm = p_bpm + targetbpm->get_bpm();
                 // these will change during bpm ramp
@@ -197,7 +197,7 @@ void timemap::run()
         if (out_bpm_change_trig == ON) out_bpm_change_trig = OFF;
         if (bpmrampsize != 0) {
             if (out_meter_change_trig == ON) {// there's always one!
-                bpmchange_notelen = (unsigned long)
+                bpmchange_notelen = (samp_t)
                     ((bpmchangebar - out_bar) * barlength);
                 bpmchange_pos = 0;
                 bpmsampletot = notelen_to_samples(bpmchange_notelen);
@@ -207,7 +207,7 @@ void timemap::run()
             }
             out_bpm += bpmrampsize;
             bpmchange_ratio = (double) bpmchange_pos / bpmchange_notelen;
-            bpmsampletot = (unsigned long)(jwm.samplerate() * (60 / out_bpm)
+            bpmsampletot = (samp_t)(jwm.samplerate() * (60 / out_bpm)
                          * ((double) (bpmchange_notelen - bpmchange_pos) 
                          / beatlength));
             bpmrampsize = (targbpm - out_bpm) / (double) bpmsampletot;
@@ -218,20 +218,20 @@ void timemap::run()
     }
     out_sample_total++;
     out_sample_in_bar++;
-    out_pos_in_bar = (unsigned long)pos_in_bar;
+    out_pos_in_bar = (samp_t)pos_in_bar;
     pos_in_bar += out_pos_step_size;
 }
 
-unsigned long timemap::notelen_to_samples(short nl) const
+samp_t timemap::notelen_to_samples(short nl) const
 {
-    return (unsigned long)(jwm.samplerate()
+    return (samp_t)(jwm.samplerate()
      * ((double) 60 / out_bpm) * ((double)nl / beatlength));
 }
 
 #ifdef UNUSED
-unsigned long timemap::ms_to_samples(double ms) const
+samp_t timemap::ms_to_samples(double ms) const
 {
-    return (unsigned long)(jwm.samplerate() * (ms / 1000));
+    return (samp_t)(jwm.samplerate() * (ms / 1000));
 }
 
 double timemap::notelen_to_frequency(short nl) const

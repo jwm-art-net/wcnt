@@ -34,10 +34,10 @@ class wavfilein : public dobj
     #ifdef UNUSED // usage of libsamplerate makes bitrate transparent
     WAV_BITRATE get_bitrate() const; /* FIXME: used?? */
     #endif
-    unsigned long get_length() const;
-    unsigned long get_sample_rate() const;
-    void read_wav_at(void* buf, unsigned long smp);
-    void read_wav_chunk(void* buf, unsigned long smp, int bsize);
+    samp_t get_length() const;
+    samp_t get_sample_rate() const;
+    void read_wav_at(void* buf, samp_t smp);
+    void read_wav_chunk(void* buf, samp_t smp, int bsize);
     const char* get_filename() const { return fname; }
     const char* get_root_note() const { return rootnote;}
     double get_root_phase_step() const;

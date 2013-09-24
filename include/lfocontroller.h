@@ -34,8 +34,8 @@ private:
     double amp_modsize;
     // working
     double ams_r;
-    unsigned long delay_samples;
-    unsigned long ramp_samples;
+    samp_t delay_samples;
+    samp_t ramp_samples;
     double resp_size;
     double resp_fa_level;
     double resp_ac;

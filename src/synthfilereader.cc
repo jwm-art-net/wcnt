@@ -129,7 +129,7 @@ bool synthfilereader::read_and_create()
             wc_err("File %s inspires premature optimism.", wc_filename);
             return false;
     }
-    unsigned long srate;
+    samp_t srate;
 
     cout << (wc_file_type == WC_INCLUDE_FILE
                 ? "  Including "
@@ -942,7 +942,7 @@ synthfilereader::open_file()
     return filestatus;
 }
 
-bool synthfilereader::read_header(unsigned long *samplerate)
+bool synthfilereader::read_header(samp_t *samplerate)
 {
     if (filestatus != FILE_OPEN) {
         wc_err("%s Attempted read of header without open file.",
@@ -1031,7 +1031,7 @@ bool synthfilereader::skip_remarks()
 
 // (snip swearing,  wingeing, and excuse making, for what follows ;)
 
-bool synthfilereader::eff_ing_header_bodge(unsigned long *samplerate)
+bool synthfilereader::eff_ing_header_bodge(samp_t *samplerate)
 {
     ifstream headerfile;
     string hf_name;
