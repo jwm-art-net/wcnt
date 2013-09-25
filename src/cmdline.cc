@@ -320,6 +320,14 @@ void cmdline::module_help()
     }
     msg += "\n";
     msg += sm->get_username();
+
+    const char* descr = synthmodnames::get_descr(smt);
+    if (descr) {
+        std::string* d = justify(descr, 60, ' ', "\n// ");
+        msg += *d;
+        delete d;
+        msg += "\n//----";
+    }
     dobj_help(smt);
     modinputlist::linkedlist* inlist =
         new_list_of_by(jwm.get_inputlist(), sm);
@@ -480,6 +488,15 @@ void cmdline::dobj_help()
     msg += "\n";
     msg += dobjnames::get_name(dt);
     msg += "\nusername";
+
+    const char* descr = dobjnames::get_descr(dt);
+    if (descr) {
+        std::string* d = justify(descr, 60, ' ', "\n// ");
+        msg += *d;
+        delete d;
+        msg += "\n//----";
+    }
+
     dobj_help_params(dt);
 
     int p = 10;

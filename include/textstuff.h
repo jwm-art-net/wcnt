@@ -29,7 +29,8 @@ collumnize(const char** textarr,    unsigned int arrsize,
 
 size_t cfmt(char* buf, size_t buffer_size, const char* fmt, ...);
 
-
+std::string*
+justify(const char* src, int width, int splitchar, const char* seperator);
 
 #if DEBUG
 /*  debug previously just #define'd itself as errmsg but i want to

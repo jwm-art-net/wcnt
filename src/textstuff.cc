@@ -105,6 +105,37 @@ collumnize(const char** textarr,    unsigned int arrsize,
     return str;
 }
 
+std::string*
+justify(const char* src, int width, int splitchar, const char* seperator )
+{
+    const char* p1;
+    p1 = src;
+    if (width < 8 || !splitchar || !seperator)
+        return 0;
+    std::string* str = new std::string;
+    do {
+        char buf[width + 1];
+        char* p2;
+        strncpy(buf, p1, width);
+        buf[width] = '\0';
+        p2 = buf + strlen(buf);
+        while (*p2 != splitchar && p2 > p1)
+            --p2;
+        if (p2 == p1)
+            p2 += width;
+        else
+            ++p2;
+        *p2 = '\0';
+        *str += seperator;
+        *str += buf;
+            p1 += strlen(buf);
+    } while(strlen(p1) > (size_t)width);
+    *str += seperator;
+    *str += p1;
+    return str;
+}
+
+
 size_t cfmt(char* buf, size_t bufsz, const char* fmt, ...)
 {
     char tmp[bufsz];

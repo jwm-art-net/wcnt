@@ -51,12 +51,9 @@ class synthmod
     const char* get_username() const
         { return username; }
 
-    const char* get_group_name() const
-        {
-            return
-                ((flags & SM_UNGROUPABLE)
-                    ? 0
-                    : get_groupname(username));
+    const char* get_group_name() const {
+            return ((flags & SM_UNGROUPABLE)
+                        ? 0 : get_groupname(username));
         }
 
     void set_group_name(const char* const);

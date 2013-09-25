@@ -94,6 +94,7 @@ public:
     dobjnames();
     ~dobjnames(){};
     static const char* get_name(DOBJ_TYPE);
+    static const char* get_descr(DOBJ_TYPE);
     static DOBJ_TYPE   get_type(const char* const);
     static DOBJ_TYPE   check_type(DOBJ_TYPE);
     static DOBJ_TYPE   get_sub_type(DOBJ_TYPE);
@@ -106,6 +107,7 @@ private:
     {
         DOBJ_TYPE type;
         const char* const name;
+        const char* const descr;
     };
     static const dobj_data data[DOBJ_LAST];
 };
