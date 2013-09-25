@@ -1,0 +1,353 @@
+wcnt-1.26/jwmsynth
+//------------------------------------------------------------------------
+//
+//  prettymuch unsequenced ---- but it could be sequenced if you add more
+//  notes to the riff.
+//
+//------------------------------------------------------------------------
+
+header header.wch
+
+//------------------------------------------------------------------------
+
+synth_file_reader
+timefile
+    filename time.wch
+    mod_action  exclude
+    dobj_action exclude
+    modules
+    modules
+    data_objects
+    data_objects
+timefile
+
+riff
+riffl
+    quarter_value   1
+    notelist
+        note name c0 pos 0  len 2040  vel 1.0
+    notelist
+riffl
+
+sequencer
+seq1
+    track
+        riff_node
+            riff riffl  bar 0   transpose 0
+            repeat 0 repeat_stripe 1
+    track
+    in_bar              time1 out_bar
+    in_bar_trig         time1 out_bar_trig
+    in_pos_step_size    time1 out_pos_step_size
+    in_beats_per_bar    time1 out_beats_per_bar
+    in_beat_value       time1 out_beat_value
+    start_bar 0
+    velocity_response_time 5
+seq1
+
+adsr
+adsr1
+        envelope
+        section name attack
+            ut  9000.0    ul  1.0
+            lt  9000.0    ll  1.0
+        section name decay
+            ut  2005.0    ul  0.99
+            lt  2005.0    ll  0.99
+        section name release
+            ut  3005.0    ul  0.3
+            lt  3005.0    ll  0.3
+        section name release
+            ut  5005.0    ul  0.0
+            lt  5005.0    ll  0.0
+        envelope
+        in_note_on_trig     seq1    out_note_on_trig
+        in_note_off_trig    seq1    out_note_off_trig
+        in_velocity         seq1    out_velocity
+        up_thresh        1.0
+        lo_thresh        0.0
+        start_level      0.0
+        min_time         5.0
+        max_sustain_time 0.0 // 0 = sustain forever until note off
+        release_is_ratio off
+        sustain_state    on
+        zero_retrigger   off
+adsr1
+
+osc_clock
+orb_clock
+        in_note_on_trig     seq1    out_note_on_trig
+        in_note_slide_trig  seq1    out_note_slide_trig
+        in_play_state       adsr1   out_play_state
+        in_frequency        seq1    out_frequency
+        in_freq_mod1        orbit1 out_x
+        in_freq_mod2        orbit1 out_y
+        octave_offset       8
+        tuning_semitones    0
+        portamento_time     1.0
+        response_time       5.0
+        freq_mod1_size      2
+        freq_mod2_size      2
+orb_clock
+
+orbit
+orbit1
+    in_restart_trig  off
+    in_trig          orb_clock  out_phase_trig
+    orbit_type       quadrup
+    a  4.2
+    b -3.1
+    c  2.7
+    test_iterations  1000000
+orbit1
+
+osc_clock
+osc-l
+        in_note_on_trig     seq1    out_note_on_trig
+        in_note_slide_trig  seq1    out_note_slide_trig
+        in_play_state       adsr1   out_play_state
+        in_frequency        seq1    out_frequency
+        in_freq_mod1        orbit1 out_x
+        in_freq_mod2        orbit1 out_y
+        octave_offset       -1
+        tuning_semitones    0
+        portamento_time     15.0
+        response_time       5.0
+        freq_mod1_size      4.0
+        freq_mod2_size      1.125
+osc-l
+
+copier c1 from osc-l to osc-r c1
+
+param_editor
+pe_lr1
+    editlist
+        edit osc-r
+            freq_mod1_size 1.125
+            freq_mod2_size 4.0
+    editlist
+pe_lr1
+
+
+wave
+sine-l
+    in_phase_step  osc-l out_phase_step
+    type sine
+sine-l
+
+copier c2 from sine-l to sine-r c2
+
+input_editor
+ie_lr1
+    editlist
+        connect sine-r
+            in_phase_step   osc-r out_phase_step
+    editlist
+ie_lr1
+
+multiplier shaped-l
+    in_signal1 sine-l  out_output
+    in_signal2 adsr1   out_output
+shaped-l
+
+multiplier shaped-r
+    in_signal1 sine-r  out_output
+    in_signal2 adsr1   out_output
+shaped-r
+
+group g01
+modules
+    synthmod name adsr1
+    synthmod name orb_clock
+    synthmod name orbit1
+    synthmod name osc-l
+    synthmod name osc-r
+    synthmod name sine-l
+    synthmod name sine-r
+    synthmod name shaped-l
+    synthmod name shaped-r
+modules
+g01
+
+copier gc01 from g01 to g02 gc01
+copier gc02 from g01 to g03 gc02
+copier gc03 from g01 to g04 gc03
+copier gc04 from g01 to g05 gc04
+copier gc05 from g01 to g06 gc05
+copier gc06 from g01 to g07 gc06
+copier gc07 from g01 to g08 gc07
+copier gc08 from g01 to g09 gc08
+copier gc09 from g02 to g10 gc09
+copier gc10 from g03 to g11 gc10
+copier gc11 from g04 to g12 gc11
+copier gc12 from g05 to g13 gc12
+copier gc13 from g06 to g14 gc13
+copier gc14 from g07 to g15 gc14
+copier gc15 from g08 to g16 gc15
+
+param_editor
+pe1
+    editlist
+        edit g01.orbit1
+            a  4.20001
+            b -3.1
+            c  2.7
+        edit g02.orbit1
+            a  4.2
+            b -3.10001
+            c  2.7
+        edit g03.orbit1
+            a  4.2
+            b -3.1
+            c  2.70001
+        edit g04.orbit1
+            a  4.20001
+            b -3.10001
+            c  2.7
+        edit g05.orbit1
+            a  4.2
+            b -3.10001
+            c  2.70001
+        edit g06.orbit1
+            a  4.20001
+            b -3.1
+            c  2.70001
+        edit g07.orbit1
+            a  4.20002
+            b -3.1
+            c  2.7
+        edit g08.orbit1
+            a  4.2
+            b -3.10002
+            c  2.7
+
+        edit g09.orbit1
+            a  4.2
+            b -3.1
+            c  2.70002
+        edit g10.orbit1
+            a  4.20002
+            b -3.10002
+            c  2.7
+        edit g11.orbit1
+            a  4.2
+            b -3.10002
+            c  2.70002
+        edit g12.orbit1
+            a  4.20002
+            b -3.1
+            c  2.70002
+        edit g13.orbit1
+            a  4.20003
+            b -3.1
+            c  2.7
+        edit g14.orbit1
+            a  4.2
+            b -3.10003
+            c  2.7
+        edit g15.orbit1
+            a  4.2
+            b -3.1
+            c  2.70003
+        edit g16.orbit1
+            a  4.20003
+            b -3.1
+            c  2.70003
+    editlist
+pe1
+
+
+
+
+combiner
+cmb-l
+    signals
+        synthmod name g01.shaped-l
+        synthmod name g02.shaped-l
+        synthmod name g03.shaped-l
+        synthmod name g04.shaped-l
+        synthmod name g05.shaped-l
+        synthmod name g06.shaped-l
+        synthmod name g07.shaped-l
+        synthmod name g08.shaped-l
+        synthmod name g09.shaped-l
+        synthmod name g10.shaped-l
+        synthmod name g11.shaped-l
+        synthmod name g12.shaped-l
+        synthmod name g13.shaped-l
+        synthmod name g14.shaped-l
+        synthmod name g15.shaped-l
+        synthmod name g16.shaped-l
+    signals
+    mean_total on
+cmb-l
+
+combiner
+cmb-r
+    signals
+        synthmod name g01.shaped-r
+        synthmod name g02.shaped-r
+        synthmod name g03.shaped-r
+        synthmod name g04.shaped-r
+        synthmod name g05.shaped-r
+        synthmod name g06.shaped-r
+        synthmod name g07.shaped-r
+        synthmod name g08.shaped-r
+        synthmod name g09.shaped-r
+        synthmod name g10.shaped-r
+        synthmod name g11.shaped-r
+        synthmod name g12.shaped-r
+        synthmod name g13.shaped-r
+        synthmod name g14.shaped-r
+        synthmod name g15.shaped-r
+        synthmod name g16.shaped-r
+    signals
+    mean_total on
+cmb-r
+
+caps_plate2x2
+revb
+    in_left   cmb-l out_output
+    in_right  cmb-r out_output
+    bandwidth  0.9
+    tail       0.7
+    damping    0.2
+    wet/dry    0.5
+revb
+
+stereo_amp amp1
+    in_left    revb out_left
+    in_right   revb out_right
+    in_amp_eg  one  out_output
+    in_amp_mod off
+    left_level   1.0
+    right_level  1.0
+    amp_mod_size 0.0
+    clip_level   1.0
+amp1
+
+wavfile_out
+wav1
+    in_left     amp1    out_left
+    in_right    amp1    out_right
+    in_bar      time1   out_bar
+    in_bar_trig time1   out_bar_trig
+    snapshot_mode off
+    data_format float32
+    filename    siqurb.wav
+    start_bar   0
+    end_bar     512
+wav1
+
+// setup how long to process:
+
+wcnt_exit
+wcnt_exit_module
+    in_bar  time1   out_bar
+    exit_bar    512
+wcnt_exit_module
+
+//------------------------------------------------------------------------
+// End Of File _jwm 2005.
+//------------------------------------------------------------------------
+wcnt-1.26/jwmsynth
