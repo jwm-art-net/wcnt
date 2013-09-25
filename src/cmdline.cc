@@ -469,18 +469,13 @@ void cmdline::dobj_help()
         delete [] dbjnames;
         return;
     }
-    dobjdobjlist* ddlist = jwm.get_topdobjlist()->get_first_of_type(dt);
-
-    if (!ddlist) {
-        std::cout << "\nfailed to get topdobjlist of " <<
-            dobjnames::get_name(dt);
-        return;
-    }
 
     msg += "\n";
     msg += dobjnames::get_name(dt);
     msg += "\nusername";
     dobj_help_params(dt);
+
+    dobjdobjlist* ddlist = jwm.get_topdobjlist()->get_first_of_type(dt);
 
     int p = 10;
 
