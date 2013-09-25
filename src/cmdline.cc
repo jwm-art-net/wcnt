@@ -209,12 +209,20 @@ bool cmdline::scan()
         invalid_args();
         return false;
     }
+    
     for (int o = 1; o < OPTS_COUNT; o++) {
         if ((data[o].type & opts_flags)) {
             if (opts_count > data[o].max_args) {
                 invalid_args();
                 return false;
             }
+        }
+    }
+
+    set_jwm_globals();
+
+    for (int o = 1; o < OPTS_COUNT; o++) {
+        if ((data[o].type & opts_flags)) {
             if (data[o].helpfunc){
                 (this->*data[o].helpfunc)();
                 return false;
@@ -294,17 +302,38 @@ void cmdline::module_help()
             msg += "\n";
         }
         msg += "\nAvailable module types are:\n";
-        int modcount = synthmodnames::LAST - 2;
-        const char** modnames = new const char*[modcount];
-        for (int i = synthmodnames::FIRST + 2;
-                i < synthmodnames::LAST; i++)
-            modnames[i - 2] =
-                synthmodnames::get_name((synthmodnames::SYNTH_MOD_TYPE)i);
-        std::string* str = collumnize(modnames, modcount, 26, 3, true);
-        msg += *str;
-        delete str;
-        delete [] modnames;
-        return;
+
+        if (jwm.is_verbose()) {
+            for (int i = synthmodnames::FIRST + 2;
+                     i < synthmodnames::LAST; ++i)
+            {
+                smt = (synthmodnames::SYNTH_MOD_TYPE)i;
+                std::string mhv = synthmodnames::get_name(smt);
+                const char* descr = synthmodnames::get_descr(smt);
+                mhv += " - ";
+                std::string* d = justify(descr, 60, ' ', "\n    ",
+                                                            mhv.c_str());
+                msg += *d;
+                msg += "\n\n";
+                delete d;
+            }
+            return;
+        }
+        else
+        {
+            int modcount = synthmodnames::LAST - 2;
+            const char** modnames = new const char*[modcount];
+            for (int i = synthmodnames::FIRST + 2;
+                     i < synthmodnames::LAST; i++) {
+                modnames[i - 2] = synthmodnames::get_name(
+                                    (synthmodnames::SYNTH_MOD_TYPE)i);
+            }
+            std::string* str = collumnize(modnames, modcount, 26, 3, true);
+            msg += *str;
+            delete str;
+            delete [] modnames;
+            return;
+        }
     }
     synthmod* sm = jwm.get_modlist()->create_module(smt, "username");
     msg = "\n";
@@ -323,7 +352,7 @@ void cmdline::module_help()
 
     const char* descr = synthmodnames::get_descr(smt);
     if (descr) {
-        std::string* d = justify(descr, 60, ' ', "\n// ");
+        std::string* d = justify(descr, 60, ' ', "\n// ", 0);
         msg += *d;
         delete d;
         msg += "\n//----";
@@ -491,7 +520,7 @@ void cmdline::dobj_help()
 
     const char* descr = dobjnames::get_descr(dt);
     if (descr) {
-        std::string* d = justify(descr, 60, ' ', "\n// ");
+        std::string* d = justify(descr, 60, ' ', "\n// ", 0);
         msg += *d;
         delete d;
         msg += "\n//----";
@@ -616,7 +645,6 @@ void cmdline::input_help()
     iocat::IOCAT incat = inputnames::get_category(intype);
     if (data[WC_IX].par1 > 0) {
         // must create all modules to gain access to compatible outputs
-        set_jwm_globals();
         jwmsynth jwm_synth;
         if (!jwm_synth.is_valid() || !jwm_synth.generate_synth()) {
             msg =

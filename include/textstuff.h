@@ -25,12 +25,26 @@ std::string*
 collumnize(const char** textarr,    unsigned int arrsize,
            unsigned int colwidth,   unsigned int colcount,  bool sort);
 
+template <typename T, typename R>
+char** c_str_arr_from_names(int first, int last, const char* (T::*func)(R))
+{
+    size_t count = last - first;
 
+    if (count <= 0)
+        return 0;
+
+    char** strarr = new char*[count + 1];
+    for (int i = first; i < last; ++i)
+        strarr[i] = strdup(func((R)i));
+    strarr[count] = 0;
+    return strarr;
+}
 
 size_t cfmt(char* buf, size_t buffer_size, const char* fmt, ...);
 
 std::string*
-justify(const char* src, int width, int splitchar, const char* seperator);
+justify(const char* src, int width, int splitchar, const char* seperator,
+                                                   const char* lead_in);
 
 #if DEBUG
 /*  debug previously just #define'd itself as errmsg but i want to

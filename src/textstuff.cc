@@ -106,31 +106,49 @@ collumnize(const char** textarr,    unsigned int arrsize,
 }
 
 std::string*
-justify(const char* src, int width, int splitchar, const char* seperator )
+justify(const char* src, int width, int splitchar, const char* seperator,
+                                                   const char* lead_in)
 {
-    const char* p1;
-    p1 = src;
     if (width < 8 || !splitchar || !seperator)
         return 0;
+
+    const char* p1 = src;
     std::string* str = new std::string;
+    size_t w = width;
+
+    if (lead_in) {
+        w = width - strlen(lead_in);
+        *str = lead_in;
+    }
+
     do {
-        char buf[width + 1];
+        char buf[w + 1];
         char* p2;
-        strncpy(buf, p1, width);
-        buf[width] = '\0';
-        p2 = buf + strlen(buf);
-        while (*p2 != splitchar && p2 > p1)
-            --p2;
-        if (p2 == p1)
-            p2 += width;
+        strncpy(buf, p1, w);
+        buf[w] = '\0';
+        size_t l = strlen(buf);
+        if (l == w) {
+            p2 = buf + strlen(buf);
+            while (*p2 != splitchar && p2 > p1)
+                --p2;
+            if (p2 == p1)
+                p2 += w;
+            else
+                ++p2;
+            *p2 = '\0';
+            *str += buf;
+            *str += seperator;
+        }
         else
-            ++p2;
-        *p2 = '\0';
-        *str += seperator;
-        *str += buf;
-            p1 += strlen(buf);
+            *str += buf;
+        p1 += strlen(buf);
+
+        if (lead_in) {
+            w = width;
+            lead_in = 0;
+        }
+            
     } while(strlen(p1) > (size_t)width);
-    *str += seperator;
     *str += p1;
     return str;
 }
