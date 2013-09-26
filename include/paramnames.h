@@ -219,19 +219,24 @@ class paramnames
         DROP_CHECK_RANGE,
         LAST
     };
+
     paramnames();
     ~paramnames(){};
-    static const char*  get_name(PAR_TYPE type);
-    static iocat::IOCAT get_category(PAR_TYPE type);
+
+    static const char*  get_name(int);
+    static const char*  get_descr(int);
+    static iocat::IOCAT get_category(int);
     static PAR_TYPE     get_type(const char* const name);
+
  private:
+
     struct param_data
     {
         PAR_TYPE type;
         const char* const name;
         iocat::IOCAT cat;
-    };
-    static const param_data data[LAST];
+        const char* const descr;
+    } static const data[LAST];
 };
 
 #endif

@@ -121,7 +121,7 @@ void timemap::init()
     meterchangebar = currentmeter->get_bar();
     out_beats_per_bar = currentmeter->get_beatsperbar();
     out_beat_value = currentmeter->get_beatvalue();
-    beatlength = (short)(QUARTER_VALUE * (4.0 / (float)out_beat_value));
+    beatlength = (short)(TPQN * (4.0 / (float)out_beat_value));
     barlength = out_beats_per_bar * beatlength;
     pos_in_bar = barlength; // trig first bar - not favorite sollution
     out_bar = -1;           // ...it just gets worse!
@@ -140,8 +140,7 @@ void timemap::run()
         if (currentmeter) {
             out_beats_per_bar = currentmeter->get_beatsperbar();
             out_beat_value = currentmeter->get_beatvalue();
-            beatlength = (short)(QUARTER_VALUE *
-                                 (4.0 / (double)out_beat_value));
+            beatlength = (short)(TPQN * (4.0 / (double)out_beat_value));
             barlength = out_beats_per_bar * beatlength;
             out_meter_change_trig = ON;
             currentmeter = meter_map->goto_next();

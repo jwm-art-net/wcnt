@@ -32,7 +32,7 @@ synthmodlist::~synthmodlist()
 
 synthmod* 
 synthmodlist::create_module(
-    synthmodnames::SYNTH_MOD_TYPE smt, const char* uname)
+    synthmodnames::SYNTHMOD_TYPE smt, const char* uname)
 {
     switch (smt) {
     case synthmodnames::WCNTEXIT:       return new wcnt_exit(uname);

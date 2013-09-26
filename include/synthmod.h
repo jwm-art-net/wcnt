@@ -39,13 +39,13 @@ class synthmod
         SM_HAS_OUT_TRIG =       0x0040
     };
 
-    synthmod(   synthmodnames::SYNTH_MOD_TYPE,
+    synthmod(   synthmodnames::SYNTHMOD_TYPE,
                 const char* const uname,
                 int _flags_);
 
     virtual ~synthmod();
 
-    synthmodnames::SYNTH_MOD_TYPE get_module_type() const
+    synthmodnames::SYNTHMOD_TYPE get_module_type() const
         { return module_type; }
 
     const char* get_username() const
@@ -94,7 +94,7 @@ class synthmod
     static const STATUS* get_abort_status()
         { return &abort_status;}
 
-    bool operator()(synthmodnames::SYNTH_MOD_TYPE & smt) const
+    bool operator()(synthmodnames::SYNTHMOD_TYPE & smt) const
         { return module_type == smt; }
 
     bool operator()(name & n) const { return n(username); }
@@ -140,7 +140,7 @@ class synthmod
     static char err_msg[STRBUFLEN];
 
  private:
-    synthmodnames::SYNTH_MOD_TYPE   module_type;
+    synthmodnames::SYNTHMOD_TYPE   module_type;
     char*                           username;
     int                             flags;
     static STATUS                   abort_status;

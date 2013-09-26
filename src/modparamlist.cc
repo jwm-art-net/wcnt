@@ -11,7 +11,7 @@ modparamlist::modparamlist(DESTRUCTION d) :
 }
 
 modparam* modparamlist::add_param(
-    synthmodnames::SYNTH_MOD_TYPE smt, paramnames::PAR_TYPE pt)
+    synthmodnames::SYNTHMOD_TYPE smt, paramnames::PAR_TYPE pt)
 {
     modparam* mp = new modparam(smt, pt);
     if (!add_at_tail(mp)) {
@@ -27,7 +27,7 @@ bool modparamlist::validate(
     if (!sm) return false;
     if (!stockerrs::check_type(et) && et < stockerrs::ERR_TYPE4)
         return false;
-    synthmodnames::SYNTH_MOD_TYPE smt = sm->get_module_type();
+    synthmodnames::SYNTHMOD_TYPE smt = sm->get_module_type();
     modparam* param = goto_first();
     while (param) {
         if (param->get_moduletype() == smt) {

@@ -17,7 +17,7 @@ modoutput::~modoutput()
     #endif
 }
 
-synthmodnames::SYNTH_MOD_TYPE modoutput::get_moduletype() const
+synthmodnames::SYNTHMOD_TYPE modoutput::get_moduletype() const
 {
     return (this != 0)
      ? synthmodule->get_module_type()

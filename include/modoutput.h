@@ -14,7 +14,7 @@ class modoutput
 
     synthmod* get_synthmodule() const { return synthmodule; }
 
-    synthmodnames::SYNTH_MOD_TYPE get_moduletype() const;
+    synthmodnames::SYNTHMOD_TYPE get_moduletype() const;
     outputnames::OUT_TYPE get_outputtype() const;
     iocat::IOCAT get_outputcategory() const;
 

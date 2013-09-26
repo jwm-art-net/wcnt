@@ -17,20 +17,20 @@ class dobjdobjlist;
 class moddobj
 {
  public:
-    moddobj(synthmodnames::SYNTH_MOD_TYPE, dobjnames::DOBJ_TYPE);
+    moddobj(synthmodnames::SYNTHMOD_TYPE, dobjnames::DOBJ_TYPE);
     ~moddobj();
-    synthmodnames::SYNTH_MOD_TYPE get_moduletype() const {
+    synthmodnames::SYNTHMOD_TYPE get_moduletype() const {
         return (this) ? synthmodule_type : synthmodnames::FIRST;
     }
     dobjnames::DOBJ_TYPE get_first_child() const { return first_child; }
     dobjdobjlist* get_dobjdobjlist() const { return (this) ? dd_list : 0;}
 
-    bool operator()(synthmodnames::SYNTH_MOD_TYPE & smt) const {
+    bool operator()(synthmodnames::SYNTHMOD_TYPE & smt) const {
         return this->synthmodule_type == smt;
     }
 
  private:
-    synthmodnames::SYNTH_MOD_TYPE synthmodule_type;
+    synthmodnames::SYNTHMOD_TYPE synthmodule_type;
     dobjnames::DOBJ_TYPE first_child;
     dobjdobjlist* dd_list;
 };

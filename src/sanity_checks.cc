@@ -60,8 +60,8 @@ void module_iop_checks()
     bool sanity = true;
     for (int i = synthmodnames::FIRST + 2; i < synthmodnames::LAST; i++)
     {
-        synthmodnames::SYNTH_MOD_TYPE smt =
-            (synthmodnames::SYNTH_MOD_TYPE)i;
+        synthmodnames::SYNTHMOD_TYPE smt =
+            (synthmodnames::SYNTHMOD_TYPE)i;
         const char* const modname = synthmodnames::get_name(smt);
         std::cout << "\n--------------------------------------------"
             "\nChecking module type: " << modname;

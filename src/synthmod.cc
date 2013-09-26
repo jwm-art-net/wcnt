@@ -17,7 +17,7 @@
 //------------------------------------------------------------------------
 
 synthmod::synthmod(
- synthmodnames::SYNTH_MOD_TYPE mt, const char* const uname, int _flags_) :
+ synthmodnames::SYNTHMOD_TYPE mt, const char* const uname, int _flags_) :
  module_type(mt), username(0)
 {
     flags = _flags_ | SM_VALID;

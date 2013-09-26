@@ -6,7 +6,7 @@
 
 /* modparamlist is slightly different to modinputlist or modoutputlist
 instead of taking a synthmod* arguement it takes 
-synthmodnames::SYNTH_MOD_TYPE.  The list also differs in the way it is
+synthmodnames::SYNTHMOD_TYPE.  The list also differs in the way it is
 called, ie the params should be added only once for each module type,
 not for every module created.  (possibly by a static member func called
 by the module constructor) also, there is no need to delete the params
@@ -30,7 +30,7 @@ public:
     modparamlist(DESTRUCTION);
 
     modparam* add_param(
-        synthmodnames::SYNTH_MOD_TYPE, paramnames::PAR_TYPE);
+        synthmodnames::SYNTHMOD_TYPE, paramnames::PAR_TYPE);
 
     bool validate(synthmod*, paramnames::PAR_TYPE, stockerrs::ERR_TYPE);
 

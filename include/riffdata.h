@@ -76,8 +76,8 @@ class riffdata : public dobj, public linked_list<note_data>
     /*
     // needed (kinda, atleast for ease of...)
     */
-    void set_quartervalue(short qv) { quarter_val = qv;}
-    short get_quartervalue() const  { return quarter_val;}
+    void set_tpqn(short tpq)    { tpqn = tpq; }
+    short get_tpqn() const      { return tpqn;}
 
     note_data* insert_and_position_note(note_data*);
     note_data* add_edit_note(note_data* en) {
@@ -105,7 +105,7 @@ class riffdata : public dobj, public linked_list<note_data>
     dobj* duplicate_dobj(const char*);
 
  private:
-    short quarter_val;
+    short tpqn;
 
     linkedlist* editlist;
 

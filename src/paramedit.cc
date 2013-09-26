@@ -96,7 +96,7 @@ bool paramedit::do_param_edits()
 bool paramedit::mod_param_edit(synthmod* module, const char* parname,
                                const char* valstr)
 {
-    synthmodnames::SYNTH_MOD_TYPE smt = module->get_module_type();
+    synthmodnames::SYNTHMOD_TYPE smt = module->get_module_type();
     modparamlist::linkedlist*
         parlist = new_list_of_by(jwm.get_paramlist(),smt);
 

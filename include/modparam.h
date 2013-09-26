@@ -10,9 +10,9 @@ class synthmod;
 class modparam
 {
  public:
-    modparam(synthmodnames::SYNTH_MOD_TYPE, paramnames::PAR_TYPE);
+    modparam(synthmodnames::SYNTHMOD_TYPE, paramnames::PAR_TYPE);
     ~modparam();
-    synthmodnames::SYNTH_MOD_TYPE get_moduletype() const {
+    synthmodnames::SYNTHMOD_TYPE get_moduletype() const {
         return (this) ? synthmodule_type : synthmodnames::FIRST;
     }
     paramnames::PAR_TYPE get_paramtype() const {
@@ -23,7 +23,7 @@ class modparam
     #endif
     bool validate(synthmod* sm, stockerrs::ERR_TYPE et);
 
-    bool operator()(synthmodnames::SYNTH_MOD_TYPE & smt) const {
+    bool operator()(synthmodnames::SYNTHMOD_TYPE & smt) const {
         return synthmodule_type == smt;
     }
 
@@ -36,7 +36,7 @@ class modparam
     #endif
 
  private:
-    synthmodnames::SYNTH_MOD_TYPE synthmodule_type;
+    synthmodnames::SYNTHMOD_TYPE synthmodule_type;
     paramnames::PAR_TYPE param_type;
 
     #ifdef DATA_STATS

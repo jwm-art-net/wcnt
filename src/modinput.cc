@@ -17,7 +17,7 @@ modinput::~modinput()
     #endif
 }
 
-synthmodnames::SYNTH_MOD_TYPE modinput::get_moduletype() const
+synthmodnames::SYNTHMOD_TYPE modinput::get_moduletype() const
 {
     return (this != 0)
      ? synthmodule->get_module_type()

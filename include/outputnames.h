@@ -5,6 +5,7 @@
 
 class outputnames {
  public:
+
     enum OUT_TYPE
     {
         OUT_FIRST, // used in error situations also
@@ -81,20 +82,24 @@ class outputnames {
         OUT_THROUGH,
         OUT_LAST
     };
+
     outputnames();
     ~outputnames(){};
-    static const char*  get_name(OUT_TYPE type);
-    static iocat::IOCAT get_category(OUT_TYPE type);
+
+    static const char*  get_name(int);
+    static const char*  get_descr(int);
+    static iocat::IOCAT get_category(int);
     static OUT_TYPE     get_type(const char* const name);
     static OUT_TYPE     get_nonezerotype(iocat::IOCAT cat);
+
  private:
     struct output_data
     {
         OUT_TYPE type;
         const char* const name;
         iocat::IOCAT cat;
-    };
-    static const output_data data[OUT_LAST];
+        const char* const descr;
+    } static const data[OUT_LAST];
 };
 
 #endif

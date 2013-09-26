@@ -285,7 +285,7 @@ void cmdline::invalid_args()
 void cmdline::module_help()
 {
     int n = data[MH_IX].par1;
-    synthmodnames::SYNTH_MOD_TYPE smt =
+    synthmodnames::SYNTHMOD_TYPE smt =
         synthmodnames::get_type((n != 0 && n < opts_count)
             ? opts[n] : "" );
     if (smt == synthmodnames::NONEZERO) {
@@ -307,7 +307,7 @@ void cmdline::module_help()
             for (int i = synthmodnames::FIRST + 2;
                      i < synthmodnames::LAST; ++i)
             {
-                smt = (synthmodnames::SYNTH_MOD_TYPE)i;
+                smt = (synthmodnames::SYNTHMOD_TYPE)i;
                 std::string mhv = synthmodnames::get_name(smt);
                 const char* descr = synthmodnames::get_descr(smt);
                 mhv += " - ";
@@ -326,7 +326,7 @@ void cmdline::module_help()
             for (int i = synthmodnames::FIRST + 2;
                      i < synthmodnames::LAST; i++) {
                 modnames[i - 2] = synthmodnames::get_name(
-                                    (synthmodnames::SYNTH_MOD_TYPE)i);
+                                    (synthmodnames::SYNTHMOD_TYPE)i);
             }
             std::string* str = collumnize(modnames, modcount, 26, 3, true);
             msg += *str;
@@ -446,7 +446,7 @@ void cmdline::module_help()
     return;
 }
 
-void cmdline::dobj_help(synthmodnames::SYNTH_MOD_TYPE smt)
+void cmdline::dobj_help(synthmodnames::SYNTHMOD_TYPE smt)
 {
     moddobj* mdbj = jwm.get_moddobjlist()->get_first_of_type(smt);
     // forgot that some modules have more than one list.... so we do want
@@ -661,14 +661,14 @@ void cmdline::input_help()
         {
             if (i != synthmodnames::NONEZERO) {
                 sm = jwm.get_modlist()->create_module(
-                    (synthmodnames::SYNTH_MOD_TYPE) i,
+                    (synthmodnames::SYNTHMOD_TYPE) i,
                         synthmodnames::get_name(
-                            (synthmodnames::SYNTH_MOD_TYPE)i));
+                            (synthmodnames::SYNTHMOD_TYPE)i));
                 if (!sm) {
                     msg += "\nnot enough memory to process request to"
                         "create synthmodule type: ";
                     msg += synthmodnames::get_name(
-                            (synthmodnames::SYNTH_MOD_TYPE)i);
+                            (synthmodnames::SYNTHMOD_TYPE)i);
                     return;
                 }
                 jwm.get_modlist()->add_module(sm);

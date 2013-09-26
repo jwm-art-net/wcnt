@@ -291,7 +291,7 @@ bool synthfilereader::include_dbj(const char* name)
 
 synthmod* synthfilereader::read_synthmodule(const char* com)
 {
-    synthmodnames::SYNTH_MOD_TYPE
+    synthmodnames::SYNTHMOD_TYPE
                 smt = synthmodnames::get_type(com);
     if (smt == synthmodnames::FIRST 
         || smt == synthmodnames::NONEZERO)
@@ -595,7 +595,7 @@ bool synthfilereader::read_dobjs(dobj* dbj)
 //--
 bool synthfilereader::read_dobjs(synthmod* sm)
 {
-    synthmodnames::SYNTH_MOD_TYPE smt = sm->get_module_type();
+    synthmodnames::SYNTHMOD_TYPE smt = sm->get_module_type();
     moddobjlist* mdbjslist = jwm.get_moddobjlist();
     moddobj* mdbj = mdbjslist->get_first_of_type(smt);
     while(mdbj) { // module may contain more than one list (ie timemap)

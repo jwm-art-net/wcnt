@@ -19,7 +19,7 @@ class modoutputlist : public linked_list<modoutput>
     bool is_registered(synthmod *);
 
     modoutputlist* list_of_category_orderpref(iocat::IOCAT out_cat,
-                                    synthmodnames::SYNTH_MOD_TYPE* sm_prefs,
+                                    synthmodnames::SYNTHMOD_TYPE* sm_prefs,
                                     outputnames::OUT_TYPE* out_prefs,
                                     outputnames::OUT_TYPE* not_out_prefs);
     #endif

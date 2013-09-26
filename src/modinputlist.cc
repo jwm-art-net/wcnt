@@ -53,7 +53,7 @@ modinputlist* modinputlist::get_list_of_category(iocat::IOCAT oc)
 /*
 modinputlist*
 modinputlist::get_list_of_category_orderpref(iocat::IOCAT in_cat,
-        synthmodnames::SYNTH_MOD_TYPE* sm_prefs,
+        synthmodnames::SYNTHMOD_TYPE* sm_prefs,
         inputnames::IN_TYPE* in_prefs,
         inputnames::IN_TYPE* not_in_prefs )
 {

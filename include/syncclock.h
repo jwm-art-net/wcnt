@@ -32,7 +32,7 @@ private:
     // parameters
     double freq_mod1size;
     double freq_mod2size;
-    short quarter_val;
+    short  tpqn;
     double note_length;
     double snap_to;
     // working

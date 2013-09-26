@@ -101,7 +101,7 @@ class cmdline
     static cmd_opts_data data[OPTS_COUNT];
     struct mod_help_data
     {
-        synthmodnames::SYNTH_MOD_TYPE type;
+        synthmodnames::SYNTHMOD_TYPE type;
         const char* const help;
     };
     static const mod_help_data modhelp_data[synthmodnames::LAST];
@@ -126,7 +126,7 @@ class cmdline
     void help();
     void about();
 
-    void dobj_help(synthmodnames::SYNTH_MOD_TYPE);
+    void dobj_help(synthmodnames::SYNTHMOD_TYPE);
     void dobj_help_params(dobjnames::DOBJ_TYPE);
 };
 

@@ -4,7 +4,7 @@
 #include "../include/checkvalue.h"
 
 modparam::modparam(
- synthmodnames::SYNTH_MOD_TYPE smt, paramnames::PAR_TYPE pt) :
+ synthmodnames::SYNTHMOD_TYPE smt, paramnames::PAR_TYPE pt) :
  synthmodule_type(smt), param_type(pt)
 {
     #ifdef DATA_STATS

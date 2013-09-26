@@ -16,7 +16,7 @@ using std::cout;
 
 riffdata::riffdata() :
  dobj(dobjnames::DEF_RIFF),
- quarter_val(0),
+ tpqn(0),
  editlist(0)
 {
     init_first();
@@ -291,7 +291,7 @@ double riffdata::calc_riff_length(char beats_per_bar, char beat_value)
     short bars = 1;
     double rifflen = 0;
     while (rifflen < note_off_pos){
-        double beatlen = (get_quartervalue() * (4.0 / (double)beat_value));
+        double beatlen = (tpqn * (4.0 / (double)beat_value));
         rifflen = beats_per_bar * beatlen * bars;
         bars++;
     }
@@ -304,7 +304,7 @@ bool riffdata::set_param(paramnames::PAR_TYPE dt, const void* data)
     switch(dt)
     {
         case paramnames::QUARTER_VAL:
-            set_quartervalue(*(short*)data);
+            set_tpqn(*(short*)data);
             return true;
         default:
             return false;
@@ -315,7 +315,7 @@ const void* riffdata::get_param(paramnames::PAR_TYPE dt) const
 {
     switch(dt)
     {
-        case paramnames::QUARTER_VAL: return &quarter_val;
+        case paramnames::QUARTER_VAL: return &tpqn;
         default: return 0;
     }
 }
@@ -324,7 +324,7 @@ dobj* riffdata::duplicate_dobj(const char* name)
 {
     riffdata* dupriff = new riffdata;
     dupriff->set_username(name);
-    dupriff->set_quartervalue(quarter_val);
+    dupriff->set_tpqn(tpqn);
     note_data* note = goto_first();
     #ifdef NOTE_EDIT_DEBUG
     std::cout << "\nduplicating riff from " << get_username();

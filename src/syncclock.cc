@@ -11,7 +11,7 @@ sync_clock::sync_clock(const char* uname) :
  synthmod(synthmodnames::SYNCCLOCK, uname, SM_DEFAULT),
  in_bpm(0), in_pos_stepsz(0), in_beats_per_bar(0), in_beat_value(0),
  in_phase_trig(0), in_freq_mod1(0), in_freq_mod2(0), out_phase_trig(OFF),
- out_phase_step(0), freq_mod1size(0), freq_mod2size(0), quarter_val(0),
+ out_phase_step(0), freq_mod1size(0), freq_mod2size(0), tpqn(0),
  note_length(0), snap_to(0), premod_nlen(0), mod1size(0), mod2size(0),
  posconv(0), phaselen(0), beatlen(0),
  phasepos(0), snapto(0)
@@ -100,7 +100,7 @@ bool sync_clock::set_param(paramnames::PAR_TYPE pt, const void* data)
             freq_mod2size = *(double*)data;
             return true;
         case paramnames::QUARTER_VAL:
-            quarter_val = *(short*)data;
+            tpqn = *(short*)data;
             return true;
         case paramnames::NOTE_LEN:
             note_length = *(double*)data;
@@ -119,7 +119,7 @@ const void* sync_clock::get_param(paramnames::PAR_TYPE pt) const
     {
         case paramnames::FREQ_MOD1SIZE: return &freq_mod1size;
         case paramnames::FREQ_MOD2SIZE: return &freq_mod2size;
-        case paramnames::QUARTER_VAL:   return &quarter_val;
+        case paramnames::QUARTER_VAL:   return &tpqn;
         case paramnames::NOTE_LEN:      return &note_length;
         case paramnames::SNAP_TO:       return &snap_to;
         default: return 0;
@@ -131,8 +131,7 @@ stockerrs::ERR_TYPE sync_clock::validate()
     if (!jwm.get_paramlist()->validate(this,
         paramnames::QUARTER_VAL, stockerrs::ERR_NEGATIVE))
     {
-        sm_err("%s", paramnames::get_name(
-                                            paramnames::QUARTER_VAL));
+        sm_err("%s", paramnames::get_name(paramnames::QUARTER_VAL));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -149,7 +148,7 @@ stockerrs::ERR_TYPE sync_clock::validate()
 void sync_clock::init()
 {
 // convert note_length to quarter val as used by time map
-    posconv = (double)timemap::QUARTER_VALUE / quarter_val;
+    posconv = (double)timemap::TPQN / tpqn;
     premod_nlen = note_length * posconv;
     snapto = snap_to * posconv;
     mod1size = freq_mod1size - 1;
@@ -189,7 +188,7 @@ void sync_clock::run()
         }
         else phaselen = nlen2;
     } else if (out_phase_trig == ON) out_phase_trig = OFF;
-    beatlen = (timemap::QUARTER_VALUE * (4.0 / (double)*in_beat_value));
+    beatlen = (timemap::TPQN * (4.0 / (double)*in_beat_value));
     out_phase_step = 360.0 * (1 / ((jwm.samplerate() * (60.0 / *in_bpm)
      * (phaselen / beatlen))));
     phasepos += *in_pos_stepsz;

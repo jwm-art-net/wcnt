@@ -279,7 +279,7 @@ void sequencer::init()
 note_data* sequencer::posconv_note(note_data* rn)
 {
     // create new note using its length to store note off position,
-    // convert to time_map quarter_value, and transpose.
+    // convert to time_map TPQN, and transpose.
     const char* tr_notename =
         transpose_notename(rn->get_name(), out_transpose);
     note_data* newnote = new note_data(
@@ -347,9 +347,8 @@ void sequencer::run()
             cur_node = riff_node_ptr;
             riff_ptr = cur_node->get_riff_source();
             out_transpose = cur_node->get_transpose();
-            posconv = (double)timemap::QUARTER_VALUE
-                / riff_ptr->get_quartervalue();
-            if (next_note) {        // no dangling allowed
+            posconv = (double)timemap::TPQN / riff_ptr->get_tpqn();
+            if (next_note) { // no dangling allowed
                 delete next_note;
                 next_note = 0;
             }
@@ -365,8 +364,7 @@ void sequencer::run()
             riff_pos -= riff_len;
             riff_len = 0;
         }
-        short bl = (short)(timemap::QUARTER_VALUE
-         * (4.0 / (double)*in_beat_value));
+        short bl = (short)(timemap::TPQN * (4.0 / (double)*in_beat_value));
         riff_len += (*in_beats_per_bar * bl);
     }
     else if (out_riff_start_trig == ON) {

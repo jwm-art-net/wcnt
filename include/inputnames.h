@@ -5,7 +5,7 @@
 
 class inputnames
 {
-public:
+ public:
     enum IN_TYPE
     {
         IN_FIRST, // <-- returned on error
@@ -82,20 +82,23 @@ public:
         // used for array to know how many:
         IN_LAST
     };
+
     inputnames();
     ~inputnames(){};
-    static const char*  get_name(IN_TYPE);
-    static iocat::IOCAT get_category(IN_TYPE);
-    static IN_TYPE      get_type(const char* const);
 
-private:
+    static const char*  get_name(int);
+    static const char*  get_descr(int);
+    static iocat::IOCAT get_category(int);
+    static IN_TYPE      get_type(const char* const name);
+
+ private:
     struct input_data
     {
         IN_TYPE type;
         const char* const name;
         iocat::IOCAT cat;
-    };
-    static const input_data data[IN_LAST];
+        const char* const descr;
+    } static const data[IN_LAST];
 };
 
 #endif

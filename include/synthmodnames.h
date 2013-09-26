@@ -4,7 +4,7 @@
 class synthmodnames
 {
  public:
-    enum SYNTH_MOD_TYPE
+    enum SYNTHMOD_TYPE
     {
         FIRST,
         NONEZERO,
@@ -91,19 +91,21 @@ class synthmodnames
         SAMPLECLIMB,
         LAST
     };
+
     synthmodnames();
     ~synthmodnames(){};
-    static const char*    get_name(SYNTH_MOD_TYPE id);
-    static SYNTH_MOD_TYPE get_type(const char* const name);
-    static const char*    get_descr(SYNTH_MOD_TYPE id);
+
+    static const char*      get_name(int);
+    static const char*      get_descr(int);
+    static SYNTHMOD_TYPE    get_type(const char* const name);
+
  private:
     struct mod_data
     {
-        SYNTH_MOD_TYPE type;
+        SYNTHMOD_TYPE type;
         const char* const name;
         const char* const descr;
-    };
-    static const mod_data data[LAST];
+    } static const data[LAST];
 };
 
 #endif
