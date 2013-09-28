@@ -33,6 +33,14 @@ const char* inputnames::get_name(int id)
         return data[IN_FIRST].name;
 }
 
+const char* inputnames::get_descr(int id)
+{
+    if (id >= IN_FIRST && id < IN_LAST)
+        return data[id].descr;
+    else
+        return data[IN_FIRST].descr;
+}
+
 iocat::IOCAT inputnames::get_category(int id)
 {
     if (id >= IN_FIRST && id < IN_LAST)

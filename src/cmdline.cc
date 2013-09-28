@@ -337,9 +337,6 @@ void cmdline::module_help()
     }
     synthmod* sm = jwm.get_modlist()->create_module(smt, "username");
     msg = "\n";
-//    if(modhelp_data[smt].help)
-//        msg += modhelp_data[smt].help;
-//    msg += "\n\nHere is the module definition:\n\n";
     msg += synthmodnames::get_name(smt);
     if (sm == 0) {
         msg += " module has not been fully\nincorporated into the ";
@@ -352,6 +349,7 @@ void cmdline::module_help()
 
     const char* descr = synthmodnames::get_descr(smt);
     if (descr) {
+        msg += "\n// ";
         std::string* d = justify(descr, 60, ' ', "\n// ", 0);
         msg += *d;
         delete d;
@@ -378,12 +376,17 @@ void cmdline::module_help()
         mxl += 2;
         input = inlist->goto_first();
         while(input) {
-            std::string in = inputnames::get_name(
-                                    input->get_inputtype());
+            inputnames::IN_TYPE it = input->get_inputtype();
+            std::string in = inputnames::get_name(it);
             msg += "\n    " + in;
             msg.append(spaces, mxl - in.length());
             msg += "modulename outputname";
             input = inlist->goto_next();
+            if (jwm.is_verbose()) {
+                const char* descr = inputnames::get_descr(it);
+                msg += " // ";
+                msg += descr;
+            }
         }
     }
     delete inlist;
@@ -420,6 +423,13 @@ void cmdline::module_help()
             }
             else
                 msg += iocat::get_name(ioc);
+
+            if (jwm.is_verbose()) {
+                const char* descr = paramnames::get_descr(pt);
+                msg += " // ";
+                msg += descr;
+            }
+
             param = parlist->goto_next();
         }
     }
@@ -434,8 +444,14 @@ void cmdline::module_help()
         msg += synthmodnames::get_name(smt);
         while(output) {
             msg += "\n// ";
-            msg += outputnames::get_name(output->get_outputtype());
+            outputnames::OUT_TYPE ot = output->get_outputtype();
+            msg += outputnames::get_name(ot);
             output = outlist->goto_next();
+            if (jwm.is_verbose()) {
+                const char* descr = outputnames::get_descr(ot);
+                msg += " // ";
+                msg += descr;
+            }
         }
     }
     delete outlist;

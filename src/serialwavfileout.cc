@@ -278,7 +278,9 @@ void serialwavfileout::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::DATA_FMT, "pcm16/pcm24/pcm32/float32/float64");     register_param(paramnames::WAV_BASENAME);
+    register_param(paramnames::DATA_FMT,
+                    "pcm16/pcm24/pcm32/float32/float64");
+    register_param(paramnames::WAV_BASENAME);
     register_param(paramnames::START_BAR);
     register_param(paramnames::END_BAR);
 }

@@ -26,8 +26,6 @@ class paramnames
         END_LEVEL,
         AMP_MODSIZE,
         FUNC,
-        MIN_OUT,
-        MAX_OUT,
         POSNEG_MIRROR,
         OCTAVE,
         PORTAMENTO,
@@ -92,7 +90,6 @@ class paramnames
         ATTACK_LEVEL,
         RELEASE_TIME,
         RELEASE_LEVEL,
-        INDEPENDANT,
         USE_RATIOS,
         NO_LONOTE,
         NO_HINOTE,
@@ -134,22 +131,14 @@ class paramnames
         MODNAME,            // synth module name
         ROOT_NOTE,
         TRANSPOSE,
-        STARTLEN,
-        ENDLEN,
         SIGIN_LEVEL,
         SIGOUT_UPLEVEL,
         SIGOUT_LOLEVEL,
         SECONDS,
         MOD_ACTION,
         DOBJ_ACTION,
-        NAME_EXT,
-        PARAMETER,
-        VALUESTR,
-        DOBJNAME,           // data object name
-        INMODULE,
-        INPUT,
-        OUTMODULE,
-        OUTPUT,
+
+
         STR_UNNAMED, // special handling required
         STR_LIST,    // for these two
         SNAP_TO,
@@ -166,7 +155,6 @@ class paramnames
         POS,
         BIAS,
         // wcnt-1.26
-        SAMPLECOUNT,
         ORBIT_TYPE,
         A,
         B,

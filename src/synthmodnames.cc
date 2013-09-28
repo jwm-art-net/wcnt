@@ -25,7 +25,7 @@ static synthmodnames smnames;
 #endif
 
 
-const char* synthmodnames::get_name(SYNTHMOD_TYPE id)
+const char* synthmodnames::get_name(int id)
 {
     if (id > FIRST && id < LAST)
         return data[id].name;
@@ -42,7 +42,7 @@ synthmodnames::get_type(const char* const mname)
     return FIRST;
 }
 
-const char* synthmodnames::get_descr(SYNTHMOD_TYPE id)
+const char* synthmodnames::get_descr(int id)
 {
     if (id > FIRST && id < LAST)
         return data[id].descr;

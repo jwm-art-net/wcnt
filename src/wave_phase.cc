@@ -130,7 +130,7 @@ stockerrs::ERR_TYPE wave_phase::validate()
     }
     return stockerrs::ERR_NO_ERROR;
 }
-#include<iostream>
+
 void wave_phase::run()
 {
     if (play_state == OFF || reset_phase == ON) {

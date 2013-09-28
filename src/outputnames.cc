@@ -41,6 +41,14 @@ iocat::IOCAT outputnames::get_category(int id)
         return data[OUT_FIRST].cat;
 }
 
+const char* outputnames::get_descr(int id)
+{
+    if (id >= OUT_FIRST && id < OUT_LAST)
+        return data[id].descr;
+    else
+        return data[OUT_FIRST].descr;
+}
+
 outputnames::OUT_TYPE outputnames::get_type(const char* const oname)
 {
     for (int i = OUT_FIRST + 1; i < OUT_LAST; i++)

@@ -226,7 +226,7 @@ void dynamic::run()
 
     double ol = dvc->get_out_level(m);
     if (dvn) {
-        out_output = (ol + (dvn->get_out_level(m) - ol) 
+        out_output = (ol + (dvn->get_out_level(m) - ol)
          * ((insig - sil) / (dvn->get_signal_in_level() - sil)))
          * ((use_ratios == OFF) ? insig_sign : isig);
     }
