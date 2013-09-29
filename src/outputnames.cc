@@ -1,95 +1,29 @@
 #include "../include/outputnames.h"
 
-#include <cstring>
-
-#ifdef DEBUG
-#include <iostream>
-#endif
-
-outputnames::outputnames()
+namespace output
 {
-#ifdef DEBUG
-    for (int i = OUT_FIRST; i < OUT_LAST; i++){
-        if (data[i].type != i) {
-            std::cout << "\n***** outputnames error *****\n";
-            std::cout << data[i].name << " is in array index " << i;
-            std::cout << " but has type index of " << data[i].type;
-            std::cout << "\nthese values should tally!\n";
-        }
-    }
-#endif
-}
-
-#ifdef DEBUG
-static outputnames onames;
-#endif
 
 
-const char* outputnames::get_name(int id)
-{
-    if (id >= OUT_FIRST && id < OUT_LAST)
-        return data[id].name;
-    else
-        return data[OUT_FIRST].name;
-}
-
-iocat::IOCAT outputnames::get_category(int id)
-{
-    if (id >= OUT_FIRST && id < OUT_LAST)
-        return data[id].cat;
-    else
-        return data[OUT_FIRST].cat;
-}
-
-const char* outputnames::get_descr(int id)
-{
-    if (id >= OUT_FIRST && id < OUT_LAST)
-        return data[id].descr;
-    else
-        return data[OUT_FIRST].descr;
-}
-
-outputnames::OUT_TYPE outputnames::get_type(const char* const oname)
-{
-    for (int i = OUT_FIRST + 1; i < OUT_LAST; i++)
-        if (strcmp(data[i].name, oname) == 0)
-            return (OUT_TYPE)i;
-    return OUT_FIRST;
-}
-
-outputnames::OUT_TYPE
-outputnames::get_nonezerotype(iocat::IOCAT iocat)
-{
-    OUT_TYPE ot;
-    switch(iocat)
+ TYPE names::get_off_type(iocat::TYPE ioc)
+ {
+    TYPE ot;
+    switch(ioc)
     {
-    case iocat::DOUBLE:
-        ot = OUT_NONE_DOUBLE;
-        break;
-    case iocat::SHORT:
-        ot = OUT_NONE_SHORT;
-        break;
-    case iocat::ULONG:
-        ot = OUT_NONE_ULONG;
-        break;
-    case iocat::TRIG:
-        ot = OUT_NONE_TRIG;
-        break;
-    case iocat::STATE:
-        ot = OUT_NONE_STATE;
-        break;
-    case iocat::STRING:
-        ot = OUT_NONE_STRING;
-        break;
+    case iocat::DOUBLE: ot = OUT_NONE_DOUBLE;   break;
+    case iocat::SHORT:  ot = OUT_NONE_SHORT;    break;
+    case iocat::ULONG:  ot = OUT_NONE_ULONG;    break;
+    case iocat::TRIG:   ot = OUT_NONE_TRIG;     break;
+    case iocat::STATE:  ot = OUT_NONE_STATE;    break;
+    case iocat::STRING: ot = OUT_NONE_STRING;   break;
     default:
-        ot = OUT_FIRST;
+        return ERR_TYPE;
     }
     return ot;
 }
 
-const outputnames::output_data outputnames::data[OUT_LAST] =
-{
-    { OUT_FIRST,            "BAD_OUTPUT_TYPE",      iocat::FIRST,   "ERROR!"   },
+ const struct names::gn_data names::data[LAST_TYPE] =
+ {
+    { ERR_TYPE,             "BAD_OUTPUT_TYPE",      iocat::ERR_TYPE,"ERROR!"   },
     { OUT_NONE_DOUBLE,      "off",                  iocat::DOUBLE,  "Input turned off"  },
     { OUT_NONE_SHORT,       "off",                  iocat::SHORT,   "Input turned off"  },
     { OUT_NONE_ULONG,       "off",                  iocat::ULONG,   "Input turned off"  },
@@ -122,7 +56,6 @@ const outputnames::output_data outputnames::data[OUT_LAST] =
     { OUT_WRITE_END_TRIG,   "out_write_end_trig",   iocat::TRIG,    "Triggers when file writing ends." },
     { OUT_PRE_AMP_MOD,      "out_pre_amp_mod",      iocat::DOUBLE,  "Amplitude value before modulation." },
     { OUT_NOT_TRIG,         "out_not_trig",         iocat::TRIG,    "Triggers when the input trigger was ignored by an out_trig trigger." },
-    //wcnt 1.1001
     { OUT_BPM,              "out_bpm",              iocat::DOUBLE,  "Outputs a BPM value." },
     { OUT_BAR,              "out_bar",              iocat::SHORT,   "Outputs the bar number, starting at zero." },
     { OUT_BAR_TRIG,         "out_bar_trig",         iocat::TRIG,    "Triggers when a new bar begins." },
@@ -154,12 +87,11 @@ const outputnames::output_data outputnames::data[OUT_LAST] =
     { OUT_RELEASE_STATE,    "out_release_state",    iocat::STATE,   "ON when the release section is active." },
     { OUT_X,                "out_x",                iocat::DOUBLE,  "X position calculated." },
     { OUT_Y,                "out_y",                iocat::DOUBLE,  "Y position calculated." },
-    #ifdef WITH_LADSPA
     { OUT_UP,               "out_up",               iocat::DOUBLE,  "Outputs the input signal frequency shifted upwards." },
     { OUT_DOWN,             "out_down",             iocat::DOUBLE,  "Outputs the input signal shifted down in frequency." },
-    #endif
     { OUT_PRE_COUNT,        "out_pre_count",        iocat::SHORT,   "Where in the pre-count stage we are." },
     { OUT_PRE_SHAPE_OUTPUT, "out_pre_shape_output", iocat::DOUBLE,  "Output before shaping applied." },
     { OUT_THROUGH,          "out_through",          iocat::DOUBLE,  "Input signal passed straight through to output." }
-};
+ };
+}; // namespace output
 

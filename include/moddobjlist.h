@@ -15,9 +15,9 @@ public:
     ~moddobjlist(){};
 
     moddobj* register_moddobj(
-        synthmodnames::SYNTHMOD_TYPE, dobjnames::DOBJ_TYPE);
+        module::TYPE, dobjnames::DOBJ_TYPE);
 
-    moddobj* get_first_of_type(synthmodnames::SYNTHMOD_TYPE smt) {
+    moddobj* get_first_of_type(module::TYPE smt) {
         return (search_result =
             find_in_data(sneak_first(), search_type = smt)
                 )->get_data();
@@ -30,7 +30,7 @@ public:
     }
 
 private:
-    synthmodnames::SYNTHMOD_TYPE search_type;
+    module::TYPE search_type;
     llitem* search_result;
 };
 

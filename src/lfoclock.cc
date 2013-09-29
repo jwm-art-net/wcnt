@@ -6,7 +6,7 @@
 #include "../include/conversions.h"
 
 lfo_clock::lfo_clock(const char* uname) :
- synthmod(synthmodnames::LFOCLOCK, uname, SM_HAS_OUT_OUTPUT),
+ synthmod(module::LFOCLOCK, uname, SM_HAS_OUT_OUTPUT),
  out_phase_trig(OFF), out_phase_step(0.00), out_premod_phase_step(0.00),
  note_length_freq(0), hrtz_freq(0.00), in_phase_trig(NULL), 
  in_freq_mod1(NULL), in_freq_mod2(NULL), freq_mod1size(0.00),
@@ -14,12 +14,12 @@ lfo_clock::lfo_clock(const char* uname) :
  degsize1(0.00), degsize2(0.00)
 {
 // degs initialised at 360 so immediately triggers if in_phase_trig is off
-    register_input(inputnames::IN_PHASE_TRIG);
-    register_input(inputnames::IN_FREQ_MOD1);
-    register_input(inputnames::IN_FREQ_MOD2);
-    register_output(outputnames::OUT_PHASE_TRIG);
-    register_output(outputnames::OUT_PREMOD_PHASE_STEP);
-    register_output(outputnames::OUT_PHASE_STEP);
+    register_input(input::IN_PHASE_TRIG);
+    register_input(input::IN_FREQ_MOD1);
+    register_input(input::IN_FREQ_MOD2);
+    register_output(output::OUT_PHASE_TRIG);
+    register_output(output::OUT_PREMOD_PHASE_STEP);
+    register_output(output::OUT_PHASE_STEP);
     init_first();
 }
 
@@ -27,57 +27,57 @@ lfo_clock::~lfo_clock()
 {
 }
 
-const void* lfo_clock::get_out(outputnames::OUT_TYPE ot) const
+const void* lfo_clock::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_PHASE_TRIG:
+        case output::OUT_PHASE_TRIG:
             return &out_phase_trig;
-        case outputnames::OUT_PREMOD_PHASE_STEP:
+        case output::OUT_PREMOD_PHASE_STEP:
             return &out_premod_phase_step;
-        case outputnames::OUT_PHASE_STEP:
+        case output::OUT_PHASE_STEP:
             return &out_phase_step;
         default:
             return 0;
     }
 }
 
-const void* lfo_clock::set_in(inputnames::IN_TYPE it, const void* o)
+const void* lfo_clock::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_PHASE_TRIG:
+        case input::IN_PHASE_TRIG:
             return in_phase_trig = (STATUS*)o;
-        case inputnames::IN_FREQ_MOD1:
+        case input::IN_FREQ_MOD1:
             return in_freq_mod1 = (double*)o;
-        case inputnames::IN_FREQ_MOD2:
+        case input::IN_FREQ_MOD2:
             return in_freq_mod2 = (double*)o;
         default:
             return 0;
     }
 }
 
-const void* lfo_clock::get_in(inputnames::IN_TYPE it) const
+const void* lfo_clock::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_PHASE_TRIG: return in_phase_trig;
-        case inputnames::IN_FREQ_MOD1:  return in_freq_mod1;
-        case inputnames::IN_FREQ_MOD2:  return in_freq_mod2;
+        case input::IN_PHASE_TRIG: return in_phase_trig;
+        case input::IN_FREQ_MOD1:  return in_freq_mod1;
+        case input::IN_FREQ_MOD2:  return in_freq_mod2;
         default: return 0;
     }
 }
 
-bool lfo_clock::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool lfo_clock::set_param(param::TYPE pt, const void* data)
 {
     switch(pt) {
-    case paramnames::FREQ_MOD1SIZE:
+    case param::FREQ_MOD1SIZE:
         freq_mod1size = *(double*)data;
         return true;
-    case paramnames::FREQ_MOD2SIZE:
+    case param::FREQ_MOD2SIZE:
         freq_mod2size = *(double*)data;
         return true;
-    case paramnames::FREQ:
+    case param::FREQ:
         hrtz_freq = *(double*)data;
         return true;
     default:
@@ -85,39 +85,39 @@ bool lfo_clock::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* lfo_clock::get_param(paramnames::PAR_TYPE pt) const
+const void* lfo_clock::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::FREQ_MOD1SIZE: return &freq_mod1size;
-        case paramnames::FREQ_MOD2SIZE: return &freq_mod2size;
-        case paramnames::FREQ:          return &hrtz_freq;
+        case param::FREQ_MOD1SIZE: return &freq_mod1size;
+        case param::FREQ_MOD2SIZE: return &freq_mod2size;
+        case param::FREQ:          return &hrtz_freq;
         default: return 0;
     }
 }
 
 stockerrs::ERR_TYPE lfo_clock::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, paramnames::FREQ,
+    if (!jwm.get_paramlist()->validate(this, param::FREQ,
             stockerrs::ERR_RANGE_FREQ))
     {
-        sm_err("%s", paramnames::get_name(paramnames::FREQ));
+        sm_err("%s", param::names::get(param::FREQ));
         invalidate();
         return stockerrs::ERR_RANGE_FREQ;
     }
-    if (!jwm.get_paramlist()->validate(this, paramnames::FREQ_MOD1SIZE,
+    if (!jwm.get_paramlist()->validate(this, param::FREQ_MOD1SIZE,
             stockerrs::ERR_RANGE_FMOD))
     {
-        sm_err("%s", paramnames::get_name(
-                                            paramnames::FREQ_MOD1SIZE));
+        sm_err("%s", param::names::get(
+                                            param::FREQ_MOD1SIZE));
         invalidate();
         return stockerrs::ERR_RANGE_FMOD;
     }
-    if (!jwm.get_paramlist()->validate(this, paramnames::FREQ_MOD2SIZE,
+    if (!jwm.get_paramlist()->validate(this, param::FREQ_MOD2SIZE,
             stockerrs::ERR_RANGE_FMOD))
     {
-        sm_err("%s", paramnames::get_name(
-                                            paramnames::FREQ_MOD2SIZE));
+        sm_err("%s", param::names::get(
+                                            param::FREQ_MOD2SIZE));
         invalidate();
         return stockerrs::ERR_RANGE_FMOD;
     }
@@ -169,8 +169,8 @@ void lfo_clock::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::FREQ);
-    register_param(paramnames::FREQ_MOD1SIZE);
-    register_param(paramnames::FREQ_MOD2SIZE);
+    register_param(param::FREQ);
+    register_param(param::FREQ_MOD1SIZE);
+    register_param(param::FREQ_MOD2SIZE);
 }
 

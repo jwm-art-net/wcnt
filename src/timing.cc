@@ -16,11 +16,11 @@ timing::timing(double s):
     init_first();
 }
 
-bool timing::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool timing::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::SECONDS:
+        case param::SECONDS:
             set_time(*(double*)data);
             return true;
         default:
@@ -28,11 +28,11 @@ bool timing::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* timing::get_param(paramnames::PAR_TYPE pt) const
+const void* timing::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::SECONDS:
+        case param::SECONDS:
             return &seconds;
         default:
             return 0;
@@ -42,9 +42,9 @@ const void* timing::get_param(paramnames::PAR_TYPE pt) const
 stockerrs::ERR_TYPE timing::validate()
 {
     if (!jwm.get_dparlist()->validate(
-        this, paramnames::SECONDS, stockerrs::ERR_NEGATIVE))
+        this, param::SECONDS, stockerrs::ERR_NEGATIVE))
     {
-        dobjerr("%s", paramnames::get_name(paramnames::BAR));
+        dobjerr("%s", param::names::get(param::BAR));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -56,6 +56,6 @@ stockerrs::ERR_TYPE timing::validate()
 void timing::init_first()
 {
     if (done_first()) return;
-    register_param(paramnames::SECONDS);
+    register_param(param::SECONDS);
 }
 

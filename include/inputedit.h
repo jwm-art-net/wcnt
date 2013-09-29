@@ -27,8 +27,8 @@ public:
     virtual stockerrs::ERR_TYPE validate(){
         return stockerrs::ERR_NO_ERROR;
     }
-    bool set_param(paramnames::PAR_TYPE, const void*);
-    const void* get_param(paramnames::PAR_TYPE) const;
+    bool set_param(param::TYPE, const void*);
+    const void* get_param(param::TYPE) const;
 
 private:
     char* modname;

@@ -8,7 +8,7 @@
 #include "../include/conversions.h"
 
 adsr::adsr(const char* uname) :
- synthmod(synthmodnames::ADSR, uname, SM_HAS_OUT_OUTPUT),
+ synthmod(module::ADSR, uname, SM_HAS_OUT_OUTPUT),
  in_note_on_trig(0), in_note_off_trig(0), in_velocity(0), output(0),
  out_off_trig(OFF), play_state(OFF), up_thresh(0), lo_thresh(0),
  start_level(0), min_time(0), max_sus_time(0), sustain_status(OFF),
@@ -18,12 +18,12 @@ adsr::adsr(const char* uname) :
  run_coords(0), coord(0), coord_ix(0),
  decay_ix(0), sustain_ix(0), release_ix(0)
 {
-    register_input(inputnames::IN_NOTE_ON_TRIG);
-    register_input(inputnames::IN_NOTE_OFF_TRIG);
-    register_input(inputnames::IN_VELOCITY);
-    register_output(outputnames::OUT_OUTPUT);
-    register_output(outputnames::OUT_OFF_TRIG);
-    register_output(outputnames::OUT_PLAY_STATE);
+    register_input(input::IN_NOTE_ON_TRIG);
+    register_input(input::IN_NOTE_OFF_TRIG);
+    register_input(input::IN_VELOCITY);
+    register_output(output::OUT_OUTPUT);
+    register_output(output::OUT_OFF_TRIG);
+    register_output(output::OUT_PLAY_STATE);
 
     add_at_head(new adsr_coord(adsr_coord::ADSR_SUSTAIN, 0 ,0 ,0 ,0));
 
@@ -36,68 +36,68 @@ adsr::~adsr()
         destroy_array_moved_from_list(run_coords);
 }
 
-const void * adsr::get_out(outputnames::OUT_TYPE ot) const
+const void * adsr::get_out(output::TYPE ot) const
 {
     switch (ot) {
-        case outputnames::OUT_OUTPUT:       return &output;
-        case outputnames::OUT_OFF_TRIG:     return &out_off_trig;
-        case outputnames::OUT_PLAY_STATE:   return &play_state;
+        case output::OUT_OUTPUT:       return &output;
+        case output::OUT_OFF_TRIG:     return &out_off_trig;
+        case output::OUT_PLAY_STATE:   return &play_state;
         default: return 0;
     }
 }
 
-const void * adsr::set_in(inputnames::IN_TYPE it, void const *o)
+const void * adsr::set_in(input::TYPE it, void const *o)
 {
     switch (it)
     {
-        case inputnames::IN_VELOCITY:
+        case input::IN_VELOCITY:
             return in_velocity = (double *) o;
-        case inputnames::IN_NOTE_ON_TRIG:
+        case input::IN_NOTE_ON_TRIG:
             return in_note_on_trig = (STATUS *) o;
-        case inputnames::IN_NOTE_OFF_TRIG:
+        case input::IN_NOTE_OFF_TRIG:
             return in_note_off_trig = (STATUS *) o;
         default:
             return 0;
     }
 }
 
-const void * adsr::get_in(inputnames::IN_TYPE it) const
+const void * adsr::get_in(input::TYPE it) const
 {
     switch (it)
     {
-        case inputnames::IN_VELOCITY:       return in_velocity;
-        case inputnames::IN_NOTE_ON_TRIG:   return in_note_on_trig;
-        case inputnames::IN_NOTE_OFF_TRIG:  return in_note_off_trig;
+        case input::IN_VELOCITY:       return in_velocity;
+        case input::IN_NOTE_ON_TRIG:   return in_note_on_trig;
+        case input::IN_NOTE_OFF_TRIG:  return in_note_off_trig;
         default: return 0;
     }
 }
 
-bool adsr::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool adsr::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-    case paramnames::START_LEVEL:
+    case param::START_LEVEL:
         start_level = *(double*)data;
         return true;
-    case paramnames::SUSTAIN_STATUS:
+    case param::SUSTAIN_STATUS:
         sustain_status = *(STATUS*)data;
         return true;
-    case paramnames::RELEASE_RATIO:
+    case param::RELEASE_RATIO:
         release_ratio = *(STATUS*)data;
         return true;
-    case paramnames::ZERO_RETRIGGER:
+    case param::ZERO_RETRIGGER:
         zero_retrigger = *(STATUS*)data;
         return true;
-    case paramnames::UP_THRESH:
+    case param::UP_THRESH:
         up_thresh = *(double*)data;
         return true;
-    case paramnames::LO_THRESH:
+    case param::LO_THRESH:
         lo_thresh = *(double*)data;
         return true;
-    case paramnames::MIN_TIME:
+    case param::MIN_TIME:
         min_time = *(double*)data;
         return true;
-    case paramnames::MAX_SUSTAIN_TIME:
+    case param::MAX_SUSTAIN_TIME:
         max_sus_time = *(double*)data;
         return true;
     default:
@@ -105,18 +105,18 @@ bool adsr::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* adsr::get_param(paramnames::PAR_TYPE pt) const
+const void* adsr::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::START_LEVEL:       return &start_level;
-        case paramnames::SUSTAIN_STATUS:    return &sustain_status;
-        case paramnames::ZERO_RETRIGGER:    return &zero_retrigger;
-        case paramnames::UP_THRESH:         return &up_thresh;
-        case paramnames::LO_THRESH:         return &lo_thresh;
-        case paramnames::RELEASE_RATIO:     return &release_ratio;
-        case paramnames::MIN_TIME:          return &min_time;
-        case paramnames::MAX_SUSTAIN_TIME:  return &max_sus_time;
+        case param::START_LEVEL:       return &start_level;
+        case param::SUSTAIN_STATUS:    return &sustain_status;
+        case param::ZERO_RETRIGGER:    return &zero_retrigger;
+        case param::UP_THRESH:         return &up_thresh;
+        case param::LO_THRESH:         return &lo_thresh;
+        case param::RELEASE_RATIO:     return &release_ratio;
+        case param::MIN_TIME:          return &min_time;
+        case param::MAX_SUSTAIN_TIME:  return &max_sus_time;
         default: return 0;
     }
 }
@@ -140,24 +140,24 @@ stockerrs::ERR_TYPE adsr::validate()
     }
     if (up_thresh < lo_thresh) {
         sm_err("%s must not be less than %s.",
-                paramnames::get_name(paramnames::UP_THRESH),
-                paramnames::get_name(paramnames::LO_THRESH));
+                param::names::get(param::UP_THRESH),
+                param::names::get(param::LO_THRESH));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
 
-    if (!jwm.get_paramlist()->validate(this, paramnames::MIN_TIME,
+    if (!jwm.get_paramlist()->validate(this, param::MIN_TIME,
                                             stockerrs::ERR_NEGATIVE))
     {
-        sm_err("%s", paramnames::get_name(paramnames::MIN_TIME));
+        sm_err("%s", param::names::get(param::MIN_TIME));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
-    if (!jwm.get_paramlist()->validate(this, paramnames::MAX_SUSTAIN_TIME,
+    if (!jwm.get_paramlist()->validate(this, param::MAX_SUSTAIN_TIME,
                                             stockerrs::ERR_NEGATIVE))
     {
-        sm_err("%s", paramnames::get_name(
-                                            paramnames::MAX_SUSTAIN_TIME));
+        sm_err("%s", param::names::get(
+                                            param::MAX_SUSTAIN_TIME));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -369,14 +369,14 @@ void adsr::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::UP_THRESH);
-    register_param(paramnames::LO_THRESH);
-    register_param(paramnames::START_LEVEL);
-    register_param(paramnames::MIN_TIME);
-    register_param(paramnames::MAX_SUSTAIN_TIME);
-    register_param(paramnames::RELEASE_RATIO);
-    register_param(paramnames::SUSTAIN_STATUS);
-    register_param(paramnames::ZERO_RETRIGGER);
+    register_param(param::UP_THRESH);
+    register_param(param::LO_THRESH);
+    register_param(param::START_LEVEL);
+    register_param(param::MIN_TIME);
+    register_param(param::MAX_SUSTAIN_TIME);
+    register_param(param::RELEASE_RATIO);
+    register_param(param::SUSTAIN_STATUS);
+    register_param(param::ZERO_RETRIGGER);
     register_moddobj(dobjnames::LST_ENVELOPE, dobjnames::SIN_COORD);
 
 }

@@ -6,17 +6,17 @@
 #include "../include/conversions.h"
 
 clockclock::clockclock(const char* uname) :
- synthmod(synthmodnames::CLOCK, uname, SM_DEFAULT),
+ synthmod(module::CLOCK, uname, SM_DEFAULT),
  out_phase_trig(OFF),
  out_premod_phase_step(0.00), out_phase_step(0.00),
  in_freq_mod1(0), hrtz_freq(0.00), freq_mod1size(0.00),
  mod1size(0),degs(360.00)
 {
     // degs initialised to 360 so that it immediately triggers
-    register_input(inputnames::IN_FREQ_MOD1);
-    register_output(outputnames::OUT_PHASE_TRIG);
-    register_output(outputnames::OUT_PREMOD_PHASE_STEP);
-    register_output(outputnames::OUT_PHASE_STEP);
+    register_input(input::IN_FREQ_MOD1);
+    register_output(output::OUT_PHASE_TRIG);
+    register_output(output::OUT_PREMOD_PHASE_STEP);
+    register_output(output::OUT_PHASE_STEP);
     init_first();
 }
 
@@ -24,46 +24,46 @@ clockclock::~clockclock()
 {
 }
 
-const void* clockclock::get_out(outputnames::OUT_TYPE ot) const
+const void* clockclock::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_PHASE_TRIG:
+        case output::OUT_PHASE_TRIG:
             return &out_phase_trig;
-        case outputnames::OUT_PREMOD_PHASE_STEP:
+        case output::OUT_PREMOD_PHASE_STEP:
             return &out_premod_phase_step;
-        case outputnames::OUT_PHASE_STEP:
+        case output::OUT_PHASE_STEP:
             return &out_phase_step;
         default: return 0;
     }
 }
 
-const void* clockclock::set_in(inputnames::IN_TYPE it, const void* o)
+const void* clockclock::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_FREQ_MOD1: return in_freq_mod1 = (double*)o;
+        case input::IN_FREQ_MOD1: return in_freq_mod1 = (double*)o;
         default: return 0;
     }
 }
 
-const void* clockclock::get_in(inputnames::IN_TYPE it) const
+const void* clockclock::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_FREQ_MOD1: return in_freq_mod1;
+        case input::IN_FREQ_MOD1: return in_freq_mod1;
         default: return 0;
     }
 }
 
-bool clockclock::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool clockclock::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-    case paramnames::FREQ:
+    case param::FREQ:
         hrtz_freq = *(double*)data;
         return true;
-    case paramnames::FREQ_MOD1SIZE:
+    case param::FREQ_MOD1SIZE:
         freq_mod1size = *(double*)data;
         return true;
     default:
@@ -71,30 +71,30 @@ bool clockclock::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* clockclock::get_param(paramnames::PAR_TYPE pt) const
+const void* clockclock::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::FREQ:          return &hrtz_freq;
-        case paramnames::FREQ_MOD1SIZE: return &freq_mod1size;
+        case param::FREQ:          return &hrtz_freq;
+        case param::FREQ_MOD1SIZE: return &freq_mod1size;
         default: return 0;
     }
 }
 
 stockerrs::ERR_TYPE clockclock::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, paramnames::FREQ,
+    if (!jwm.get_paramlist()->validate(this, param::FREQ,
                                             stockerrs::ERR_RANGE_FREQ))
     {
-        sm_err("%s", paramnames::get_name(paramnames::FREQ));
+        sm_err("%s", param::names::get(param::FREQ));
         invalidate();
         return stockerrs::ERR_RANGE_FREQ;
     }
-    if (!jwm.get_paramlist()->validate(this, paramnames::FREQ_MOD1SIZE,
+    if (!jwm.get_paramlist()->validate(this, param::FREQ_MOD1SIZE,
                                             stockerrs::ERR_RANGE_FMOD))
     {
-        sm_err("%s", paramnames::get_name(
-                                            paramnames::FREQ_MOD1SIZE));
+        sm_err("%s", param::names::get(
+                                            param::FREQ_MOD1SIZE));
         invalidate();
         return stockerrs::ERR_RANGE_FMOD;
     }
@@ -131,7 +131,7 @@ void clockclock::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::FREQ);
-    register_param(paramnames::FREQ_MOD1SIZE);
+    register_param(param::FREQ);
+    register_param(param::FREQ_MOD1SIZE);
 }
 

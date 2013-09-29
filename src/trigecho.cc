@@ -6,20 +6,15 @@
 #include "../include/modparamlist.h"
 
 trigecho::trigecho(const char* uname) :
-
- synthmod(
-    synthmodnames::TRIGECHO,
-    uname,
-    SM_HAS_OUT_TRIG),
-
+ synthmod(module::TRIGECHO, uname, SM_HAS_OUT_TRIG),
  in_trig(0), out_trig(OFF), out_velocity(0), out_count(0),
  delay_time(0.0), count(0), send_input_out(OFF),
  past_trigs(0), pastmax(0), pastpos(0), vel_count_ratio(0)
 {
-    register_input(inputnames::IN_TRIG);
-    register_output(outputnames::OUT_TRIG);
-    register_output(outputnames::OUT_COUNT);
-    register_output(outputnames::OUT_VELOCITY);
+    register_input(input::IN_TRIG);
+    register_output(output::OUT_TRIG);
+    register_output(output::OUT_COUNT);
+    register_output(output::OUT_VELOCITY);
     init_first();
 }
 
@@ -42,44 +37,38 @@ void trigecho::init()
     vel_count_ratio = 1.0 / (double)count;
 }
 
-const void* trigecho::get_out(outputnames::OUT_TYPE ot) const
+const void* trigecho::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_TRIG:     return &out_trig;
-        case outputnames::OUT_COUNT:    return &out_count;
-        case outputnames::OUT_VELOCITY: return &out_velocity;
+        case output::OUT_TRIG:     return &out_trig;
+        case output::OUT_COUNT:    return &out_count;
+        case output::OUT_VELOCITY: return &out_velocity;
         default: return 0;
     }
 }
 
-const void* trigecho::set_in(inputnames::IN_TYPE it, const void* o)
+const void* trigecho::set_in(input::TYPE it, const void* o)
 {
-    if (it == inputnames::IN_TRIG) {
-        in_trig = (STATUS*)o;
-        return o;
-    }
-    return  0;
+    return (it == input::IN_TRIG ? (in_trig = (STATUS*)o) : 0);
 }
 
-const void* trigecho::get_in(inputnames::IN_TYPE it) const
+const void* trigecho::get_in(input::TYPE it) const
 {
-    if (it == inputnames::IN_TRIG)
-        return in_trig;
-    return  0;
+    return (it == input::IN_TRIG ? in_trig : 0);
 }
 
-bool trigecho::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool trigecho::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::DELAY_TIME:
+        case param::DELAY_TIME:
             delay_time = *(double*)data;
             return true;
-        case paramnames::COUNT:
+        case param::COUNT:
             count = *(short*)data;
             return true;
-        case paramnames::SEND_INPUT_OUT:
+        case param::SEND_INPUT_OUT:
             send_input_out = *(STATUS*)data;
             return true;
         default:
@@ -87,31 +76,31 @@ bool trigecho::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* trigecho::get_param(paramnames::PAR_TYPE pt) const
+const void* trigecho::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::DELAY_TIME:        return &delay_time;
-        case paramnames::COUNT:             return &count;
-        case paramnames::SEND_INPUT_OUT:    return &send_input_out;
+        case param::DELAY_TIME:        return &delay_time;
+        case param::COUNT:             return &count;
+        case param::SEND_INPUT_OUT:    return &send_input_out;
         default: return 0;
     }
 }
 
 stockerrs::ERR_TYPE trigecho::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, paramnames::DELAY_TIME,
+    if (!jwm.get_paramlist()->validate(this, param::DELAY_TIME,
                                             stockerrs::ERR_NEG_ZERO))
     {
-        sm_err("%s", paramnames::get_name(
-                                            paramnames::DELAY_TIME));
+        sm_err("%s", param::names::get(
+                                            param::DELAY_TIME));
         invalidate();
         return stockerrs::ERR_NEG_ZERO;
     }
-    if (!jwm.get_paramlist()->validate(this, paramnames::COUNT,
+    if (!jwm.get_paramlist()->validate(this, param::COUNT,
                                             stockerrs::ERR_NEGATIVE))
     {
-        sm_err("%s", paramnames::get_name(paramnames::COUNT));
+        sm_err("%s", param::names::get(param::COUNT));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -144,8 +133,8 @@ void trigecho::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::DELAY_TIME);
-    register_param(paramnames::COUNT);
-    register_param(paramnames::SEND_INPUT_OUT);
+    register_param(param::DELAY_TIME);
+    register_param(param::COUNT);
+    register_param(param::SEND_INPUT_OUT);
 }
 

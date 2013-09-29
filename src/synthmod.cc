@@ -16,9 +16,8 @@
 // public member methods
 //------------------------------------------------------------------------
 
-synthmod::synthmod(
- synthmodnames::SYNTHMOD_TYPE mt, const char* const uname, int _flags_) :
- module_type(mt), username(0)
+synthmod::synthmod(module::TYPE mt, const char* const uname, int _flags_)
+ : module_type(mt), username(0)
 {
     flags = _flags_ | SM_VALID;
     username = new char[strlen(uname) + 1];
@@ -45,7 +44,7 @@ void synthmod::set_group_name(const char* const gname)
     delete [] oldname;
 }
 
-const void* synthmod::get_out(outputnames::OUT_TYPE) const
+const void* synthmod::get_out(output::TYPE) const
 {
     #ifdef IO_PARANOIA
     sm_err("%s %s get output where none exist.", stockerrs::major,
@@ -54,7 +53,7 @@ const void* synthmod::get_out(outputnames::OUT_TYPE) const
     return 0;
 }
 
-const void* synthmod::set_in(inputnames::IN_TYPE, const void*)
+const void* synthmod::set_in(input::TYPE, const void*)
 {
     #ifdef IO_PARANOIA
     sm_err("%s %s set input where none exist.", stockerrs::major,
@@ -63,7 +62,7 @@ const void* synthmod::set_in(inputnames::IN_TYPE, const void*)
     return 0;
 }
 
-const void* synthmod::get_in(inputnames::IN_TYPE) const
+const void* synthmod::get_in(input::TYPE) const
 {
     #ifdef IO_PARANOIA
     sm_err("%s %s get input where none exist.", stockerrs::major,
@@ -72,7 +71,7 @@ const void* synthmod::get_in(inputnames::IN_TYPE) const
     return 0;
 }
 
-bool synthmod::set_param(paramnames::PAR_TYPE, const void*)
+bool synthmod::set_param(param::TYPE, const void*)
 {
     #ifdef IO_PARANOIA
     sm_err("%s %s set parameter where none exist.", stockerrs::major,
@@ -81,7 +80,7 @@ bool synthmod::set_param(paramnames::PAR_TYPE, const void*)
     return false;
 }
 
-const void* synthmod::get_param(paramnames::PAR_TYPE) const
+const void* synthmod::get_param(param::TYPE) const
 {
     #ifdef IO_PARANOIA
     sm_err("%s %s get parameter where none exist.", stockerrs::major,
@@ -104,7 +103,7 @@ synthmod::duplicate_module(const char* uname, DUP_IO iocon)
 {
     if (flag(SM_UNDUPLICABLE)) {
         sm_err("Duplication of module %s is forbidden due to type %s.",
-                username, synthmodnames::get_name(module_type));
+                username, module::names::get(module_type));
         return 0;
     }
     synthmod* dup = jwm.get_modlist()->create_module(module_type, uname);
@@ -130,7 +129,7 @@ void synthmod::duplicate_params_to(synthmod* to_mod) const
     if (mplist) {
         modparam* mp = mplist->goto_first();
         while(mp) {
-            paramnames::PAR_TYPE pt = mp->get_paramtype();
+            param::TYPE pt = mp->get_paramtype();
             to_mod->set_param(pt, get_param(pt));
             mp = mplist->goto_next();
         }
@@ -154,20 +153,20 @@ bool synthmod::done_first() const
     return r;
 }
 
-void synthmod::register_param(paramnames::PAR_TYPE pt)
+void synthmod::register_param(param::TYPE pt)
 {
     if (!(flags & SM_VALID))
         return;
     if (!jwm.get_paramlist()->add_param(module_type, pt))
     {
         sm_err("Failed to register param %s with module type %s.",
-                paramnames::get_name(pt),
-                synthmodnames::get_name(module_type));
+                param::names::get(pt),
+                module::names::get(module_type));
         invalidate();
     }
 }
 
-void synthmod::register_param(paramnames::PAR_TYPE pt, const char* fixstr)
+void synthmod::register_param(param::TYPE pt, const char* fixstr)
 {
     if (!(flags & SM_VALID))
         return;
@@ -179,33 +178,33 @@ void synthmod::register_param(paramnames::PAR_TYPE pt, const char* fixstr)
     if (!mp || !fsp)
     {
         sm_err("Failed to register fixed string param %s (%s) "
-               "with module type %s,",  paramnames::get_name(pt),
+               "with module type %s,",  param::names::get(pt),
                                         fixstr,
-                               synthmodnames::get_name(module_type));
+                                        module::names::get(module_type));
         invalidate();
     }
 }
 
-void synthmod::register_input(inputnames::IN_TYPE t)
+void synthmod::register_input(input::TYPE t)
 {
     if (!(flags & SM_VALID))
         return;
     if (!jwm.get_inputlist()->register_input(this, t))
     {
         sm_err("Failed to register input %s with module %s.",
-                inputnames::get_name(t), username);
+                input::names::get(t), username);
         invalidate();
     }
 }
 
-void synthmod::register_output(outputnames::OUT_TYPE t)
+void synthmod::register_output(output::TYPE t)
 {
     if (!(flags & SM_VALID))
         return;
     if (!jwm.get_outputlist()->register_output(this, t))
     {
         sm_err("Failed to register output %s with module %s.",
-                outputnames::get_name(t), username);
+                output::names::get(t), username);
         invalidate();
     }
 }
@@ -225,7 +224,7 @@ void synthmod::register_moddobj(dobjnames::DOBJ_TYPE parent,
         sm_err("Failed to register data object %s (child %s) with "
                "module type %s.", dobjnames::get_name(parent),
                                 dobjnames::get_name(sprog),
-                                synthmodnames::get_name(module_type));
+                                module::names::get(module_type));
         invalidate();
     }
 }
@@ -241,7 +240,7 @@ bool synthmod::check_inputs()
         if (!get_in(modinp->get_inputtype())) {
             sm_err("%s Module %s does not have its %s "
                     "input set.", stockerrs::major, get_username(), 
-                        inputnames::get_name(modinp->get_inputtype()));
+                        input::names::get(modinp->get_inputtype()));
             delete modinps;
             return false;
         }
@@ -260,4 +259,4 @@ STATS_INIT(synthmod)
 #endif
 
 
-bool synthmod::first_done[synthmodnames::LAST] = { false };
+bool synthmod::first_done[module::LAST_TYPE] = { false };

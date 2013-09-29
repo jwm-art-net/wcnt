@@ -2,12 +2,6 @@
 #define JWM_GLOBALS_H
 
 // forward definitions
-class iocat;
-class synthmodnames;
-class inputnames;
-class outputnames;
-class paramnames;
-class dobjnames;
 class synthmodlist;
 class modinputlist;
 class modoutputlist;

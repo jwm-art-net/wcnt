@@ -6,16 +6,16 @@
 #include "../include/modparamlist.h"
 
 glame_filter::glame_filter(const char* uname) :
- synthmod(synthmodnames::GLAME_FILTER, uname, SM_HAS_OUT_OUTPUT),
+ synthmod(module::GLAME_FILTER, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), in_freq_mod1(0), output(0),
  type(LOPASS), cutoff_freq(440.0), freq_mod1size(1.0), stages(1),
  l_descriptor(0), l_inst_handle(0),
  l_cutoff_freq(440.0), l_stages(1),
  l_input(0), l_output(0)
 {
-    register_input(inputnames::IN_SIGNAL);
-    register_input(inputnames::IN_FREQ_MOD1);
-    register_output(outputnames::OUT_OUTPUT);
+    register_input(input::IN_SIGNAL);
+    register_input(input::IN_FREQ_MOD1);
+    register_output(output::OUT_OUTPUT);
     init_first();
     type_names[0] = "lowpass_iir";
     type_names[1] = "highpass_iir";
@@ -30,54 +30,54 @@ glame_filter::~glame_filter()
     if (l_output) delete [] l_output;
 }
 
-const void* glame_filter::get_out(outputnames::OUT_TYPE ot) const
+const void* glame_filter::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_OUTPUT: return &output;
+        case output::OUT_OUTPUT: return &output;
         default: return 0;
     }
 }
 
 const void*
-glame_filter::set_in(inputnames::IN_TYPE it, const void* o)
+glame_filter::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_SIGNAL:
+        case input::IN_SIGNAL:
             return in_signal = (double*)o;
-        case inputnames::IN_FREQ_MOD1:
+        case input::IN_FREQ_MOD1:
             return in_freq_mod1 = (double*)o;
         default:
             return 0;
     }
 }
 
-const void* glame_filter::get_in(inputnames::IN_TYPE it) const
+const void* glame_filter::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_SIGNAL:    return in_signal;
-        case inputnames::IN_FREQ_MOD1: return in_freq_mod1;
+        case input::IN_SIGNAL:    return in_signal;
+        case input::IN_FREQ_MOD1: return in_freq_mod1;
         default: return 0;
     }
 }
 
 bool
-glame_filter::set_param(paramnames::PAR_TYPE pt, const void* data)
+glame_filter::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::GLAME_FILTER_TYPE:
+        case param::GLAME_FILTER_TYPE:
             type = *(F_TYPE*)data;
             return true;
-        case paramnames::FREQ:
+        case param::FREQ:
             cutoff_freq = *(double*)data;
             return true;
-        case paramnames::FREQ_MOD1SIZE:
+        case param::FREQ_MOD1SIZE:
             freq_mod1size = *(double*)data;
             return true;
-        case paramnames::STAGES:
+        case param::STAGES:
             stages = *(short*)data;
             return true;
         default:
@@ -85,14 +85,14 @@ glame_filter::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* glame_filter::get_param(paramnames::PAR_TYPE pt) const
+const void* glame_filter::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::GLAME_FILTER_TYPE: return &type;
-        case paramnames::FREQ:              return &cutoff_freq;
-        case paramnames::FREQ_MOD1SIZE:     return &freq_mod1size;
-        case paramnames::STAGES:            return &stages;
+        case param::GLAME_FILTER_TYPE: return &type;
+        case param::FREQ:              return &cutoff_freq;
+        case param::FREQ_MOD1SIZE:     return &freq_mod1size;
+        case param::STAGES:            return &stages;
         default: return 0;
     }
 }
@@ -102,21 +102,21 @@ stockerrs::ERR_TYPE glame_filter::validate()
     if (cutoff_freq < min_cutoff || cutoff_freq > max_cutoff) {
         sm_err("%s must be within range 0.0001 * samplerate ~ "
                "0.45 * samplerate.",
-                paramnames::get_name(paramnames::FREQ));
+                param::names::get(param::FREQ));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (stages < 1 || stages > 10){
         sm_err("%s must be within range 1 ~ 10",
-                    paramnames::get_name(paramnames::FREQ));
+                    param::names::get(param::FREQ));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
-    if (!jwm.get_paramlist()->validate(this, paramnames::FREQ_MOD1SIZE,
+    if (!jwm.get_paramlist()->validate(this, param::FREQ_MOD1SIZE,
             stockerrs::ERR_RANGE_FMOD))
     {
-        sm_err("%s", paramnames::get_name(
-                                            paramnames::FREQ_MOD1SIZE));
+        sm_err("%s", param::names::get(
+                                            param::FREQ_MOD1SIZE));
         invalidate();
         return stockerrs::ERR_RANGE_FMOD;
     }
@@ -177,10 +177,10 @@ void glame_filter::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::GLAME_FILTER_TYPE, "lowpass/highpass");
-    register_param(paramnames::FREQ);
-    register_param(paramnames::FREQ_MOD1SIZE);
-    register_param(paramnames::STAGES);
+    register_param(param::GLAME_FILTER_TYPE, "lowpass/highpass");
+    register_param(param::FREQ);
+    register_param(param::FREQ_MOD1SIZE);
+    register_param(param::STAGES);
 }
 
 #endif // WITH_LADSPA

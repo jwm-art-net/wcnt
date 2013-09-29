@@ -299,11 +299,11 @@ double riffdata::calc_riff_length(char beats_per_bar, char beat_value)
 }
 #endif
 
-bool riffdata::set_param(paramnames::PAR_TYPE dt, const void* data)
+bool riffdata::set_param(param::TYPE dt, const void* data)
 {
     switch(dt)
     {
-        case paramnames::QUARTER_VAL:
+        case param::QUARTER_VAL:
             set_tpqn(*(short*)data);
             return true;
         default:
@@ -311,11 +311,11 @@ bool riffdata::set_param(paramnames::PAR_TYPE dt, const void* data)
     }
 }
 
-const void* riffdata::get_param(paramnames::PAR_TYPE dt) const
+const void* riffdata::get_param(param::TYPE dt) const
 {
     switch(dt)
     {
-        case paramnames::QUARTER_VAL: return &tpqn;
+        case param::QUARTER_VAL: return &tpqn;
         default: return 0;
     }
 }
@@ -368,9 +368,9 @@ dobj const* riffdata::add_dobj(dobj* dbj)
 stockerrs::ERR_TYPE riffdata::validate()
 {
     if (!jwm.get_dparlist()->validate(
-        this, paramnames::QUARTER_VAL, stockerrs::ERR_NEGATIVE))
+        this, param::QUARTER_VAL, stockerrs::ERR_NEGATIVE))
     {
-        dobjerr("%s", paramnames::get_name(paramnames::QUARTER_VAL));
+        dobjerr("%s", param::names::get(param::QUARTER_VAL));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -381,7 +381,7 @@ void riffdata::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::QUARTER_VAL);
+    register_param(param::QUARTER_VAL);
     register_dobjdobj(dobjnames::LST_NOTES, dobjnames::SIN_NOTE);
 }
 

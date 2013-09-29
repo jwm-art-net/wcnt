@@ -20,9 +20,9 @@ public:
     void run();
     void init();
     stockerrs::ERR_TYPE validate();
-    const void* get_out(outputnames::OUT_TYPE) const;
-    bool set_param(paramnames::PAR_TYPE, const void*);
-    const void* get_param(paramnames::PAR_TYPE) const;
+    const void* get_out(output::TYPE) const;
+    bool set_param(param::TYPE, const void*);
+    const void* get_param(param::TYPE) const;
     synthmod* duplicate_module(const char* uname, DUP_IO);
     dobj* add_dobj(dobj*);
 private:

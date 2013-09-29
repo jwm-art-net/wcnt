@@ -5,11 +5,11 @@
 #include "../include/conversions.h"
 
 constant_freq::constant_freq(const char* uname) :
- synthmod(synthmodnames::CONSTANT_FREQ, uname, SM_EMPTY_RUN),
+ synthmod(module::CONSTANT_FREQ, uname, SM_EMPTY_RUN),
  out_freq(0.0), out_phase_step(0.0)
 {
-    register_output(outputnames::OUT_FREQ);
-    register_output(outputnames::OUT_PHASE_STEP);
+    register_output(output::OUT_FREQ);
+    register_output(output::OUT_PHASE_STEP);
     init_first();
 }
 
@@ -17,20 +17,20 @@ constant_freq::~constant_freq()
 {
 }
 
-const void* constant_freq::get_out(outputnames::OUT_TYPE ot) const
+const void* constant_freq::get_out(output::TYPE ot) const
 {
     switch(ot) 
     {
-        case outputnames::OUT_FREQ:       return &out_freq;
-        case outputnames::OUT_PHASE_STEP: return &out_phase_step;
+        case output::OUT_FREQ:       return &out_freq;
+        case output::OUT_PHASE_STEP: return &out_phase_step;
         default: return 0;
     }
 }
 
-bool constant_freq::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool constant_freq::set_param(param::TYPE pt, const void* data)
 {
     switch(pt) {
-        case paramnames::FREQ:
+        case param::FREQ:
             out_freq = *(double*)data;
             return true;
         default:
@@ -38,21 +38,21 @@ bool constant_freq::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* constant_freq::get_param(paramnames::PAR_TYPE pt) const
+const void* constant_freq::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::FREQ: return &out_freq;
+        case param::FREQ: return &out_freq;
         default: return 0;
     }
 }
 
 stockerrs::ERR_TYPE constant_freq::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, paramnames::FREQ,
+    if (!jwm.get_paramlist()->validate(this, param::FREQ,
             stockerrs::ERR_RANGE_FREQ))
     {
-        sm_err("%s", paramnames::get_name(paramnames::FREQ));
+        sm_err("%s", param::names::get(param::FREQ));
         invalidate();
         return stockerrs::ERR_RANGE_FREQ;
     }
@@ -68,6 +68,6 @@ void constant_freq::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::FREQ);
+    register_param(param::FREQ);
 }
 

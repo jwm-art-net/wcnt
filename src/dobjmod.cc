@@ -8,11 +8,11 @@ dobjmod::dobjmod() :
     init_first();
 }
 
-bool dobjmod::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool dobjmod::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-    case paramnames::MODNAME:
+    case param::MODNAME:
         set_synthmod((synthmod*)data);
          return true;
    default:
@@ -20,11 +20,11 @@ bool dobjmod::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* dobjmod::get_param(paramnames::PAR_TYPE pt) const
+const void* dobjmod::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::MODNAME: // aparently, no reason to use this.
+        case param::MODNAME: // aparently, no reason to use this.
         default: return 0;
     }
 }
@@ -33,5 +33,5 @@ void dobjmod::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::MODNAME);
+    register_param(param::MODNAME);
 }

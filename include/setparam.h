@@ -10,7 +10,7 @@
 //  and read_dobj_params, but have been removed to avoid duplication
 //  elsewhere.
 //  const char* param is what was read as part of definition
-//  paramnames::PAR_TYPE pt is the param type expected by definition
+//  param::TYPE pt is the param type expected by definition
 //  const char* value is the string value read
 //  ostringstream* result on return contains the result of the conversion
 //  to the data type of the parameter, converted back again.
@@ -39,11 +39,11 @@ namespace setpar
 {
 
 template <typename T>
-bool set_param(T* obj, const char* param, paramnames::PAR_TYPE pt,
+bool set_param(T* obj, const char* param, param::TYPE pt,
     const char* value, std::ostringstream* result);
 
 template <typename T>
-void* compute(T* obj, paramnames::PAR_TYPE pt, void* data, int op);
+void* compute(T* obj, param::TYPE pt, void* data, int op);
 
 //--------------------------------------------------------------
 // is_operator

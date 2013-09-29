@@ -24,20 +24,20 @@ void wave_vertex::modulate(double vmod, double hmod)
     out_pos = lo_pos + (up_pos - lo_pos) * (( vmod < 0) ? -vmod : vmod);
 }
 
-bool wave_vertex::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool wave_vertex::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-    case paramnames::UPDEG:
+    case param::UPDEG:
         set_updeg(*(double*)data);
         return true;
-    case paramnames::UPLEVEL:
+    case param::UPLEVEL:
         set_uppos(*(double*)data);
         return true;
-    case paramnames::LODEG:
+    case param::LODEG:
         set_lodeg(*(double*)data);
         return true;
-    case paramnames::LOLEVEL:
+    case param::LOLEVEL:
         set_lopos(*(double*)data);
         return true;
     default:
@@ -45,17 +45,17 @@ bool wave_vertex::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* wave_vertex::get_param(paramnames::PAR_TYPE pt) const
+const void* wave_vertex::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-    case paramnames::UPDEG:
+    case param::UPDEG:
         return &up_deg;
-    case paramnames::UPLEVEL:
+    case param::UPLEVEL:
         return &up_pos;
-    case paramnames::LODEG:
+    case param::LODEG:
         return &lo_deg;
-    case paramnames::LOLEVEL:
+    case param::LOLEVEL:
         return &lo_pos;
     default:
         return 0;
@@ -65,16 +65,16 @@ const void* wave_vertex::get_param(paramnames::PAR_TYPE pt) const
 stockerrs::ERR_TYPE wave_vertex::validate()
 {
     if (!jwm.get_dparlist()->validate(this,
-        paramnames::UPDEG, stockerrs::ERR_RANGE_DEGS))
+        param::UPDEG, stockerrs::ERR_RANGE_DEGS))
     {
-        dobjerr("%s", paramnames::get_name(paramnames::UPDEG));
+        dobjerr("%s", param::names::get(param::UPDEG));
         invalidate();
         return stockerrs::ERR_RANGE_DEGS;
     }
     if (!jwm.get_dparlist()->validate(this,
-        paramnames::LODEG, stockerrs::ERR_RANGE_DEGS))
+        param::LODEG, stockerrs::ERR_RANGE_DEGS))
     {
-        dobjerr("%s", paramnames::get_name(paramnames::LODEG));
+        dobjerr("%s", param::names::get(param::LODEG));
         invalidate();
         return stockerrs::ERR_RANGE_DEGS;
     }
@@ -85,10 +85,10 @@ void wave_vertex::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::UPDEG);
-    register_param(paramnames::UPLEVEL);
-    register_param(paramnames::LODEG);
-    register_param(paramnames::LOLEVEL);
+    register_param(param::UPDEG);
+    register_param(param::UPLEVEL);
+    register_param(param::LODEG);
+    register_param(param::LOLEVEL);
 }
 
 

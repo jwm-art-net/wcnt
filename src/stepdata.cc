@@ -21,17 +21,17 @@ step_data::~step_data()
 {
 }
 
-bool step_data::set_param(paramnames::PAR_TYPE dt, const void* data)
+bool step_data::set_param(param::TYPE dt, const void* data)
 {
     switch(dt)
     {
-        case paramnames::POS:
+        case param::POS:
             position = *(double*)data;
             return true;
-        case paramnames::UPLEVEL:
+        case param::UPLEVEL:
             up_level = *(double*)data;
             return true;
-        case paramnames::LOLEVEL:
+        case param::LOLEVEL:
             lo_level = *(double*)data;
             return true;
         default:
@@ -39,13 +39,13 @@ bool step_data::set_param(paramnames::PAR_TYPE dt, const void* data)
     }
 }
 
-const void* step_data::get_param(paramnames::PAR_TYPE dt) const
+const void* step_data::get_param(param::TYPE dt) const
 {
     switch(dt)
     {
-        case paramnames::POS:       return &position;
-        case paramnames::UPLEVEL:   return &up_level;
-        case paramnames::LOLEVEL:   return &lo_level;
+        case param::POS:       return &position;
+        case param::UPLEVEL:   return &up_level;
+        case param::LOLEVEL:   return &lo_level;
         default: return 0;
     }
 }
@@ -53,9 +53,9 @@ const void* step_data::get_param(paramnames::PAR_TYPE dt) const
 stockerrs::ERR_TYPE step_data::validate()
 {
     if (!jwm.get_dparlist()->validate(
-        this, paramnames::POS, stockerrs::ERR_RANGE_0_1))
+        this, param::POS, stockerrs::ERR_RANGE_0_1))
     {
-        dobjerr("%s", paramnames::get_name(paramnames::POS));
+        dobjerr("%s", param::names::get(param::POS));
         invalidate();
         return stockerrs::ERR_RANGE_0_1;
     }
@@ -66,8 +66,8 @@ void step_data::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::POS);
-    register_param(paramnames::UPLEVEL);
-    register_param(paramnames::LOLEVEL);
+    register_param(param::POS);
+    register_param(param::UPLEVEL);
+    register_param(param::LOLEVEL);
 }
 

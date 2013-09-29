@@ -9,7 +9,7 @@
 #include <iostream>
 
 serialwavfileout::serialwavfileout(const char* uname) :
- synthmod(synthmodnames::SERIALWAVFILEOUT, uname, SM_DEFAULT),
+ synthmod(module::SERIALWAVFILEOUT, uname, SM_DEFAULT),
  in_left_channel(0), in_right_channel(0), in_bar(0), in_bar_trig(0),
  in_write_trig(0), in_stop_trig(0), write_status(OFF),
  data_format(FMT_FLT32), start_bar(0),
@@ -17,13 +17,13 @@ serialwavfileout::serialwavfileout(const char* uname) :
  in_write_region(OFF), status(WAV_STATUS_INIT), 
  st_buffer(NULL), sample_total(0), buff_pos(0)
 {
-    register_input(inputnames::IN_LEFT);
-    register_input(inputnames::IN_RIGHT);
-    register_input(inputnames::IN_BAR);
-    register_input(inputnames::IN_BAR_TRIG);
-    register_input(inputnames::IN_WRITE_TRIG);
-    register_input(inputnames::IN_STOP_TRIG);
-    register_output(outputnames::OUT_WRITE_STATE);
+    register_input(input::IN_LEFT);
+    register_input(input::IN_RIGHT);
+    register_input(input::IN_BAR);
+    register_input(input::IN_BAR_TRIG);
+    register_input(input::IN_WRITE_TRIG);
+    register_input(input::IN_STOP_TRIG);
+    register_output(output::OUT_WRITE_STATE);
     st_buffer = new stereodata[jwm_init::wav_buffer_size];
     for(short i = 0; i < jwm_init::wav_buffer_size; i++){
         st_buffer[i].left = 0;
@@ -45,52 +45,52 @@ serialwavfileout::~serialwavfileout()
     if (wav_basename) delete [] wav_basename;
 }
 
-const void* serialwavfileout::get_out(outputnames::OUT_TYPE ot) const
+const void* serialwavfileout::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_WRITE_STATE: return &write_status;
+        case output::OUT_WRITE_STATE: return &write_status;
         default: return 0;
     }
 }
 
 const void*
-serialwavfileout::set_in(inputnames::IN_TYPE it, const void* o)
+serialwavfileout::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_LEFT:
+        case input::IN_LEFT:
             return in_left_channel = (short*)o;
-        case inputnames::IN_RIGHT:
+        case input::IN_RIGHT:
             return in_right_channel = (short*)o;
-        case inputnames::IN_BAR:
+        case input::IN_BAR:
             return in_bar = (short*)o;
-        case inputnames::IN_BAR_TRIG:
+        case input::IN_BAR_TRIG:
             return in_bar_trig = (STATUS*)o;
-        case inputnames::IN_WRITE_TRIG:
+        case input::IN_WRITE_TRIG:
             return in_write_trig = (STATUS*)o;
-        case inputnames::IN_STOP_TRIG:
+        case input::IN_STOP_TRIG:
             return in_stop_trig = (STATUS*)o;
         default:
             return 0;
     }
 }
 
-const void* serialwavfileout::get_in(inputnames::IN_TYPE it) const
+const void* serialwavfileout::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_LEFT:
+        case input::IN_LEFT:
             return in_left_channel;
-        case inputnames::IN_RIGHT:
+        case input::IN_RIGHT:
             return in_right_channel;
-        case inputnames::IN_BAR:
+        case input::IN_BAR:
             return in_bar;
-        case inputnames::IN_BAR_TRIG:
+        case input::IN_BAR_TRIG:
             return in_bar_trig;
-        case inputnames::IN_WRITE_TRIG:
+        case input::IN_WRITE_TRIG:
             return in_write_trig;
-        case inputnames::IN_STOP_TRIG:
+        case input::IN_STOP_TRIG:
             return in_stop_trig;
         default:
             return 0;
@@ -98,20 +98,20 @@ const void* serialwavfileout::get_in(inputnames::IN_TYPE it) const
 }
 
 bool
-serialwavfileout::set_param(paramnames::PAR_TYPE pt, const void* data)
+serialwavfileout::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::DATA_FMT:
+        case param::DATA_FMT:
             data_format = *(DATA_FMT*)data;
             return true;
-        case paramnames::WAV_BASENAME:
+        case param::WAV_BASENAME:
             set_wav_basename((const char*)data);
             return true;
-        case paramnames::START_BAR:
+        case param::START_BAR:
             start_bar = *(short*)data;
             return true;
-        case paramnames::END_BAR:
+        case param::END_BAR:
             end_bar = *(short*)data;
             return true;
         default:
@@ -119,31 +119,31 @@ serialwavfileout::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* serialwavfileout::get_param(paramnames::PAR_TYPE pt) const
+const void* serialwavfileout::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::DATA_FMT:      return &data_format;
-        case paramnames::WAV_BASENAME:  return wav_basename;
-        case paramnames::START_BAR:     return &start_bar;
-        case paramnames::END_BAR:       return &end_bar;
+        case param::DATA_FMT:      return &data_format;
+        case param::WAV_BASENAME:  return wav_basename;
+        case param::START_BAR:     return &start_bar;
+        case param::END_BAR:       return &end_bar;
         default: return 0;
     }
 }
 
 stockerrs::ERR_TYPE serialwavfileout::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, paramnames::START_BAR,
+    if (!jwm.get_paramlist()->validate(this, param::START_BAR,
             stockerrs::ERR_NEGATIVE))
     {
-        sm_err("%s", paramnames::get_name(paramnames::START_BAR));
+        sm_err("%s", param::names::get(param::START_BAR));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (end_bar <= start_bar) {
         sm_err("%s should be after %s.", 
-                paramnames::get_name(paramnames::END_BAR),
-                paramnames::get_name(paramnames::START_BAR));
+                param::names::get(param::END_BAR),
+                param::names::get(param::START_BAR));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
@@ -278,10 +278,10 @@ void serialwavfileout::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::DATA_FMT,
+    register_param(param::DATA_FMT,
                     "pcm16/pcm24/pcm32/float32/float64");
-    register_param(paramnames::WAV_BASENAME);
-    register_param(paramnames::START_BAR);
-    register_param(paramnames::END_BAR);
+    register_param(param::WAV_BASENAME);
+    register_param(param::START_BAR);
+    register_param(param::END_BAR);
 }
 

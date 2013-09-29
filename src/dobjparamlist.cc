@@ -3,7 +3,7 @@
 
 dobjparam*
 dobjparamlist::add_dobjparam(
-    dobjnames::DOBJ_TYPE dt, paramnames::PAR_TYPE dp)
+    dobjnames::DOBJ_TYPE dt, param::TYPE dp)
 {
     dobjparam* dobjp = new dobjparam(dt, dp);
     dobjparam* dpar = add_at_tail(dobjp)->get_data();
@@ -16,7 +16,7 @@ dobjparamlist::add_dobjparam(
 
 bool
 dobjparamlist::validate(
- dobj* dbj, paramnames::PAR_TYPE dpt, stockerrs::ERR_TYPE et)
+ dobj* dbj, param::TYPE dpt, stockerrs::ERR_TYPE et)
 {
     if (!dbj)
         return false;

@@ -10,7 +10,7 @@
 #include <math.h>
 
 user_wave::user_wave(const char* uname) :
- synthmod(synthmodnames::USERWAVE, uname, SM_HAS_OUT_OUTPUT),
+ synthmod(module::USERWAVE, uname, SM_HAS_OUT_OUTPUT),
  in_phase_trig(0), in_phase_step(0), in_pwm(0), in_h_mod(0), in_v_mod(0),
  output(0.0), play_state(OFF),
  recycle(OFF), zero_retrigger_mode(OFF), drop_check_range(2),
@@ -18,12 +18,12 @@ user_wave::user_wave(const char* uname) :
  sect_spanlvl(0.0), sect_startlvl(0.0),
  sectdegs(0), degs(360), pdegs(0)
 {
-    register_input(inputnames::IN_PHASE_TRIG);
-    register_input(inputnames::IN_PHASE_STEP);
-    register_input(inputnames::IN_V_MOD);
-    register_input(inputnames::IN_H_MOD);
-    register_output(outputnames::OUT_OUTPUT);
-    register_output(outputnames::OUT_PLAY_STATE);
+    register_input(input::IN_PHASE_TRIG);
+    register_input(input::IN_PHASE_STEP);
+    register_input(input::IN_V_MOD);
+    register_input(input::IN_H_MOD);
+    register_output(output::OUT_OUTPUT);
+    register_output(output::OUT_PLAY_STATE);
     add_at_head(new wave_vertex(  0.0, 0.0,   0.0, 0.0));
     add_at_tail(new wave_vertex(360.0, 0.0, 360.0, 0.0));
     init_first();
@@ -35,51 +35,51 @@ user_wave::~user_wave()
         destroy_array_moved_from_list(vertices);
 }
 
-const void* user_wave::get_out(outputnames::OUT_TYPE ot) const
+const void* user_wave::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_OUTPUT:       return &output;
-        case outputnames::OUT_PLAY_STATE:   return &play_state;
+        case output::OUT_OUTPUT:       return &output;
+        case output::OUT_PLAY_STATE:   return &play_state;
         default: return 0;
     }
 }
 
-const void* user_wave::set_in(inputnames::IN_TYPE it, const void* o)
+const void* user_wave::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_PHASE_TRIG: return in_phase_trig = (STATUS*)o;
-        case inputnames::IN_PHASE_STEP: return in_phase_step = (double*)o;
-        case inputnames::IN_V_MOD:      return in_v_mod = (double*)o;
-        case inputnames::IN_H_MOD:      return in_h_mod = (double*)o;
+        case input::IN_PHASE_TRIG: return in_phase_trig = (STATUS*)o;
+        case input::IN_PHASE_STEP: return in_phase_step = (double*)o;
+        case input::IN_V_MOD:      return in_v_mod = (double*)o;
+        case input::IN_H_MOD:      return in_h_mod = (double*)o;
         default: return 0;
     }
 }
 
-const void* user_wave::get_in(inputnames::IN_TYPE it) const
+const void* user_wave::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_PHASE_TRIG: return in_phase_trig;
-        case inputnames::IN_PHASE_STEP: return in_phase_step;
-        case inputnames::IN_V_MOD:      return in_v_mod;
-        case inputnames::IN_H_MOD:      return in_h_mod;
+        case input::IN_PHASE_TRIG: return in_phase_trig;
+        case input::IN_PHASE_STEP: return in_phase_step;
+        case input::IN_V_MOD:      return in_v_mod;
+        case input::IN_H_MOD:      return in_h_mod;
         default: return 0;
     }
 }
 
-bool user_wave::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool user_wave::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::RECYCLE_MODE:
+        case param::RECYCLE_MODE:
             recycle = *(STATUS*)data;
             return true;
-        case paramnames::ZERO_RETRIGGER:
+        case param::ZERO_RETRIGGER:
             zero_retrigger_mode = *(STATUS*)data;
             return true;
-        case paramnames::DROP_CHECK_RANGE:
+        case param::DROP_CHECK_RANGE:
             drop_check_range = *(short*)data;
             return true;
         default:
@@ -87,13 +87,13 @@ bool user_wave::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* user_wave::get_param(paramnames::PAR_TYPE pt) const
+const void* user_wave::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::RECYCLE_MODE:     return &recycle;
-        case paramnames::ZERO_RETRIGGER:   return &zero_retrigger_mode;
-        case paramnames::DROP_CHECK_RANGE: return &drop_check_range;
+        case param::RECYCLE_MODE:     return &recycle;
+        case param::ZERO_RETRIGGER:   return &zero_retrigger_mode;
+        case param::DROP_CHECK_RANGE: return &drop_check_range;
         default: return 0;
     }
 }
@@ -143,10 +143,10 @@ synthmod* user_wave::duplicate_module(const char* uname, DUP_IO dupio)
 stockerrs::ERR_TYPE user_wave::validate()
 {
     if (!jwm.get_paramlist()->validate(this,
-        paramnames::DROP_CHECK_RANGE, stockerrs::ERR_NEGATIVE))
+        param::DROP_CHECK_RANGE, stockerrs::ERR_NEGATIVE))
     {
-        sm_err("%s", paramnames::get_name(
-                                        paramnames::DROP_CHECK_RANGE));
+        sm_err("%s", param::names::get(
+                                        param::DROP_CHECK_RANGE));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -281,9 +281,9 @@ void user_wave::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::RECYCLE_MODE);
-    register_param(paramnames::ZERO_RETRIGGER);
-    register_param(paramnames::DROP_CHECK_RANGE);
+    register_param(param::RECYCLE_MODE);
+    register_param(param::ZERO_RETRIGGER);
+    register_param(param::DROP_CHECK_RANGE);
     register_moddobj(dobjnames::LST_WAVEFORM, dobjnames::SIN_VERTEX);
 }
 

@@ -22,17 +22,17 @@ stockerrs::ERR_TYPE dynvertex::validate()
     return stockerrs::ERR_NO_ERROR;
 }
 
-bool dynvertex::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool dynvertex::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::SIGIN_LEVEL:
+        case param::SIGIN_LEVEL:
             si_level = *(double*)data;
             return true;
-        case paramnames::SIGOUT_UPLEVEL:
+        case param::SIGOUT_UPLEVEL:
             uso_level = *(double*)data;
             return true;
-        case paramnames::SIGOUT_LOLEVEL:
+        case param::SIGOUT_LOLEVEL:
             lso_level = *(double*)data;
             return true;
         default:
@@ -40,13 +40,13 @@ bool dynvertex::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* dynvertex::get_param(paramnames::PAR_TYPE pt) const
+const void* dynvertex::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::SIGIN_LEVEL:       return &si_level;
-        case paramnames::SIGOUT_UPLEVEL:    return &uso_level;
-        case paramnames::SIGOUT_LOLEVEL:    return &lso_level;
+        case param::SIGIN_LEVEL:       return &si_level;
+        case param::SIGOUT_UPLEVEL:    return &uso_level;
+        case param::SIGOUT_LOLEVEL:    return &lso_level;
         default: return 0;
     }
 }
@@ -55,9 +55,9 @@ void dynvertex::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::SIGIN_LEVEL);
-    register_param(paramnames::SIGOUT_UPLEVEL);
-    register_param(paramnames::SIGOUT_LOLEVEL);
+    register_param(param::SIGIN_LEVEL);
+    register_param(param::SIGOUT_UPLEVEL);
+    register_param(param::SIGOUT_LOLEVEL);
 }
 
 

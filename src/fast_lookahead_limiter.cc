@@ -8,7 +8,7 @@
 fast_lookahead_limiter::fast_lookahead_limiter(const char* uname) :
 
  synthmod(
-    synthmodnames::FAST_LOOKAHEAD_LIMITER,
+    module::FAST_LOOKAHEAD_LIMITER,
     uname,
     SM_HAS_STEREO_OUTPUT),
 
@@ -21,10 +21,10 @@ fast_lookahead_limiter::fast_lookahead_limiter(const char* uname) :
  l_in_left(0), l_in_right(0), l_out_left(0), l_out_right(0),
  l_out_latency(0)
 {
-    register_input(inputnames::IN_LEFT);
-    register_input(inputnames::IN_RIGHT);
-    register_output(outputnames::OUT_LEFT);
-    register_output(outputnames::OUT_RIGHT);
+    register_input(input::IN_LEFT);
+    register_input(input::IN_RIGHT);
+    register_output(output::OUT_LEFT);
+    register_output(output::OUT_RIGHT);
     init_first();
 }
 
@@ -38,50 +38,50 @@ fast_lookahead_limiter::~fast_lookahead_limiter()
 }
 
 const void*
-fast_lookahead_limiter::get_out(outputnames::OUT_TYPE ot) const
+fast_lookahead_limiter::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_LEFT: return &out_left;
-        case outputnames::OUT_RIGHT: return &out_right;
+        case output::OUT_LEFT: return &out_left;
+        case output::OUT_RIGHT: return &out_right;
         default: return 0;
     }
 }
 
 const void*
-fast_lookahead_limiter::set_in(inputnames::IN_TYPE it, const void* o)
+fast_lookahead_limiter::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_LEFT:  return in_left = (double*)o;
-        case inputnames::IN_RIGHT: return in_right = (double*)o;
+        case input::IN_LEFT:  return in_left = (double*)o;
+        case input::IN_RIGHT: return in_right = (double*)o;
         default: return 0;
     }
 }
 
-const void* fast_lookahead_limiter::get_in(inputnames::IN_TYPE it) const
+const void* fast_lookahead_limiter::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_LEFT:  return in_left;
-        case inputnames::IN_RIGHT: return in_right;
+        case input::IN_LEFT:  return in_left;
+        case input::IN_RIGHT: return in_right;
         default: return 0;
     }
 }
 
 bool
-fast_lookahead_limiter::set_param(paramnames::PAR_TYPE pt,
+fast_lookahead_limiter::set_param(param::TYPE pt,
                                   const void* data)
 {
     switch(pt)
     {
-        case paramnames::GAIN_DB:
+        case param::GAIN_DB:
             gain_db = *(double*)data;
             return true;
-        case paramnames::LIMIT_DB:
+        case param::LIMIT_DB:
             limit_db = *(double*)data;
             return true;
-        case paramnames::RELEASE_SECS:
+        case param::RELEASE_SECS:
             release_secs = *(double*)data;
             return true;
         default:
@@ -90,13 +90,13 @@ fast_lookahead_limiter::set_param(paramnames::PAR_TYPE pt,
 }
 
 const void*
-fast_lookahead_limiter::get_param(paramnames::PAR_TYPE pt) const
+fast_lookahead_limiter::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::GAIN_DB:      return &gain_db;
-        case paramnames::LIMIT_DB:     return &limit_db;
-        case paramnames::RELEASE_SECS: return &release_secs;
+        case param::GAIN_DB:      return &gain_db;
+        case param::LIMIT_DB:     return &limit_db;
+        case param::RELEASE_SECS: return &release_secs;
         default: return 0;
     }
 }
@@ -105,19 +105,19 @@ stockerrs::ERR_TYPE fast_lookahead_limiter::validate()
 {
     if (gain_db < -20 || gain_db > 20) {
         sm_err("%s must be within range -20.0 ~ +20.0.",
-                paramnames::get_name(paramnames::GAIN_DB));
+                param::names::get(param::GAIN_DB));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (limit_db < -20 || limit_db > 0) {
         sm_err("%s must be within range -20.0 ~ 0.0.",
-                paramnames::get_name(paramnames::LIMIT_DB));
+                param::names::get(param::LIMIT_DB));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (release_secs < 0.01 || release_secs > 2.0) {
         sm_err("%s must be within range 0.01 ~ 2.0.",
-                paramnames::get_name(paramnames::RELEASE_SECS));
+                param::names::get(param::RELEASE_SECS));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
@@ -176,9 +176,9 @@ void fast_lookahead_limiter::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::GAIN_DB);
-    register_param(paramnames::LIMIT_DB);
-    register_param(paramnames::RELEASE_SECS);
+    register_param(param::GAIN_DB);
+    register_param(param::LIMIT_DB);
+    register_param(param::RELEASE_SECS);
 }
 
 #endif // WITH_LADSPA

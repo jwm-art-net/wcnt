@@ -22,9 +22,9 @@ public:
     void run(){};
     const double* get_output_left() const  { return io_left;  }
     const double* get_output_right() const { return io_right; }
-    const void* get_out(outputnames::OUT_TYPE) const;
-    const void* set_in(inputnames::IN_TYPE, const void*);
-    const void* get_in(inputnames::IN_TYPE it) const;
+    const void* get_out(output::TYPE) const;
+    const void* set_in(input::TYPE, const void*);
+    const void* get_in(input::TYPE) const;
 
 private:
     const double* io_left;

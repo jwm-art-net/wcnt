@@ -2,8 +2,8 @@
 #include "../include/jwm_globals.h"
 #include "../include/synthmod.h"
 
-modoutput::modoutput(synthmod * sm, outputnames::OUT_TYPE ot) :
- synthmodule(sm), output_type(ot)
+modoutput::modoutput(synthmod * sm, output::TYPE ot) :
+ module(sm), output_type(ot)
 {
     #ifdef DATA_STATS
     STATS_INC
@@ -17,26 +17,22 @@ modoutput::~modoutput()
     #endif
 }
 
-synthmodnames::SYNTHMOD_TYPE modoutput::get_moduletype() const
+module::TYPE modoutput::get_moduletype() const
 {
-    return (this != 0)
-     ? synthmodule->get_module_type()
-     : synthmodnames::FIRST;
+    return (this != 0) ? module->get_module_type()
+                       : module::ERR_TYPE;
 }
 
-outputnames::OUT_TYPE modoutput::get_outputtype() const
+output::TYPE modoutput::get_outputtype() const
 {
-    return (this != 0)
-     ? output_type
-     : outputnames::OUT_FIRST;
+    return (this != 0) ? output_type
+                       : output::ERR_TYPE;
 }
 
-iocat::IOCAT modoutput::get_outputcategory() const
+iocat::TYPE modoutput::get_outputcategory() const
 {
-    return (this != 0)
-     ? outputnames::get_category(output_type)
-     
-     : iocat::FIRST;
+    return (this != 0) ? output::names::category(output_type)
+                       : iocat::ERR_TYPE;
 }
 
 #ifdef DATA_STATS

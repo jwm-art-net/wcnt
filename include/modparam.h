@@ -1,43 +1,41 @@
 #ifndef MODPARAM_H
 #define MODPARAM_H
 
-#include "synthmodnames.h"
 #include "paramnames.h"
 #include "stockerrs.h"
+#include "synthmodnames.h"
+#include "types.h"
 
 class synthmod;
 
 class modparam
 {
  public:
-    modparam(synthmodnames::SYNTHMOD_TYPE, paramnames::PAR_TYPE);
+    modparam(module::TYPE, param::TYPE);
     ~modparam();
-    synthmodnames::SYNTHMOD_TYPE get_moduletype() const {
-        return (this) ? synthmodule_type : synthmodnames::FIRST;
-    }
-    paramnames::PAR_TYPE get_paramtype() const {
-        return (this) ? param_type: paramnames::FIRST;
-    }
+
+    module::TYPE get_moduletype() const
+        { return (this) ? synthmodule_type : module::ERR_TYPE; }
+    param::TYPE get_paramtype() const
+        { return (this) ? param_type: param::ERR_TYPE; }
     #ifdef UNUSED
-    iocat::IOCAT get_paramcategory();
+    iocat::TYPE get_paramcategory();
     #endif
     bool validate(synthmod* sm, stockerrs::ERR_TYPE et);
 
-    bool operator()(synthmodnames::SYNTHMOD_TYPE & smt) const {
-        return synthmodule_type == smt;
-    }
+    bool operator()(module::TYPE & smt) const
+        { return synthmodule_type == smt; }
 
-    bool operator()(paramnames::PAR_TYPE & pt) const {
-        return param_type == pt;
-    }
+    bool operator()(param::TYPE & pt) const
+        { return param_type == pt; }
 
     #ifdef DATA_STATS
     STATS_FUNCS
     #endif
 
  private:
-    synthmodnames::SYNTHMOD_TYPE synthmodule_type;
-    paramnames::PAR_TYPE param_type;
+    module::TYPE synthmodule_type;
+    param::TYPE  param_type;
 
     #ifdef DATA_STATS
     STATS_VARS

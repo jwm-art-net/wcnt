@@ -53,11 +53,11 @@ bool copier::set_to_name(const char* name)
     return true;
 }
 
-bool copier::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool copier::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-    case paramnames::COPYFROM:
+    case param::COPYFROM:
         if (!set_from_name((const char* const)data))
         {
             dobjerr("Cannot copy %s, no such module or data object.",
@@ -65,7 +65,7 @@ bool copier::set_param(paramnames::PAR_TYPE pt, const void* data)
             return false;
         }
         return true;
-    case paramnames::COPYTO: {
+    case param::COPYTO: {
         const char* const grpname =
             get_groupname((const char*)data);
         if (grpname) {
@@ -94,21 +94,21 @@ bool copier::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* copier::get_param(paramnames::PAR_TYPE pt) const
+const void* copier::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::COPYFROM:  return from_name;
-        case paramnames::COPYTO:    return to_name;
+        case param::COPYFROM:  return from_name;
+        case param::COPYTO:    return to_name;
         default: return 0;
     }
 }
 
 stockerrs::ERR_TYPE copier::validate()
 {
-    if (!set_param(paramnames::COPYFROM, from_name))
+    if (!set_param(param::COPYFROM, from_name))
         return stockerrs::ERR_ERROR;
-    if (!set_param(paramnames::COPYTO, to_name))
+    if (!set_param(param::COPYTO, to_name))
         return stockerrs::ERR_ERROR;
     if (from_mod) {
         if (!(to_mod = from_mod->duplicate_module(to_name,
@@ -138,8 +138,8 @@ void copier::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::COPYFROM);
-    register_param(paramnames::COPYTO);
+    register_param(param::COPYFROM);
+    register_param(param::COPYTO);
 }
 
 

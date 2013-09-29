@@ -30,23 +30,23 @@ riff_node* riff_node::duplicate_for_bar(short barpos)
     return newrn;
 }
 
-bool riff_node::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool riff_node::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::RIFFNAME:
+        case param::RIFFNAME:
             set_riff_source((riffdata*)data);
             return true;
-        case paramnames::BAR:
+        case param::BAR:
             set_start_bar(*(short*)data);
             return true;
-        case paramnames::TRANSPOSE:
+        case param::TRANSPOSE:
             set_transpose(*(short*)data);
             return true;
-        case paramnames::REPEAT:
+        case param::REPEAT:
             set_repeat(*(short*)data);
             return true;
-        case paramnames::REPEAT_STRIPE:
+        case param::REPEAT_STRIPE:
             set_repeat_stripe(*(short*)data);
             return true;
         default:
@@ -54,15 +54,15 @@ bool riff_node::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* riff_node::get_param(paramnames::PAR_TYPE pt) const
+const void* riff_node::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::RIFFNAME:      return riff_source;
-        case paramnames::BAR:           return &start_bar;
-        case paramnames::TRANSPOSE:     return &transpose;
-        case paramnames::REPEAT:        return &repeat;
-        case paramnames::REPEAT_STRIPE: return &repeat_stripe;
+        case param::RIFFNAME:      return riff_source;
+        case param::BAR:           return &start_bar;
+        case param::TRANSPOSE:     return &transpose;
+        case param::REPEAT:        return &repeat;
+        case param::REPEAT_STRIPE: return &repeat_stripe;
         default: return 0;
     }
 }
@@ -76,24 +76,24 @@ stockerrs::ERR_TYPE riff_node::validate()
         return stockerrs::ERR_ERROR;
     }
     if (!jwm.get_dparlist()->validate(this,
-        paramnames::BAR, stockerrs::ERR_NEGATIVE))
+        param::BAR, stockerrs::ERR_NEGATIVE))
     {
-        dobjerr("%s", paramnames::get_name(paramnames::BAR));
+        dobjerr("%s", param::names::get(param::BAR));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (!jwm.get_dparlist()->validate(this,
-        paramnames::REPEAT, stockerrs::ERR_NEGATIVE))
+        param::REPEAT, stockerrs::ERR_NEGATIVE))
     {
-        dobjerr("%s", paramnames::get_name(paramnames::REPEAT));
+        dobjerr("%s", param::names::get(param::REPEAT));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (!jwm.get_dparlist()->validate(this,
-        paramnames::REPEAT_STRIPE, stockerrs::ERR_NEG_ZERO))
+        param::REPEAT_STRIPE, stockerrs::ERR_NEG_ZERO))
     {
-        dobjerr("%s", paramnames::get_name(
-                                            paramnames::REPEAT_STRIPE));
+        dobjerr("%s", param::names::get(
+                                            param::REPEAT_STRIPE));
         invalidate();
         return stockerrs::ERR_NEG_ZERO;
     }
@@ -104,10 +104,10 @@ void riff_node::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::RIFFNAME);
-    register_param(paramnames::BAR);
-    register_param(paramnames::TRANSPOSE);
-    register_param(paramnames::REPEAT);
-    register_param(paramnames::REPEAT_STRIPE);
+    register_param(param::RIFFNAME);
+    register_param(param::BAR);
+    register_param(param::TRANSPOSE);
+    register_param(param::REPEAT);
+    register_param(param::REPEAT_STRIPE);
 }
 

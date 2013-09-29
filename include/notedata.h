@@ -112,8 +112,8 @@ class note_data : public dobj
     // virtuals from dobj
     const char* get_username(){ return notename;}
     // virtuals from dobj
-    bool set_param(paramnames::PAR_TYPE, const void*);
-    const void* get_param(paramnames::PAR_TYPE) const;
+    bool set_param(param::TYPE, const void*);
+    const void* get_param(param::TYPE) const;
     stockerrs::ERR_TYPE validate();
 
     #ifdef DATA_STATS

@@ -1,66 +1,10 @@
 #include "../include/paramnames.h"
 
-#include <cstring>
-
-#ifdef DEBUG
-#include <iostream>
-#endif
-
-paramnames::paramnames()
+namespace param
 {
-#ifdef DEBUG
-    for (int i = FIRST; i < LAST; i++){
-        if (data[i].type != i) {
-            std::cout << "\n***** paramnames error *****\n";
-            std::cout << data[i].name << " is in array index " << i;
-            std::cout << " but has type index of " << data[i].type;
-            std::cout << "\nthese values should tally!\n";
-        }
-    }
-#endif
-}
-
-#ifdef DEBUG
-static paramnames pnames;
-#endif
-
-
-const char* paramnames::get_name(int id)
-{
-    if (id >= FIRST && id < LAST)
-        return data[id].name;
-    else
-        return data[FIRST].name;
-}
-
-iocat::IOCAT paramnames::get_category(int id)
-{
-    if (id >= FIRST && id < LAST)
-        return data[id].cat;
-    else
-        return data[FIRST].cat;
-}
-
-const char* paramnames::get_descr(int id)
-{
-    if (id >= FIRST && id < LAST)
-        return data[id].descr;
-    else
-        return data[FIRST].descr;
-}
-
-paramnames::PAR_TYPE paramnames::get_type(const char* const pname)
-{
-    for (int i = FIRST + 1; i < LAST; i++) {
-        if (strcmp(data[i].name, pname) == 0)
-            return (PAR_TYPE)i;
-    }
-    return FIRST;
-}
-
-const paramnames::param_data paramnames::data[LAST] =
-{
-    { FIRST,            "BAD_PARAM_TYPE",       iocat::FIRST,   "ERROR!"   },
+ const struct names::gn_data names::data[LAST_TYPE] =
+ {
+    { ERR_TYPE,         "BAD_PARAM_TYPE",       iocat::ERR_TYPE,"ERROR!"   },
     { SUSTAIN_STATUS,   "sustain_state",        iocat::STATE,   "Set sustain section to be active or ignored." },
     { ZERO_RETRIGGER,   "zero_retrigger",       iocat::STATE,   "Whether to hard reset to zero on retrigger." },
     { FREQ,             "freq",                 iocat::DOUBLE,  "Operating frequency." },
@@ -186,8 +130,6 @@ const paramnames::param_data paramnames::data[LAST] =
     { SECONDS,          "seconds",              iocat::DOUBLE,  "Number of seconds to wait." },
     { MOD_ACTION,       "mod_action",           iocat::FIX_STR, "What to do with modules named in the list." },
     { DOBJ_ACTION,      "dobj_action",          iocat::FIX_STR, "What to do with data objects named in the list."},
-    { STR_UNNAMED,      "<unnamed>",            iocat::STRING,  "A name of something." },
-    { STR_LIST,         "<unnamed>",            iocat::STRING,  "A number of names of things." },
     { SNAP_TO,          "snap_to",              iocat::DOUBLE,  "Multiple, relative to TPQN (quarter_value), to snap positions to." },
     { COUNT,            "count",                iocat::SHORT,   "The number of what-have-yous to do and see." },
     { CHECK_LEVELS,     "check_levels",         iocat::STATE,   "Whether to perform extra checks on the levels or not." },
@@ -249,6 +191,9 @@ const paramnames::param_data paramnames::data[LAST] =
     { FADE_OUT_TIME,    "fade_out_time",        iocat::DOUBLE,  "Length of time (ms) that fade out should take."  },
     { RATE,             "rate",                 iocat::DOUBLE,  "Rate that target level should be reached, ie output = output + (target - output) * rate." },
     { SNAPSHOT_MODE,    "snapshot_mode",        iocat::STATE,   "Whether to append a timestamp to filenames of written audio files." },
-    { DROP_CHECK_RANGE, "drop_check_range",     iocat::SHORT,   "How may degrees apart a pair of vertices may be to considered a collision and for one to be dropped from waveform. " }
-};
+    { DROP_CHECK_RANGE, "drop_check_range",     iocat::SHORT,   "How may degrees apart a pair of vertices may be to considered a collision and for one to be dropped from waveform. " },
+    { STR_UNNAMED,      "<unnamed>",            iocat::STRING,  "A name of something." },
+    { STR_LIST,         "<unnamed>",            iocat::STRING,  "A number of names of things." }
+ };
+}; // namespace param
 

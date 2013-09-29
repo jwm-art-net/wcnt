@@ -12,12 +12,12 @@
 #include "../include/duplicate_list_module.h"
 
 combiner::combiner(const char* uname) :
- synthmod(synthmodnames::COMBINER, uname, SM_HAS_OUT_OUTPUT),
+ synthmod(module::COMBINER, uname, SM_HAS_OUT_OUTPUT),
  linkedlist(MULTIREF_OFF, PRESERVE_DATA),
  out_output(0), meantotal(OFF),
  total(0), sigs(0), sigcount(0)
 {
-    register_output(outputnames::OUT_OUTPUT);
+    register_output(output::OUT_OUTPUT);
     init_first();
 }
 
@@ -27,20 +27,20 @@ combiner::~combiner()
         delete [] sigs;
 }
 
-const void* combiner::get_out(outputnames::OUT_TYPE ot) const
+const void* combiner::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_OUTPUT: return &out_output;
+        case output::OUT_OUTPUT: return &out_output;
         default: return 0;
     }
 }
 
-bool combiner::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool combiner::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::MEAN_TOTAL:
+        case param::MEAN_TOTAL:
             meantotal = *(STATUS*)data;
             return true;
         default:
@@ -48,11 +48,11 @@ bool combiner::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* combiner::get_param(paramnames::PAR_TYPE pt) const
+const void* combiner::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::MEAN_TOTAL: return &meantotal;
+        case param::MEAN_TOTAL: return &meantotal;
         default: return 0;
     }
 }
@@ -80,9 +80,9 @@ dobj* combiner::add_dobj(dobj* dbj)
             sm_err("%s will not accept the module %s because modules "
                     "of type %s do not have the %s output type.",
                     get_username(), sm->get_username(),
-                    synthmodnames::get_name(sm->get_module_type()),
-                    outputnames::get_name(
-                                                outputnames::OUT_OUTPUT));
+                    module::names::get(sm->get_module_type()),
+                    output::names::get(
+                                                output::OUT_OUTPUT));
             return 0;
         }
         if (!add_at_tail(sm)) {
@@ -107,7 +107,7 @@ void combiner::init()
     synthmod* sm = goto_first();
     long ix = 0;
     while(sm) {
-        sigs[ix] = (double const*)sm->get_out(outputnames::OUT_OUTPUT);
+        sigs[ix] = (double const*)sm->get_out(output::OUT_OUTPUT);
         if (!sigs[ix]) {
             sm_err("Things not looking good ;-(... %s",
                    "Don't worry, I have no idea what this means either.");
@@ -139,7 +139,7 @@ void combiner::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::MEAN_TOTAL);
+    register_param(param::MEAN_TOTAL);
     register_moddobj(dobjnames::LST_SIGNALS, dobjnames::DOBJ_SYNTHMOD);
 }
 

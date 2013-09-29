@@ -16,11 +16,11 @@ riff_editor::~riff_editor()
 {
 }
 
-bool riff_editor::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool riff_editor::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-    case paramnames::RIFFNAME:
+    case param::RIFFNAME:
         if (((dobj*)data)->get_object_type() == dobjnames::DEF_RIFF) {
             set_riff_source((riffdata*)data);// pass pointer
             return true;
@@ -33,11 +33,11 @@ bool riff_editor::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* riff_editor::get_param(paramnames::PAR_TYPE pt) const
+const void* riff_editor::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::RIFFNAME: return riff_source;
+        case param::RIFFNAME: return riff_source;
         default: return 0;
     }
 }
@@ -72,7 +72,7 @@ void riff_editor::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::RIFFNAME);
+    register_param(param::RIFFNAME);
     register_dobjdobj(dobjnames::LST_NOTES, dobjnames::SIN_NOTE);
 }
 

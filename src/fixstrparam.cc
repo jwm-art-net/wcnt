@@ -3,7 +3,7 @@
 #include <cstring>
 
 fixstrparam::
-fixstrparam(const char* str_list, paramnames::PAR_TYPE par_type)
+fixstrparam(const char* str_list, param::TYPE par_type)
  : string_list(str_list), param_type(par_type)
 {
 }
@@ -11,7 +11,7 @@ fixstrparam(const char* str_list, paramnames::PAR_TYPE par_type)
 fixstrparam::~fixstrparam()
 {
     string_list = 0;
-    param_type = paramnames::FIRST;
+    param_type = param::ERR_TYPE;
 }
 //  "apple/pear/banana" apple = 0, pear = 1, banana = 2
 

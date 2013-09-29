@@ -7,21 +7,16 @@
 #include "../include/dobjdobjlist.h"
 
 timer::timer(const char* uname) :
-
- synthmod(
-    synthmodnames::TIMER,
-    uname,
-    SM_UNDUPLICABLE | SM_UNGROUPABLE | SM_HAS_OUT_TRIG),
-
+ synthmod(module::TIMER, uname, SM_UNDUPLICABLE | SM_UNGROUPABLE
+                                                | SM_HAS_OUT_TRIG),
  out_count(0), out_trig(OFF),
  timings(0), time_ix(0),
  samples(0)
 {
-    register_output(outputnames::OUT_TRIG);
-    register_output(outputnames::OUT_COUNT);
+    register_output(output::OUT_TRIG);
+    register_output(output::OUT_COUNT);
     init_first();
 }
-#include <iostream>
 
 timer::~timer()
 {
@@ -79,12 +74,12 @@ void timer::run()
     }
 }
 
-const void* timer::get_out(outputnames::OUT_TYPE ot) const
+const void* timer::get_out(output::TYPE ot) const
 {
     switch (ot)
     {
-        case outputnames::OUT_TRIG: return &out_trig;
-        case outputnames::OUT_COUNT:return &out_count;
+        case output::OUT_TRIG: return &out_trig;
+        case output::OUT_COUNT:return &out_count;
         default: return 0;
     }
 }

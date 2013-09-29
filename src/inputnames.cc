@@ -1,65 +1,10 @@
 #include "../include/inputnames.h"
 
-#include <cstring>
-
-#ifdef DEBUG
-#include <iostream>
-#endif
-
-inputnames::inputnames()
+namespace input
 {
-#ifdef DEBUG
-    for (int i = IN_FIRST; i < IN_LAST; i++){
-        if (data[i].type != i) {
-            std::cout << "\n***** inputnames error *****\n";
-            std::cout << data[i].name << " is in array index " << i;
-            std::cout << " but has type index of " << data[i].type;
-            std::cout << "\nthese values should tally!\n";
-        }
-    }
-#endif
-}
-
-#ifdef DEBUG
-static inputnames inames;
-#endif
-
-
-const char* inputnames::get_name(int id)
-{
-    if (id >= IN_FIRST && id < IN_LAST)
-        return data[id].name;
-    else
-        return data[IN_FIRST].name;
-}
-
-const char* inputnames::get_descr(int id)
-{
-    if (id >= IN_FIRST && id < IN_LAST)
-        return data[id].descr;
-    else
-        return data[IN_FIRST].descr;
-}
-
-iocat::IOCAT inputnames::get_category(int id)
-{
-    if (id >= IN_FIRST && id < IN_LAST)
-        return data[id].cat;
-    else
-        return data[IN_FIRST].cat;
-}
-
-inputnames::IN_TYPE inputnames::get_type(const char* const iname)
-{
-    for (int i = IN_FIRST + 1; i < IN_LAST; i++)
-        if (strcmp(data[i].name, iname) == 0)
-            return (IN_TYPE)i;
-    return IN_FIRST;
-}
-
-const inputnames::input_data inputnames::data[IN_LAST] =
-{
-    { IN_FIRST,             "BAD_INPUT_TYPE",       iocat::FIRST,   "INPUT ERROR"   },
+ const struct names::gn_data names::data[LAST_TYPE] =
+ {
+    { ERR_TYPE,             "BAD_INPUT_TYPE",       iocat::ERR_TYPE,"INPUT ERROR"   },
     { IN_VELOCITY,          "in_velocity",          iocat::DOUBLE,  "Velocity input, value range -1.0 ~ +1.0."  },
     { IN_NOTE_ON_TRIG,      "in_note_on_trig",      iocat::TRIG,    "Trigger note-on. " },
     { IN_NOTE_SLIDE_TRIG,   "in_note_slide_trig",   iocat::TRIG,    "Trigger note-slide (portamento)." },
@@ -105,7 +50,9 @@ const inputnames::input_data inputnames::data[IN_LAST] =
     { IN_STATE,             "in_state",             iocat::STATE,   "ON or OFF." },
     { IN_PLAY_STATE,        "in_play_state",        iocat::STATE,   "ON or OFF." },
     { IN_RESTART_TRIG,      "in_restart_trig",      iocat::TRIG,    "Hard restart trigger." },
-    #ifdef WITH_LADSPA
+    { IN_RESET_TRIG,        "in_reset_trig",        iocat::TRIG,    "Trigger to reset module." },
+    { IN_COUNT,             "in_count",             iocat::SHORT,   "Counter input." },
+    { IN_BIAS,              "in_bias",              iocat::DOUBLE,  "Bias input." },
     { IN_RES_MOD,           "in_res_mod",           iocat::DOUBLE,  "Resonance modulation input." },
     { IN_THRESH_MOD,        "in_thresh_mod",        iocat::DOUBLE,  "Threshold modulation input." },
     { IN_BANDWIDTH_MOD,     "in_bandwidth_mod",     iocat::DOUBLE,  "Bandwidth modulation input." },
@@ -114,19 +61,15 @@ const inputnames::input_data inputnames::data[IN_LAST] =
     { IN_FREQ_MOD,          "in_freq_mod",          iocat::DOUBLE,  "Frequency modulation input." },
     { IN_SIGNAL1,           "in_signal1",           iocat::DOUBLE,  "1st signal." },
     { IN_SIGNAL2,           "in_signal2",           iocat::DOUBLE,  "2nd signal." },
-    #endif
-    /* inspect module's bs */
-    { IN__DF,               "_in_double_float_",      iocat::DOUBLE,    "Floating point input."  },
-    { IN__DF_TRIG,          "_in_double_float_trig_", iocat::TRIG,      "Trigger to display value of floating point input." },
-    { IN__SI,               "_in_short_int_",         iocat::SHORT,     "Integer input." },
-    { IN__SI_TRIG,          "_in_short_int_trig_",    iocat::TRIG,      "Trigger to display value of integer input." },
-    { IN__UL,               "_in_unsigned_long_",     iocat::ULONG,     "Long integer input." },
-    { IN__UL_TRIG,          "_in_unsigned_long_trig_",iocat::TRIG,      "Trigger to display value of long integer input." },
-    { IN__ST,               "_in_state_",             iocat::STATE,     "State input." },
-    { IN__ST_TRIG,          "_in_state_trig_",        iocat::TRIG,      "Trigger to display state input." },
-    { IN__STR,              "_in_string_",            iocat::STRING,    "String input." },
-    { IN__STR_TRIG,         "_in_string_trig_",       iocat::TRIG,      "Trigger to display text of string input." },
-    { IN_RESET_TRIG,        "in_reset_trig",        iocat::TRIG,        "Trigger to reset module." },
-    { IN_COUNT,             "in_count",             iocat::SHORT,       "Counter input." },
-    { IN_BIAS,              "in_bias",              iocat::DOUBLE,      "Bias input." }
-};
+    { IN_INSP_DF,       "_in_double_float_",        iocat::DOUBLE,  "Floating point input."  },
+    { IN_INSP_DF_TRIG,  "_in_double_float_trig_",   iocat::TRIG,    "Trigger to display value of floating point input." },
+    { IN_INSP_SI,       "_in_short_int_",           iocat::SHORT,   "Integer input." },
+    { IN_INSP_SI_TRIG,  "_in_short_int_trig_",      iocat::TRIG,    "Trigger to display value of integer input." },
+    { IN_INSP_UL,       "_in_unsigned_long_",       iocat::ULONG,   "Long integer input." },
+    { IN_INSP_UL_TRIG,  "_in_unsigned_long_trig_",  iocat::TRIG,    "Trigger to display value of long integer input." },
+    { IN_INSP_ST,       "_in_state_",               iocat::STATE,   "State input." },
+    { IN_INSP_ST_TRIG,  "_in_state_trig_",          iocat::TRIG,    "Trigger to display state input." },
+    { IN_INSP_STR,      "_in_string_",              iocat::STRING,  "String input." },
+    { IN_INSP_STR_TRIG, "_in_string_trig_",         iocat::TRIG,    "Trigger to display text of string input." },
+ };
+}; // namespace input

@@ -47,6 +47,11 @@ jwm_globals::jwm_globals() :
     connectlist = new connectorlist;
     stock_errs  = new stockerrs;
     wavetables  = new wave_tables;
+    iocat::names::instantiate();
+    input::names::instantiate();
+    output::names::instantiate();
+    param::names::instantiate();
+    module::names::instantiate();
 }
 
 jwm_globals::~jwm_globals()

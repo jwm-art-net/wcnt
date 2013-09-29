@@ -20,15 +20,15 @@ meterchange::meterchange(short br, char btpb, char btval) :
     init_first();
 }
 
-bool meterchange::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool meterchange::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::METER:
+        case param::METER:
             set_beatsperbar(((timesig*)data)->beatsperbar);
             set_beatvalue(((timesig*)data)->beatvalue);
             return true;
-        case paramnames::BAR:
+        case param::BAR:
             bar = *(short*)data;
             return true;
         default:
@@ -36,12 +36,12 @@ bool meterchange::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* meterchange::get_param(paramnames::PAR_TYPE pt) const
+const void* meterchange::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::METER: return &time_sig;
-        case paramnames::BAR:   return &bar;
+        case param::METER: return &time_sig;
+        case param::BAR:   return &bar;
         default: return 0;
     }
 }
@@ -49,19 +49,19 @@ const void* meterchange::get_param(paramnames::PAR_TYPE pt) const
 stockerrs::ERR_TYPE meterchange::validate()
 {
     if (time_sig.beatsperbar <= 2 || time_sig.beatsperbar > 32) {
-        dobjerr("%s", paramnames::get_name(paramnames::METER));
+        dobjerr("%s", param::names::get(param::METER));
         invalidate();
         return stockerrs::ERR_RANGE_BEAT;
     }
     if (time_sig.beatvalue <= 2 || time_sig.beatvalue > 32) {
-        dobjerr("%s", paramnames::get_name(paramnames::METER));
+        dobjerr("%s", param::names::get(param::METER));
         invalidate();
         return stockerrs::ERR_RANGE_BEAT;
     }
     if (!jwm.get_dparlist()->validate(
-        this, paramnames::BAR, stockerrs::ERR_NEGATIVE))
+        this, param::BAR, stockerrs::ERR_NEGATIVE))
     {
-        dobjerr("%s", paramnames::get_name(paramnames::BAR));
+        dobjerr("%s", param::names::get(param::BAR));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -74,7 +74,7 @@ void meterchange::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::METER);
-    register_param(paramnames::BAR);
+    register_param(param::METER);
+    register_param(param::BAR);
 }
 

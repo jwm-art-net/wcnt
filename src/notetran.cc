@@ -7,7 +7,7 @@
 #include "../include/conversions.h"
 
 notetran::notetran(const char* uname) :
- synthmod(synthmodnames::NOTETRAN, uname, SM_DEFAULT),
+ synthmod(module::NOTETRAN, uname, SM_DEFAULT),
  in_notename(0), in_detranspose(0), in_note_on_trig(0),
  in_note_slide_trig(0), out_no_value(0), out_ns_value(0),
  out_note_on_trig(OFF), out_not_no_trig(OFF), out_note_slide_trig(OFF),
@@ -22,16 +22,16 @@ notetran::notetran(const char* uname) :
     no_hi_notename = new char[jwm_init::note_array_size];
     ns_lo_notename = new char[jwm_init::note_array_size];
     ns_hi_notename = new char[jwm_init::note_array_size];
-    register_input(inputnames::IN_NOTENAME);
-    register_input(inputnames::IN_NOTE_ON_TRIG);
-    register_input(inputnames::IN_NOTE_SLIDE_TRIG);
-    register_input(inputnames::IN_DETRANSPOSE);
-    register_output(outputnames::OUT_NOVALUE);
-    register_output(outputnames::OUT_NSVALUE);
-    register_output(outputnames::OUT_NOTE_ON_TRIG);
-    register_output(outputnames::OUT_NOT_NO_TRIG);
-    register_output(outputnames::OUT_NOTE_SLIDE_TRIG);
-    register_output(outputnames::OUT_NOT_NS_TRIG);
+    register_input(input::IN_NOTENAME);
+    register_input(input::IN_NOTE_ON_TRIG);
+    register_input(input::IN_NOTE_SLIDE_TRIG);
+    register_input(input::IN_DETRANSPOSE);
+    register_output(output::OUT_NOVALUE);
+    register_output(output::OUT_NSVALUE);
+    register_output(output::OUT_NOTE_ON_TRIG);
+    register_output(output::OUT_NOT_NO_TRIG);
+    register_output(output::OUT_NOTE_SLIDE_TRIG);
+    register_output(output::OUT_NOT_NS_TRIG);
     init_first();
 }
 
@@ -43,87 +43,87 @@ notetran::~notetran()
     delete [] ns_hi_notename;
 }
 
-const void* notetran::get_out(outputnames::OUT_TYPE ot) const
+const void* notetran::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_NOVALUE:          return &out_no_value;
-        case outputnames::OUT_NSVALUE:          return &out_ns_value;
-        case outputnames::OUT_NOTE_ON_TRIG:     return &out_note_on_trig;
-        case outputnames::OUT_NOT_NO_TRIG:      return &out_not_no_trig;
-        case outputnames::OUT_NOTE_SLIDE_TRIG:return &out_note_slide_trig;
-        case outputnames::OUT_NOT_NS_TRIG:      return &out_not_ns_trig;
+        case output::OUT_NOVALUE:          return &out_no_value;
+        case output::OUT_NSVALUE:          return &out_ns_value;
+        case output::OUT_NOTE_ON_TRIG:     return &out_note_on_trig;
+        case output::OUT_NOT_NO_TRIG:      return &out_not_no_trig;
+        case output::OUT_NOTE_SLIDE_TRIG:return &out_note_slide_trig;
+        case output::OUT_NOT_NS_TRIG:      return &out_not_ns_trig;
         default: return 0;
     }
 }
 
-const void* notetran::set_in(inputnames::IN_TYPE it, const void* o)
+const void* notetran::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-    case inputnames::IN_NOTENAME:
+    case input::IN_NOTENAME:
         return in_notename = (const char**)o;
-    case inputnames::IN_DETRANSPOSE:
+    case input::IN_DETRANSPOSE:
         return in_detranspose = (short*)o;
-    case inputnames::IN_NOTE_ON_TRIG:
+    case input::IN_NOTE_ON_TRIG:
         return in_note_on_trig = (STATUS*)o;
-    case inputnames::IN_NOTE_SLIDE_TRIG:
+    case input::IN_NOTE_SLIDE_TRIG:
         return in_note_slide_trig = (STATUS*)o;
     default:
         return 0;
     }
 }
 
-const void* notetran::get_in(inputnames::IN_TYPE it) const
+const void* notetran::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_NOTENAME:           return in_notename;
-        case inputnames::IN_DETRANSPOSE:        return in_detranspose;
-        case inputnames::IN_NOTE_ON_TRIG:       return in_note_on_trig;
-        case inputnames::IN_NOTE_SLIDE_TRIG:    return in_note_slide_trig;
+        case input::IN_NOTENAME:           return in_notename;
+        case input::IN_DETRANSPOSE:        return in_detranspose;
+        case input::IN_NOTE_ON_TRIG:       return in_note_on_trig;
+        case input::IN_NOTE_SLIDE_TRIG:    return in_note_slide_trig;
     default: return 0;
     }
 }
 
-bool notetran::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool notetran::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-    case paramnames::NO_LONOTE:
+    case param::NO_LONOTE:
         set_no_lo_notename((const char*)data);
         return true;
-    case paramnames::NO_HINOTE:
+    case param::NO_HINOTE:
         set_no_hi_notename((const char*)data);
         return true;
-    case paramnames::NS_LONOTE:
+    case param::NS_LONOTE:
         set_ns_lo_notename((const char*)data);
         return true;
-    case paramnames::NS_HINOTE:
+    case param::NS_HINOTE:
         set_ns_hi_notename((const char*)data);
         return true;
-    case paramnames::MINNO_OUT:
+    case param::MINNO_OUT:
         min_no_out = *(double*)data;
         return true;
-    case paramnames::MAXNO_OUT:
+    case param::MAXNO_OUT:
         max_no_out = *(double*)data;
         return true;
-    case paramnames::MINNS_OUT:
+    case param::MINNS_OUT:
         min_ns_out = *(double*)data;
         return true;
-    case paramnames::MAXNS_OUT:
+    case param::MAXNS_OUT:
         max_ns_out = *(double*)data;
         return true;
-    case paramnames::DETRAN_NO:
+    case param::DETRAN_NO:
         detran_no = *(STATUS*)data;
         return true;
-    case paramnames::DETRAN_NS:
+    case param::DETRAN_NS:
         detran_ns = *(STATUS*)data;
         return true;
-    case paramnames::NO_RESPTIME:
+    case param::NO_RESPTIME:
         no_resptime = *(double*)data;
         return true;
-    case paramnames::NS_RESPTIME:
+    case param::NS_RESPTIME:
         ns_resptime = *(double*)data;
         return true;
     default:
@@ -131,22 +131,22 @@ bool notetran::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* notetran::get_param(paramnames::PAR_TYPE pt) const
+const void* notetran::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::NO_LONOTE:     return no_lo_notename;
-        case paramnames::NO_HINOTE:     return no_hi_notename;
-        case paramnames::NS_LONOTE:     return ns_lo_notename;
-        case paramnames::NS_HINOTE:     return ns_hi_notename;
-        case paramnames::MINNO_OUT:     return &min_no_out;
-        case paramnames::MAXNO_OUT:     return &max_no_out;
-        case paramnames::MINNS_OUT:     return &min_ns_out;
-        case paramnames::MAXNS_OUT:     return &max_ns_out;
-        case paramnames::DETRAN_NO:     return &detran_no;
-        case paramnames::DETRAN_NS:     return &detran_ns;
-        case paramnames::NO_RESPTIME:   return &no_resptime;
-        case paramnames::NS_RESPTIME:   return &ns_resptime;
+        case param::NO_LONOTE:     return no_lo_notename;
+        case param::NO_HINOTE:     return no_hi_notename;
+        case param::NS_LONOTE:     return ns_lo_notename;
+        case param::NS_HINOTE:     return ns_hi_notename;
+        case param::MINNO_OUT:     return &min_no_out;
+        case param::MAXNO_OUT:     return &max_no_out;
+        case param::MINNS_OUT:     return &min_ns_out;
+        case param::MAXNS_OUT:     return &max_ns_out;
+        case param::DETRAN_NO:     return &detran_no;
+        case param::DETRAN_NS:     return &detran_ns;
+        case param::NO_RESPTIME:   return &no_resptime;
+        case param::NS_RESPTIME:   return &ns_resptime;
         default: return 0;
     }
 }
@@ -155,41 +155,41 @@ stockerrs::ERR_TYPE notetran::validate()
 {
     if (!check_notename(no_lo_notename)) {
         sm_err("%s %s",
-                paramnames::get_name(paramnames::NO_LONOTE),
+                param::names::get(param::NO_LONOTE),
                 no_lo_notename);
         invalidate();
     }
     if (!check_notename(no_hi_notename)) {
         sm_err("%s %s",
-                paramnames::get_name(paramnames::NO_HINOTE),
+                param::names::get(param::NO_HINOTE),
                 no_hi_notename);
         invalidate();
     }
     if (!check_notename(ns_lo_notename)) {
         sm_err("%s %s",
-                paramnames::get_name(paramnames::NS_LONOTE),
+                param::names::get(param::NS_LONOTE),
                 ns_lo_notename);
         invalidate();
     }
     if (!check_notename(ns_hi_notename)) {
         sm_err("%s %s",
-                paramnames::get_name(paramnames::NS_HINOTE),
+                param::names::get(param::NS_HINOTE),
                 ns_hi_notename);
         invalidate();
     }
-    if (!jwm.get_paramlist()->validate(this, paramnames::NO_RESPTIME,
+    if (!jwm.get_paramlist()->validate(this, param::NO_RESPTIME,
             stockerrs::ERR_NEGATIVE))
     {
         sm_err("%s",
-                paramnames::get_name(paramnames::NO_RESPTIME));
+                param::names::get(param::NO_RESPTIME));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
-    if (!jwm.get_paramlist()->validate(this, paramnames::NS_RESPTIME,
+    if (!jwm.get_paramlist()->validate(this, param::NS_RESPTIME,
             stockerrs::ERR_NEGATIVE))
     {
         sm_err("%s",
-                paramnames::get_name(paramnames::NS_RESPTIME));
+                param::names::get(param::NS_RESPTIME));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -297,17 +297,17 @@ void notetran::init_first()
     if (done_first())
         return;
     // inserted in order to be defined by user
-    register_param(paramnames::NO_LONOTE);
-    register_param(paramnames::NO_HINOTE);
-    register_param(paramnames::MINNO_OUT);
-    register_param(paramnames::MAXNO_OUT);
-    register_param(paramnames::DETRAN_NO);
-    register_param(paramnames::NO_RESPTIME);
-    register_param(paramnames::NS_LONOTE);
-    register_param(paramnames::NS_HINOTE);
-    register_param(paramnames::MINNS_OUT);
-    register_param(paramnames::MAXNS_OUT);
-    register_param(paramnames::DETRAN_NS);
-    register_param(paramnames::NS_RESPTIME);
+    register_param(param::NO_LONOTE);
+    register_param(param::NO_HINOTE);
+    register_param(param::MINNO_OUT);
+    register_param(param::MAXNO_OUT);
+    register_param(param::DETRAN_NO);
+    register_param(param::NO_RESPTIME);
+    register_param(param::NS_LONOTE);
+    register_param(param::NS_HINOTE);
+    register_param(param::MINNS_OUT);
+    register_param(param::MAXNS_OUT);
+    register_param(param::DETRAN_NS);
+    register_param(param::NS_RESPTIME);
 }
 

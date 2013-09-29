@@ -6,17 +6,17 @@
 #include "../include/modparamlist.h"
 
 bode_freq_shifter::bode_freq_shifter(const char* uname) :
- synthmod(synthmodnames::BODE_FREQ_SHIFTER, uname, SM_DEFAULT),
+ synthmod(module::BODE_FREQ_SHIFTER, uname, SM_DEFAULT),
  in_signal(0), in_shift_mod(0), out_up(0), out_down(0),
  freq_shift(0), shift_modsize(0.0),
  l_descriptor(0), l_inst_handle(0),
  l_freq_shift(0.0), l_input(0), l_out_down(0), l_out_up(0),
  l_out_latency(0)
 {
-    register_input(inputnames::IN_SIGNAL);
-    register_input(inputnames::IN_SHIFT_MOD);
-    register_output(outputnames::OUT_UP);
-    register_output(outputnames::OUT_DOWN);
+    register_input(input::IN_SIGNAL);
+    register_input(input::IN_SHIFT_MOD);
+    register_output(output::OUT_UP);
+    register_output(output::OUT_DOWN);
     init_first();
 }
 
@@ -29,49 +29,49 @@ bode_freq_shifter::~bode_freq_shifter()
     if (l_out_latency) delete [] l_out_latency;
 }
 
-const void* bode_freq_shifter::get_out(outputnames::OUT_TYPE ot) const
+const void* bode_freq_shifter::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_UP: return &out_up;
-        case outputnames::OUT_DOWN: return &out_down;
+        case output::OUT_UP: return &out_up;
+        case output::OUT_DOWN: return &out_down;
         default: return 0;
     }
 }
 
 const void*
-bode_freq_shifter::set_in(inputnames::IN_TYPE it, const void* o)
+bode_freq_shifter::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_SIGNAL:
+        case input::IN_SIGNAL:
             return in_signal = (double*)o;
-        case inputnames::IN_SHIFT_MOD:
+        case input::IN_SHIFT_MOD:
             return in_shift_mod = (double*)o;
         default:
             return 0;
     }
 }
 
-const void* bode_freq_shifter::get_in(inputnames::IN_TYPE it) const
+const void* bode_freq_shifter::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_SIGNAL:    return in_signal;
-        case inputnames::IN_SHIFT_MOD: return in_shift_mod;
+        case input::IN_SIGNAL:    return in_signal;
+        case input::IN_SHIFT_MOD: return in_shift_mod;
         default: return 0;
     }
 }
 
 bool
-bode_freq_shifter::set_param(paramnames::PAR_TYPE pt, const void* data)
+bode_freq_shifter::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::FREQ_SHIFT:
+        case param::FREQ_SHIFT:
             freq_shift = *(double*)data;
             return true;
-        case paramnames::SHIFT_MODSIZE:
+        case param::SHIFT_MODSIZE:
             shift_modsize = *(double*)data;
             return true;
         default:
@@ -79,12 +79,12 @@ bode_freq_shifter::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* bode_freq_shifter::get_param(paramnames::PAR_TYPE pt) const
+const void* bode_freq_shifter::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::FREQ_SHIFT:    return &freq_shift;
-        case paramnames::SHIFT_MODSIZE: return &shift_modsize;
+        case param::FREQ_SHIFT:    return &freq_shift;
+        case param::SHIFT_MODSIZE: return &shift_modsize;
         default: return 0;
     }
 }
@@ -93,7 +93,7 @@ stockerrs::ERR_TYPE bode_freq_shifter::validate()
 {
     if (freq_shift < 0 || freq_shift > 5000) {
         sm_err("%s must be within range 0 ~ 5000.",
-                paramnames::get_name(paramnames::FREQ_SHIFT));
+                param::names::get(param::FREQ_SHIFT));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
@@ -148,8 +148,8 @@ void bode_freq_shifter::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::FREQ_SHIFT);
-    register_param(paramnames::SHIFT_MODSIZE);
+    register_param(param::FREQ_SHIFT);
+    register_param(param::SHIFT_MODSIZE);
 }
 
 #endif // WITH_LADSPA

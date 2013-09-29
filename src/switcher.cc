@@ -13,14 +13,14 @@
 #include "../include/duplicate_list_module.h"
 
 switcher::switcher(const char* uname) :
- synthmod(synthmodnames::SWITCHER, uname, SM_HAS_OUT_OUTPUT),
+ synthmod(module::SWITCHER, uname, SM_HAS_OUT_OUTPUT),
  linkedlist(MULTIREF_ON, PRESERVE_DATA),
  in_trig(0), xfadetime(25), out_output(0), xfade_samp(0),
  xfade_max_samps(0), xfade_stpsz(0), xfade_size(0),
  sigs(0), sig_ix(0), sig(0), prevsig(0), zero(0)
 {
-    register_input(inputnames::IN_TRIG);
-    register_output(outputnames::OUT_OUTPUT);
+    register_input(input::IN_TRIG);
+    register_output(output::OUT_OUTPUT);
     init_first();
 }
 
@@ -30,49 +30,49 @@ switcher::~switcher()
         delete [] sigs;
 }
 
-const void* switcher::get_out(outputnames::OUT_TYPE ot) const
+const void* switcher::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_OUTPUT: return &out_output;
+        case output::OUT_OUTPUT: return &out_output;
         default: return 0;
     }
 }
 
-const void* switcher::set_in(inputnames::IN_TYPE it, const void* o)
+const void* switcher::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_TRIG: return in_trig = (STATUS*)o;
+        case input::IN_TRIG: return in_trig = (STATUS*)o;
         default: return 0;
     }
 }
 
-const void* switcher::get_in(inputnames::IN_TYPE it) const
+const void* switcher::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_TRIG: return in_trig;
+        case input::IN_TRIG: return in_trig;
         default: return 0;
     }
 }
 
-bool switcher::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool switcher::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::XFADE_TIME: xfadetime = *(double*)data;
+        case param::XFADE_TIME: xfadetime = *(double*)data;
             return true;
         default:
             return false;
     }
 }
 
-const void* switcher::get_param(paramnames::PAR_TYPE pt) const
+const void* switcher::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::XFADE_TIME: return &xfadetime;
+        case param::XFADE_TIME: return &xfadetime;
         default: return 0;
     }
 }
@@ -88,11 +88,11 @@ stockerrs::ERR_TYPE switcher::validate()
         sm_err("%s", "must be at least two signals to switch between.");
         return stockerrs::ERR_ERROR;
     }
-    if (!jwm.get_paramlist()->validate(this, paramnames::XFADE_TIME,
+    if (!jwm.get_paramlist()->validate(this, param::XFADE_TIME,
                                             stockerrs::ERR_NEGATIVE))
     {
-        sm_err("%s", paramnames::get_name(
-                                            paramnames::XFADE_TIME));
+        sm_err("%s", param::names::get(
+                                            param::XFADE_TIME));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -107,9 +107,9 @@ dobj* switcher::add_dobj(dobj* dbj)
             sm_err("%s will not accept the module %s because modules of "
                                 "type %s do not have the %s output type.",
                     get_username(), sm->get_username(),
-                    synthmodnames::get_name(sm->get_module_type()),
-                    outputnames::get_name(
-                                                outputnames::OUT_OUTPUT));
+                    module::names::get(sm->get_module_type()),
+                    output::names::get(
+                                                output::OUT_OUTPUT));
             return 0;
         }
         if (!add_at_tail(sm)) {
@@ -133,7 +133,7 @@ void switcher::init()
     synthmod* sm = goto_first();
     long ix = 0;
     while(sm) {
-        sigs[ix] = (double const*)sm->get_out(outputnames::OUT_OUTPUT);
+        sigs[ix] = (double const*)sm->get_out(output::OUT_OUTPUT);
         if (!sigs[ix]) {
             sm_err("Things not looking good ;-(... %s",
                    "Don't worry, I have no idea what this means either.");
@@ -174,7 +174,7 @@ void switcher::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::XFADE_TIME);
+    register_param(param::XFADE_TIME);
     register_moddobj(dobjnames::LST_SIGNALS, dobjnames::DOBJ_SYNTHMOD);
 }
 

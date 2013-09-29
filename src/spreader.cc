@@ -14,13 +14,13 @@
 #include <math.h>
 
 spreader::spreader(const char* uname) :
- synthmod(synthmodnames::SPREADER, uname, SM_HAS_OUT_OUTPUT),
+ synthmod(module::SPREADER, uname, SM_HAS_OUT_OUTPUT),
  linkedlist(MULTIREF_ON, PRESERVE_DATA),
  in_mod(0), out_output(0), start_level(0), end_level(0), seg_lvl(0),
  sigs(0)
 {
-    register_input(inputnames::IN_MODULATION);
-    register_output(outputnames::OUT_OUTPUT);
+    register_input(input::IN_MODULATION);
+    register_output(output::OUT_OUTPUT);
     init_first();
 }
 
@@ -30,41 +30,41 @@ spreader::~spreader()
         delete [] sigs;
 }
 
-const void* spreader::get_out(outputnames::OUT_TYPE ot) const
+const void* spreader::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_OUTPUT: return &out_output;
+        case output::OUT_OUTPUT: return &out_output;
         default: return 0;
     }
 }
 
-const void* spreader::set_in(inputnames::IN_TYPE it, const void* o)
+const void* spreader::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_MODULATION: return in_mod = (double*)o;
+        case input::IN_MODULATION: return in_mod = (double*)o;
         default: return 0;
     }
 }
 
-const void* spreader::get_in(inputnames::IN_TYPE it) const
+const void* spreader::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_MODULATION: return in_mod;
+        case input::IN_MODULATION: return in_mod;
         default: return 0;
     }
 }
 
-bool spreader::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool spreader::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::START_LEVEL:
+        case param::START_LEVEL:
             start_level = *(double*)data;
             return true;
-        case paramnames::END_LEVEL:
+        case param::END_LEVEL:
             end_level = *(double*)data;
             return true;
         default:
@@ -72,12 +72,12 @@ bool spreader::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* spreader::get_param(paramnames::PAR_TYPE pt) const
+const void* spreader::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::START_LEVEL:   return &start_level;
-        case paramnames::END_LEVEL:     return &end_level;
+        case param::START_LEVEL:   return &start_level;
+        case param::END_LEVEL:     return &end_level;
         default: return 0;
     }
 }
@@ -105,9 +105,9 @@ dobj* spreader::add_dobj(dobj* dbj)
             sm_err("%s will not accept the module %s because modules of "
                     "type %s do not have the %s output.",
                     get_username(), sm->get_username(),
-                    synthmodnames::get_name(sm->get_module_type()),
-                    outputnames::get_name(
-                                                outputnames::OUT_OUTPUT));
+                    module::names::get(sm->get_module_type()),
+                    output::names::get(
+                                                output::OUT_OUTPUT));
             return 0;
         }
         if (!add_at_tail(sm)) {
@@ -131,7 +131,7 @@ void spreader::init()
     synthmod* sm = goto_first();
     long ix = 0;
     while(sm) {
-        sigs[ix] = (double const*)sm->get_out(outputnames::OUT_OUTPUT);
+        sigs[ix] = (double const*)sm->get_out(output::OUT_OUTPUT);
         if (!sigs[ix]) {
             sm_err("Things not looking good ;-(... %s",
                    "Don't worry, I have no idea what this means either.");
@@ -173,8 +173,8 @@ void spreader::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::START_LEVEL);
-    register_param(paramnames::END_LEVEL);
+    register_param(param::START_LEVEL);
+    register_param(param::END_LEVEL);
     register_moddobj(dobjnames::LST_SIGNALS, dobjnames::DOBJ_SYNTHMOD);
 }
 

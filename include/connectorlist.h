@@ -26,7 +26,7 @@ public:
     connectorlist(DESTRUCTION);
     ~connectorlist();
 
-    connector* get_connector_by_input(const synthmod*, inputnames::IN_TYPE);
+    connector* get_connector_by_input(const synthmod*, input::TYPE);
 
     connector* add_connector(connector* rd);
 
@@ -65,7 +65,7 @@ public:
     // wcnt_signal::init to sort out the problem. other modules may
     // also utilise this method if possible.
     bool remake_connections(
-        synthmod*, outputnames::OUT_TYPE, outputnames::OUT_TYPE new_ot);
+        synthmod*, output::TYPE, output::TYPE new_ot);
     #endif
 };
 

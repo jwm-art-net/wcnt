@@ -60,9 +60,9 @@ bool inputedit::create_connectors()
     std::string input_name;
     strm >> input_name;
     do{
-        inputnames::IN_TYPE in_type;
-        in_type = inputnames::get_type(input_name.c_str());
-        if (in_type == inputnames::IN_FIRST) {
+        input::TYPE in_type;
+        in_type = input::names::type(input_name.c_str());
+        if (in_type == input::ERR_TYPE) {
             dobjerr("Unrecognised input type %s, in connection for %s.",
                                             input_name.c_str(), modname);
             invalidate();
@@ -70,24 +70,24 @@ bool inputedit::create_connectors()
         }
         std::string out_modname;
         std::string output_name;
-        outputnames::OUT_TYPE out_type;
+        output::TYPE out_type;
         strm >> out_modname;
         if (strcmp(out_modname.c_str(), "off") == 0) {
-            out_type = outputnames::get_nonezerotype(
-                                inputnames::get_category(in_type));
+            out_type = output::names::get_off_type(
+                        input::names::category(in_type));
         }
         else {
             // allow output module to not exist yet.
             strm >> output_name;
-            out_type = outputnames::get_type(output_name.c_str());
-            if (out_type == outputnames::OUT_FIRST) {
+            out_type = output::names::type(output_name.c_str());
+            if (out_type == output::ERR_TYPE) {
                 dobjerr("Unrecognised output type %s in connection for %s.",
                                             output_name.c_str(), modname);
                 invalidate();
                 return false;
             }
-            if (inputnames::get_category(in_type)
-                != outputnames::get_category(out_type))
+            if (input::names::category(in_type)
+            != output::names::category(out_type))
             {
                 dobjerr("In connection for %s output %s does not match "
                                 "category of input %s.", modname,
@@ -133,11 +133,11 @@ bool inputedit::create_connectors()
     return true;
 }
 
-bool inputedit::set_param(paramnames::PAR_TYPE dt, const void* data)
+bool inputedit::set_param(param::TYPE dt, const void* data)
 {
     switch(dt)
     {
-        case paramnames::STR_UNNAMED:
+        case param::STR_UNNAMED:
             if (!set_modname((const char*)data)) {
                 dobjerr("Input module %s does not exist.",
                                             (const char*)data);
@@ -145,7 +145,7 @@ bool inputedit::set_param(paramnames::PAR_TYPE dt, const void* data)
                 return false;
             }
             return true;
-        case paramnames::STR_LIST:
+        case param::STR_LIST:
             set_iostr((const char*)data);
             return true;
         default:
@@ -153,12 +153,12 @@ bool inputedit::set_param(paramnames::PAR_TYPE dt, const void* data)
     }
 }
 
-const void* inputedit::get_param(paramnames::PAR_TYPE dt) const
+const void* inputedit::get_param(param::TYPE dt) const
 {
     switch(dt)
     {
-        case paramnames::STR_UNNAMED:   return get_modname();
-        case paramnames::STR_LIST:      return get_iostr();
+        case param::STR_UNNAMED:   return get_modname();
+        case param::STR_LIST:      return get_iostr();
         default: return 0;
     }
 }
@@ -167,8 +167,8 @@ void inputedit::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::STR_UNNAMED);
-    register_param(paramnames::STR_LIST);
+    register_param(param::STR_UNNAMED);
+    register_param(param::STR_LIST);
 }
 
 

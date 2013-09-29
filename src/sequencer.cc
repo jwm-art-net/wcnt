@@ -11,12 +11,7 @@
 #include <iostream>
 
 sequencer::sequencer(const char* uname) :
-
- synthmod(
-    synthmodnames::SEQUENCER,
-    uname,
-    SM_UNDUPLICABLE | SM_UNGROUPABLE),
-
+ synthmod(module::SEQUENCER, uname, SM_UNDUPLICABLE | SM_UNGROUPABLE),
  in_bar_trig(0), in_bar(0), in_pos_step_size(0), in_beats_per_bar(0),
  in_beat_value(0),
  out_note_on_trig(OFF), out_note_slide_trig(OFF),
@@ -33,25 +28,25 @@ sequencer::sequencer(const char* uname) :
  play_item(0), next_in_riff(0), play_note(0), next_note(0), note_ptr(0),
  next_note_on_pos(-1), play_note_off_pos(-1)
 {
-    register_input(inputnames::IN_BAR);
-    register_input(inputnames::IN_BAR_TRIG);
-    register_input(inputnames::IN_POS_STEP_SIZE);
-    register_input(inputnames::IN_BEATS_PER_BAR);
-    register_input(inputnames::IN_BEAT_VALUE);
-    register_output(outputnames::OUT_NOTE_ON_TRIG);
-    register_output(outputnames::OUT_NOTE_SLIDE_TRIG);
-    register_output(outputnames::OUT_NOTE_OFF_TRIG);
-    register_output(outputnames::OUT_NOTENAME);
-    register_output(outputnames::OUT_FREQ);
-    register_output(outputnames::OUT_VELOCITY);
-    register_output(outputnames::OUT_VELOCITY_RAMP);
-    register_output(outputnames::OUT_TRANSPOSE);
-    register_output(outputnames::OUT_RIFF_START_TRIG);
-    register_output(outputnames::OUT_RIFF_END_TRIG);
-    register_output(outputnames::OUT_START_TRIG);
-    register_output(outputnames::OUT_END_TRIG);
-    register_output(outputnames::OUT_RIFF_PLAY_STATE);
-    register_output(outputnames::OUT_NOTE_PLAY_STATE);
+    register_input(input::IN_BAR);
+    register_input(input::IN_BAR_TRIG);
+    register_input(input::IN_POS_STEP_SIZE);
+    register_input(input::IN_BEATS_PER_BAR);
+    register_input(input::IN_BEAT_VALUE);
+    register_output(output::OUT_NOTE_ON_TRIG);
+    register_output(output::OUT_NOTE_SLIDE_TRIG);
+    register_output(output::OUT_NOTE_OFF_TRIG);
+    register_output(output::OUT_NOTENAME);
+    register_output(output::OUT_FREQ);
+    register_output(output::OUT_VELOCITY);
+    register_output(output::OUT_VELOCITY_RAMP);
+    register_output(output::OUT_TRANSPOSE);
+    register_output(output::OUT_RIFF_START_TRIG);
+    register_output(output::OUT_RIFF_END_TRIG);
+    register_output(output::OUT_START_TRIG);
+    register_output(output::OUT_END_TRIG);
+    register_output(output::OUT_RIFF_PLAY_STATE);
+    register_output(output::OUT_NOTE_PLAY_STATE);
     play_list = new linked_list<note_data>;
     init_first();
 }
@@ -66,89 +61,89 @@ sequencer::~sequencer()
         delete [] out_notename;
 }
 
-const void* sequencer::get_out(outputnames::OUT_TYPE ot) const
+const void* sequencer::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-    case outputnames::OUT_NOTE_ON_TRIG:
+    case output::OUT_NOTE_ON_TRIG:
         return &out_note_on_trig;
-    case outputnames::OUT_NOTE_SLIDE_TRIG:
+    case output::OUT_NOTE_SLIDE_TRIG:
         return &out_note_slide_trig;
-    case outputnames::OUT_NOTE_OFF_TRIG:
+    case output::OUT_NOTE_OFF_TRIG:
         return &out_note_off_trig;
-    case outputnames::OUT_RIFF_START_TRIG:
+    case output::OUT_RIFF_START_TRIG:
         return &out_riff_start_trig;
-    case outputnames::OUT_RIFF_END_TRIG:
+    case output::OUT_RIFF_END_TRIG:
         return &out_riff_end_trig;
-    case outputnames::OUT_START_TRIG:
+    case output::OUT_START_TRIG:
         return &out_start_trig;
-    case outputnames::OUT_END_TRIG:
+    case output::OUT_END_TRIG:
         return &out_end_trig;
-    case outputnames::OUT_NOTENAME:
+    case output::OUT_NOTENAME:
         return &out_notename;
-    case outputnames::OUT_FREQ:
+    case output::OUT_FREQ:
         return &out_freq;
-    case outputnames::OUT_VELOCITY:
+    case output::OUT_VELOCITY:
         return &out_velocity;
-    case outputnames::OUT_VELOCITY_RAMP:
+    case output::OUT_VELOCITY_RAMP:
         return &out_velocity_ramp;
-    case outputnames::OUT_TRANSPOSE:
+    case output::OUT_TRANSPOSE:
         return &out_transpose;
-    case outputnames::OUT_RIFF_PLAY_STATE:
+    case output::OUT_RIFF_PLAY_STATE:
         return &riff_play_state;
-    case outputnames::OUT_NOTE_PLAY_STATE:
+    case output::OUT_NOTE_PLAY_STATE:
         return &note_play_state;
     default:
         return 0;
     }
 }
 
-const void* sequencer::set_in(inputnames::IN_TYPE it, const void* o)
+const void* sequencer::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-    case inputnames::IN_BAR_TRIG:
+    case input::IN_BAR_TRIG:
         return in_bar_trig = (STATUS*)o;
-    case inputnames::IN_BAR:
+    case input::IN_BAR:
         return in_bar = (short*)o;
-    case inputnames::IN_POS_STEP_SIZE:
+    case input::IN_POS_STEP_SIZE:
         return in_pos_step_size = (double*)o;
-    case inputnames::IN_BEATS_PER_BAR:
+    case input::IN_BEATS_PER_BAR:
         return in_beats_per_bar = (short*)o;
-    case inputnames::IN_BEAT_VALUE:
+    case input::IN_BEAT_VALUE:
         return in_beat_value = (short*)o;
     default:
         return 0;
     }
 }
 
-const void* sequencer::get_in(inputnames::IN_TYPE it) const
+const void* sequencer::get_in(input::TYPE it) const
 {
     switch(it)
     {
-    case inputnames::IN_BAR_TRIG:
+    case input::IN_BAR_TRIG:
         return in_bar_trig;
-    case inputnames::IN_BAR:
+    case input::IN_BAR:
         return in_bar;
-    case inputnames::IN_POS_STEP_SIZE:
+    case input::IN_POS_STEP_SIZE:
         return in_pos_step_size;
-    case inputnames::IN_BEATS_PER_BAR:
+    case input::IN_BEATS_PER_BAR:
         return in_beats_per_bar;
-    case inputnames::IN_BEAT_VALUE:
+    case input::IN_BEAT_VALUE:
         return in_beat_value;
     default:
         return 0;
     }
 }
 
-bool sequencer::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool sequencer::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::VELOCITY_RESPONSE:
+        case param::VELOCITY_RESPONSE:
             vel_response = *(double*)data;
             return true;
-        case paramnames::START_BAR:
+        case param::START_BAR:
             start_bar = *(short*)data;
             return true;
         default:
@@ -156,12 +151,12 @@ bool sequencer::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* sequencer::get_param(paramnames::PAR_TYPE pt) const
+const void* sequencer::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::VELOCITY_RESPONSE: return &vel_response;
-        case paramnames::START_BAR:         return &start_bar;
+        case param::VELOCITY_RESPONSE: return &vel_response;
+        case param::START_BAR:         return &start_bar;
         default: return 0;
     }
 }
@@ -193,10 +188,10 @@ synthmod* sequencer::duplicate_module(const char* uname, DUP_IO dupio)
 stockerrs::ERR_TYPE sequencer::validate()
 {
     if (!jwm.get_paramlist()->validate(this,
-            paramnames::VELOCITY_RESPONSE,
+            param::VELOCITY_RESPONSE,
             stockerrs::ERR_NEGATIVE))
     {
-        sm_err("%s", paramnames::get_name(paramnames::VELOCITY_RESPONSE));
+        sm_err("%s", param::names::get(param::VELOCITY_RESPONSE));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -454,7 +449,7 @@ void sequencer::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::START_BAR);
-    register_param(paramnames::VELOCITY_RESPONSE);
+    register_param(param::START_BAR);
+    register_param(param::VELOCITY_RESPONSE);
     register_moddobj(dobjnames::LST_TRACK, dobjnames::SIN_RIFFNODE);
 }

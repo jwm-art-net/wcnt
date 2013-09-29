@@ -36,23 +36,23 @@ void adsr_coord::run(double velocity)
     output_level = lower_level + (upper_level - lower_level) * velocity;
 }
 
-bool adsr_coord::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool adsr_coord::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     { // PAR_ADSRSECT is iocat::CAT_FIX_STR.
-        case paramnames::ADSRSECT:
+        case param::ADSRSECT:
             set_adsr_section((SECT)(*(int*)data));
             return true;
-        case paramnames::UPTIME:
+        case param::UPTIME:
             set_upper_time(*(double*)data);
             return true;
-        case paramnames::UPLEVEL:
+        case param::UPLEVEL:
             set_upper_level(*(double*)data);
             return true;
-        case paramnames::LOTIME:
+        case param::LOTIME:
             set_lower_time(*(double*)data);
             return true;
-        case paramnames::LOLEVEL:
+        case param::LOLEVEL:
             set_lower_level(*(double*)data);
             return true;
         default:
@@ -60,15 +60,15 @@ bool adsr_coord::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* adsr_coord::get_param(paramnames::PAR_TYPE pt) const
+const void* adsr_coord::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::ADSRSECT:  return &sect;
-        case paramnames::UPTIME:    return &upper_time;
-        case paramnames::UPLEVEL:   return &upper_level;
-        case paramnames::LOTIME:    return &lower_time;
-        case paramnames::LOLEVEL:   return &lower_level;
+        case param::ADSRSECT:  return &sect;
+        case param::UPTIME:    return &upper_time;
+        case param::UPLEVEL:   return &upper_level;
+        case param::LOTIME:    return &lower_time;
+        case param::LOLEVEL:   return &lower_level;
         default: return 0;
     }
 }
@@ -77,16 +77,16 @@ stockerrs::ERR_TYPE adsr_coord::validate()
 {
     dobjparamlist* dpl = jwm.get_dparlist();
     if (!dpl->validate(
-        this, paramnames::UPTIME, stockerrs::ERR_NEGATIVE))
+        this, param::UPTIME, stockerrs::ERR_NEGATIVE))
     {
-        dobjerr("%s", paramnames::get_name(paramnames::UPTIME));
+        dobjerr("%s", param::names::get(param::UPTIME));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (!dpl->validate(
-        this, paramnames::LOTIME, stockerrs::ERR_NEGATIVE))
+        this, param::LOTIME, stockerrs::ERR_NEGATIVE))
     {
-        dobjerr("%s", paramnames::get_name(paramnames::LOTIME));
+        dobjerr("%s", param::names::get(param::LOTIME));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -97,10 +97,10 @@ void adsr_coord::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::ADSRSECT, "attack/decay/sustain/release");
-    register_param(paramnames::UPTIME);
-    register_param(paramnames::UPLEVEL);
-    register_param(paramnames::LOTIME);
-    register_param(paramnames::LOLEVEL);
+    register_param(param::ADSRSECT, "attack/decay/sustain/release");
+    register_param(param::UPTIME);
+    register_param(param::UPLEVEL);
+    register_param(param::LOTIME);
+    register_param(param::LOLEVEL);
 }
 

@@ -3,28 +3,29 @@
 
 #include "inputnames.h"
 #include "synthmodnames.h"
+#include "types.h"
+
 
 class synthmod;
 
 class modinput
 {
  public:
-    modinput(synthmod*, inputnames::IN_TYPE);
+    modinput(synthmod*, input::TYPE);
     ~modinput();
 
-    synthmod* get_synthmodule() const { return synthmodule; }
-
-    synthmodnames::SYNTHMOD_TYPE get_moduletype() const;
-    inputnames::IN_TYPE get_inputtype() const;
+    synthmod*       get_synthmodule() const { return synthmodule; }
+    module::TYPE    get_moduletype() const;
+    input::TYPE     get_inputtype() const;
     #ifdef UNUSED
-    iocat::IOCAT get_inputcategory() const;
+    iocat::TYPE     get_inputcategory() const;
     #endif
 
     bool operator()(synthmod* sm) const {
         return synthmodule == sm;
     }
 
-    bool operator()(inputnames::IN_TYPE & it) const {
+    bool operator()(input::TYPE & it) const {
         return input_type == it;
     }
 
@@ -33,8 +34,8 @@ class modinput
     #endif
 
  private:
-    synthmod* synthmodule;
-    inputnames::IN_TYPE input_type;
+    synthmod*   synthmodule;
+    input::TYPE input_type;
 
     #ifdef DATA_STATS
     STATS_VARS

@@ -5,12 +5,12 @@
 #include "../include/conversions.h"
 
 constant_note::constant_note(const char* uname) :
- synthmod(synthmodnames::CONSTANT_NOTE, uname, SM_EMPTY_RUN),
+ synthmod(module::CONSTANT_NOTE, uname, SM_EMPTY_RUN),
  out_freq(0.0), out_phase_step(0.0)
 {
-    register_output(outputnames::OUT_NOTENAME);
-    register_output(outputnames::OUT_FREQ);
-    register_output(outputnames::OUT_PHASE_STEP);
+    register_output(output::OUT_NOTENAME);
+    register_output(output::OUT_FREQ);
+    register_output(output::OUT_PHASE_STEP);
     note = new char[jwm_init::note_array_size];
     init_first();
 }
@@ -21,21 +21,21 @@ constant_note::~constant_note()
         delete [] note;
 }
 
-const void* constant_note::get_out(outputnames::OUT_TYPE ot) const
+const void* constant_note::get_out(output::TYPE ot) const
 {
     switch(ot) 
     {
-        case outputnames::OUT_NOTENAME:   return &note;
-        case outputnames::OUT_FREQ:       return &out_freq;
-        case outputnames::OUT_PHASE_STEP: return &out_phase_step;
+        case output::OUT_NOTENAME:   return &note;
+        case output::OUT_FREQ:       return &out_freq;
+        case output::OUT_PHASE_STEP: return &out_phase_step;
         default: return 0;
     }
 }
 
-bool constant_note::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool constant_note::set_param(param::TYPE pt, const void* data)
 {
     switch(pt) {
-        case paramnames::NAME:
+        case param::NAME:
             set_note((const char*)data);
             return true;
         default:
@@ -43,11 +43,11 @@ bool constant_note::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* constant_note::get_param(paramnames::PAR_TYPE pt) const
+const void* constant_note::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::NAME: return note;
+        case param::NAME: return note;
         default: return 0;
     }
 }
@@ -55,7 +55,7 @@ const void* constant_note::get_param(paramnames::PAR_TYPE pt) const
 stockerrs::ERR_TYPE constant_note::validate()
 {
     if (!check_notename(note)){
-        sm_err("%s", paramnames::get_name(paramnames::NAME));
+        sm_err("%s", param::names::get(param::NAME));
         invalidate();
         return stockerrs::ERR_NOTENAME;
     }
@@ -78,6 +78,6 @@ void constant_note::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::NAME);
+    register_param(param::NAME);
 }
 

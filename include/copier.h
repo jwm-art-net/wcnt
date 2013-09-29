@@ -28,8 +28,8 @@ class copier : public dobj
     bool set_from_name(const char*);
     bool set_to_name(const char*);
     // virtuals from dobj
-    bool set_param(paramnames::PAR_TYPE, const void*);
-    const void* get_param(paramnames::PAR_TYPE) const;
+    bool set_param(param::TYPE, const void*);
+    const void* get_param(param::TYPE) const;
     stockerrs::ERR_TYPE validate();
 
  private:

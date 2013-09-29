@@ -6,20 +6,15 @@
 #include "../include/conversions.h"
 
 waittrig::waittrig(const char* uname) :
-
- synthmod(
-    synthmodnames::WAITTRIG,
-    uname,
-    SM_HAS_OUT_TRIG),
-
+ synthmod(module::WAITTRIG, uname, SM_HAS_OUT_TRIG),
  in_trig1(0), in_trig2(0), out_trig(OFF), out_wait_state(ON),
  min_time(0), max_time(0), count(1), min_samples(0), max_samples(0),
  mins(0), maxs(0), counter(0)
 {
-    register_input(inputnames::IN_TRIG1);
-    register_input(inputnames::IN_TRIG2);
-    register_output(outputnames::OUT_TRIG);
-    register_output(outputnames::OUT_WAIT_STATE);
+    register_input(input::IN_TRIG1);
+    register_input(input::IN_TRIG2);
+    register_output(output::OUT_TRIG);
+    register_output(output::OUT_WAIT_STATE);
     init_first();
 }
 
@@ -27,47 +22,47 @@ waittrig::~waittrig()
 {
 }
 
-const void* waittrig::get_out(outputnames::OUT_TYPE ot) const
+const void* waittrig::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_TRIG:         return &out_trig;
-        case outputnames::OUT_WAIT_STATE:   return &out_wait_state;
+        case output::OUT_TRIG:         return &out_trig;
+        case output::OUT_WAIT_STATE:   return &out_wait_state;
         default: return 0;
     }
 }
 
-const void* waittrig::set_in(inputnames::IN_TYPE it, const void* o)
+const void* waittrig::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_TRIG1: return in_trig1 = (STATUS*)o;
-        case inputnames::IN_TRIG2: return in_trig2 = (STATUS*)o;
+        case input::IN_TRIG1: return in_trig1 = (STATUS*)o;
+        case input::IN_TRIG2: return in_trig2 = (STATUS*)o;
         default: return 0;
     }
 }
 
-const void* waittrig::get_in(inputnames::IN_TYPE it) const
+const void* waittrig::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_TRIG1: return in_trig1;
-        case inputnames::IN_TRIG2: return in_trig2;
+        case input::IN_TRIG1: return in_trig1;
+        case input::IN_TRIG2: return in_trig2;
         default: return 0;
     }
 }
 
-bool waittrig::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool waittrig::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::MIN_WAIT:
+        case param::MIN_WAIT:
             min_time = *(double*)data;
             return true;
-        case paramnames::MAX_WAIT:
+        case param::MAX_WAIT:
             max_time = *(double*)data;
             return true;
-        case paramnames::COUNT:
+        case param::COUNT:
             count = *(short*)data;
             return true;
         default:
@@ -75,13 +70,13 @@ bool waittrig::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* waittrig::get_param(paramnames::PAR_TYPE pt) const
+const void* waittrig::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::MIN_WAIT:  return &min_time;
-        case paramnames::MAX_WAIT:  return &max_time;
-        case paramnames::COUNT:     return &count;
+        case param::MIN_WAIT:  return &min_time;
+        case param::MAX_WAIT:  return &max_time;
+        case param::COUNT:     return &count;
         default: return 0;
     }
 }
@@ -89,24 +84,24 @@ const void* waittrig::get_param(paramnames::PAR_TYPE pt) const
 stockerrs::ERR_TYPE waittrig::validate()
 {
     modparamlist* pl = jwm.get_paramlist();
-    if (!pl->validate(this, paramnames::MIN_WAIT,
+    if (!pl->validate(this, param::MIN_WAIT,
             stockerrs::ERR_NEGATIVE))
     {
-        sm_err("%s", paramnames::get_name(paramnames::MIN_WAIT));
+        sm_err("%s", param::names::get(param::MIN_WAIT));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
-    if (!pl->validate(this, paramnames::MAX_WAIT,
+    if (!pl->validate(this, param::MAX_WAIT,
             stockerrs::ERR_NEGATIVE))
     {
-        sm_err("%s", paramnames::get_name(paramnames::MAX_WAIT));
+        sm_err("%s", param::names::get(param::MAX_WAIT));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
-    if (!pl->validate(this, paramnames::COUNT,
+    if (!pl->validate(this, param::COUNT,
             stockerrs::ERR_NEG_ZERO))
     {
-        sm_err("%s", paramnames::get_name(paramnames::COUNT));
+        sm_err("%s", param::names::get(param::COUNT));
         invalidate();
         return stockerrs::ERR_NEG_ZERO;
     }
@@ -158,8 +153,8 @@ void waittrig::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::MIN_WAIT);
-    register_param(paramnames::MAX_WAIT);
-    register_param(paramnames::COUNT);
+    register_param(param::MIN_WAIT);
+    register_param(param::MAX_WAIT);
+    register_param(param::COUNT);
 }
 

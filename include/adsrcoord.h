@@ -34,8 +34,8 @@ public:
     double output_level;
     // virtuals from dobj
     stockerrs::ERR_TYPE validate();
-    bool set_param(paramnames::PAR_TYPE, const void*);
-    const void* get_param(paramnames::PAR_TYPE pt) const;
+    bool set_param(param::TYPE, const void*);
+    const void* get_param(param::TYPE pt) const;
 
     bool operator()(SECT & s) const {
         return this->sect == s;

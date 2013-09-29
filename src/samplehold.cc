@@ -6,13 +6,13 @@
 #include "../include/conversions.h"
 
 sample_hold::sample_hold(const char* uname) :
- synthmod(synthmodnames::SAMPLEHOLD, uname, SM_HAS_OUT_OUTPUT),
+ synthmod(module::SAMPLEHOLD, uname, SM_HAS_OUT_OUTPUT),
  in_trig(0), in_signal(0), output(0.00), decay_time(0.00), 
  decay_samps(0), ds(0), decay_size(0.00)
 {
-    register_input(inputnames::IN_TRIG);
-    register_input(inputnames::IN_SIGNAL);
-    register_output(outputnames::OUT_OUTPUT);
+    register_input(input::IN_TRIG);
+    register_input(input::IN_SIGNAL);
+    register_output(output::OUT_OUTPUT);
     init_first();
 }
 
@@ -20,40 +20,40 @@ sample_hold::~sample_hold()
 {
 }
 
-const void* sample_hold::get_out(outputnames::OUT_TYPE ot) const
+const void* sample_hold::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_OUTPUT: return &output;
+        case output::OUT_OUTPUT: return &output;
         default: return 0;
     }
 }
 
-const void* sample_hold::set_in(inputnames::IN_TYPE it, const void* o)
+const void* sample_hold::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_TRIG:   return in_trig = (STATUS*)o;
-        case inputnames::IN_SIGNAL: return in_signal= (double*)o;
+        case input::IN_TRIG:   return in_trig = (STATUS*)o;
+        case input::IN_SIGNAL: return in_signal= (double*)o;
         default: return 0;
     }
 }
 
-const void* sample_hold::get_in(inputnames::IN_TYPE it) const
+const void* sample_hold::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_TRIG:   return in_trig;
-        case inputnames::IN_SIGNAL: return in_signal;
+        case input::IN_TRIG:   return in_trig;
+        case input::IN_SIGNAL: return in_signal;
         default: return 0;
     }
 }
 
-bool sample_hold::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool sample_hold::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::DECAY_TIME:
+        case param::DECAY_TIME:
             decay_time = *(double*)data;
             return true;
         default:
@@ -61,22 +61,22 @@ bool sample_hold::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* sample_hold::get_param(paramnames::PAR_TYPE pt) const
+const void* sample_hold::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::DECAY_TIME: return &decay_time;
+        case param::DECAY_TIME: return &decay_time;
         default: return 0;
     }
 }
 
 stockerrs::ERR_TYPE sample_hold::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, paramnames::DECAY_TIME,
+    if (!jwm.get_paramlist()->validate(this, param::DECAY_TIME,
             stockerrs::ERR_NEGATIVE))
     {
-        sm_err("%s", paramnames::get_name(
-                                            paramnames::DECAY_TIME));
+        sm_err("%s", param::names::get(
+                                            param::DECAY_TIME));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -112,6 +112,6 @@ void sample_hold::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::DECAY_TIME);
+    register_param(param::DECAY_TIME);
 }
 

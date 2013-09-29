@@ -16,14 +16,14 @@ bpmchange::bpmchange(short bar, double bpm) :
     init_first();
 }
 
-bool bpmchange::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool bpmchange::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-    case paramnames::BPM:
+    case param::BPM:
         set_bpm(*(double*)data);
         return true;
-    case paramnames::BAR:
+    case param::BAR:
         set_bar(*(short*)data);
         return true;
     default:
@@ -31,12 +31,12 @@ bool bpmchange::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* bpmchange::get_param(paramnames::PAR_TYPE pt) const
+const void* bpmchange::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::BPM:   return &tobpm;
-        case paramnames::BAR:   return &atbar;
+        case param::BPM:   return &tobpm;
+        case param::BAR:   return &atbar;
         default: return 0;
     }
 }
@@ -44,16 +44,16 @@ const void* bpmchange::get_param(paramnames::PAR_TYPE pt) const
 stockerrs::ERR_TYPE bpmchange::validate()
 {
     if (!jwm.get_dparlist()->validate(
-        this, paramnames::BPM, stockerrs::ERR_RANGE_BPM))
+        this, param::BPM, stockerrs::ERR_RANGE_BPM))
     {
-        dobjerr("%s", paramnames::get_name(paramnames::BPM));
+        dobjerr("%s", param::names::get(param::BPM));
         invalidate();
         return stockerrs::ERR_RANGE_BPM;
     }
     if (!jwm.get_dparlist()->validate(
-        this, paramnames::BAR, stockerrs::ERR_NEGATIVE))
+        this, param::BAR, stockerrs::ERR_NEGATIVE))
     {
-        dobjerr("%s", paramnames::get_name(paramnames::BAR));
+        dobjerr("%s", param::names::get(param::BAR));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -64,7 +64,7 @@ void bpmchange::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::BPM);
-    register_param(paramnames::BAR);
+    register_param(param::BPM);
+    register_param(param::BAR);
 }
 

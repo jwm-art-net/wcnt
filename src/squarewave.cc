@@ -7,19 +7,19 @@
 #include <cstdlib>
 
 square_wave::square_wave(const char* uname) :
- synthmod(synthmodnames::SQUAREWAVE, uname, SM_HAS_OUT_OUTPUT),
+ synthmod(module::SQUAREWAVE, uname, SM_HAS_OUT_OUTPUT),
  output(0.00), out_offpulse(OFF), play_state(OFF),
  in_phase_trig(NULL), in_phase_step(NULL), in_pwm(NULL),
  rate(1.0), pulse_width(0.50), pwm_size(0.00), recycle(OFF),
  pulse(OFF), degs(0.00), podeg(0), pwdeg_rad(0), poff_deg(0.00),
  target(0), cycle(0)
 {
-    register_input(inputnames::IN_PHASE_TRIG);
-    register_input(inputnames::IN_PHASE_STEP);
-    register_input(inputnames::IN_PWM);
-    register_output(outputnames::OUT_OUTPUT);
-    register_output(outputnames::OUT_OFF_PULSE);
-    register_output(outputnames::OUT_PLAY_STATE);
+    register_input(input::IN_PHASE_TRIG);
+    register_input(input::IN_PHASE_STEP);
+    register_input(input::IN_PWM);
+    register_output(output::OUT_OUTPUT);
+    register_output(output::OUT_OFF_PULSE);
+    register_output(output::OUT_PLAY_STATE);
     init_first();
 }
 
@@ -27,53 +27,53 @@ square_wave::~square_wave()
 {
 }
 
-const void* square_wave::get_out(outputnames::OUT_TYPE ot) const
+const void* square_wave::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_OUTPUT:       return &output;
-        case outputnames::OUT_OFF_PULSE:    return &out_offpulse;
-        case outputnames::OUT_PLAY_STATE:   return &play_state;
+        case output::OUT_OUTPUT:       return &output;
+        case output::OUT_OFF_PULSE:    return &out_offpulse;
+        case output::OUT_PLAY_STATE:   return &play_state;
         default: return 0;
     }
 }
 
-const void* square_wave::set_in(inputnames::IN_TYPE it, const void* o)
+const void* square_wave::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_PHASE_TRIG: return in_phase_trig = (STATUS*)o;
-        case inputnames::IN_PHASE_STEP: return in_phase_step = (double*)o;
-        case inputnames::IN_PWM:        return in_pwm =  (double*)o;
+        case input::IN_PHASE_TRIG: return in_phase_trig = (STATUS*)o;
+        case input::IN_PHASE_STEP: return in_phase_step = (double*)o;
+        case input::IN_PWM:        return in_pwm =  (double*)o;
         default: return 0;
     }
 }
 
-const void* square_wave::get_in(inputnames::IN_TYPE it) const
+const void* square_wave::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_PHASE_TRIG: return in_phase_trig;
-        case inputnames::IN_PHASE_STEP: return in_phase_step;
-        case inputnames::IN_PWM:        return in_pwm;
+        case input::IN_PHASE_TRIG: return in_phase_trig;
+        case input::IN_PHASE_STEP: return in_phase_step;
+        case input::IN_PWM:        return in_pwm;
         default: return 0;
     }
 }
 
-bool square_wave::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool square_wave::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::RATE:
+        case param::RATE:
             rate = *(double*)data;
             return true;
-        case paramnames::PULSE_WIDTH:
+        case param::PULSE_WIDTH:
             pulse_width = *(double*)data;
             return true;
-        case paramnames::PWM_SIZE:
+        case param::PWM_SIZE:
             pwm_size = *(double*)data;
             return true;
-        case paramnames::RECYCLE_MODE:
+        case param::RECYCLE_MODE:
             recycle = *(STATUS*)data;
             return true;
         default:
@@ -81,39 +81,39 @@ bool square_wave::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* square_wave::get_param(paramnames::PAR_TYPE pt) const
+const void* square_wave::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::RATE:         return &rate;
-        case paramnames::PULSE_WIDTH:  return &pulse_width;
-        case paramnames::PWM_SIZE:     return &pwm_size;
-        case paramnames::RECYCLE_MODE: return &recycle;
+        case param::RATE:         return &rate;
+        case param::PULSE_WIDTH:  return &pulse_width;
+        case param::PWM_SIZE:     return &pwm_size;
+        case param::RECYCLE_MODE: return &recycle;
         default: return 0;
     }
 }
 
 stockerrs::ERR_TYPE square_wave::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, paramnames::RATE,
+    if (!jwm.get_paramlist()->validate(this, param::RATE,
             stockerrs::ERR_RANGE_0_1))
     {
-        sm_err("%s", paramnames::get_name(paramnames::RATE));
+        sm_err("%s", param::names::get(param::RATE));
         invalidate();
         return stockerrs::ERR_RANGE_0_1;
     }
-    if (!jwm.get_paramlist()->validate(this, paramnames::PULSE_WIDTH,
+    if (!jwm.get_paramlist()->validate(this, param::PULSE_WIDTH,
             stockerrs::ERR_RANGE_0_1_IN))
     {
         sm_err("%s", 
-                paramnames::get_name(paramnames::PULSE_WIDTH));
+                param::names::get(param::PULSE_WIDTH));
         invalidate();
         return stockerrs::ERR_RANGE_0_1_IN;
     }
-    if (!jwm.get_paramlist()->validate(this, paramnames::PWM_SIZE,
+    if (!jwm.get_paramlist()->validate(this, param::PWM_SIZE,
             stockerrs::ERR_RANGE_0_1))
     {
-        sm_err("%s", paramnames::get_name(paramnames::PWM_SIZE));
+        sm_err("%s", param::names::get(param::PWM_SIZE));
         invalidate();
         return stockerrs::ERR_RANGE_0_1;
     }
@@ -183,9 +183,9 @@ void square_wave::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::RATE);
-    register_param(paramnames::PULSE_WIDTH);
-    register_param(paramnames::PWM_SIZE);
-    register_param(paramnames::RECYCLE_MODE);
+    register_param(param::RATE);
+    register_param(param::PULSE_WIDTH);
+    register_param(param::PWM_SIZE);
+    register_param(param::RECYCLE_MODE);
 }
 

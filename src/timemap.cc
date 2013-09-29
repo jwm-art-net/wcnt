@@ -10,12 +10,7 @@
 #include <sstream>
 
 timemap::timemap(const char* uname) :
-
- synthmod(
-    synthmodnames::TIMEMAP,
-    uname,
-    SM_UNGROUPABLE | SM_UNDUPLICABLE),
-
+ synthmod(module::TIMEMAP, uname, SM_UNGROUPABLE | SM_UNDUPLICABLE),
  out_bar(0), out_bar_trig(OFF), out_pos_in_bar(0), out_pos_step_size(0),
  out_bpm(0.0), out_sample_total(0), out_sample_in_bar(0),
  out_beats_per_bar(0), out_beat_value(0), out_bpm_change_trig(OFF),
@@ -25,18 +20,18 @@ timemap::timemap(const char* uname) :
  bpmchange_ratio(0), targbpm(0), pos_in_bar(0), bpmchange_notelen(0),
  bpmchangebar(0), barlength(0), beatlength(0), meterchangebar(0), p_bpm(0)
 {
-    register_output(outputnames::OUT_BPM);
-    register_output(outputnames::OUT_BAR);
-    register_output(outputnames::OUT_BAR_TRIG);
-    register_output(outputnames::OUT_POS_IN_BAR);
-    register_output(outputnames::OUT_POS_STEP_SIZE);
-    register_output(outputnames::OUT_SAMPLE_TOTAL);
-    register_output(outputnames::OUT_SAMPLE_IN_BAR);
-    register_output(outputnames::OUT_BEATS_PER_BAR);
-    register_output(outputnames::OUT_BEAT_VALUE);
-    register_output(outputnames::OUT_BPM_CHANGE_TRIG);
-    register_output(outputnames::OUT_METER_CHANGE_TRIG);
-    register_output(outputnames::OUT_BPM_CHANGE_STATE);
+    register_output(output::OUT_BPM);
+    register_output(output::OUT_BAR);
+    register_output(output::OUT_BAR_TRIG);
+    register_output(output::OUT_POS_IN_BAR);
+    register_output(output::OUT_POS_STEP_SIZE);
+    register_output(output::OUT_SAMPLE_TOTAL);
+    register_output(output::OUT_SAMPLE_IN_BAR);
+    register_output(output::OUT_BEATS_PER_BAR);
+    register_output(output::OUT_BEAT_VALUE);
+    register_output(output::OUT_BPM_CHANGE_TRIG);
+    register_output(output::OUT_METER_CHANGE_TRIG);
+    register_output(output::OUT_BPM_CHANGE_STATE);
 
     bpm_map = new linked_list<bpmchange>;
     meter_map = new linked_list<meterchange>;
@@ -245,32 +240,32 @@ double timemap::notelen_to_ms(short nl) const
 }
 #endif
 
-const void* timemap::get_out(outputnames::OUT_TYPE ot) const
+const void* timemap::get_out(output::TYPE ot) const
 {
     switch (ot) {
-    case outputnames::OUT_BPM:
+    case output::OUT_BPM:
         return &out_bpm;
-    case outputnames::OUT_BAR:
+    case output::OUT_BAR:
         return &out_bar;
-    case outputnames::OUT_BAR_TRIG:
+    case output::OUT_BAR_TRIG:
         return &out_bar_trig;
-    case outputnames::OUT_POS_IN_BAR:
+    case output::OUT_POS_IN_BAR:
         return &out_pos_in_bar;
-    case outputnames::OUT_POS_STEP_SIZE:
+    case output::OUT_POS_STEP_SIZE:
         return &out_pos_step_size;
-    case outputnames::OUT_SAMPLE_TOTAL:
+    case output::OUT_SAMPLE_TOTAL:
         return &out_sample_total;
-    case outputnames::OUT_SAMPLE_IN_BAR:
+    case output::OUT_SAMPLE_IN_BAR:
         return &out_sample_in_bar;
-    case outputnames::OUT_BEATS_PER_BAR:
+    case output::OUT_BEATS_PER_BAR:
         return &out_beats_per_bar;
-    case outputnames::OUT_BEAT_VALUE:
+    case output::OUT_BEAT_VALUE:
         return &out_beat_value;
-    case outputnames::OUT_BPM_CHANGE_TRIG:
+    case output::OUT_BPM_CHANGE_TRIG:
         return &out_bpm_change_trig;
-    case outputnames::OUT_METER_CHANGE_TRIG:
+    case output::OUT_METER_CHANGE_TRIG:
         return &out_meter_change_trig;
-    case outputnames::OUT_BPM_CHANGE_STATE:
+    case output::OUT_BPM_CHANGE_STATE:
         return &out_bpm_change_state;
     default:
         return 0;

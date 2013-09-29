@@ -21,19 +21,19 @@
 class fixstrparam
 {
  public:
-    fixstrparam(const char* str_list, paramnames::PAR_TYPE par_type);
+    fixstrparam(const char* str_list, param::TYPE par_type);
     ~fixstrparam();
     const char* get_string_list() const         { return string_list; }
-    paramnames::PAR_TYPE get_param_type() const {return param_type; }
+    param::TYPE get_param_type() const {return param_type; }
     int get_substring_count() const;
     int get_substring_index(const char* substr) const;
     const char* get_substring(int index) const;
-    bool operator()(paramnames::PAR_TYPE & pt) const {
+    bool operator()(param::TYPE & pt) const {
         return param_type == pt;
     }
  private:
     const char* string_list;
-    paramnames::PAR_TYPE param_type;
+    param::TYPE param_type;
 };
 
 #endif

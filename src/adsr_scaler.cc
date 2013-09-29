@@ -14,41 +14,41 @@ adsr_scaler::~adsr_scaler()
 {
 }
 
-bool adsr_scaler::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool adsr_scaler::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::ADSR_NAME:
+        case param::ADSR_NAME:
             if(((synthmod*)data)->get_module_type() ==
-               synthmodnames::ADSR)
+               module::ADSR)
             {
                 padsr = (adsr*)data;
                 return true;
             }
             dobjerr("%s is not an %s.", ((synthmod*)data)->get_username(),
-                        synthmodnames::get_name(synthmodnames::ADSR));
+                        module::names::get(module::ADSR));
             return false;
-        case paramnames::ATTACK_SCALE:
+        case param::ATTACK_SCALE:
             attack_scale = *(double*)data;
             return true;
-        case paramnames::DECAY_SCALE:
+        case param::DECAY_SCALE:
             decay_scale = *(double*)data;
             return true;
-        case paramnames::RELEASE_SCALE:
+        case param::RELEASE_SCALE:
             release_scale = *(double*)data;
             return true;
         default: return false;
     }
 }
 
-const void* adsr_scaler::get_param(paramnames::PAR_TYPE pt) const
+const void* adsr_scaler::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::ADSR_NAME:     return padsr;
-        case paramnames::ATTACK_SCALE:  return &attack_scale;
-        case paramnames::DECAY_SCALE:   return &decay_scale;
-        case paramnames::RELEASE_SCALE: return &release_scale;
+        case param::ADSR_NAME:     return padsr;
+        case param::ATTACK_SCALE:  return &attack_scale;
+        case param::DECAY_SCALE:   return &decay_scale;
+        case param::RELEASE_SCALE: return &release_scale;
         default: return 0;
     }
 }
@@ -60,26 +60,26 @@ stockerrs::ERR_TYPE adsr_scaler::validate()
     // well no, not if the adsr was defined before the adsr_scaler ;-)
     // (clue: it would have to be).
     if (!jwm.get_dparlist()->validate(
-        this, paramnames::ATTACK_SCALE, stockerrs::ERR_NEGATIVE))
+        this, param::ATTACK_SCALE, stockerrs::ERR_NEGATIVE))
     {
-        dobjerr("%s", paramnames::get_name(
-                                        paramnames::ATTACK_SCALE));
+        dobjerr("%s", param::names::get(
+                                        param::ATTACK_SCALE));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (!jwm.get_dparlist()->validate(
-        this, paramnames::DECAY_SCALE, stockerrs::ERR_NEGATIVE))
+        this, param::DECAY_SCALE, stockerrs::ERR_NEGATIVE))
     {
-        dobjerr("%s", paramnames::get_name(
-                                        paramnames::DECAY_SCALE));
+        dobjerr("%s", param::names::get(
+                                        param::DECAY_SCALE));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (!jwm.get_dparlist()->validate(
-        this, paramnames::RELEASE_SCALE, stockerrs::ERR_NEGATIVE))
+        this, param::RELEASE_SCALE, stockerrs::ERR_NEGATIVE))
     {
-        dobjerr("%s", paramnames::get_name(
-                                        paramnames::RELEASE_SCALE));
+        dobjerr("%s", param::names::get(
+                                        param::RELEASE_SCALE));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -111,9 +111,9 @@ void adsr_scaler::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::ADSR_NAME);
-    register_param(paramnames::ATTACK_SCALE);
-    register_param(paramnames::DECAY_SCALE);
-    register_param(paramnames::RELEASE_SCALE);
+    register_param(param::ADSR_NAME);
+    register_param(param::ATTACK_SCALE);
+    register_param(param::DECAY_SCALE);
+    register_param(param::RELEASE_SCALE);
 }
 

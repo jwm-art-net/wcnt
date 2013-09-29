@@ -10,7 +10,7 @@
 #include <iostream>
 
 sampler::sampler(const char* uname) :
- synthmod(synthmodnames::SAMPLER, uname, SM_HAS_STEREO_OUTPUT),
+ synthmod(module::SAMPLER, uname, SM_HAS_STEREO_OUTPUT),
  in_play_trig(0), in_stop_trig(0), in_start_pos_mod(0), in_phase_step(0),
  out_left(0), out_right(0),
  out_loop_trig(OFF), play_state(OFF),
@@ -34,14 +34,14 @@ sampler::sampler(const char* uname) :
  ac_out_left(0), ac_out_right(0),
  ch(WAV_CH_UNKNOWN)
 {
-    register_input(inputnames::IN_PLAY_TRIG);
-    register_input(inputnames::IN_STOP_TRIG);
-    register_input(inputnames::IN_START_POS_MOD);
-    register_input(inputnames::IN_PHASE_STEP);
-    register_output(outputnames::OUT_LEFT);
-    register_output(outputnames::OUT_RIGHT);
-    register_output(outputnames::OUT_LOOP_TRIG);
-    register_output(outputnames::OUT_PLAY_STATE);
+    register_input(input::IN_PLAY_TRIG);
+    register_input(input::IN_STOP_TRIG);
+    register_input(input::IN_START_POS_MOD);
+    register_input(input::IN_PHASE_STEP);
+    register_output(output::OUT_LEFT);
+    register_output(output::OUT_RIGHT);
+    register_output(output::OUT_LOOP_TRIG);
+    register_output(output::OUT_PLAY_STATE);
     init_first();
     sampletot = 0;
 }
@@ -58,52 +58,52 @@ sampler::~sampler()
         delete [] ac_st_buf;
 }
 
-const void* sampler::get_out(outputnames::OUT_TYPE ot) const
+const void* sampler::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_LEFT:         return &out_left;
-        case outputnames::OUT_RIGHT:        return &out_right;
-        case outputnames::OUT_LOOP_TRIG:    return &out_loop_trig;
-        case outputnames::OUT_PLAY_STATE:   return &play_state;
+        case output::OUT_LEFT:         return &out_left;
+        case output::OUT_RIGHT:        return &out_right;
+        case output::OUT_LOOP_TRIG:    return &out_loop_trig;
+        case output::OUT_PLAY_STATE:   return &play_state;
         default: return 0;
     }
 }
 
-const void* sampler::set_in(inputnames::IN_TYPE it, const void* o)
+const void* sampler::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_PLAY_TRIG:
+        case input::IN_PLAY_TRIG:
             return in_play_trig = (STATUS*)o;
-        case inputnames::IN_STOP_TRIG:
+        case input::IN_STOP_TRIG:
             return in_stop_trig = (STATUS*)o;
-        case inputnames::IN_PHASE_STEP:
+        case input::IN_PHASE_STEP:
             return in_phase_step = (double*)o;
-        case inputnames::IN_START_POS_MOD:
+        case input::IN_START_POS_MOD:
             return in_start_pos_mod = (double*)o;
         default:
             return 0;
     }
 }
 
-const void* sampler::get_in(inputnames::IN_TYPE it) const
+const void* sampler::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_PLAY_TRIG:      return in_play_trig;
-        case inputnames::IN_STOP_TRIG:      return in_stop_trig;
-        case inputnames::IN_PHASE_STEP:     return in_phase_step;
-        case inputnames::IN_START_POS_MOD:  return in_start_pos_mod;
+        case input::IN_PLAY_TRIG:      return in_play_trig;
+        case input::IN_STOP_TRIG:      return in_stop_trig;
+        case input::IN_PHASE_STEP:     return in_phase_step;
+        case input::IN_START_POS_MOD:  return in_start_pos_mod;
         default: return 0;
     }
 }
 
-bool sampler::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool sampler::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-    case paramnames::WAVFILEIN:
+    case param::WAVFILEIN:
         if (((dobj*)data)->get_object_type() != dobjnames::DEF_WAVFILEIN)
         {
             sm_err("%s is not a wavfilein.",
@@ -112,47 +112,47 @@ bool sampler::set_param(paramnames::PAR_TYPE pt, const void* data)
         }
         wavfile = (wavfilein*)data; // note: pointer.
         return true;
-    case paramnames::PLAY_DIR:
+    case param::PLAY_DIR:
         play_dir = (PLAY_DIR)(*(int*)data);
         return true;
-    case paramnames::PLAY_MODE:
+    case param::PLAY_MODE:
         play_mode = (PLAY_MODE)(*(int*)data);
         return true;
-    case paramnames::JUMP_MODE:
+    case param::JUMP_MODE:
         jump_mode = (JUMP_DIR)(*(int*)data);
         return true;
-    case paramnames::START_POS_MIN:
+    case param::START_POS_MIN:
         min_start_pos = *(unsigned long*)data;
         return true;
-    case paramnames::START_POS_MAX:
+    case param::START_POS_MAX:
         max_start_pos = *(unsigned long*)data;
         return true;
-    case paramnames::LOOP_BEGIN:
+    case param::LOOP_BEGIN:
         loop_begin = *(unsigned long*)data;
         return true;
-    case paramnames::LOOP_END:
+    case param::LOOP_END:
         loop_end = *(unsigned long*)data;
         return true;
-    case paramnames::LOOP_MODE:
+    case param::LOOP_MODE:
         loop_mode = (LOOP_MODE)(*(int*)data);
         return true;
-    case paramnames::LOOP_IS_OFFSET:
+    case param::LOOP_IS_OFFSET:
         loop_is_offset = *(STATUS*)data;
         return true;
-    case paramnames::LOOP_BI_OFFSET:
+    case param::LOOP_BI_OFFSET:
         loop_bi_offset = *(short*)data;
         return true;
-    case paramnames::ANTI_CLIP:
+    case param::ANTI_CLIP:
         anti_clip_size = *(short*)data;
         return true;
-    case paramnames::AC_EACH_END:
+    case param::AC_EACH_END:
         ac_each_end = *(STATUS*)data;
         return true;
-    case paramnames::ZERO_SEARCH_RANGE:
+    case param::ZERO_SEARCH_RANGE:
         search_range = *(short*)data;
         if(search_range == 1) search_range++;
         return true;
-    case paramnames::PHASE_STEP_AMOUNT:
+    case param::PHASE_STEP_AMOUNT:
         phase_step_amount = *(double*)data;
         return true;
     default:
@@ -160,25 +160,25 @@ bool sampler::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* sampler::get_param(paramnames::PAR_TYPE pt) const
+const void* sampler::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::WAVFILEIN:         return wavfile;
-        case paramnames::PLAY_DIR:          return &play_dir;
-        case paramnames::PLAY_MODE:         return &play_mode;
-        case paramnames::JUMP_MODE:         return &jump_mode;
-        case paramnames::START_POS_MIN:     return &min_start_pos;
-        case paramnames::START_POS_MAX:     return &max_start_pos;
-        case paramnames::LOOP_BEGIN:        return &loop_begin;
-        case paramnames::LOOP_END:          return &loop_end;
-        case paramnames::LOOP_MODE:         return &loop_mode;
-        case paramnames::LOOP_IS_OFFSET:    return &loop_is_offset;
-        case paramnames::LOOP_BI_OFFSET:    return &loop_bi_offset;
-        case paramnames::ANTI_CLIP:         return &anti_clip_size;
-        case paramnames::AC_EACH_END:       return &ac_each_end;
-        case paramnames::ZERO_SEARCH_RANGE: return &search_range;
-        case paramnames::PHASE_STEP_AMOUNT: return &phase_step_amount;
+        case param::WAVFILEIN:         return wavfile;
+        case param::PLAY_DIR:          return &play_dir;
+        case param::PLAY_MODE:         return &play_mode;
+        case param::JUMP_MODE:         return &jump_mode;
+        case param::START_POS_MIN:     return &min_start_pos;
+        case param::START_POS_MAX:     return &max_start_pos;
+        case param::LOOP_BEGIN:        return &loop_begin;
+        case param::LOOP_END:          return &loop_end;
+        case param::LOOP_MODE:         return &loop_mode;
+        case param::LOOP_IS_OFFSET:    return &loop_is_offset;
+        case param::LOOP_BI_OFFSET:    return &loop_bi_offset;
+        case param::ANTI_CLIP:         return &anti_clip_size;
+        case param::AC_EACH_END:       return &ac_each_end;
+        case param::ZERO_SEARCH_RANGE: return &search_range;
+        case param::PHASE_STEP_AMOUNT: return &phase_step_amount;
         default: return 0;
     }
 }
@@ -189,71 +189,71 @@ stockerrs::ERR_TYPE sampler::validate()
     if (wavstatus == WAV_STATUS_NOT_FOUND) {
 
         sm_err("%s using wavfilein %s file %s not found.",
-                paramnames::get_name(paramnames::FILENAME),
+                param::names::get(param::FILENAME),
                 wavfile->get_username(), wavfile->get_filename());
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (wavstatus == WAV_STATUS_WAVERR) {
         sm_err("%s using wavfilein %s file %s is not a WAV.",
-                paramnames::get_name(paramnames::FILENAME),
+                param::names::get(param::FILENAME),
                 wavfile->get_username(), wavfile->get_filename());
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (wavstatus != WAV_STATUS_OPEN) {
         sm_err("%s using wavfilein %s file %s failed to open.",
-                paramnames::get_name(paramnames::FILENAME),
+                param::names::get(param::FILENAME),
                 wavfile->get_username(), wavfile->get_filename());
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     modparamlist* pl = jwm.get_paramlist();
-    if (!pl->validate(this, paramnames::START_POS_MIN,
+    if (!pl->validate(this, param::START_POS_MIN,
             stockerrs::ERR_NEGATIVE))
     {
         sm_err("%s",
-                paramnames::get_name(paramnames::START_POS_MIN));
+                param::names::get(param::START_POS_MIN));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
-    if (!pl->validate(this, paramnames::START_POS_MAX,
+    if (!pl->validate(this, param::START_POS_MAX,
             stockerrs::ERR_NEGATIVE))
     {
         sm_err("%s",
-                paramnames::get_name(paramnames::START_POS_MAX));
+                param::names::get(param::START_POS_MAX));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
     if (max_start_pos < min_start_pos) {
         sm_err("%s must not be less than %s.",
-                paramnames::get_name(paramnames::START_POS_MAX),
-                paramnames::get_name(paramnames::START_POS_MIN));
+                param::names::get(param::START_POS_MAX),
+                param::names::get(param::START_POS_MIN));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
     if (loop_is_offset == OFF) {
-        if (!pl->validate(this, paramnames::LOOP_BEGIN,
+        if (!pl->validate(this, param::LOOP_BEGIN,
                 stockerrs::ERR_NEGATIVE))
         {
             sm_err("%s of absolute value.", /* eh? */
-                    paramnames::get_name(paramnames::LOOP_BEGIN));
+                    param::names::get(param::LOOP_BEGIN));
             invalidate();
             return stockerrs::ERR_NEGATIVE;
         }
-        if (!pl->validate(this, paramnames::LOOP_END,
+        if (!pl->validate(this, param::LOOP_END,
                 stockerrs::ERR_NEGATIVE))
         {
             sm_err("%s of absolute value.", /* eh? */
-                    paramnames::get_name(paramnames::LOOP_END));
+                    param::names::get(param::LOOP_END));
             invalidate();
             return stockerrs::ERR_NEGATIVE;
         }
     }
     if (loop_end <= loop_begin) {
         sm_err("%s must be more than %s.",
-                paramnames::get_name(paramnames::LOOP_END),
-                paramnames::get_name(paramnames::LOOP_BEGIN));
+                param::names::get(param::LOOP_END),
+                param::names::get(param::LOOP_BEGIN));
         invalidate();
         return stockerrs::ERR_ERROR;
     }
@@ -261,16 +261,16 @@ stockerrs::ERR_TYPE sampler::validate()
         || anti_clip_size > jwm_init::max_anti_clip_samples)
     {
         sm_err("%s out of range 0 ~ %d.", 
-                paramnames::get_name(paramnames::ANTI_CLIP),
+                param::names::get(param::ANTI_CLIP),
                 jwm_init::max_anti_clip_samples);
         invalidate();
         return stockerrs::ERR_ERROR;
     }
-    if (!pl->validate(this, paramnames::ZERO_SEARCH_RANGE,
+    if (!pl->validate(this, param::ZERO_SEARCH_RANGE,
             stockerrs::ERR_NEGATIVE))
     {
         sm_err("%s",
-            paramnames::get_name(paramnames::ZERO_SEARCH_RANGE));
+            param::names::get(param::ZERO_SEARCH_RANGE));
         invalidate();
         return stockerrs::ERR_NEGATIVE;
     }
@@ -1198,19 +1198,19 @@ void sampler::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::WAVFILEIN);
-    register_param(paramnames::PLAY_DIR,     "fwd/rev");
-    register_param(paramnames::PLAY_MODE,    "stop/wrap/bounce/jump");
-    register_param(paramnames::JUMP_MODE,    "play/loop");
-    register_param(paramnames::START_POS_MIN);
-    register_param(paramnames::START_POS_MAX);
-    register_param(paramnames::LOOP_MODE,    "off/fwd/rev/bi");
-    register_param(paramnames::LOOP_BEGIN);
-    register_param(paramnames::LOOP_END);
-    register_param(paramnames::LOOP_IS_OFFSET);
-    register_param(paramnames::LOOP_BI_OFFSET);
-    register_param(paramnames::ANTI_CLIP);
-    register_param(paramnames::AC_EACH_END);
-    register_param(paramnames::ZERO_SEARCH_RANGE);
-    register_param(paramnames::PHASE_STEP_AMOUNT);
+    register_param(param::WAVFILEIN);
+    register_param(param::PLAY_DIR,     "fwd/rev");
+    register_param(param::PLAY_MODE,    "stop/wrap/bounce/jump");
+    register_param(param::JUMP_MODE,    "play/loop");
+    register_param(param::START_POS_MIN);
+    register_param(param::START_POS_MAX);
+    register_param(param::LOOP_MODE,    "off/fwd/rev/bi");
+    register_param(param::LOOP_BEGIN);
+    register_param(param::LOOP_END);
+    register_param(param::LOOP_IS_OFFSET);
+    register_param(param::LOOP_BI_OFFSET);
+    register_param(param::ANTI_CLIP);
+    register_param(param::AC_EACH_END);
+    register_param(param::ZERO_SEARCH_RANGE);
+    register_param(param::PHASE_STEP_AMOUNT);
 }

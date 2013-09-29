@@ -74,14 +74,14 @@ const char* dobj::get_username()
     return username;
 }
 
-bool dobj::set_param(paramnames::PAR_TYPE, const void*)
+bool dobj::set_param(param::TYPE, const void*)
 {
     dobjerr("%s %s set parameter of data object.", stockerrs::major,
                                                    stockerrs::bad);
     return 0;
 }
 
-const void* dobj::get_param(paramnames::PAR_TYPE) const
+const void* dobj::get_param(param::TYPE) const
 {
     dobjerr("%s %s get parameter of data object.", stockerrs::major,
                                                    stockerrs::bad);
@@ -112,20 +112,20 @@ bool dobj::done_first() const
 
 char dobj::err_msg[STRBUFLEN] = "";
 
-void dobj::register_param(paramnames::PAR_TYPE pt)
+void dobj::register_param(param::TYPE pt)
 {
     if (!valid)
         return;
     if (!jwm.get_dparlist()->add_dobjparam(object_type, pt))
     {
         dobjerr("Failed to register param %s with data object type %s.",
-                            paramnames::get_name(pt),
+                            param::names::get(pt),
                             dobjnames::get_name(object_type));
         valid = false;
     }
 }
 
-void dobj::register_param(paramnames::PAR_TYPE pt, const char* fixstr)
+void dobj::register_param(param::TYPE pt, const char* fixstr)
 {
     if (!valid)
         return;
@@ -137,7 +137,7 @@ void dobj::register_param(paramnames::PAR_TYPE pt, const char* fixstr)
     {
         dobjerr("Failed to register fixed string param %s (%s) "
                             "with data object type %s.",
-                            paramnames::get_name(pt), fixstr,
+                            param::names::get(pt), fixstr,
                             dobjnames::get_name(object_type));
         valid = false;
     }

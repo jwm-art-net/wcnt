@@ -6,15 +6,15 @@
 #include "../include/fxsparamlist.h"
 
 modifier::modifier(const char* uname) :
- synthmod(synthmodnames::MODIFIER, uname, SM_HAS_OUT_OUTPUT),
+ synthmod(module::MODIFIER, uname, SM_HAS_OUT_OUTPUT),
  in_signal1(0), in_signal2(0), in_bias(0),
  out_output(0),
  func(ADD), type(M1)
 {
-    register_input(inputnames::IN_SIGNAL1);
-    register_input(inputnames::IN_SIGNAL2);
-    register_input(inputnames::IN_BIAS);
-    register_output(outputnames::OUT_OUTPUT);
+    register_input(input::IN_SIGNAL1);
+    register_input(input::IN_SIGNAL2);
+    register_input(input::IN_BIAS);
+    register_output(output::OUT_OUTPUT);
     init_first();
 }
 
@@ -22,49 +22,49 @@ modifier::~modifier()
 {
 }
 
-const void* modifier::get_out(outputnames::OUT_TYPE ot) const
+const void* modifier::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_OUTPUT: return &out_output;
+        case output::OUT_OUTPUT: return &out_output;
         default: return 0;
     }
 }
 
-const void* modifier::set_in(inputnames::IN_TYPE it, const void* o)
+const void* modifier::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_SIGNAL1: return in_signal1 = (double*)o;
-        case inputnames::IN_SIGNAL2: return in_signal2 = (double*)o;
-        case inputnames::IN_BIAS:    return in_bias = (double*)o;
+        case input::IN_SIGNAL1: return in_signal1 = (double*)o;
+        case input::IN_SIGNAL2: return in_signal2 = (double*)o;
+        case input::IN_BIAS:    return in_bias = (double*)o;
         default: return 0;
     }
 }
 
-const void* modifier::get_in(inputnames::IN_TYPE it) const
+const void* modifier::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_SIGNAL1:     return in_signal1;
-        case inputnames::IN_SIGNAL2:     return in_signal2;
-        case inputnames::IN_BIAS:        return in_bias;
+        case input::IN_SIGNAL1:     return in_signal1;
+        case input::IN_SIGNAL2:     return in_signal2;
+        case input::IN_BIAS:        return in_bias;
         default: return 0;
     }
 }
 
-bool modifier::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool modifier::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::FUNC:
+        case param::FUNC:
             func = (FUNC)(*(int*)data);
             return true;
-        case paramnames::MODIFIER_TYPE:
+        case param::MODIFIER_TYPE:
             type = (TYPE)(*(int*)data);
             return true;
 /*
-        case paramnames::BIAS:
+        case param::BIAS:
             bias = *(double*)data;
             return true;
 */
@@ -73,13 +73,13 @@ bool modifier::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* modifier::get_param(paramnames::PAR_TYPE pt) const
+const void* modifier::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::FUNC:          return &func;
-        case paramnames::MODIFIER_TYPE: return &type;
-//        case paramnames::BIAS:          return &bias;
+        case param::FUNC:          return &func;
+        case param::MODIFIER_TYPE: return &type;
+//        case param::BIAS:          return &bias;
         default: return 0;
     }
 }
@@ -87,10 +87,10 @@ const void* modifier::get_param(paramnames::PAR_TYPE pt) const
 stockerrs::ERR_TYPE modifier::validate()
 {
 /*
-    if (!jwm.get_paramlist()->validate(this, paramnames::BIAS,
+    if (!jwm.get_paramlist()->validate(this, param::BIAS,
                                         stockerrs::ERR_RANGE_0_1))
     {
-        *err_msg = paramnames::get_name(paramnames::BIAS);
+        *err_msg = param::names::get(param::BIAS);
         invalidate();
         return stockerrs::ERR_RANGE_0_1;
     }
@@ -124,10 +124,10 @@ void modifier::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::FUNC, "add/sub/mul");
-    register_param(paramnames::MODIFIER_TYPE, "m1/m2");
+    register_param(param::FUNC, "add/sub/mul");
+    register_param(param::MODIFIER_TYPE, "m1/m2");
 /*
-    register_param(paramnames::BIAS);
+    register_param(param::BIAS);
 */
 }
 

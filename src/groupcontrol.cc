@@ -12,21 +12,16 @@
 #include <sstream>
 
 group_control::group_control(const char* uname) :
-
- synthmod(
-    synthmodnames::GROUPCONTROL,
-    uname,
-    SM_UNGROUPABLE | SM_UNDUPLICABLE),
-
+ synthmod(module::GROUPCONTROL, uname, SM_UNGROUPABLE | SM_UNDUPLICABLE),
  in_play_trig(0), in_stop_trig(0),
  out_play_state(OFF),
  group_name(0),
  stop_pending(0),
  grp(0), runlist(0), empty_run_list(0)
 {
-    register_input(inputnames::IN_PLAY_TRIG);
-    register_input(inputnames::IN_STOP_TRIG);
-    register_output(outputnames::OUT_PLAY_STATE);
+    register_input(input::IN_PLAY_TRIG);
+    register_input(input::IN_STOP_TRIG);
+    register_output(output::OUT_PLAY_STATE);
     init_first();
 }
 
@@ -40,54 +35,54 @@ group_control::~group_control()
         destroy_array_moved_from_list(empty_run_list);
 }
 
-const void* group_control::get_out(outputnames::OUT_TYPE ot) const
+const void* group_control::get_out(output::TYPE ot) const
 {
     switch (ot)
     {
-        case outputnames::OUT_PLAY_STATE: return &out_play_state;
+        case output::OUT_PLAY_STATE: return &out_play_state;
         default: return 0;
     }
 }
 
-const void* group_control::set_in(inputnames::IN_TYPE it, const void* o)
+const void* group_control::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_PLAY_TRIG:
+        case input::IN_PLAY_TRIG:
             return in_play_trig = (STATUS const*)o;
-        case inputnames::IN_STOP_TRIG:
+        case input::IN_STOP_TRIG:
             return in_stop_trig = (STATUS const*)o;
         default:
             return 0;
     }
 }
 
-const void* group_control::get_in(inputnames::IN_TYPE it) const
+const void* group_control::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_PLAY_TRIG: return in_play_trig;
-        case inputnames::IN_STOP_TRIG: return in_stop_trig;
+        case input::IN_PLAY_TRIG: return in_play_trig;
+        case input::IN_STOP_TRIG: return in_stop_trig;
         default: return 0;
     }
 }
 
-bool group_control::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool group_control::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::GROUP_NAME:
+        case param::GROUP_NAME:
             return set_group_name((const char*)data);
         default:
             return false;
     }
 }
 
-const void* group_control::get_param(paramnames::PAR_TYPE pt) const
+const void* group_control::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::GROUP_NAME: return group_name;
+        case param::GROUP_NAME: return group_name;
         default: return 0;
     }
 }
@@ -190,6 +185,6 @@ void group_control::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::GROUP_NAME);
+    register_param(param::GROUP_NAME);
 }
 

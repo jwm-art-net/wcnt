@@ -21,7 +21,7 @@ public:
         return add_at_tail(sm)->get_data();
     }
 
-    synthmod* create_module(synthmodnames::SYNTHMOD_TYPE smt,
+    synthmod* create_module(module::TYPE smt,
                             const char* );
 
     bool delete_module(synthmod* sm);
@@ -30,7 +30,7 @@ public:
         return find_in_data(sneak_first(), name(n))->get_data();
     }
 
-    synthmod* get_first_of_type(synthmodnames::SYNTHMOD_TYPE smt) {
+    synthmod* get_first_of_type(module::TYPE smt) {
         return (search_result =
             find_in_data(sneak_first(), search_type = smt)
                 )->get_data();
@@ -81,7 +81,7 @@ public:
 
 private:
     linkedlist* emptyrunlist;
-    synthmodnames::SYNTHMOD_TYPE search_type;
+    module::TYPE search_type;
     llitem* search_result;
     static nonezero* off;
 };

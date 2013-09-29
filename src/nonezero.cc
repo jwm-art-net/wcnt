@@ -5,7 +5,7 @@
 nonezero::nonezero(const char* uname) :
 
  synthmod(
-    synthmodnames::NONEZERO,
+    module::NONEZERO,
     uname,
     SM_EMPTY_RUN | SM_UNGROUPABLE | SM_UNDUPLICABLE),
 
@@ -14,12 +14,12 @@ nonezero::nonezero(const char* uname) :
 {
     out_none_string = new char[1];
     *out_none_string = '\0';
-    register_output(outputnames::OUT_NONE_DOUBLE);
-    register_output(outputnames::OUT_NONE_SHORT);
-    register_output(outputnames::OUT_NONE_ULONG);
-    register_output(outputnames::OUT_NONE_TRIG);
-    register_output(outputnames::OUT_NONE_STATE);
-    register_output(outputnames::OUT_NONE_STRING);
+    register_output(output::OUT_NONE_DOUBLE);
+    register_output(output::OUT_NONE_SHORT);
+    register_output(output::OUT_NONE_ULONG);
+    register_output(output::OUT_NONE_TRIG);
+    register_output(output::OUT_NONE_STATE);
+    register_output(output::OUT_NONE_STRING);
 }
 
 nonezero::~nonezero()
@@ -28,16 +28,16 @@ nonezero::~nonezero()
         delete [] out_none_string;
 }
 
-const void* nonezero::get_out(outputnames::OUT_TYPE ot) const
+const void* nonezero::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_NONE_DOUBLE:  return &out_none_double;
-        case outputnames::OUT_NONE_SHORT:   return &out_none_short;
-        case outputnames::OUT_NONE_ULONG:   return &out_none_ulong;
-        case outputnames::OUT_NONE_TRIG:    return &out_none_STATUS;
-        case outputnames::OUT_NONE_STATE:   return &out_none_STATUS;
-        case outputnames::OUT_NONE_STRING:  return &out_none_string;
+        case output::OUT_NONE_DOUBLE:  return &out_none_double;
+        case output::OUT_NONE_SHORT:   return &out_none_short;
+        case output::OUT_NONE_ULONG:   return &out_none_ulong;
+        case output::OUT_NONE_TRIG:    return &out_none_STATUS;
+        case output::OUT_NONE_STATE:   return &out_none_STATUS;
+        case output::OUT_NONE_STRING:  return &out_none_string;
         default: return 0;
     }
 }

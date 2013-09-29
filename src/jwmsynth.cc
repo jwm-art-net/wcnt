@@ -80,7 +80,7 @@ bool jwmsynth::validate_synth()
         }
         sm = jwm.get_modlist()->goto_next();
     }
-    if (jwm.get_modlist()->get_first_of_type(synthmodnames::WCNTEXIT)==0)
+    if (jwm.get_modlist()->get_first_of_type(module::WCNTEXIT)==0)
     {
         jwm_err("%s", "No wcnt_exit module created. Without this module "
                                          "I won't know when to stop.");

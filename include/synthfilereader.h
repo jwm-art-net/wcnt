@@ -53,8 +53,8 @@ public:
     const char* get_wc_error_msg() const { return wc_err_msg; }
 
     virtual stockerrs::ERR_TYPE validate();
-    bool set_param(paramnames::PAR_TYPE, const void*);
-    const void* get_param(paramnames::PAR_TYPE pt) const;
+    bool set_param(param::TYPE, const void*);
+    const void* get_param(param::TYPE pt) const;
     dobj const* add_dobj(dobj*);
 
 private:

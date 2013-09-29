@@ -177,10 +177,10 @@ bool synthfilereader::read_and_create_synthmod(const char* com)
     if (jwm.is_verbose())
         cout << "end " << mod->get_username() << endl;
     if (include_mod(mod->get_username())) {
-        if (mod->get_module_type() == synthmodnames::WCNTEXIT)
+        if (mod->get_module_type() == module::WCNTEXIT)
         {
             if (jwm.get_modlist()->
-                    get_first_of_type(synthmodnames::WCNTEXIT))
+                    get_first_of_type(module::WCNTEXIT))
             {
                 wc_err("Cannot create more than one wcnt_exit module. Not "
                                     "creating %s.", mod->get_username());
@@ -291,10 +291,10 @@ bool synthfilereader::include_dbj(const char* name)
 
 synthmod* synthfilereader::read_synthmodule(const char* com)
 {
-    synthmodnames::SYNTHMOD_TYPE
-                smt = synthmodnames::get_type(com);
-    if (smt == synthmodnames::FIRST 
-        || smt == synthmodnames::NONEZERO)
+    module::TYPE
+                smt = module::names::type(com);
+    if (smt == module::ERR_TYPE 
+        || smt == module::NONEZERO)
     {
         wc_err("Unrecognised wcnt/jwmsynth module %s.", com);
         return 0;
@@ -318,7 +318,7 @@ synthmod* synthfilereader::read_synthmodule(const char* com)
         wc_err("The %s module name %s uses the '.' character which is "
                 "reserved for grouped modules only (use the group data "
                 "object if you want to add the module to a group.)",
-                synthmodnames::get_name(smt), modname.c_str());
+                module::names::get(smt), modname.c_str());
         return 0;
     }
     if (include_mod(modname.c_str())) {
@@ -428,7 +428,7 @@ dobj* synthfilereader::read_dobj(const char* com)
         if (sm){ // formality because of parameditor.cc workings.
             wc_err("Cannot name %s %s, the name is already in use by a "
                     "module of type %s.", com, sm->get_username(),
-                    synthmodnames::get_name(sm->get_module_type()));
+                    module::names::get(sm->get_module_type()));
             return 0;
         }
         inc_current = true;
@@ -595,7 +595,7 @@ bool synthfilereader::read_dobjs(dobj* dbj)
 //--
 bool synthfilereader::read_dobjs(synthmod* sm)
 {
-    synthmodnames::SYNTHMOD_TYPE smt = sm->get_module_type();
+    module::TYPE smt = sm->get_module_type();
     moddobjlist* mdbjslist = jwm.get_moddobjlist();
     moddobj* mdbj = mdbjslist->get_first_of_type(smt);
     while(mdbj) { // module may contain more than one list (ie timemap)
@@ -681,7 +681,7 @@ bool synthfilereader::read_dobjs(synthmod* sm)
 // when reading an EDIT dobj type contained in an EDIT_LST dobjtype. they
 // point to a char string which is the EDIT dobj name, and another which 
 // is the EDITLIST dobj name and are used to terminate reading strings
-// to add to the string list paramnames::TYPE PAR_STR_LIST.
+// to add to the string list param::TYPE PAR_STR_LIST.
 
 bool synthfilereader::
 read_dobj_params(dobj* dbj, const char* endterm)
@@ -694,15 +694,15 @@ read_dobj_params(dobj* dbj, const char* endterm)
     const char* enda = dobjnames::get_name(dobjtype);
     while(param) {
         ostringstream conv;
-        paramnames::PAR_TYPE pt = param->get_partype();
+        param::TYPE pt = param->get_partype();
         const char* parname;
-        if (pt != paramnames::STR_UNNAMED
-            && pt != paramnames::STR_LIST) 
+        if (pt != param::STR_UNNAMED
+            && pt != param::STR_LIST) 
         {
             parname = read_command();
         }
         string* datastr;
-        if (pt == paramnames::STR_LIST) {
+        if (pt == param::STR_LIST) {
             datastr = (string*)read_string_list_param(enda, endterm);
             if (!datastr)
             {
@@ -818,23 +818,21 @@ bool synthfilereader::read_inputs(synthmod* sm)
     if (jwm.is_verbose() && inp)
         cout << "--------" << endl;
     while(inp) { // step through each  input for module
-        inputnames::IN_TYPE it = inp->get_inputtype();
+        input::TYPE it = inp->get_inputtype();
         const char* inputname = read_command();
-        if (strcmp(inputnames::get_name(it), inputname) != 0) {
+        if (strcmp(input::names::get(it), inputname) != 0) {
             wc_err("expected input type %s got %s instead.", 
-                    inputnames::get_name(it), inputname);
+                    input::names::get(it), inputname);
             delete inlist;
             return false;
         } else {
-            inputnames::IN_TYPE 
-                        input_type = inputnames::get_type(inputname);
+            input::TYPE input_type = input::names::type(inputname);
             string outmodname;
             *synthfile >> outmodname;
             if (outmodname == "off") {
                 if (inc_mod) {
-                    outputnames::OUT_TYPE
-                        offout = outputnames::get_nonezerotype(
-                                     inputnames::get_category(input_type));
+                    output::TYPE offout = output::names::get_off_type(
+                                     input::names::category(input_type));
                     connector* connect = new
                      connector(sm, input_type,
                         outmodname.c_str(), offout);
@@ -849,16 +847,16 @@ bool synthfilereader::read_inputs(synthmod* sm)
             {
                 string outputname;
                 *synthfile >> outputname;
-                outputnames::OUT_TYPE output_type = outputnames::get_type(
+                output::TYPE output_type = output::names::type(
                                                         outputname.c_str());
-                if (output_type == outputnames::OUT_FIRST) {
+                if (output_type == output::ERR_TYPE) {
                     wc_err("Input %s set with unknown output type %s.",
                                             inputname, outputname.c_str());
                     delete inlist;
                     return false;
                 }
-                if (inputnames::get_category(input_type)
-                    != outputnames::get_category(output_type))
+                if (input::names::category(input_type)
+                != output::names::category(output_type))
                 {
                     wc_err("Input %s set with wrong category of output %s.",
                                             inputname, outputname.c_str());
@@ -866,9 +864,8 @@ bool synthfilereader::read_inputs(synthmod* sm)
                     return false;
                 }
                 if (inc_mod) {
-                    connector* connect =
-                        new connector(sm, input_type, 
-                            outmodname.c_str(), output_type);
+                    connector* connect = new connector(sm, input_type, 
+                                        outmodname.c_str(), output_type);
                     jwm.get_connectlist()->add_connector(connect);
                     if (jwm.is_verbose()){
                         cout << "added connector " << inputname << "\t"
@@ -903,7 +900,7 @@ bool synthfilereader::read_params(synthmod* sm)
         cout << "--------" << endl;
     while(param) {
         paramname = read_command();
-        paramnames::PAR_TYPE pt = param->get_paramtype();
+        param::TYPE pt = param->get_paramtype();
         ostringstream conv;
         string datastr;
         *synthfile >> datastr;
@@ -1088,17 +1085,17 @@ stockerrs::ERR_TYPE synthfilereader::validate()
     return stockerrs::ERR_NO_ERROR;
 }
 
-bool synthfilereader::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool synthfilereader::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     { // PAR_ADSRSECT is iocat::CAT_FIX_STR.
-        case paramnames::FILENAME:
+        case param::FILENAME:
             set_wc_filename((const char*)data);
             return true;
-        case paramnames::MOD_ACTION:
+        case param::MOD_ACTION:
             mod_action = (ACTION)(*(int*)data);
             return true;
-        case paramnames::DOBJ_ACTION:
+        case param::DOBJ_ACTION:
             dobj_action = (ACTION)(*(int*)data);
             return true;
         default:
@@ -1106,13 +1103,13 @@ bool synthfilereader::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* synthfilereader::get_param(paramnames::PAR_TYPE pt) const
+const void* synthfilereader::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::FILENAME:      return wc_filename;
-        case paramnames::MOD_ACTION:    return &mod_action;
-        case paramnames::DOBJ_ACTION:   return &dobj_action;
+        case param::FILENAME:      return wc_filename;
+        case param::MOD_ACTION:    return &mod_action;
+        case param::DOBJ_ACTION:   return &dobj_action;
         default: return 0;
     }
 }
@@ -1144,9 +1141,9 @@ void synthfilereader::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::FILENAME);
-    register_param(paramnames::MOD_ACTION, "include/exclude");
-    register_param(paramnames::DOBJ_ACTION, "include/exclude");
+    register_param(param::FILENAME);
+    register_param(param::MOD_ACTION, "include/exclude");
+    register_param(param::DOBJ_ACTION, "include/exclude");
     register_dobjdobj(dobjnames::LST_MODULES, dobjnames::SIN_MODNAME);
     register_dobjdobj(dobjnames::LST_DOBJS, dobjnames::SIN_DOBJNAME);
 }
