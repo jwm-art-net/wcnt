@@ -18,10 +18,10 @@ class dobj;
 class dobjparam
 {
 public:
-    dobjparam(dobjnames::DOBJ_TYPE dt, param::TYPE pt);
+    dobjparam(dataobj::TYPE dt, param::TYPE pt);
     ~dobjparam(){};
-    dobjnames::DOBJ_TYPE get_dobjtype() const {
-        return (this) ? dobjtype : dobjnames::DOBJ_FIRST;
+    dataobj::TYPE get_dobjtype() const {
+        return (this) ? dobjtype : dataobj::ERR_TYPE;
     }
     param::TYPE get_partype() const {
         return (this) ? partype : param::ERR_TYPE;
@@ -31,9 +31,9 @@ public:
             ? param::names::category(partype)
             : iocat::ERR_TYPE;
     }
-    bool validate(dobj*, stockerrs::ERR_TYPE);
+    bool validate(dobj*, errors::TYPE);
 
-    bool operator()(dobjnames::DOBJ_TYPE & dt) const {
+    bool operator()(dataobj::TYPE & dt) const {
         return dobjtype == dt;
     }
 
@@ -42,7 +42,7 @@ public:
     }
 
 private:
-    dobjnames::DOBJ_TYPE dobjtype;
+    dataobj::TYPE dobjtype;
     param::TYPE partype;
 };
 

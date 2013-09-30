@@ -20,7 +20,7 @@ public:
 
     // virtual funcs
     void run();
-    stockerrs::ERR_TYPE validate(); // opens the wav
+    errors::TYPE validate(); // opens the wav
     const void* get_out(output::TYPE) const;
     const void* set_in(input::TYPE, const void*);
     const void* get_in(input::TYPE) const;

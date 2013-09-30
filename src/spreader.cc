@@ -87,19 +87,19 @@ synthmod* spreader::duplicate_module(const char* uname, DUP_IO dupio)
     return duplicate_list_module(this, goto_first(), uname, dupio);
 }
 
-stockerrs::ERR_TYPE spreader::validate()
+errors::TYPE spreader::validate()
 {
     if (!goto_first() || !goto_next()) {
         sm_err("%s", "Must be at least two signals to spread across.");
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
-    return stockerrs::ERR_NO_ERROR;
+    return errors::NO_ERROR;
 }
 
 dobj* spreader::add_dobj(dobj* dbj)
 {
-    if (dbj->get_object_type() == dobjnames::DOBJ_SYNTHMOD) {
+    if (dbj->get_object_type() == dataobj::DOBJ_SYNTHMOD) {
         synthmod* sm = ((dobjmod*)dbj)->get_synthmod();
         if (!sm->flag(SM_HAS_OUT_OUTPUT)) {
             sm_err("%s will not accept the module %s because modules of "
@@ -120,7 +120,7 @@ dobj* spreader::add_dobj(dobj* dbj)
         jwm.get_dobjlist()->add_dobj(dbj);
         return dbj;
     }
-    sm_err("%s %s to %s", stockerrs::major, stockerrs::bad_add,
+    sm_err("%s %s to %s", errors::stock::major, errors::stock::bad_add,
                                                     get_username());
     return 0;
 }
@@ -175,6 +175,6 @@ void spreader::init_first()
         return;
     register_param(param::START_LEVEL);
     register_param(param::END_LEVEL);
-    register_moddobj(dobjnames::LST_SIGNALS, dobjnames::DOBJ_SYNTHMOD);
+    register_moddobj(dataobj::LST_SIGNALS, dataobj::DOBJ_SYNTHMOD);
 }
 

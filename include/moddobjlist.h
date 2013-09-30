@@ -15,7 +15,7 @@ public:
     ~moddobjlist(){};
 
     moddobj* register_moddobj(
-        module::TYPE, dobjnames::DOBJ_TYPE);
+        module::TYPE, dataobj::TYPE);
 
     moddobj* get_first_of_type(module::TYPE smt) {
         return (search_result =

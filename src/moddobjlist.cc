@@ -6,7 +6,7 @@ moddobjlist::moddobjlist() :
 }
 
 moddobj* moddobjlist::register_moddobj(module::TYPE smt,
-                                                    dobjnames::DOBJ_TYPE fc)
+                                                    dataobj::TYPE fc)
 {
     if (smt <= module::ERR_TYPE || smt >= module::LAST_TYPE)
         return 0;

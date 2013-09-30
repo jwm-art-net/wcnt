@@ -25,11 +25,6 @@
 #include <cstdlib>
 #include <sstream>
 
-namespace dbjdefs
-{
-dobjnames::DOBJ_TYPE get_dobj_def_type(int i)
-    {   return (dobjnames::DOBJ_TYPE)(i + dobjnames::DOBJ_DEFS + 1); }
-}
 
 cmdline::cmdline(int const argc, const char** const argv) :
  opts_count(argc), opts(argv), opts_flags(0), good_opts(false)
@@ -473,22 +468,22 @@ void cmdline::dobj_help(module::TYPE smt)
     msg += module::names::get(smt);
     while(mdbj) {
         dobjdobjlist* mod_ddlist = mdbj->get_dobjdobjlist();
-        dobjnames::DOBJ_TYPE dt = mdbj->get_first_child();
+        dataobj::TYPE dt = mdbj->get_first_child();
         dobjdobjlist* ddlist =
             mod_ddlist->get_dobjdobjlist_for_dobjtype(dt);
         dobjdobj* dd = ddlist->goto_first();
         msg += "\n    ";
-        msg += dobjnames::get_name(dt);
+        msg += dataobj::names::get(dt);
         while(dd) {
-            dobjnames::DOBJ_TYPE sprogtype = dd->get_dobj_sprog();
+            dataobj::TYPE sprogtype = dd->get_dobj_sprog();
             msg += "\n        ";
-            msg += dobjnames::get_name(sprogtype);
+            msg += dataobj::names::get(sprogtype);
             delete jwm.get_dobjlist()->create_dobj(sprogtype);
             dobj_help_params(sprogtype);
             dd = ddlist->goto_next();
         }
         msg += "\n    ";
-        msg += dobjnames::get_name(dt);
+        msg += dataobj::names::get(dt);
         delete ddlist;
         mdbj = jwm.get_moddobjlist()->get_next_of_type();
     }
@@ -500,9 +495,7 @@ void cmdline::dobj_help()
 {
     int n = data[DH_IX].par1;
     std::string dname = (n != 0 && n < opts_count) ? opts[n] : "";
-    dobjnames::DOBJ_TYPE
-        dt = dobjnames::get_type(
-            dname.c_str());
+    dataobj::TYPE dt = dataobj::names::type(dname.c_str());
 
     dobj* dbj = jwm.get_dobjlist()->create_dobj(dt);
     if (!dbj) {
@@ -510,31 +503,21 @@ void cmdline::dobj_help()
         if (opts_count == 3)
             msg = "\nno data object available named " + dname;
         msg += "\navailable data object types are:\n\n";
-        int dbjcount=dobjnames::DOBJ_SYNTHMOD - dobjnames::DOBJ_DEFS - 1;
-        const char** dbjnames = new const char*[dbjcount];
-        for (int i = dobjnames::DOBJ_DEFS + 1;
-                i < dobjnames::DOBJ_SYNTHMOD; i++)
-            dbjnames[i - dobjnames::DOBJ_DEFS - 1] =
-                dobjnames::get_name((dobjnames::DOBJ_TYPE)i);
-        std::string* str = collumnize(dbjnames, dbjcount, 20, 2, true);
+        int count = 0;
+        const char** dbjnames =
+            dataobj::names::all_in_category(dataobj::CAT_DEF, &count);
+        std::string* str = collumnize(dbjnames, count, 20, 2, true);
         msg += *str;
         delete str;
         delete [] dbjnames;
         return;
     }
     dobjdobjlist* ddlist = jwm.get_topdobjlist()->get_first_of_type(dt);
-
-    if (!ddlist) {
-        std::cout << "\nfailed to get topdobjlist of " <<
-            dobjnames::get_name(dt);
-        return;
-    }
-
     msg += "\n";
-    msg += dobjnames::get_name(dt);
+    msg += dataobj::names::get(dt);
     msg += "\nusername";
 
-    const char* descr = dobjnames::get_descr(dt);
+    const char* descr = dataobj::names::descr(dt);
     if (descr) {
         std::string* d = justify(descr, 60, ' ', "\n// ", 0);
         msg += *d;
@@ -549,23 +532,23 @@ void cmdline::dobj_help()
     while(ddlist && p) {
         dobjdobj* dd = ddlist->goto_first();
         while(dd) {
-            dobjnames::DOBJ_TYPE sprogtype = dd->get_dobj_sprog();
+            dataobj::TYPE sprogtype = dd->get_dobj_sprog();
             msg += "\n    ";
-            msg += dobjnames::get_name(sprogtype);
+            msg += dataobj::names::get(sprogtype);
             dobjdobjlist::linkedlist* sddlist = 0;
             sddlist = ddlist->get_dobjdobjlist_for_dobjtype(sprogtype);
             dobjdobj* sdd = sddlist->goto_first();
             while(sdd) {
-                dobjnames::DOBJ_TYPE ssprogtype = sdd->get_dobj_sprog();
+                dataobj::TYPE ssprogtype = sdd->get_dobj_sprog();
                 msg += "\n        ";
-                msg += dobjnames::get_name(ssprogtype);
+                msg += dataobj::names::get(ssprogtype);
                 delete jwm.get_dobjlist()->create_dobj(ssprogtype);
                 dobj_help_params(ssprogtype);
                 sdd = sddlist->goto_next();
             }
             delete sddlist;
             msg += "\n    ";
-            msg += dobjnames::get_name(sprogtype);
+            msg += dataobj::names::get(sprogtype);
             delete jwm.get_dobjlist()->create_dobj(sprogtype);
             dobj_help_params(sprogtype);
             dd = ddlist->goto_next();
@@ -579,7 +562,7 @@ void cmdline::dobj_help()
     return;
 }
 
-void cmdline::dobj_help_params(dobjnames::DOBJ_TYPE dt)
+void cmdline::dobj_help_params(dataobj::TYPE dt)
 {
     char spaces[20];
     for (int i = 0; i < 20; spaces[i++] = ' ');
@@ -593,7 +576,7 @@ void cmdline::dobj_help_params(dobjnames::DOBJ_TYPE dt)
 
     if (!dparlist) {
         std::cout << "\nfailed to retrieve dobjparamlist for "
-            << dobjnames::get_name(dt);
+            << dataobj::names::get(dt);
         return;
     }
 /*

@@ -119,16 +119,12 @@ void wave_phase::init()
         invph = -1;
 }
 
-stockerrs::ERR_TYPE wave_phase::validate()
+errors::TYPE wave_phase::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, param::CYCLES,
-            stockerrs::ERR_NEG_ZERO))
-    {
-        sm_err("%s", param::names::get(param::CYCLES));
-        invalidate();
-        return stockerrs::ERR_NEG_ZERO;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::CYCLES, errors::NEG_OR_ZERO))
+        return errors::NEG_OR_ZERO;
+
+    return errors::NO_ERROR;
 }
 
 void wave_phase::run()

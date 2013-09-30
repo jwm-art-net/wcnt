@@ -98,38 +98,23 @@ const void* lfo_controller::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE lfo_controller::validate()
+errors::TYPE lfo_controller::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, param::DELAY_TIME,
-                                                stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", param::names::get(
-                                                param::DELAY_TIME));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    if (!jwm.get_paramlist()->validate(this, param::RAMP_TIME,
-                                                stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", param::names::get(
-                                                param::RAMP_TIME));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    if (!jwm.get_paramlist()->validate(this, param::RESPONSE_TIME,
-                                                stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", param::names::get(
-                                                param::RESPONSE_TIME));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
+    if (!validate_param(param::DELAY_TIME, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    if (!validate_param(param::RAMP_TIME, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    if (!validate_param(param::RESPONSE_TIME, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
     if (response_time < 0) {
         sm_err("%s less than zero.", param::names::get(
                                                 param::RESPONSE_TIME));
         invalidate();
     }
-    return stockerrs::ERR_NO_ERROR;
+    return errors::NO_ERROR;
 }
 
 void lfo_controller::init()

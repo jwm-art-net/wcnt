@@ -14,7 +14,7 @@ public:
     const void* get_out(output::TYPE) const;
     bool set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE) const;
-    stockerrs::ERR_TYPE validate();
+    errors::TYPE validate();
 
 private:
     char* note; /* is param and output */

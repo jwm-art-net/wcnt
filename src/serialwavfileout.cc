@@ -131,23 +131,19 @@ const void* serialwavfileout::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE serialwavfileout::validate()
+errors::TYPE serialwavfileout::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, param::START_BAR,
-            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", param::names::get(param::START_BAR));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
+    if (!validate_param(param::START_BAR, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
     if (end_bar <= start_bar) {
         sm_err("%s should be after %s.", 
                 param::names::get(param::END_BAR),
                 param::names::get(param::START_BAR));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
-    return stockerrs::ERR_NO_ERROR;
+    return errors::NO_ERROR;
 }
 
 void serialwavfileout::set_wav_basename(const char* fname)

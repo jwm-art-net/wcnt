@@ -132,56 +132,27 @@ const void* osc_clock::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE osc_clock::validate()
+errors::TYPE osc_clock::validate()
 {
-    modparamlist* pl = jwm.get_paramlist();
-    if (!pl->validate(this, param::PORTAMENTO,
-                                            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", param::names::get(
-                                            param::PORTAMENTO));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    if (!pl->validate(this, param::RESPONSE_TIME,
-                                            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", param::names::get(
-                                            param::RESPONSE_TIME));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    if (!pl->validate(this, param::FREQ_MOD1SIZE,
-                                            stockerrs::ERR_RANGE_FMOD))
-    {
-        sm_err("%s", param::names::get(
-                                            param::FREQ_MOD1SIZE));
-        invalidate();
-        return stockerrs::ERR_RANGE_FMOD;
-    }
-    if (!pl->validate(this, param::FREQ_MOD2SIZE,
-                                            stockerrs::ERR_RANGE_FMOD))
-    {
-        sm_err("%s", param::names::get(
-                                            param::FREQ_MOD2SIZE));
-        invalidate();
-        return stockerrs::ERR_RANGE_FMOD;
-    }
-    if (!pl->validate(this, param::TUNING_SEMITONES,
-                                            stockerrs::ERR_RANGE_SEMI))
-    {
-        sm_err("%s", param::names::get(
-                                            param::TUNING_SEMITONES));
-        invalidate();
-        return stockerrs::ERR_RANGE_SEMI;
-    }
-    if (!pl->validate(this, param::OCTAVE, stockerrs::ERR_RANGE_OCT))
-    {
-        sm_err("%s", param::names::get(param::OCTAVE));
-        invalidate();
-        return stockerrs::ERR_RANGE_OCT;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::PORTAMENTO, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    if (!validate_param(param::RESPONSE_TIME, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    if (!validate_param(param::FREQ_MOD1SIZE, errors::RANGE_FMOD))
+        return errors::RANGE_FMOD;
+
+    if (!validate_param(param::FREQ_MOD2SIZE, errors::RANGE_FMOD))
+        return errors::RANGE_FMOD;
+
+    if (!validate_param(param::TUNING_SEMITONES, errors::RANGE_SEMI))
+        return errors::RANGE_SEMI;
+
+    if (!validate_param(param::OCTAVE, errors::RANGE_OCT))
+        return errors::RANGE_OCT;
+
+    return errors::NO_ERROR;
 }
 
 void osc_clock::init()

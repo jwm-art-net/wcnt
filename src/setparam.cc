@@ -45,18 +45,28 @@ template
 void* compute<dobj>(dobj*, param::TYPE pt, void* data, int op);
 
 template <typename T>
-bool set_param(T* obj, const char* par, param::TYPE pt,
-    const char* value, std::ostringstream* result)
+bool set_param(T* obj, const char* par,     param::TYPE pt,
+                       const char* value,   std::ostringstream* result)
 {
+    /*#ifdef DEBUG
+    std::cout << "set_param: ";
+    if (obj->get_username())
+        std::cout << "\tobj: " << obj->get_username();
+    if (par)
+        std::cout << "\tparam: "  << par;
+    std::cout << "\texpecting: " << param::names::get(pt);
+    if (value)
+        std::cout << "\tvalue: " << value;
+    std::cout << std::endl;
+    #endif*/
+
     const char* parname = param::names::get(pt);
-    if (pt != param::STR_UNNAMED && pt != param::STR_LIST)
-    {
+    if (pt != param::STR_UNNAMED && pt != param::STR_LIST) {
         if (strcmp(par, parname) != 0) {
-            setpar_err("Expected %s got %s instead. %s",
-                            parname, par,
+            setpar_err("expected %s got %s instead. %s", parname, par,
                     ((param::names::type(par) == param::ERR_TYPE
                         && (time(0) % 8) == 0)
-                                ? ". Just can't get the staff these days."
+                                ? "Just can't get the staff these days."
                                 : ""));
             return false;
         }
@@ -100,13 +110,19 @@ bool set_param(T* obj, const char* par, param::TYPE pt,
         }
     }
     if (!obj->set_param(pt, data)) {
+        printf("obj:%p\n", obj);
+        printf("obj username: %s\n", obj->get_username());
+        printf("par:%s\n", par);
+        printf("value:%s\n", value);
         if (ioc == iocat::FIX_STR) {
             delete (int*)data;
             data = datatmp;
         }
         iocatconv::destroy_iocat_data(ioc, data);
-        setpar_err("Module %s refuses to set parameter %s with value %s.",
-                                        obj->get_username(), par, value);
+        const char* n = obj->get_username();
+        setpar_err("%s refuses to set parameter %s with value %s.",
+                                        (n ? n : ""), (par ? par : ""),
+                                                                value);
         return false;
     }
     if (ioc == iocat::FIX_STR) {
@@ -171,7 +187,6 @@ int get_operator(const char* txt)
             return 0;
     }
 }
-
 
 const char* get_error_msg()
 {

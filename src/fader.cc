@@ -91,39 +91,21 @@ const void* fader::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE fader::validate()
+errors::TYPE fader::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, param::START_BAR,
-                                            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", param::names::get(param::START_BAR));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    if (!jwm.get_paramlist()->validate(this, param::END_BAR,
-                                            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", param::names::get(param::END_BAR));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    if (!jwm.get_paramlist()->validate(this, param::FADE_IN_TIME,
-                                            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", param::names::get(
-                                            param::FADE_IN_TIME));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    if (!jwm.get_paramlist()->validate(this, param::FADE_OUT_TIME,
-                                            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", param::names::get(
-                                            param::FADE_OUT_TIME));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::START_BAR, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    if (!validate_param(param::END_BAR, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    if (!validate_param(param::FADE_IN_TIME, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    if (!validate_param(param::FADE_OUT_TIME, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    return errors::NO_ERROR;
 }
 
 void fader::init()

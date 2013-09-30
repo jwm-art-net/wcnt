@@ -61,17 +61,12 @@ const void* trigdelay::get_param(param::TYPE pt) const
     return (pt == param::DELAY_TIME ? &delay_time : 0);
 }
 
-stockerrs::ERR_TYPE trigdelay::validate()
+errors::TYPE trigdelay::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, param::DELAY_TIME,
-            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", param::names::get(
-                                            param::DELAY_TIME));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::DELAY_TIME, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    return errors::NO_ERROR;
 }
 
 void trigdelay::run()

@@ -7,7 +7,7 @@
 
 
 riff_editor::riff_editor() :
- dobj(dobjnames::DEF_RIFFEDITOR), riff_source(0)
+ dobj(dataobj::DEF_RIFFEDITOR), riff_source(0)
 {
     init_first();
 }
@@ -21,7 +21,7 @@ bool riff_editor::set_param(param::TYPE pt, const void* data)
     switch(pt)
     {
     case param::RIFFNAME:
-        if (((dobj*)data)->get_object_type() == dobjnames::DEF_RIFF) {
+        if (((dobj*)data)->get_object_type() == dataobj::DEF_RIFF) {
             set_riff_source((riffdata*)data);// pass pointer
             return true;
         }
@@ -45,10 +45,10 @@ const void* riff_editor::get_param(param::TYPE pt) const
 dobj const* riff_editor::add_dobj(dobj* dbj)
 {
     dobj* retv = 0;
-    dobjnames::DOBJ_TYPE dbjtype = dbj->get_object_type();
+    dataobj::TYPE dbjtype = dbj->get_object_type();
     switch(dbjtype)
     {
-    case dobjnames::SIN_NOTE:
+    case dataobj::SIN_NOTE:
         retv = riff_source->insert_and_position_note((note_data*)dbj);
         if (!retv)
             dobjerr("Could not add note change to %s by way of "
@@ -56,16 +56,16 @@ dobj const* riff_editor::add_dobj(dobj* dbj)
                                       get_username());
         break;
     default:
-        dobjerr("%s %s to %s", stockerrs::major, stockerrs::bad_add,
+        dobjerr("%s %s to %s", errors::stock::major, errors::stock::bad_add,
                                                         get_username());
         retv = 0;
     }
     return retv;
 }
 
-stockerrs::ERR_TYPE riff_editor::validate()
+errors::TYPE riff_editor::validate()
 {
-    return stockerrs::ERR_NO_ERROR;
+    return errors::NO_ERROR;
 }
 
 void riff_editor::init_first()
@@ -73,7 +73,7 @@ void riff_editor::init_first()
     if (done_first())
         return;
     register_param(param::RIFFNAME);
-    register_dobjdobj(dobjnames::LST_NOTES, dobjnames::SIN_NOTE);
+    register_dobjdobj(dataobj::LST_NOTES, dataobj::SIN_NOTE);
 }
 
 

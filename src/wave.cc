@@ -70,7 +70,7 @@ const void* wave::get_param(param::TYPE pt) const
 
 void wave::init()
 {
-    if (!(table = wave_tables::get_table(type))){
+    if (!(table = wave_tables::get_table(type))) {
         invalidate();
         return;
     }

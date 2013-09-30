@@ -34,7 +34,7 @@ class riff_editor : public dobj
     bool set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE) const;
     dobj const* add_dobj(dobj*);
-    stockerrs::ERR_TYPE validate();
+    errors::TYPE validate();
 
  private:
     riffdata* riff_source;

@@ -94,12 +94,12 @@ dobj* dynamic::add_dobj(dobj* dbj)
     dobj* retv = 0;
     switch(dbj->get_object_type())
     {
-    case dobjnames::SIN_DVERTEX:
+    case dataobj::SIN_DVERTEX:
         if (!(retv = add_dvertex((dynvertex*)dbj)))
             sm_err("Could not add vertex to %s.", get_username());
         break;
     default:
-    sm_err("%s %s to %s", stockerrs::major, stockerrs::bad_add,
+    sm_err("%s %s to %s", errors::stock::major, errors::stock::bad_add,
                                                     get_username());
     }
     return retv;
@@ -121,21 +121,21 @@ synthmod* dynamic::duplicate_module(const char* uname, DUP_IO dupio)
     return dup;
 }
 
-stockerrs::ERR_TYPE dynamic::validate()
+errors::TYPE dynamic::validate()
 {
     if (!goto_first() || !goto_next()) {
         sm_err("%s", "requires two or more dvertex added to amp_map.");
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
     if (up_thresh < lo_thresh) {
         sm_err("%s must not be less than %s.",
                 param::names::get(param::UP_THRESH),
                 param::names::get(param::LO_THRESH));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
-    return stockerrs::ERR_NO_ERROR;
+    return errors::NO_ERROR;
 }
 
 dynvertex* dynamic::add_dvertex(double sil, double usol, double lsol)
@@ -241,5 +241,5 @@ void dynamic::init_first()
     register_param(param::LO_THRESH);
     register_param(param::POSNEG_MIRROR);
     register_param(param::USE_RATIOS);
-    register_moddobj(dobjnames::LST_DYNAMICS, dobjnames::SIN_DVERTEX);
+    register_moddobj(dataobj::LST_DYNAMICS, dataobj::SIN_DVERTEX);
 }

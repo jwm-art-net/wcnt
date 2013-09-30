@@ -2,7 +2,7 @@
 #include "../include/dobjparamlist.h"
 
 modnamedobj::modnamedobj() :
- dobj(dobjnames::SIN_MODNAME),
+ dobj(dataobj::SIN_MODNAME),
  modname(0)
 {
     init_first();

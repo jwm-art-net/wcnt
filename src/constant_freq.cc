@@ -47,16 +47,12 @@ const void* constant_freq::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE constant_freq::validate()
+errors::TYPE constant_freq::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, param::FREQ,
-            stockerrs::ERR_RANGE_FREQ))
-    {
-        sm_err("%s", param::names::get(param::FREQ));
-        invalidate();
-        return stockerrs::ERR_RANGE_FREQ;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::FREQ, errors::RANGE_FREQ))
+        return errors::RANGE_FREQ;
+
+    return errors::NO_ERROR;
 }
 
 void constant_freq::init()

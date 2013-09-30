@@ -3,7 +3,7 @@
 #include "../include/dobjparamlist.h"
 
 dobjnamedobj::dobjnamedobj() :
- dobj(dobjnames::SIN_DOBJNAME),
+ dobj(dataobj::SIN_DOBJNAME),
  dobjname(0)
 {
     init_first();

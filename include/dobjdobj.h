@@ -19,19 +19,19 @@
 class dobjdobj
 {
 public:
-    dobjdobj(dobjnames::DOBJ_TYPE, dobjnames::DOBJ_TYPE);
+    dobjdobj(dataobj::TYPE, dataobj::TYPE);
     dobjdobj(dobjdobj &);
     ~dobjdobj();
-    dobjnames::DOBJ_TYPE get_dobj_type() const {
-        return (this) ? dobj_type : dobjnames::DOBJ_FIRST;
+    dataobj::TYPE get_dobj_type() const {
+        return (this) ? dobj_type : dataobj::ERR_TYPE;
     }
-    dobjnames::DOBJ_TYPE get_dobj_sprog() const {
-        return (this) ? sprog : dobjnames::DOBJ_FIRST;
+    dataobj::TYPE get_dobj_sprog() const {
+        return (this) ? sprog : dataobj::ERR_TYPE;
     }
 
 private:
-    dobjnames::DOBJ_TYPE dobj_type;
-    dobjnames::DOBJ_TYPE sprog;
+    dataobj::TYPE dobj_type;
+    dataobj::TYPE sprog;
 };
 
 #endif

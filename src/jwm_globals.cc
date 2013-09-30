@@ -34,7 +34,7 @@ jwm_globals::jwm_globals() :
  #ifdef WITH_LADSPA
  ladspaloader(0),
  #endif
- stock_errs(0)
+ wavetables(0)
 {
     inputlist   = new modinputlist;
     outputlist  = new modoutputlist;
@@ -45,13 +45,14 @@ jwm_globals::jwm_globals() :
     topdbjlist  = new topdobjlist;
     moddbjlist  = new moddobjlist;
     connectlist = new connectorlist;
-    stock_errs  = new stockerrs;
     wavetables  = new wave_tables;
     iocat::names::instantiate();
     input::names::instantiate();
     output::names::instantiate();
     param::names::instantiate();
     module::names::instantiate();
+    dataobj::names::instantiate();
+    errors::stock::instantiate();
 }
 
 jwm_globals::~jwm_globals()
@@ -65,7 +66,6 @@ jwm_globals::~jwm_globals()
     delete topdbjlist;
     delete moddbjlist;
     delete connectlist;
-    delete stock_errs;
     delete wavetables;
     // these created by friend function cmdline::set_jwm_globals()
     delete [] wc_path;

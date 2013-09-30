@@ -1,114 +1,100 @@
 #ifndef DOBJNAMES_H
 #define DOBJNAMES_H
 
-// if you want to add new dobj types then MAKE SURE you add them
-// to the CORRECT part of the enum.... and be prepared for hassle!
+#include "getnames.h"
 
-// DOBJ_TYPE check_type(DOBJ_TYPE)
-// checks the type passed is a usable type, ie is not one of these types:
-//      DOBJ_FIRST DOBJ_NONE DOBJ_INLISTS DOBJ_INSINGLES
-//      DOBJ_DEFLISTS DOBJ_DEFSINGLES DOBJ_LAST
-// if it's one of them, it returns DOBJ_FIRST, otherwise, if it's a
-// usable type it will return the value passed.
 
-class dobjnames
+namespace dataobj
 {
-public:
-    enum DOBJ_TYPE
-    {
-        //---------------------------------------------
-        DOBJ_FIRST = 0, // keep first & error type
-        //---------------------------------------------
-        DOBJ_NONE,      // hmmm, no dobj inserted?
-        //---------------------------------------------
-        DOBJ_LISTS,     // seperator
-        //---------------------------------------------
-        // lists to be defined within the module
-        // or data object
-        //---------------------------------------------
-        LST_ENVELOPE,
-        LST_WAVEFORM,
-        LST_METER,
-        LST_BPM,
-        LST_TRACK,
-        LST_MIX,
-        LST_SIGNALS,
-        LST_DYNAMICS,
-        LST_TIMINGS,
-        LST_MODULES,
-        LST_DOBJS,
-        LST_NOTES,
-        LST_EDITS,
-        LST_TRIGGERS,
-        LST_STEPS,
-        //---------------------------------------------
-        DOBJ_SINGLES,   // seperator
-        //---------------------------------------------
-        // single objects to be inserted in lists
-        // dobj inherited
-        SIN_NOTE,
-        SIN_COORD,
-        SIN_VERTEX,
-        SIN_METER,
-        SIN_BPM,
-        SIN_RIFFNODE,
-        SIN_DVERTEX,
-        SIN_TIME,
-        SIN_MODNAME,
-        SIN_DOBJNAME,
-        SIN_STEP,
-        //---------------------------------------------
-        DOBJ_EDITS,
-        //---------------------------------------------
-        // dobjs defined in a list of edits - which 
-        // interpret a list of commands contained in a
-        // string (paramnames::PAR_STR_LIST)
-        //---------------------------------------------
-        SIN_EDIT_PARAM,
-        SIN_EDIT_INPUT,
-        //---------------------------------------------
-        DOBJ_DEFS,      // seperator
-        //---------------------------------------------
-        // stand alone dobj's defined outside of
-        // a module, and inserted by name, as
-        // a parameter into either dobj or module.
-        //---------------------------------------------
-        DEF_WAVFILEIN,
-        DEF_RIFF,
-        DEF_WCFILE,
-        DEF_PARAMEDITOR,
-        DEF_INPUTEDITOR,
-        DEF_RIFFEDITOR,
-        DEF_COPIER,
-        DEF_GROUP,
-        DEF_ADSR_SCALER,
-        //---------------------------------------------
-        // special dobj for inserting synthmodules into
-        // list see dobjmod.h for more info.
-        //---------------------------------------------
-        DOBJ_SYNTHMOD,
-        //---------------------------------------------
-        DOBJ_LAST       // keep last
-        //---------------------------------------------
-    };
-    dobjnames();
-    ~dobjnames(){};
-    static const char* get_name(DOBJ_TYPE);
-    static const char* get_descr(DOBJ_TYPE);
-    static DOBJ_TYPE   get_type(const char* const);
-    static DOBJ_TYPE   check_type(DOBJ_TYPE);
-    static DOBJ_TYPE   get_sub_type(DOBJ_TYPE);
-    #ifdef UNUSED
-    static const char* get_sub_name(DOBJ_TYPE);
-    #endif
+ enum CAT
+ {
+    CAT_ERR_TYPE,
+    CAT_LIST,
+    CAT_SINGLE,
+    CAT_EDIT,
+    CAT_DEF,
+    CAT_SYNTHMOD,
+    CAT_LAST_TYPE
+ };
 
-private:
-    struct dobj_data
-    {
-        DOBJ_TYPE type;
-        const char* const name;
-        const char* const descr;
-    };
-    static const dobj_data data[DOBJ_LAST];
-};
+ enum TYPE
+ {
+    ERR_TYPE,
+    //---------------------------------------------
+    // lists to be defined within a module
+    // or data object
+    //---------------------------------------------
+    LST_ENVELOPE,
+    LST_WAVEFORM,
+    LST_METER,
+    LST_BPM,
+    LST_TRACK,
+    LST_MIX,
+    LST_SIGNALS,
+    LST_DYNAMICS,
+    LST_TIMINGS,
+    LST_MODULES,
+    LST_DOBJS,
+    LST_NOTES,
+    LST_EDITS,
+    LST_TRIGGERS,
+    LST_STEPS,
+    //---------------------------------------------
+    // single objects to be inserted in lists
+    // dobj inherited
+    //---------------------------------------------
+    SIN_NOTE,
+    SIN_COORD,
+    SIN_VERTEX,
+    SIN_METER,
+    SIN_BPM,
+    SIN_RIFFNODE,
+    SIN_DVERTEX,
+    SIN_TIME,
+    SIN_MODNAME,
+    SIN_DOBJNAME,
+    SIN_STEP,
+    //---------------------------------------------
+    // dobjs defined in a list of edits - which
+    // interpret a list of commands contained in a
+    // string (paramnames::PAR_STR_LIST)
+    //---------------------------------------------
+    SIN_EDIT_PARAM,
+    SIN_EDIT_INPUT,
+    //---------------------------------------------
+    // stand alone dobj's defined outside of
+    // a module, and inserted by name, as
+    // a parameter into either dobj or module.
+    //---------------------------------------------
+    DEF_WAVFILEIN,
+    DEF_RIFF,
+    DEF_WCFILE,
+    DEF_PARAMEDITOR,
+    DEF_INPUTEDITOR,
+    DEF_RIFFEDITOR,
+    DEF_COPIER,
+    DEF_GROUP,
+    DEF_ADSR_SCALER,
+    //---------------------------------------------
+    // special dobj for inserting synthmodules into
+    // list see dobjmod.h for more info.
+    //---------------------------------------------
+    DOBJ_SYNTHMOD,
+    //---------------------------------------------
+    LAST_TYPE
+    //---------------------------------------------
+ };
+
+ class names : public getnames<TYPE, CAT>
+ {
+  public:
+    static void instantiate() { static names paramnames; }
+
+  private:
+    names() : getnames(LAST_TYPE, data) {}
+    ~names() {}
+    static const struct gn_data data[LAST_TYPE];
+ };
+}; // namespace dataobj
+
 #endif

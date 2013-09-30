@@ -24,7 +24,7 @@ public:
     bool set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE) const;
 
-    stockerrs::ERR_TYPE validate();
+    errors::TYPE validate();
 private:
     STATUS const* in_trig;
     STATUS out_trig;

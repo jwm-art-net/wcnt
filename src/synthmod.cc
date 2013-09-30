@@ -47,8 +47,8 @@ void synthmod::set_group_name(const char* const gname)
 const void* synthmod::get_out(output::TYPE) const
 {
     #ifdef IO_PARANOIA
-    sm_err("%s %s get output where none exist.", stockerrs::major,
-                                                 stockerrs::bad, username);
+    sm_err("%s %s get output where none exist.", errors::stock::major,
+                                                 errors::stock::bad, username);
     #endif
     return 0;
 }
@@ -56,8 +56,8 @@ const void* synthmod::get_out(output::TYPE) const
 const void* synthmod::set_in(input::TYPE, const void*)
 {
     #ifdef IO_PARANOIA
-    sm_err("%s %s set input where none exist.", stockerrs::major,
-                                                stockerrs::bad, username);
+    sm_err("%s %s set input where none exist.", errors::stock::major,
+                                                errors::stock::bad, username);
     #endif
     return 0;
 }
@@ -65,8 +65,8 @@ const void* synthmod::set_in(input::TYPE, const void*)
 const void* synthmod::get_in(input::TYPE) const
 {
     #ifdef IO_PARANOIA
-    sm_err("%s %s get input where none exist.", stockerrs::major,
-                                                stockerrs::bad, username);
+    sm_err("%s %s get input where none exist.", errors::stock::major,
+                                                errors::stock::bad, username);
     #endif
     return 0;
 }
@@ -74,8 +74,8 @@ const void* synthmod::get_in(input::TYPE) const
 bool synthmod::set_param(param::TYPE, const void*)
 {
     #ifdef IO_PARANOIA
-    sm_err("%s %s set parameter where none exist.", stockerrs::major,
-                                                stockerrs::bad, username);
+    sm_err("%s %s set parameter where none exist.", errors::stock::major,
+                                                errors::stock::bad, username);
     #endif
     return false;
 }
@@ -83,8 +83,8 @@ bool synthmod::set_param(param::TYPE, const void*)
 const void* synthmod::get_param(param::TYPE) const
 {
     #ifdef IO_PARANOIA
-    sm_err("%s %s get parameter where none exist.", stockerrs::major,
-                                                stockerrs::bad, username);
+    sm_err("%s %s get parameter where none exist.", errors::stock::major,
+                                                errors::stock::bad, username);
     #endif
     return 0;
 }
@@ -92,8 +92,8 @@ const void* synthmod::get_param(param::TYPE) const
 dobj* synthmod::add_dobj(dobj*)
 {
     #ifdef IO_PARANOIA
-    sm_err("%s %s module unable to contain data objects.", stockerrs::major,
-                                              stockerrs::bad_add, username);
+    sm_err("%s %s module unable to contain data objects.", errors::stock::major,
+                                              errors::stock::bad_add, username);
     #endif
     return 0;
 }
@@ -142,7 +142,7 @@ void synthmod::init_first()
     #ifdef IO_PARANOIA
     sm_err("%s, Module %s: call to base method "
            "synthmod::init_first. This method should be implemented "
-           "in the derived class.", stockerrs::major, username);
+           "in the derived class.", errors::stock::major, username);
     #endif
 }
 
@@ -209,8 +209,7 @@ void synthmod::register_output(output::TYPE t)
     }
 }
 
-void synthmod::register_moddobj(dobjnames::DOBJ_TYPE parent,
-                                                dobjnames::DOBJ_TYPE sprog)
+void synthmod::register_moddobj(dataobj::TYPE parent, dataobj::TYPE sprog)
 {
     if (!(flags & SM_VALID))
         return;
@@ -222,11 +221,22 @@ void synthmod::register_moddobj(dobjnames::DOBJ_TYPE parent,
     if (!mdbj || !ddbj)
     {
         sm_err("Failed to register data object %s (child %s) with "
-               "module type %s.", dobjnames::get_name(parent),
-                                dobjnames::get_name(sprog),
-                                module::names::get(module_type));
+               "module type %s.", dataobj::names::get(parent),
+                                  dataobj::names::get(sprog),
+                                  module::names::get(module_type));
         invalidate();
     }
+}
+
+bool synthmod::validate_param(param::TYPE pt, errors::TYPE et)
+{
+    if (!jwm.get_paramlist()->validate(this, pt, et))
+    {
+        sm_err("%s", param::names::get(pt));
+        invalidate();
+        return false;
+    }
+    return true;
 }
 
 
@@ -239,7 +249,7 @@ bool synthmod::check_inputs()
     while(modinp) {
         if (!get_in(modinp->get_inputtype())) {
             sm_err("%s Module %s does not have its %s "
-                    "input set.", stockerrs::major, get_username(), 
+                    "input set.", errors::stock::major, get_username(), 
                         input::names::get(modinp->get_inputtype()));
             delete modinps;
             return false;

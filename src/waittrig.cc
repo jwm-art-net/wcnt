@@ -81,31 +81,18 @@ const void* waittrig::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE waittrig::validate()
+errors::TYPE waittrig::validate()
 {
-    modparamlist* pl = jwm.get_paramlist();
-    if (!pl->validate(this, param::MIN_WAIT,
-            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", param::names::get(param::MIN_WAIT));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    if (!pl->validate(this, param::MAX_WAIT,
-            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", param::names::get(param::MAX_WAIT));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    if (!pl->validate(this, param::COUNT,
-            stockerrs::ERR_NEG_ZERO))
-    {
-        sm_err("%s", param::names::get(param::COUNT));
-        invalidate();
-        return stockerrs::ERR_NEG_ZERO;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::MIN_WAIT, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    if (!validate_param(param::MAX_WAIT, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    if (!validate_param(param::COUNT, errors::NEG_OR_ZERO))
+        return errors::NEG_OR_ZERO;
+
+    return errors::NO_ERROR;
 }
 
 void waittrig::init()

@@ -19,7 +19,7 @@ public:
     // virtual funcs
     void run();
     void init();
-    stockerrs::ERR_TYPE validate();
+    errors::TYPE validate();
     const void* get_out(output::TYPE) const;
     bool set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE) const;

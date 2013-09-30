@@ -86,29 +86,21 @@ const void* trigcounter::get_param(param::TYPE pt) const
         default: return 0;
     }
 }
-#include <iostream>
-stockerrs::ERR_TYPE trigcounter::validate()
+
+errors::TYPE trigcounter::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, param::PRE_COUNT,
-                                            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", param::names::get(param::PRE_COUNT));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    if (!jwm.get_paramlist()->validate(this, param::COUNT,
-                                            stockerrs::ERR_ABOVE1))
-    {
-        sm_err("%s", param::names::get(param::COUNT));
-        invalidate();
-        return stockerrs::ERR_ABOVE1;
-    }
+    if (!validate_param(param::PRE_COUNT, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    if (!validate_param(param::COUNT, errors::ABOVE1))
+        return errors::ABOVE1;
+
     if (count < 1){
         sm_err("PPO %s", "(I'm as confused as you).");
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
-    return stockerrs::ERR_NO_ERROR;
+    return errors::NO_ERROR;
 }
 
 void trigcounter::init()

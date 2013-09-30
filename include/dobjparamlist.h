@@ -19,9 +19,9 @@ class dobjparamlist : public linked_list<dobjparam>
     dobjparam* add_dobjparam(dobjparam* dp)
         { return add_at_tail(dp)->get_data(); };
 
-    dobjparam* add_dobjparam(dobjnames::DOBJ_TYPE, param::TYPE);
+    dobjparam* add_dobjparam(dataobj::TYPE, param::TYPE);
 
-    bool validate(dobj*, param::TYPE, stockerrs::ERR_TYPE);
+    bool validate(dobj*, param::TYPE, errors::TYPE);
 };
 
 #endif

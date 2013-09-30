@@ -4,13 +4,13 @@
 
 
 timing::timing():
- dobj(dobjnames::SIN_TIME), seconds(0.0)
+ dobj(dataobj::SIN_TIME), seconds(0.0)
 {
     init_first();
 }
 
 timing::timing(double s):
- dobj(dobjnames::SIN_BPM),
+ dobj(dataobj::SIN_BPM),
  seconds(s)
 {
     init_first();
@@ -39,16 +39,12 @@ const void* timing::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE timing::validate()
+errors::TYPE timing::validate()
 {
-    if (!jwm.get_dparlist()->validate(
-        this, param::SECONDS, stockerrs::ERR_NEGATIVE))
-    {
-        dobjerr("%s", param::names::get(param::BAR));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::SECONDS, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    return errors::NO_ERROR;
 }
 
 

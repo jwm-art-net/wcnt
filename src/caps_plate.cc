@@ -31,9 +31,9 @@ const void* caps_plate::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case output::OUT_LEFT: return &out_left;
-        case output::OUT_RIGHT: return &out_right;
-        default: return 0;
+    case output::OUT_LEFT: return &out_left;
+    case output::OUT_RIGHT: return &out_right;
+    default: return 0;
     }
 }
 
@@ -42,10 +42,10 @@ caps_plate::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case input::IN_SIGNAL:
-            return in_signal = (double*)o;
-        default:
-            return 0;
+    case input::IN_SIGNAL:
+        return in_signal = (double*)o;
+    default:
+        return 0;
     }
 }
 
@@ -53,8 +53,8 @@ const void* caps_plate::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case input::IN_SIGNAL: return in_signal;
-        default: return 0;
+    case input::IN_SIGNAL: return in_signal;
+    default: return 0;
     }
 }
 
@@ -63,20 +63,20 @@ caps_plate::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case param::BANDWIDTH:
-            bandwidth = *(double*)data;
-            return true;
-        case param::TAIL:
-            tail = *(double*)data;
-            return true;
-        case param::DAMPING:
-            damping = *(double*)data;
-            return true;
-        case param::WETDRY:
-            blend = *(double*)data;
-            return true;
-        default:
-            return false;
+    case param::BANDWIDTH:
+        bandwidth = *(double*)data;
+        return true;
+    case param::TAIL:
+        tail = *(double*)data;
+        return true;
+    case param::DAMPING:
+        damping = *(double*)data;
+        return true;
+    case param::WETDRY:
+        blend = *(double*)data;
+        return true;
+    default:
+        return false;
     }
 }
 
@@ -84,41 +84,37 @@ const void* caps_plate::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case param::BANDWIDTH: return &bandwidth;
-        case param::TAIL:      return &tail;
-        case param::DAMPING:   return &damping;
-        case param::WETDRY:    return &blend;
-        default: return 0;
+    case param::BANDWIDTH: return &bandwidth;
+    case param::TAIL:      return &tail;
+    case param::DAMPING:   return &damping;
+    case param::WETDRY:    return &blend;
+    default: return 0;
     }
 }
 
-stockerrs::ERR_TYPE caps_plate::validate()
+errors::TYPE caps_plate::validate()
 {
     if (bandwidth < 0.005 || bandwidth > 0.999) {
         sm_err("%s must be within range 0.005 to 0.999.",
                 param::names::get(param::BANDWIDTH));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
     if (tail < 0.0 || tail > 0.749) {
         sm_err("%s must be within range 0.0 to 0.749", 
                 param::names::get(param::TAIL));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
     if (damping < 0.0005 || damping > 1.0) {
         sm_err("%s must be within range 0.0005 to 1.0",
                 param::names::get(param::DAMPING));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
-    if (blend < 0.0 || blend > 1.0) {
-        sm_err("%s must be within range 0.0 to 1.0",
-                param::names::get(param::WETDRY));
-        invalidate();
-        return stockerrs::ERR_ERROR;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::WETDRY, errors::RANGE_0_1))
+        return errors::RANGE_0_1;
+    return errors::NO_ERROR;
 }
 
 void caps_plate::init()

@@ -58,7 +58,6 @@ namespace iocat
 
     static const struct gn_data data[LAST_TYPE];
  };
-
 }; // namespace iocat
 
 #endif

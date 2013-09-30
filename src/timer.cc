@@ -87,15 +87,15 @@ const void* timer::get_out(output::TYPE ot) const
 dobj* timer::add_dobj(dobj* dbj)
 {
     dobj* retv = 0;
-    dobjnames::DOBJ_TYPE dbjtype = dbj->get_object_type();
+    dataobj::TYPE dbjtype = dbj->get_object_type();
     switch(dbjtype)
     {
-    case dobjnames::SIN_TIME:
+    case dataobj::SIN_TIME:
         if (!(retv = add_timing((timing*)dbj)))
             sm_err("Could not add timing to %s", get_username());
         break;
     default:
-    sm_err("%s %s to %s", stockerrs::major, stockerrs::bad_add,
+    sm_err("%s %s to %s", errors::stock::major, errors::stock::bad_add,
                                                     get_username());
         retv = 0;
     }
@@ -106,6 +106,6 @@ void timer::init_first()
 {
     if (done_first())
         return;
-    register_moddobj(dobjnames::LST_TIMINGS, dobjnames::SIN_TIME);
+    register_moddobj(dataobj::LST_TIMINGS, dataobj::SIN_TIME);
 }
 

@@ -75,25 +75,15 @@ const void* randomtrigger::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE randomtrigger::validate()
+errors::TYPE randomtrigger::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, param::PROBABILITY,
-            stockerrs::ERR_RANGE_0_1))
-    {
-        sm_err("%s", param::names::get(
-                                            param::PROBABILITY));
-        invalidate();
-        return stockerrs::ERR_RANGE_0_1;
-    }
-    if (!jwm.get_paramlist()->validate(this, param::NOTPROBABILITY,
-            stockerrs::ERR_RANGE_0_1))
-    {
-        sm_err("%s", param::names::get(
-                                            param::NOTPROBABILITY));
-        invalidate();
-        return stockerrs::ERR_RANGE_0_1;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::PROBABILITY, errors::RANGE_0_1))
+        return errors::RANGE_0_1;
+
+    if (!validate_param(param::NOTPROBABILITY, errors::RANGE_0_1))
+        return errors::RANGE_0_1;
+
+    return errors::NO_ERROR;
 }
 
 void randomtrigger::run()

@@ -76,25 +76,15 @@ const void* trigger::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE trigger::validate()
+errors::TYPE trigger::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, param::DELAY_TIME,
-            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s",
-                param::names::get(param::DELAY_TIME));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    if (!jwm.get_paramlist()->validate(this, param::TRIGGER_LEVEL,
-            stockerrs::ERR_NEG_ZERO))
-    {
-        sm_err("%s",
-             param::names::get(param::TRIGGER_LEVEL));
-        invalidate();
-        return stockerrs::ERR_NEG_ZERO;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::DELAY_TIME, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    if (!validate_param(param::TRIGGER_LEVEL, errors::NEG_OR_ZERO))
+        return errors::NEG_OR_ZERO;
+
+    return errors::NO_ERROR;
 }
 
 void trigger::run()

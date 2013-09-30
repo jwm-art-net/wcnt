@@ -11,7 +11,7 @@
 
 
 inputedit::inputedit() :
- dobj(dobjnames::SIN_EDIT_INPUT),
+ dobj(dataobj::SIN_EDIT_INPUT),
  modname(0), iostr(0)
 {
     init_first();

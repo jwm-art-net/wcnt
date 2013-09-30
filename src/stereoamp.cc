@@ -91,25 +91,15 @@ const void* stereo_amp::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE stereo_amp::validate()
+errors::TYPE stereo_amp::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, param::AMP_MODSIZE,
-                                            stockerrs::ERR_RANGE_0_1))
-    {
-        sm_err("%s", param::names::get(
-                                            param::AMP_MODSIZE));
-        invalidate();
-        return stockerrs::ERR_RANGE_0_1;
-    }
-    if (!jwm.get_paramlist()->validate(this, param::CLIP_LEVEL,
-                                            stockerrs::ERR_NEG_ZERO))
-    {
-        sm_err("%s", param::names::get(
-                                            param::CLIP_LEVEL));
-        invalidate();
-        return stockerrs::ERR_NEG_ZERO;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::AMP_MODSIZE, errors::RANGE_0_1))
+        return errors::RANGE_0_1;
+
+    if (!validate_param(param::CLIP_LEVEL, errors::NEG_OR_ZERO))
+        return errors::NEG_OR_ZERO;
+
+    return errors::NO_ERROR;
 }
 
 void stereo_amp::run()

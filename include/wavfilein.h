@@ -44,7 +44,7 @@ class wavfilein : public dobj
     // virtuals from dobj
     bool set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE) const;
-    virtual stockerrs::ERR_TYPE validate();
+    virtual errors::TYPE validate();
 
  private:
     char* fname;

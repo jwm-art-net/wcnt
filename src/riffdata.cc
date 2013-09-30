@@ -15,7 +15,7 @@ using std::cout;
 #endif
 
 riffdata::riffdata() :
- dobj(dobjnames::DEF_RIFF),
+ dobj(dataobj::DEF_RIFF),
  tpqn(0),
  editlist(0)
 {
@@ -350,31 +350,27 @@ dobj* riffdata::duplicate_dobj(const char* name)
 dobj const* riffdata::add_dobj(dobj* dbj)
 {
     dobj* retv = 0;
-    dobjnames::DOBJ_TYPE dbjtype = dbj->get_object_type();
+    dataobj::TYPE dbjtype = dbj->get_object_type();
     switch(dbjtype)
     {
-    case dobjnames::SIN_NOTE:
+    case dataobj::SIN_NOTE:
         if (!(retv = insert_and_position_note((note_data*)dbj)))
             dobjerr("Could not add note change to %s.", get_username());
         break;
     default:
-        dobjerr("%s %s to %s.", stockerrs::major, stockerrs::bad_add,
-                                                    get_username());
+        dobjerr("%s %s to %s.", errors::stock::major,
+                                errors::stock::bad_add, get_username());
         retv = 0;
     }
     return retv;
 }
 
-stockerrs::ERR_TYPE riffdata::validate()
+errors::TYPE riffdata::validate()
 {
-    if (!jwm.get_dparlist()->validate(
-        this, param::QUARTER_VAL, stockerrs::ERR_NEGATIVE))
-    {
-        dobjerr("%s", param::names::get(param::QUARTER_VAL));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::QUARTER_VAL, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    return errors::NO_ERROR;
 }
 
 void riffdata::init_first()
@@ -382,7 +378,7 @@ void riffdata::init_first()
     if (done_first())
         return;
     register_param(param::QUARTER_VAL);
-    register_dobjdobj(dobjnames::LST_NOTES, dobjnames::SIN_NOTE);
+    register_dobjdobj(dataobj::LST_NOTES, dataobj::SIN_NOTE);
 }
 
 

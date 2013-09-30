@@ -98,46 +98,29 @@ const void* onofftrig::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE onofftrig::validate()
+errors::TYPE onofftrig::validate()
 {
-    modparamlist* pl = jwm.get_paramlist();
-    if (!pl->validate(this, param::ATTACK_TIME,
-            stockerrs::ERR_NEG_ZERO))
-    {
-        sm_err("%s", param::names::get(param::ATTACK_TIME));
-        invalidate();
-        return stockerrs::ERR_NEG_ZERO;
-    }
-    if (!pl->validate(this, param::ATTACK_LEVEL,
-            stockerrs::ERR_NEG_ZERO))
-    {
-        sm_err("%s", param::names::get(param::ATTACK_LEVEL));
-        invalidate();
-        return stockerrs::ERR_NEG_ZERO;
-    }
-    if (!pl->validate(this, param::RELEASE_TIME,
-            stockerrs::ERR_NEG_ZERO))
-    {
-        sm_err("%s", param::names::get(param::RELEASE_TIME));
-        invalidate();
-        return stockerrs::ERR_NEG_ZERO;
-    }
-    if (!pl->validate(this, param::RELEASE_LEVEL,
-            stockerrs::ERR_NEG_ZERO))
-    {
-        sm_err("%s", param::names::get(param::RELEASE_LEVEL));
-        invalidate();
-        return stockerrs::ERR_NEG_ZERO;
-    }
+    if (!validate_param(param::ATTACK_TIME, errors::NEG_OR_ZERO))
+        return errors::NEG_OR_ZERO;
+
+    if (!validate_param(param::ATTACK_LEVEL, errors::NEG_OR_ZERO))
+        return errors::NEG_OR_ZERO;
+
+    if (!validate_param(param::RELEASE_TIME, errors::NEG_OR_ZERO))
+        return errors::NEG_OR_ZERO;
+
+    if (!validate_param(param::RELEASE_LEVEL, errors::NEG_OR_ZERO))
+        return errors::NEG_OR_ZERO;
+
     if (check_levels == ON && attack_level <= release_level) {
         sm_err("When %s is set on %s must be higher than %s.",
                         param::names::get(param::CHECK_LEVELS),
                         param::names::get(param::ATTACK_LEVEL),
                         param::names::get(param::RELEASE_LEVEL));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
-    return stockerrs::ERR_NO_ERROR;
+    return errors::NO_ERROR;
 }
 
 void onofftrig::run()

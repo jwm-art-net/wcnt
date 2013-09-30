@@ -52,14 +52,14 @@ const void* constant_note::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE constant_note::validate()
+errors::TYPE constant_note::validate()
 {
     if (!check_notename(note)){
         sm_err("%s", param::names::get(param::NAME));
         invalidate();
-        return stockerrs::ERR_NOTENAME;
+        return errors::NOTENAME;
     }
-    return stockerrs::ERR_NO_ERROR;
+    return errors::NO_ERROR;
 }
 
 void constant_note::init()

@@ -7,7 +7,7 @@
 #include "../include/topdobjlist.h"
 
 
-dobj::dobj(dobjnames::DOBJ_TYPE dt) :
+dobj::dobj(dataobj::TYPE dt) :
  object_type(dt), username(0), valid(true)
 {
     #ifdef DATA_STATS
@@ -28,18 +28,14 @@ dobj::~dobj()
 
 bool dobj::is_named_by_user()
 {
-    if (dobjnames::check_type(object_type)
-        == dobjnames::DOBJ_FIRST)
+    if (dataobj::names::category(object_type) != dataobj::CAT_DEF)
     {
         dobjerr("Error in object %s type %s.",
                 (username ? username : ""),
-                dobjnames::get_name(object_type));
+                dataobj::names::get(object_type));
         return (valid = false);
     }
-    // check_type(object_type) means need only check for 1 condition...
-    if (object_type > dobjnames::DOBJ_DEFS)
-        return true;
-    return false; // should not be named by user
+    return true;
 }
 
 bool dobj::set_username(const char* un)
@@ -47,17 +43,17 @@ bool dobj::set_username(const char* un)
     if (!is_named_by_user()) {// should not be given username
         dobjerr("Tried to set username of object type %s, but %s "
                                         "does not require naming.",
-                        dobjnames::get_name(object_type));
+                        dataobj::names::get(object_type));
         return (valid = false);
     }
     if (un == 0) {
         dobjerr("NULL username specified for object type %s.",
-                        dobjnames::get_name(object_type));
+                        dataobj::names::get(object_type));
         return (valid = false);
     }
     if (strlen(un) == 0) {
         dobjerr("NULL length username specified for object type %s.",
-                        dobjnames::get_name(object_type));
+                        dataobj::names::get(object_type));
         return (valid = false);
     }
     if (username) delete [] username;
@@ -68,29 +64,28 @@ bool dobj::set_username(const char* un)
 
 const char* dobj::get_username()
 {
-    if (dobjnames::check_type(object_type)
-        == dobjnames::DOBJ_FIRST)
+    if (dataobj::names::category(object_type) != dataobj::CAT_DEF)
         return 0;
     return username;
 }
 
 bool dobj::set_param(param::TYPE, const void*)
 {
-    dobjerr("%s %s set parameter of data object.", stockerrs::major,
-                                                   stockerrs::bad);
+    dobjerr("%s %s set parameter of data object.", errors::stock::major,
+                                                   errors::stock::bad);
     return 0;
 }
 
 const void* dobj::get_param(param::TYPE) const
 {
-    dobjerr("%s %s get parameter of data object.", stockerrs::major,
-                                                   stockerrs::bad);
+    dobjerr("%s %s get parameter of data object.", errors::stock::major,
+                                                   errors::stock::bad);
     return 0;
 }
 
 dobj const* dobj::add_dobj(dobj*)
 {
-    dobjerr("%s %s to data object", stockerrs::major, stockerrs::bad_add);
+    dobjerr("%s %s to data object", errors::stock::major, errors::stock::bad_add);
     return 0;
 }
 
@@ -99,7 +94,7 @@ dobj* dobj::duplicate_dobj(const char* uname)
     (void)uname;
     dobjerr("Data object %s of type %s does not allow copies to be "
                         "made of it.", (username ? username : ""),
-                        dobjnames::get_name(object_type));
+                        dataobj::names::get(object_type));
     return 0;
 }
 
@@ -120,7 +115,7 @@ void dobj::register_param(param::TYPE pt)
     {
         dobjerr("Failed to register param %s with data object type %s.",
                             param::names::get(pt),
-                            dobjnames::get_name(object_type));
+                            dataobj::names::get(object_type));
         valid = false;
     }
 }
@@ -138,13 +133,13 @@ void dobj::register_param(param::TYPE pt, const char* fixstr)
         dobjerr("Failed to register fixed string param %s (%s) "
                             "with data object type %s.",
                             param::names::get(pt), fixstr,
-                            dobjnames::get_name(object_type));
+                            dataobj::names::get(object_type));
         valid = false;
     }
 }
 
-void dobj::register_dobjdobj(dobjnames::DOBJ_TYPE parent,
-                                                dobjnames::DOBJ_TYPE sprog)
+void dobj::register_dobjdobj(dataobj::TYPE parent,
+                                                dataobj::TYPE sprog)
 {
     if (!valid)
         return;
@@ -157,11 +152,22 @@ void dobj::register_dobjdobj(dobjnames::DOBJ_TYPE parent,
     {
         dobjerr("Failed to register parent data object %s with child data "
                             "object %s as part of data object %s",
-                            dobjnames::get_name(parent),
-                            dobjnames::get_name(sprog),
-                            dobjnames::get_name(object_type));
+                            dataobj::names::get(parent),
+                            dataobj::names::get(sprog),
+                            dataobj::names::get(object_type));
         valid = false;
     }
+}
+
+bool dobj::validate_param(param::TYPE pt, errors::TYPE et)
+{
+   if (!jwm.get_dparlist()->validate(this, pt, et))
+    {
+        dobjerr("%s", param::names::get(pt));
+        invalidate();
+        return false;
+    }
+    return true;
 }
 
 
@@ -169,5 +175,5 @@ void dobj::register_dobjdobj(dobjnames::DOBJ_TYPE parent,
 STATS_INIT(dobj)
 #endif
 
-bool dobj::first_done[dobjnames::DOBJ_LAST] = { false };
+bool dobj::first_done[dataobj::LAST_TYPE] = { false };
 

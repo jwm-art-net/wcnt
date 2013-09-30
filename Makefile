@@ -52,7 +52,7 @@ main.o: main.c $(HEADERS)
 examples: $(WAVS)
 
 %.wav :  %.wc $(PROG)
-	@./$(PROG) --no-title $<
+	@./$(PROG) --no-title --dont-run $<
 
 clean:
 	@rm -vf $(OBJS) $(PROG)

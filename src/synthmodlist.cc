@@ -166,3 +166,16 @@ synthmodlist::duplicate_group(const char* from, const char* to)
     return grplist;
 }
 
+void synthmodlist::remove_empty_run_modules()
+{
+    emptyrunlist = move_to_new_list_of_by(this, synthmod::SM_EMPTY_RUN);
+
+    if (jwm.is_verbose()) {
+        synthmod* sm = emptyrunlist->goto_first();
+        while(sm) {
+            std::cout << module::names::get(sm->get_module_type())
+                      << " " << sm->get_username() << std::endl;
+            sm = emptyrunlist->goto_next();
+        }
+    }
+}

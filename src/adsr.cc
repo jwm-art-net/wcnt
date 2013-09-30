@@ -121,61 +121,52 @@ const void* adsr::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE adsr::validate()
+errors::TYPE adsr::validate()
 {
     if (!goto_section(adsr_coord::ADSR_ATTACK)) {
         sm_err("%s", "adsr lacks attack section!");
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
     if (!goto_section(adsr_coord::ADSR_DECAY)) {
         sm_err("%s", "adsr lacks decay section!");
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
     if (!goto_section(adsr_coord::ADSR_RELEASE)) {
         sm_err("%s", "adsr lacks release section!");
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
     if (up_thresh < lo_thresh) {
         sm_err("%s must not be less than %s.",
                 param::names::get(param::UP_THRESH),
                 param::names::get(param::LO_THRESH));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
 
-    if (!jwm.get_paramlist()->validate(this, param::MIN_TIME,
-                                            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", param::names::get(param::MIN_TIME));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    if (!jwm.get_paramlist()->validate(this, param::MAX_SUSTAIN_TIME,
-                                            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", param::names::get(
-                                            param::MAX_SUSTAIN_TIME));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::MIN_TIME, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    if (!validate_param(param::MAX_SUSTAIN_TIME, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    return errors::NO_ERROR;
 }
 
 dobj* adsr::add_dobj(dobj* dbj)
 {
     dobj* retv = 0;
-    dobjnames::DOBJ_TYPE dbjtype = dbj->get_object_type();
+    dataobj::TYPE dbjtype = dbj->get_object_type();
     switch(dbjtype)
     {
-    case dobjnames::SIN_COORD:
+    case dataobj::SIN_COORD:
         if (!(retv = insert_coord((adsr_coord*)dbj)))
             sm_err("Could not add section to %s.", get_username());
         break;
     default:
-        sm_err("%s %s to %s.", stockerrs::major, stockerrs::bad_add,
+        sm_err("%s %s to %s.", errors::stock::major, errors::stock::bad_add,
                                                     get_username());
         retv = 0;
     }
@@ -377,6 +368,5 @@ void adsr::init_first()
     register_param(param::RELEASE_RATIO);
     register_param(param::SUSTAIN_STATUS);
     register_param(param::ZERO_RETRIGGER);
-    register_moddobj(dobjnames::LST_ENVELOPE, dobjnames::SIN_COORD);
-
+    register_moddobj(dataobj::LST_ENVELOPE, dataobj::SIN_COORD);
 }

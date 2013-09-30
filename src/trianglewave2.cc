@@ -91,24 +91,15 @@ const void* triangle_wave2::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE triangle_wave2::validate()
+errors::TYPE triangle_wave2::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, param::NORM_FREQ,
-            stockerrs::ERR_RANGE_FREQ))
-    {
-        sm_err("%s", param::names::get(param::NORM_FREQ));
-        invalidate();
-        return stockerrs::ERR_RANGE_FREQ;
-    }
-    if (!jwm.get_paramlist()->validate(this, param::NORM_MODSIZE,
-            stockerrs::ERR_RANGE_FMOD))
-    {
-        sm_err("%s", param::names::get(
-                                            param::NORM_MODSIZE));
-        invalidate();
-        return stockerrs::ERR_RANGE_FMOD;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::NORM_FREQ, errors::RANGE_FREQ))
+        return errors::RANGE_FREQ;
+
+    if (!validate_param(param::NORM_MODSIZE, errors::RANGE_FMOD))
+        return errors::RANGE_FMOD;
+
+    return errors::NO_ERROR;
 }
 
 void triangle_wave2::init()

@@ -4,14 +4,14 @@
 
 
 step_data::step_data() :
- dobj(dobjnames::SIN_STEP),
+ dobj(dataobj::SIN_STEP),
  position(0), up_level(0), lo_level(0)
 {
     init_first();
 }
 
 step_data::step_data(double pos, double ul, double ll) :
- dobj(dobjnames::SIN_STEP),
+ dobj(dataobj::SIN_STEP),
  position(pos), up_level(ul), lo_level(ll)
 {
     init_first();
@@ -50,16 +50,12 @@ const void* step_data::get_param(param::TYPE dt) const
     }
 }
 
-stockerrs::ERR_TYPE step_data::validate()
+errors::TYPE step_data::validate()
 {
-    if (!jwm.get_dparlist()->validate(
-        this, param::POS, stockerrs::ERR_RANGE_0_1))
-    {
-        dobjerr("%s", param::names::get(param::POS));
-        invalidate();
-        return stockerrs::ERR_RANGE_0_1;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::POS, errors::RANGE_0_1))
+        return errors::RANGE_0_1;
+
+    return errors::NO_ERROR;
 }
 
 void step_data::init_first()

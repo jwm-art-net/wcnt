@@ -10,7 +10,7 @@ public:
     ~sync_clock();
     void run();
     void init();
-    stockerrs::ERR_TYPE validate();
+    errors::TYPE validate();
     const void* set_in(input::TYPE, const void*);
     const void* get_in(input::TYPE) const;
     const void* get_out(output::TYPE) const;

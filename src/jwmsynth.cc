@@ -66,11 +66,13 @@ bool jwmsynth::validate_synth()
     synthmod* sm;
     sm = jwm.get_modlist()->goto_first();
     while(sm) {
-        stockerrs::ERR_TYPE et = sm->validate();
-        if (et != stockerrs::ERR_NO_ERROR) {
+        errors::TYPE et = sm->validate();
+        if (et != errors::NO_ERROR) {
             jwm_err("Module %s is a little odd, %s %s %s",
-                    sm->get_username(), synthmod::get_error_msg(),
-                    stockerrs::get_prefix_err(et), stockerrs::get_err(et));
+                            sm->get_username(),
+                            synthmod::get_error_msg(),
+                            errors::stock::get_prefix_msg(et),
+                            errors::stock::get(et));
             return false;
         }
         if (!sm->flag(synthmod::SM_VALID)){

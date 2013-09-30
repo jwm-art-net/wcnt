@@ -93,31 +93,18 @@ const void* square_wave::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE square_wave::validate()
+errors::TYPE square_wave::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, param::RATE,
-            stockerrs::ERR_RANGE_0_1))
-    {
-        sm_err("%s", param::names::get(param::RATE));
-        invalidate();
-        return stockerrs::ERR_RANGE_0_1;
-    }
-    if (!jwm.get_paramlist()->validate(this, param::PULSE_WIDTH,
-            stockerrs::ERR_RANGE_0_1_IN))
-    {
-        sm_err("%s", 
-                param::names::get(param::PULSE_WIDTH));
-        invalidate();
-        return stockerrs::ERR_RANGE_0_1_IN;
-    }
-    if (!jwm.get_paramlist()->validate(this, param::PWM_SIZE,
-            stockerrs::ERR_RANGE_0_1))
-    {
-        sm_err("%s", param::names::get(param::PWM_SIZE));
-        invalidate();
-        return stockerrs::ERR_RANGE_0_1;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::RATE, errors::RANGE_0_1))
+        return errors::RANGE_0_1;
+
+    if (!validate_param(param::PULSE_WIDTH, errors::RANGE_0_1_IN))
+        return errors::RANGE_0_1_IN;
+
+    if (!validate_param(param::PWM_SIZE, errors::RANGE_0_1))
+        return errors::RANGE_0_1;
+
+    return errors::NO_ERROR;
 }
 
 void square_wave::init()

@@ -98,7 +98,7 @@ class riffdata : public dobj, public linked_list<note_data>
     /*
     // virtuals from dobj
     */
-    stockerrs::ERR_TYPE validate();
+    errors::TYPE validate();
     bool set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE) const;
     dobj const* add_dobj(dobj*);

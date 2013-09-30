@@ -26,7 +26,7 @@ public:
     void set_wav_basename(const char* fname);
     // virtual funcs
     void run();
-    stockerrs::ERR_TYPE validate();
+    errors::TYPE validate();
     const void* get_out(output::TYPE) const;
     const void* set_in(input::TYPE, const void*);
     const void* get_in(input::TYPE) const;

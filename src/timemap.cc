@@ -60,30 +60,30 @@ meterchange* timemap::add_meter_change(meterchange* mch)
             ->get_data());
 }
 
-stockerrs::ERR_TYPE timemap::validate()
+errors::TYPE timemap::validate()
 {
     if (!(currentmeter = meter_map->goto_first())) {
         sm_err("Time signature not set for %s. Will not continue.",
                                                     get_username());
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
     if (!(currentbpm = bpm_map->goto_first())) {
         sm_err("BPM not set for %s. Will not continue.", get_username());
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
     if (currentmeter->get_bar() > 0) {
         sm_err("The first added time signature is at bar %d. Should be "
                                     "at bar 0.", currentmeter->get_bar());
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
     if (currentbpm->get_bar() > 0) {
         sm_err("The first added tempo is at bar %d. Should start at "
                                         "bar 0.", currentbpm->get_bar());
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
     double bpm = 0;
     while(currentbpm){
@@ -93,18 +93,18 @@ stockerrs::ERR_TYPE timemap::validate()
                                     "BPM of %d.", currentbpm->get_bar(),
                                                     jwm_init::min_bpm);
             invalidate();
-            return stockerrs::ERR_ERROR;
+            return errors::ERROR;
         }
         if (bpm > jwm_init::max_bpm) {
             sm_err("At bar %d BPM change takes tempo above maximum "
                                     "BPM of %d.", currentbpm->get_bar(),
                                                     jwm_init::max_bpm);
             invalidate();
-            return stockerrs::ERR_ERROR;
+            return errors::ERROR;
         }
         currentbpm = bpm_map->goto_next();
     }
-    return stockerrs::ERR_NO_ERROR;
+    return errors::NO_ERROR;
 }
 #include <cstdio>
 void timemap::init()
@@ -275,19 +275,19 @@ const void* timemap::get_out(output::TYPE ot) const
 dobj* timemap::add_dobj(dobj* dbj)
 {
     dobj* retv = 0;
-    dobjnames::DOBJ_TYPE dbjtype = dbj->get_object_type();
+    dataobj::TYPE dbjtype = dbj->get_object_type();
     switch(dbjtype)
     {
-    case dobjnames::SIN_METER:
+    case dataobj::SIN_METER:
         if (!(retv = add_meter_change((meterchange*)dbj)))
             sm_err("Could not add meter change to %s.", get_username());
         break;
-    case dobjnames::SIN_BPM:
+    case dataobj::SIN_BPM:
         if (!(retv = add_bpm_change((bpmchange*)dbj)))
             sm_err("Could not add bpm change to %s.", get_username());
         break;
     default:
-        sm_err("%s %s to %s.", stockerrs::major, stockerrs::bad_add,
+        sm_err("%s %s to %s.", errors::stock::major, errors::stock::bad_add,
                                                       get_username());
         retv = 0;
     }
@@ -305,7 +305,7 @@ void timemap::init_first()
 {
     if (done_first())
         return;
-    register_moddobj(dobjnames::LST_METER, dobjnames::SIN_METER);
-    register_moddobj(dobjnames::LST_BPM, dobjnames::SIN_BPM);
+    register_moddobj(dataobj::LST_METER, dataobj::SIN_METER);
+    register_moddobj(dataobj::LST_BPM, dataobj::SIN_BPM);
 }
 

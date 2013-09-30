@@ -87,24 +87,15 @@ const void* trigecho::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE trigecho::validate()
+errors::TYPE trigecho::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, param::DELAY_TIME,
-                                            stockerrs::ERR_NEG_ZERO))
-    {
-        sm_err("%s", param::names::get(
-                                            param::DELAY_TIME));
-        invalidate();
-        return stockerrs::ERR_NEG_ZERO;
-    }
-    if (!jwm.get_paramlist()->validate(this, param::COUNT,
-                                            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", param::names::get(param::COUNT));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::DELAY_TIME, errors::NEG_OR_ZERO))
+        return errors::NEG_OR_ZERO;
+
+    if (!validate_param(param::COUNT, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    return errors::NO_ERROR;
 }
 
 void trigecho::run()

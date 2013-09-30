@@ -4,7 +4,7 @@
 
 
 wave_vertex::wave_vertex() :
- dobj(dobjnames::SIN_VERTEX), out_deg(0), out_pos(0),
+ dobj(dataobj::SIN_VERTEX), out_deg(0), out_pos(0),
  up_deg(0), up_pos(0), lo_deg(0), lo_pos(0)
 {
     init_first();
@@ -12,7 +12,7 @@ wave_vertex::wave_vertex() :
 
 wave_vertex::wave_vertex(
     double udeg, double upos, double ldeg, double lpos) :
- dobj(dobjnames::SIN_VERTEX), out_deg(0), out_pos(0),
+ dobj(dataobj::SIN_VERTEX), out_deg(0), out_pos(0),
  up_deg(udeg), up_pos(upos), lo_deg(ldeg), lo_pos(lpos)
 {
     init_first();
@@ -62,23 +62,15 @@ const void* wave_vertex::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE wave_vertex::validate()
+errors::TYPE wave_vertex::validate()
 {
-    if (!jwm.get_dparlist()->validate(this,
-        param::UPDEG, stockerrs::ERR_RANGE_DEGS))
-    {
-        dobjerr("%s", param::names::get(param::UPDEG));
-        invalidate();
-        return stockerrs::ERR_RANGE_DEGS;
-    }
-    if (!jwm.get_dparlist()->validate(this,
-        param::LODEG, stockerrs::ERR_RANGE_DEGS))
-    {
-        dobjerr("%s", param::names::get(param::LODEG));
-        invalidate();
-        return stockerrs::ERR_RANGE_DEGS;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::UPDEG, errors::RANGE_DEGS))
+        return errors::RANGE_DEGS;
+
+    if (!validate_param(param::LODEG, errors::RANGE_DEGS))
+        return errors::RANGE_DEGS;
+
+    return errors::NO_ERROR;
 }
 
 void wave_vertex::init_first()

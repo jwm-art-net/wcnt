@@ -5,14 +5,14 @@
 
 
 riff_node::riff_node() :
- dobj(dobjnames::SIN_RIFFNODE), start_bar(0), riff_source(0),
+ dobj(dataobj::SIN_RIFFNODE), start_bar(0), riff_source(0),
  transpose(0), repeat(0), repeat_stripe(0)
 {
     init_first();
 }
 
 riff_node::riff_node(riffdata* rd, short barpos) :
- dobj(dobjnames::SIN_RIFFNODE), start_bar(barpos), riff_source(rd),
+ dobj(dataobj::SIN_RIFFNODE), start_bar(barpos), riff_source(rd),
  transpose(0), repeat(0), repeat_stripe(0)
 {
     init_first();
@@ -67,37 +67,25 @@ const void* riff_node::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE riff_node::validate()
+errors::TYPE riff_node::validate()
 {
-    if (((dobj*)riff_source)->get_object_type() != dobjnames::DEF_RIFF) 
+    if (((dobj*)riff_source)->get_object_type() != dataobj::DEF_RIFF) 
     {
         dobjerr("%s is not a riff and cannot be used as one.",
                                     riff_source->get_username());
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
-    if (!jwm.get_dparlist()->validate(this,
-        param::BAR, stockerrs::ERR_NEGATIVE))
-    {
-        dobjerr("%s", param::names::get(param::BAR));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    if (!jwm.get_dparlist()->validate(this,
-        param::REPEAT, stockerrs::ERR_NEGATIVE))
-    {
-        dobjerr("%s", param::names::get(param::REPEAT));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    if (!jwm.get_dparlist()->validate(this,
-        param::REPEAT_STRIPE, stockerrs::ERR_NEG_ZERO))
-    {
-        dobjerr("%s", param::names::get(
-                                            param::REPEAT_STRIPE));
-        invalidate();
-        return stockerrs::ERR_NEG_ZERO;
-    }
-    return stockerrs::ERR_NO_ERROR;
+
+    if (!validate_param(param::BAR, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    if (!validate_param(param::REPEAT, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    if (!validate_param(param::REPEAT_STRIPE, errors::NEG_OR_ZERO))
+        return errors::NEG_OR_ZERO;
+
+    return errors::NO_ERROR;
 }
 
 void riff_node::init_first()

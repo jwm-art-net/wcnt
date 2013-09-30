@@ -151,7 +151,7 @@ const void* notetran::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE notetran::validate()
+errors::TYPE notetran::validate()
 {
     if (!check_notename(no_lo_notename)) {
         sm_err("%s %s",
@@ -177,23 +177,13 @@ stockerrs::ERR_TYPE notetran::validate()
                 ns_hi_notename);
         invalidate();
     }
-    if (!jwm.get_paramlist()->validate(this, param::NO_RESPTIME,
-            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s",
-                param::names::get(param::NO_RESPTIME));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    if (!jwm.get_paramlist()->validate(this, param::NS_RESPTIME,
-            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s",
-                param::names::get(param::NS_RESPTIME));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::NO_RESPTIME, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    if (!validate_param(param::NS_RESPTIME, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    return errors::NO_ERROR;
 }
 
 void notetran::set_no_lo_notename(const char* nol)

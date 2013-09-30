@@ -21,68 +21,56 @@ balance::~balance()
 
 const void* balance::get_out(output::TYPE ot) const
 {
-    switch(ot)
-    {
-        case output::OUT_OUTPUT: return &out_output;
-        default: return 0;
-    }
+    return (ot == output::OUT_OUTPUT ? &out_output : 0);
 }
 
 const void* balance::set_in(input::TYPE it, const void* o)
 {
-    switch(it)
-    {
-        case input::IN_SIGNAL1:     return in_signal1 = (double*)o;
-        case input::IN_SIGNAL2:     return in_signal2 = (double*)o;
-        default: return 0;
+    switch(it) {
+    case input::IN_SIGNAL1: return in_signal1 = (double*)o;
+    case input::IN_SIGNAL2: return in_signal2 = (double*)o;
+    default: return 0;
     }
 }
 
 const void* balance::get_in(input::TYPE it) const
 {
-    switch(it)
-    {
-        case input::IN_SIGNAL1:     return in_signal1;
-        case input::IN_SIGNAL2:     return in_signal2;
-        default: return 0;
+    switch(it) {
+    case input::IN_SIGNAL1: return in_signal1;
+    case input::IN_SIGNAL2: return in_signal2;
+    default: return 0;
     }
 }
 
 bool balance::set_param(param::TYPE pt, const void* data)
 {
-    switch(pt)
-    {
-        case param::FUNC:
-            func = (FUNC)(*(int*)data);
-            return true;
-        case param::BIAS:
-            bias = *(double*)data;
-            return true;
-        default:
-            return false;
+    switch(pt) {
+    case param::FUNC:
+        func = (FUNC)(*(int*)data);
+        return true;
+    case param::BIAS:
+        bias = *(double*)data;
+        return true;
+    default:
+        return false;
     }
 }
 
 const void* balance::get_param(param::TYPE pt) const
 {
-    switch(pt)
-    {
-        case param::FUNC: return &func;
-        case param::BIAS: return &bias;
-        default: return 0;
+    switch(pt) {
+    case param::FUNC: return &func;
+    case param::BIAS: return &bias;
+    default: return 0;
     }
 }
 
-stockerrs::ERR_TYPE balance::validate()
+errors::TYPE balance::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, param::BIAS,
-                                        stockerrs::ERR_RANGE_0_1))
-    {
-        sm_err("%s", param::names::get(param::BIAS));
-        invalidate();
-        return stockerrs::ERR_RANGE_0_1;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::BIAS, errors::RANGE_0_1))
+        return errors::RANGE_0_1;
+
+    return errors::NO_ERROR;
 }
 
 void balance::run()

@@ -4,22 +4,22 @@
 
 
 dynvertex::dynvertex() :
- dobj(dobjnames::SIN_DVERTEX),
+ dobj(dataobj::SIN_DVERTEX),
  si_level(0), uso_level(0), lso_level(0)
 {
     init_first();
 }
 
 dynvertex::dynvertex(double sil, double usol, double lsol) :
-        dobj(dobjnames::SIN_DVERTEX),
+        dobj(dataobj::SIN_DVERTEX),
         si_level(sil), uso_level(usol), lso_level(lsol)
 {
     init_first();
 }
 
-stockerrs::ERR_TYPE dynvertex::validate()
+errors::TYPE dynvertex::validate()
 {
-    return stockerrs::ERR_NO_ERROR;
+    return errors::NO_ERROR;
 }
 
 bool dynvertex::set_param(param::TYPE pt, const void* data)

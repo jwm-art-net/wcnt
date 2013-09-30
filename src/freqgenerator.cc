@@ -86,31 +86,18 @@ const void* freq_generator::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE freq_generator::validate()
+errors::TYPE freq_generator::validate()
 {
-    if (step_count <= 1) {
-        sm_err("%s must be of a higher count than 1",
-                param::names::get(param::STEP_COUNT));
-        invalidate();
-        return stockerrs::ERR_ERROR;
-    }
-    if (!jwm.get_paramlist()->validate(this, param::FREQ_RANGE_HI,
-            stockerrs::ERR_RANGE_FREQ))
-    {
-        sm_err("%s", param::names::get(
-                                            param::FREQ_RANGE_HI));
-        invalidate();
-        return stockerrs::ERR_RANGE_FREQ;
-    }
-    if (!jwm.get_paramlist()->validate(this, param::FREQ_RANGE_LO,
-            stockerrs::ERR_RANGE_FREQ))
-    {
-        sm_err("%s", param::names::get(
-                                            param::FREQ_RANGE_LO));
-        invalidate();
-        return stockerrs::ERR_RANGE_FREQ;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::STEP_COUNT, errors::ABOVE1))
+        return errors::ABOVE1;
+
+    if (!validate_param(param::FREQ_RANGE_HI, errors::RANGE_FREQ))
+        return errors::RANGE_FREQ;
+
+    if (!validate_param(param::FREQ_RANGE_LO, errors::RANGE_FREQ))
+        return errors::RANGE_FREQ;
+
+    return errors::NO_ERROR;
 }
 
 void freq_generator::init()

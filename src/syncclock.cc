@@ -126,23 +126,15 @@ const void* sync_clock::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE sync_clock::validate()
+errors::TYPE sync_clock::validate()
 {
-    if (!jwm.get_paramlist()->validate(this,
-        param::QUARTER_VAL, stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", param::names::get(param::QUARTER_VAL));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    if (!jwm.get_paramlist()->validate(this,
-        param::NOTE_LEN, stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", param::names::get(param::NOTE_LEN));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::QUARTER_VAL, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    if (!validate_param(param::NOTE_LEN, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    return errors::NO_ERROR;
 }
 
 void sync_clock::init()

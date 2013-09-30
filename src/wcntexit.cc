@@ -49,15 +49,11 @@ synthmod* wcnt_exit::duplicate_module(const char* uname, DUP_IO dupio)
     return 0;
 }
 
-stockerrs::ERR_TYPE wcnt_exit::validate()
+errors::TYPE wcnt_exit::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, param::EXIT_BAR,
-            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", param::names::get(param::EXIT_BAR));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
+    if (!validate_param(param::EXIT_BAR, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
     connector* con = jwm.get_connectlist()->get_connector_by_input(this,
                                                             input::IN_BAR);
     if (strcmp(con->get_output_module_name(), "off") == 0
@@ -68,9 +64,9 @@ stockerrs::ERR_TYPE wcnt_exit::validate()
                 input::names::get(input::IN_BAR),
                     param::names::get(param::EXIT_BAR));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
-    return stockerrs::ERR_NO_ERROR;
+    return errors::NO_ERROR;
 }
 
 void wcnt_exit::init()

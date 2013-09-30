@@ -192,8 +192,8 @@ namespace param
     { RATE,             "rate",                 iocat::DOUBLE,  "Rate that target level should be reached, ie output = output + (target - output) * rate." },
     { SNAPSHOT_MODE,    "snapshot_mode",        iocat::STATE,   "Whether to append a timestamp to filenames of written audio files." },
     { DROP_CHECK_RANGE, "drop_check_range",     iocat::SHORT,   "How may degrees apart a pair of vertices may be to considered a collision and for one to be dropped from waveform. " },
-    { STR_UNNAMED,      "<unnamed>",            iocat::STRING,  "A name of something." },
-    { STR_LIST,         "<unnamed>",            iocat::STRING,  "A number of names of things." }
+    { STR_UNNAMED,      "<unnamed_item>",       iocat::STRING,  "A name of something." },
+    { STR_LIST,         "<unnamed_list>",       iocat::STRING,  "A number of names of things." }
  };
 }; // namespace param
 

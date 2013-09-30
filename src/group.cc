@@ -12,14 +12,14 @@
 
 
 group::group() :
- dobj(dobjnames::DEF_GROUP),
+ dobj(dataobj::DEF_GROUP),
  is_duplicate(false), controlled(false)
 {
     init_first();
 }
 
 group::group(CLONE) :
- dobj(dobjnames::DEF_GROUP),
+ dobj(dataobj::DEF_GROUP),
  is_duplicate(true), controlled(false)
 {
     init_first();
@@ -65,7 +65,7 @@ synthmod* group::group_module(synthmod* sm)
 
 dobj* group::add_dobj(dobj* dbj)
 {
-    if (dbj->get_object_type() == dobjnames::DOBJ_SYNTHMOD) {
+    if (dbj->get_object_type() == dataobj::DOBJ_SYNTHMOD) {
         synthmod* sm = ((dobjmod*)dbj)->get_synthmod();
         const char* const grpname = sm->get_group_name();
         if (grpname) {
@@ -84,7 +84,7 @@ dobj* group::add_dobj(dobj* dbj)
         return dbj;
     }
 
-    dobjerr("%s %s to %s", stockerrs::major, stockerrs::bad_add,
+    dobjerr("%s %s to %s", errors::stock::major, errors::stock::bad_add,
                                                     get_username());
     return 0;
 }
@@ -185,16 +185,16 @@ bool group::groupify(synthmod* sm)
     return true;
 }
 
-stockerrs::ERR_TYPE group::validate()
+errors::TYPE group::validate()
 {
-    return stockerrs::ERR_NO_ERROR;
+    return errors::NO_ERROR;
 }
 
 void group::init_first()
 {
     if (done_first())
         return;
-    register_dobjdobj(dobjnames::LST_MODULES, dobjnames::DOBJ_SYNTHMOD);
+    register_dobjdobj(dataobj::LST_MODULES, dataobj::DOBJ_SYNTHMOD);
 }
 
 

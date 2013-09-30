@@ -1,16 +1,16 @@
 wcnt-1.26/jwmsynth
 
-samplerate 44100
+samplerate 96000
 
 time_map
 time
     meter_map
-        meter   tsig 6/4    bar 0
+        meter   tsig 4/4    bar 0
     meter_map
     bpm_map
-        tempo   bpm 120     bar 1
-        tempo   bpm 0       bar 4 // @ bar 4, is still 120
-        tempo   bpm -50     bar 8 // @ from bar 4, graduates to 70.
+        tempo   bpm 140     bar 0
+        tempo   bpm 0       bar 12 // @ bar 4, is still 120
+        tempo   bpm -60     bar 24 // @ from bar 4, graduates to 70.
     bpm_map
 time
 
@@ -18,11 +18,11 @@ riff
 riff1
     quarter_value   64
     notelist
-        note name c20    pos 0   len 80      vel 1.0
+        note name c2    pos 0   len 80      vel 1.0
         note name f0    pos 64  len 20      vel 1.0
-        note name e0    pos 96  len 8       vel 1.0
+        note name e4    pos 96  len 8       vel 1.0
         note name c0    pos 128 len 80      vel 1.0
-        note name e0    pos 160 len 16      vel 1.0
+        note name e3    pos 160 len 16      vel 1.0
         note name g0    pos 208 len 12      vel 1.0
         note name =P+N  pos 208 len 13      vel 0.0
         note name IP+N  pos 90  len 90      vel -5.0
@@ -44,11 +44,11 @@ sequencer
 seq
     track
         riff_node
-            riff riff1  bar 0   transpose 0
-            repeat 3 repeat_stripe 2
+            riff riff1  bar 0   transpose -1
+            repeat 24 repeat_stripe 2
         riff_node
             riff riff2  bar 1   transpose 0
-            repeat 3 repeat_stripe 2
+            repeat 24 repeat_stripe 2
     track
     in_bar              time out_bar
     in_bar_trig         time out_bar_trig
@@ -59,6 +59,8 @@ seq
     velocity_response_time 0
 seq
 
+
+
 osc_clock
 osc
         in_note_on_trig     seq out_note_on_trig
@@ -67,7 +69,7 @@ osc
         in_frequency        seq out_frequency
         in_freq_mod1        off
         in_freq_mod2        off
-        octave_offset       -1
+        octave_offset       -3
         tuning_semitones    0
         portamento_time     50
         response_time       10
@@ -75,14 +77,36 @@ osc
         freq_mod2_size      1
 osc
 
+copier cp1 from osc to osc_lpf cp1
+
+input_editor
+ed1
+    editlist
+        connect osc_lpf
+            in_freq_mod1 lfo_wave out_output
+    editlist
+ed1
+
+param_editor
+pe1
+    editlist
+        edit osc_lpf
+            octave_offset   3
+            tuning_semitones    6
+            portamento_time     250
+            response_time       250
+            freq_mod1_size      2.0
+    editlist
+pe1
+
 square_wave
 squ
     in_phase_trig  osc out_phase_trig
     in_phase_step  osc out_phase_step
-    in_pwm         off
-    rate          0.1
+    in_pwm         lfo_wave out_output
+    rate          0.0487
     pulse_width   0.5
-    pwm_size      0
+    pwm_size      0.874
     recycle_mode  off
 squ
 
@@ -97,7 +121,7 @@ adsr
             lt  25.0    ll  0.250
         section name release
             ut  25.0    ul  0.750
-            lt  15.0    ll  0.250
+            lt  15.0    ll  0.250qq
         section name release
             ut  25.0    ul  0.000
             lt  15.0    ll  0.000
@@ -121,23 +145,92 @@ out
     in_signal2 adsr out_output
 out
 
+clock
+lfo_osc
+    in_freq_mod1    off
+    freq            0.127
+    freq_mod1_size  1.0
+lfo_osc
+
+wave
+lfo_wave
+    in_phase_step  lfo_osc out_phase_step
+    type  tri
+lfo_wave
+
+glame_butterworth
+lpf1
+    in_signal             out       out_output
+    in_cutoff_phase_step  osc_lpf   out_phase_step
+    in_res_mod            off
+    filter_type   lowpass
+    resonance     0.25
+    res_mod_size  0.0
+lpf1
+
+echo
+ek1
+    in_signal        lpf1 out_output
+    in_gain_mod      off
+    in_feedback      ek2 out_wet_output
+    in_feedback_mod  off
+    delay_time         275
+    gain               0.65
+    gain_mod_size      0.0
+    feedback           0.75
+    feedback_mod_size  0.0
+    wet/dry            0.1
+ek1
+
+
+echo
+ek2
+    in_signal        lpf1 out_output
+    in_gain_mod      off
+    in_feedback      ek1 out_wet_output
+    in_feedback_mod  off
+    delay_time         375
+    gain               0.65
+    gain_mod_size      0.0
+    feedback           0.75
+    feedback_mod_size  0.0
+    wet/dry            0.1
+ek2
+
+constant_freq
+bass
+    freq 80.0
+bass
+
+single_band_parametric
+eq
+    in_signal         ek2 out_output
+    in_phase_step     bass out_phase_step
+    in_gain_mod       off
+    in_bandwidth_mod  off
+    gain_db             4.0
+    gain_mod_size       0
+    bandwidth           2.0
+    bandwidth_mod_size  0
+eq
+
 wavfile_out
 wav
-    in_left     out out_output
-    in_right    out out_output
+    in_left     ek1 out_output
+    in_right    ek2 out_output
     in_bar      time out_bar
     in_bar_trig time out_bar_trig
     snapshot_mode off
     data_format float32
     filename    errors.wav
     start_bar   0
-    end_bar     10
+    end_bar     24
 wav
 
 wcnt_exit
 exit
     in_bar      time out_bar
-    exit_bar    10
+    exit_bar    24
 exit
 
 wcnt-1.26/jwmsynth

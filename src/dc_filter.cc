@@ -68,16 +68,12 @@ const void* dc_filter::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE dc_filter::validate()
+errors::TYPE dc_filter::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, param::DC_TIME,
-            stockerrs::ERR_NEG_ZERO))
-    {
-        sm_err("%s", param::names::get(param::DC_TIME));
-        invalidate();
-        return stockerrs::ERR_NEG_ZERO;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::DC_TIME, errors::NEG_OR_ZERO))
+        return errors::NEG_OR_ZERO;
+
+    return errors::NO_ERROR;
 }
 
 void dc_filter::init()

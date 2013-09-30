@@ -8,7 +8,7 @@
 
 
 copier::copier() :
- dobj(dobjnames::DEF_COPIER),
+ dobj(dataobj::DEF_COPIER),
  from_name(0), to_name(0),
  from_mod(0), to_mod(0),
  from_dobj(0), to_dobj(0)
@@ -43,8 +43,8 @@ bool copier::set_to_name(const char* name)
         to_name = new char[strlen(name) + 1];
         strcpy(to_name, name); // copy to to_name
     }
-    if (strcmp(name, dobjnames::get_name(
-            dobjnames::LST_EDITS)) == 0)
+    if (strcmp(name, dataobj::names::get(
+            dataobj::LST_EDITS)) == 0)
         return false;
     if (jwm.get_dobjlist()->get_dobj_by_name(name))
         return false;
@@ -78,8 +78,8 @@ bool copier::set_param(param::TYPE pt, const void* data)
         }
         if (!set_to_name((const char*)data))
         {
-            const char* d = dobjnames::get_name(
-                                                    dobjnames::LST_EDITS);
+            const char* d = dataobj::names::get(
+                                                    dataobj::LST_EDITS);
             const char* e = (strcmp(to_name, d) == 0
                                             ? "is reserved"
                                             : "already in use");
@@ -104,34 +104,34 @@ const void* copier::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE copier::validate()
+errors::TYPE copier::validate()
 {
     if (!set_param(param::COPYFROM, from_name))
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     if (!set_param(param::COPYTO, to_name))
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     if (from_mod) {
         if (!(to_mod = from_mod->duplicate_module(to_name,
                                     synthmod::AUTO_CONNECT)))
         {
             dobjerr("%s", synthmod::get_error_msg());
-            return stockerrs::ERR_ERROR;
+            return errors::ERROR;
         }
         if (!jwm.get_modlist()->add_module(to_mod)) {
             dobjerr("Could not add module %s copied from %s to module "
                                                        "run list. Bad.",
                         to_mod->get_username(), from_mod->get_username());
-            return stockerrs::ERR_ERROR;
+            return errors::ERROR;
         }
-        return stockerrs::ERR_NO_ERROR;
+        return errors::NO_ERROR;
     }
     else if (from_dobj) {
         if (!(to_dobj = from_dobj->duplicate_dobj(to_name)))
-            return stockerrs::ERR_ERROR;
+            return errors::ERROR;
         jwm.get_dobjlist()->add_dobj(to_dobj);
-        return stockerrs::ERR_NO_ERROR;
+        return errors::NO_ERROR;
     }
-    return stockerrs::ERR_ERROR;
+    return errors::ERROR;
 }
 
 void copier::init_first()

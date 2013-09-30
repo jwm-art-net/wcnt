@@ -70,17 +70,12 @@ const void* sample_hold::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE sample_hold::validate()
+errors::TYPE sample_hold::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, param::DECAY_TIME,
-            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", param::names::get(
-                                            param::DECAY_TIME));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::DECAY_TIME, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    return errors::NO_ERROR;
 }
 
 void sample_hold::init()

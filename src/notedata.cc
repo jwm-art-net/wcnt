@@ -11,7 +11,7 @@
 
 
 note_data::note_data() :
- dobj(dobjnames::SIN_NOTE),
+ dobj(dataobj::SIN_NOTE),
  note_type(NOTE_TYPE_ERR),position(0), length(0), velocity(0)
 {
     notename[0] = '\0';
@@ -25,7 +25,7 @@ STATS_INC
 
 note_data::note_data(const char *name, double pos, double len, double vel)
  :
- dobj(dobjnames::SIN_NOTE),
+ dobj(dataobj::SIN_NOTE),
  note_type(NOTE_TYPE_ERR), position(pos), length(len), velocity(vel)
 {
     set_name(name);
@@ -219,30 +219,23 @@ const void* note_data::get_param(param::TYPE dt) const
     }
 }
 
-stockerrs::ERR_TYPE note_data::validate()
+errors::TYPE note_data::validate()
 {
     if (note_type == NOTE_TYPE_ERR) {
         dobjerr("%s is problematically set with %s.",
                 param::names::get(param::NAME), notename);
         invalidate();
-        return stockerrs::ERR_NOTENAME;
+        return errors::NOTENAME;
     } else if (note_type == NOTE_TYPE_EDIT)
-        return stockerrs::ERR_NO_ERROR;
-    if (!jwm.get_dparlist()->validate(this,
-        param::NOTE_POS, stockerrs::ERR_NEGATIVE))
-    {
-        dobjerr("%s", param::names::get(param::NOTE_POS));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    if (!jwm.get_dparlist()->validate(this,
-        param::NOTE_LEN, stockerrs::ERR_NEGATIVE))
-    {
-        dobjerr("%s", param::names::get(param::NOTE_LEN));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    return stockerrs::ERR_NO_ERROR;
+        return errors::NO_ERROR;
+
+    if (!validate_param(param::NOTE_POS, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    if (!validate_param(param::NOTE_LEN, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    return errors::NO_ERROR;
 }
 
 void note_data::init_first()

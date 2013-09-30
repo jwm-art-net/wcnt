@@ -3,7 +3,7 @@
 #include "../include/dobjparamlist.h"
 
 dobjmod::dobjmod() :
- dobj(dobjnames::DOBJ_SYNTHMOD), synth_mod(0)
+ dobj(dataobj::DOBJ_SYNTHMOD), synth_mod(0)
 {
     init_first();
 }

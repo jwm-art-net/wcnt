@@ -101,27 +101,27 @@ fast_lookahead_limiter::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE fast_lookahead_limiter::validate()
+errors::TYPE fast_lookahead_limiter::validate()
 {
     if (gain_db < -20 || gain_db > 20) {
         sm_err("%s must be within range -20.0 ~ +20.0.",
                 param::names::get(param::GAIN_DB));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
     if (limit_db < -20 || limit_db > 0) {
         sm_err("%s must be within range -20.0 ~ 0.0.",
                 param::names::get(param::LIMIT_DB));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
     if (release_secs < 0.01 || release_secs > 2.0) {
         sm_err("%s must be within range 0.01 ~ 2.0.",
                 param::names::get(param::RELEASE_SECS));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
-    return stockerrs::ERR_NO_ERROR;
+    return errors::NO_ERROR;
 }
 
 void fast_lookahead_limiter::init()

@@ -6,7 +6,7 @@
 
 
 wavfilein::wavfilein() :
- dobj(dobjnames::DEF_WAVFILEIN),
+ dobj(dataobj::DEF_WAVFILEIN),
  fname(0), rootnote(0),
  filein(0), status(WAV_STATUS_INIT)
 {
@@ -152,15 +152,15 @@ const void* wavfilein::get_param(param::TYPE dt) const
     }
 }
 
-stockerrs::ERR_TYPE wavfilein::validate()
+errors::TYPE wavfilein::validate()
 {
     if (!check_notename(rootnote)) {
         dobjerr("%s, %s", param::names::get(
                                     param::ROOT_NOTE), rootnote);
         invalidate();
-        return stockerrs::ERR_NOTENAME;
+        return errors::NOTENAME;
     }
-    return stockerrs::ERR_NO_ERROR;
+    return errors::NO_ERROR;
 }
 
 void wavfilein::init_first()

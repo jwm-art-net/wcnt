@@ -75,24 +75,15 @@ const void* pan::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE pan::validate()
+errors::TYPE pan::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, param::PAN,
-            stockerrs::ERR_RANGE_M1_1))
-    {
-        sm_err("%s", param::names::get(param::PAN));
-        invalidate();
-        return stockerrs::ERR_RANGE_M1_1;
-    }
-    if (!jwm.get_paramlist()->validate(this, param::PAN_MODSIZE,
-            stockerrs::ERR_RANGE_0_1))
-    {
-        sm_err("%s", 
-                param::names::get(param::PAN_MODSIZE));
-        invalidate();
-        return stockerrs::ERR_RANGE_0_1;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::PAN, errors::RANGE_M1_1))
+        return errors::RANGE_M1_1;
+
+    if (!validate_param(param::PAN_MODSIZE, errors::RANGE_0_1))
+        return errors::RANGE_0_1;
+
+    return errors::NO_ERROR;
 }
 
 void pan::run()

@@ -71,16 +71,12 @@ const void* rms::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE rms::validate()
+errors::TYPE rms::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, param::RMS_TIME,
-            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", param::names::get(param::RMS_TIME));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::RMS_TIME, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    return errors::NO_ERROR;
 }
 
 void rms::init()

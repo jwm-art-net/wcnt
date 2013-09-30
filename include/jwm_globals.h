@@ -101,7 +101,6 @@ class jwm_globals
     #ifdef WITH_LADSPA
     ladspa_loader*  ladspaloader;
     #endif
-    stockerrs*      stock_errs;
     wave_tables*    wavetables;
 } extern jwm;
 

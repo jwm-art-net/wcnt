@@ -21,7 +21,7 @@ public:
     // virtual funcs
     void run();
     void init();
-    stockerrs::ERR_TYPE validate();
+    errors::TYPE validate();
     // wcnt_signal is not a dobj, but a synthmod, so a dobj wrapper class
     // - dobjmod, is passed which contains a pointer to the wcnt_signal
     dobj* add_dobj(dobj*);

@@ -101,15 +101,15 @@ const void* user_wave::get_param(param::TYPE pt) const
 dobj* user_wave::add_dobj(dobj* dbj)
 {
     dobj* retv = 0;
-    dobjnames::DOBJ_TYPE dbjtype = dbj->get_object_type();
+    dataobj::TYPE dbjtype = dbj->get_object_type();
     switch(dbjtype)
     {
-    case dobjnames::SIN_VERTEX:
+    case dataobj::SIN_VERTEX:
         if (!(retv = add_vertex((wave_vertex*)dbj)))
             sm_err("Could not add vertex to %s.", get_username());
         break;
     default:
-        sm_err("%s %s to %s.", stockerrs::major, stockerrs::bad_add,
+        sm_err("%s %s to %s.", errors::stock::major, errors::stock::bad_add,
                                                   get_username());
         retv = 0;
     }
@@ -140,17 +140,12 @@ synthmod* user_wave::duplicate_module(const char* uname, DUP_IO dupio)
     return dup;
 }
 
-stockerrs::ERR_TYPE user_wave::validate()
+errors::TYPE user_wave::validate()
 {
-    if (!jwm.get_paramlist()->validate(this,
-        param::DROP_CHECK_RANGE, stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", param::names::get(
-                                        param::DROP_CHECK_RANGE));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::DROP_CHECK_RANGE, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    return errors::NO_ERROR;
 }
 
 wave_vertex* user_wave::add_vertex(wave_vertex* wv)
@@ -284,6 +279,6 @@ void user_wave::init_first()
     register_param(param::RECYCLE_MODE);
     register_param(param::ZERO_RETRIGGER);
     register_param(param::DROP_CHECK_RANGE);
-    register_moddobj(dobjnames::LST_WAVEFORM, dobjnames::SIN_VERTEX);
+    register_moddobj(dataobj::LST_WAVEFORM, dataobj::SIN_VERTEX);
 }
 

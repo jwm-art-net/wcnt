@@ -33,7 +33,7 @@ public:
     double output_time;
     double output_level;
     // virtuals from dobj
-    stockerrs::ERR_TYPE validate();
+    errors::TYPE validate();
     bool set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE pt) const;
 

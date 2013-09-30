@@ -31,8 +31,7 @@ bode_freq_shifter::~bode_freq_shifter()
 
 const void* bode_freq_shifter::get_out(output::TYPE ot) const
 {
-    switch(ot)
-    {
+    switch(ot) {
         case output::OUT_UP: return &out_up;
         case output::OUT_DOWN: return &out_down;
         default: return 0;
@@ -42,62 +41,57 @@ const void* bode_freq_shifter::get_out(output::TYPE ot) const
 const void*
 bode_freq_shifter::set_in(input::TYPE it, const void* o)
 {
-    switch(it)
-    {
-        case input::IN_SIGNAL:
-            return in_signal = (double*)o;
-        case input::IN_SHIFT_MOD:
-            return in_shift_mod = (double*)o;
-        default:
-            return 0;
+    switch(it) {
+    case input::IN_SIGNAL:
+        return in_signal = (double*)o;
+    case input::IN_SHIFT_MOD:
+        return in_shift_mod = (double*)o;
+    default:
+        return 0;
     }
 }
 
 const void* bode_freq_shifter::get_in(input::TYPE it) const
 {
-    switch(it)
-    {
-        case input::IN_SIGNAL:    return in_signal;
-        case input::IN_SHIFT_MOD: return in_shift_mod;
-        default: return 0;
+    switch(it) {
+    case input::IN_SIGNAL:    return in_signal;
+    case input::IN_SHIFT_MOD: return in_shift_mod;
+    default: return 0;
     }
 }
 
-bool
-bode_freq_shifter::set_param(param::TYPE pt, const void* data)
+bool bode_freq_shifter::set_param(param::TYPE pt, const void* data)
 {
-    switch(pt)
-    {
-        case param::FREQ_SHIFT:
-            freq_shift = *(double*)data;
-            return true;
-        case param::SHIFT_MODSIZE:
-            shift_modsize = *(double*)data;
-            return true;
-        default:
-            return false;
+    switch(pt) {
+    case param::FREQ_SHIFT:
+        freq_shift = *(double*)data;
+        return true;
+    case param::SHIFT_MODSIZE:
+        shift_modsize = *(double*)data;
+        return true;
+    default:
+        return false;
     }
 }
 
 const void* bode_freq_shifter::get_param(param::TYPE pt) const
 {
-    switch(pt)
-    {
-        case param::FREQ_SHIFT:    return &freq_shift;
-        case param::SHIFT_MODSIZE: return &shift_modsize;
-        default: return 0;
+    switch(pt) {
+    case param::FREQ_SHIFT:    return &freq_shift;
+    case param::SHIFT_MODSIZE: return &shift_modsize;
+    default: return 0;
     }
 }
 
-stockerrs::ERR_TYPE bode_freq_shifter::validate()
+errors::TYPE bode_freq_shifter::validate()
 {
     if (freq_shift < 0 || freq_shift > 5000) {
         sm_err("%s must be within range 0 ~ 5000.",
                 param::names::get(param::FREQ_SHIFT));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
-    return stockerrs::ERR_NO_ERROR;
+    return errors::NO_ERROR;
 }
 
 void bode_freq_shifter::init()

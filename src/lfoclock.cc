@@ -96,32 +96,18 @@ const void* lfo_clock::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE lfo_clock::validate()
+errors::TYPE lfo_clock::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, param::FREQ,
-            stockerrs::ERR_RANGE_FREQ))
-    {
-        sm_err("%s", param::names::get(param::FREQ));
-        invalidate();
-        return stockerrs::ERR_RANGE_FREQ;
-    }
-    if (!jwm.get_paramlist()->validate(this, param::FREQ_MOD1SIZE,
-            stockerrs::ERR_RANGE_FMOD))
-    {
-        sm_err("%s", param::names::get(
-                                            param::FREQ_MOD1SIZE));
-        invalidate();
-        return stockerrs::ERR_RANGE_FMOD;
-    }
-    if (!jwm.get_paramlist()->validate(this, param::FREQ_MOD2SIZE,
-            stockerrs::ERR_RANGE_FMOD))
-    {
-        sm_err("%s", param::names::get(
-                                            param::FREQ_MOD2SIZE));
-        invalidate();
-        return stockerrs::ERR_RANGE_FMOD;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::FREQ, errors::RANGE_FREQ))
+        return errors::RANGE_FREQ;
+
+    if (!validate_param(param::FREQ_MOD1SIZE, errors::RANGE_FMOD))
+        return errors::RANGE_FMOD;
+
+    if (!validate_param(param::FREQ_MOD2SIZE, errors::RANGE_FMOD))
+        return errors::RANGE_FMOD;
+
+    return errors::NO_ERROR;
 }
 
 void lfo_clock::init()

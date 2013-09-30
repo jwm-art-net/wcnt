@@ -101,7 +101,7 @@ class group : public dobj
     void cancel_duplicate_status(){is_duplicate = false;}
     // virtuals from dobj
     dobj* add_dobj(dobj*);
-    stockerrs::ERR_TYPE validate();
+    errors::TYPE validate();
     dobj* duplicate_dobj(const char*);
 
  private:

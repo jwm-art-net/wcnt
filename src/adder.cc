@@ -18,9 +18,7 @@ adder::~adder()
 
 const void* adder::get_out(output::TYPE ot) const
 {
-    if (ot == output::OUT_OUTPUT)
-        return &out_output;
-    return 0;
+    return (ot == output::OUT_OUTPUT) ? &out_output : 0;
 }
 
 const void* adder::set_in(input::TYPE it, const void* o)

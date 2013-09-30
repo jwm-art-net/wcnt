@@ -37,31 +37,30 @@
 
 namespace setpar
 {
+ template <typename T>
+ bool set_param(T* obj, const char* param, param::TYPE pt,
+                        const char* value, std::ostringstream* result);
 
-template <typename T>
-bool set_param(T* obj, const char* param, param::TYPE pt,
-    const char* value, std::ostringstream* result);
+ template <typename T>
+ void* compute(T* obj, param::TYPE pt, void* data, int op);
 
-template <typename T>
-void* compute(T* obj, param::TYPE pt, void* data, int op);
+ //--------------------------------------------------------------
+ // is_operator
+ //      checks txt is a single character & terminated:
+ //      detects  none         +   -   *   /
+ //      returns false  -or-  true
+ bool is_operator(const char* txt);
 
-//--------------------------------------------------------------
-// is_operator
-//      checks txt is a single character & terminated:
-//      detects  none         +   -   *   /
-//      returns false  -or-  true
-bool is_operator(const char* txt);
+ //--------------------------------------------------------------
+ // get_operator
+ //      checks only first character of any-length string:
+ //      detects none  +   -   *   /
+ //      returns  0   '+' '-' '*' '/' (ie ascii char code).
+ int get_operator(const char* txt);
 
-//--------------------------------------------------------------
-// get_operator
-//      checks only first character of any-length string:
-//      detects none  +   -   *   /
-//      returns  0   '+' '-' '*' '/' (ie ascii char code).
-int get_operator(const char* txt);
-
-template <typename T>
-T comp(T* a, T*b, int op)
-{
+ template <typename T>
+ T comp(T* a, T*b, int op)
+ {
     switch(op)
     {
         case '+': return *a + *b;
@@ -70,10 +69,10 @@ T comp(T* a, T*b, int op)
         case '/': return *a / *b;
         default: return 0;
     }
-}
+ }
 
-const char* get_error_msg();
+ const char* get_error_msg();
 
-} // namespace setpar;
+}; // namespace setpar
 
 #endif

@@ -122,34 +122,29 @@ synthmod* stepper::duplicate_module(const char* uname, DUP_IO dupio)
     return dup;
 }
 
-stockerrs::ERR_TYPE stepper::validate()
+errors::TYPE stepper::validate()
 {
     if (!goto_first()) {
         sm_err("%s", "Step shape unformed.");
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
     else if (!goto_next()){
         sm_err("%s", "Step shape needs more form.");
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
-    if (!jwm.get_paramlist()->validate(this, param::RESPONSE_TIME,
-                                            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", param::names::get(
-                                            param::RESPONSE_TIME));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
+    if (!validate_param(param::RESPONSE_TIME, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
     if (up_thresh < lo_thresh) {
         sm_err("%s must not be less than %s.",
                 param::names::get(param::UP_THRESH),
                 param::names::get(param::LO_THRESH));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
-    return stockerrs::ERR_NO_ERROR;
+    return errors::NO_ERROR;
 }
 
 step_data* stepper::insert_step(double pos, double uplvl, double lolvl)
@@ -179,14 +174,14 @@ step_data* stepper::insert_step(step_data* newstep)
 
 dobj* stepper::add_dobj(dobj* dbj)
 {
-    if (dbj->get_object_type() == dobjnames::SIN_STEP) {
+    if (dbj->get_object_type() == dataobj::SIN_STEP) {
         if (insert_step((step_data*)dbj))
             return dbj;
         sm_err("Could not insert %s into stepper.",
-                dobjnames::get_name(dobjnames::SIN_STEP));
+                dataobj::names::get(dataobj::SIN_STEP));
         return 0;
     }
-    sm_err("%s %s to %s.", stockerrs::major, stockerrs::bad_add,
+    sm_err("%s %s to %s.", errors::stock::major, errors::stock::bad_add,
                                                 get_username());
     return 0;
 }
@@ -272,6 +267,6 @@ void stepper::init_first()
     register_param(param::LO_THRESH);
     register_param(param::RESPONSE_TIME);
     register_param(param::RECYCLE_MODE);
-    register_moddobj(dobjnames::LST_STEPS, dobjnames::SIN_STEP);
+    register_moddobj(dataobj::LST_STEPS, dataobj::SIN_STEP);
 }
 

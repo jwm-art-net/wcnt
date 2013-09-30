@@ -69,16 +69,12 @@ const void* sample_climb::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE sample_climb::validate()
+errors::TYPE sample_climb::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, param::RATE,
-            stockerrs::ERR_RANGE_0_1_IN))
-    {
-        sm_err("%s", param::names::get(param::RATE));
-        invalidate();
-        return stockerrs::ERR_RANGE_0_1_IN;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::RATE, errors::RANGE_0_1_IN))
+        return errors::RANGE_0_1_IN;
+
+    return errors::NO_ERROR;
 }
 
 void sample_climb::run()

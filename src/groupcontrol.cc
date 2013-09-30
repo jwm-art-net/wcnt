@@ -87,10 +87,10 @@ const void* group_control::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE group_control::validate()
+errors::TYPE group_control::validate()
 {
     // validation done at set_param level.
-    return stockerrs::ERR_NO_ERROR;
+    return errors::NO_ERROR;
 }
 
 void group_control::init()
@@ -164,7 +164,7 @@ bool group_control::set_group_name(const char* name)
         sm_err("No group named %s exists.", group_name);
         return false;
     }
-    if (grp_dbj->get_object_type() != dobjnames::DEF_GROUP){
+    if (grp_dbj->get_object_type() != dataobj::DEF_GROUP){
         invalidate();
         sm_err("%s is not a group.", group_name);
         return false;

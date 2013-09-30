@@ -49,16 +49,12 @@ const void* trigrouter::get_in(input::TYPE it) const
 }
 
 
-stockerrs::ERR_TYPE trigrouter::validate()
+errors::TYPE trigrouter::validate()
 {
-    if (!jwm.get_paramlist()->validate(this,
-        param::COUNT, stockerrs::ERR_ABOVE1))
-    {
-        sm_err("%s", param::names::get(param::COUNT));
-        invalidate();
-        return stockerrs::ERR_ABOVE1;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::COUNT, errors::ABOVE1))
+        return errors::ABOVE1;
+
+    return errors::NO_ERROR;
 }
 
 bool trigrouter::set_param(param::TYPE pt, const void* data)
@@ -122,7 +118,7 @@ void trigrouter::create_wcnt_triggers()
         }
         if (!sm->set_in(input::IN_TRIG, &trigs[i])) {
             sm_err("%s in %s could not set input for "
-                            "dynamically created %s.", stockerrs::major,
+                            "dynamically created %s.", errors::stock::major,
                                                                 un, wtn);
         }
     }

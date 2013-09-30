@@ -82,26 +82,21 @@ synthmod* switcher::duplicate_module(const char* uname, DUP_IO dupio)
     return duplicate_list_module(this, goto_first(), uname, dupio);
 }
 
-stockerrs::ERR_TYPE switcher::validate()
+errors::TYPE switcher::validate()
 {
     if (!goto_first() || !goto_next()) {
         sm_err("%s", "must be at least two signals to switch between.");
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
-    if (!jwm.get_paramlist()->validate(this, param::XFADE_TIME,
-                                            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", param::names::get(
-                                            param::XFADE_TIME));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::XFADE_TIME, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    return errors::NO_ERROR;
 }
 
 dobj* switcher::add_dobj(dobj* dbj)
 {
-    if (dbj->get_object_type() == dobjnames::DOBJ_SYNTHMOD) {
+    if (dbj->get_object_type() == dataobj::DOBJ_SYNTHMOD) {
         synthmod* sm = ((dobjmod*)dbj)->get_synthmod();
         if (!sm->flag(SM_HAS_OUT_OUTPUT)) {
             sm_err("%s will not accept the module %s because modules of "
@@ -122,7 +117,7 @@ dobj* switcher::add_dobj(dobj* dbj)
         jwm.get_dobjlist()->add_dobj(dbj);
         return dbj;
     }
-    sm_err("%s %s to %s", stockerrs::major, stockerrs::bad_add,
+    sm_err("%s %s to %s", errors::stock::major, errors::stock::bad_add,
                                                     get_username());
     return 0;
 }
@@ -175,6 +170,6 @@ void switcher::init_first()
     if (done_first())
         return;
     register_param(param::XFADE_TIME);
-    register_moddobj(dobjnames::LST_SIGNALS, dobjnames::DOBJ_SYNTHMOD);
+    register_moddobj(dataobj::LST_SIGNALS, dataobj::DOBJ_SYNTHMOD);
 }
 

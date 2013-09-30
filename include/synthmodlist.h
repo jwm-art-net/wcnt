@@ -53,10 +53,7 @@ public:
     //  this should only be called before running the synth:
     //  (it unlinks them and places them in emptyrunlist)
     */
-    void remove_empty_run_modules() {
-        emptyrunlist =
-            move_to_new_list_of_by(this, synthmod::SM_EMPTY_RUN);
-    }
+    void remove_empty_run_modules();
 
     /*
     // returns 0 terminated synthmod* array:

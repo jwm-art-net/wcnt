@@ -22,11 +22,11 @@ class dobjdobjlist : public linked_list<dobjdobj>
         return add_at_tail(dd)->get_data();
     }
 
-    dobjdobj* register_dobjdobj(dobjnames::DOBJ_TYPE, dobjnames::DOBJ_TYPE);
+    dobjdobj* register_dobjdobj(dataobj::TYPE, dataobj::TYPE);
 
-    dobjdobjlist* get_dobjdobjlist_for_dobjtype(dobjnames::DOBJ_TYPE);
+    dobjdobjlist* get_dobjdobjlist_for_dobjtype(dataobj::TYPE);
     #ifdef UNUSED
-    dobjdobjlist* get_dobjdobjlist_of_sprogs(dobjnames::DOBJ_TYPE);
+    dobjdobjlist* get_dobjdobjlist_of_sprogs(dataobj::TYPE);
     #endif
 };
 

@@ -29,12 +29,12 @@ void patterntrig::set_pattern_string(const char* pat)
     strcpy(pattern, pat);
 }
 
-stockerrs::ERR_TYPE patterntrig::validate()
+errors::TYPE patterntrig::validate()
 {
     if (!pattern || strlen(pattern) < 1) {
         sm_err("%s", "No pattern - oops.");
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
 
     int bc = 0;
@@ -65,8 +65,8 @@ stockerrs::ERR_TYPE patterntrig::validate()
     }
     return
         (flag(SM_VALID))
-            ? stockerrs::ERR_NO_ERROR
-            : stockerrs::ERR_ERROR;
+            ? errors::NO_ERROR
+            : errors::ERROR;
 }
 
 const void* patterntrig::get_out(output::TYPE ot) const

@@ -4,7 +4,7 @@
 
 
 meterchange::meterchange() :
- dobj(dobjnames::SIN_METER),
+ dobj(dataobj::SIN_METER),
  bar(0)
 {
     time_sig.beatsperbar = 0;
@@ -13,7 +13,7 @@ meterchange::meterchange() :
 }
 
 meterchange::meterchange(short br, char btpb, char btval) :
-        dobj(dobjnames::SIN_METER), bar(br)
+        dobj(dataobj::SIN_METER), bar(br)
 {
     time_sig.beatsperbar = btpb;
     time_sig.beatvalue = btval;
@@ -46,26 +46,22 @@ const void* meterchange::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE meterchange::validate()
+errors::TYPE meterchange::validate()
 {
     if (time_sig.beatsperbar <= 2 || time_sig.beatsperbar > 32) {
         dobjerr("%s", param::names::get(param::METER));
         invalidate();
-        return stockerrs::ERR_RANGE_BEAT;
+        return errors::RANGE_BEAT;
     }
     if (time_sig.beatvalue <= 2 || time_sig.beatvalue > 32) {
         dobjerr("%s", param::names::get(param::METER));
         invalidate();
-        return stockerrs::ERR_RANGE_BEAT;
+        return errors::RANGE_BEAT;
     }
-    if (!jwm.get_dparlist()->validate(
-        this, param::BAR, stockerrs::ERR_NEGATIVE))
-    {
-        dobjerr("%s", param::names::get(param::BAR));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::BAR, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    return errors::NO_ERROR;
 }
 
 

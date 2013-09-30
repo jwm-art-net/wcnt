@@ -28,7 +28,7 @@ iocat::TYPE modparam::get_paramcategory()
 }
 #endif
 
-bool modparam::validate(synthmod* sm, stockerrs::ERR_TYPE et)
+bool modparam::validate(synthmod* sm, errors::TYPE et)
 {
     const void* data = sm->get_param(param_type);
     if (!data) return false;

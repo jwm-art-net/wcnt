@@ -104,7 +104,7 @@ bool sampler::set_param(param::TYPE pt, const void* data)
     switch(pt)
     {
     case param::WAVFILEIN:
-        if (((dobj*)data)->get_object_type() != dobjnames::DEF_WAVFILEIN)
+        if (((dobj*)data)->get_object_type() != dataobj::DEF_WAVFILEIN)
         {
             sm_err("%s is not a wavfilein.",
                     *((dobj*)data)->get_username());
@@ -183,7 +183,7 @@ const void* sampler::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE sampler::validate()
+errors::TYPE sampler::validate()
 {
     WAV_STATUS wavstatus = wavfile->open_wav();
     if (wavstatus == WAV_STATUS_NOT_FOUND) {
@@ -192,70 +192,49 @@ stockerrs::ERR_TYPE sampler::validate()
                 param::names::get(param::FILENAME),
                 wavfile->get_username(), wavfile->get_filename());
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
     if (wavstatus == WAV_STATUS_WAVERR) {
         sm_err("%s using wavfilein %s file %s is not a WAV.",
                 param::names::get(param::FILENAME),
                 wavfile->get_username(), wavfile->get_filename());
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
     if (wavstatus != WAV_STATUS_OPEN) {
         sm_err("%s using wavfilein %s file %s failed to open.",
                 param::names::get(param::FILENAME),
                 wavfile->get_username(), wavfile->get_filename());
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
-    modparamlist* pl = jwm.get_paramlist();
-    if (!pl->validate(this, param::START_POS_MIN,
-            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s",
-                param::names::get(param::START_POS_MIN));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    if (!pl->validate(this, param::START_POS_MAX,
-            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s",
-                param::names::get(param::START_POS_MAX));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
+
+    if (!validate_param(param::START_POS_MIN, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    if (!validate_param(param::START_POS_MAX, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
     if (max_start_pos < min_start_pos) {
         sm_err("%s must not be less than %s.",
                 param::names::get(param::START_POS_MAX),
                 param::names::get(param::START_POS_MIN));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
     if (loop_is_offset == OFF) {
-        if (!pl->validate(this, param::LOOP_BEGIN,
-                stockerrs::ERR_NEGATIVE))
-        {
-            sm_err("%s of absolute value.", /* eh? */
-                    param::names::get(param::LOOP_BEGIN));
-            invalidate();
-            return stockerrs::ERR_NEGATIVE;
-        }
-        if (!pl->validate(this, param::LOOP_END,
-                stockerrs::ERR_NEGATIVE))
-        {
-            sm_err("%s of absolute value.", /* eh? */
-                    param::names::get(param::LOOP_END));
-            invalidate();
-            return stockerrs::ERR_NEGATIVE;
-        }
+        if (!validate_param(param::LOOP_BEGIN, errors::NEGATIVE))
+            return errors::NEGATIVE;
+
+        if (!validate_param(param::LOOP_END, errors::NEGATIVE))
+            return errors::NEGATIVE;
     }
     if (loop_end <= loop_begin) {
         sm_err("%s must be more than %s.",
                 param::names::get(param::LOOP_END),
                 param::names::get(param::LOOP_BEGIN));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
     if (anti_clip_size < 0
         || anti_clip_size > jwm_init::max_anti_clip_samples)
@@ -264,17 +243,12 @@ stockerrs::ERR_TYPE sampler::validate()
                 param::names::get(param::ANTI_CLIP),
                 jwm_init::max_anti_clip_samples);
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
-    if (!pl->validate(this, param::ZERO_SEARCH_RANGE,
-            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s",
-            param::names::get(param::ZERO_SEARCH_RANGE));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::ZERO_SEARCH_RANGE, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    return errors::NO_ERROR;
 }
 
 void sampler::init()

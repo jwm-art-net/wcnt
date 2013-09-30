@@ -98,16 +98,12 @@ const void* contraster::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE contraster::validate()
+errors::TYPE contraster::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, param::WETDRY,
-            stockerrs::ERR_RANGE_0_1))
-    {
-        sm_err("%s", param::names::get(param::WETDRY));
-        invalidate();
-        return stockerrs::ERR_RANGE_0_1;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::WETDRY, errors::RANGE_0_1))
+        return errors::RANGE_0_1;
+
+    return errors::NO_ERROR;
 }
 
 void contraster::init()

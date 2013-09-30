@@ -26,7 +26,7 @@ class meterchange : public dobj
     char get_beatsperbar() const    { return time_sig.beatsperbar; }
     char get_beatvalue() const      { return time_sig.beatvalue; }
     // virtuals from dobj
-    stockerrs::ERR_TYPE validate();
+    errors::TYPE validate();
     bool set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE pt) const;
 

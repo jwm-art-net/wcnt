@@ -81,31 +81,21 @@ const void* mono_amp::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE mono_amp::validate()
+errors::TYPE mono_amp::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, param::AMP_MODSIZE,
-            stockerrs::ERR_RANGE_0_1))
-    {
-        sm_err("%s",
-                param::names::get(param::AMP_MODSIZE));
-        invalidate();
-        return stockerrs::ERR_RANGE_0_1;
-    }
-    if (!jwm.get_paramlist()->validate(this, param::CLIP_LEVEL,
-            stockerrs::ERR_NEG_ZERO))
-    {
-        sm_err("%s",
-                param::names::get(param::CLIP_LEVEL));
-        invalidate();
-        return stockerrs::ERR_NEG_ZERO;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::AMP_MODSIZE, errors::RANGE_0_1))
+        return errors::RANGE_0_1;
+
+    if (!validate_param(param::CLIP_LEVEL, errors::NEG_OR_ZERO))
+        return errors::NEG_OR_ZERO;
+
+    return errors::NO_ERROR;
 }
 
 void mono_amp::run()
 {
-    ampsig = (level * (1 - amp_modsize) + level *
-              *in_amp_mod * amp_modsize) * *in_signal * *in_amp_eg;
+    ampsig = (level * (1 - amp_modsize) + level
+                * *in_amp_mod * amp_modsize) * *in_signal * *in_amp_eg;
     out_output = ampsig;
     if (ampsig < -clip_level)
         out_output = -clip_level;

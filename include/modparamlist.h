@@ -31,7 +31,7 @@ public:
 
     modparam* add_param(module::TYPE, param::TYPE);
 
-    bool validate(synthmod*, param::TYPE, stockerrs::ERR_TYPE);
+    bool validate(synthmod*, param::TYPE, errors::TYPE);
 
 private:
     bool delete_param(modparam*);

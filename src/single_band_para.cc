@@ -103,21 +103,21 @@ const void* single_band_para::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE single_band_para::validate()
+errors::TYPE single_band_para::validate()
 {
     if (gain_db < -70 || gain_db > 30) {
         sm_err("%s  must be within range -70 ~ 30.",
                     param::names::get(param::GAIN_DB));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
     if (bandwidth < 0 || bandwidth > 4) {
         sm_err("%s  must be within range 0 ~ 4.",
                     param::names::get(param::BANDWIDTH));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
-    return stockerrs::ERR_NO_ERROR;
+    return errors::NO_ERROR;
 }
 
 void single_band_para::init()

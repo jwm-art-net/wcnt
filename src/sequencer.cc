@@ -166,12 +166,12 @@ dobj* sequencer::add_dobj(dobj* dbj)
     dobj* retv = 0;
     switch(dbj->get_object_type())
     {
-    case dobjnames::SIN_RIFFNODE:
+    case dataobj::SIN_RIFFNODE:
         if (!(retv = add_riff_node((riff_node*)dbj)))
             sm_err("Could not add riff node to %s", get_username());
         break;
     default:
-        sm_err("%s %s to %s.", stockerrs::major, stockerrs::bad_add, 
+        sm_err("%s %s to %s.", errors::stock::major, errors::stock::bad_add, 
                                                     get_username());
         retv = 0;
     }
@@ -185,17 +185,14 @@ synthmod* sequencer::duplicate_module(const char* uname, DUP_IO dupio)
     return 0;
 }
 
-stockerrs::ERR_TYPE sequencer::validate()
+errors::TYPE sequencer::validate()
 {
-    if (!jwm.get_paramlist()->validate(this,
-            param::VELOCITY_RESPONSE,
-            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", param::names::get(param::VELOCITY_RESPONSE));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::VELOCITY_RESPONSE, errors::NEGATIVE))
+        return errors::NEGATIVE;
+    if (!validate_param(param::START_BAR, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    return errors::NO_ERROR;
 }
 
 // add_riff_node(riff_node*) is used exclusively by add_dobj(dobj*)
@@ -451,5 +448,5 @@ void sequencer::init_first()
         return;
     register_param(param::START_BAR);
     register_param(param::VELOCITY_RESPONSE);
-    register_moddobj(dobjnames::LST_TRACK, dobjnames::SIN_RIFFNODE);
+    register_moddobj(dataobj::LST_TRACK, dataobj::SIN_RIFFNODE);
 }

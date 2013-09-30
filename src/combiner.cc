@@ -31,8 +31,8 @@ const void* combiner::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case output::OUT_OUTPUT: return &out_output;
-        default: return 0;
+    case output::OUT_OUTPUT: return &out_output;
+    default: return 0;
     }
 }
 
@@ -40,11 +40,11 @@ bool combiner::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case param::MEAN_TOTAL:
-            meantotal = *(STATUS*)data;
-            return true;
-        default:
-            return false;
+    case param::MEAN_TOTAL:
+        meantotal = *(STATUS*)data;
+        return true;
+    default:
+        return false;
     }
 }
 
@@ -52,8 +52,8 @@ const void* combiner::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case param::MEAN_TOTAL: return &meantotal;
-        default: return 0;
+    case param::MEAN_TOTAL: return &meantotal;
+    default: return 0;
     }
 }
 
@@ -62,19 +62,19 @@ synthmod* combiner::duplicate_module(const char* uname, DUP_IO dupio)
     return duplicate_list_module(this, goto_first(), uname, dupio);
 }
 
-stockerrs::ERR_TYPE combiner::validate()
+errors::TYPE combiner::validate()
 {
     if (!goto_first() || !goto_next()) {
         sm_err("%s", " signals to combine");
         invalidate();
-        return stockerrs::ERR_ATLEAST2;
+        return errors::ATLEAST2;
     }
-    return stockerrs::ERR_NO_ERROR;
+    return errors::NO_ERROR;
 }
 
 dobj* combiner::add_dobj(dobj* dbj)
 {
-    if (dbj->get_object_type() == dobjnames::DOBJ_SYNTHMOD) {
+    if (dbj->get_object_type() == dataobj::DOBJ_SYNTHMOD) {
         synthmod* sm = ((dobjmod*)dbj)->get_synthmod();
         if (!sm->flag(SM_HAS_OUT_OUTPUT)) {
             sm_err("%s will not accept the module %s because modules "
@@ -95,7 +95,7 @@ dobj* combiner::add_dobj(dobj* dbj)
         jwm.get_dobjlist()->add_dobj(dbj);
         return dbj;
     }
-    sm_err("%s %s to %s", stockerrs::major, stockerrs::bad_add,
+    sm_err("%s %s to %s", errors::stock::major, errors::stock::bad_add,
                                                     get_username());
     return 0;
 }
@@ -140,6 +140,6 @@ void combiner::init_first()
     if (done_first())
         return;
     register_param(param::MEAN_TOTAL);
-    register_moddobj(dobjnames::LST_SIGNALS, dobjnames::DOBJ_SYNTHMOD);
+    register_moddobj(dataobj::LST_SIGNALS, dataobj::DOBJ_SYNTHMOD);
 }
 

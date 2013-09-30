@@ -21,7 +21,7 @@ class modparam
     #ifdef UNUSED
     iocat::TYPE get_paramcategory();
     #endif
-    bool validate(synthmod* sm, stockerrs::ERR_TYPE et);
+    bool validate(synthmod* sm, errors::TYPE et);
 
     bool operator()(module::TYPE & smt) const
         { return synthmodule_type == smt; }

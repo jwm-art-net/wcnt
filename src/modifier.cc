@@ -63,7 +63,7 @@ bool modifier::set_param(param::TYPE pt, const void* data)
         case param::MODIFIER_TYPE:
             type = (TYPE)(*(int*)data);
             return true;
-/*
+/* FIXME: wtf is going on here then????
         case param::BIAS:
             bias = *(double*)data;
             return true;
@@ -84,18 +84,18 @@ const void* modifier::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE modifier::validate()
+errors::TYPE modifier::validate()
 {
 /*
-    if (!jwm.get_paramlist()->validate(this, param::BIAS,
-                                        stockerrs::ERR_RANGE_0_1))
+    if (!validate_param(param::BIAS,
+                                        errors::RANGE_0_1))
     {
         *err_msg = param::names::get(param::BIAS);
         invalidate();
-        return stockerrs::ERR_RANGE_0_1;
+        return errors::RANGE_0_1;
     }
 */
-    return stockerrs::ERR_NO_ERROR;
+    return errors::NO_ERROR;
 }
 
 #include <math.h>

@@ -3,7 +3,7 @@
 #include "../include/dobjparamlist.h"
 
 adsr_scaler::adsr_scaler() :
- dobj(dobjnames::DEF_ADSR_SCALER),
+ dobj(dataobj::DEF_ADSR_SCALER),
  padsr(0),
  attack_scale(1.0), decay_scale(1.0), release_scale(1.0)
 {
@@ -16,95 +16,77 @@ adsr_scaler::~adsr_scaler()
 
 bool adsr_scaler::set_param(param::TYPE pt, const void* data)
 {
-    switch(pt)
-    {
-        case param::ADSR_NAME:
-            if(((synthmod*)data)->get_module_type() ==
-               module::ADSR)
-            {
-                padsr = (adsr*)data;
-                return true;
-            }
-            dobjerr("%s is not an %s.", ((synthmod*)data)->get_username(),
-                        module::names::get(module::ADSR));
-            return false;
-        case param::ATTACK_SCALE:
-            attack_scale = *(double*)data;
+    switch(pt) {
+    case param::ADSR_NAME:
+        if(((synthmod*)data)->get_module_type() == module::ADSR) {
+            padsr = (adsr*)data;
             return true;
-        case param::DECAY_SCALE:
-            decay_scale = *(double*)data;
-            return true;
-        case param::RELEASE_SCALE:
-            release_scale = *(double*)data;
-            return true;
-        default: return false;
+        }
+        dobjerr("%s is not an %s.", ((synthmod*)data)->get_username(),
+                                    module::names::get(module::ADSR));
+        return false;
+    case param::ATTACK_SCALE:
+        attack_scale = *(double*)data;
+        return true;
+    case param::DECAY_SCALE:
+        decay_scale = *(double*)data;
+        return true;
+    case param::RELEASE_SCALE:
+        release_scale = *(double*)data;
+        return true;
+    default:
+        return false;
     }
 }
 
 const void* adsr_scaler::get_param(param::TYPE pt) const
 {
-    switch(pt)
-    {
-        case param::ADSR_NAME:     return padsr;
-        case param::ATTACK_SCALE:  return &attack_scale;
-        case param::DECAY_SCALE:   return &decay_scale;
-        case param::RELEASE_SCALE: return &release_scale;
-        default: return 0;
+    switch(pt) {
+    case param::ADSR_NAME:     return padsr;
+    case param::ATTACK_SCALE:  return &attack_scale;
+    case param::DECAY_SCALE:   return &decay_scale;
+    case param::RELEASE_SCALE: return &release_scale;
+    default: return 0;
     }
 }
 
-stockerrs::ERR_TYPE adsr_scaler::validate()
+errors::TYPE adsr_scaler::validate()
 {
     // hang on... the adsr_coords will get validated themselves
     //  - won't they???
     // well no, not if the adsr was defined before the adsr_scaler ;-)
     // (clue: it would have to be).
-    if (!jwm.get_dparlist()->validate(
-        this, param::ATTACK_SCALE, stockerrs::ERR_NEGATIVE))
-    {
-        dobjerr("%s", param::names::get(
-                                        param::ATTACK_SCALE));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    if (!jwm.get_dparlist()->validate(
-        this, param::DECAY_SCALE, stockerrs::ERR_NEGATIVE))
-    {
-        dobjerr("%s", param::names::get(
-                                        param::DECAY_SCALE));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    if (!jwm.get_dparlist()->validate(
-        this, param::RELEASE_SCALE, stockerrs::ERR_NEGATIVE))
-    {
-        dobjerr("%s", param::names::get(
-                                        param::RELEASE_SCALE));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
+    if (!validate_param(param::ATTACK_SCALE, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    if (!validate_param(param::DECAY_SCALE, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    if (!validate_param(param::RELEASE_SCALE, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
     adsr_coord* ac = padsr->goto_first();
     if(!ac){
         // this won't arise because you can't define an adsr with zero
         // sections.
         dobjerr("%s", "The impossible has happened.");
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
     double scale;
-    while(ac){
-        switch(ac->get_adsr_section()){
-            case adsr_coord::ADSR_ATTACK:   scale = attack_scale; break;
-            case adsr_coord::ADSR_DECAY:    scale = decay_scale; break;
-            case adsr_coord::ADSR_RELEASE:  scale = release_scale; break;
-            default: scale = 0; break;
+    while(ac) {
+        switch(ac->get_adsr_section()) {
+        case adsr_coord::ADSR_ATTACK:   scale = attack_scale; break;
+        case adsr_coord::ADSR_DECAY:    scale = decay_scale; break;
+        case adsr_coord::ADSR_RELEASE:  scale = release_scale; break;
+        default: scale = 0; break;
         }
-        if (scale > 0){
+        if (scale > 0) {
             ac->set_upper_time(ac->get_upper_time() * scale);
             ac->set_lower_time(ac->get_lower_time() * scale);
         }
         ac = padsr->goto_next();
     }
-    return stockerrs::ERR_NO_ERROR;
+    return errors::NO_ERROR;
 }
 
 void adsr_scaler::init_first()

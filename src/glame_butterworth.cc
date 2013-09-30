@@ -96,15 +96,15 @@ const void* glame_butterworth::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE glame_butterworth::validate()
+errors::TYPE glame_butterworth::validate()
 {
     if (resonance < 0.1 || resonance > 1.41) {
         sm_err("%s must be within range 0.1 ~ 1.41.",   
                 param::names::get(param::RESONANCE));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
-    return stockerrs::ERR_NO_ERROR;
+    return errors::NO_ERROR;
 }
 
 void glame_butterworth::init()

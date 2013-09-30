@@ -24,7 +24,7 @@ public:
     ~dc_filter();
     void run();
     void init();
-    stockerrs::ERR_TYPE validate();
+    errors::TYPE validate();
     const void* get_out(output::TYPE) const;
     const void* set_in(input::TYPE, const void*);
     const void* get_in(input::TYPE) const;

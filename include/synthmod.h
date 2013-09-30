@@ -26,7 +26,6 @@ class dobj;
 class synthmod
 {
  public:
-
     enum SM_FLAGS
     {
         SM_DEFAULT,
@@ -43,10 +42,10 @@ class synthmod
 
     virtual ~synthmod();
 
-    module::TYPE get_module_type() const   { return module_type; }
-    const char* get_username() const    { return username; }
+    module::TYPE    get_module_type() const { return module_type; }
+    const char*     get_username()    const { return username; }
 
-    const char* get_group_name() const {
+    const char*     get_group_name() const {
             return ((flags & SM_UNGROUPABLE)
                         ? 0 : get_groupname(username));
         }
@@ -76,8 +75,8 @@ class synthmod
     virtual synthmod* duplicate_module(const char* const uname, DUP_IO);
 
     // validation
-    virtual stockerrs::ERR_TYPE validate()
-        { return stockerrs::ERR_NO_ERROR; }
+    virtual errors::TYPE validate()
+        { return errors::NO_ERROR; }
 
     #ifdef DEBUG
     bool check_inputs();
@@ -124,8 +123,7 @@ class synthmod
     bool done_first() const;
     void register_param(param::TYPE);
     void register_param(param::TYPE, const char* fixed_string);
-    void register_moddobj(dobjnames::DOBJ_TYPE parent,
-                                                dobjnames::DOBJ_TYPE sprog);
+    void register_moddobj(dataobj::TYPE parent, dataobj::TYPE sprog);
 
     /*  inputs & outputs OTOH, are unique to each instance, so will need
         registration per instance (ie in derived constructor).
@@ -133,10 +131,12 @@ class synthmod
     void register_input(input::TYPE);
     void register_output(output::TYPE);
 
+    bool validate_param(param::TYPE, errors::TYPE);
+
     static char err_msg[STRBUFLEN];
 
  private:
-    module::TYPE       module_type;
+    module::TYPE    module_type;
     char*           username;
     int             flags;
     static STATUS   abort_status;

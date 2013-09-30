@@ -66,21 +66,21 @@ synthmod* stereomixer::duplicate_module(const char* uname, DUP_IO dupio)
     return duplicate_list_module(this, goto_first(), uname, dupio);
 }
 
-stockerrs::ERR_TYPE stereomixer::validate()
+errors::TYPE stereomixer::validate()
 {
     if (master_level == 0) {
-        // should probably allow zero amplitude...
+        // FIXME: should probably allow zero amplitude...
         sm_err("%s is zero, all will be very quiet!",
                 param::names::get(param::MASTER_LEVEL));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
-    return stockerrs::ERR_NO_ERROR;
+    return errors::NO_ERROR;
 }
 
 dobj* stereomixer::add_dobj(dobj* dbj)
 {
-    if (dbj->get_object_type() == dobjnames::DOBJ_SYNTHMOD) {
+    if (dbj->get_object_type() == dataobj::DOBJ_SYNTHMOD) {
         synthmod* sm = ((dobjmod*)dbj)->get_synthmod();
         if (sm->get_module_type() != module::STEREOCHANNEL
             && !sm->get_out(output::OUT_LEFT))
@@ -103,7 +103,7 @@ dobj* stereomixer::add_dobj(dobj* dbj)
         jwm.get_dobjlist()->add_dobj(dbj);
         return dbj;
     }
-    sm_err("%s %s to %s", stockerrs::major, stockerrs::bad_add,
+    sm_err("%s %s to %s", errors::stock::major, errors::stock::bad_add,
                                                     get_username());
     return 0;
 }
@@ -142,6 +142,6 @@ void stereomixer::init_first()
     if (done_first())
         return;
     register_param(param::MASTER_LEVEL);
-    register_moddobj(dobjnames::LST_MIX, dobjnames::DOBJ_SYNTHMOD);
+    register_moddobj(dataobj::LST_MIX, dataobj::DOBJ_SYNTHMOD);
 }
 

@@ -11,7 +11,7 @@
 
 
 paramedit::paramedit() :
- dobj(dobjnames::SIN_EDIT_PARAM),
+ dobj(dataobj::SIN_EDIT_PARAM),
  name(0), parstr(0)
 {
     init_first();
@@ -140,7 +140,7 @@ bool paramedit::mod_param_edit(synthmod* module, const char* parname,
 bool paramedit::dobj_param_edit(dobj* dobject, const char* parname, 
                                 const char* valstr)
 {
-    dobjnames::DOBJ_TYPE dt = dobject->get_object_type();
+    dataobj::TYPE dt = dobject->get_object_type();
     dobjparamlist::linkedlist*
         parlist = new_list_of_by(jwm.get_dparlist(), dt);
 

@@ -92,45 +92,45 @@ const void* sc1::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE sc1::validate()
+errors::TYPE sc1::validate()
 {
     if (attack  < 2 || attack > 400) {
         sm_err("%s must be within range 2 ~ 400.",
                 param::names::get(param::ATTACK_TIME));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
     if (release  < 2 || release > 800) {
         sm_err("%s must be within range 2 ~ 800.",
                 param::names::get(param::RELEASE_TIME));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
     if (thresh  < -30 || thresh > 0) {
         sm_err("%s must be within range -30 ~ 0",
                  param::names::get(param::THRESH_DB));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
     if (ratio  < 1 || ratio > 10) {
         sm_err("%s must be within range 1 ~ 10",
                 param::names::get(param::RATIO_1N));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
     if (knee  < 1 || knee > 10) {
         sm_err("%s must be within range 1 ~ 10",
                 param::names::get(param::KNEE_DB));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
     if (makeup  < 0 || makeup > 24) {
         sm_err("%s must be within range 0 ~ 24",
                 param::names::get(param::MAKEUP_DB));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
-    return stockerrs::ERR_NO_ERROR;
+    return errors::NO_ERROR;
 }
 
 void sc1::init()

@@ -100,56 +100,27 @@ const void* echo::get_param(param::TYPE pt) const
     }
 }
 
-stockerrs::ERR_TYPE echo::validate()
+errors::TYPE echo::validate()
 {
-    modparamlist* pl = jwm.get_paramlist();
-    if (!pl->validate(this, param::DELAY_TIME,
-                                            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", param::names::get(
-                                            param::DELAY_TIME));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    if (!pl->validate(this, param::GAIN,
-                                            stockerrs::ERR_RANGE_M1_1))
-    {
-        sm_err("%s", param::names::get(param::GAIN));
-        invalidate();
-        return stockerrs::ERR_RANGE_M1_1;
-    }
-    if (!pl->validate(this, param::GAIN_MODSIZE,
-                                            stockerrs::ERR_RANGE_0_1))
-    {
-        sm_err("%s", param::names::get(
-                                            param::GAIN_MODSIZE));
-        invalidate();
-        return stockerrs::ERR_RANGE_0_1;
-    }
-    if (!pl->validate(this, param::FEED_LEVEL,
-                                            stockerrs::ERR_RANGE_FEED))
-    {
-        sm_err("%s", param::names::get(
-                                            param::FEED_LEVEL));
-        invalidate();
-        return stockerrs::ERR_RANGE_FEED;
-    }
-    if (!pl->validate(this, param::FEED_MODSIZE,
-                                            stockerrs::ERR_RANGE_0_1))
-    {
-        sm_err("%s", param::names::get(
-                                            param::FEED_MODSIZE));
-        invalidate();
-        return stockerrs::ERR_RANGE_0_1;
-    }
-    if (!pl->validate(this, param::WETDRY,
-            stockerrs::ERR_RANGE_0_1))
-    {
-        sm_err("%s", param::names::get(param::WETDRY));
-        invalidate();
-        return stockerrs::ERR_RANGE_0_1;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::DELAY_TIME, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    if (!validate_param(param::GAIN, errors::RANGE_M1_1))
+        return errors::RANGE_M1_1;
+
+    if (!validate_param(param::GAIN_MODSIZE, errors::RANGE_0_1))
+        return errors::RANGE_0_1;
+
+    if (!validate_param(param::FEED_LEVEL, errors::RANGE_FEED))
+        return errors::RANGE_FEED;
+
+    if (!validate_param(param::FEED_MODSIZE, errors::RANGE_0_1))
+        return errors::RANGE_0_1;
+
+    if (!validate_param(param::WETDRY, errors::RANGE_0_1))
+        return errors::RANGE_0_1;
+
+    return errors::NO_ERROR;
 }
 
 void echo::init()
