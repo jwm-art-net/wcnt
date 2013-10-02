@@ -6,23 +6,19 @@
 #include "../include/conversions.h"
 
 fader::fader(const char* uname) :
- synthmod(
-    synthmodnames::FADER,
-    uname,
-    SM_HAS_OUT_TRIG),
-
+ synthmod(module::FADER, uname, SM_HAS_OUT_TRIG),
  in_bar_trig(0), in_bar(0),
  out_output(0), out_bar_trig(OFF), out_bar(0), out_play_state(OFF),
  start_bar(0), end_bar(1), fade_in_time(0), fade_out_time(0),
  fade_in_smps(0), fismp(0), fade_out_smps(0), fosmp(0),
  _end_bar(0), fisz(0), fosz(0)
 {
-    register_input(inputnames::IN_BAR);
-    register_input(inputnames::IN_BAR_TRIG);
-    register_output(outputnames::OUT_OUTPUT);
-    register_output(outputnames::OUT_BAR_TRIG);
-    register_output(outputnames::OUT_BAR);
-    register_output(outputnames::OUT_PLAY_STATE);
+    register_input(input::IN_BAR);
+    register_input(input::IN_BAR_TRIG);
+    register_output(output::OUT_OUTPUT);
+    register_output(output::OUT_BAR_TRIG);
+    register_output(output::OUT_BAR);
+    register_output(output::OUT_PLAY_STATE);
     init_first();
 }
 
@@ -30,104 +26,78 @@ fader::~fader()
 {
 }
 
-const void* fader::set_in(inputnames::IN_TYPE it, const void* o)
+const void* fader::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_BAR:        return in_bar = (short*)o;
-        case inputnames::IN_BAR_TRIG:   return in_bar_trig = (STATUS*)o;
-        default: return 0;
+    case input::IN_BAR:         return in_bar = (short*)o;
+    case input::IN_BAR_TRIG:    return in_bar_trig = (STATUS*)o;
+    default: return 0;
     }
 }
 
-const void* fader::get_in(inputnames::IN_TYPE it) const
+const void* fader::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_BAR:        return in_bar;
-        case inputnames::IN_BAR_TRIG:   return in_bar_trig;
-        default: return 0;
+    case input::IN_BAR:         return in_bar;
+    case input::IN_BAR_TRIG:    return in_bar_trig;
+    default: return 0;
     }
 }
 
-const void* fader::get_out(outputnames::OUT_TYPE ot) const
+const void* fader::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_OUTPUT:     return &out_output;
-        case outputnames::OUT_BAR_TRIG:   return &out_bar_trig;
-        case outputnames::OUT_BAR:        return &out_bar;
-        case outputnames::OUT_PLAY_STATE: return &out_play_state;
-        default: return 0;
+    case output::OUT_OUTPUT:    return &out_output;
+    case output::OUT_BAR_TRIG:  return &out_bar_trig;
+    case output::OUT_BAR:       return &out_bar;
+    case output::OUT_PLAY_STATE:return &out_play_state;
+    default: return 0;
     }
 }
 
-bool fader::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool fader::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::START_BAR:
-            start_bar = *(short*)data;
-            return true;
-        case paramnames::END_BAR:
-            end_bar = *(short*)data;
-            return true;
-        case paramnames::FADE_IN_TIME:
-            fade_in_time = *(double*)data;
-            return true;
-        case paramnames::FADE_OUT_TIME:
-            fade_out_time = *(double*)data;
-            return true;
-        default:
-            return false;
+    case param::START_BAR:      start_bar = *(short*)data;      return true;
+    case param::END_BAR:        end_bar = *(short*)data;        return true;
+    case param::FADE_IN_TIME:   fade_in_time = *(double*)data;  return true;
+    case param::FADE_OUT_TIME:  fade_out_time = *(double*)data; return true;
+    default:
+        return false;
     }
 }
 
-const void* fader::get_param(paramnames::PAR_TYPE pt) const
+const void* fader::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::START_BAR:     return &start_bar;
-        case paramnames::END_BAR:       return &end_bar;
-        case paramnames::FADE_IN_TIME:  return &fade_in_time;
-        case paramnames::FADE_OUT_TIME: return &fade_out_time;
-        default: return 0;
+    case param::START_BAR:     return &start_bar;
+    case param::END_BAR:       return &end_bar;
+    case param::FADE_IN_TIME:  return &fade_in_time;
+    case param::FADE_OUT_TIME: return &fade_out_time;
+    default: return 0;
     }
 }
 
-stockerrs::ERR_TYPE fader::validate()
+errors::TYPE fader::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, paramnames::START_BAR,
-                                            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", paramnames::get_name(paramnames::START_BAR));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    if (!jwm.get_paramlist()->validate(this, paramnames::END_BAR,
-                                            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", paramnames::get_name(paramnames::END_BAR));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    if (!jwm.get_paramlist()->validate(this, paramnames::FADE_IN_TIME,
-                                            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", paramnames::get_name(
-                                            paramnames::FADE_IN_TIME));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    if (!jwm.get_paramlist()->validate(this, paramnames::FADE_OUT_TIME,
-                                            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", paramnames::get_name(
-                                            paramnames::FADE_OUT_TIME));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::START_BAR, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    if (!validate_param(param::END_BAR, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    if (!validate_param(param::FADE_IN_TIME, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    if (!validate_param(param::FADE_OUT_TIME, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    return errors::NO_ERROR;
 }
 
 void fader::init()
@@ -182,8 +152,8 @@ void fader::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::START_BAR);
-    register_param(paramnames::END_BAR);
-    register_param(paramnames::FADE_IN_TIME);
-    register_param(paramnames::FADE_OUT_TIME);
+    register_param(param::START_BAR);
+    register_param(param::END_BAR);
+    register_param(param::FADE_IN_TIME);
+    register_param(param::FADE_OUT_TIME);
 }

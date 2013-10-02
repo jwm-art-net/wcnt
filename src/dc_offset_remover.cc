@@ -5,12 +5,12 @@
 #include "../include/modparamlist.h"
 
 dc_offset_remover::dc_offset_remover(const char* uname) :
- synthmod(synthmodnames::DC_OFFSET_REMOVER, uname, SM_HAS_OUT_OUTPUT),
+ synthmod(module::DC_OFFSET_REMOVER, uname, SM_HAS_OUT_OUTPUT),
  input(0), output(0),
  l_descriptor(0), l_inst_handle(0), l_input(0), l_output(0)
 {
-    register_input(inputnames::IN_SIGNAL);
-    register_output(outputnames::OUT_OUTPUT);
+    register_input(input::IN_SIGNAL);
+    register_output(output::OUT_OUTPUT);
 }
 
 dc_offset_remover::~dc_offset_remover()
@@ -47,30 +47,30 @@ void dc_offset_remover::init()
     l_descriptor->activate(l_inst_handle);
 }
 
-const void* dc_offset_remover::get_out(outputnames::OUT_TYPE ot) const
+const void* dc_offset_remover::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_OUTPUT: return &output;
+        case output::OUT_OUTPUT: return &output;
         default: return 0;
     }
 }
 
 const void*
-dc_offset_remover::set_in(inputnames::IN_TYPE it, const void* o)
+dc_offset_remover::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_SIGNAL: return input = (double*)o;
+        case input::IN_SIGNAL: return input = (double*)o;
         default: return 0;
     }
 }
 
-const void* dc_offset_remover::get_in(inputnames::IN_TYPE it) const
+const void* dc_offset_remover::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_SIGNAL: return input;
+        case input::IN_SIGNAL: return input;
         default: return 0;
     }
 }

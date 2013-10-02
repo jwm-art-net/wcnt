@@ -121,7 +121,7 @@ T** move_to_array(linked_list<T>* list)
     if (list->is_empty())
         return 0;
     T** array = new T*[list->get_count() + 1];
-    long ix = 0;
+    int ix = 0;
     ll_item<T>* tmp = list->sneak_first();
     while(tmp) {
         array[ix++] = tmp->get_data();
@@ -156,6 +156,26 @@ void destroy_array_moved_from_list(T** array)
         delete array[ix++];
     }
     delete [] array;
+}
+
+template <typename T, typename R> // selection sort
+void sort_list(linked_list<T>* list, R (T::*func)() const)
+{
+    ll_item<T>* expos = list->sneak_first();
+    while(expos) {
+        ll_item<T>* tmp = expos;
+        ll_item<T>* smallest = tmp;
+        while (tmp) {
+            tmp = tmp->get_next();
+            if (tmp && (tmp->get_data()->*func)()
+              < (smallest->get_data()->*func)())
+                smallest = tmp;
+        }
+        T* n = expos->get_data();
+        expos->set_data(smallest->get_data());
+        smallest->set_data(n);
+        expos = expos->get_next();
+    }
 }
 
 #endif

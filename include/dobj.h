@@ -16,10 +16,10 @@
 class dobj
 {
  public:
-    dobj(dobjnames::DOBJ_TYPE objtype);
+    dobj(dataobj::TYPE);
     virtual ~dobj();
 
-    dobjnames::DOBJ_TYPE get_object_type() const { return object_type; }
+    dataobj::TYPE get_object_type() const { return object_type; }
     bool is_named_by_user();
     bool set_username(const char*);
     // some dobj are unamed by user, but contain another string which
@@ -27,15 +27,15 @@ class dobj
     // is now virtual.
     virtual const char* get_username();
     bool is_valid() const   { return valid; }
-    virtual stockerrs::ERR_TYPE validate() = 0;
-    virtual bool set_param(paramnames::PAR_TYPE, const void*);
-    virtual const void* get_param(paramnames::PAR_TYPE) const;
+    virtual errors::TYPE validate() = 0;
+    virtual bool set_param(param::TYPE, const void*);
+    virtual const void* get_param(param::TYPE) const;
     virtual dobj const* add_dobj(dobj*); // don't be fooled...
     virtual dobj* duplicate_dobj(const char*);
 
     static const char* get_error_msg() { return err_msg; }
 
-    bool operator()(dobjnames::DOBJ_TYPE & dt) const {
+    bool operator()(dataobj::TYPE & dt) const {
         return object_type == dt;
     }
 
@@ -51,14 +51,14 @@ protected:
     static char err_msg[STRBUFLEN];
     virtual void init_first() = 0;
     void invalidate(){ valid = false;}
-    void register_param(paramnames::PAR_TYPE);
-    void register_param(paramnames::PAR_TYPE, const char* fixed_string);
-    void register_dobjdobj(dobjnames::DOBJ_TYPE parent,
-                                                dobjnames::DOBJ_TYPE sprog);
+    void register_param(param::TYPE);
+    void register_param(param::TYPE, const char* fixed_string);
+    void register_dobjdobj(dataobj::TYPE parent, dataobj::TYPE sprog);
     bool done_first() const;
+    bool validate_param(param::TYPE, errors::TYPE);
 
  private:
-    dobjnames::DOBJ_TYPE object_type;
+    dataobj::TYPE object_type;
     char* username;
     bool valid;
 
@@ -66,7 +66,7 @@ protected:
     STATS_VARS
     #endif
 
-    static bool first_done[dobjnames::DOBJ_LAST];
+    static bool first_done[dataobj::LAST_TYPE];
 };
 
 

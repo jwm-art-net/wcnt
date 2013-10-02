@@ -10,8 +10,7 @@ modparamlist::modparamlist(DESTRUCTION d) :
 {
 }
 
-modparam* modparamlist::add_param(
-    synthmodnames::SYNTH_MOD_TYPE smt, paramnames::PAR_TYPE pt)
+modparam* modparamlist::add_param(module::TYPE smt, param::TYPE pt)
 {
     modparam* mp = new modparam(smt, pt);
     if (!add_at_tail(mp)) {
@@ -21,13 +20,22 @@ modparam* modparamlist::add_param(
     return mp;
 }
 
-bool modparamlist::validate(
-    synthmod* sm, paramnames::PAR_TYPE pt, stockerrs::ERR_TYPE et)
+bool modparamlist::validate(synthmod* sm, param::TYPE pt, errors::TYPE et)
 {
     if (!sm) return false;
-    if (!stockerrs::check_type(et) && et < stockerrs::ERR_TYPE4)
+    if (!errors::stock::chk(et))
         return false;
-    synthmodnames::SYNTH_MOD_TYPE smt = sm->get_module_type();
+    #ifdef DEBUG
+    switch(errors::stock::category(et)) {
+    case errors::CAT_COULD_NOT:
+    case errors::CAT_INVALID:
+    case errors::CAT_OTHER:
+        std::cout << "Is this an error here???" << std::endl;
+    default:
+        ;
+    }
+    #endif
+    module::TYPE smt = sm->get_module_type();
     modparam* param = goto_first();
     while (param) {
         if (param->get_moduletype() == smt) {

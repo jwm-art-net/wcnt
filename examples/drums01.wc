@@ -17,6 +17,7 @@ t1
         time seconds 0.0
         time seconds 20.0 // little surprise
     timings
+    time_is_relative off
 t1
 
 timer
@@ -24,6 +25,7 @@ t2
     timings
         time seconds 35.0
     timings
+    time_is_relative off
 t2
 
 timer
@@ -31,6 +33,7 @@ t3
     timings
         time seconds 38.0
     timings
+    time_is_relative off
 t3
 
 //---------------------------------------------------------

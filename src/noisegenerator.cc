@@ -3,22 +3,22 @@
 #include "../include/modoutputlist.h"
 
 noise_generator::noise_generator(const char* uname) :
- synthmod(synthmodnames::NOISEGEN, uname, SM_HAS_OUT_OUTPUT),
+ synthmod(module::NOISEGEN, uname, SM_HAS_OUT_OUTPUT),
  output(0.00)
 {
     srandom(time(0));
-    register_output(outputnames::OUT_OUTPUT);
+    register_output(output::OUT_OUTPUT);
 }
 
 noise_generator::~noise_generator()
 {
 }
 
-const void* noise_generator::get_out(outputnames::OUT_TYPE ot) const
+const void* noise_generator::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_OUTPUT: return &output;
+        case output::OUT_OUTPUT: return &output;
         default: return 0;
     }
 }

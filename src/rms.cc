@@ -8,12 +8,12 @@
 #include <math.h>
 
 rms::rms(const char* uname) :
- synthmod(synthmodnames::RMS, uname, SM_DEFAULT),
+ synthmod(module::RMS, uname, SM_DEFAULT),
  in_signal(0), out_rms(0), rms_time(0), output(0), rmsarr(0),
  arraymax(0), arrpos(0), sqrsum(0)
 {
-    register_input(inputnames::IN_SIGNAL);
-    register_output(outputnames::OUT_RMS);
+    register_input(input::IN_SIGNAL);
+    register_output(output::OUT_RMS);
     init_first();
 }
 
@@ -23,38 +23,38 @@ rms::~rms()
         delete [] rmsarr;
 }
 
-const void* rms::get_out(outputnames::OUT_TYPE ot) const
+const void* rms::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_RMS: return &out_rms;
+        case output::OUT_RMS: return &out_rms;
         default: return 0;
     }
 }
 
-const void* rms::set_in(inputnames::IN_TYPE it, const void* o)
+const void* rms::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_SIGNAL: return in_signal = (double*)o;
+        case input::IN_SIGNAL: return in_signal = (double*)o;
         default: return 0;
     }
 }
 
-const void* rms::get_in(inputnames::IN_TYPE it) const
+const void* rms::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_SIGNAL: return in_signal;
+        case input::IN_SIGNAL: return in_signal;
         default: return 0;
     }
 }
 
-bool rms::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool rms::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::RMS_TIME:
+        case param::RMS_TIME:
             rms_time = *(double*)data;
             return true;
         default:
@@ -62,25 +62,21 @@ bool rms::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* rms::get_param(paramnames::PAR_TYPE pt) const
+const void* rms::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::RMS_TIME: return &rms_time;
+        case param::RMS_TIME: return &rms_time;
         default: return 0;
     }
 }
 
-stockerrs::ERR_TYPE rms::validate()
+errors::TYPE rms::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, paramnames::RMS_TIME,
-            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", paramnames::get_name(paramnames::RMS_TIME));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::RMS_TIME, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    return errors::NO_ERROR;
 }
 
 void rms::init()
@@ -109,6 +105,6 @@ void rms::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::RMS_TIME);
+    register_param(param::RMS_TIME);
 }
 

@@ -10,7 +10,7 @@
               remaps the amplitude of input signal.
 
     dynamic contains linked list of dynvertex.  referenced to dobj via
-    dobjnames::LIN_DYNAMIC.  
+    dobjnames::LST_DYNAMICS.
 
     to create the dynamic map shape, insert dynvertex into it.
     dynvertex has an sigin_level which represents a given amplitude
@@ -43,12 +43,12 @@ class dynamic : public synthmod, public linked_list<dynvertex>
     */
     void run();
     void init();
-    stockerrs::ERR_TYPE validate();
-    const void* get_out(outputnames::OUT_TYPE) const;
-    const void* set_in(inputnames::IN_TYPE, const void*);
-    const void* get_in(inputnames::IN_TYPE it) const;
-    bool set_param(paramnames::PAR_TYPE, const void*);
-    const void* get_param(paramnames::PAR_TYPE) const;
+    errors::TYPE validate();
+    const void* get_out(output::TYPE) const;
+    const void* set_in(input::TYPE, const void*);
+    const void* get_in(input::TYPE) const;
+    bool set_param(param::TYPE, const void*);
+    const void* get_param(param::TYPE) const;
     dobj* add_dobj(dobj*);
     synthmod* duplicate_module(const char* uname, DUP_IO);
 

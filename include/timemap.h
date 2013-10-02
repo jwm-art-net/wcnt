@@ -22,7 +22,7 @@
 class timemap : public synthmod
 {
 public:
-    enum { QUARTER_VALUE = 6720 };
+    enum { TPQN = 6720 }; // Ticks Per Quarter Note
     timemap(const char*);
     ~timemap();
 
@@ -34,8 +34,8 @@ public:
     // virtual methods
     void run();
     void init(); // init will grab global bpm to start with
-    stockerrs::ERR_TYPE validate();
-    const void* get_out(outputnames::OUT_TYPE) const;
+    errors::TYPE validate();
+    const void* get_out(output::TYPE) const;
     synthmod* duplicate_module(const char* uname, DUP_IO);
     dobj* add_dobj(dobj*);
 

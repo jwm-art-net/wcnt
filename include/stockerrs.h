@@ -1,99 +1,79 @@
 #ifndef STOCKERRS_H
 #define STOCKERRS_H
 
-/*
-// used to get stock err_msg strings
-// and for 'auto' error detection in params
-// ***
-//  'auto' error detection can only handle numerical errors in
-//  a parameter value.
-//
-//  for it to work properly, the markers ERR_RANGE_FIRST, and 
-//  ERR_RANGE_LAST should not be removed, and the numerical
-//  error types should be within the two markers.
-// ***
-// the remaining error types have to be detected by
-// the synthmod or dobj that needs validating.
-// 'auto' error detection means:
-//    for synthmod derrived classes, synthmodclass::validate()
-//      calls modparamlist::validate(synthmod* this, PAR_TYPE, ERR_TYPE)
-//      and invalidates and returns the ERR_TYPE if modparamlist
-//      returned false.
-//      synthmodclass::validate does the error checking
-//      itself for non numerical errors.
-// type1 must be lowest or highest, or anywhere between
-// type2 must be higher than lowest and lower than highest
-// type3 one way range checks (usually must be above)
-// type4 non automated checks.
-*/
+#include "getnames.h"
 
-class stockerrs
+namespace errors
 {
- public:
+ enum CAT
+ {
+    CAT_ERR_TYPE,
+    CAT_NO_ERROR,
+    CAT_NUM_OUT_OF_RANGE,
+    CAT_NUM_OUT_OF_RANGE_OR_EQ,
+    CAT_NUM_BELOW,
+    CAT_COULD_NOT,
+    CAT_INVALID,
+    CAT_OTHER,
+    CAT_ERR_LAST
+ };
+
+ enum TYPE
+ {
+    ERR_TYPE,       // erroneous error!
+    NO_ERROR,       // no error
+    // CAT_NUM_OUT_OF_RANGE:
+    RANGE_0_1,      // outside 0 ~ 1
+    RANGE_M1_1,     // outside -1 ~ 1
+    RANGE_CLIP,     // outside 1 ~ 32767
+    RANGE_AMP,      // outside -32767 ~ 32767
+    RANGE_FEED,     // outside feedback range prob -2 ~ 2
+    RANGE_DEGS,     // outside 0.0 ~ 360.0
+    RANGE_SEMI,     // outside -12.0 ~ 12.0
+    RANGE_OCT,      // outside -24.0 ~ 8.0 - overly generous.
+    RANGE_BPM,      // outside -500 ~ 500 (now relative)
+    RANGE_BEAT,     // outside 2 ~ 32
+    // CAT_NUM_OUT_OF_RANGE_OR_EQ:
+    RANGE_0_1_IN,   // outside 0 ~ 1 or is 0 or 1
+    RANGE_M1_1_IN,  // outside -1 ~ 1 or is -1 or 1
+    RANGE_FMOD,     // outside freq mod range prob 0 ~ 15
+    RANGE_FREQ,     // outside 0.0 ~ 1/4 samplerate or is either.
+    // CAT_NUM_BELOW:
+    NEGATIVE,       // < 0 is bad
+    NEG_OR_ZERO,    // <= 0 is bad
+    ABOVE1,         // < 1.0 is bad
+    // CAT_OTHER:
+    LESS_THAN,      // a < b
+    ATLEAST2,       // must be atleast two (object)
+    NO_OPEN,        // could not open file
+    NO_ADD,         // could not add (object)
+    ISNOT,          // is not a (object type)
+    NOTENAME,       // is not a notename
+    INVALID_OBJECT, // invalid object type
+    ERROR,          // non-stock error (the error of a lazy man...)
+    LAST_TYPE
+ };
+
+ class stock : public getnames<TYPE, CAT>
+ {
+  public:
+
     static const char* major;   // "*** MAJOR ERROR ***"
     static const char* bad;     // "Bad attempt made to"
-    static const char* bad_add; // "Bad attempt made to add
-                                //  invalid object type";
+    static const char* bad_add; // "Bad attempt made to add "
+                                // "invalid object type"
 
-    enum ERR_TYPE
-    {
-      ERR_FIRST = 0,      // cause:
-        ERR_NO_ERROR,       // no error
+    static void instantiate() { static stock stockerrs; }
 
-      ERR_RANGE_TYPE1,   // *** see notes ***
-        ERR_RANGE_0_1,      // outside 0 ~ 1
-        ERR_RANGE_M1_1,     // outside -1 ~ 1
-        ERR_RANGE_CLIP,     // outside 1 ~ 32767
-        ERR_RANGE_AMP,      // outside -32767 ~ 32767
-        ERR_RANGE_FEED,     // outside feedback range prob -2 ~ 2
-        ERR_RANGE_DEGS,     // outside 0.0 ~ 360.0
-        ERR_RANGE_SEMI,     // outside -12.0 ~ 12.0
-        ERR_RANGE_OCT,      // outside -24.0 ~ 8.0 - overly generous.
-        ERR_RANGE_BPM,      // outside -500 ~ 500 (now relative)
-        ERR_RANGE_BEAT,     // outside 2 ~ 32
-        
-// should be inside range errmsgs:
-      ERR_RANGE_TYPE2,
-        ERR_RANGE_0_1_IN,   // outside 0 ~ 1 or is 0 or 1
-        ERR_RANGE_M1_1_IN,  // outside -1 ~ 1 or is -1 or 1
-        ERR_RANGE_FMOD,     // outside freq mod range prob 0 ~ 15
-        ERR_RANGE_FREQ,     // outside 0.0 ~ 1/4 samplerate or is either.
+    static const char* get_prefix_msg(TYPE t)
+        { return prefix_msg[data[chk(t)].cat]; }
 
-      ERR_TYPE3,
-        ERR_NEGATIVE,       // < 0 is bad
-// must be errmsgs:
-        ERR_NEG_ZERO,       // <= 0 is bad
-        ERR_ABOVE1,         // < 1.0 is bad
-
-      ERR_TYPE4,            // *** see notes ***
-        ERR_LESS_THAN,      // a < b
-        ERR_ATLEAST2,       // must be atleast two (object)
-
-// could not errmsgs:
-        ERR_NO_OPEN,        // could not open file
-        ERR_NO_ADD,         // could not add (object)
-
-// is not a errmsgs:
-        ERR_ISNOT,          // is not a (object type)
-        ERR_NOTENAME,       // is not a notename
-
-        ERR_INVALID_OBJECT, // invalid object type
-        ERR_ERROR,          // non-stock error
-      ERR_LAST
-    };
-    stockerrs();
-    ~stockerrs();
-    static const char* get_err(ERR_TYPE);
-    static const char* get_prefix_err(ERR_TYPE);
-    static bool check_type(ERR_TYPE);
-private:
-    struct err_msg_data
-    {
-        ERR_TYPE type;
-        const char* const msg;
-    };
-    static const err_msg_data data[ERR_LAST];
-    static const char* prefixmsg[6];/* secret number do not alter */
-};
+  private:
+    stock() : getnames(LAST_TYPE, data) {}
+    ~stock() {}
+    static const struct gn_data data[LAST_TYPE];
+    static const char* prefix_msg[CAT_ERR_LAST];
+ };
+}; // namespace errors
 
 #endif

@@ -7,13 +7,13 @@
 
 logictrigger::logictrigger(const char* uname) :
 
- synthmod(synthmodnames::LOGICTRIGGER, uname, SM_HAS_OUT_TRIG),
+ synthmod(module::LOGICTRIGGER, uname, SM_HAS_OUT_TRIG),
  in_trig1(0), in_trig2(0), out_trig(OFF), logicfunc(AND), precision(0),
  next_trig(0), t1_samps(0), t2_samps(0), trig1(OFF), trig2(OFF)
 {
-    register_input(inputnames::IN_TRIG1);
-    register_input(inputnames::IN_TRIG2);
-    register_output(outputnames::OUT_TRIG);
+    register_input(input::IN_TRIG1);
+    register_input(input::IN_TRIG2);
+    register_output(output::OUT_TRIG);
     init_first();
 }
 
@@ -21,43 +21,43 @@ logictrigger::~logictrigger()
 {
 }
 
-const void* logictrigger::get_out(outputnames::OUT_TYPE ot) const
+const void* logictrigger::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_TRIG: return &out_trig;
+        case output::OUT_TRIG: return &out_trig;
         default: return 0;
     }
 }
 
-const void* logictrigger::set_in(inputnames::IN_TYPE it, const void* o)
+const void* logictrigger::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_TRIG1: return in_trig1 = (STATUS*)o;
-        case inputnames::IN_TRIG2: return in_trig2 = (STATUS*)o;
+        case input::IN_TRIG1: return in_trig1 = (STATUS*)o;
+        case input::IN_TRIG2: return in_trig2 = (STATUS*)o;
         default: return 0;
     }
 }
 
-const void* logictrigger::get_in(inputnames::IN_TYPE it) const
+const void* logictrigger::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_TRIG1: return in_trig1;
-        case inputnames::IN_TRIG2: return in_trig2;
+        case input::IN_TRIG1: return in_trig1;
+        case input::IN_TRIG2: return in_trig2;
         default: return 0;
     }
 }
 
-bool logictrigger::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool logictrigger::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::LOGICFUNC:
+        case param::LOGICFUNC:
             logicfunc = (LOGIC_FUNC)(*(int*)data);
             return true;
-        case paramnames::PRECISION:
+        case param::PRECISION:
             precision = *(short*)data;
             return true;
         default:
@@ -65,12 +65,12 @@ bool logictrigger::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* logictrigger::get_param(paramnames::PAR_TYPE pt) const
+const void* logictrigger::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::LOGICFUNC: return &logicfunc;
-        case paramnames::PRECISION: return &precision;
+        case param::LOGICFUNC: return &logicfunc;
+        case param::PRECISION: return &precision;
         default: return 0;
     }
 }
@@ -182,6 +182,6 @@ void logictrigger::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::LOGICFUNC, "and/or/xor/xornot");
-    register_param(paramnames::PRECISION);
+    register_param(param::LOGICFUNC, "and/or/xor/xornot");
+    register_param(param::PRECISION);
 }

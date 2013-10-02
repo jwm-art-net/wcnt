@@ -35,6 +35,7 @@ timer t1
     //        time seconds 384.0
 
     timings
+    time_is_relative on
 t1
 
 timer t2
@@ -50,6 +51,7 @@ timer t2
     //    time seconds 359.0
 
     timings
+    time_is_relative on
 t2
 
 // this is the 'master' envelope:

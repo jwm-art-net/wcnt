@@ -4,15 +4,10 @@
 #include "../include/modparamlist.h"
 
 constmod::constmod(const char* uname) :
-
- synthmod(
-    synthmodnames::CONSTMOD,
-    uname,
-    SM_EMPTY_RUN | SM_HAS_OUT_OUTPUT),
-
+ synthmod(module::CONSTMOD, uname, SM_EMPTY_RUN | SM_HAS_OUT_OUTPUT),
  output(0)
 {
-    register_output(outputnames::OUT_OUTPUT);
+    register_output(output::OUT_OUTPUT);
     init_first();
 }
 
@@ -20,19 +15,19 @@ constmod::~constmod()
 {
 }
 
-const void* constmod::get_out(outputnames::OUT_TYPE ot) const
+const void* constmod::get_out(output::TYPE ot) const
 {
     switch(ot) 
     {
-        case outputnames::OUT_OUTPUT: return &output;
+        case output::OUT_OUTPUT: return &output;
         default: return 0;
     }
 }
 
-bool constmod::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool constmod::set_param(param::TYPE pt, const void* data)
 {
     switch(pt) {
-        case paramnames::VALUE:
+        case param::VALUE:
             output = *(double*)data;
             return true;
         default:
@@ -40,12 +35,12 @@ bool constmod::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* constmod::get_param(paramnames::PAR_TYPE pt) const
+const void* constmod::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
         // parameter /is/ output.
-        case paramnames::VALUE: return &output;
+        case param::VALUE: return &output;
         default: return 0;
     }
 }
@@ -56,6 +51,6 @@ void constmod::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::VALUE);
+    register_param(param::VALUE);
 }
 

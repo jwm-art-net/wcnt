@@ -3,53 +3,64 @@ wcnt-1.26/jwmsynth
 samplerate 44100
 
 timer
-t
+t-on
     timings
         time seconds 0.0
-        time seconds 1.0
+        time seconds 6.0
     timings
-t
+    time_is_relative off
+t-on
 
-clock
-c
-    in_freq_mod1 off
-    freq 1
-    freq_mod1_size 1
-c
+timer
+t-off
+    timings
+        time seconds 5.0
+    timings
+    time_is_relative off
+t-off
 
-pattern_trig
-pt
-    in_trig c out_phase_trig
-    pattern 10
-pt
-
-adsr
-env
-    envelope
+adsr            // the shape of this envelope is purposely made
+env             // so the actual insertion order can be checked
+    envelope    // by looking at its output when written to a file.
         section name attack
-            ut  115   ul  1.0
-            lt  115   ll  1.0
+            ut  50  ul  0.333
+            lt  50  ll  0.333
+        section name attack
+            ut  950 ul  0.666
+            lt  950 ll  0.666
+        section name attack
+            ut  250 ul  1.00
+            lt  250 ll  1.00
         section name decay
-            ut  15  ul  0.9
-            lt  15  ll  0.9
+            ut  50  ul  0.777
+            lt  50  ll  0.777
         section name decay
-            ut  135 ul  0.75
-            lt  135 ll  0.75
+            ut  950 ul  0.666
+            lt  950 ll  0.666
+        section name decay
+            ut  250 ul  0.555
+            lt  250 ll  0.555
         section name release
-            ut  425 ul  0.0
-            lt  425 ll  0.0
+            ut  50  ul  0.444
+            lt  50  ll  0.444
+        section name release
+            ut  950 ul  0.350
+            lt  950 ll  0.350
+        section name release
+            ut  150 ul  0.1
+            lt  150 ll  0.1
     envelope
-    in_note_on_trig     pt out_trig
-    in_note_off_trig    off
+    in_note_on_trig     t-on    out_trig
+    in_note_off_trig    t-off   out_trig
     in_velocity         off
-    up_thresh       1.0
-    lo_thresh       0.0
-    start_level     0.0
-    min_time         125.0
-    max_sustain_time 0.0
-    release_is_ratio off
-    sustain_state   off
-    zero_retrigger  off
+    up_thresh           1.0
+    lo_thresh           0.0
+    start_level         0.0
+    min_time            0.0
+    max_sustain_time    1000.0
+    release_is_ratio    on
+    sustain_state       on
+    zero_retrigger      off
 env
 
 clock
@@ -65,22 +76,36 @@ i
     _in_double_float_trig_  cc out_phase_trig
     _in_short_int_          off
     _in_short_int_trig_     off
-    _in_unsigned_long_      off
-    _in_unsigned_long_trig_ off
+    _in_samp_t_             off
+    _in_samp_t_trig_        off
     _in_state_              off
     _in_state_trig_         off
     _in_string_             off
     _in_string_trig_        off
-    _double_float_msg_  sw:out_output=
+    _double_float_msg_  env:out_output=
     _short_int_msg_     .
-    _long_int_msg_      .
+    _samp_t_msg_        .
     _state_msg_         .
     _string_msg_        .
 i
 
+wavfile_out
+wav
+    in_left      env    out_output
+    in_right     env    out_output
+    in_bar       t-on   out_count
+    in_bar_trig  t-on   out_trig
+
+    snapshot_mode  off
+    data_format    pcm16
+    filename       adsr_output.wav
+    start_bar      0
+    end_bar        1
+wav
+
 wcnt_exit
 exit
-    in_bar      t out_count
+    in_bar      t-on out_count
     exit_bar    1
 exit
 

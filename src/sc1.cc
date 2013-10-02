@@ -6,7 +6,7 @@
 #include "../include/modparamlist.h"
 
 sc1::sc1(const char* uname) :
- synthmod(synthmodnames::SC1, uname, SM_HAS_OUT_OUTPUT),
+ synthmod(module::SC1, uname, SM_HAS_OUT_OUTPUT),
  input(0), in_thresh_mod(0), in_ratio_mod(0), in_knee_mod(0),
  in_makeup_mod(0), output(0),
  attack(101.5), release(401), thresh(0), ratio(1), knee(3.25), makeup(0),
@@ -15,8 +15,8 @@ sc1::sc1(const char* uname) :
  l_makeup(0), l_input(0), l_output(0)
 
 {
-    register_input(inputnames::IN_SIGNAL);
-    register_output(outputnames::OUT_OUTPUT);
+    register_input(input::IN_SIGNAL);
+    register_output(output::OUT_OUTPUT);
     init_first();
 
 }
@@ -28,49 +28,49 @@ sc1::~sc1()
     if (l_output) delete [] l_output;
 }
 
-const void* sc1::get_out(outputnames::OUT_TYPE ot) const
+const void* sc1::get_out(output::TYPE ot) const
 {
     switch(ot) {
-        case outputnames::OUT_OUTPUT: return &output;
+        case output::OUT_OUTPUT: return &output;
         default: return 0;
     }
 }
 
-const void* sc1::set_in(inputnames::IN_TYPE it, const void* o)
+const void* sc1::set_in(input::TYPE it, const void* o)
 {
     switch(it){
-        case inputnames::IN_SIGNAL: return input = (double*)o;
+        case input::IN_SIGNAL: return input = (double*)o;
         default: return 0;
     }
 }
 
-const void* sc1::get_in(inputnames::IN_TYPE it) const
+const void* sc1::get_in(input::TYPE it) const
 {
     switch(it) {
-        case inputnames::IN_SIGNAL: return input;
+        case input::IN_SIGNAL: return input;
         default: return 0;
     }
 }
 
-bool sc1::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool sc1::set_param(param::TYPE pt, const void* data)
 {
     switch(pt) {
-        case paramnames::ATTACK_TIME:
+        case param::ATTACK_TIME:
             attack = (*(double*)data);
             return true;
-        case paramnames::RELEASE_TIME:
+        case param::RELEASE_TIME:
             release = (*(double*)data);
             return true;
-        case paramnames::THRESH_DB:
+        case param::THRESH_DB:
             thresh = (*(double*)data);
             return true;
-        case paramnames::RATIO_1N:
+        case param::RATIO_1N:
             ratio = (*(double*)data);
             return true;
-        case paramnames::KNEE_DB:
+        case param::KNEE_DB:
             knee = (*(double*)data);
             return true;
-        case paramnames::MAKEUP_DB:
+        case param::MAKEUP_DB:
             makeup = (*(double*)data);
             return true;
         default:
@@ -78,59 +78,59 @@ bool sc1::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* sc1::get_param(paramnames::PAR_TYPE pt) const
+const void* sc1::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::ATTACK_TIME:   return &attack;
-        case paramnames::RELEASE_TIME:  return &release;
-        case paramnames::THRESH_DB:     return &thresh;
-        case paramnames::RATIO_1N:      return &ratio;
-        case paramnames::KNEE_DB:       return &knee;
-        case paramnames::MAKEUP_DB:     return &makeup;
+        case param::ATTACK_TIME:   return &attack;
+        case param::RELEASE_TIME:  return &release;
+        case param::THRESH_DB:     return &thresh;
+        case param::RATIO_1N:      return &ratio;
+        case param::KNEE_DB:       return &knee;
+        case param::MAKEUP_DB:     return &makeup;
         default: return 0;
     }
 }
 
-stockerrs::ERR_TYPE sc1::validate()
+errors::TYPE sc1::validate()
 {
     if (attack  < 2 || attack > 400) {
         sm_err("%s must be within range 2 ~ 400.",
-                paramnames::get_name(paramnames::ATTACK_TIME));
+                param::names::get(param::ATTACK_TIME));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
     if (release  < 2 || release > 800) {
         sm_err("%s must be within range 2 ~ 800.",
-                paramnames::get_name(paramnames::RELEASE_TIME));
+                param::names::get(param::RELEASE_TIME));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
     if (thresh  < -30 || thresh > 0) {
         sm_err("%s must be within range -30 ~ 0",
-                 paramnames::get_name(paramnames::THRESH_DB));
+                 param::names::get(param::THRESH_DB));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
     if (ratio  < 1 || ratio > 10) {
         sm_err("%s must be within range 1 ~ 10",
-                paramnames::get_name(paramnames::RATIO_1N));
+                param::names::get(param::RATIO_1N));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
     if (knee  < 1 || knee > 10) {
         sm_err("%s must be within range 1 ~ 10",
-                paramnames::get_name(paramnames::KNEE_DB));
+                param::names::get(param::KNEE_DB));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
     if (makeup  < 0 || makeup > 24) {
         sm_err("%s must be within range 0 ~ 24",
-                paramnames::get_name(paramnames::MAKEUP_DB));
+                param::names::get(param::MAKEUP_DB));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
-    return stockerrs::ERR_NO_ERROR;
+    return errors::NO_ERROR;
 }
 
 void sc1::init()
@@ -184,12 +184,12 @@ void sc1::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::ATTACK_TIME);
-    register_param(paramnames::RELEASE_TIME);
-    register_param(paramnames::THRESH_DB);
-    register_param(paramnames::RATIO_1N);
-    register_param(paramnames::KNEE_DB);
-    register_param(paramnames::MAKEUP_DB);
+    register_param(param::ATTACK_TIME);
+    register_param(param::RELEASE_TIME);
+    register_param(param::THRESH_DB);
+    register_param(param::RATIO_1N);
+    register_param(param::KNEE_DB);
+    register_param(param::MAKEUP_DB);
 }
 
 #endif // WITH_LADSPA

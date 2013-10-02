@@ -1,7 +1,7 @@
 #ifndef IOCAT_H
 #define IOCAT_H
 
-#include "types.h"
+#include "getnames.h"
 
 // Used by triggers and switches and states
 
@@ -14,51 +14,50 @@
 // BUT, the CAT_SHORT is more appropriate for a number of other
 // ins/out/params which I'd overlooked...so keep :)
 
-class iocat
+namespace iocat
 {
- public:
-    enum IOCAT
-    {
-        // keep first:
-        FIRST,
-        //----------------------------------------------------------------
-        // the following types cover all inputs and outputs:
-        //----------------------------------------------------------------
-        DOUBLE,     // signal, bpm, etc
-        SHORT,      // bar count, etc
-        SAMP_T,     // sample positions etc
-        TRIG,       // trigger      - ON/OFF - on for one sample only
-        STATE,      // power/status - ON/OFF
-        STRING,     // note_tran & sequencer employ this as input/output
-        //----------------------------------------------------------------
-        // these have been added as extra types for parameter
-        // names and won't be used by inputs or outputs:
-        // note: above statement is subject to change...
-        //----------------------------------------------------------------
-        FIX_STR,    // fixed string defined by whatevahhhh
-        METER,      // time signature  ie 4/4 3/4 etc
-        // the following types are read as strings but they need to match
-        // the name of module/object
-        DOBJ,       // looks up data from dobjlist
-        SYNTHMOD,   // looks up data from smodlist
-        // cat dobj and cat synthmod have arisen because of new code to
-        // read data types ie riffs, adsrs, envelopes, tracks etc rather
-        // than it being specialistically hard coded as before.
-        //----------------------------------------------------------------
-        // keep last:
-        LAST
-    };
-    iocat();
-    ~iocat(){};
-    static const char* get_name(IOCAT);
+ enum TYPE
+ {
+    ERR_TYPE,
+    //----------------------------------------------------------------
+    // the following types cover all inputs and outputs:
+    //----------------------------------------------------------------
+    DOUBLE,     // signal, bpm, etc
+    SHORT,      // bar count, etc
+    SAMP_T,     // sample positions etc
+    TRIG,       // trigger      - ON/OFF - on for one sample only
+    STATE,      // power/status - ON/OFF
+    STRING,     // note_tran & sequencer employ this as input/output
+    //----------------------------------------------------------------
+    // these have been added as extra types for parameter
+    // names and won't be used by inputs or outputs:
+    // note: above statement is subject to change...
+    //----------------------------------------------------------------
+    FIX_STR,    // fixed string defined by whatevahhhh
+    METER,      // time signature  ie 4/4 3/4 etc
+    // the following types are read as strings but they need to match
+    // the name of module/object
+    DOBJ,       // looks up data from dobjlist
+    SYNTHMOD,   // looks up data from smodlist
+    // cat dobj and cat synthmod have arisen because of new code to
+    // read data types ie riffs, adsrs, envelopes, tracks etc rather
+    // than it being specialistically hard coded as before.
+    //----------------------------------------------------------------
+    // keep last:
+    LAST_TYPE
+ };
 
- private:
-    struct iocat_data
-    {
-        IOCAT cat;
-        const char* const name;
-    };
-    static const iocat_data data[LAST];
-};
+ class names : public getnames<TYPE, void*>
+ {
+  public:
+    static void instantiate() { static names iocatnames; }
+
+  private:
+    names() : getnames(LAST_TYPE, data) {}
+    ~names() {}
+
+    static const struct gn_data data[LAST_TYPE];
+ };
+}; // namespace iocat
 
 #endif

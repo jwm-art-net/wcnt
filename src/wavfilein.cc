@@ -6,7 +6,7 @@
 
 
 wavfilein::wavfilein() :
- dobj(dobjnames::DEF_WAVFILEIN),
+ dobj(dataobj::DEF_WAVFILEIN),
  fname(0), rootnote(0),
  filein(0), status(WAV_STATUS_INIT)
 {
@@ -127,14 +127,14 @@ void wavfilein::read_wav_chunk(void * buf, samp_t smp, int bsize)
     }
 }
 
-bool wavfilein::set_param(paramnames::PAR_TYPE dt, const void* data)
+bool wavfilein::set_param(param::TYPE dt, const void* data)
 {
     switch(dt)
     {
-        case paramnames::FILENAME:
+        case param::FILENAME:
             set_wav_filename((const char*)data);
             return true;
-        case paramnames::ROOT_NOTE:
+        case param::ROOT_NOTE:
             set_root_note((const char*)data);
             return true;
         default:
@@ -142,33 +142,33 @@ bool wavfilein::set_param(paramnames::PAR_TYPE dt, const void* data)
     }
 }
 
-const void* wavfilein::get_param(paramnames::PAR_TYPE dt) const
+const void* wavfilein::get_param(param::TYPE dt) const
 {
     switch(dt)
     {
-        case paramnames::FILENAME:  return fname;
-        case paramnames::ROOT_NOTE: return rootnote;
+        case param::FILENAME:  return fname;
+        case param::ROOT_NOTE: return rootnote;
         default: return 0;
     }
 }
 
-stockerrs::ERR_TYPE wavfilein::validate()
+errors::TYPE wavfilein::validate()
 {
     if (!check_notename(rootnote)) {
-        dobjerr("%s, %s", paramnames::get_name(
-                                    paramnames::ROOT_NOTE), rootnote);
+        dobjerr("%s, %s", param::names::get(
+                                    param::ROOT_NOTE), rootnote);
         invalidate();
-        return stockerrs::ERR_NOTENAME;
+        return errors::NOTENAME;
     }
-    return stockerrs::ERR_NO_ERROR;
+    return errors::NO_ERROR;
 }
 
 void wavfilein::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::FILENAME);
-    register_param(paramnames::ROOT_NOTE);
+    register_param(param::FILENAME);
+    register_param(param::ROOT_NOTE);
 }
 
 

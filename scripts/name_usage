@@ -1,0 +1,239 @@
+#!/bin/bash
+
+echo THIS IS NOT WORKING PROPERLY YET
+echo commas are removed from description field.
+
+exit
+
+
+# Script for counting usage of names in the examples
+# and source code of Wav Composer Not Toilet
+# (C) 2013 James W Morris - http://jwm-art.net
+# http://wcnt.sourceforge.net
+
+#---------------------------------------------------------
+# read definition of a names struct (ie defined in paramnames.cc)
+# into a number of arrays associated by enum type
+# the ENAMES, ECATS, and EDESCRS associative arrays must already be
+# declared using declare -A
+function names_struct_to_bash_array
+{
+    FILE=$1
+    ID="const struct names::gn_data"
+    echo "Reading $FILE for $ID..."
+
+    READ_STRUCT=0
+    while read -r LINE
+    do
+        if [ $READ_STRUCT == 0 ]
+        then
+            if [[ $LINE == namespace* ]]
+            then
+                NAMESPACE=${LINE##* }
+                echo "Found namespace $NAMESPACE..."
+                case $NAMESPACE in
+                "input")
+                    ;&
+                "output")
+                    ;&
+                "param")    SEP="iocat::"
+                    ;;
+                "module")   SEP="0"
+                    ;;
+                "dataobj")  SEP="CAT_"
+                    ;;
+                *)  echo "Unaccounted for namespace: '$NAMESPACE'"
+                    break;
+                    ;;
+                esac
+            elif [[ $LINE == $ID* ]]; then
+                echo "Found identifier $ID..."
+                READ_STRUCT=1
+            fi
+        elif [ $READ_STRUCT == 1 ]
+        then
+            # look for lines ending with "}," or a "}" alone
+            # note: lines with closing braces of enum and namespace
+            #       end with a "};"
+            if [[ $LINE == *}, || $LINE == *} ]]
+            then
+                # convert C++ punctuation to spaces, preserving quotes
+                # quoted to stop expansion of * in descr field
+                LN=$(echo "$LINE" | tr '{}' ' ')
+                #echo $LN
+                # split the four fields of each line in half
+                # we need the punctuation to do this
+                H1="${LN%%$SEP*}"   # quoted to keep spaces
+                H2="${LN##$H1}"       # so this substitution
+                H1=$(echo $H1)              # works
+                # split into fields:
+                T=${H1%% *}     # type
+                N=${H1##* }     # name
+                C="${H2%% *}"   # category
+                # description:
+                LT=${H2##${H2%%\"*}}
+                D=${LT%%${LT##*\"}}
+                ENAMES[$T]=$N
+                ECATS[$T]=$C
+                EDESCRS[$T]=$D
+            elif [[ $LINE == *}\; ]]; then
+                echo "Found end of $ID values, reading done."
+                break
+            fi
+        fi
+    done < $FILE
+}
+
+function find_maxlengths
+{
+    ETYPES_MAX=0
+    ENAMES_MAX=0
+    ECATS_MAX=0
+    EDESCRS_MAX=0
+
+    for TYPE in ${!ENAMES[@]}
+    do
+        L=${#TYPE}
+        if [ $L -gt $ETYPES_MAX ]; then ETYPES_MAX=$L; fi
+        L=${#ENAMES[$TYPE]}
+        if [ $L -gt $ENAMES_MAX ]; then ENAMES_MAX=$L; fi
+        L=${#ECATS[$TYPE]}
+        if [ $L -gt $ECATS_MAX ]; then ECATS_MAX=$L; fi
+        L=${#EDESCRS[$TYPE]}
+        if [ $L -gt $EDESCRS_MAX ]; then EDESCRS_MAX=$L; fi
+    done
+
+    echo longest type:$ETYPES_MAX
+    echo longest name:$ENAMES_MAX
+    echo longest cat: $ECATS_MAX
+    echo longest descr: $EDESCRS_MAX
+}
+
+function sort_types_to_tmp_file
+{
+    TMP=$(mktemp)
+    RC=${#ENAMES[@]}
+
+    for TYPE in "${!ENAMES[@]}"
+    do
+        printf "%s %d\n" $TYPE ${EX_COUNT[$TYPE]}
+    done | sort -rn -k2 -o $TMP
+    echo $TMP
+}
+
+function dump_sorted_names_def
+{
+    RC=$(($RC - 1))
+    TYPES_W=$(($ETYPES_MAX + 2))
+    NAMES_W=$(($ENAMES_MAX + 2))
+    CATS_W=$(($ECATS_MAX + 2))
+    DESCRS_W=$(($EDESCRS_MAX + 2))
+    FMT="%-${TYPES_W}s %-${NAMES_W}s %-${CATS_W}s %s"
+
+    echo " const struct names::gn_data names::data[LAST_TYPE] ="
+    echo " {"
+    ET="ERR_TYPE"
+    printf "    { $FMT },\n"    "$ET,"              \
+                                "${ENAMES[$ET]},"   \
+                                "${ECATS[$ET]},"    \
+                                "${EDESCRS[$ET]}"
+    while read -r LINE
+    do
+        TYPE=${LINE%% *}
+        if [[ "x${TYPE}x" != "xERR_TYPEx" ]]; then
+            printf  "    { $FMT }"      \
+                    "$TYPE,"            \
+                    "${ENAMES[$TYPE]}," \
+                    "${ECATS[$TYPE]},"  \
+                    "${EDESCRS[$TYPE]}"
+            if [ $RC -eq 1 ]; then
+                echo
+            else
+                echo ,
+            fi
+            RC=$(($RC - 1))
+        fi
+    done < $TMP
+    echo " };"
+}
+
+function dump_sorted_names_decl
+{
+    RC=$(($RC - 1))
+    TYPES_W=$(($ETYPES_MAX + 2))
+    FMT="%-${TYPES_W}s"
+    echo " enum TYPE"
+    echo " {"
+    echo "    ERR_TYPE,  /* usage in examples */"
+    while read -r LINE
+    do
+        TYPE=${LINE%% *}
+        if [[ "x${TYPE}x" != "xERR_TYPEx" ]]; then
+            if [ ! $RC -eq 1 ]; then
+                printf "    $FMT" "$TYPE,"
+            else
+                printf "    $FMT" "$TYPE,"
+            fi
+            printf " // %d\n" ${EX_COUNT[$TYPE]}
+            RC=$(($RC - 1))
+        fi
+    done < $TMP
+    echo " };"
+}
+
+
+# file within which to look for enums, should be a .cc file.
+if [ "x$1x" == "xx" ]
+then
+    ESRC="src/outputnames.cc"
+    ESRC="src/paramnames.cc"
+    ESRC="src/synthmodnames.cc"
+    ESRC="src/inputnames.cc"
+    ESRC="src/dobjnames.cc"
+else
+    ESRC=$1
+fi
+
+declare -A SRC_COUNT # associates counts of usage in source with enums
+declare -A EX_COUNT  # associates counts of usage in examples with enums
+
+declare -A ENAMES
+declare -A ECATS
+declare -A EDESCRS
+
+names_struct_to_bash_array $ESRC
+
+COUNT=${#ENAMES[@]}
+
+echo "Found ${COUNT} enumeration values in namespace ${NAMESPACE}."
+
+if [ "$COUNT" == "0" ]; then exit; fi
+
+echo "Grepping usage..."
+
+for TYPE in ${!ENAMES[@]}
+do
+    SEARCH1="${NAMESPACE}::${TYPE}"
+    SEARCH2=$(echo ${ENAMES[$TYPE]} | tr -d \")
+    C1=$(grep -w --exclude=$ESRC -l "${SEARCH1}" src/*.cc | wc -l)
+    C2=$(grep -w -l "${SEARCH2}" examples/*.wc | wc -l)
+    SRC_COUNT[$TYPE]=$C1
+    EX_COUNT[$TYPE]=$C2
+done
+
+echo done.
+echo;
+
+find_maxlengths
+
+TMP=$(sort_types_to_tmp_file)
+
+echo;echo;echo Code snippets:;echo;echo;
+
+dump_sorted_names_decl
+
+echo;echo;echo
+
+dump_sorted_names_def
+
+rm $TMP

@@ -11,10 +11,10 @@ public:
     ~constant_note();
     void run(){};
     void init();
-    const void* get_out(outputnames::OUT_TYPE) const;
-    bool set_param(paramnames::PAR_TYPE, const void*);
-    const void* get_param(paramnames::PAR_TYPE) const;
-    stockerrs::ERR_TYPE validate();
+    const void* get_out(output::TYPE) const;
+    bool set_param(param::TYPE, const void*);
+    const void* get_param(param::TYPE) const;
+    errors::TYPE validate();
 
 private:
     char* note; /* is param and output */

@@ -40,9 +40,9 @@ class dynvertex : public dobj
     double get_lower_signal_out_level() const   { return lso_level;}
     double get_out_level(double height) const {
         return lso_level * (1 - height) + uso_level * height; }
-    stockerrs::ERR_TYPE validate();
-    bool set_param(paramnames::PAR_TYPE, const void*);
-    const void* get_param(paramnames::PAR_TYPE pt) const;
+    errors::TYPE validate();
+    bool set_param(param::TYPE, const void*);
+    const void* get_param(param::TYPE pt) const;
 
  private:
     double si_level;

@@ -21,7 +21,7 @@ public:
         return add_at_tail(sm)->get_data();
     }
 
-    synthmod* create_module(synthmodnames::SYNTH_MOD_TYPE smt,
+    synthmod* create_module(module::TYPE smt,
                             const char* );
 
     bool delete_module(synthmod* sm);
@@ -30,7 +30,7 @@ public:
         return find_in_data(sneak_first(), name(n))->get_data();
     }
 
-    synthmod* get_first_of_type(synthmodnames::SYNTH_MOD_TYPE smt) {
+    synthmod* get_first_of_type(module::TYPE smt) {
         return (search_result =
             find_in_data(sneak_first(), search_type = smt)
                 )->get_data();
@@ -53,10 +53,7 @@ public:
     //  this should only be called before running the synth:
     //  (it unlinks them and places them in emptyrunlist)
     */
-    void remove_empty_run_modules() {
-        emptyrunlist =
-            move_to_new_list_of_by(this, synthmod::SM_EMPTY_RUN);
-    }
+    void remove_empty_run_modules();
 
     /*
     // returns 0 terminated synthmod* array:
@@ -81,7 +78,7 @@ public:
 
 private:
     linkedlist* emptyrunlist;
-    synthmodnames::SYNTH_MOD_TYPE search_type;
+    module::TYPE search_type;
     llitem* search_result;
     static nonezero* off;
 };

@@ -33,9 +33,9 @@ class adsr_scaler : public dobj
     ~adsr_scaler();
 
     // virtuals from dobj
-    bool set_param(paramnames::PAR_TYPE, const void*);
-    const void* get_param(paramnames::PAR_TYPE) const;
-    stockerrs::ERR_TYPE validate();
+    bool set_param(param::TYPE, const void*);
+    const void* get_param(param::TYPE) const;
+    errors::TYPE validate();
 
  private:
     adsr* padsr;

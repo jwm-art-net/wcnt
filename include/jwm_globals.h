@@ -2,12 +2,6 @@
 #define JWM_GLOBALS_H
 
 // forward definitions
-class iocat;
-class synthmodnames;
-class inputnames;
-class outputnames;
-class paramnames;
-class dobjnames;
 class synthmodlist;
 class modinputlist;
 class modoutputlist;
@@ -106,7 +100,6 @@ class jwm_globals
     #ifdef WITH_LADSPA
     ladspa_loader*  ladspaloader;
     #endif
-    stockerrs*      stock_errs;
     wave_tables*    wavetables;
 } extern jwm;
 

@@ -6,7 +6,7 @@
 #include "../include/modparamlist.h"
 
 single_band_para::single_band_para(const char* uname) :
- synthmod(synthmodnames::SINGLE_BAND_PARA, uname, SM_HAS_OUT_OUTPUT),
+ synthmod(module::SINGLE_BAND_PARA, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), in_phase_step(0), in_gain_mod(0), in_bandwidth_mod(0),
  output(0),
  gain_db(0), gain_mod_size(0), bandwidth(0), bandwidth_mod_size(0),
@@ -14,11 +14,11 @@ single_band_para::single_band_para(const char* uname) :
  l_input(0), l_output(0),
  l_gain_db(0), l_frequency(440), l_bandwidth(1)
 {
-    register_input(inputnames::IN_SIGNAL);
-    register_input(inputnames::IN_PHASE_STEP);
-    register_input(inputnames::IN_GAIN_MOD);
-    register_input(inputnames::IN_BANDWIDTH_MOD);
-    register_output(outputnames::OUT_OUTPUT);
+    register_input(input::IN_SIGNAL);
+    register_input(input::IN_PHASE_STEP);
+    register_input(input::IN_GAIN_MOD);
+    register_input(input::IN_BANDWIDTH_MOD);
+    register_output(output::OUT_OUTPUT);
     init_first();
     max_freq = 0.4 * jwm.samplerate();
 }
@@ -30,60 +30,60 @@ single_band_para::~single_band_para()
     if (l_output) delete [] l_output;
 }
 
-const void* single_band_para::get_out(outputnames::OUT_TYPE ot) const
+const void* single_band_para::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_OUTPUT: return &output;
+        case output::OUT_OUTPUT: return &output;
         default: return 0;
     }
 }
 
 const void*
-single_band_para::set_in(inputnames::IN_TYPE it, const void* o)
+single_band_para::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_SIGNAL:
+        case input::IN_SIGNAL:
             return in_signal = (double*)o;
-        case inputnames::IN_PHASE_STEP:
+        case input::IN_PHASE_STEP:
             return in_phase_step = (double*)o;
-        case inputnames::IN_GAIN_MOD:
+        case input::IN_GAIN_MOD:
             return in_gain_mod = (double*)o;
-        case inputnames::IN_BANDWIDTH_MOD:
+        case input::IN_BANDWIDTH_MOD:
             return in_bandwidth_mod = (double*)o;
         default:
             return 0;
     }
 }
 
-const void* single_band_para::get_in(inputnames::IN_TYPE it) const
+const void* single_band_para::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_SIGNAL:         return in_signal;
-        case inputnames::IN_PHASE_STEP:     return in_phase_step;
-        case inputnames::IN_GAIN_MOD:       return in_gain_mod;
-        case inputnames::IN_BANDWIDTH_MOD:  return in_bandwidth_mod;
+        case input::IN_SIGNAL:         return in_signal;
+        case input::IN_PHASE_STEP:     return in_phase_step;
+        case input::IN_GAIN_MOD:       return in_gain_mod;
+        case input::IN_BANDWIDTH_MOD:  return in_bandwidth_mod;
         default: return 0;
     }
 }
 
 bool
-single_band_para::set_param(paramnames::PAR_TYPE pt, const void* data)
+single_band_para::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::GAIN_DB:
+        case param::GAIN_DB:
             gain_db = *(double*)data;
             return true;
-        case paramnames::GAIN_MODSIZE:
+        case param::GAIN_MODSIZE:
             gain_mod_size = *(double*)data;
             return true;
-        case paramnames::BANDWIDTH:
+        case param::BANDWIDTH:
             bandwidth = *(double*)data;
             return true;
-        case paramnames::BANDWIDTH_MODSIZE:
+        case param::BANDWIDTH_MODSIZE:
             bandwidth_mod_size = *(double*)data;
             return true;
         default:
@@ -91,33 +91,33 @@ single_band_para::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* single_band_para::get_param(paramnames::PAR_TYPE pt) const
+const void* single_band_para::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::GAIN_DB:           return &gain_db;
-        case paramnames::GAIN_MODSIZE:      return &gain_mod_size;
-        case paramnames::BANDWIDTH:         return &bandwidth;
-        case paramnames::BANDWIDTH_MODSIZE: return &bandwidth_mod_size;
+        case param::GAIN_DB:           return &gain_db;
+        case param::GAIN_MODSIZE:      return &gain_mod_size;
+        case param::BANDWIDTH:         return &bandwidth;
+        case param::BANDWIDTH_MODSIZE: return &bandwidth_mod_size;
         default: return 0;
     }
 }
 
-stockerrs::ERR_TYPE single_band_para::validate()
+errors::TYPE single_band_para::validate()
 {
     if (gain_db < -70 || gain_db > 30) {
         sm_err("%s  must be within range -70 ~ 30.",
-                    paramnames::get_name(paramnames::GAIN_DB));
+                    param::names::get(param::GAIN_DB));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
     if (bandwidth < 0 || bandwidth > 4) {
         sm_err("%s  must be within range 0 ~ 4.",
-                    paramnames::get_name(paramnames::BANDWIDTH));
+                    param::names::get(param::BANDWIDTH));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
-    return stockerrs::ERR_NO_ERROR;
+    return errors::NO_ERROR;
 }
 
 void single_band_para::init()
@@ -171,10 +171,10 @@ void single_band_para::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::GAIN_DB);
-    register_param(paramnames::GAIN_MODSIZE);
-    register_param(paramnames::BANDWIDTH);
-    register_param(paramnames::BANDWIDTH_MODSIZE);
+    register_param(param::GAIN_DB);
+    register_param(param::GAIN_MODSIZE);
+    register_param(param::BANDWIDTH);
+    register_param(param::BANDWIDTH_MODSIZE);
 }
 
 #endif // WITH_LADSPA

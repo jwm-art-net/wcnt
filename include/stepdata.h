@@ -34,9 +34,9 @@ class step_data : public dobj
     double get_lower_level() const { return lo_level; }
 
     // virtuals from dobj
-    bool set_param(paramnames::PAR_TYPE, const void*);
-    const void* get_param(paramnames::PAR_TYPE) const;
-    stockerrs::ERR_TYPE validate();
+    bool set_param(param::TYPE, const void*);
+    const void* get_param(param::TYPE) const;
+    errors::TYPE validate();
 
     bool operator()(_pos_ & n) const {
         return n(position);

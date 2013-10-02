@@ -11,9 +11,9 @@ public:
     // this method needed by trigswitcher (etc?)...
     const STATUS* get_out_trig() const { return in_trig; }
     void run(){};
-    const void* get_out(outputnames::OUT_TYPE) const;
-    const void* set_in(inputnames::IN_TYPE, const void*);
-    const void* get_in(inputnames::IN_TYPE it) const;
+    const void* get_out(output::TYPE) const;
+    const void* set_in(input::TYPE, const void*);
+    const void* get_in(input::TYPE) const;
 private:
     const STATUS* in_trig;
 };

@@ -27,6 +27,7 @@ t
         time seconds 0.5
         time seconds 0.5
     timings
+    time_is_relative on
 t
 
 constant_note n1 name d-2 n1

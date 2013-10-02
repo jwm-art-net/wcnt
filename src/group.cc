@@ -12,14 +12,14 @@
 
 
 group::group() :
- dobj(dobjnames::DEF_GROUP),
+ dobj(dataobj::DEF_GROUP),
  is_duplicate(false), controlled(false)
 {
     init_first();
 }
 
 group::group(CLONE) :
- dobj(dobjnames::DEF_GROUP),
+ dobj(dataobj::DEF_GROUP),
  is_duplicate(true), controlled(false)
 {
     init_first();
@@ -47,7 +47,7 @@ synthmod* group::group_module(synthmod* sm)
             dobjerr("Could not add %s to group %s. It is forbidden to add "
                                                 "a %s module to a group.",
                      sm->get_username(), get_username(),
-                     synthmodnames::get_name(sm->get_module_type()));
+                     module::names::get(sm->get_module_type()));
             invalidate();
             return 0;
         }
@@ -65,7 +65,7 @@ synthmod* group::group_module(synthmod* sm)
 
 dobj* group::add_dobj(dobj* dbj)
 {
-    if (dbj->get_object_type() == dobjnames::DOBJ_SYNTHMOD) {
+    if (dbj->get_object_type() == dataobj::DOBJ_SYNTHMOD) {
         synthmod* sm = ((dobjmod*)dbj)->get_synthmod();
         const char* const grpname = sm->get_group_name();
         if (grpname) {
@@ -84,7 +84,7 @@ dobj* group::add_dobj(dobj* dbj)
         return dbj;
     }
 
-    dobjerr("%s %s to %s", stockerrs::major, stockerrs::bad_add,
+    dobjerr("%s %s to %s", errors::stock::major, errors::stock::bad_add,
                                                     get_username());
     return 0;
 }
@@ -149,11 +149,10 @@ dobj* group::duplicate_dobj(const char* new_group_name)
                     con->set_output_module_name(new_mod_name);
                     if (jwm.is_verbose()) {
                         std::cout << new_mod_name << " "
-                            << outputnames::get_name(con->get_output_type())
+                            << output::names::get(con->get_output_type())
                             << " --> "
-                            << con->get_input_module()->get_username()
-                            << " " << inputnames::get_name(
-                                                    con->get_input_type());
+                            << con->get_input_module()->get_username() << " " 
+                            << input::names::get(con->get_input_type());
                     }
                     delete [] new_mod_name;
                 }
@@ -186,16 +185,16 @@ bool group::groupify(synthmod* sm)
     return true;
 }
 
-stockerrs::ERR_TYPE group::validate()
+errors::TYPE group::validate()
 {
-    return stockerrs::ERR_NO_ERROR;
+    return errors::NO_ERROR;
 }
 
 void group::init_first()
 {
     if (done_first())
         return;
-    register_dobjdobj(dobjnames::LST_MODULES, dobjnames::DOBJ_SYNTHMOD);
+    register_dobjdobj(dataobj::LST_MODULES, dataobj::DOBJ_SYNTHMOD);
 }
 
 

@@ -4,45 +4,41 @@
 #include "../include/modinputlist.h"
 
 wcnt_trigger::wcnt_trigger(const char* uname) :
-
- synthmod(
-    synthmodnames::WCNTTRIGGER,
-    uname,
-    SM_EMPTY_RUN | SM_HAS_OUT_TRIG),
-
+ synthmod(module::WCNTTRIGGER, uname, SM_EMPTY_RUN
+                                           | SM_HAS_OUT_TRIG),
  in_trig(0)
 {
-    register_input(inputnames::IN_TRIG);
-    register_output(outputnames::OUT_TRIG);
+    register_input(input::IN_TRIG);
+    register_output(output::OUT_TRIG);
 }
 
 wcnt_trigger::~wcnt_trigger()
 {
 }
 
-const void* wcnt_trigger::get_out(outputnames::OUT_TYPE ot) const
+const void* wcnt_trigger::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_TRIG: return in_trig;
+        case output::OUT_TRIG: return in_trig;
         default: return 0;
     }
 }
 
-const void* wcnt_trigger::set_in(inputnames::IN_TYPE it, const void* o)
+const void* wcnt_trigger::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_TRIG: return in_trig = (STATUS*)o;
+        case input::IN_TRIG: return in_trig = (STATUS*)o;
         default: return 0;
     }
 }
 
-const void* wcnt_trigger::get_in(inputnames::IN_TYPE it) const
+const void* wcnt_trigger::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_TRIG: return in_trig;
+        case input::IN_TRIG: return in_trig;
         default: return 0;
     }
 }

@@ -16,7 +16,7 @@
 
 void module_iop_checks();
 
-int check_mod_param_fixed_string(synthmod*, paramnames::PAR_TYPE);
+int check_mod_param_fixed_string(synthmod*, param::TYPE);
 
 void sanity_checks()
 {
@@ -58,11 +58,11 @@ void module_iop_checks()
         " checked.";
     synthmodlist* modlist = jwm.get_modlist();
     bool sanity = true;
-    for (int i = synthmodnames::FIRST + 2; i < synthmodnames::LAST; i++)
+    for (int i = module::ERR_TYPE + 2; i < module::LAST_TYPE; i++)
     {
-        synthmodnames::SYNTH_MOD_TYPE smt =
-            (synthmodnames::SYNTH_MOD_TYPE)i;
-        const char* const modname = synthmodnames::get_name(smt);
+        module::TYPE smt =
+            (module::TYPE)i;
+        const char* const modname = module::names::get(smt);
         std::cout << "\n--------------------------------------------"
             "\nChecking module type: " << modname;
         synthmod* sm = 0;
@@ -98,10 +98,10 @@ bool mod_check_inputs(synthmod* sm)
     bool fail = false;
     if (input) {
         while(input) {
-            inputnames::IN_TYPE it = input->get_inputtype();
-            const char* const inname = inputnames::get_name(it);
+            input::TYPE it = input->get_inputtype();
+            const char* const inname = input::name(it);
             std::cout << "\n\tChecking input: " << inname << "... ";
-            iocat::IOCAT ioc = inputnames::get_category(it);
+            iocat::TYPE ioc = inputnames::get_category(it);
             // the 'outputs' to be used for setting the inputs...
             double          out_double  = 1.23456789;
             short           out_short   = 32154;
@@ -228,8 +228,8 @@ bool mod_check_outputs(synthmod* sm)
     bool fail = false;
     if (output) {
         while(output) {
-            outputnames::OUT_TYPE ot = output->get_outputtype();
-            const char* const outname = outputnames::get_name(ot);
+            output::TYPE ot = output->get_outputtype();
+            const char* const outname = output::names::get(ot);
             std::cout << "\n\tChecking output: " << outname << "... ";
             if(!sm->get_out(ot)){
                 std::cout << "\n\t\t**** Failed to get output ****";
@@ -261,10 +261,10 @@ bool mod_check_params(synthmod * sm)
             STATUS          par_state   = ON;
             const char*     par_string  = "c#-1";
             int             par_fixstr_ix = 0;
-            paramnames::PAR_TYPE pt = param->get_paramtype();
-            const char* const parname = paramnames::get_name(pt);
+            param::TYPE pt = param->get_paramtype();
+            const char* const parname = param::names::get(pt);
             std::cout << "\n\tChecking parameter: " << parname << "... ";
-            iocat::IOCAT ioc = paramnames::get_category(pt);
+            iocat::TYPE ioc = param::names::category(pt);
             bool set_ret = false;
             switch(ioc)
             {
@@ -331,8 +331,8 @@ bool mod_check_params(synthmod * sm)
             if (mismatched) {
                 std::cout << "Value mismatch between set and get of "
                              "parameter %s in synthmod %s." <<
-                             paramnames::get_name(pt) <<
-                             synthmodnames::get_name(sm->get_module_type())
+                             param::names::get(pt) <<
+                             module::names::get(sm->get_module_type())
                                                             << std::endl;
                 fail = true;
             }
@@ -347,7 +347,7 @@ bool mod_check_params(synthmod * sm)
     return fail;
 }
 
-int check_mod_param_fixed_string(synthmod* sm, paramnames::PAR_TYPE pt)
+int check_mod_param_fixed_string(synthmod* sm, param::TYPE pt)
 {
     fixstrparam* fxspar = jwm.get_fxsparamlist()->get_fix_str_param(pt);
     int count = fxspar->get_substring_count();

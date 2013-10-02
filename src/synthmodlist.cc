@@ -12,7 +12,7 @@ nonezero* synthmodlist::off = 0;
 synthmodlist::synthmodlist(DESTRUCTION d) :
  linkedlist(MULTIREF_OFF, d),
  emptyrunlist(0),
- search_type(synthmodnames::FIRST),
+ search_type(module::ERR_TYPE),
  search_result(0)
 {
     // nonezero module is not user accessable.
@@ -32,100 +32,100 @@ synthmodlist::~synthmodlist()
 
 synthmod* 
 synthmodlist::create_module(
-    synthmodnames::SYNTH_MOD_TYPE smt, const char* uname)
+    module::TYPE smt, const char* uname)
 {
     switch (smt) {
-    case synthmodnames::WCNTEXIT:       return new wcnt_exit(uname);
-    case synthmodnames::ADSR:           return new adsr(uname);
-    case synthmodnames::STEREOAMP:      return new stereo_amp(uname);
-    case synthmodnames::CLOCK:          return new clockclock(uname);
-    case synthmodnames::CONSTMOD:       return new constmod(uname);
-    case synthmodnames::FREQGEN:        return new freq_generator(uname);
-    case synthmodnames::LFOCLOCK:       return new lfo_clock(uname);
-    case synthmodnames::LFOCONTROL:     return new lfo_controller(uname);
-    case synthmodnames::MODIFIER:       return new modifier(uname);
-    case synthmodnames::NOISEGEN:       return new noise_generator(uname);
-    case synthmodnames::OSCCLOCK:       return new osc_clock(uname);
-    case synthmodnames::SAMPLEHOLD:     return new sample_hold(uname);
-    case synthmodnames::SEQUENCER:      return new sequencer(uname);
-    case synthmodnames::SQUAREWAVE:     return new square_wave(uname);
-    case synthmodnames::TRIGGER:        return new trigger(uname);
-    case synthmodnames::TRIWAVE2:       return new triangle_wave2(uname);
-    case synthmodnames::USERWAVE:       return new user_wave(uname);
-    case synthmodnames::SAMPLER:        return new sampler(uname);
-    case synthmodnames::WAVFILEOUT:     return new wavfileout(uname);
-    case synthmodnames::STEREOCHANNEL:  return new stereo_channel(uname);
-    case synthmodnames::STEREOMIXER:    return new stereomixer(uname);
-    case synthmodnames::RANDTRIGGER:    return new randomtrigger(uname);
-    case synthmodnames::LOGICTRIGGER:   return new logictrigger(uname);
-    case synthmodnames::SWITCHER:       return new switcher(uname);
-    case synthmodnames::WCNTSIGNAL:     return new wcnt_signal(uname);
-    case synthmodnames::COMBINER:       return new combiner(uname);
-    case synthmodnames::TIMEMAP:        return new timemap(uname);
-    case synthmodnames::SERIALWAVFILEOUT:
+    case module::WCNTEXIT:       return new wcnt_exit(uname);
+    case module::ADSR:           return new adsr(uname);
+    case module::STEREOAMP:      return new stereo_amp(uname);
+    case module::CLOCK:          return new clockclock(uname);
+    case module::CONSTMOD:       return new constmod(uname);
+    case module::FREQGEN:        return new freq_generator(uname);
+    case module::LFOCLOCK:       return new lfo_clock(uname);
+    case module::LFOCONTROL:     return new lfo_controller(uname);
+    case module::MODIFIER:       return new modifier(uname);
+    case module::NOISEGEN:       return new noise_generator(uname);
+    case module::OSCCLOCK:       return new osc_clock(uname);
+    case module::SAMPLEHOLD:     return new sample_hold(uname);
+    case module::SEQUENCER:      return new sequencer(uname);
+    case module::SQUAREWAVE:     return new square_wave(uname);
+    case module::TRIGGER:        return new trigger(uname);
+    case module::TRIWAVE2:       return new triangle_wave2(uname);
+    case module::USERWAVE:       return new user_wave(uname);
+    case module::SAMPLER:        return new sampler(uname);
+    case module::WAVFILEOUT:     return new wavfileout(uname);
+    case module::STEREOCHANNEL:  return new stereo_channel(uname);
+    case module::STEREOMIXER:    return new stereomixer(uname);
+    case module::RANDTRIGGER:    return new randomtrigger(uname);
+    case module::LOGICTRIGGER:   return new logictrigger(uname);
+    case module::SWITCHER:       return new switcher(uname);
+    case module::WCNTSIGNAL:     return new wcnt_signal(uname);
+    case module::COMBINER:       return new combiner(uname);
+    case module::TIMEMAP:        return new timemap(uname);
+    case module::SERIALWAVFILEOUT:
         return new serialwavfileout(uname);
-    case synthmodnames::CONTRASTER:     return new contraster(uname);
-    case synthmodnames::DELAY:          return new delay(uname);
-    case synthmodnames::ECHO:           return new echo(uname);
-    case synthmodnames::MONOAMP:        return new mono_amp(uname);
-    case synthmodnames::MULTIPLIER:     return new multiplier(uname);
-    case synthmodnames::RANGELIMIT:     return new range_limit(uname);
-    case synthmodnames::PAN:            return new pan(uname);
-    case synthmodnames::RMS:            return new rms(uname);
-    case synthmodnames::DCFILTER:       return new dc_filter(uname);
-    case synthmodnames::DYNAMIC:        return new dynamic(uname);
-    case synthmodnames::SPREADER:       return new spreader(uname);
-    case synthmodnames::NOTETRAN:       return new notetran(uname);
-    case synthmodnames::WAITTRIG:       return new waittrig(uname);
-    case synthmodnames::PATTERNTRIG:    return new patterntrig(uname);
-    case synthmodnames::STATEGATETRIG:  return new stategatetrig(uname);
-    case synthmodnames::INVERT:         return new invert(uname);
-    case synthmodnames::TIMER:          return new timer(uname);
-    case synthmodnames::SYNCCLOCK:      return new sync_clock(uname);
-    case synthmodnames::WCNTTRIGGER:    return new wcnt_trigger(uname);
-    case synthmodnames::TRIGSWITCHER:   return new trigswitcher(uname);
-    case synthmodnames::ONOFFTRIG:      return new onofftrig(uname);
-    case synthmodnames::PEAKDETECTOR:   return new peak_detector(uname);
-    case synthmodnames::STEPPER:        return new stepper(uname);
-    case synthmodnames::ADDER:          return new adder(uname);
-    case synthmodnames::SUBTRACTER:     return new subtracter(uname);
-    case synthmodnames::TRIGDELAY:      return new trigdelay(uname);
-    case synthmodnames::SIMPLEDELAY:    return new simple_delay(uname);
-    case synthmodnames::DIFFFILTER:     return new diff_filter(uname);
-    case synthmodnames::IMPULSE:        return new impulse(uname);
-    case synthmodnames::ORBIT:          return new orbit(uname);
+    case module::CONTRASTER:     return new contraster(uname);
+    case module::DELAY:          return new delay(uname);
+    case module::ECHO:           return new echo(uname);
+    case module::MONOAMP:        return new mono_amp(uname);
+    case module::MULTIPLIER:     return new multiplier(uname);
+    case module::RANGELIMIT:     return new range_limit(uname);
+    case module::PAN:            return new pan(uname);
+    case module::RMS:            return new rms(uname);
+    case module::DCFILTER:       return new dc_filter(uname);
+    case module::DYNAMIC:        return new dynamic(uname);
+    case module::SPREADER:       return new spreader(uname);
+    case module::NOTETRAN:       return new notetran(uname);
+    case module::WAITTRIG:       return new waittrig(uname);
+    case module::PATTERNTRIG:    return new patterntrig(uname);
+    case module::STATEGATETRIG:  return new stategatetrig(uname);
+    case module::INVERT:         return new invert(uname);
+    case module::TIMER:          return new timer(uname);
+    case module::SYNCCLOCK:      return new sync_clock(uname);
+    case module::WCNTTRIGGER:    return new wcnt_trigger(uname);
+    case module::TRIGSWITCHER:   return new trigswitcher(uname);
+    case module::ONOFFTRIG:      return new onofftrig(uname);
+    case module::PEAKDETECTOR:   return new peak_detector(uname);
+    case module::STEPPER:        return new stepper(uname);
+    case module::ADDER:          return new adder(uname);
+    case module::SUBTRACTER:     return new subtracter(uname);
+    case module::TRIGDELAY:      return new trigdelay(uname);
+    case module::SIMPLEDELAY:    return new simple_delay(uname);
+    case module::DIFFFILTER:     return new diff_filter(uname);
+    case module::IMPULSE:        return new impulse(uname);
+    case module::ORBIT:          return new orbit(uname);
     #ifdef WITH_LADSPA
-    case synthmodnames::GLAME_BUTTERWORTH:
+    case module::GLAME_BUTTERWORTH:
         return new glame_butterworth(uname);
-    case synthmodnames::FAST_LOOKAHEAD_LIMITER:
+    case module::FAST_LOOKAHEAD_LIMITER:
         return new fast_lookahead_limiter(uname);
-    case synthmodnames::DC_OFFSET_REMOVER:
+    case module::DC_OFFSET_REMOVER:
         return new dc_offset_remover(uname);
-    case synthmodnames::SC1:
+    case module::SC1:
         return new sc1(uname);
-    case synthmodnames::SINGLE_BAND_PARA:
+    case module::SINGLE_BAND_PARA:
         return new single_band_para(uname);
-    case synthmodnames::GLAME_FILTER:
+    case module::GLAME_FILTER:
         return new glame_filter(uname);
-    case synthmodnames::BODE_FREQ_SHIFTER:
+    case module::BODE_FREQ_SHIFTER:
         return new bode_freq_shifter(uname);
-    case synthmodnames::CAPS_PLATE:
+    case module::CAPS_PLATE:
         return new caps_plate(uname);
-    case synthmodnames::CAPS_PLATE2X2:
+    case module::CAPS_PLATE2X2:
         return new caps_plate2x2(uname);
     #endif // WITH_LADSPA
-    case synthmodnames::WAVE:           return new wave(uname);
-    case synthmodnames::WAVE_PHASE:     return new wave_phase(uname);
-    case synthmodnames::CONSTANT_FREQ:  return new constant_freq(uname);
-    case synthmodnames::CONSTANT_NOTE:  return new constant_note(uname);
-    case synthmodnames::BALANCE:        return new balance(uname);
-    case synthmodnames::TRIGECHO:       return new trigecho(uname);
-    case synthmodnames::INSPECT:        return new inspect(uname);
-    case synthmodnames::TRIGCOUNTER:    return new trigcounter(uname);
-    case synthmodnames::TRIGROUTER:     return new trigrouter(uname);
-    case synthmodnames::GROUPCONTROL:   return new group_control(uname);
-    case synthmodnames::FADER:          return new fader(uname);
-    case synthmodnames::SAMPLECLIMB:    return new sample_climb(uname);
+    case module::WAVE:           return new wave(uname);
+    case module::WAVE_PHASE:     return new wave_phase(uname);
+    case module::CONSTANT_FREQ:  return new constant_freq(uname);
+    case module::CONSTANT_NOTE:  return new constant_note(uname);
+    case module::BALANCE:        return new balance(uname);
+    case module::TRIGECHO:       return new trigecho(uname);
+    case module::INSPECT:        return new inspect(uname);
+    case module::TRIGCOUNTER:    return new trigcounter(uname);
+    case module::TRIGROUTER:     return new trigrouter(uname);
+    case module::GROUPCONTROL:   return new group_control(uname);
+    case module::FADER:          return new fader(uname);
+    case module::SAMPLECLIMB:    return new sample_climb(uname);
     default:
         return 0;
     }
@@ -166,3 +166,16 @@ synthmodlist::duplicate_group(const char* from, const char* to)
     return grplist;
 }
 
+void synthmodlist::remove_empty_run_modules()
+{
+    emptyrunlist = move_to_new_list_of_by(this, synthmod::SM_EMPTY_RUN);
+
+    if (jwm.is_verbose()) {
+        synthmod* sm = emptyrunlist->goto_first();
+        while(sm) {
+            std::cout << module::names::get(sm->get_module_type())
+                      << " " << sm->get_username() << std::endl;
+            sm = emptyrunlist->goto_next();
+        }
+    }
+}

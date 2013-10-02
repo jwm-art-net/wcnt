@@ -10,19 +10,19 @@
 class dobjlist : public linked_list<dobj>
 {
  public:
-    dobjlist(): search_type(dobjnames::DOBJ_FIRST), search_result(0)
+    dobjlist(): search_type(dataobj::ERR_TYPE), search_result(0)
     {};
 
     dobj* add_dobj(dobj* d) { return add_at_tail(d)->get_data(); }
 
     // create_dobj does not add to list.
-    dobj* create_dobj(dobjnames::DOBJ_TYPE);
+    dobj* create_dobj(dataobj::TYPE);
 
     dobj* get_dobj_by_name(const char* n) {
         return find_in_data(sneak_first(), name(n))->get_data();
     }
 
-    dobj* get_first_of_type(dobjnames::DOBJ_TYPE dt) {
+    dobj* get_first_of_type(dataobj::TYPE dt) {
         return (search_result =
             find_in_data(sneak_first(), search_type = dt))->get_data();
     }
@@ -34,7 +34,7 @@ class dobjlist : public linked_list<dobj>
     }
 
  private:
-    dobjnames::DOBJ_TYPE search_type;
+    dataobj::TYPE search_type;
     llitem* search_result;
 };
 

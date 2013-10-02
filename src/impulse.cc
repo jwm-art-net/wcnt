@@ -4,11 +4,11 @@
 #include "../include/modinputlist.h"
 
 impulse::impulse(const char* uname) :
- synthmod(synthmodnames::IMPULSE, uname, SM_HAS_OUT_OUTPUT),
+ synthmod(module::IMPULSE, uname, SM_HAS_OUT_OUTPUT),
  in_trig(0), out_output(0.0)
 {
-    register_input(inputnames::IN_TRIG);
-    register_output(outputnames::OUT_OUTPUT);
+    register_input(input::IN_TRIG);
+    register_output(output::OUT_OUTPUT);
 }
 
 impulse::~impulse()
@@ -20,23 +20,18 @@ void impulse::run()
     out_output = (*in_trig == OFF) ? 0.0 : 1.0;
 }
 
-const void* impulse::get_out(outputnames::OUT_TYPE ot) const
+const void* impulse::set_in(input::TYPE it, const void* o)
 {
-    if (ot == outputnames::OUT_OUTPUT)
-        return &out_output;
-    return 0;
+    return (it == input::IN_TRIG ? (in_trig = (STATUS*)o) : 0);
 }
 
-const void* impulse::set_in(inputnames::IN_TYPE it, const void* o)
+const void* impulse::get_in(input::TYPE it) const
 {
-    if (it == inputnames::IN_TRIG)
-        return in_trig = (STATUS*)o;
-    return 0;
+    return (it == input::IN_TRIG ? in_trig : 0);
 }
 
-const void* impulse::get_in(inputnames::IN_TYPE it) const
+const void* impulse::get_out(output::TYPE ot) const
 {
-    if (it == inputnames::IN_TRIG)
-        return in_trig;
-    return 0;
+    return (ot == output::OUT_OUTPUT) ? &out_output : 0;
 }
+

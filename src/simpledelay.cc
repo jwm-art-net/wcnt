@@ -5,12 +5,12 @@
 #include "../include/modparamlist.h"
 
 simple_delay::simple_delay(const char* uname) :
- synthmod(synthmodnames::SIMPLEDELAY, uname, SM_HAS_OUT_OUTPUT),
+ synthmod(module::SIMPLEDELAY, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), out_output(0), delay_time(0), output(0),
  filter(0), filterarraymax(0), fpos(0), filtertotal(0)
 {
-    register_input(inputnames::IN_SIGNAL);
-    register_output(outputnames::OUT_OUTPUT);
+    register_input(input::IN_SIGNAL);
+    register_output(output::OUT_OUTPUT);
     init_first();
 }
 
@@ -32,38 +32,38 @@ void simple_delay::init()
     fpos = filterarraymax - 1;
 }
 
-const void* simple_delay::get_out(outputnames::OUT_TYPE ot) const
+const void* simple_delay::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_OUTPUT: return &out_output;
+        case output::OUT_OUTPUT: return &out_output;
         default: return 0;
     }
 }
 
-const void* simple_delay::set_in(inputnames::IN_TYPE it, const void* o)
+const void* simple_delay::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_SIGNAL: return in_signal = (double*)o;
+        case input::IN_SIGNAL: return in_signal = (double*)o;
         default: return  0;
     }
 }
 
-const void* simple_delay::get_in(inputnames::IN_TYPE it) const
+const void* simple_delay::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_SIGNAL: return in_signal;
+        case input::IN_SIGNAL: return in_signal;
         default: return 0;
     }
 }
 
-bool simple_delay::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool simple_delay::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::DELAY_TIME:
+        case param::DELAY_TIME:
             delay_time = *(double*)data;
             return true;
         default:
@@ -71,26 +71,21 @@ bool simple_delay::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* simple_delay::get_param(paramnames::PAR_TYPE pt) const
+const void* simple_delay::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::DELAY_TIME: return &delay_time;
+        case param::DELAY_TIME: return &delay_time;
         default: return 0;
     }
 }
 
-stockerrs::ERR_TYPE simple_delay::validate()
+errors::TYPE simple_delay::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, paramnames::DELAY_TIME,
-            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", paramnames::get_name(
-                                            paramnames::DELAY_TIME));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::DELAY_TIME, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    return errors::NO_ERROR;
 }
 
 void simple_delay::run()
@@ -105,6 +100,6 @@ void simple_delay::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::DELAY_TIME);
+    register_param(param::DELAY_TIME);
 }
 

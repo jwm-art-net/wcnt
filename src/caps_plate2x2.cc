@@ -6,17 +6,17 @@
 #include "../include/modparamlist.h"
 
 caps_plate2x2::caps_plate2x2(const char* uname) :
- synthmod(synthmodnames::CAPS_PLATE2X2, uname, SM_HAS_STEREO_OUTPUT),
+ synthmod(module::CAPS_PLATE2X2, uname, SM_HAS_STEREO_OUTPUT),
  in_left(0), in_right(0), out_left(0), out_right(0),
  bandwidth(0.502), tail(0.3745), damping(0.250375), blend(0.25),
  l_descriptor(0), l_inst_handle(0),
  l_in_left(0), l_in_right(0), l_bandwidth(0), l_tail(0), l_damping(0),
  l_blend(0), l_out_left(0), l_out_right(0)
 {
-    register_input(inputnames::IN_LEFT);
-    register_input(inputnames::IN_RIGHT);
-    register_output(outputnames::OUT_LEFT);
-    register_output(outputnames::OUT_RIGHT);
+    register_input(input::IN_LEFT);
+    register_input(input::IN_RIGHT);
+    register_output(output::OUT_LEFT);
+    register_output(output::OUT_RIGHT);
     init_first();
 }
 
@@ -29,101 +29,97 @@ caps_plate2x2::~caps_plate2x2()
     if (l_out_right) delete [] l_out_right;
 }
 
-const void* caps_plate2x2::get_out(outputnames::OUT_TYPE ot) const
+const void* caps_plate2x2::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_LEFT: return &out_left;
-        case outputnames::OUT_RIGHT: return &out_right;
+        case output::OUT_LEFT: return &out_left;
+        case output::OUT_RIGHT: return &out_right;
         default: return 0;
     }
 }
 
 const void*
-caps_plate2x2::set_in(inputnames::IN_TYPE it, const void* o)
+caps_plate2x2::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_LEFT:
-            return in_left = (double*)o;
-        case inputnames::IN_RIGHT:
-            return in_right = (double*)o;
-        default:
-            return 0;
+    case input::IN_LEFT:
+        return in_left = (double*)o;
+    case input::IN_RIGHT:
+        return in_right = (double*)o;
+    default:
+        return 0;
     }
 }
 
-const void* caps_plate2x2::get_in(inputnames::IN_TYPE it) const
+const void* caps_plate2x2::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_LEFT:   return in_left;
-        case inputnames::IN_RIGHT:  return in_right;
-        default: return 0;
+    case input::IN_LEFT:   return in_left;
+    case input::IN_RIGHT:  return in_right;
+    default: return 0;
     }
 }
 
 bool
-caps_plate2x2::set_param(paramnames::PAR_TYPE pt, const void* data)
+caps_plate2x2::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::BANDWIDTH:
-            bandwidth = *(double*)data;
-            return true;
-        case paramnames::TAIL:
-            tail = *(double*)data;
-            return true;
-        case paramnames::DAMPING:
-            damping = *(double*)data;
-            return true;
-        case paramnames::WETDRY:
-            blend = *(double*)data;
-            return true;
-        default:
-            return false;
+    case param::BANDWIDTH:
+        bandwidth = *(double*)data;
+        return true;
+    case param::TAIL:
+        tail = *(double*)data;
+        return true;
+    case param::DAMPING:
+        damping = *(double*)data;
+        return true;
+    case param::WETDRY:
+        blend = *(double*)data;
+        return true;
+    default:
+        return false;
     }
 }
 
-const void* caps_plate2x2::get_param(paramnames::PAR_TYPE pt) const
+const void* caps_plate2x2::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::BANDWIDTH: return &bandwidth;
-        case paramnames::TAIL:      return &tail;
-        case paramnames::DAMPING:   return &damping;
-        case paramnames::WETDRY:    return &blend;
-        default: return 0;
+    case param::BANDWIDTH: return &bandwidth;
+    case param::TAIL:      return &tail;
+    case param::DAMPING:   return &damping;
+    case param::WETDRY:    return &blend;
+    default: return 0;
     }
 }
 
-stockerrs::ERR_TYPE caps_plate2x2::validate()
+errors::TYPE caps_plate2x2::validate()
 {
     if (bandwidth < 0.005 || bandwidth > 0.999) {
         sm_err("%s must be within range 0.005 ~ 0.999,",
-                paramnames::get_name(paramnames::BANDWIDTH));
+                param::names::get(param::BANDWIDTH));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
     if (tail < 0.0 || tail > 0.749) {
         sm_err("%s must be within range 0.0 ~ 0.749.",
-                paramnames::get_name(paramnames::TAIL));
+                param::names::get(param::TAIL));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
     if (damping < 0.0005 || damping > 1.0) {
         sm_err("%s must be within range 0.0005 ~ 1.0.",
-                paramnames::get_name(paramnames::DAMPING));
+                param::names::get(param::DAMPING));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
-    if (blend < 0.0 || blend > 1.0) {
-        sm_err("%s must be within range 0.0 ~ 1.0.",
-                paramnames::get_name(paramnames::WETDRY));
-        invalidate();
-        return stockerrs::ERR_ERROR;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::WETDRY, errors::RANGE_0_1))
+        return errors::RANGE_0_1;
+    return errors::NO_ERROR;
 }
 
 void caps_plate2x2::init()
@@ -177,10 +173,10 @@ void caps_plate2x2::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::BANDWIDTH);
-    register_param(paramnames::TAIL);
-    register_param(paramnames::DAMPING);
-    register_param(paramnames::WETDRY);
+    register_param(param::BANDWIDTH);
+    register_param(param::TAIL);
+    register_param(param::DAMPING);
+    register_param(param::WETDRY);
 }
 
 #endif // WITH_LADSPA

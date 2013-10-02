@@ -23,11 +23,7 @@
 // if required for dealing with requested help.
 */
 
-namespace dbjdefs
-{
-const int DOBJ_LAST = dobjnames::DOBJ_SYNTHMOD - dobjnames::DOBJ_DEFS;
-dobjnames::DOBJ_TYPE get_dobj_def_type(int i);
-}
+
 
 class cmdline
 {
@@ -99,19 +95,6 @@ class cmdline
         void (cmdline::*helpfunc)();
     };
     static cmd_opts_data data[OPTS_COUNT];
-    struct mod_help_data
-    {
-        synthmodnames::SYNTH_MOD_TYPE type;
-        const char* const help;
-    };
-    static const mod_help_data modhelp_data[synthmodnames::LAST];
-
-    struct dobj_help_data
-    {
-        dobjnames::DOBJ_TYPE type;
-        const char* const help;
-    };
-    static const dobj_help_data dobjhelp_data[dbjdefs::DOBJ_LAST];
 
     void invalid_args();
 
@@ -126,8 +109,8 @@ class cmdline
     void help();
     void about();
 
-    void dobj_help(synthmodnames::SYNTH_MOD_TYPE);
-    void dobj_help_params(dobjnames::DOBJ_TYPE);
+    void dobj_help(module::TYPE);
+    void dobj_help_params(dataobj::TYPE);
 };
 
 #endif

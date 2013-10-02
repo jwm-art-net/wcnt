@@ -7,7 +7,7 @@
 #include <iostream>
 
 inspect::inspect(const char* uname) :
- synthmod(synthmodnames::INSPECT, uname, SM_DEFAULT),
+ synthmod(module::INSPECT, uname, SM_DEFAULT),
  in_df(0),  in_df_trig(0),
  in_si(0),  in_si_trig(0),
  in_ul(0),  in_ul_trig(0),
@@ -15,16 +15,16 @@ inspect::inspect(const char* uname) :
  in_str(0), in_str_trig(0),
  df_msg(0), si_msg(0), ul_msg(0), st_msg(0), str_msg(0)
 {
-    register_input(inputnames::IN__DF);
-    register_input(inputnames::IN__DF_TRIG);
-    register_input(inputnames::IN__SI);
-    register_input(inputnames::IN__SI_TRIG);
-    register_input(inputnames::IN__UL);
-    register_input(inputnames::IN__UL_TRIG);
-    register_input(inputnames::IN__ST);
-    register_input(inputnames::IN__ST_TRIG);
-    register_input(inputnames::IN__STR);
-    register_input(inputnames::IN__STR_TRIG);
+    register_input(input::IN_INSP_DF);
+    register_input(input::IN_INSP_DF_TRIG);
+    register_input(input::IN_INSP_SI);
+    register_input(input::IN_INSP_SI_TRIG);
+    register_input(input::IN_INSP_UL);
+    register_input(input::IN_INSP_UL_TRIG);
+    register_input(input::IN_INSP_ST);
+    register_input(input::IN_INSP_ST_TRIG);
+    register_input(input::IN_INSP_STR);
+    register_input(input::IN_INSP_STR_TRIG);
     init_first();
 }
 
@@ -52,49 +52,39 @@ void inspect::set_message(const char* msg_from, char** msg_to)
     strcpy(*msg_to, msg_from);
 }
 
-const void* inspect::set_in(inputnames::IN_TYPE it, const void* o)
+const void* inspect::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN__DF: return in_df = (const double*)o;
-        case inputnames::IN__DF_TRIG:
-            return in_df_trig = (const STATUS*)o;
-
-        case inputnames::IN__SI: return in_si = (const short*)o;
-        case inputnames::IN__SI_TRIG:
-            return in_si_trig = (const STATUS*)o;
-
-        case inputnames::IN__UL: return in_ul = (const samp_t*)o;
-        case inputnames::IN__UL_TRIG:
-            return in_ul_trig = (const STATUS*)o;
-
-        case inputnames::IN__ST: return in_st = (STATUS const*)o;
-        case inputnames::IN__ST_TRIG:
-            return in_st_trig = (const STATUS*)o;
-
-        case inputnames::IN__STR:return in_str = (const char**) o;
-        case inputnames::IN__STR_TRIG:
-            return in_str_trig = (const STATUS*) o;
-
-        default: return 0;
+    case input::IN_INSP_DF:        return in_df = (const double*)o;
+    case input::IN_INSP_DF_TRIG:   return in_df_trig = (const STATUS*)o;
+    case input::IN_INSP_SI:        return in_si = (const short*)o;
+    case input::IN_INSP_SI_TRIG:   return in_si_trig = (const STATUS*)o;
+    case input::IN_INSP_UL:        return in_ul = (const samp_t*)o;
+    case input::IN_INSP_UL_TRIG:   return in_ul_trig = (const STATUS*)o;
+    case input::IN_INSP_ST:        return in_st = (STATUS const*)o;
+    case input::IN_INSP_ST_TRIG:   return in_st_trig = (const STATUS*)o;
+    case input::IN_INSP_STR:       return in_str = (const char**) o;
+    case input::IN_INSP_STR_TRIG:  return in_str_trig = (const STATUS*) o;
+    default: return 0;
     }
 }
 
-const void* inspect::get_in(inputnames::IN_TYPE it) const
+const void* inspect::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN__DF:        return in_df;
-        case inputnames::IN__DF_TRIG:   return in_df_trig;
-        case inputnames::IN__SI:        return in_si;
-        case inputnames::IN__SI_TRIG:   return in_si_trig;
-        case inputnames::IN__UL:        return in_ul;
-        case inputnames::IN__UL_TRIG:   return in_ul_trig;
-        case inputnames::IN__ST:        return in_st;
-        case inputnames::IN__ST_TRIG:   return in_st_trig;
-        case inputnames::IN__STR:       return in_str;
-        case inputnames::IN__STR_TRIG:  return in_str_trig;
-        default: return 0;
+    case input::IN_INSP_DF:        return in_df;
+    case input::IN_INSP_DF_TRIG:   return in_df_trig;
+    case input::IN_INSP_SI:        return in_si;
+    case input::IN_INSP_SI_TRIG:   return in_si_trig;
+    case input::IN_INSP_UL:        return in_ul;
+    case input::IN_INSP_UL_TRIG:   return in_ul_trig;
+    case input::IN_INSP_ST:        return in_st;
+    case input::IN_INSP_ST_TRIG:   return in_st_trig;
+    case input::IN_INSP_STR:       return in_str;
+    case input::IN_INSP_STR_TRIG:  return in_str_trig;
+    default: return 0;
     }
 }
 
@@ -118,23 +108,23 @@ void inspect::run()
     }
 }
 
-bool inspect::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool inspect::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::INSPECT_DF_MSG:
+        case param::INSPECT_DF_MSG:
             set_message((const char*)data, &df_msg);
             return true;
-        case paramnames::INSPECT_SI_MSG:
+        case param::INSPECT_SI_MSG:
             set_message((const char*)data, &si_msg);
             return true;
-        case paramnames::INSPECT_UL_MSG:
+        case param::INSPECT_UL_MSG:
             set_message((const char*)data, &ul_msg);
             return true;
-        case paramnames::INSPECT_ST_MSG:
+        case param::INSPECT_ST_MSG:
             set_message((const char*)data, &st_msg);
             return true;
-        case paramnames::INSPECT_STR_MSG:
+        case param::INSPECT_STR_MSG:
             set_message((const char*)data, &str_msg);
             return true;
         default:
@@ -142,15 +132,15 @@ bool inspect::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* inspect::get_param(paramnames::PAR_TYPE pt) const
+const void* inspect::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::INSPECT_DF_MSG:  return df_msg;
-        case paramnames::INSPECT_SI_MSG:  return si_msg;
-        case paramnames::INSPECT_UL_MSG:  return ul_msg;
-        case paramnames::INSPECT_ST_MSG:  return st_msg;
-        case paramnames::INSPECT_STR_MSG: return str_msg;
+        case param::INSPECT_DF_MSG:  return df_msg;
+        case param::INSPECT_SI_MSG:  return si_msg;
+        case param::INSPECT_UL_MSG:  return ul_msg;
+        case param::INSPECT_ST_MSG:  return st_msg;
+        case param::INSPECT_STR_MSG: return str_msg;
         default: return 0;
     }
 }
@@ -161,9 +151,9 @@ void inspect::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::INSPECT_DF_MSG);
-    register_param(paramnames::INSPECT_SI_MSG);
-    register_param(paramnames::INSPECT_UL_MSG);
-    register_param(paramnames::INSPECT_ST_MSG);
-    register_param(paramnames::INSPECT_STR_MSG);
+    register_param(param::INSPECT_DF_MSG);
+    register_param(param::INSPECT_SI_MSG);
+    register_param(param::INSPECT_UL_MSG);
+    register_param(param::INSPECT_ST_MSG);
+    register_param(param::INSPECT_STR_MSG);
 }

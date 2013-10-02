@@ -86,9 +86,9 @@ public:
     short get_transpose() const         { return transpose; }
     short get_repeat() const            { return repeat;}
     short get_repeat_stripe() const     { return repeat_stripe;}
-    virtual stockerrs::ERR_TYPE validate();
-    bool set_param(paramnames::PAR_TYPE, const void*);
-    const void* get_param(paramnames::PAR_TYPE pt) const;
+    virtual errors::TYPE validate();
+    bool set_param(param::TYPE, const void*);
+    const void* get_param(param::TYPE pt) const;
 
     bool operator()(_start_bar_ & n) {
         return n(start_bar);

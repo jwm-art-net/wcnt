@@ -12,7 +12,7 @@
 #include "../include/miscfuncobj.h"
 
 stepper::stepper(const char* uname) :
- synthmod(synthmodnames::STEPPER, uname, SM_HAS_OUT_OUTPUT),
+ synthmod(module::STEPPER, uname, SM_HAS_OUT_OUTPUT),
  in_trig(0), in_restart_trig(0), in_modulation(0),
  step_count(0), up_thresh(0), lo_thresh(0), rtime(0), recycle(OFF),
  out_output(0),
@@ -20,10 +20,10 @@ stepper::stepper(const char* uname) :
  lo_levels(0),
  rtime_samp(0), rtime_max_samps(0), rtime_stpsz(0), rtime_size(0)
 {
-    register_input(inputnames::IN_TRIG);
-    register_input(inputnames::IN_RESTART_TRIG);
-    register_input(inputnames::IN_MODULATION);
-    register_output(outputnames::OUT_OUTPUT);
+    register_input(input::IN_TRIG);
+    register_input(input::IN_RESTART_TRIG);
+    register_input(input::IN_MODULATION);
+    register_output(output::OUT_OUTPUT);
     insert_step(0.0, 0.0, 0.0);
     insert_step(1.0, 1.0, 1.0);
     init_first();
@@ -35,58 +35,58 @@ stepper::~stepper()
     if (lo_levels) delete [] lo_levels;
 }
 
-const void* stepper::get_out(outputnames::OUT_TYPE ot) const
+const void* stepper::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_OUTPUT: return &out_output;
+        case output::OUT_OUTPUT: return &out_output;
         default: return 0;
     }
 }
 
-const void* stepper::set_in(inputnames::IN_TYPE it, const void* o)
+const void* stepper::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_TRIG:
+        case input::IN_TRIG:
             return in_trig = (STATUS*)o;
-        case inputnames::IN_RESTART_TRIG:
+        case input::IN_RESTART_TRIG:
             return in_restart_trig = (STATUS*)o;
-        case inputnames::IN_MODULATION:
+        case input::IN_MODULATION:
             return in_modulation = (double*)o;
         default:
             return 0;
     }
 }
 
-const void* stepper::get_in(inputnames::IN_TYPE it) const
+const void* stepper::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_TRIG:           return in_trig;
-        case inputnames::IN_RESTART_TRIG:   return in_restart_trig;
-        case inputnames::IN_MODULATION:     return in_modulation;
+        case input::IN_TRIG:           return in_trig;
+        case input::IN_RESTART_TRIG:   return in_restart_trig;
+        case input::IN_MODULATION:     return in_modulation;
         default: return 0;
     }
 }
 
-bool stepper::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool stepper::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::STEP_COUNT:
+        case param::STEP_COUNT:
             step_count = *(short*)data;
             return true;
-        case paramnames::UP_THRESH:
+        case param::UP_THRESH:
             up_thresh = *(double*)data;
             return true;
-        case paramnames::LO_THRESH:
+        case param::LO_THRESH:
             lo_thresh = *(double*)data;
             return true;
-        case paramnames::RESPONSE_TIME:
+        case param::RESPONSE_TIME:
             rtime = *(double*)data;
             return true;
-        case paramnames::RECYCLE_MODE:
+        case param::RECYCLE_MODE:
             recycle = *(STATUS*)data;
             return true;
         default:
@@ -94,15 +94,15 @@ bool stepper::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* stepper::get_param(paramnames::PAR_TYPE pt) const
+const void* stepper::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::STEP_COUNT:    return &step_count;
-        case paramnames::UP_THRESH:     return &up_thresh;
-        case paramnames::LO_THRESH:     return &lo_thresh;
-        case paramnames::RESPONSE_TIME: return &rtime;
-        case paramnames::RECYCLE_MODE:  return &recycle;
+        case param::STEP_COUNT:    return &step_count;
+        case param::UP_THRESH:     return &up_thresh;
+        case param::LO_THRESH:     return &lo_thresh;
+        case param::RESPONSE_TIME: return &rtime;
+        case param::RECYCLE_MODE:  return &recycle;
         default: return 0;
     }
 }
@@ -122,34 +122,29 @@ synthmod* stepper::duplicate_module(const char* uname, DUP_IO dupio)
     return dup;
 }
 
-stockerrs::ERR_TYPE stepper::validate()
+errors::TYPE stepper::validate()
 {
     if (!goto_first()) {
         sm_err("%s", "Step shape unformed.");
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
     else if (!goto_next()){
         sm_err("%s", "Step shape needs more form.");
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
-    if (!jwm.get_paramlist()->validate(this, paramnames::RESPONSE_TIME,
-                                            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", paramnames::get_name(
-                                            paramnames::RESPONSE_TIME));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
+    if (!validate_param(param::RESPONSE_TIME, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
     if (up_thresh < lo_thresh) {
         sm_err("%s must not be less than %s.",
-                paramnames::get_name(paramnames::UP_THRESH),
-                paramnames::get_name(paramnames::LO_THRESH));
+                param::names::get(param::UP_THRESH),
+                param::names::get(param::LO_THRESH));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
-    return stockerrs::ERR_NO_ERROR;
+    return errors::NO_ERROR;
 }
 
 step_data* stepper::insert_step(double pos, double uplvl, double lolvl)
@@ -179,14 +174,14 @@ step_data* stepper::insert_step(step_data* newstep)
 
 dobj* stepper::add_dobj(dobj* dbj)
 {
-    if (dbj->get_object_type() == dobjnames::SIN_STEP) {
+    if (dbj->get_object_type() == dataobj::SIN_STEP) {
         if (insert_step((step_data*)dbj))
             return dbj;
         sm_err("Could not insert %s into stepper.",
-                dobjnames::get_name(dobjnames::SIN_STEP));
+                dataobj::names::get(dataobj::SIN_STEP));
         return 0;
     }
-    sm_err("%s %s to %s.", stockerrs::major, stockerrs::bad_add,
+    sm_err("%s %s to %s.", errors::stock::major, errors::stock::bad_add,
                                                 get_username());
     return 0;
 }
@@ -267,11 +262,11 @@ void stepper::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::STEP_COUNT);
-    register_param(paramnames::UP_THRESH);
-    register_param(paramnames::LO_THRESH);
-    register_param(paramnames::RESPONSE_TIME);
-    register_param(paramnames::RECYCLE_MODE);
-    register_moddobj(dobjnames::LST_STEPS, dobjnames::SIN_STEP);
+    register_param(param::STEP_COUNT);
+    register_param(param::UP_THRESH);
+    register_param(param::LO_THRESH);
+    register_param(param::RESPONSE_TIME);
+    register_param(param::RECYCLE_MODE);
+    register_moddobj(dataobj::LST_STEPS, dataobj::SIN_STEP);
 }
 

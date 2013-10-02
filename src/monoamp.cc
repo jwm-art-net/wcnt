@@ -5,15 +5,15 @@
 #include "../include/modparamlist.h"
 
 mono_amp::mono_amp(const char* uname) :
- synthmod(synthmodnames::MONOAMP, uname, SM_HAS_OUT_OUTPUT),
+ synthmod(module::MONOAMP, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), in_amp_eg(0), in_amp_mod(0),
  out_output(0),
  level(0), amp_modsize(0), clip_level(0), amp_level(0), ampsig(0)
 {
-    register_input(inputnames::IN_SIGNAL);
-    register_input(inputnames::IN_EG);
-    register_input(inputnames::IN_AMP_MOD);
-    register_output(outputnames::OUT_OUTPUT);
+    register_input(input::IN_SIGNAL);
+    register_input(input::IN_EG);
+    register_input(input::IN_AMP_MOD);
+    register_output(output::OUT_OUTPUT);
     init_first();
 }
 
@@ -21,48 +21,48 @@ mono_amp::~mono_amp()
 {
 }
 
-const void* mono_amp::get_out(outputnames::OUT_TYPE ot) const
+const void* mono_amp::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_OUTPUT: return &out_output;
+        case output::OUT_OUTPUT: return &out_output;
         default: return 0;
     }
 }
 
-const void* mono_amp::set_in(inputnames::IN_TYPE it, const void* o)
+const void* mono_amp::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_SIGNAL: return in_signal = (double*)o;
-        case inputnames::IN_EG:     return in_amp_eg = (double*)o;
-        case inputnames::IN_AMP_MOD:return in_amp_mod = (double*)o;
+        case input::IN_SIGNAL: return in_signal = (double*)o;
+        case input::IN_EG:     return in_amp_eg = (double*)o;
+        case input::IN_AMP_MOD:return in_amp_mod = (double*)o;
         default: return 0;
     }
 }
 
-const void* mono_amp::get_in(inputnames::IN_TYPE it) const
+const void* mono_amp::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_SIGNAL: return in_signal;
-        case inputnames::IN_EG:     return in_amp_eg;
-        case inputnames::IN_AMP_MOD:return in_amp_mod;
+        case input::IN_SIGNAL: return in_signal;
+        case input::IN_EG:     return in_amp_eg;
+        case input::IN_AMP_MOD:return in_amp_mod;
         default: return 0;
     }
 }
 
-bool mono_amp::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool mono_amp::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::LEVEL:
+        case param::LEVEL:
             level = *(double*)data;
             return true;
-        case paramnames::AMP_MODSIZE:
+        case param::AMP_MODSIZE:
             amp_modsize = *(double*)data;
             return true;
-        case paramnames::CLIP_LEVEL:
+        case param::CLIP_LEVEL:
             clip_level = *(double*)data;
             return true;
         default:
@@ -70,42 +70,32 @@ bool mono_amp::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* mono_amp::get_param(paramnames::PAR_TYPE pt) const
+const void* mono_amp::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::LEVEL:         return &level;
-        case paramnames::AMP_MODSIZE:   return &amp_modsize;
-        case paramnames::CLIP_LEVEL:    return &clip_level;
+        case param::LEVEL:         return &level;
+        case param::AMP_MODSIZE:   return &amp_modsize;
+        case param::CLIP_LEVEL:    return &clip_level;
         default: return 0;
     }
 }
 
-stockerrs::ERR_TYPE mono_amp::validate()
+errors::TYPE mono_amp::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, paramnames::AMP_MODSIZE,
-            stockerrs::ERR_RANGE_0_1))
-    {
-        sm_err("%s",
-                paramnames::get_name(paramnames::AMP_MODSIZE));
-        invalidate();
-        return stockerrs::ERR_RANGE_0_1;
-    }
-    if (!jwm.get_paramlist()->validate(this, paramnames::CLIP_LEVEL,
-            stockerrs::ERR_NEG_ZERO))
-    {
-        sm_err("%s",
-                paramnames::get_name(paramnames::CLIP_LEVEL));
-        invalidate();
-        return stockerrs::ERR_NEG_ZERO;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::AMP_MODSIZE, errors::RANGE_0_1))
+        return errors::RANGE_0_1;
+
+    if (!validate_param(param::CLIP_LEVEL, errors::NEG_OR_ZERO))
+        return errors::NEG_OR_ZERO;
+
+    return errors::NO_ERROR;
 }
 
 void mono_amp::run()
 {
-    ampsig = (level * (1 - amp_modsize) + level *
-              *in_amp_mod * amp_modsize) * *in_signal * *in_amp_eg;
+    ampsig = (level * (1 - amp_modsize) + level
+                * *in_amp_mod * amp_modsize) * *in_signal * *in_amp_eg;
     out_output = ampsig;
     if (ampsig < -clip_level)
         out_output = -clip_level;
@@ -117,8 +107,8 @@ void mono_amp::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::LEVEL);
-    register_param(paramnames::AMP_MODSIZE);
-    register_param(paramnames::CLIP_LEVEL);
+    register_param(param::LEVEL);
+    register_param(param::AMP_MODSIZE);
+    register_param(param::CLIP_LEVEL);
 }
 

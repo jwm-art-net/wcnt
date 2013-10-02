@@ -9,9 +9,9 @@ public:
     constmod(const char*);
     ~constmod();
     void run(){};
-    const void* get_out(outputnames::OUT_TYPE) const;
-    bool set_param(paramnames::PAR_TYPE, const void*);
-    const void* get_param(paramnames::PAR_TYPE) const;
+    const void* get_out(output::TYPE) const;
+    bool set_param(param::TYPE, const void*);
+    const void* get_param(param::TYPE) const;
 
 private:
     double output;

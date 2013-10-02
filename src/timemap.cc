@@ -10,12 +10,7 @@
 #include <sstream>
 
 timemap::timemap(const char* uname) :
-
- synthmod(
-    synthmodnames::TIMEMAP,
-    uname,
-    SM_UNGROUPABLE | SM_UNDUPLICABLE),
-
+ synthmod(module::TIMEMAP, uname, SM_UNGROUPABLE | SM_UNDUPLICABLE),
  out_bar(0), out_bar_trig(OFF), out_pos_in_bar(0), out_pos_step_size(0),
  out_bpm(0.0), out_sample_total(0), out_sample_in_bar(0),
  out_beats_per_bar(0), out_beat_value(0), out_bpm_change_trig(OFF),
@@ -25,18 +20,18 @@ timemap::timemap(const char* uname) :
  bpmchange_ratio(0), targbpm(0), pos_in_bar(0), bpmchange_notelen(0),
  bpmchangebar(0), barlength(0), beatlength(0), meterchangebar(0), p_bpm(0)
 {
-    register_output(outputnames::OUT_BPM);
-    register_output(outputnames::OUT_BAR);
-    register_output(outputnames::OUT_BAR_TRIG);
-    register_output(outputnames::OUT_POS_IN_BAR);
-    register_output(outputnames::OUT_POS_STEP_SIZE);
-    register_output(outputnames::OUT_SAMPLE_TOTAL);
-    register_output(outputnames::OUT_SAMPLE_IN_BAR);
-    register_output(outputnames::OUT_BEATS_PER_BAR);
-    register_output(outputnames::OUT_BEAT_VALUE);
-    register_output(outputnames::OUT_BPM_CHANGE_TRIG);
-    register_output(outputnames::OUT_METER_CHANGE_TRIG);
-    register_output(outputnames::OUT_BPM_CHANGE_STATE);
+    register_output(output::OUT_BPM);
+    register_output(output::OUT_BAR);
+    register_output(output::OUT_BAR_TRIG);
+    register_output(output::OUT_POS_IN_BAR);
+    register_output(output::OUT_POS_STEP_SIZE);
+    register_output(output::OUT_SAMPLE_TOTAL);
+    register_output(output::OUT_SAMPLE_IN_BAR);
+    register_output(output::OUT_BEATS_PER_BAR);
+    register_output(output::OUT_BEAT_VALUE);
+    register_output(output::OUT_BPM_CHANGE_TRIG);
+    register_output(output::OUT_METER_CHANGE_TRIG);
+    register_output(output::OUT_BPM_CHANGE_STATE);
 
     bpm_map = new linked_list<bpmchange>;
     meter_map = new linked_list<meterchange>;
@@ -65,30 +60,30 @@ meterchange* timemap::add_meter_change(meterchange* mch)
             ->get_data());
 }
 
-stockerrs::ERR_TYPE timemap::validate()
+errors::TYPE timemap::validate()
 {
     if (!(currentmeter = meter_map->goto_first())) {
         sm_err("Time signature not set for %s. Will not continue.",
                                                     get_username());
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
     if (!(currentbpm = bpm_map->goto_first())) {
         sm_err("BPM not set for %s. Will not continue.", get_username());
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
     if (currentmeter->get_bar() > 0) {
         sm_err("The first added time signature is at bar %d. Should be "
                                     "at bar 0.", currentmeter->get_bar());
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
     if (currentbpm->get_bar() > 0) {
         sm_err("The first added tempo is at bar %d. Should start at "
                                         "bar 0.", currentbpm->get_bar());
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
     double bpm = 0;
     while(currentbpm){
@@ -98,18 +93,18 @@ stockerrs::ERR_TYPE timemap::validate()
                                     "BPM of %d.", currentbpm->get_bar(),
                                                     jwm_init::min_bpm);
             invalidate();
-            return stockerrs::ERR_ERROR;
+            return errors::ERROR;
         }
         if (bpm > jwm_init::max_bpm) {
             sm_err("At bar %d BPM change takes tempo above maximum "
                                     "BPM of %d.", currentbpm->get_bar(),
                                                     jwm_init::max_bpm);
             invalidate();
-            return stockerrs::ERR_ERROR;
+            return errors::ERROR;
         }
         currentbpm = bpm_map->goto_next();
     }
-    return stockerrs::ERR_NO_ERROR;
+    return errors::NO_ERROR;
 }
 #include <cstdio>
 void timemap::init()
@@ -121,7 +116,7 @@ void timemap::init()
     meterchangebar = currentmeter->get_bar();
     out_beats_per_bar = currentmeter->get_beatsperbar();
     out_beat_value = currentmeter->get_beatvalue();
-    beatlength = (short)(QUARTER_VALUE * (4.0 / (float)out_beat_value));
+    beatlength = (short)(TPQN * (4.0 / (float)out_beat_value));
     barlength = out_beats_per_bar * beatlength;
     pos_in_bar = barlength; // trig first bar - not favorite sollution
     out_bar = -1;           // ...it just gets worse!
@@ -140,8 +135,7 @@ void timemap::run()
         if (currentmeter) {
             out_beats_per_bar = currentmeter->get_beatsperbar();
             out_beat_value = currentmeter->get_beatvalue();
-            beatlength = (short)(QUARTER_VALUE *
-                                 (4.0 / (double)out_beat_value));
+            beatlength = (short)(TPQN * (4.0 / (double)out_beat_value));
             barlength = out_beats_per_bar * beatlength;
             out_meter_change_trig = ON;
             currentmeter = meter_map->goto_next();
@@ -246,32 +240,32 @@ double timemap::notelen_to_ms(short nl) const
 }
 #endif
 
-const void* timemap::get_out(outputnames::OUT_TYPE ot) const
+const void* timemap::get_out(output::TYPE ot) const
 {
     switch (ot) {
-    case outputnames::OUT_BPM:
+    case output::OUT_BPM:
         return &out_bpm;
-    case outputnames::OUT_BAR:
+    case output::OUT_BAR:
         return &out_bar;
-    case outputnames::OUT_BAR_TRIG:
+    case output::OUT_BAR_TRIG:
         return &out_bar_trig;
-    case outputnames::OUT_POS_IN_BAR:
+    case output::OUT_POS_IN_BAR:
         return &out_pos_in_bar;
-    case outputnames::OUT_POS_STEP_SIZE:
+    case output::OUT_POS_STEP_SIZE:
         return &out_pos_step_size;
-    case outputnames::OUT_SAMPLE_TOTAL:
+    case output::OUT_SAMPLE_TOTAL:
         return &out_sample_total;
-    case outputnames::OUT_SAMPLE_IN_BAR:
+    case output::OUT_SAMPLE_IN_BAR:
         return &out_sample_in_bar;
-    case outputnames::OUT_BEATS_PER_BAR:
+    case output::OUT_BEATS_PER_BAR:
         return &out_beats_per_bar;
-    case outputnames::OUT_BEAT_VALUE:
+    case output::OUT_BEAT_VALUE:
         return &out_beat_value;
-    case outputnames::OUT_BPM_CHANGE_TRIG:
+    case output::OUT_BPM_CHANGE_TRIG:
         return &out_bpm_change_trig;
-    case outputnames::OUT_METER_CHANGE_TRIG:
+    case output::OUT_METER_CHANGE_TRIG:
         return &out_meter_change_trig;
-    case outputnames::OUT_BPM_CHANGE_STATE:
+    case output::OUT_BPM_CHANGE_STATE:
         return &out_bpm_change_state;
     default:
         return 0;
@@ -281,19 +275,19 @@ const void* timemap::get_out(outputnames::OUT_TYPE ot) const
 dobj* timemap::add_dobj(dobj* dbj)
 {
     dobj* retv = 0;
-    dobjnames::DOBJ_TYPE dbjtype = dbj->get_object_type();
+    dataobj::TYPE dbjtype = dbj->get_object_type();
     switch(dbjtype)
     {
-    case dobjnames::SIN_METER:
+    case dataobj::SIN_METER:
         if (!(retv = add_meter_change((meterchange*)dbj)))
             sm_err("Could not add meter change to %s.", get_username());
         break;
-    case dobjnames::SIN_BPM:
+    case dataobj::SIN_BPM:
         if (!(retv = add_bpm_change((bpmchange*)dbj)))
             sm_err("Could not add bpm change to %s.", get_username());
         break;
     default:
-        sm_err("%s %s to %s.", stockerrs::major, stockerrs::bad_add,
+        sm_err("%s %s to %s.", errors::stock::major, errors::stock::bad_add,
                                                       get_username());
         retv = 0;
     }
@@ -311,7 +305,7 @@ void timemap::init_first()
 {
     if (done_first())
         return;
-    register_moddobj(dobjnames::LST_METER, dobjnames::SIN_METER);
-    register_moddobj(dobjnames::LST_BPM, dobjnames::SIN_BPM);
+    register_moddobj(dataobj::LST_METER, dataobj::SIN_METER);
+    register_moddobj(dataobj::LST_BPM, dataobj::SIN_BPM);
 }
 

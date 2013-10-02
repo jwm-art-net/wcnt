@@ -6,7 +6,7 @@
 #include "../include/conversions.h"
 
 osc_clock::osc_clock(const char* uname) :
- synthmod(synthmodnames::OSCCLOCK, uname, SM_DEFAULT),
+ synthmod(module::OSCCLOCK, uname, SM_DEFAULT),
  out_phase_trig(OFF), out_phase_step(0.00), out_premod_phase_step(0.00),
  in_freq(NULL), in_note_on_trig(NULL), in_note_slide_trig(NULL),
  in_play_state(NULL), in_freq_mod1(NULL), in_freq_mod2(NULL),
@@ -18,15 +18,15 @@ osc_clock::osc_clock(const char* uname) :
 {
 // degs initialised with 360 so that it 
 // immediately triggers if in_phase_trig is off
-    register_input(inputnames::IN_NOTE_ON_TRIG);
-    register_input(inputnames::IN_NOTE_SLIDE_TRIG);
-    register_input(inputnames::IN_PLAY_STATE);
-    register_input(inputnames::IN_FREQ);
-    register_input(inputnames::IN_FREQ_MOD1);
-    register_input(inputnames::IN_FREQ_MOD2);
-    register_output(outputnames::OUT_PHASE_TRIG);
-    register_output(outputnames::OUT_PREMOD_PHASE_STEP);
-    register_output(outputnames::OUT_PHASE_STEP);
+    register_input(input::IN_NOTE_ON_TRIG);
+    register_input(input::IN_NOTE_SLIDE_TRIG);
+    register_input(input::IN_PLAY_STATE);
+    register_input(input::IN_FREQ);
+    register_input(input::IN_FREQ_MOD1);
+    register_input(input::IN_FREQ_MOD2);
+    register_output(output::OUT_PHASE_TRIG);
+    register_output(output::OUT_PREMOD_PHASE_STEP);
+    register_output(output::OUT_PHASE_STEP);
     init_first();
 }
 
@@ -34,83 +34,83 @@ osc_clock::~osc_clock()
 {
 }
 
-const void* osc_clock::get_out(outputnames::OUT_TYPE ot) const
+const void* osc_clock::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_PHASE_TRIG:
+        case output::OUT_PHASE_TRIG:
             return &out_phase_trig;
-        case outputnames::OUT_PREMOD_PHASE_STEP:
+        case output::OUT_PREMOD_PHASE_STEP:
             return &out_premod_phase_step;
-        case outputnames::OUT_PHASE_STEP:
+        case output::OUT_PHASE_STEP:
             return &out_phase_step;
         default:
             return 0;
     }
 }
 
-const void* osc_clock::set_in(inputnames::IN_TYPE it, const void* o)
+const void* osc_clock::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_NOTE_ON_TRIG:
+        case input::IN_NOTE_ON_TRIG:
             return in_note_on_trig = (STATUS*)o;
-        case inputnames::IN_NOTE_SLIDE_TRIG:
+        case input::IN_NOTE_SLIDE_TRIG:
             return in_note_slide_trig = (STATUS*)o;
-        case inputnames::IN_PLAY_STATE:
+        case input::IN_PLAY_STATE:
             return in_play_state = (STATUS*)o;
-        case inputnames::IN_FREQ:
+        case input::IN_FREQ:
             return in_freq = (double*)o;
-        case inputnames::IN_FREQ_MOD1:
+        case input::IN_FREQ_MOD1:
             return in_freq_mod1 = (double*)o;
-        case inputnames::IN_FREQ_MOD2:
+        case input::IN_FREQ_MOD2:
             return in_freq_mod2 = (double*)o;
         default:
             return 0;
     }
 }
 
-const void* osc_clock::get_in(inputnames::IN_TYPE it) const
+const void* osc_clock::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_NOTE_ON_TRIG:
+        case input::IN_NOTE_ON_TRIG:
             return in_note_on_trig;
-        case inputnames::IN_NOTE_SLIDE_TRIG:
+        case input::IN_NOTE_SLIDE_TRIG:
             return in_note_slide_trig;
-        case inputnames::IN_PLAY_STATE:
+        case input::IN_PLAY_STATE:
             return in_play_state;
-        case inputnames::IN_FREQ:
+        case input::IN_FREQ:
             return in_freq;
-        case inputnames::IN_FREQ_MOD1:
+        case input::IN_FREQ_MOD1:
             return in_freq_mod1;
-        case inputnames::IN_FREQ_MOD2:
+        case input::IN_FREQ_MOD2:
             return in_freq_mod2;
         default:
             return 0;
     }
 }
 
-bool osc_clock::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool osc_clock::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::OCTAVE:
+        case param::OCTAVE:
             octave_offset = *(short*)data;
             return true;
-        case paramnames::TUNING_SEMITONES:
+        case param::TUNING_SEMITONES:
             semitones = *(double*)data;
             return true;
-        case paramnames::FREQ_MOD1SIZE:
+        case param::FREQ_MOD1SIZE:
             freq_mod1size = *(double*)data;
             return true;
-        case paramnames::FREQ_MOD2SIZE:
+        case param::FREQ_MOD2SIZE:
             freq_mod2size = *(double*)data;
             return true;
-        case paramnames::PORTAMENTO:
+        case param::PORTAMENTO:
             portamento = *(double*)data;
             return true;
-        case paramnames::RESPONSE_TIME:
+        case param::RESPONSE_TIME:
             response_time = *(double*)data;
             return true;
         default:
@@ -118,70 +118,41 @@ bool osc_clock::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* osc_clock::get_param(paramnames::PAR_TYPE pt) const
+const void* osc_clock::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::OCTAVE:            return &octave_offset;
-        case paramnames::TUNING_SEMITONES:  return &semitones;
-        case paramnames::FREQ_MOD1SIZE:     return &freq_mod1size;
-        case paramnames::FREQ_MOD2SIZE:     return &freq_mod2size;
-        case paramnames::PORTAMENTO:        return &portamento;
-        case paramnames::RESPONSE_TIME:     return &response_time;
+        case param::OCTAVE:            return &octave_offset;
+        case param::TUNING_SEMITONES:  return &semitones;
+        case param::FREQ_MOD1SIZE:     return &freq_mod1size;
+        case param::FREQ_MOD2SIZE:     return &freq_mod2size;
+        case param::PORTAMENTO:        return &portamento;
+        case param::RESPONSE_TIME:     return &response_time;
         default: return 0;
     }
 }
 
-stockerrs::ERR_TYPE osc_clock::validate()
+errors::TYPE osc_clock::validate()
 {
-    modparamlist* pl = jwm.get_paramlist();
-    if (!pl->validate(this, paramnames::PORTAMENTO,
-                                            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", paramnames::get_name(
-                                            paramnames::PORTAMENTO));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    if (!pl->validate(this, paramnames::RESPONSE_TIME,
-                                            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", paramnames::get_name(
-                                            paramnames::RESPONSE_TIME));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    if (!pl->validate(this, paramnames::FREQ_MOD1SIZE,
-                                            stockerrs::ERR_RANGE_FMOD))
-    {
-        sm_err("%s", paramnames::get_name(
-                                            paramnames::FREQ_MOD1SIZE));
-        invalidate();
-        return stockerrs::ERR_RANGE_FMOD;
-    }
-    if (!pl->validate(this, paramnames::FREQ_MOD2SIZE,
-                                            stockerrs::ERR_RANGE_FMOD))
-    {
-        sm_err("%s", paramnames::get_name(
-                                            paramnames::FREQ_MOD2SIZE));
-        invalidate();
-        return stockerrs::ERR_RANGE_FMOD;
-    }
-    if (!pl->validate(this, paramnames::TUNING_SEMITONES,
-                                            stockerrs::ERR_RANGE_SEMI))
-    {
-        sm_err("%s", paramnames::get_name(
-                                            paramnames::TUNING_SEMITONES));
-        invalidate();
-        return stockerrs::ERR_RANGE_SEMI;
-    }
-    if (!pl->validate(this, paramnames::OCTAVE, stockerrs::ERR_RANGE_OCT))
-    {
-        sm_err("%s", paramnames::get_name(paramnames::OCTAVE));
-        invalidate();
-        return stockerrs::ERR_RANGE_OCT;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::PORTAMENTO, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    if (!validate_param(param::RESPONSE_TIME, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    if (!validate_param(param::FREQ_MOD1SIZE, errors::RANGE_FMOD))
+        return errors::RANGE_FMOD;
+
+    if (!validate_param(param::FREQ_MOD2SIZE, errors::RANGE_FMOD))
+        return errors::RANGE_FMOD;
+
+    if (!validate_param(param::TUNING_SEMITONES, errors::RANGE_SEMI))
+        return errors::RANGE_SEMI;
+
+    if (!validate_param(param::OCTAVE, errors::RANGE_OCT))
+        return errors::RANGE_OCT;
+
+    return errors::NO_ERROR;
 }
 
 void osc_clock::init()
@@ -258,11 +229,11 @@ void osc_clock::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::OCTAVE);
-    register_param(paramnames::TUNING_SEMITONES);
-    register_param(paramnames::PORTAMENTO);
-    register_param(paramnames::RESPONSE_TIME);
-    register_param(paramnames::FREQ_MOD1SIZE);
-    register_param(paramnames::FREQ_MOD2SIZE);
+    register_param(param::OCTAVE);
+    register_param(param::TUNING_SEMITONES);
+    register_param(param::PORTAMENTO);
+    register_param(param::RESPONSE_TIME);
+    register_param(param::FREQ_MOD1SIZE);
+    register_param(param::FREQ_MOD2SIZE);
 }
 

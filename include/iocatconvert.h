@@ -8,10 +8,10 @@
 namespace iocatconv
 {
 
-void* cstr_to_iocat(iocat::IOCAT,   const char* cstrval,
+void* cstr_to_iocat(iocat::TYPE,   const char* cstrval,
                     std::ostringstream* result);
 
-void destroy_iocat_data(iocat::IOCAT iocat, const void* data);
+void destroy_iocat_data(iocat::TYPE iocat, const void* data);
 
 const char* get_error_msg();
 

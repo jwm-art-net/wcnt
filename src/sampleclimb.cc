@@ -6,12 +6,12 @@
 #include "../include/conversions.h"
 
 sample_climb::sample_climb(const char* uname) :
- synthmod(synthmodnames::SAMPLECLIMB, uname, SM_HAS_OUT_OUTPUT),
+ synthmod(module::SAMPLECLIMB, uname, SM_HAS_OUT_OUTPUT),
  in_trig(0), in_signal(0), output(0), rate(1), target(0)
 {
-    register_input(inputnames::IN_TRIG);
-    register_input(inputnames::IN_SIGNAL);
-    register_output(outputnames::OUT_OUTPUT);
+    register_input(input::IN_TRIG);
+    register_input(input::IN_SIGNAL);
+    register_output(output::OUT_OUTPUT);
     init_first();
 }
 
@@ -19,40 +19,40 @@ sample_climb::~sample_climb()
 {
 }
 
-const void* sample_climb::get_out(outputnames::OUT_TYPE ot) const
+const void* sample_climb::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_OUTPUT: return &output;
+        case output::OUT_OUTPUT: return &output;
         default: return 0;
     }
 }
 
-const void* sample_climb::set_in(inputnames::IN_TYPE it, const void* o)
+const void* sample_climb::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_TRIG:   return in_trig = (STATUS*)o;
-        case inputnames::IN_SIGNAL: return in_signal= (double*)o;
+        case input::IN_TRIG:   return in_trig = (STATUS*)o;
+        case input::IN_SIGNAL: return in_signal= (double*)o;
         default: return 0;
     }
 }
 
-const void* sample_climb::get_in(inputnames::IN_TYPE it) const
+const void* sample_climb::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_TRIG:   return in_trig;
-        case inputnames::IN_SIGNAL: return in_signal;
+        case input::IN_TRIG:   return in_trig;
+        case input::IN_SIGNAL: return in_signal;
         default: return 0;
     }
 }
 
-bool sample_climb::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool sample_climb::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::RATE:
+        case param::RATE:
             rate = *(double*)data;
             return true;
         default:
@@ -60,25 +60,21 @@ bool sample_climb::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* sample_climb::get_param(paramnames::PAR_TYPE pt) const
+const void* sample_climb::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::RATE: return &rate;
+        case param::RATE: return &rate;
         default: return 0;
     }
 }
 
-stockerrs::ERR_TYPE sample_climb::validate()
+errors::TYPE sample_climb::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, paramnames::RATE,
-            stockerrs::ERR_RANGE_0_1_IN))
-    {
-        sm_err("%s", paramnames::get_name(paramnames::RATE));
-        invalidate();
-        return stockerrs::ERR_RANGE_0_1_IN;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::RATE, errors::RANGE_0_1_IN))
+        return errors::RANGE_0_1_IN;
+
+    return errors::NO_ERROR;
 }
 
 void sample_climb::run()
@@ -92,5 +88,5 @@ void sample_climb::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::RATE);
+    register_param(param::RATE);
 }

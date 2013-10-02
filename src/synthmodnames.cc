@@ -1,131 +1,92 @@
 #include "../include/synthmodnames.h"
 
-#include <cstring>
-
-#ifdef DEBUG
-#include <iostream>
-#endif
-
-synthmodnames::synthmodnames()
+namespace module
 {
-#ifdef DEBUG
-    for (int i = FIRST; i < LAST; i++){
-        if (data[i].type != i) {
-            std::cout << "\n***** synthmodnames error *****\n";
-            std::cout << data[i].name << " is in array index " << i;
-            std::cout << " but has type index of " << data[i].type;
-            std::cout << "\nthese values should tally!\n";
-        }
-    }
-#endif
-}
-
-#ifdef DEBUG
-static synthmodnames smnames;
-#endif
-
-
-const char* synthmodnames::get_name(SYNTH_MOD_TYPE id)
-{
-    if (id > FIRST && id < LAST)
-        return data[id].name;
-    else
-        return data[FIRST].name;
-}
-
-synthmodnames::SYNTH_MOD_TYPE
-synthmodnames::get_type(const char* const mname)
-{
-    for (int i = FIRST; i < LAST; i++)
-        if (strcmp(data[i].name, mname) == 0)
-            return (SYNTH_MOD_TYPE)i;
-    return FIRST;
-}
-
-const synthmodnames::mod_data synthmodnames::data[LAST] =
-{
-    { FIRST,            "BAD_MODULE_TYPE"   },
-    { NONEZERO,         "none"              },
-    { ADSR,             "adsr"              },
-    { STEREOAMP,        "stereo_amp"        },
-    { CLOCK,            "clock"             },
-    { CONSTMOD,         "constant"          },
-    { FREQGEN,          "freq_generator"    },
-    { LFOCLOCK,         "lfo_clock"         },
-    { LFOCONTROL,       "lfo_controller"    },
-    { MODIFIER,         "modifier"          },
-    { NOISEGEN,         "noise_generator"   },
-    { OSCCLOCK,         "osc_clock"         },
-    { SAMPLEHOLD,       "sample_hold"       },
-    { SEQUENCER,        "sequencer"         },
-    { SQUAREWAVE,       "square_wave"       },
-    { TRIGGER,          "trigger"           },
-    { TRIWAVE2,         "tri_wave2"         },
-    { USERWAVE,         "user_wave"         },
-    { SAMPLER,          "sampler"           },
-    { WAVFILEOUT,       "wavfile_out"       },
-    { STEREOCHANNEL,    "mix_chan"          },
-    { STEREOMIXER,      "mixer"             },
-    { RANDTRIGGER,      "rnd_trigger"       },
-    { LOGICTRIGGER,     "logic_trigger"     },
-    { SWITCHER,         "switcher"          },
-    { WCNTSIGNAL,       "wcnt_signal"       },
-    { COMBINER,         "combiner"          },
-    { TIMEMAP,          "time_map"          },
-    { CONTRASTER,       "contraster"        },
-    { SERIALWAVFILEOUT, "serial_wavout"     },
-    { DELAY,            "delay"             },
-    { ECHO,             "echo"              },
-    { MONOAMP,          "mono_amp"          },
-    { WCNTEXIT,         "wcnt_exit"         },
-    { MULTIPLIER,       "multiplier"        },
-    { RANGELIMIT,       "range_limit"       },
-    { PAN,              "panner"            },
-    { RMS,              "rms"               },
-    { DCFILTER,         "dc_filter"         },
-    { DYNAMIC,          "dynamic"           },
-    { SPREADER,         "spreader"          },
-    { NOTETRAN,         "note_tran"         },
-    { WAITTRIG,         "wait_trig"         },
-    { PATTERNTRIG,      "pattern_trig"      },
-    { STATEGATETRIG,    "state_gate_trig"   },
-    { INVERT,           "invert"            },
-    { TIMER,            "timer"             },
-    { SYNCCLOCK,        "sync_clock"        },
-    { WCNTTRIGGER,      "wcnt_trigger"      },
-    { TRIGSWITCHER,     "trig_switcher"     },
-    { ONOFFTRIG,        "on_off_trig"       },
-    { PEAKDETECTOR,     "peak_detector"     },
-    { STEPPER,          "stepper"           },
-    { ADDER,            "adder"             },
-    { SUBTRACTER,       "subtracter"        },
-    { TRIGDELAY,        "trig_delay"        },
-    { SIMPLEDELAY,      "simple_delay"      },
-    { DIFFFILTER,       "diff_filter"       },
-    { IMPULSE,          "impulse"           },
-    { ORBIT,            "orbit"             },
+ const struct names::gn_data names::data[LAST_TYPE] =
+ {
+    { ERR_TYPE,         "BAD_MODULE_TYPE",  0, "ERROR!"   },
+    { NONEZERO,         "none",             0, "A module providing outputs which are used when an input is turned off."        },
+    { ADSR,             "adsr",             0, "A dual shaped modulatable envelope generator."                                 },
+    { STEREOAMP,        "stereo_amp",       0, "A module used to shape, modulate, and adjust the levels of a pair of signals." },
+    { CLOCK,            "clock",            0, "A basic clock source providing a phase trigger and step outputs."              },
+    { CONSTMOD,         "constant",         0, "Provides a constant unchanging value."                                         },
+    { FREQGEN,          "freq_generator",   0, "Translate one signal range to another."                                        },
+    { LFOCLOCK,         "lfo_clock",        0, "A clock with phase reset and with dual modulation inputs."                     },
+    { LFOCONTROL,       "lfo_controller",   0, "Designed to shape waveform output to provide LFO functionality."               },
+    { MODIFIER,         "modifier",         0, "Modify the first signal by the second, with bias and a choice of operators."   },
+    { NOISEGEN,         "noise_generator",  0, "Generates a random signal value for every sample."                             },
+    { OSCCLOCK,         "osc_clock",        0, "A clock generally driven by the sequencer module, versatile."                  },
+    { SAMPLEHOLD,       "sample_hold",      0, "Samples a signal and holds the value with optional decay."                                 },
+    { SEQUENCER,        "sequencer",        0, "Sequences and translates riffs of notes along the time line into forms usable by other modules." },
+    { SQUAREWAVE,       "square_wave",      0, "A square waveform implementation with an additional climb-rate parameter."                 },
+    { TRIGGER,          "trigger",          0, "Outputs a trigger when the signal reaches a specific level."                               },
+    { TRIWAVE2,         "tri_wave2",        0, "Triangle waveform with ramps set to a specific frequency."                                 },
+    { USERWAVE,         "user_wave",        0, "User defined waveform with X/Y shape modulation, but lacks smoothing."                     },
+    { SAMPLER,          "sampler",          0, "Reads data from an audio file. Supports granular synthesis style usage." },
+    { WAVFILEOUT,       "wavfile_out",      0, "Writes data to an audio file. Appends a time stamp to filename when snapshot_mode is used." },
+    { STEREOCHANNEL,    "mix_chan",         0, "A module to provide a stereo signal to the mixer module."                                      },
+    { STEREOMIXER,      "mixer",            0, "Mixes any number of stereo signals together. The signals are specified as a list of modules." },
+    { RANDTRIGGER,      "rnd_trigger",      0, "Depending on probability, randomly outputs a trigger when the input triggers."                 },
+    { LOGICTRIGGER,     "logic_trigger",    0, "Uses logic to output a trigger depending on the two (near simultaneous) input triggers."       },
+    { SWITCHER,         "switcher",         0, "When triggered, switches to the next signal. The signals are specified as a list of modules." },
+    { WCNTSIGNAL,       "wcnt_signal",      0, "A connective module which can be added into the switcher, combiner, and spreader modules, etc."     },
+    { COMBINER,         "combiner",         0, "Combines (or mixes) a number of signals together. The signals are specified as a list of modules." },
+    { TIMEMAP,          "time_map",         0, "Manages the timeline, supports ramped tempo changes, and time signature changes."},
+    { CONTRASTER,       "contraster",       0, "Adds 'contrast' to a signal. Optional 'rude' mode provides an 'alternative' implementation" },
+    { SERIALWAVFILEOUT, "serial_wavout",    0, "Writes data to a series of audio files. The current file is closed and a new file opened upon trigger."},
+    { DELAY,            "delay",            0, "Takes a signal and delays it."},
+    { ECHO,             "echo",             0, "Takes a signal and delays it with feedback."},
+    { MONOAMP,          "mono_amp",         0, "A module used to shape, modulate, and adjust the levels of a signal."          },
+    { WCNTEXIT,         "wcnt_exit",        0, "A mandatory module used to stop processing." },
+    { MULTIPLIER,       "multiplier",       0, "Multiplies two signals together." },
+    { RANGELIMIT,       "range_limit",      0, "Limits the upper and lower value bounds of a signal." },
+    { PAN,              "panner",           0, "Positions a signal between a stereo pair, allows modulation." },
+    { RMS,              "rms",              0, "Calculate the RMS of a signal." },
+    { DCFILTER,         "dc_filter",        0, "Filters DC from by subtracting the mean." },
+    { DYNAMIC,          "dynamic",          0, "User defined and modulatable dynamic mapping of signal levels." },
+    { SPREADER,         "spreader",         0, "Dependant on value of input signal, outputs one of a number of signals. The signals are specified as a list of modules." },
+    { NOTETRAN,         "note_tran",        0, "Performs some sort of difficult to comprehend translation of note data!" },
+    { WAITTRIG,         "wait_trig",        0, "Waits for trigger one before outputting trigger two a specified number of times." },
+    { PATTERNTRIG,      "pattern_trig",     0, "A binary pattern is used to decide if the input trigger should be passed through to output or not." },
+    { STATEGATETRIG,    "state_gate_trig",  0, "The input trigger is allowed through to output only if the state input is on." },
+    { INVERT,           "invert",           0, "Flips the sign of a signal." },
+    { TIMER,            "timer",            0, "Outputs a trigger at specified times, or after specified intervals." },
+    { SYNCCLOCK,        "sync_clock",       0, "A clock that can be syncronised with the time line (or modulated around it)." },
+    { WCNTTRIGGER,      "wcnt_trigger",     0, "A connective module which can be used, for example, by the trig_switcher." },
+    { TRIGSWITCHER,     "trig_switcher",    0, "On input trigger switches to the next ouput trigger. The triggers are specified as a list of modules." },
+    { ONOFFTRIG,        "on_off_trig",      0, "Outputs one of two triggers when the input signal rises above a specified level. Outputs the other trigger when the signal falls." },
+    { PEAKDETECTOR,     "peak_detector",    0, "Can be used to detect when input signal peaks beyond the bounds of a specified range. Can be used to display a message or abort processing." },
+    { STEPPER,          "stepper",          0, "Given a user-defined shape, divide it into step_count sections. When input triggers, step along each section outputting the value found." },
+    { ADDER,            "adder",            0, "Add two signals together." },
+    { SUBTRACTER,       "subtracter",       0, "Subtract the second signal from the first."},
+    { TRIGDELAY,        "trig_delay",       0, "Delay a trigger output by a specified time." },
+    { SIMPLEDELAY,      "simple_delay",     0, "Delay a signal by a specified time." },
+    { DIFFFILTER,       "diff_filter",      0, "Calculates the difference between the previous and current sample processed." },
+    { IMPULSE,          "impulse",          0, "Outputs the value of 1.0 for a single sample when input triggers." },
+    { ORBIT,            "orbit",            0, "Implements Threeply, Quadrup, or Hopalong fractals for modulation purposes."  },
     #ifdef WITH_LADSPA
-    { GLAME_BUTTERWORTH,        "glame_butterworth"         },
-    { FAST_LOOKAHEAD_LIMITER,   "fast_lookahead_limiter"    },
-    { DC_OFFSET_REMOVER,        "dc_offset_remover"         },
-    { SC1,                      "sc1"                       },
-    { SINGLE_BAND_PARA,         "single_band_parametric"    },
-    { GLAME_FILTER,             "glame_filter"              },
-    { BODE_FREQ_SHIFTER,        "bode_freq_shifter"         },
-    { CAPS_PLATE,               "caps_plate"                },
-    { CAPS_PLATE2X2,            "caps_plate2x2"             },
+    { GLAME_BUTTERWORTH,        "glame_butterworth",        0, "Provides the Glame Butterworth High and Low pass filter LADSPA plugins (if available)."         },
+    { FAST_LOOKAHEAD_LIMITER,   "fast_lookahead_limiter",   0, "Provides the Fast Lookahead Limiter LADSPA plugin (if available)."    },
+    { DC_OFFSET_REMOVER,        "dc_offset_remover",        0, "Provides the DC Offset Remove LADSPA plugin (if available)."        },
+    { SC1,                      "sc1",                      0, "Provides the SC1 Compressor LADSPA plugin (if available)." },
+    { SINGLE_BAND_PARA,         "single_band_parametric",   0, "Provides the Single Band Parametric LADSPA plugin (if available)."    },
+    { GLAME_FILTER,             "glame_filter",             0, "Provides the Glame High and Low pass filter LADSPA plugins (if available)." },
+    { BODE_FREQ_SHIFTER,        "bode_freq_shifter",        0, "Provides the Bode Frequency Shifter LADSPA plugin (if available)." },
+    { CAPS_PLATE,               "caps_plate",               0, "Provides the C* Plate LADSPA plugin (if available)." },
+    { CAPS_PLATE2X2,            "caps_plate2x2",            0, "Provides the C* Plate LADSPA plugin (if available)." },
     #endif
-    { WAVE,             "wave"              },
-    { WAVE_PHASE,       "wave_phase"        },
-    { CONSTANT_FREQ,    "constant_freq"     },
-    { CONSTANT_NOTE,    "constant_note"     },
-    { BALANCE,          "balance"           },
-    { TRIGECHO,         "trig_echo"         },
-    { INSPECT,          "inspector"         },
-    { TRIGCOUNTER,      "trig_counter"      },
-    { TRIGROUTER,       "trig_router"       },
-    { GROUPCONTROL,     "group_control"     },
-    { FADER,            "fader"             },
-    { SAMPLECLIMB,      "sample_climb"      }
-};
+    { WAVE,             "wave",             0, "Outputs one of a number of basic waveforms."             },
+    { WAVE_PHASE,       "wave_phase",       0, "Outputs one waveform multiplied by another. The two waveforms may be synchronised by phase despite operating at different frequencies." },
+    { CONSTANT_FREQ,    "constant_freq",    0, "Outputs an unchanging frequency value, and the phase-step equivalent." },
+    { CONSTANT_NOTE,    "constant_note",    0, "Outputs an unchanging note name as well as the frequency and phase-step equivalents." },
+    { BALANCE,          "balance",          0, "Combines a pair of signals with optional bias toward one or the other." },
+    { TRIGECHO,         "trig_echo",        0, "Delays the trigger input by a specified time, with feedback." },
+    { INSPECT,          "inspector",        0, "A module displaying values of specified signals when the corresponding input triggers." },
+    { TRIGCOUNTER,      "trig_counter",     0, "Outputs a count of how many times the input triggers. Can be reset and/or set to ignore a number of triggers." },
+    { TRIGROUTER,       "trig_router",      0, "Routes the trigger input amongst a group of wcnt_trigger modules which are created by the trig_router itself. The wcnt_trigger modules are added to a group of the same name." },
+    { GROUPCONTROL,     "group_control",    0, "Used to stop or start processing for all modules within a specified group. Use in combination with the trig_router. Take care!" },
+    { FADER,            "fader",            0, "Perform a fade in and fade out at specific bars in the time line." },
+    { SAMPLECLIMB,      "sample_climb",     0, "Similar to sample_hold, but instead of holding the value and decaying, this module optionally climbs to the sampled value before holding it." }
+ };
+}; // namespace module
 

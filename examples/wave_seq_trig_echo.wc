@@ -16,6 +16,7 @@ t1
         time seconds 0.0
         time seconds 33.0
     timings
+    time_is_relative off
 t1
 
 clock

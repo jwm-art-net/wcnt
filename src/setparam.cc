@@ -29,40 +29,49 @@ static char err_msg[STRBUFLEN] = "";
 
 template
 bool set_param<synthmod>
-    (synthmod* sm, const char* param, paramnames::PAR_TYPE pt,
+    (synthmod* sm, const char* param, param::TYPE pt,
         const char* value, std::ostringstream* result);
 
 template
 bool set_param<dobj>
-    (dobj*, const char* param, paramnames::PAR_TYPE pt,
+    (dobj*, const char* param, param::TYPE pt,
         const char* value, std::ostringstream* result);
 
 template
 void* compute<synthmod>
-    (synthmod*, paramnames::PAR_TYPE pt, void* data, int op);
+    (synthmod*, param::TYPE pt, void* data, int op);
 
 template
-void* compute<dobj>(dobj*, paramnames::PAR_TYPE pt, void* data, int op);
+void* compute<dobj>(dobj*, param::TYPE pt, void* data, int op);
 
 template <typename T>
-bool set_param(T* obj, const char* param, paramnames::PAR_TYPE pt,
-    const char* value, std::ostringstream* result)
+bool set_param(T* obj, const char* par,     param::TYPE pt,
+                       const char* value,   std::ostringstream* result)
 {
-    const char* parname = paramnames::get_name(pt);
-    if (pt != paramnames::STR_UNNAMED && pt != paramnames::STR_LIST)
-    {
-        if (strcmp(param, parname) != 0) {
-            setpar_err("Expected %s got %s instead. %s",
-                            parname, param,
-                    ((paramnames::get_type(param)
-                                                == paramnames::FIRST
+    /*#ifdef DEBUG
+    std::cout << "set_param: ";
+    if (obj->get_username())
+        std::cout << "\tobj: " << obj->get_username();
+    if (par)
+        std::cout << "\tparam: "  << par;
+    std::cout << "\texpecting: " << param::names::get(pt);
+    if (value)
+        std::cout << "\tvalue: " << value;
+    std::cout << std::endl;
+    #endif*/
+
+    const char* parname = param::names::get(pt);
+    if (pt != param::STR_UNNAMED && pt != param::STR_LIST) {
+        if (strcmp(par, parname) != 0) {
+            setpar_err("expected %s got %s instead. %s", parname, par,
+                    ((param::names::type(par) == param::ERR_TYPE
                         && (time(0) % 8) == 0)
-                                ? ". Just can't get the staff these days."
+                                ? "Just can't get the staff these days."
                                 : ""));
             return false;
         }
     }
-    iocat::IOCAT ioc = paramnames::get_category(pt);
+    iocat::TYPE ioc = param::names::category(pt);
     int op = get_operator(value);
     if (op)
         value += 2; // value == ptr to txt-representation of value ;-)
@@ -70,8 +79,7 @@ bool set_param(T* obj, const char* param, paramnames::PAR_TYPE pt,
     void* data = iocatconv::cstr_to_iocat(ioc, value, result);
     if (!data) {
         setpar_err("Failed to convert %s to an acceptable form for "
-                "parameter %s %s.", value, param,
-                                            iocatconv::get_error_msg());
+                "parameter %s %s.", value, par, iocatconv::get_error_msg());
         return false;
     }
     void* datatmp = data;
@@ -80,14 +88,13 @@ bool set_param(T* obj, const char* param, paramnames::PAR_TYPE pt,
         fsp = jwm.get_fxsparamlist()->get_fix_str_param(pt);
         if (!fsp) {
             iocatconv::destroy_iocat_data(ioc, data);
-            setpar_err("No registered fixed string for %s parameter.",
-                        param);
+            setpar_err("No registered fixed string for %s parameter.", par);
             return false;
         }
         int n = fsp->get_substring_index((const char*)data);
         if (n < 0) {
             setpar_err("Parameter %s does not understand %s. Try one of "
-                       "'%s' instead.", param, ((const char*)data),
+                       "'%s' instead.", par, ((const char*)data),
                                                 fsp->get_string_list());
             iocatconv::destroy_iocat_data(ioc, data);
             return false;
@@ -103,13 +110,19 @@ bool set_param(T* obj, const char* param, paramnames::PAR_TYPE pt,
         }
     }
     if (!obj->set_param(pt, data)) {
+        printf("obj:%p\n", obj);
+        printf("obj username: %s\n", obj->get_username());
+        printf("par:%s\n", par);
+        printf("value:%s\n", value);
         if (ioc == iocat::FIX_STR) {
             delete (int*)data;
             data = datatmp;
         }
         iocatconv::destroy_iocat_data(ioc, data);
-        setpar_err("Module %s refuses to set parameter %s with value %s.",
-                                        obj->get_username(), param, value);
+        const char* n = obj->get_username();
+        setpar_err("%s refuses to set parameter %s with value %s.",
+                                        (n ? n : ""), (par ? par : ""),
+                                                                value);
         return false;
     }
     if (ioc == iocat::FIX_STR) {
@@ -121,11 +134,11 @@ bool set_param(T* obj, const char* param, paramnames::PAR_TYPE pt,
 }
 
 template <typename T>
-void* compute(T* obj, paramnames::PAR_TYPE pt, void* data, int op)
+void* compute(T* obj, param::TYPE pt, void* data, int op)
 {
-    if (!obj || pt == paramnames::FIRST || !data || op == 0)
+    if (!obj || pt == param::ERR_TYPE || !data || op == 0)
         return 0;
-    switch(paramnames::get_category(pt)){
+    switch(param::names::category(pt)){
         case iocat::DOUBLE:
             if (op == '/' && *(double*)data == 0)
                 return 0;
@@ -173,7 +186,6 @@ int get_operator(const char* txt)
             return 0;
     }
 }
-
 
 const char* get_error_msg()
 {

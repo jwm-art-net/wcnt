@@ -13,7 +13,7 @@
 #include <sys/timeb.h>
 
 wavfileout::wavfileout(const char* uname) :
- synthmod(synthmodnames::WAVFILEOUT, uname, SM_DEFAULT),
+ synthmod(module::WAVFILEOUT, uname, SM_DEFAULT),
  in_l(0), in_r(0), in_bar(0), in_bar_trig(0),
  out_write_start_trig(OFF), out_write_end_trig(OFF),
  write_status(OFF),
@@ -23,13 +23,13 @@ wavfileout::wavfileout(const char* uname) :
  fileout(0), //header(0),
  status(WAV_STATUS_INIT), st_buffer(0), sample_total(0), buff_pos(0)
 {
-    register_input(inputnames::IN_LEFT);
-    register_input(inputnames::IN_RIGHT);
-    register_input(inputnames::IN_BAR);
-    register_input(inputnames::IN_BAR_TRIG);
-    register_output(outputnames::OUT_WRITE_START_TRIG);
-    register_output(outputnames::OUT_WRITE_END_TRIG);
-    register_output(outputnames::OUT_WRITE_STATE);
+    register_input(input::IN_LEFT);
+    register_input(input::IN_RIGHT);
+    register_input(input::IN_BAR);
+    register_input(input::IN_BAR_TRIG);
+    register_output(output::OUT_WRITE_START_TRIG);
+    register_output(output::OUT_WRITE_END_TRIG);
+    register_output(output::OUT_WRITE_STATE);
     st_buffer = new st_data[jwm_init::wav_buffer_size];
     for(short i = 0; i < jwm_init::wav_buffer_size; i++){
         st_buffer[i].left = 0;
@@ -49,62 +49,62 @@ wavfileout::~wavfileout()
     delete [] st_buffer;
 }
 
-const void* wavfileout::get_out(outputnames::OUT_TYPE ot) const
+const void* wavfileout::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_WRITE_START_TRIG:
+        case output::OUT_WRITE_START_TRIG:
             return &out_write_start_trig;
-        case outputnames::OUT_WRITE_END_TRIG:
+        case output::OUT_WRITE_END_TRIG:
             return &out_write_end_trig;
-        case outputnames::OUT_WRITE_STATE:
+        case output::OUT_WRITE_STATE:
             return &write_status;
         default:
             return 0;
     }
 }
 
-const void* wavfileout::set_in(inputnames::IN_TYPE it, const void* o)
+const void* wavfileout::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_LEFT:       return in_l = (double*)o;
-        case inputnames::IN_RIGHT:      return in_r = (double*)o;
-        case inputnames::IN_BAR:        return in_bar = (short*)o;
-        case inputnames::IN_BAR_TRIG:   return in_bar_trig = (STATUS*)o;
+        case input::IN_LEFT:       return in_l = (double*)o;
+        case input::IN_RIGHT:      return in_r = (double*)o;
+        case input::IN_BAR:        return in_bar = (short*)o;
+        case input::IN_BAR_TRIG:   return in_bar_trig = (STATUS*)o;
         default: return 0;
     }
 }
 
-const void* wavfileout::get_in(inputnames::IN_TYPE it) const
+const void* wavfileout::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_LEFT:       return in_l;
-        case inputnames::IN_RIGHT:      return in_r;
-        case inputnames::IN_BAR:        return in_bar;
-        case inputnames::IN_BAR_TRIG:   return in_bar_trig;
+        case input::IN_LEFT:       return in_l;
+        case input::IN_RIGHT:      return in_r;
+        case input::IN_BAR:        return in_bar;
+        case input::IN_BAR_TRIG:   return in_bar_trig;
         default: return 0;
     }
 }
 
-bool wavfileout::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool wavfileout::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::SNAPSHOT_MODE:
+        case param::SNAPSHOT_MODE:
             snapshot_mode = *(STATUS*)data;
             return true;
-        case paramnames::DATA_FMT:
+        case param::DATA_FMT:
             data_format = *(DATA_FMT*)data;
             return true;
-        case paramnames::FILENAME:
+        case param::FILENAME:
             set_wav_filename((char*)data);
             return true;
-        case paramnames::START_BAR:
+        case param::START_BAR:
             start_bar = *(short*)data;
             return true;
-        case paramnames::END_BAR:
+        case param::END_BAR:
             end_bar = *(short*)data;
             return true;
         default:
@@ -112,36 +112,32 @@ bool wavfileout::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* wavfileout::get_param(paramnames::PAR_TYPE pt) const
+const void* wavfileout::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::SNAPSHOT_MODE: return &snapshot_mode;
-        case paramnames::DATA_FMT:      return &data_format;
-        case paramnames::FILENAME:      return filename;
-        case paramnames::START_BAR:     return &start_bar;
-        case paramnames::END_BAR:       return &end_bar;
+        case param::SNAPSHOT_MODE: return &snapshot_mode;
+        case param::DATA_FMT:      return &data_format;
+        case param::FILENAME:      return filename;
+        case param::START_BAR:     return &start_bar;
+        case param::END_BAR:       return &end_bar;
         default: return 0;
     }
 }
 
-stockerrs::ERR_TYPE wavfileout::validate()
+errors::TYPE wavfileout::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, paramnames::START_BAR,
-            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", paramnames::get_name(paramnames::START_BAR));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
+    if (!validate_param(param::START_BAR, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
     if (end_bar <= start_bar) {
         sm_err("%s should be after %s.",
-                    paramnames::get_name(paramnames::END_BAR),
-                    paramnames::get_name(paramnames::START_BAR));
+                    param::names::get(param::END_BAR),
+                    param::names::get(param::START_BAR));
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
-    return stockerrs::ERR_NO_ERROR;
+    return errors::NO_ERROR;
 }
 
 void wavfileout::set_wav_filename(char* fname)
@@ -297,10 +293,10 @@ void wavfileout::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::SNAPSHOT_MODE);
-    register_param(paramnames::DATA_FMT, "pcm16/pcm24/pcm32/float32/float64");
-    register_param(paramnames::FILENAME);
-    register_param(paramnames::START_BAR);
-    register_param(paramnames::END_BAR);
+    register_param(param::SNAPSHOT_MODE);
+    register_param(param::DATA_FMT, "pcm16/pcm24/pcm32/float32/float64");
+    register_param(param::FILENAME);
+    register_param(param::START_BAR);
+    register_param(param::END_BAR);
 }
 

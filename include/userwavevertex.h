@@ -18,9 +18,9 @@ public:
     void set_lodeg(double n) { lo_deg = n;}
     void set_lopos(double n) { lo_pos = n;}
     void modulate(double vmod, double hmod);
-    virtual stockerrs::ERR_TYPE validate();
-    bool set_param(paramnames::PAR_TYPE, const void*);
-    const void* get_param(paramnames::PAR_TYPE pt) const;
+    virtual errors::TYPE validate();
+    bool set_param(param::TYPE, const void*);
+    const void* get_param(param::TYPE pt) const;
     // oh so naughty:
     double out_deg;
     double out_pos;

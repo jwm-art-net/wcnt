@@ -2,7 +2,7 @@
 #include "../include/dobjparamlist.h"
 
 modnamedobj::modnamedobj() :
- dobj(dobjnames::SIN_MODNAME),
+ dobj(dataobj::SIN_MODNAME),
  modname(0)
 {
     init_first();
@@ -23,11 +23,11 @@ void modnamedobj::set_modname(const char* name)
     return;
 }
 
-bool modnamedobj::set_param(paramnames::PAR_TYPE dt, const void* data)
+bool modnamedobj::set_param(param::TYPE dt, const void* data)
 {
     switch(dt)
     {
-        case paramnames::NAME:
+        case param::NAME:
             set_modname((const char*)data);
             return true;
         default:
@@ -35,11 +35,11 @@ bool modnamedobj::set_param(paramnames::PAR_TYPE dt, const void* data)
     }
 }
 
-const void* modnamedobj::get_param(paramnames::PAR_TYPE dt) const
+const void* modnamedobj::get_param(param::TYPE dt) const
 {
     switch(dt)
     {
-        case paramnames::NAME: return modname;
+        case param::NAME: return modname;
         default: return 0;
     }
 }
@@ -48,7 +48,7 @@ void modnamedobj::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::NAME);
+    register_param(param::NAME);
 }
 
 

@@ -5,24 +5,19 @@
 #include "../include/modparamlist.h"
 
 trigcounter::trigcounter(const char* uname) :
-
- synthmod(
-    synthmodnames::TRIGCOUNTER,
-    uname,
-    SM_HAS_OUT_TRIG),
-
+ synthmod(module::TRIGCOUNTER, uname, SM_HAS_OUT_TRIG),
  in_trig(0), in_reset_trig(0),
  out_trig(OFF), out_not_trig(OFF), out_pre_count(0), out_count(-1),
  out_play_state(OFF),
  pre_count(0), count(0), wrap(OFF)
 {
-    register_input(inputnames::IN_TRIG);
-    register_input(inputnames::IN_RESET_TRIG);
-    register_output(outputnames::OUT_TRIG);
-    register_output(outputnames::OUT_NOT_TRIG);
-    register_output(outputnames::OUT_COUNT);
-    register_output(outputnames::OUT_PRE_COUNT);
-    register_output(outputnames::OUT_PLAY_STATE);
+    register_input(input::IN_TRIG);
+    register_input(input::IN_RESET_TRIG);
+    register_output(output::OUT_TRIG);
+    register_output(output::OUT_NOT_TRIG);
+    register_output(output::OUT_COUNT);
+    register_output(output::OUT_PRE_COUNT);
+    register_output(output::OUT_PLAY_STATE);
     init_first();
 }
 
@@ -30,50 +25,50 @@ trigcounter::~trigcounter()
 {
 }
 
-const void* trigcounter::get_out(outputnames::OUT_TYPE ot) const
+const void* trigcounter::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_TRIG:         return &out_trig;
-        case outputnames::OUT_NOT_TRIG:     return &out_not_trig;
-        case outputnames::OUT_PRE_COUNT:    return &out_pre_count;
-        case outputnames::OUT_COUNT:        return &out_count;
-        case outputnames::OUT_PLAY_STATE:   return &out_play_state;
+        case output::OUT_TRIG:         return &out_trig;
+        case output::OUT_NOT_TRIG:     return &out_not_trig;
+        case output::OUT_PRE_COUNT:    return &out_pre_count;
+        case output::OUT_COUNT:        return &out_count;
+        case output::OUT_PLAY_STATE:   return &out_play_state;
         default: return 0;
     }
 }
 
-const void* trigcounter::set_in(inputnames::IN_TYPE it, const void* o)
+const void* trigcounter::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_TRIG:      return in_trig = (STATUS*)o;
-        case inputnames::IN_RESET_TRIG:return in_reset_trig = (STATUS*)o;
+        case input::IN_TRIG:      return in_trig = (STATUS*)o;
+        case input::IN_RESET_TRIG:return in_reset_trig = (STATUS*)o;
         default: return  0;
     }
 }
 
-const void* trigcounter::get_in(inputnames::IN_TYPE it) const
+const void* trigcounter::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_TRIG:       return in_trig;
-        case inputnames::IN_RESET_TRIG: return in_reset_trig;
+        case input::IN_TRIG:       return in_trig;
+        case input::IN_RESET_TRIG: return in_reset_trig;
         default: return  0;
     }
 }
 
-bool trigcounter::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool trigcounter::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::PRE_COUNT:
+        case param::PRE_COUNT:
             pre_count = *(short*)data;
             return true;
-        case paramnames::COUNT:
+        case param::COUNT:
             count = *(short*)data;
             return true;
-        case paramnames::WRAP:
+        case param::WRAP:
             wrap = *(STATUS*)data;
             return true;
         default:
@@ -81,39 +76,31 @@ bool trigcounter::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* trigcounter::get_param(paramnames::PAR_TYPE pt) const
+const void* trigcounter::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::PRE_COUNT: return &pre_count;
-        case paramnames::COUNT:     return &count;
-        case paramnames::WRAP:      return &wrap;
+        case param::PRE_COUNT: return &pre_count;
+        case param::COUNT:     return &count;
+        case param::WRAP:      return &wrap;
         default: return 0;
     }
 }
-#include <iostream>
-stockerrs::ERR_TYPE trigcounter::validate()
+
+errors::TYPE trigcounter::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, paramnames::PRE_COUNT,
-                                            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", paramnames::get_name(paramnames::PRE_COUNT));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    if (!jwm.get_paramlist()->validate(this, paramnames::COUNT,
-                                            stockerrs::ERR_ABOVE1))
-    {
-        sm_err("%s", paramnames::get_name(paramnames::COUNT));
-        invalidate();
-        return stockerrs::ERR_ABOVE1;
-    }
+    if (!validate_param(param::PRE_COUNT, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    if (!validate_param(param::COUNT, errors::ABOVE1))
+        return errors::ABOVE1;
+
     if (count < 1){
         sm_err("PPO %s", "(I'm as confused as you).");
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
-    return stockerrs::ERR_NO_ERROR;
+    return errors::NO_ERROR;
 }
 
 void trigcounter::init()
@@ -165,8 +152,8 @@ void trigcounter::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::PRE_COUNT);
-    register_param(paramnames::COUNT);
-    register_param(paramnames::WRAP);
+    register_param(param::PRE_COUNT);
+    register_param(param::COUNT);
+    register_param(param::WRAP);
 }
 

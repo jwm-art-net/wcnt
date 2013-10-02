@@ -141,7 +141,7 @@ char note_to_noteno(const char* note_name)
         name[2] = '\0';
     }
     else name[1] = '\0';
-    return (1 + strstr(scale, name) - scale) / 2;
+    return (1 + strstr(scale, name) - scale) / 2.0f;
 }
 
 char extract_octave(const char* note_name)
@@ -159,6 +159,6 @@ samp_t freq_to_samples(double f)
 
 samp_t ms_to_samples(double t)
 {
-    return (samp_t)(jwm.samplerate() * (t / 1000));
+    return (samp_t)(jwm.samplerate() * (t / 1000.0f));
 }
 

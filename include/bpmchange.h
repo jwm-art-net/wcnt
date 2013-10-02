@@ -16,9 +16,9 @@ public:
     void set_bpm(double bpm){tobpm = bpm;}
     short get_bar() const { return atbar;}
     double get_bpm() const { return tobpm;}
-    stockerrs::ERR_TYPE validate();
-    bool set_param(paramnames::PAR_TYPE, const void*);
-    const void* get_param(paramnames::PAR_TYPE pt) const;
+    errors::TYPE validate();
+    bool set_param(param::TYPE, const void*);
+    const void* get_param(param::TYPE pt) const;
 
 private:
     short atbar;

@@ -11,7 +11,7 @@
 
 
 paramedit::paramedit() :
- dobj(dobjnames::SIN_EDIT_PARAM),
+ dobj(dataobj::SIN_EDIT_PARAM),
  name(0), parstr(0)
 {
     init_first();
@@ -96,18 +96,18 @@ bool paramedit::do_param_edits()
 bool paramedit::mod_param_edit(synthmod* module, const char* parname,
                                const char* valstr)
 {
-    synthmodnames::SYNTH_MOD_TYPE smt = module->get_module_type();
+    module::TYPE smt = module->get_module_type();
     modparamlist::linkedlist*
         parlist = new_list_of_by(jwm.get_paramlist(),smt);
 
     modparam* mp = parlist->goto_first();
-    paramnames::PAR_TYPE pt = paramnames::FIRST;
+    param::TYPE pt = param::ERR_TYPE;
     bool confused = false;
     while(mp) {
-        paramnames::PAR_TYPE mpt = mp->get_paramtype();
-        const char* mparname = paramnames::get_name(mpt);
+        param::TYPE mpt = mp->get_paramtype();
+        const char* mparname = param::names::get(mpt);
         if (strcmp(parname, mparname) == 0) {
-            if (pt != paramnames::FIRST)
+            if (pt != param::ERR_TYPE)
                 confused = true;
             pt = mpt;
         }
@@ -120,7 +120,7 @@ bool paramedit::mod_param_edit(synthmod* module, const char* parname,
         delete parlist;
         return false;
     }
-    if (pt == paramnames::FIRST) {
+    if (pt == param::ERR_TYPE) {
         dobjerr("Module %s does not have any parameter named %s.",
                                         module->get_username(), parname);
         invalidate();
@@ -140,18 +140,18 @@ bool paramedit::mod_param_edit(synthmod* module, const char* parname,
 bool paramedit::dobj_param_edit(dobj* dobject, const char* parname, 
                                 const char* valstr)
 {
-    dobjnames::DOBJ_TYPE dt = dobject->get_object_type();
+    dataobj::TYPE dt = dobject->get_object_type();
     dobjparamlist::linkedlist*
         parlist = new_list_of_by(jwm.get_dparlist(), dt);
 
     dobjparam* dp = parlist->goto_first();
-    paramnames::PAR_TYPE pt = paramnames::FIRST;
+    param::TYPE pt = param::ERR_TYPE;
     bool confused = false;
     while(dp) {
-        paramnames::PAR_TYPE dpt = dp->get_partype();
-        const char* mparname = paramnames::get_name(dpt);
+        param::TYPE dpt = dp->get_partype();
+        const char* mparname = param::names::get(dpt);
         if (strcmp(parname, mparname) == 0) {
-            if (pt != paramnames::FIRST)
+            if (pt != param::ERR_TYPE)
                 confused = true;
             pt = dpt;
         }
@@ -164,7 +164,7 @@ bool paramedit::dobj_param_edit(dobj* dobject, const char* parname,
         delete parlist;
         return false;
     }
-    if (pt == paramnames::FIRST) {
+    if (pt == param::ERR_TYPE) {
         dobjerr("Data object %s does not have any parameter named %s.",
                                         dobject->get_username(), parname);
         invalidate();
@@ -181,11 +181,11 @@ bool paramedit::dobj_param_edit(dobj* dobject, const char* parname,
     return true;
 }
 
-bool paramedit::set_param(paramnames::PAR_TYPE dt, const void* data)
+bool paramedit::set_param(param::TYPE dt, const void* data)
 {
     switch(dt)
     {
-    case paramnames::STR_UNNAMED:
+    case param::STR_UNNAMED:
         if (!set_name((const char*)data)) {
             dobjerr("There are no data objects or modules named %s "
                     "cannot edit parameters.", (const char*)data);
@@ -193,7 +193,7 @@ bool paramedit::set_param(paramnames::PAR_TYPE dt, const void* data)
             return false;
         }
         return true;
-    case paramnames::STR_LIST:
+    case param::STR_LIST:
         set_parstr((const char*)data);
         return true;
     default:
@@ -201,12 +201,12 @@ bool paramedit::set_param(paramnames::PAR_TYPE dt, const void* data)
     }
 }
 
-const void* paramedit::get_param(paramnames::PAR_TYPE dt) const
+const void* paramedit::get_param(param::TYPE dt) const
 {
     switch(dt)
     {
-        case paramnames::STR_UNNAMED:   return get_name();
-        case paramnames::STR_LIST:      return get_parstr();
+        case param::STR_UNNAMED:   return get_name();
+        case param::STR_LIST:      return get_parstr();
         default: return 0;
     }
 }
@@ -215,8 +215,8 @@ void paramedit::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::STR_UNNAMED);
-    register_param(paramnames::STR_LIST);
+    register_param(param::STR_UNNAMED);
+    register_param(param::STR_LIST);
 }
 
 

@@ -2,7 +2,7 @@
 #include "../include/jwm_globals.h"
 #include "../include/synthmod.h"
 
-modinput::modinput(synthmod * sm, inputnames::IN_TYPE it) :
+modinput::modinput(synthmod * sm, input::TYPE it) :
  synthmodule(sm), input_type(it)
 {
     #ifdef DATA_STATS
@@ -17,22 +17,22 @@ modinput::~modinput()
     #endif
 }
 
-synthmodnames::SYNTH_MOD_TYPE modinput::get_moduletype() const
+module::TYPE modinput::get_moduletype() const
 {
     return (this != 0)
      ? synthmodule->get_module_type()
-     : synthmodnames::FIRST;
+     : module::ERR_TYPE;
 }
 
-inputnames::IN_TYPE modinput::get_inputtype() const
+input::TYPE modinput::get_inputtype() const
 {
     return (this != 0)
      ? input_type
-     : inputnames::IN_FIRST;
+     : input::ERR_TYPE;
 }
 
 #ifdef UNUSED
-iocat::IOCAT modinput::get_inputcategory() const
+iocat::TYPE modinput::get_inputcategory() const
 {
     return (this != 0)
      ? inputnames::get_category(input_type)

@@ -2,79 +2,77 @@
 #include "../include/jwm_globals.h"
 #include "../include/dataobjects.h"
 
-dobj* dobjlist::create_dobj(dobjnames::DOBJ_TYPE dt)
+dobj* dobjlist::create_dobj(dataobj::TYPE dt)
 {
-    if (dobjnames::check_type(dt) == dobjnames::DOBJ_FIRST)
-        return 0;
     dobj* dobjy = 0;
     switch(dt) {
-    case dobjnames::SIN_NOTE:
+    case dataobj::SIN_NOTE:
         dobjy = new note_data;
         break;
-    case dobjnames::SIN_COORD:
+    case dataobj::SIN_COORD:
         dobjy = new adsr_coord;
         break;
-    case dobjnames::SIN_VERTEX:
+    case dataobj::SIN_VERTEX:
         dobjy = new wave_vertex;
         break;
-    case dobjnames::SIN_METER:
+    case dataobj::SIN_METER:
         dobjy = new meterchange;
         break;
-    case dobjnames::SIN_BPM:
+    case dataobj::SIN_BPM:
         dobjy = new bpmchange;
         break;
-    case dobjnames::SIN_RIFFNODE:
+    case dataobj::SIN_RIFFNODE:
         dobjy = new riff_node;
         break;
-    case dobjnames::SIN_DVERTEX:
+    case dataobj::SIN_DVERTEX:
         dobjy = new dynvertex;
         break;
-    case dobjnames::SIN_TIME:
+    case dataobj::SIN_TIME:
         dobjy = new timing;
         break;
-    case dobjnames::SIN_MODNAME:
+    case dataobj::SIN_MODNAME:
         dobjy = new modnamedobj;
         break;
-    case dobjnames::SIN_DOBJNAME:
+    case dataobj::SIN_DOBJNAME:
         dobjy = new dobjnamedobj;
         break;
-    case dobjnames::SIN_EDIT_PARAM:
+    case dataobj::SIN_EDIT_PARAM:
         dobjy = new paramedit;
         break;
-    case dobjnames::SIN_EDIT_INPUT:
+    case dataobj::SIN_EDIT_INPUT:
         dobjy = new inputedit;
         break;
-    case dobjnames::SIN_STEP:
+    case dataobj::SIN_STEP:
         dobjy = new step_data;
         break;
-    case dobjnames::DEF_WAVFILEIN:
+    case dataobj::DEF_WAVFILEIN:
         dobjy = new wavfilein;
         break;
-    case dobjnames::DEF_RIFF:
+    case dataobj::DEF_RIFF:
         dobjy = new riffdata;
         break;
-    case dobjnames::DEF_WCFILE:
+    case dataobj::DEF_WCFILE:
         dobjy = new synthfilereader;
         break;
-    case dobjnames::DEF_PARAMEDITOR:
+    case dataobj::DEF_PARAMEDITOR:
         dobjy = new parameditor;
         break;
-    case dobjnames::DEF_INPUTEDITOR:
+    case dataobj::DEF_INPUTEDITOR:
         dobjy = new inputeditor;
         break;
-    case dobjnames::DEF_RIFFEDITOR:
+    case dataobj::DEF_RIFFEDITOR:
         dobjy = new riff_editor;
         break;
-    case dobjnames::DEF_COPIER:
+    case dataobj::DEF_COPIER:
         dobjy = new copier;
         break;
-    case dobjnames::DEF_GROUP:
+    case dataobj::DEF_GROUP:
         dobjy = new group;
         break;
-    case dobjnames::DEF_ADSR_SCALER:
+    case dataobj::DEF_ADSR_SCALER:
         dobjy = new adsr_scaler;
         break;
-    case dobjnames::DOBJ_SYNTHMOD:
+    case dataobj::DOBJ_SYNTHMOD:
         dobjy = new dobjmod;
         break;
     default:

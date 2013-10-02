@@ -10,76 +10,32 @@ header header.wch
 
 //------------------------------------------------------------------------
 
-synth_file_reader
-timefile
-    filename time.wch
-    mod_action  exclude
-    dobj_action exclude
-    modules
-    modules
-    data_objects
-    data_objects
-timefile
+constant_note
+note1
+    name c0
+note1
 
-riff
-riffl
-    quarter_value   1
-    notelist
-        note name c0 pos 0  len 2040  vel 1.0
-    notelist
-riffl
+constant
+one
+    value 1.0
+one
 
-sequencer
-seq1
-    track
-        riff_node
-            riff riffl  bar 0   transpose 0
-            repeat 0 repeat_stripe 1
-    track
-    in_bar              time1 out_bar
-    in_bar_trig         time1 out_bar_trig
-    in_pos_step_size    time1 out_pos_step_size
-    in_beats_per_bar    time1 out_beats_per_bar
-    in_beat_value       time1 out_beat_value
-    start_bar 0
-    velocity_response_time 5
-seq1
-
-adsr
-adsr1
-        envelope
-        section name attack
-            ut  9000.0    ul  1.0
-            lt  9000.0    ll  1.0
-        section name decay
-            ut  2005.0    ul  0.99
-            lt  2005.0    ll  0.99
-        section name release
-            ut  3005.0    ul  0.3
-            lt  3005.0    ll  0.3
-        section name release
-            ut  5005.0    ul  0.0
-            lt  5005.0    ll  0.0
-        envelope
-        in_note_on_trig     seq1    out_note_on_trig
-        in_note_off_trig    seq1    out_note_off_trig
-        in_velocity         seq1    out_velocity
-        up_thresh        1.0
-        lo_thresh        0.0
-        start_level      0.0
-        min_time         5.0
-        max_sustain_time 0.0 // 0 = sustain forever until note off
-        release_is_ratio off
-        sustain_state    on
-        zero_retrigger   off
-adsr1
+timer
+t1
+    timings
+        time seconds 0
+        time seconds 60.0
+        time seconds 5.0
+    timings
+    time_is_relative on
+t1
 
 osc_clock
 orb_clock
-        in_note_on_trig     seq1    out_note_on_trig
-        in_note_slide_trig  seq1    out_note_slide_trig
-        in_play_state       adsr1   out_play_state
-        in_frequency        seq1    out_frequency
+        in_note_on_trig     t1      out_trig
+        in_note_slide_trig  off
+        in_play_state       off
+        in_frequency        note1    out_frequency
         in_freq_mod1        orbit1 out_x
         in_freq_mod2        orbit1 out_y
         octave_offset       8
@@ -103,10 +59,10 @@ orbit1
 
 osc_clock
 osc-l
-        in_note_on_trig     seq1    out_note_on_trig
-        in_note_slide_trig  seq1    out_note_slide_trig
-        in_play_state       adsr1   out_play_state
-        in_frequency        seq1    out_frequency
+        in_note_on_trig     t1  out_trig
+        in_note_slide_trig  off
+        in_play_state       off
+        in_frequency        note1   out_frequency
         in_freq_mod1        orbit1 out_x
         in_freq_mod2        orbit1 out_y
         octave_offset       -1
@@ -145,27 +101,14 @@ ie_lr1
     editlist
 ie_lr1
 
-multiplier shaped-l
-    in_signal1 sine-l  out_output
-    in_signal2 adsr1   out_output
-shaped-l
-
-multiplier shaped-r
-    in_signal1 sine-r  out_output
-    in_signal2 adsr1   out_output
-shaped-r
-
 group g01
 modules
-    synthmod name adsr1
     synthmod name orb_clock
     synthmod name orbit1
     synthmod name osc-l
     synthmod name osc-r
     synthmod name sine-l
     synthmod name sine-r
-    synthmod name shaped-l
-    synthmod name shaped-r
 modules
 g01
 
@@ -262,22 +205,22 @@ pe1
 combiner
 cmb-l
     signals
-        synthmod name g01.shaped-l
-        synthmod name g02.shaped-l
-        synthmod name g03.shaped-l
-        synthmod name g04.shaped-l
-        synthmod name g05.shaped-l
-        synthmod name g06.shaped-l
-        synthmod name g07.shaped-l
-        synthmod name g08.shaped-l
-        synthmod name g09.shaped-l
-        synthmod name g10.shaped-l
-        synthmod name g11.shaped-l
-        synthmod name g12.shaped-l
-        synthmod name g13.shaped-l
-        synthmod name g14.shaped-l
-        synthmod name g15.shaped-l
-        synthmod name g16.shaped-l
+        synthmod name g01.sine-l
+        synthmod name g02.sine-l
+        synthmod name g03.sine-l
+        synthmod name g04.sine-l
+        synthmod name g05.sine-l
+        synthmod name g06.sine-l
+        synthmod name g07.sine-l
+        synthmod name g08.sine-l
+        synthmod name g09.sine-l
+        synthmod name g10.sine-l
+        synthmod name g11.sine-l
+        synthmod name g12.sine-l
+        synthmod name g13.sine-l
+        synthmod name g14.sine-l
+        synthmod name g15.sine-l
+        synthmod name g16.sine-l
     signals
     mean_total on
 cmb-l
@@ -285,22 +228,22 @@ cmb-l
 combiner
 cmb-r
     signals
-        synthmod name g01.shaped-r
-        synthmod name g02.shaped-r
-        synthmod name g03.shaped-r
-        synthmod name g04.shaped-r
-        synthmod name g05.shaped-r
-        synthmod name g06.shaped-r
-        synthmod name g07.shaped-r
-        synthmod name g08.shaped-r
-        synthmod name g09.shaped-r
-        synthmod name g10.shaped-r
-        synthmod name g11.shaped-r
-        synthmod name g12.shaped-r
-        synthmod name g13.shaped-r
-        synthmod name g14.shaped-r
-        synthmod name g15.shaped-r
-        synthmod name g16.shaped-r
+        synthmod name g01.sine-r
+        synthmod name g02.sine-r
+        synthmod name g03.sine-r
+        synthmod name g04.sine-r
+        synthmod name g05.sine-r
+        synthmod name g06.sine-r
+        synthmod name g07.sine-r
+        synthmod name g08.sine-r
+        synthmod name g09.sine-r
+        synthmod name g10.sine-r
+        synthmod name g11.sine-r
+        synthmod name g12.sine-r
+        synthmod name g13.sine-r
+        synthmod name g14.sine-r
+        synthmod name g15.sine-r
+        synthmod name g16.sine-r
     signals
     mean_total on
 cmb-r
@@ -315,10 +258,21 @@ revb
     wet/dry    0.5
 revb
 
-stereo_amp amp1
+fader
+f1
+    in_bar      t1 out_count
+    in_bar_trig t1 out_trig
+    start_bar      0
+    end_bar        1
+    fade_in_time   5000.0
+    fade_out_time  5000.0
+f1
+
+stereo_amp
+amp1
     in_left    revb out_left
     in_right   revb out_right
-    in_amp_eg  one  out_output
+    in_amp_eg  f1  out_output
     in_amp_mod off
     left_level   1.0
     right_level  1.0
@@ -330,21 +284,21 @@ wavfile_out
 wav1
     in_left     amp1    out_left
     in_right    amp1    out_right
-    in_bar      time1   out_bar
-    in_bar_trig time1   out_bar_trig
+    in_bar      t1      out_count
+    in_bar_trig t1      out_trig
     snapshot_mode off
     data_format float32
     filename    siqurb.wav
     start_bar   0
-    end_bar     512
+    end_bar     2
 wav1
 
 // setup how long to process:
 
 wcnt_exit
 wcnt_exit_module
-    in_bar  time1   out_bar
-    exit_bar    512
+    in_bar      t1   out_count
+    exit_bar    2
 wcnt_exit_module
 
 //------------------------------------------------------------------------

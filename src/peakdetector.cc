@@ -7,11 +7,11 @@
 #include <iostream>
 
 peak_detector::peak_detector(const char* uname) :
- synthmod(synthmodnames::PEAKDETECTOR, uname, SM_DEFAULT),
+ synthmod(module::PEAKDETECTOR, uname, SM_DEFAULT),
  in_signal(0), sig_range_hi(0.0), sig_range_lo(0.0), message(0),
  force_abort(OFF), max_peaks(0), peak_count(0), check(true)
 {
-    register_input(inputnames::IN_SIGNAL);
+    register_input(input::IN_SIGNAL);
     init_first();
 }
 
@@ -29,20 +29,20 @@ void peak_detector::set_message(const char* msg)
     strcpy(message, msg);
 }
 
-const void* peak_detector::set_in(inputnames::IN_TYPE it, const void* o)
+const void* peak_detector::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_SIGNAL: return in_signal = (double*)o;
+        case input::IN_SIGNAL: return in_signal = (double*)o;
         default: return 0;
     }
 }
 
-const void* peak_detector::get_in(inputnames::IN_TYPE it) const
+const void* peak_detector::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_SIGNAL: return in_signal;
+        case input::IN_SIGNAL: return in_signal;
         default: return 0;
     }
 }
@@ -89,23 +89,23 @@ void peak_detector::init()
     if (max_peaks < 0) max_peaks = 0;
 }
 
-bool peak_detector::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool peak_detector::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::SIG_RANGE_HI:
+        case param::SIG_RANGE_HI:
             sig_range_hi = *(double*)data;
             return true;
-        case paramnames::SIG_RANGE_LO:
+        case param::SIG_RANGE_LO:
             sig_range_lo = *(double*)data;
             return true;
-        case paramnames::MSG:
+        case param::MSG:
             set_message((const char*)data);
             return true;
-        case paramnames::FORCE_ABORT:
+        case param::FORCE_ABORT:
             force_abort = *(STATUS*)data;
             return true;
-        case paramnames::MAXPEAKS:
+        case param::MAXPEAKS:
             max_peaks = *(short*)data;
             return true;
         default:
@@ -113,15 +113,15 @@ bool peak_detector::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* peak_detector::get_param(paramnames::PAR_TYPE pt) const
+const void* peak_detector::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::SIG_RANGE_HI:  return &sig_range_hi;
-        case paramnames::SIG_RANGE_LO:  return &sig_range_lo;
-        case paramnames::MSG:           return message;
-        case paramnames::FORCE_ABORT:   return &force_abort;
-        case paramnames::MAXPEAKS:      return &max_peaks;
+        case param::SIG_RANGE_HI:  return &sig_range_hi;
+        case param::SIG_RANGE_LO:  return &sig_range_lo;
+        case param::MSG:           return message;
+        case param::FORCE_ABORT:   return &force_abort;
+        case param::MAXPEAKS:      return &max_peaks;
         default: return 0;
     }
 }
@@ -130,10 +130,10 @@ void peak_detector::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::SIG_RANGE_HI);
-    register_param(paramnames::SIG_RANGE_LO);
-    register_param(paramnames::MSG);
-    register_param(paramnames::FORCE_ABORT);
-    register_param(paramnames::MAXPEAKS);
+    register_param(param::SIG_RANGE_HI);
+    register_param(param::SIG_RANGE_LO);
+    register_param(param::MSG);
+    register_param(param::FORCE_ABORT);
+    register_param(param::MAXPEAKS);
 }
 

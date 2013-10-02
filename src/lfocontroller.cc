@@ -6,18 +6,18 @@
 #include "../include/conversions.h"
 
 lfo_controller::lfo_controller(const char* uname) :
- synthmod(synthmodnames::LFOCONTROL, uname, SM_HAS_OUT_OUTPUT),
+ synthmod(module::LFOCONTROL, uname, SM_HAS_OUT_OUTPUT),
  in_trig(0), in_wave(0), in_amp_mod(0), out_preampmod(0), output(0),
  delay_time(0), ramp_time(0), start_level(0), end_level(0),
  response_time(0), amp_modsize(0), ams_r(0), delay_samples(0),
  ramp_samples(0), resp_size(0), resp_fa_level(0), resp_ac(0),
  level_size(0), current_level(0)
 {
-    register_input(inputnames::IN_TRIG);
-    register_input(inputnames::IN_WAVE);
-    register_input(inputnames::IN_AMP_MOD);
-    register_output(outputnames::OUT_OUTPUT);
-    register_output(outputnames::OUT_PRE_AMP_MOD);
+    register_input(input::IN_TRIG);
+    register_input(input::IN_WAVE);
+    register_input(input::IN_AMP_MOD);
+    register_output(output::OUT_OUTPUT);
+    register_output(output::OUT_PRE_AMP_MOD);
     init_first();
 }
 
@@ -25,58 +25,58 @@ lfo_controller::~lfo_controller()
 {
 }
 
-const void* lfo_controller::get_out(outputnames::OUT_TYPE ot) const
+const void* lfo_controller::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_OUTPUT:       return &output;
-        case outputnames::OUT_PRE_AMP_MOD:  return &out_preampmod;
+        case output::OUT_OUTPUT:       return &output;
+        case output::OUT_PRE_AMP_MOD:  return &out_preampmod;
         default: return 0;
     }
 }
 
-const void* lfo_controller::set_in(inputnames::IN_TYPE it, const void* o)
+const void* lfo_controller::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_TRIG:       return in_trig = (STATUS*)o;
-        case inputnames::IN_WAVE:       return in_wave = (double*)o;
-        case inputnames::IN_AMP_MOD:    return in_amp_mod = (double*)o;
+        case input::IN_TRIG:       return in_trig = (STATUS*)o;
+        case input::IN_WAVE:       return in_wave = (double*)o;
+        case input::IN_AMP_MOD:    return in_amp_mod = (double*)o;
         default: return 0;
     }
 }
 
-const void* lfo_controller::get_in(inputnames::IN_TYPE it) const
+const void* lfo_controller::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_TRIG:   return in_trig;
-        case inputnames::IN_WAVE:   return in_wave;
-        case inputnames::IN_AMP_MOD:return in_amp_mod;
+        case input::IN_TRIG:   return in_trig;
+        case input::IN_WAVE:   return in_wave;
+        case input::IN_AMP_MOD:return in_amp_mod;
         default: return 0;
     }
 }
 
-bool lfo_controller::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool lfo_controller::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::DELAY_TIME:
+        case param::DELAY_TIME:
             delay_time = *(double*)data;
             return true;
-        case paramnames::RAMP_TIME:
+        case param::RAMP_TIME:
             ramp_time = *(double*)data;
             return true;
-        case paramnames::START_LEVEL:
+        case param::START_LEVEL:
             start_level = *(double*)data;
             return true;
-        case paramnames::END_LEVEL:
+        case param::END_LEVEL:
             end_level = *(double*)data;
             return true;
-        case paramnames::RESPONSE_TIME:
+        case param::RESPONSE_TIME:
             response_time = *(double*)data;
             return true;
-        case paramnames::AMP_MODSIZE:
+        case param::AMP_MODSIZE:
             amp_modsize = *(double*)data;
             return true;
         default:
@@ -84,52 +84,37 @@ bool lfo_controller::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* lfo_controller::get_param(paramnames::PAR_TYPE pt) const
+const void* lfo_controller::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::DELAY_TIME:    return &delay_time;
-        case paramnames::RAMP_TIME:     return &ramp_time;
-        case paramnames::START_LEVEL:   return &start_level;
-        case paramnames::END_LEVEL:     return &end_level;
-        case paramnames::RESPONSE_TIME: return &response_time;
-        case paramnames::AMP_MODSIZE:   return &amp_modsize;
+        case param::DELAY_TIME:    return &delay_time;
+        case param::RAMP_TIME:     return &ramp_time;
+        case param::START_LEVEL:   return &start_level;
+        case param::END_LEVEL:     return &end_level;
+        case param::RESPONSE_TIME: return &response_time;
+        case param::AMP_MODSIZE:   return &amp_modsize;
         default: return 0;
     }
 }
 
-stockerrs::ERR_TYPE lfo_controller::validate()
+errors::TYPE lfo_controller::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, paramnames::DELAY_TIME,
-                                                stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", paramnames::get_name(
-                                                paramnames::DELAY_TIME));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    if (!jwm.get_paramlist()->validate(this, paramnames::RAMP_TIME,
-                                                stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", paramnames::get_name(
-                                                paramnames::RAMP_TIME));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    if (!jwm.get_paramlist()->validate(this, paramnames::RESPONSE_TIME,
-                                                stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s", paramnames::get_name(
-                                                paramnames::RESPONSE_TIME));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
+    if (!validate_param(param::DELAY_TIME, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    if (!validate_param(param::RAMP_TIME, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    if (!validate_param(param::RESPONSE_TIME, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
     if (response_time < 0) {
-        sm_err("%s less than zero.", paramnames::get_name(
-                                                paramnames::RESPONSE_TIME));
+        sm_err("%s less than zero.", param::names::get(
+                                                param::RESPONSE_TIME));
         invalidate();
     }
-    return stockerrs::ERR_NO_ERROR;
+    return errors::NO_ERROR;
 }
 
 void lfo_controller::init()
@@ -175,11 +160,11 @@ void lfo_controller::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::DELAY_TIME);
-    register_param(paramnames::RAMP_TIME);
-    register_param(paramnames::START_LEVEL);
-    register_param(paramnames::END_LEVEL);
-    register_param(paramnames::RESPONSE_TIME);
-    register_param(paramnames::AMP_MODSIZE);
+    register_param(param::DELAY_TIME);
+    register_param(param::RAMP_TIME);
+    register_param(param::START_LEVEL);
+    register_param(param::END_LEVEL);
+    register_param(param::RESPONSE_TIME);
+    register_param(param::AMP_MODSIZE);
 }
 

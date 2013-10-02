@@ -19,11 +19,11 @@ public:
     inspect(const char*);
     ~inspect();
     void run();
-    const void* get_out(outputnames::OUT_TYPE) { return 0; }
-    const void* set_in(inputnames::IN_TYPE, const void*);
-    const void* get_in(inputnames::IN_TYPE it) const;
-    bool set_param(paramnames::PAR_TYPE, const void*);
-    const void* get_param(paramnames::PAR_TYPE) const;
+    const void* get_out(output::TYPE) { return 0; }
+    const void* set_in(input::TYPE, const void*);
+    const void* get_in(input::TYPE) const;
+    bool set_param(param::TYPE, const void*);
+    const void* get_param(param::TYPE) const;
 
 private:
     /* inputs */

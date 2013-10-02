@@ -10,13 +10,13 @@
 
 trigrouter::trigrouter(const char* uname) :
 
- synthmod(synthmodnames::TRIGROUTER, uname, SM_UNGROUPABLE),
+ synthmod(module::TRIGROUTER, uname, SM_UNGROUPABLE),
  in_trig(0), in_count(0),
  count(0), wrap(OFF),
  grp(0), trigs(0)
 {
-    register_input(inputnames::IN_TRIG);
-    register_input(inputnames::IN_COUNT);
+    register_input(input::IN_TRIG);
+    register_input(input::IN_COUNT);
     init_first();
 }
 
@@ -28,49 +28,45 @@ trigrouter::~trigrouter()
         delete [] trigs;
 }
 
-const void* trigrouter::set_in(inputnames::IN_TYPE it, const void* o)
+const void* trigrouter::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_TRIG: return in_trig = (STATUS const*)o;
-        case inputnames::IN_COUNT:return in_count = (short const*)o;
+        case input::IN_TRIG: return in_trig = (STATUS const*)o;
+        case input::IN_COUNT:return in_count = (short const*)o;
         default: return 0;
     }
 }
 
-const void* trigrouter::get_in(inputnames::IN_TYPE it) const
+const void* trigrouter::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_TRIG: return in_trig;
-        case inputnames::IN_COUNT:return in_count;
+        case input::IN_TRIG: return in_trig;
+        case input::IN_COUNT:return in_count;
         default: return 0;
     }
 }
 
 
-stockerrs::ERR_TYPE trigrouter::validate()
+errors::TYPE trigrouter::validate()
 {
-    if (!jwm.get_paramlist()->validate(this,
-        paramnames::COUNT, stockerrs::ERR_ABOVE1))
-    {
-        sm_err("%s", paramnames::get_name(paramnames::COUNT));
-        invalidate();
-        return stockerrs::ERR_ABOVE1;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::COUNT, errors::ABOVE1))
+        return errors::ABOVE1;
+
+    return errors::NO_ERROR;
 }
 
-bool trigrouter::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool trigrouter::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::COUNT:
+        case param::COUNT:
             count = *(short*)data;
             if (count > 0)
                 create_wcnt_triggers();
             return true;
-        case paramnames::WRAP:
+        case param::WRAP:
             wrap = *(STATUS*)data;
             return true;
         default:
@@ -78,12 +74,12 @@ bool trigrouter::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* trigrouter::get_param(paramnames::PAR_TYPE pt) const
+const void* trigrouter::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::COUNT:     return &count;
-        case paramnames::WRAP:      return &wrap;
+        case param::COUNT:     return &count;
+        case param::WRAP:      return &wrap;
         default: return 0;
     }
 }
@@ -91,7 +87,7 @@ const void* trigrouter::get_param(paramnames::PAR_TYPE pt) const
 void trigrouter::create_wcnt_triggers()
 {
     const char* wtn =
-        synthmodnames::get_name(synthmodnames::WCNTTRIGGER);
+        module::names::get(module::WCNTTRIGGER);
     const char* un = get_username();
     bool verbose = jwm.is_verbose();
     if (verbose){
@@ -112,7 +108,7 @@ void trigrouter::create_wcnt_triggers()
         std::ostringstream ostr;
         ostr << i;
         synthmod* sm = sml->create_module(
-            synthmodnames::WCNTTRIGGER, ostr.str().c_str());
+            module::WCNTTRIGGER, ostr.str().c_str());
         sml->add_module(sm);
         grp->group_module(sm);
         if (verbose){
@@ -120,9 +116,9 @@ void trigrouter::create_wcnt_triggers()
             std::cout << "\n      grouped as " << sm->get_username();
             std::cout << "\n      connecting to trigger " << i;
         }
-        if (!sm->set_in(inputnames::IN_TRIG, &trigs[i])) {
+        if (!sm->set_in(input::IN_TRIG, &trigs[i])) {
             sm_err("%s in %s could not set input for "
-                            "dynamically created %s.", stockerrs::major,
+                            "dynamically created %s.", errors::stock::major,
                                                                 un, wtn);
         }
     }
@@ -152,7 +148,7 @@ void trigrouter::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::COUNT);
-    register_param(paramnames::WRAP);
+    register_param(param::COUNT);
+    register_param(param::WRAP);
 }
 

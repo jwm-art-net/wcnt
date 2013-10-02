@@ -8,7 +8,7 @@
 #include <cstdio>
 
 parameditor::parameditor() :
- dobj(dobjnames::DEF_PARAMEDITOR)
+ dobj(dataobj::DEF_PARAMEDITOR)
 {
     init_first();
 }
@@ -23,7 +23,7 @@ bool parameditor::do_param_edits()
         }
         if (!pe->do_param_edits()) {
             dobjerr("In %s %s, parameter set attempt failed %s",
-                    dobjnames::get_name(get_object_type()),
+                    dataobj::names::get(get_object_type()),
                                             get_username(), err_msg);
             invalidate();
             return false;
@@ -36,16 +36,16 @@ bool parameditor::do_param_edits()
 dobj const* parameditor::add_dobj(dobj* dbj)
 {
     dobj* retv = 0;
-    dobjnames::DOBJ_TYPE dbjtype = dbj->get_object_type();
+    dataobj::TYPE dbjtype = dbj->get_object_type();
     switch(dbjtype)
     {
-    case dobjnames::SIN_EDIT_PARAM:
+    case dataobj::SIN_EDIT_PARAM:
         if (!(retv = add_at_tail((paramedit*)dbj)->get_data()))
             dobjerr("Could not add parameter edit to %s", get_username());
         break;
     default:
-        dobjerr("%s %s to %s", stockerrs::major, stockerrs::bad_add,
-                                                        get_username());
+        dobjerr("%s %s to %s", errors::stock::major, errors::stock::bad_add,
+                                                            get_username());
         retv = 0;
     }
     return retv;
@@ -56,7 +56,7 @@ void parameditor::init_first()
 {
     if (done_first())
         return;
-    register_dobjdobj(dobjnames::LST_EDITS, dobjnames::SIN_EDIT_PARAM);
+    register_dobjdobj(dataobj::LST_EDITS, dataobj::SIN_EDIT_PARAM);
 }
 
 

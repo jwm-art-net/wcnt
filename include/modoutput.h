@@ -1,28 +1,30 @@
 #ifndef MODOUTPUT_H
 #define MODOUTPUT_H
 
-#include "synthmodnames.h"
 #include "outputnames.h"
+#include "synthmodnames.h"
+#include "types.h"
+
 
 class synthmod;
 
 class modoutput
 {
  public:
-    modoutput(synthmod*, outputnames::OUT_TYPE);
+    modoutput(synthmod*, output::TYPE);
     ~modoutput();
 
-    synthmod* get_synthmodule() const { return synthmodule; }
+    synthmod* get_synthmodule() const { return module; }
 
-    synthmodnames::SYNTH_MOD_TYPE get_moduletype() const;
-    outputnames::OUT_TYPE get_outputtype() const;
-    iocat::IOCAT get_outputcategory() const;
+    module::TYPE    get_moduletype() const;
+    output::TYPE    get_outputtype() const;
+    iocat::TYPE     get_outputcategory() const;
 
     bool operator()(synthmod* sm) const {
-        return synthmodule == sm;
+        return module == sm;
     }
 
-    bool operator()(outputnames::OUT_TYPE & ot) const {
+    bool operator()(output::TYPE & ot) const {
         return output_type == ot;
     }
 
@@ -31,8 +33,8 @@ class modoutput
     #endif
 
  private:
-    synthmod* synthmodule;
-    outputnames::OUT_TYPE output_type;
+    synthmod*       module;
+    output::TYPE    output_type;
 
     #ifdef DATA_STATS
     STATS_VARS

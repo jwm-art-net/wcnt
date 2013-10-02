@@ -4,7 +4,7 @@
 #include "../include/dobjdobj.h"
 
 topdobjlist::topdobjlist() :
- search_result(0), search_type(dobjnames::DOBJ_FIRST)
+ search_result(0), search_type(dataobj::ERR_TYPE)
 {
 }
 
@@ -13,14 +13,12 @@ topdobjlist::~topdobjlist()
 }
 
 dobjdobjlist* topdobjlist::create_dobjdobjlist(
-    dobjnames::DOBJ_TYPE parent, dobjnames::DOBJ_TYPE child)
+    dataobj::TYPE parent, dataobj::TYPE child)
 {
-    if (dobjnames::check_type(parent)
-        == dobjnames::DOBJ_FIRST)
+    if (dataobj::names::category(parent) == dataobj::CAT_ERR_TYPE
+     || dataobj::names::category(child) == dataobj::CAT_ERR_TYPE)
         return 0;
-    if (dobjnames::check_type(child)
-        == dobjnames::DOBJ_FIRST)
-        return 0;
+
     dobjdobjlist* newddlist = new dobjdobjlist;
     newddlist->register_dobjdobj(parent, child);
     if (!add_at_tail(newddlist)) {

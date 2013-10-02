@@ -6,7 +6,7 @@
 #include "../include/conversions.h"
 
 triangle_wave2::triangle_wave2(const char* uname) :
- synthmod(synthmodnames::TRIWAVE2, uname, SM_HAS_OUT_OUTPUT),
+ synthmod(module::TRIWAVE2, uname, SM_HAS_OUT_OUTPUT),
  in_phase_trig(0), in_phase_step(0), in_normal_mod(0), output(0.00),
  play_state(OFF), normal_freq(440.00), norm_modsize(0), recycle(OFF),
  zero_retrigger_mode(OFF), nf_phase_step(0), nf_pre_phase_step(0),
@@ -14,11 +14,11 @@ triangle_wave2::triangle_wave2(const char* uname) :
  sect_spanlvl(0), sect_startlvl(0), old_maxsamps(0), sectmaxsamps(1),
  sectsample(0), counter_ratio(0)
 {
-    register_input(inputnames::IN_PHASE_TRIG);
-    register_input(inputnames::IN_PHASE_STEP);
-    register_input(inputnames::IN_NORM_MOD);
-    register_output(outputnames::OUT_OUTPUT);
-    register_output(outputnames::OUT_PLAY_STATE);
+    register_input(input::IN_PHASE_TRIG);
+    register_input(input::IN_PHASE_STEP);
+    register_input(input::IN_NORM_MOD);
+    register_output(output::OUT_OUTPUT);
+    register_output(output::OUT_PLAY_STATE);
     init_first();
 }
 
@@ -26,52 +26,52 @@ triangle_wave2::~triangle_wave2()
 {
 }
 
-const void* triangle_wave2::get_out(outputnames::OUT_TYPE ot) const
+const void* triangle_wave2::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_OUTPUT:       return &output;
-        case outputnames::OUT_PLAY_STATE:   return &play_state;
+        case output::OUT_OUTPUT:       return &output;
+        case output::OUT_PLAY_STATE:   return &play_state;
         default: return 0;
     }
 }
 
-const void* triangle_wave2::set_in(inputnames::IN_TYPE it, const void* o)
+const void* triangle_wave2::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_PHASE_TRIG: return in_phase_trig = (STATUS*)o;
-        case inputnames::IN_PHASE_STEP: return in_phase_step = (double*)o;
-        case inputnames::IN_NORM_MOD:   return in_normal_mod = (double*)o;
+        case input::IN_PHASE_TRIG: return in_phase_trig = (STATUS*)o;
+        case input::IN_PHASE_STEP: return in_phase_step = (double*)o;
+        case input::IN_NORM_MOD:   return in_normal_mod = (double*)o;
         default: return 0;
     }
 }
 
-const void* triangle_wave2::get_in(inputnames::IN_TYPE it) const
+const void* triangle_wave2::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_PHASE_TRIG: return in_phase_trig;
-        case inputnames::IN_PHASE_STEP: return in_phase_step;
-        case inputnames::IN_NORM_MOD:   return in_normal_mod;
+        case input::IN_PHASE_TRIG: return in_phase_trig;
+        case input::IN_PHASE_STEP: return in_phase_step;
+        case input::IN_NORM_MOD:   return in_normal_mod;
         default: return 0;
     }
 }
 
-bool triangle_wave2::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool triangle_wave2::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::NORM_FREQ:
+        case param::NORM_FREQ:
             normal_freq = *(double*)data;
             return true;
-        case paramnames::NORM_MODSIZE:
+        case param::NORM_MODSIZE:
             norm_modsize = *(double*)data;
             return true;
-        case paramnames::RECYCLE_MODE:
+        case param::RECYCLE_MODE:
             recycle = *(STATUS*)data;
             return true;
-        case paramnames::ZERO_RETRIGGER:
+        case param::ZERO_RETRIGGER:
             zero_retrigger_mode = *(STATUS*)data;
             return true;
         default:
@@ -79,36 +79,27 @@ bool triangle_wave2::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* triangle_wave2::get_param(paramnames::PAR_TYPE pt) const
+const void* triangle_wave2::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::NORM_FREQ:     return &normal_freq;
-        case paramnames::NORM_MODSIZE:  return &norm_modsize;
-        case paramnames::RECYCLE_MODE:  return &recycle;
-        case paramnames::ZERO_RETRIGGER:return &zero_retrigger_mode;
+        case param::NORM_FREQ:     return &normal_freq;
+        case param::NORM_MODSIZE:  return &norm_modsize;
+        case param::RECYCLE_MODE:  return &recycle;
+        case param::ZERO_RETRIGGER:return &zero_retrigger_mode;
         default: return 0;
     }
 }
 
-stockerrs::ERR_TYPE triangle_wave2::validate()
+errors::TYPE triangle_wave2::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, paramnames::NORM_FREQ,
-            stockerrs::ERR_RANGE_FREQ))
-    {
-        sm_err("%s", paramnames::get_name(paramnames::NORM_FREQ));
-        invalidate();
-        return stockerrs::ERR_RANGE_FREQ;
-    }
-    if (!jwm.get_paramlist()->validate(this, paramnames::NORM_MODSIZE,
-            stockerrs::ERR_RANGE_FMOD))
-    {
-        sm_err("%s", paramnames::get_name(
-                                            paramnames::NORM_MODSIZE));
-        invalidate();
-        return stockerrs::ERR_RANGE_FMOD;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::NORM_FREQ, errors::RANGE_FREQ))
+        return errors::RANGE_FREQ;
+
+    if (!validate_param(param::NORM_MODSIZE, errors::RANGE_FMOD))
+        return errors::RANGE_FMOD;
+
+    return errors::NO_ERROR;
 }
 
 void triangle_wave2::init()
@@ -186,9 +177,9 @@ void triangle_wave2::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::NORM_FREQ);
-    register_param(paramnames::NORM_MODSIZE);
-    register_param(paramnames::RECYCLE_MODE);
-    register_param(paramnames::ZERO_RETRIGGER);
+    register_param(param::NORM_FREQ);
+    register_param(param::NORM_MODSIZE);
+    register_param(param::RECYCLE_MODE);
+    register_param(param::ZERO_RETRIGGER);
 }
 

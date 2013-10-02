@@ -1,6 +1,6 @@
 #include "../include/dobjdobj.h"
 
-dobjdobj::dobjdobj(dobjnames::DOBJ_TYPE dt, dobjnames::DOBJ_TYPE kid) :
+dobjdobj::dobjdobj(dataobj::TYPE dt, dataobj::TYPE kid) :
  dobj_type(dt), sprog(kid)
 {
 }

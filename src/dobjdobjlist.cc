@@ -3,12 +3,12 @@
 #include "../include/dobjdobj.h"
 
 dobjdobj * dobjdobjlist::register_dobjdobj(
- dobjnames::DOBJ_TYPE dt, dobjnames::DOBJ_TYPE kid)
+ dataobj::TYPE parent, dataobj::TYPE sprog)
 {
-    if (dobjnames::check_type(dt) == dobjnames::DOBJ_FIRST
-     || dobjnames::check_type(kid) == dobjnames::DOBJ_FIRST)
+    if (!dataobj::names::chk(parent) || !dataobj::names::chk(sprog))
         return 0;
-    dobjdobj* dd = new dobjdobj(dt, kid);
+
+    dobjdobj* dd = new dobjdobj(parent, sprog);
     llitem* tmp = add_at_tail(dd);
     if (!tmp) {
         delete dd;
@@ -18,9 +18,9 @@ dobjdobj * dobjdobjlist::register_dobjdobj(
 }
 
 dobjdobjlist *
-dobjdobjlist::get_dobjdobjlist_for_dobjtype(dobjnames::DOBJ_TYPE dt)
+dobjdobjlist::get_dobjdobjlist_for_dobjtype(dataobj::TYPE dt)
 {
-    if (dobjnames::check_type(dt) == dobjnames::DOBJ_FIRST)
+    if (!dataobj::names::chk(dt))
         return 0;
     dobjdobjlist* mdl = new dobjdobjlist(PRESERVE_DATA);
     dobjdobj* dd = goto_first();
@@ -37,15 +37,14 @@ dobjdobjlist::get_dobjdobjlist_for_dobjtype(dobjnames::DOBJ_TYPE dt)
 }
 
 #ifdef UNUSED
-dobjdobjlist * dobjdobjlist::get_dobjdobjlist_of_sprogs(
- dobjnames::DOBJ_TYPE kid)
+dobjdobjlist * dobjdobjlist::get_dobjdobjlist_of_sprogs(dataobj::TYPE sprog)
 {
-    if (dobjnames::check_type(kid) == dobjnames::DOBJ_FIRST)
-        return 0; // check_type returns DOBJ_FIRST if dt not user type
+    if (!dataobj::names::chk(sprog))
+        return 0;
     dobjdobjlist* mdl = new dobjdobjlist(PRESERVE_DATA);
     dobjdobj* dd = goto_first();
     while(dd != 0) {
-        if (dd->get_dobj_sprog() == kid) {
+        if (dd->get_dobj_sprog() == sprog) {
             if (!mdl->register_dobjdobj(dd)) {
                 delete mdl;
                 return 0;

@@ -35,6 +35,7 @@ t
         time seconds 0
         time seconds 110
     timings
+    time_is_relative on
 t
 
 timer
@@ -48,6 +49,7 @@ tsw
         time seconds 10
         time seconds 10
     timings
+    time_is_relative on
 tsw
 
 constant_freq lfo0 freq 0.15331 lfo0
@@ -191,6 +193,7 @@ tsw1
         time seconds 1
         time seconds 23
     timings
+    time_is_relative on
 tsw1
 
 switcher

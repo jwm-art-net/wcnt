@@ -16,6 +16,7 @@ timer t1
         time seconds 0.0
         time seconds 30.0
     timings
+    time_is_relative on
 t1
 
 clock clock0

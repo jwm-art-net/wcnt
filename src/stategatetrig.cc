@@ -4,50 +4,45 @@
 #include "../include/modinputlist.h"
 
 stategatetrig::stategatetrig(const char* uname) :
-
- synthmod(
-    synthmodnames::STATEGATETRIG,
-    uname,
-    SM_HAS_OUT_TRIG),
-
+ synthmod(module::STATEGATETRIG, uname, SM_HAS_OUT_TRIG),
  in_trig(0), in_state(0), out_trig(OFF), out_not_trig(OFF)
 {
-    register_input(inputnames::IN_TRIG);
-    register_input(inputnames::IN_STATE);
-    register_output(outputnames::OUT_TRIG);
-    register_output(outputnames::OUT_NOT_TRIG);
+    register_input(input::IN_TRIG);
+    register_input(input::IN_STATE);
+    register_output(output::OUT_TRIG);
+    register_output(output::OUT_NOT_TRIG);
 }
 
 stategatetrig::~stategatetrig()
 {
 }
 
-const void* stategatetrig::get_out(outputnames::OUT_TYPE ot) const
+const void* stategatetrig::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_TRIG:     return &out_trig;
-        case outputnames::OUT_NOT_TRIG: return &out_not_trig;
+        case output::OUT_TRIG:     return &out_trig;
+        case output::OUT_NOT_TRIG: return &out_not_trig;
         default: return 0;
     }
 }
 
-const void* stategatetrig::set_in(inputnames::IN_TYPE it, const void* o)
+const void* stategatetrig::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_TRIG:   return in_trig = (STATUS*)o;
-        case inputnames::IN_STATE:  return in_state = (STATUS*)o;
+        case input::IN_TRIG:   return in_trig = (STATUS*)o;
+        case input::IN_STATE:  return in_state = (STATUS*)o;
         default: return 0;
     }
 }
 
-const void* stategatetrig::get_in(inputnames::IN_TYPE it) const
+const void* stategatetrig::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_TRIG:   return in_trig;
-        case inputnames::IN_STATE:  return in_state;
+        case input::IN_TRIG:   return in_trig;
+        case input::IN_STATE:  return in_state;
         default: return 0;
     }
 }

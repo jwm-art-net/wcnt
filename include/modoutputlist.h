@@ -7,21 +7,21 @@
 class modoutputlist : public linked_list<modoutput>
 {
  public:
-    modoutputlist(){};
+    modoutputlist() {}
     modoutputlist(DESTRUCTION);
 
-    modoutput* register_output(synthmod *, outputnames::OUT_TYPE);
-    void delete_module_outputs(synthmod *);
+    modoutput* register_output(synthmod*, output::TYPE);
+    void delete_module_outputs(synthmod*);
 
-    modoutputlist* list_of_category(iocat::IOCAT);
+    modoutputlist* list_of_category(iocat::TYPE);
 
     #ifdef UNUSED
     bool is_registered(synthmod *);
 
-    modoutputlist* list_of_category_orderpref(iocat::IOCAT out_cat,
-                                    synthmodnames::SYNTH_MOD_TYPE* sm_prefs,
-                                    outputnames::OUT_TYPE* out_prefs,
-                                    outputnames::OUT_TYPE* not_out_prefs);
+    modoutputlist* list_of_category_orderpref(iocat::TYPE out_cat,
+                                             module::TYPE* sm_prefs,
+                                             output::TYPE* out_prefs,
+                                             output::TYPE* not_out_prefs);
     #endif
 };
 

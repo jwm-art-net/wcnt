@@ -8,18 +8,13 @@
 #include <math.h>
 
 trigger::trigger(const char* uname) :
-
- synthmod(
-    synthmodnames::TRIGGER,
-    uname,
-    SM_HAS_OUT_TRIG),
-
+ synthmod(module::TRIGGER, uname, SM_HAS_OUT_TRIG),
  in_signal(0), out_trig(OFF), out_not_trig(OFF), out_wait_state(OFF),
  delay_time(0.0), trigger_level(0.0), delay_samps(0)
 {
-    register_input(inputnames::IN_SIGNAL);
-    register_output(outputnames::OUT_TRIG);
-    register_output(outputnames::OUT_WAIT_STATE);
+    register_input(input::IN_SIGNAL);
+    register_output(output::OUT_TRIG);
+    register_output(output::OUT_WAIT_STATE);
     init_first();
 }
 
@@ -27,43 +22,43 @@ trigger::~trigger()
 {
 }
 
-const void* trigger::get_out(outputnames::OUT_TYPE ot) const
+const void* trigger::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_TRIG:         return &out_trig;
-        case outputnames::OUT_NOT_TRIG:     return &out_not_trig;
-        case outputnames::OUT_WAIT_STATE:   return &out_wait_state;
+        case output::OUT_TRIG:         return &out_trig;
+        case output::OUT_NOT_TRIG:     return &out_not_trig;
+        case output::OUT_WAIT_STATE:   return &out_wait_state;
         default: return 0;
     }
 }
 
-const void* trigger::set_in(inputnames::IN_TYPE it, const void* o)
+const void* trigger::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_SIGNAL: return in_signal = (double*)o;
+        case input::IN_SIGNAL: return in_signal = (double*)o;
         default: return 0;
     }
 }
 
-const void* trigger::get_in(inputnames::IN_TYPE it) const
+const void* trigger::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_SIGNAL: return in_signal;
+        case input::IN_SIGNAL: return in_signal;
         default: return 0;
     }
 }
 
-bool trigger::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool trigger::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::DELAY_TIME:
+        case param::DELAY_TIME:
             delay_time = *(double*)data;
             return true;
-        case paramnames::TRIGGER_LEVEL:
+        case param::TRIGGER_LEVEL:
             trigger_level = *(double*)data;
             return true;
         default:
@@ -71,35 +66,25 @@ bool trigger::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* trigger::get_param(paramnames::PAR_TYPE pt) const
+const void* trigger::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::DELAY_TIME:    return &delay_time;
-        case paramnames::TRIGGER_LEVEL: return &trigger_level;
+        case param::DELAY_TIME:    return &delay_time;
+        case param::TRIGGER_LEVEL: return &trigger_level;
         default: return 0;
     }
 }
 
-stockerrs::ERR_TYPE trigger::validate()
+errors::TYPE trigger::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, paramnames::DELAY_TIME,
-            stockerrs::ERR_NEGATIVE))
-    {
-        sm_err("%s",
-                paramnames::get_name(paramnames::DELAY_TIME));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    if (!jwm.get_paramlist()->validate(this, paramnames::TRIGGER_LEVEL,
-            stockerrs::ERR_NEG_ZERO))
-    {
-        sm_err("%s",
-             paramnames::get_name(paramnames::TRIGGER_LEVEL));
-        invalidate();
-        return stockerrs::ERR_NEG_ZERO;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::DELAY_TIME, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    if (!validate_param(param::TRIGGER_LEVEL, errors::NEG_OR_ZERO))
+        return errors::NEG_OR_ZERO;
+
+    return errors::NO_ERROR;
 }
 
 void trigger::run()
@@ -132,6 +117,6 @@ void trigger::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::DELAY_TIME);
-    register_param(paramnames::TRIGGER_LEVEL);
+    register_param(param::DELAY_TIME);
+    register_param(param::TRIGGER_LEVEL);
 }

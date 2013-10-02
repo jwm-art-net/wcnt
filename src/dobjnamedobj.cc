@@ -3,7 +3,7 @@
 #include "../include/dobjparamlist.h"
 
 dobjnamedobj::dobjnamedobj() :
- dobj(dobjnames::SIN_DOBJNAME),
+ dobj(dataobj::SIN_DOBJNAME),
  dobjname(0)
 {
     init_first();
@@ -24,11 +24,11 @@ void dobjnamedobj::set_dobjname(const char* name)
     return;
 }
 
-bool dobjnamedobj::set_param(paramnames::PAR_TYPE dt, const void* data)
+bool dobjnamedobj::set_param(param::TYPE dt, const void* data)
 {
     switch(dt)
     {
-        case paramnames::NAME:
+        case param::NAME:
             set_dobjname((const char*)data);
             return true;
         default:
@@ -36,11 +36,11 @@ bool dobjnamedobj::set_param(paramnames::PAR_TYPE dt, const void* data)
     }
 }
 
-const void* dobjnamedobj::get_param(paramnames::PAR_TYPE dt) const
+const void* dobjnamedobj::get_param(param::TYPE dt) const
 {
     switch(dt)
     {
-        case paramnames::NAME: return dobjname;
+        case param::NAME: return dobjname;
         default: return 0;
     }
 }
@@ -49,7 +49,7 @@ void dobjnamedobj::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::NAME);
+    register_param(param::NAME);
 }
 
 

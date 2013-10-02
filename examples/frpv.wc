@@ -8,6 +8,7 @@ t
         time seconds 0
         time seconds 30
     timings
+    time_is_relative off
 t
 
 constant_note n name c0 n

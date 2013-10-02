@@ -5,19 +5,14 @@
 #include "../include/modparamlist.h"
 
 patterntrig::patterntrig(const char* uname) :
-
- synthmod(
-    synthmodnames::PATTERNTRIG,
-    uname,
-    SM_HAS_OUT_TRIG),
-
+ synthmod(module::PATTERNTRIG, uname, SM_HAS_OUT_TRIG),
  in_trig(0), out_trig(OFF), out_start_trig(OFF),
  out_end_trig(OFF), pattern(0), ptr(0)
 {
-    register_input(inputnames::IN_TRIG);
-    register_output(outputnames::OUT_TRIG);
-    register_output(outputnames::OUT_START_TRIG);
-    register_output(outputnames::OUT_END_TRIG);
+    register_input(input::IN_TRIG);
+    register_output(output::OUT_TRIG);
+    register_output(output::OUT_START_TRIG);
+    register_output(output::OUT_END_TRIG);
     init_first();
 }
 
@@ -34,12 +29,12 @@ void patterntrig::set_pattern_string(const char* pat)
     strcpy(pattern, pat);
 }
 
-stockerrs::ERR_TYPE patterntrig::validate()
+errors::TYPE patterntrig::validate()
 {
     if (!pattern || strlen(pattern) < 1) {
         sm_err("%s", "No pattern - oops.");
         invalidate();
-        return stockerrs::ERR_ERROR;
+        return errors::ERROR;
     }
 
     int bc = 0;
@@ -70,44 +65,44 @@ stockerrs::ERR_TYPE patterntrig::validate()
     }
     return
         (flag(SM_VALID))
-            ? stockerrs::ERR_NO_ERROR
-            : stockerrs::ERR_ERROR;
+            ? errors::NO_ERROR
+            : errors::ERROR;
 }
 
-const void* patterntrig::get_out(outputnames::OUT_TYPE ot) const
+const void* patterntrig::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_TRIG:         return &out_trig;
-        case outputnames::OUT_START_TRIG:   return &out_start_trig;
-        case outputnames::OUT_END_TRIG:     return &out_end_trig;
+        case output::OUT_TRIG:         return &out_trig;
+        case output::OUT_START_TRIG:   return &out_start_trig;
+        case output::OUT_END_TRIG:     return &out_end_trig;
         default: return 0;
     }
 }
 
-const void* patterntrig::set_in(inputnames::IN_TYPE it, const void* o)
+const void* patterntrig::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_TRIG: return in_trig = (STATUS*)o;
+        case input::IN_TRIG: return in_trig = (STATUS*)o;
         default: return 0;
     }
 }
 
-const void* patterntrig::get_in(inputnames::IN_TYPE it) const
+const void* patterntrig::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_TRIG: return in_trig;
+        case input::IN_TRIG: return in_trig;
         default: return 0;
     }
 }
 
-bool patterntrig::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool patterntrig::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::TRIG_STRING:
+        case param::TRIG_STRING:
             set_pattern_string((const char*)data);
             return true;
         default:
@@ -115,11 +110,11 @@ bool patterntrig::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* patterntrig::get_param(paramnames::PAR_TYPE pt) const
+const void* patterntrig::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::TRIG_STRING: return pattern;
+        case param::TRIG_STRING: return pattern;
         default: return 0;
     }
 }
@@ -152,6 +147,6 @@ void patterntrig::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::TRIG_STRING);
+    register_param(param::TRIG_STRING);
 }
 

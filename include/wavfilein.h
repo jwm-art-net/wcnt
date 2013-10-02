@@ -42,9 +42,9 @@ class wavfilein : public dobj
     const char* get_root_note() const { return rootnote;}
     double get_root_phase_step() const;
     // virtuals from dobj
-    bool set_param(paramnames::PAR_TYPE, const void*);
-    const void* get_param(paramnames::PAR_TYPE) const;
-    virtual stockerrs::ERR_TYPE validate();
+    bool set_param(param::TYPE, const void*);
+    const void* get_param(param::TYPE) const;
+    virtual errors::TYPE validate();
 
  private:
     char* fname;

@@ -18,8 +18,8 @@ class inputeditor : public dobj, public linked_list<inputedit>
     /*
     // virtuals from dobj
     */
-    virtual stockerrs::ERR_TYPE validate(){
-        return stockerrs::ERR_NO_ERROR;
+    virtual errors::TYPE validate(){
+        return errors::NO_ERROR;
     }
 
     dobj const* add_dobj(dobj* dbj);

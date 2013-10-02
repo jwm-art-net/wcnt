@@ -8,50 +8,50 @@
 #include "../include/fxsparamlist.h"
 
 wave::wave(const char* uname) :
- synthmod(synthmodnames::WAVE, uname, SM_HAS_OUT_OUTPUT),
+ synthmod(module::WAVE, uname, SM_HAS_OUT_OUTPUT),
  output(0.00), in_phase_step(NULL), type(wave_tables::ONE), phase(0),
  table(0)
 {
-    register_input(inputnames::IN_PHASE_STEP);
-    register_output(outputnames::OUT_OUTPUT);
+    register_input(input::IN_PHASE_STEP);
+    register_output(output::OUT_OUTPUT);
     init_first();
 }
 wave::~wave()
 {
 }
 
-const void* wave::get_out(outputnames::OUT_TYPE ot) const
+const void* wave::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_OUTPUT: return &output;
+        case output::OUT_OUTPUT: return &output;
         default: return 0;
     }
 }
 
-const void* wave::set_in(inputnames::IN_TYPE it, const void* o)
+const void* wave::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_PHASE_STEP: return in_phase_step = (double*)o;
+        case input::IN_PHASE_STEP: return in_phase_step = (double*)o;
         default: return 0;
     }
 }
 
-const void* wave::get_in(inputnames::IN_TYPE it) const
+const void* wave::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_PHASE_STEP: return in_phase_step;
+        case input::IN_PHASE_STEP: return in_phase_step;
         default: return 0;
     }
 }
 
-bool wave::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool wave::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::WAVE_TYPE:
+        case param::WAVE_TYPE:
             type = (wave_tables::WT)(*(int*)data);
             return true;
         default:
@@ -59,18 +59,18 @@ bool wave::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* wave::get_param(paramnames::PAR_TYPE pt) const
+const void* wave::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::WAVE_TYPE: return &type;
+        case param::WAVE_TYPE: return &type;
         default: return 0;
     }
 }
 
 void wave::init()
 {
-    if (!(table = wave_tables::get_table(type))){
+    if (!(table = wave_tables::get_table(type))) {
         invalidate();
         return;
     }
@@ -87,7 +87,7 @@ void wave::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::WAVE_TYPE, wave_tables::fxstring);
+    register_param(param::WAVE_TYPE, wave_tables::fxstring);
 }
 
 

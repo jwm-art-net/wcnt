@@ -36,12 +36,12 @@ class group_control: public synthmod
     // virtual funcs
     void init();
     void run();
-    stockerrs::ERR_TYPE validate();
-    const void* set_in(inputnames::IN_TYPE, const void*);
-    const void* get_in(inputnames::IN_TYPE it) const;
-    const void* get_out(outputnames::OUT_TYPE) const;
-    bool set_param(paramnames::PAR_TYPE, const void*);
-    const void* get_param(paramnames::PAR_TYPE) const;
+    errors::TYPE validate();
+    const void* set_in(input::TYPE, const void*);
+    const void* get_in(input::TYPE) const;
+    const void* get_out(output::TYPE) const;
+    bool set_param(param::TYPE, const void*);
+    const void* get_param(param::TYPE) const;
 
  private:
     /* inputs */

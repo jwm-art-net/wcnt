@@ -7,21 +7,16 @@
 #include "../include/dobjdobjlist.h"
 
 timer::timer(const char* uname) :
-
- synthmod(
-    synthmodnames::TIMER,
-    uname,
-    SM_UNDUPLICABLE | SM_UNGROUPABLE | SM_HAS_OUT_TRIG),
-
- out_count(0), out_trig(OFF),
+ synthmod(module::TIMER, uname, SM_UNDUPLICABLE | SM_UNGROUPABLE
+                                                | SM_HAS_OUT_TRIG),
+ out_count(0), out_trig(OFF), time_is_relative(OFF),
  timings(0), time_ix(0),
  samples(0)
 {
-    register_output(outputnames::OUT_TRIG);
-    register_output(outputnames::OUT_COUNT);
+    register_output(output::OUT_TRIG);
+    register_output(output::OUT_COUNT);
     init_first();
 }
-#include <iostream>
 
 timer::~timer()
 {
@@ -45,7 +40,10 @@ timing* timer::add_timing(timing* t)
 
 void timer::init()
 {
-    if(!(timings = move_to_array(this))){
+    if (!time_is_relative)
+        sort_list(this, &timing::get_time);
+
+    if (!(timings = move_to_array(this))){
         invalidate();
         return;
     }
@@ -63,10 +61,14 @@ void timer::run()
     if (samples == 0) {
         out_count++;
         out_trig = ON;
-        time_ix++;
-        timing* t = timings[time_ix];
-        if (t)
-            samples = (samp_t)(t->get_time() * jwm.samplerate());
+        timing* t1 = timings[time_ix++];
+        timing* t2 = timings[time_ix];
+        if (t2)
+            if (time_is_relative)
+                samples = (samp_t)(t2->get_time() * jwm.samplerate());
+            else
+                samples = (samp_t)((t2->get_time() - t1->get_time())
+                                                  * jwm.samplerate());
         else
             samples = SAMP_T_MAX;
     }
@@ -77,28 +79,43 @@ void timer::run()
     }
 }
 
-const void* timer::get_out(outputnames::OUT_TYPE ot) const
+const void* timer::get_out(output::TYPE ot) const
 {
     switch (ot)
     {
-        case outputnames::OUT_TRIG: return &out_trig;
-        case outputnames::OUT_COUNT:return &out_count;
+        case output::OUT_TRIG: return &out_trig;
+        case output::OUT_COUNT:return &out_count;
         default: return 0;
     }
+}
+
+bool timer::set_param(param::TYPE pt, const void* data)
+{
+    switch(pt)
+    {
+    case param::TIME_IS_RELATIVE: time_is_relative = *(STATUS*)data; break;
+    default: return false;
+    }
+    return true;
+}
+
+const void* timer::get_param(param::TYPE pt) const
+{
+    return (pt == param::TIME_IS_RELATIVE) ? &time_is_relative : 0;
 }
 
 dobj* timer::add_dobj(dobj* dbj)
 {
     dobj* retv = 0;
-    dobjnames::DOBJ_TYPE dbjtype = dbj->get_object_type();
+    dataobj::TYPE dbjtype = dbj->get_object_type();
     switch(dbjtype)
     {
-    case dobjnames::SIN_TIME:
+    case dataobj::SIN_TIME:
         if (!(retv = add_timing((timing*)dbj)))
             sm_err("Could not add timing to %s", get_username());
         break;
     default:
-    sm_err("%s %s to %s", stockerrs::major, stockerrs::bad_add,
+    sm_err("%s %s to %s", errors::stock::major, errors::stock::bad_add,
                                                     get_username());
         retv = 0;
     }
@@ -109,6 +126,7 @@ void timer::init_first()
 {
     if (done_first())
         return;
-    register_moddobj(dobjnames::LST_TIMINGS, dobjnames::SIN_TIME);
+    register_param(param::TIME_IS_RELATIVE);
+    register_moddobj(dataobj::LST_TIMINGS, dataobj::SIN_TIME);
 }
 

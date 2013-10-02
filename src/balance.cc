@@ -6,12 +6,12 @@
 #include "../include/fxsparamlist.h"
 
 balance::balance(const char* uname) :
- synthmod(synthmodnames::BALANCE, uname, SM_HAS_OUT_OUTPUT),
+ synthmod(module::BALANCE, uname, SM_HAS_OUT_OUTPUT),
  in_signal1(0), in_signal2(0),out_output(0), func(ADD), bias(0)
 {
-    register_input(inputnames::IN_SIGNAL1);
-    register_input(inputnames::IN_SIGNAL2);
-    register_output(outputnames::OUT_OUTPUT);
+    register_input(input::IN_SIGNAL1);
+    register_input(input::IN_SIGNAL2);
+    register_output(output::OUT_OUTPUT);
     init_first();
 }
 
@@ -19,70 +19,58 @@ balance::~balance()
 {
 }
 
-const void* balance::get_out(outputnames::OUT_TYPE ot) const
+const void* balance::get_out(output::TYPE ot) const
 {
-    switch(ot)
-    {
-        case outputnames::OUT_OUTPUT: return &out_output;
-        default: return 0;
+    return (ot == output::OUT_OUTPUT ? &out_output : 0);
+}
+
+const void* balance::set_in(input::TYPE it, const void* o)
+{
+    switch(it) {
+    case input::IN_SIGNAL1: return in_signal1 = (double*)o;
+    case input::IN_SIGNAL2: return in_signal2 = (double*)o;
+    default: return 0;
     }
 }
 
-const void* balance::set_in(inputnames::IN_TYPE it, const void* o)
+const void* balance::get_in(input::TYPE it) const
 {
-    switch(it)
-    {
-        case inputnames::IN_SIGNAL1:     return in_signal1 = (double*)o;
-        case inputnames::IN_SIGNAL2:     return in_signal2 = (double*)o;
-        default: return 0;
+    switch(it) {
+    case input::IN_SIGNAL1: return in_signal1;
+    case input::IN_SIGNAL2: return in_signal2;
+    default: return 0;
     }
 }
 
-const void* balance::get_in(inputnames::IN_TYPE it) const
+bool balance::set_param(param::TYPE pt, const void* data)
 {
-    switch(it)
-    {
-        case inputnames::IN_SIGNAL1:     return in_signal1;
-        case inputnames::IN_SIGNAL2:     return in_signal2;
-        default: return 0;
+    switch(pt) {
+    case param::FUNC:
+        func = (FUNC)(*(int*)data);
+        return true;
+    case param::BIAS:
+        bias = *(double*)data;
+        return true;
+    default:
+        return false;
     }
 }
 
-bool balance::set_param(paramnames::PAR_TYPE pt, const void* data)
+const void* balance::get_param(param::TYPE pt) const
 {
-    switch(pt)
-    {
-        case paramnames::FUNC:
-            func = (FUNC)(*(int*)data);
-            return true;
-        case paramnames::BIAS:
-            bias = *(double*)data;
-            return true;
-        default:
-            return false;
+    switch(pt) {
+    case param::FUNC: return &func;
+    case param::BIAS: return &bias;
+    default: return 0;
     }
 }
 
-const void* balance::get_param(paramnames::PAR_TYPE pt) const
+errors::TYPE balance::validate()
 {
-    switch(pt)
-    {
-        case paramnames::FUNC: return &func;
-        case paramnames::BIAS: return &bias;
-        default: return 0;
-    }
-}
+    if (!validate_param(param::BIAS, errors::RANGE_0_1))
+        return errors::RANGE_0_1;
 
-stockerrs::ERR_TYPE balance::validate()
-{
-    if (!jwm.get_paramlist()->validate(this, paramnames::BIAS,
-                                        stockerrs::ERR_RANGE_0_1))
-    {
-        sm_err("%s", paramnames::get_name(paramnames::BIAS));
-        invalidate();
-        return stockerrs::ERR_RANGE_0_1;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    return errors::NO_ERROR;
 }
 
 void balance::run()
@@ -100,7 +88,7 @@ void balance::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::FUNC, "add/sub/mul");
-    register_param(paramnames::BIAS);
+    register_param(param::FUNC, "add/sub/mul");
+    register_param(param::BIAS);
 }
 

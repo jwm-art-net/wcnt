@@ -10,16 +10,17 @@ class timing : public dobj
 public:
     timing();
     timing(double s);
-    void set_time(double s) { seconds = s;}
-    double get_time() const { return seconds;}
-    stockerrs::ERR_TYPE validate();
-    bool set_param(paramnames::PAR_TYPE, const void*);
-    const void* get_param(paramnames::PAR_TYPE pt) const;
-
+    void set_time(double s) { seconds = s; }
+    double get_time() const { return seconds; }
+    errors::TYPE validate();
+    bool set_param(param::TYPE, const void*);
+    const void* get_param(param::TYPE pt) const;
+    int cmp(timing* t) const {
+        return (seconds < t->seconds ? 1: (seconds > t->seconds ? 1: 0));
+    }
 private:
     double seconds;
     void init_first();
-    
 };
 
 #endif

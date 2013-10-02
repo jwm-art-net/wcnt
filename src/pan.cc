@@ -5,14 +5,14 @@
 #include "../include/modparamlist.h"
 
 pan::pan(const char* uname) :
- synthmod(synthmodnames::PAN, uname, SM_HAS_STEREO_OUTPUT),
+ synthmod(module::PAN, uname, SM_HAS_STEREO_OUTPUT),
  in_signal(0), in_pan_mod(0), out_l(0), out_r(0), panpos(0),
  pan_modsize(0), pan_mod(0), pan_pos(0)
 {
-    register_input(inputnames::IN_SIGNAL);
-    register_input(inputnames::IN_PAN_MOD);
-    register_output(outputnames::OUT_LEFT);
-    register_output(outputnames::OUT_RIGHT);
+    register_input(input::IN_SIGNAL);
+    register_input(input::IN_PAN_MOD);
+    register_output(output::OUT_LEFT);
+    register_output(output::OUT_RIGHT);
     init_first();
 }
 
@@ -20,44 +20,44 @@ pan::~pan()
 {
 }
 
-const void* pan::get_out(outputnames::OUT_TYPE ot) const
+const void* pan::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_LEFT: return &out_l;
-        case outputnames::OUT_RIGHT:return &out_r;
+        case output::OUT_LEFT: return &out_l;
+        case output::OUT_RIGHT:return &out_r;
         default: return 0;
     }
 }
 
-const void* pan::set_in(inputnames::IN_TYPE it, const void* o)
+const void* pan::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_SIGNAL: return in_signal = (double*)o;
-        case inputnames::IN_PAN_MOD:return in_pan_mod = (double*)o;
+        case input::IN_SIGNAL: return in_signal = (double*)o;
+        case input::IN_PAN_MOD:return in_pan_mod = (double*)o;
         default: return 0;
     }
 }
 
-const void* pan::get_in(inputnames::IN_TYPE it) const
+const void* pan::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_SIGNAL: return in_signal;
-        case inputnames::IN_PAN_MOD:return in_pan_mod;
+        case input::IN_SIGNAL: return in_signal;
+        case input::IN_PAN_MOD:return in_pan_mod;
         default: return 0;
     }
 }
 
-bool pan::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool pan::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case paramnames::PAN:
+        case param::PAN:
             panpos = *(double*)data;
             return true;
-        case paramnames::PAN_MODSIZE:
+        case param::PAN_MODSIZE:
             pan_modsize = *(double*)data;
             return true;
         default:
@@ -65,34 +65,25 @@ bool pan::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* pan::get_param(paramnames::PAR_TYPE pt) const
+const void* pan::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::PAN:        return &panpos;
-        case paramnames::PAN_MODSIZE:return &pan_modsize;
+        case param::PAN:        return &panpos;
+        case param::PAN_MODSIZE:return &pan_modsize;
         default: return 0;
     }
 }
 
-stockerrs::ERR_TYPE pan::validate()
+errors::TYPE pan::validate()
 {
-    if (!jwm.get_paramlist()->validate(this, paramnames::PAN,
-            stockerrs::ERR_RANGE_M1_1))
-    {
-        sm_err("%s", paramnames::get_name(paramnames::PAN));
-        invalidate();
-        return stockerrs::ERR_RANGE_M1_1;
-    }
-    if (!jwm.get_paramlist()->validate(this, paramnames::PAN_MODSIZE,
-            stockerrs::ERR_RANGE_0_1))
-    {
-        sm_err("%s", 
-                paramnames::get_name(paramnames::PAN_MODSIZE));
-        invalidate();
-        return stockerrs::ERR_RANGE_0_1;
-    }
-    return stockerrs::ERR_NO_ERROR;
+    if (!validate_param(param::PAN, errors::RANGE_M1_1))
+        return errors::RANGE_M1_1;
+
+    if (!validate_param(param::PAN_MODSIZE, errors::RANGE_0_1))
+        return errors::RANGE_0_1;
+
+    return errors::NO_ERROR;
 }
 
 void pan::run()
@@ -116,6 +107,6 @@ void pan::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::PAN);
-    register_param(paramnames::PAN_MODSIZE);
+    register_param(param::PAN);
+    register_param(param::PAN_MODSIZE);
 }

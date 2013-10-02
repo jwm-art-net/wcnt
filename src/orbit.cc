@@ -9,17 +9,17 @@
 #include <math.h>
 
 orbit::orbit(const char* uname) :
- synthmod(synthmodnames::ORBIT, uname, SM_DEFAULT),
+ synthmod(module::ORBIT, uname, SM_DEFAULT),
  out_x(0.0), out_y(0.0),
  in_restart_trig(0), in_trig(0), type(ORB_HOPALONG),
  const_a(0.0), const_b(0.0), const_c(0.0),
  test_iter(0),
  x(0.0), y(0.0), scale(1.0), cos_b_pc(0), sin_abc(0)
 {
-    register_input(inputnames::IN_RESTART_TRIG);
-    register_input(inputnames::IN_TRIG);
-    register_output(outputnames::OUT_X);
-    register_output(outputnames::OUT_Y);
+    register_input(input::IN_RESTART_TRIG);
+    register_input(input::IN_TRIG);
+    register_output(output::OUT_X);
+    register_output(output::OUT_Y);
     init_first();
 }
 
@@ -27,46 +27,46 @@ orbit::~orbit()
 {
 }
 
-const void* orbit::set_in(inputnames::IN_TYPE it, const void* o)
+const void* orbit::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case inputnames::IN_TRIG:
+        case input::IN_TRIG:
             return in_trig = (STATUS*)o;
-        case inputnames::IN_RESTART_TRIG:
+        case input::IN_RESTART_TRIG:
             return in_restart_trig = (STATUS*)o;
         default:
             return 0;
     }
 }
 
-const void* orbit::get_in(inputnames::IN_TYPE it) const
+const void* orbit::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case inputnames::IN_TRIG:           return in_trig;
-        case inputnames::IN_RESTART_TRIG:   return in_restart_trig;
+        case input::IN_TRIG:           return in_trig;
+        case input::IN_RESTART_TRIG:   return in_restart_trig;
         default: return 0;
     }
 }
 
-bool orbit::set_param(paramnames::PAR_TYPE pt, const void* data)
+bool orbit::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-    case paramnames::ORBIT_TYPE:
+    case param::ORBIT_TYPE:
         type = *(ORBIT_TYPE*)data;
         return true;
-    case paramnames::A:
+    case param::A:
         const_a = *(double*)data;
         return true;
-    case paramnames::B:
+    case param::B:
         const_b = *(double*)data;
         return true;
-    case paramnames::C:
+    case param::C:
         const_c = *(double*)data;
         return true;
-    case paramnames::TEST_ITER:
+    case param::TEST_ITER:
         test_iter = *(samp_t*)data;
         return true;
     default:
@@ -74,15 +74,15 @@ bool orbit::set_param(paramnames::PAR_TYPE pt, const void* data)
     }
 }
 
-const void* orbit::get_param(paramnames::PAR_TYPE pt) const
+const void* orbit::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case paramnames::ORBIT_TYPE:    return &type;
-        case paramnames::A:             return &const_a;
-        case paramnames::B:             return &const_b;
-        case paramnames::C:             return &const_c;
-        case paramnames::TEST_ITER:     return &test_iter;
+        case param::ORBIT_TYPE:    return &type;
+        case param::A:             return &const_a;
+        case param::B:             return &const_b;
+        case param::C:             return &const_c;
+        case param::TEST_ITER:     return &test_iter;
         default: return 0;
     }
 }
@@ -161,12 +161,12 @@ void orbit::run()
     }
 }
 
-const void* orbit::get_out(outputnames::OUT_TYPE ot) const
+const void* orbit::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case outputnames::OUT_X: return &out_x;
-        case outputnames::OUT_Y: return &out_y;
+        case output::OUT_X: return &out_x;
+        case output::OUT_Y: return &out_y;
         default: return 0;
     }
 }
@@ -175,10 +175,10 @@ void orbit::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::ORBIT_TYPE, "hopalong/threeply/quadrup");
-    register_param(paramnames::A);
-    register_param(paramnames::B);
-    register_param(paramnames::C);
-    register_param(paramnames::TEST_ITER);
+    register_param(param::ORBIT_TYPE, "hopalong/threeply/quadrup");
+    register_param(param::A);
+    register_param(param::B);
+    register_param(param::C);
+    register_param(param::TEST_ITER);
 }
 

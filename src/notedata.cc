@@ -11,7 +11,7 @@
 
 
 note_data::note_data() :
- dobj(dobjnames::SIN_NOTE),
+ dobj(dataobj::SIN_NOTE),
  note_type(NOTE_TYPE_ERR),position(0), length(0), velocity(0)
 {
     notename[0] = '\0';
@@ -25,7 +25,7 @@ STATS_INC
 
 note_data::note_data(const char *name, double pos, double len, double vel)
  :
- dobj(dobjnames::SIN_NOTE),
+ dobj(dataobj::SIN_NOTE),
  note_type(NOTE_TYPE_ERR), position(pos), length(len), velocity(vel)
 {
     set_name(name);
@@ -186,20 +186,20 @@ double note_data::get_note_frequency() const
 }
 #endif
 
-bool note_data::set_param(paramnames::PAR_TYPE dt, const void* data)
+bool note_data::set_param(param::TYPE dt, const void* data)
 {
     switch(dt)
     {
-    case paramnames::NAME:
+    case param::NAME:
         set_name((const char*)data);
         return true;
-    case paramnames::NOTE_POS:
+    case param::NOTE_POS:
         set_position(*(double*)data);
         return true;
-    case paramnames::NOTE_LEN:
+    case param::NOTE_LEN:
         set_length(*(double*)data);
         return true;
-    case paramnames::NOTE_VEL:
+    case param::NOTE_VEL:
         set_velocity(*(double*)data);
         return true;
     default:
@@ -207,52 +207,45 @@ bool note_data::set_param(paramnames::PAR_TYPE dt, const void* data)
     }
 }
 
-const void* note_data::get_param(paramnames::PAR_TYPE dt) const
+const void* note_data::get_param(param::TYPE dt) const
 {
     switch(dt)
     {
-        case paramnames::NAME:      return notename;
-        case paramnames::NOTE_POS:  return &position;
-        case paramnames::NOTE_LEN:  return &length;
-        case paramnames::NOTE_VEL:  return &velocity;
+        case param::NAME:      return notename;
+        case param::NOTE_POS:  return &position;
+        case param::NOTE_LEN:  return &length;
+        case param::NOTE_VEL:  return &velocity;
         default: return 0;
     }
 }
 
-stockerrs::ERR_TYPE note_data::validate()
+errors::TYPE note_data::validate()
 {
     if (note_type == NOTE_TYPE_ERR) {
         dobjerr("%s is problematically set with %s.",
-                paramnames::get_name(paramnames::NAME), notename);
+                param::names::get(param::NAME), notename);
         invalidate();
-        return stockerrs::ERR_NOTENAME;
+        return errors::NOTENAME;
     } else if (note_type == NOTE_TYPE_EDIT)
-        return stockerrs::ERR_NO_ERROR;
-    if (!jwm.get_dparlist()->validate(this,
-        paramnames::NOTE_POS, stockerrs::ERR_NEGATIVE))
-    {
-        dobjerr("%s", paramnames::get_name(paramnames::NOTE_POS));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    if (!jwm.get_dparlist()->validate(this,
-        paramnames::NOTE_LEN, stockerrs::ERR_NEGATIVE))
-    {
-        dobjerr("%s", paramnames::get_name(paramnames::NOTE_LEN));
-        invalidate();
-        return stockerrs::ERR_NEGATIVE;
-    }
-    return stockerrs::ERR_NO_ERROR;
+        return errors::NO_ERROR;
+
+    if (!validate_param(param::NOTE_POS, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    if (!validate_param(param::NOTE_LEN, errors::NEGATIVE))
+        return errors::NEGATIVE;
+
+    return errors::NO_ERROR;
 }
 
 void note_data::init_first()
 {
     if (done_first())
         return;
-    register_param(paramnames::NAME);
-    register_param(paramnames::NOTE_POS);
-    register_param(paramnames::NOTE_LEN);
-    register_param(paramnames::NOTE_VEL);
+    register_param(param::NAME);
+    register_param(param::NOTE_POS);
+    register_param(param::NOTE_LEN);
+    register_param(param::NOTE_VEL);
 }
 
 #ifdef DATA_STATS

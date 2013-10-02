@@ -15,11 +15,11 @@ class orbit : public synthmod
     };
     void init(); // performs iteration test if (test_iter > 0)
     void run();
-    const void* set_in(inputnames::IN_TYPE, const void*);
-    const void* get_in(inputnames::IN_TYPE it) const;
-    const void* get_out(outputnames::OUT_TYPE) const;
-    bool set_param(paramnames::PAR_TYPE, const void*);
-    const void* get_param(paramnames::PAR_TYPE) const;
+    const void* set_in(input::TYPE, const void*);
+    const void* get_in(input::TYPE) const;
+    const void* get_out(output::TYPE) const;
+    bool set_param(param::TYPE, const void*);
+    const void* get_param(param::TYPE) const;
  private:
     double out_x;
     double out_y;

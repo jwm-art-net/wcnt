@@ -23,12 +23,15 @@ class timer : public synthmod, public linked_list<timing>
 
     void run();
     void init();
-    const void* get_out(outputnames::OUT_TYPE) const;
-    dobj* add_dobj(dobj*);
+    const void* get_out(output::TYPE) const;
+    bool        set_param(param::TYPE, const void*);
+    const void* get_param(param::TYPE) const;
+    dobj*       add_dobj(dobj*);
 
  private:
     short out_count;
     STATUS out_trig;
+    STATUS time_is_relative;
 
     timing** timings;
     long time_ix;
