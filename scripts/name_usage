@@ -1,8 +1,11 @@
 #!/bin/bash
 
-echo THIS IS NOT WORKING PROPERLY YET
-echo commas are removed from description field.
-
+echo "***** THIS IS NOT WORKING PROPERLY YET *****"
+echo " commas are removed from description field  "
+echo "--------------------------------------------"
+echo "BUT MUCH MORE IMPORTANTLY, TESTING SHOWS THAT
+echo "  optimization by re-ordering the names is  "
+echo "     ***** ENTIRELY NON-FRUITFUL *****"
 exit
 
 
