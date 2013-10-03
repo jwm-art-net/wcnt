@@ -1,6 +1,9 @@
 #ifndef WAVHEADER_H
 #define WAVHEADER_H
 
+#include <sndfile.h>
+#include "types.h"
+
 enum DATA_FMT
 {
     FMT_PCM16,
@@ -50,16 +53,12 @@ enum WAV_BITRATE
     WAV_BIT_16 = 16
 };
 
-struct stereodata
-{
-    short left;
-    short right;
-};
-
 struct st_data
 {
     double left;
     double right;
 };
+
+SNDFILE*    open_wav_write(const char*, DATA_FMT);
 
 #endif // WAVHEADER_H

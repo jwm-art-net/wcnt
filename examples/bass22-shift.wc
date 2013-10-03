@@ -317,7 +317,6 @@ wav
     in_left      lpf out_output
     in_right     lpf out_output
     in_bar       time1 out_bar
-    in_bar_trig  time1 out_bar_trig
     snapshot_mode off
     data_format  float32
     filename     bass22-shift.wav

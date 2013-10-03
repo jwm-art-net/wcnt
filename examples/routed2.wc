@@ -381,7 +381,6 @@ wav
     in_left     echol out_output
     in_right    echor out_output
     in_bar      time1   out_bar
-    in_bar_trig time1   out_bar_trig
     snapshot_mode off
     data_format pcm16
     filename    routed2.wav

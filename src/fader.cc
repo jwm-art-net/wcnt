@@ -7,14 +7,13 @@
 
 fader::fader(const char* uname) :
  synthmod(module::FADER, uname, SM_HAS_OUT_TRIG),
- in_bar_trig(0), in_bar(0),
- out_output(0), out_bar_trig(OFF), out_bar(0), out_play_state(OFF),
+ in_bar(0),
+ out_output(0), out_bar_trig(OFF), out_bar(-1), out_play_state(OFF),
  start_bar(0), end_bar(1), fade_in_time(0), fade_out_time(0),
  fade_in_smps(0), fismp(0), fade_out_smps(0), fosmp(0),
- fisz(0), fosz(0)
+ fisz(0), fosz(0), state(0)
 {
     register_input(input::IN_BAR);
-    register_input(input::IN_BAR_TRIG);
     register_output(output::OUT_OUTPUT);
     register_output(output::OUT_BAR_TRIG);
     register_output(output::OUT_BAR);
@@ -31,7 +30,6 @@ const void* fader::set_in(input::TYPE it, const void* o)
     switch(it)
     {
     case input::IN_BAR:         return in_bar = (short*)o;
-    case input::IN_BAR_TRIG:    return in_bar_trig = (STATUS*)o;
     default: return 0;
     }
 }
@@ -41,7 +39,6 @@ const void* fader::get_in(input::TYPE it) const
     switch(it)
     {
     case input::IN_BAR:         return in_bar;
-    case input::IN_BAR_TRIG:    return in_bar_trig;
     default: return 0;
     }
 }
@@ -111,41 +108,51 @@ void fader::init()
 
 void fader::run()
 {
-    if (out_play_state == OFF) {
-        if (out_bar_trig == ON)
-            out_bar_trig = OFF;
-        if (*in_bar_trig == ON && *in_bar == start_bar) {
+    switch(state) {
+    case 0: // Waiting for fade in
+        if (*in_bar == start_bar) {
+            state = 1;
             fismp = fade_in_smps;
-            out_bar = 0;
-            out_output = 0;
+            ++out_bar;
+            out_output = 0.0;
             out_play_state = out_bar_trig = ON;
         }
-    }
-    else if (fismp > 0) {
-        out_output += fisz;
-        fismp--;
-        if (fismp == 0)
-            out_output = 1;
+        break;
+    case 1: // Fading in
         if (out_bar_trig == ON)
             out_bar_trig = OFF;
-    }
-    else if (fosmp > 0) {
+        out_output += fisz;
+        if (--fismp == 0) {
+            state = 2;
+            out_output = 1.0;
+        }
+        else if (*in_bar == end_bar) {
+            state = 3; // early fade-out, make proportional.
+            fosmp = fade_out_smps * out_output;
+        }
+        break;
+    case 2: // Waiting for fade out
+        if (*in_bar == end_bar) {
+            state = 3;
+            fosmp = fade_out_smps;
+        }
+        break;
+    case 3: // Fading out
         out_output -= fosz;
-        fosmp--;
-        if (fosmp == 0) {
-            out_output = 0;
+        if (--fosmp == 0 || out_output < 0.0) {
+            state = 4;
+            out_output = 0.0;
             out_play_state = OFF;
             out_bar_trig = ON;
-            out_bar = 1;
+            ++out_bar;
         }
-    }
-    else if (*in_bar_trig == ON && *in_bar == end_bar) {
-        out_output = 1;
-        fosmp = fade_out_smps;
+        break;
+    case 4: // Finished, turn off bar trig.
+        out_bar_trig = OFF;
+        state = 0;
+        break;
     }
 }
-
-
 
 void fader::init_first()
 {

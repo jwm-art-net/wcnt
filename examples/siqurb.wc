@@ -261,7 +261,6 @@ revb
 fader
 f1
     in_bar      t1 out_count
-    in_bar_trig t1 out_trig
     start_bar      0
     end_bar        2
     fade_in_time   5000.0
@@ -285,7 +284,6 @@ wav1
     in_left     amp1    out_left
     in_right    amp1    out_right
     in_bar      f1      out_bar
-    in_bar_trig f1      out_bar_trig
     snapshot_mode off
     data_format float32
     filename    siqurb.wav

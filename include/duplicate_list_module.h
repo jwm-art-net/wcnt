@@ -7,7 +7,7 @@
 #include "../include/jwm_globals.h"
 #include "../include/linkedlist.h"
 
-#include <iostream>
+#include <iostream> // don't like this here but hey ho.
 
 //////////////////////////////////////////////////////////////////////////
 //

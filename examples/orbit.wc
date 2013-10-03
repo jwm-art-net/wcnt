@@ -350,7 +350,6 @@ wavfile_out wav1
     in_left     rvb out_left
     in_right    rvb out_right
     in_bar      t1 out_count
-    in_bar_trig t1 out_trig
     snapshot_mode off
     data_format pcm16
     filename    orbit.wav

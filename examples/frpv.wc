@@ -123,7 +123,6 @@ wav_out
     in_left     m out_output
     in_right    m out_output
     in_bar      t    out_count
-    in_bar_trig t    out_trig
     snapshot_mode off
     data_format float32
     filename    frpv.wav

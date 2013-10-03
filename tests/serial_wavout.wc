@@ -1,0 +1,100 @@
+wcnt-1.26/jwmsynth
+
+samplerate 44100
+
+timer
+t
+    timings
+        time seconds 0.0
+        time seconds 4.0
+    timings
+    time_is_relative off
+t
+
+clock
+c
+    in_freq_mod1    off
+    freq            1.5
+    freq_mod1_size  1.0
+c
+
+adsr
+eg
+    envelope
+        section
+            name  attack
+            ut    35.0   ul    1.0
+            lt    35.0   ll    1.0
+        section
+            name  decay
+            ut    50.0   ul    0.85
+            lt    50.0   ll    0.85
+        section
+            name  release
+            ut    250.0   ul    0.0
+            lt    250.0   ll    0.0
+    envelope
+
+    in_note_on_trig   c out_phase_trig
+    in_note_off_trig  off
+    in_velocity       off
+    up_thresh           1.0
+    lo_thresh           0.0
+    start_level         0.0
+    min_time          150.0
+    max_sustain_time    0.0
+    release_is_ratio    on
+    sustain_state       off
+    zero_retrigger      off
+eg
+
+constant_note
+e-1
+    name e-1
+e-1
+
+wave
+s
+    in_phase_step   e-1 out_phase_step
+    type sine
+s
+
+multiplier
+m
+    in_signal1  s out_output
+    in_signal2  eg out_output
+m
+
+serial_wavout
+sw
+    in_left         m   out_output
+    in_right        m   out_output
+    in_bar          t   out_count
+    in_write_trig   c   out_phase_trig
+    in_stop_trig    off //eg  out_off_trig
+    data_format     pcm16
+    basename        serial_wavout
+    start_bar       0
+    end_bar         1
+    count 5
+sw
+
+wavfile_out
+w
+    in_left      m out_output
+    in_right     m out_output
+    in_bar       t  out_count
+    snapshot_mode  off
+    data_format    pcm16
+    filename       serial_test_check.wav
+    start_bar      0
+    end_bar        1
+w
+
+wcnt_exit
+x
+    in_bar      t out_count
+    exit_bar    1
+x
+
+wcnt-1.26/jwmsynth

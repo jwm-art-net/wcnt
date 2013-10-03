@@ -35,10 +35,9 @@ public:
 
 private:
     // inputs
-    const short* in_left_channel;
-    const short* in_right_channel;
+    const double* in_l;
+    const double* in_r;
     const short* in_bar;
-    const STATUS* in_bar_trig;
     const STATUS* in_write_trig;
     const STATUS* in_stop_trig;
     // outputs
@@ -47,19 +46,21 @@ private:
     DATA_FMT data_format;
     short start_bar;
     short end_bar;
-    // other/working
     char* wav_basename;
-    char* wavfilename;
+    short count;
+    // other/working
+    char* filepath;    /* path + wav_basename */
+    char* wavfilename;  /* _basename + nnnn + .wav */
     SNDFILE* fileout;
-    SF_INFO sfinfo;
     short wavcount;
     STATUS in_write_region; // no it's not an input
     WAV_STATUS status;
-    stereodata* st_buffer;
+    st_data* st_buffer;
     samp_t sample_total;
+    int state;
     short buff_pos;
-    void write_wav_at(stereodata* buf, samp_t smp);
-    void write_wav_chunk(stereodata* buf, samp_t smp, int bsize);
+    void write_wav_at(st_data* buf, samp_t smp);
+    void write_wav_chunk(st_data* buf, samp_t smp, int bsize);
     // other
     WAV_STATUS open_wav(const char* fname);
     void close_wav();

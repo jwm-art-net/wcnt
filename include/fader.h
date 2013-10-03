@@ -19,7 +19,6 @@ class fader: public synthmod
     const void* get_param(param::TYPE) const;
 
  private:
-    const STATUS* in_bar_trig;
     const short*  in_bar;
 
     double out_output;
@@ -40,8 +39,9 @@ class fader: public synthmod
     double fisz;
     double fosz;
 
+    int state;
+
     void init_first();
-    
 };
 
 #endif

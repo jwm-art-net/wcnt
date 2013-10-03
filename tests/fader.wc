@@ -2,12 +2,21 @@ wcnt-1.26/jwmsynth
 
 samplerate 44100
 
-// testing how the fader behaves when its in_bar_trig input
-// triggers faster than its in_bar input updates.
-
-// we use a timer and clock module to provide a count and trigger
-// respectively. however, the clock module triggers more frequently
-// than the timer updates its count.
+// testing the fader
+//
+// note: the fader used to have an in_bar_trig input to tell it when to
+//      read its in_bar input, but the trig input has been removed. the
+//      fader behaviour when input triggered faster than the bar updated
+//      was no different to how it behaved when they both updated in sync
+//      so it was decided as a pointless feature and removed.
+//
+//      also updated is the behaviour of an early fade-out. that is, a
+//      fade-out occurs before fade-in has finished. the old behaviour
+//      meant the fade-out never happened. new behaviour means the fade-out
+//      starts right away from the current output level. the fade-out
+//      gradient does not change (ie length of fade-out is proportional
+//      to output level when fade-out began).
+//
 
 timer
 t
@@ -23,40 +32,38 @@ t
     time_is_relative off
 t
 
-clock
-c
-    in_freq_mod1  off
-    freq            100
-    freq_mod1_size  1.0
-c
-
+// normal: fade-in > maintain > fade-out
 fader
 f1
     in_bar          t out_count
-    in_bar_trig     c out_phase_trig
     start_bar       0
     end_bar         4
     fade_in_time   1000
     fade_out_time  1000
 f1
 
+// interuppted: fade-in > fade-out
 fader
 f2
     in_bar          t out_count
-    in_bar_trig     c out_phase_trig
     start_bar       0
     end_bar         1
     fade_in_time   1000
     fade_out_time  1000
 f2
 
+//  note start_bar and end_bar of wavfile_out and wcnt_exit
+//  all use the fader outputs. the fader does not simply pass
+//  its in_bar through to out_bar. it outputs a zero when fade-in
+//  begins, and one when fade-out ends, making it easier to stop
+//  things at the proper time.
+
 wavfile_out
 w
     in_left      f1 out_output
     in_right     f2 out_output
-    in_bar       f1  out_bar
-    in_bar_trig  f1  out_bar_trig
-    snapshot_mode  off
+    in_bar       f1 out_bar
+    snapshot_mode  on
     data_format    pcm16
     filename       fader_output.wav
     start_bar      0

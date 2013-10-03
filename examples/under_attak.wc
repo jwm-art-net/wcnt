@@ -308,7 +308,6 @@ wav
     in_left      boost_and_clip out_left
     in_right     boost_and_clip out_right
     in_bar       time1 out_bar
-    in_bar_trig  time1 out_bar_trig
     snapshot_mode off
     data_format  float32
     filename     under_attak.wav

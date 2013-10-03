@@ -143,7 +143,6 @@ wav1
     in_left     reverb out_left
     in_right    reverb out_right
     in_bar t1   out_count
-    in_bar_trig t1 out_trig
     snapshot_mode off
     data_format float32
     filename    wave_seq_trig_echo.wav

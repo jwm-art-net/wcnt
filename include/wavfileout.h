@@ -32,7 +32,6 @@ private:
     const double* in_l;
     const double* in_r;
     const short* in_bar;
-    const STATUS* in_bar_trig;
 
     // outputs
     STATUS out_write_start_trig;
@@ -44,12 +43,11 @@ private:
     DATA_FMT data_format;
     short start_bar;
     short end_bar;
-    char* _filename;
+    char* filename;
 
     // other/working
-    char* filename;
+    char* _filename;
     SNDFILE * fileout;
-    SF_INFO sfinfo;
     WAV_STATUS status;
     st_data * st_buffer;
     samp_t sample_total;
@@ -57,6 +55,9 @@ private:
     void write_wav_at(st_data* buf, samp_t smp);
     void write_wav_chunk(st_data* buf, samp_t smp, int bsize);
     void timestamp_filename();
+
+    int state;
+
     // synthmod stuff
     void init_first();
     

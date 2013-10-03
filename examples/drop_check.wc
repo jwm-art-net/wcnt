@@ -275,7 +275,6 @@ revb
 fader
 fade
     in_bar      t out_count
-    in_bar_trig t out_trig
     start_bar       0
     end_bar         1
     fade_in_time   10000
@@ -299,7 +298,6 @@ wav_out
     in_left     amp out_left
     in_right    amp out_right
     in_bar      fade out_bar
-    in_bar_trig fade out_bar_trig
     snapshot_mode off
     data_format float32
     filename    drop_check.wav
