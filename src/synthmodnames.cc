@@ -85,7 +85,7 @@ namespace module
     { TRIGCOUNTER,      "trig_counter",     0, "Outputs a count of how many times the input triggers. Can be reset and/or set to ignore a number of triggers." },
     { TRIGROUTER,       "trig_router",      0, "Routes the trigger input amongst a group of wcnt_trigger modules which are created by the trig_router itself. The wcnt_trigger modules are added to a group of the same name." },
     { GROUPCONTROL,     "group_control",    0, "Used to stop or start processing for all modules within a specified group. Use in combination with the trig_router. Take care!" },
-    { FADER,            "fader",            0, "Perform a fade in and fade out at specific bars in the time line." },
+    { FADER,            "fader",            0, "Perform a fade in and fade out at specific bars in the time line. At the start of fade-in, out_bar is 0, and at the end of fade-out, it is 1." },
     { SAMPLECLIMB,      "sample_climb",     0, "Similar to sample_hold, but instead of holding the value and decaying, this module optionally climbs to the sampled value before holding it." }
  };
 }; // namespace module

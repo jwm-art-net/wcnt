@@ -24,8 +24,8 @@ timer
 t1
     timings
         time seconds 0
-        time seconds 60.0
-        time seconds 5.0
+        time seconds 30.0
+        time seconds 30.0
     timings
     time_is_relative on
 t1
@@ -263,7 +263,7 @@ f1
     in_bar      t1 out_count
     in_bar_trig t1 out_trig
     start_bar      0
-    end_bar        1
+    end_bar        2
     fade_in_time   5000.0
     fade_out_time  5000.0
 f1
@@ -284,21 +284,21 @@ wavfile_out
 wav1
     in_left     amp1    out_left
     in_right    amp1    out_right
-    in_bar      t1      out_count
-    in_bar_trig t1      out_trig
+    in_bar      f1      out_bar
+    in_bar_trig f1      out_bar_trig
     snapshot_mode off
     data_format float32
     filename    siqurb.wav
     start_bar   0
-    end_bar     2
+    end_bar     1
 wav1
 
 // setup how long to process:
 
 wcnt_exit
 wcnt_exit_module
-    in_bar      t1   out_count
-    exit_bar    2
+    in_bar      f1   out_bar
+    exit_bar    1
 wcnt_exit_module
 
 //------------------------------------------------------------------------

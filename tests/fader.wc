@@ -1,0 +1,75 @@
+wcnt-1.26/jwmsynth
+
+samplerate 44100
+
+// testing how the fader behaves when its in_bar_trig input
+// triggers faster than its in_bar input updates.
+
+// we use a timer and clock module to provide a count and trigger
+// respectively. however, the clock module triggers more frequently
+// than the timer updates its count.
+
+timer
+t
+    timings
+        time seconds 0.0
+        time seconds 0.5
+        time seconds 1.0
+        time seconds 1.5
+        time seconds 2.0
+        time seconds 2.5
+        time seconds 3.0
+    timings
+    time_is_relative off
+t
+
+clock
+c
+    in_freq_mod1  off
+    freq            100
+    freq_mod1_size  1.0
+c
+
+fader
+f1
+    in_bar          t out_count
+    in_bar_trig     c out_phase_trig
+    start_bar       0
+    end_bar         4
+    fade_in_time   1000
+    fade_out_time  1000
+f1
+
+fader
+f2
+    in_bar          t out_count
+    in_bar_trig     c out_phase_trig
+    start_bar       0
+    end_bar         1
+    fade_in_time   1000
+    fade_out_time  1000
+f2
+
+wavfile_out
+w
+    in_left      f1 out_output
+    in_right     f2 out_output
+    in_bar       f1  out_bar
+    in_bar_trig  f1  out_bar_trig
+    snapshot_mode  off
+    data_format    pcm16
+    filename       fader_output.wav
+    start_bar      0
+    end_bar        1
+w
+
+wcnt_exit
+x
+    in_bar      f1 out_bar
+    exit_bar    1
+x
+
+wcnt-1.26/jwmsynth
+
+
+

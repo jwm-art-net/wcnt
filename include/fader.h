@@ -37,8 +37,6 @@ class fader: public synthmod
     samp_t fade_out_smps;
     samp_t fosmp;
 
-    short _end_bar;
-
     double fisz;
     double fosz;
 

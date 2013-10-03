@@ -11,7 +11,7 @@ fader::fader(const char* uname) :
  out_output(0), out_bar_trig(OFF), out_bar(0), out_play_state(OFF),
  start_bar(0), end_bar(1), fade_in_time(0), fade_out_time(0),
  fade_in_smps(0), fismp(0), fade_out_smps(0), fosmp(0),
- _end_bar(0), fisz(0), fosz(0)
+ fisz(0), fosz(0)
 {
     register_input(input::IN_BAR);
     register_input(input::IN_BAR_TRIG);
@@ -116,7 +116,7 @@ void fader::run()
             out_bar_trig = OFF;
         if (*in_bar_trig == ON && *in_bar == start_bar) {
             fismp = fade_in_smps;
-            out_bar = *in_bar;
+            out_bar = 0;
             out_output = 0;
             out_play_state = out_bar_trig = ON;
         }
@@ -136,12 +136,11 @@ void fader::run()
             out_output = 0;
             out_play_state = OFF;
             out_bar_trig = ON;
-            out_bar = _end_bar;
+            out_bar = 1;
         }
     }
     else if (*in_bar_trig == ON && *in_bar == end_bar) {
         out_output = 1;
-        _end_bar = *in_bar;
         fosmp = fade_out_smps;
     }
 }

@@ -1,12 +1,13 @@
 #!/bin/bash
 
-echo "***** THIS IS NOT WORKING PROPERLY YET *****"
-echo " commas are removed from description field  "
-echo "--------------------------------------------"
-echo "BUT MUCH MORE IMPORTANTLY, TESTING SHOWS THAT
-echo "  optimization by re-ordering the names is  "
-echo "     ***** ENTIRELY NON-FRUITFUL *****"
-exit
+echo "***** THIS IS  NOT WORKING PROPERLY YET *****"
+echo "  commas are removed from description field  "
+echo "---------------------------------------------"
+echo "BUT MUCH MORE IMPORTANTLY, TESTING SHOWS THAT"
+echo "   optimization by re-ordering the names is  "
+echo "      ***** ENTIRELY NON-FRUITFUL *****      "
+echo "Or put another way, absolutely without merit."
+
 
 
 # Script for counting usage of names in the examples
@@ -62,7 +63,7 @@ function names_struct_to_bash_array
             then
                 # convert C++ punctuation to spaces, preserving quotes
                 # quoted to stop expansion of * in descr field
-                LN=$(echo "$LINE" | tr '{}' ' ')
+                LN=$(echo "$LINE" | tr '{},' ' ')
                 #echo $LN
                 # split the four fields of each line in half
                 # we need the punctuation to do this
