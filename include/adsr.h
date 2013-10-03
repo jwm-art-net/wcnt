@@ -92,7 +92,7 @@ private:
     samp_t min_samps;
     samp_t max_samps;
     samp_t max_sus_samps;
-    short sect;
+    wcint_t sect;
     samp_t sectsample;
     samp_t sectmaxsamples;
     double levelsize;

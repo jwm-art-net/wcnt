@@ -11,17 +11,17 @@ class bpmchange : public dobj
 {
 public:
     bpmchange();
-    bpmchange(short bar, double bpm);
-    void set_bar(short bar){atbar = bar;}
+    bpmchange(wcint_t bar, double bpm);
+    void set_bar(wcint_t bar){atbar = bar;}
     void set_bpm(double bpm){tobpm = bpm;}
-    short get_bar() const { return atbar;}
+    wcint_t get_bar() const { return atbar;}
     double get_bpm() const { return tobpm;}
     errors::TYPE validate();
     bool set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE pt) const;
 
 private:
-    short atbar;
+    wcint_t atbar;
     double tobpm;
     void init_first();
 };

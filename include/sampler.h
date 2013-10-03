@@ -46,10 +46,10 @@ private:
     samp_t loop_end;
     STATUS loop_is_offset;
     LOOP_MODE loop_mode;
-    short loop_bi_offset;
-    short anti_clip_size;
+    wcint_t loop_bi_offset;
+    wcint_t anti_clip_size;
     STATUS ac_each_end;
-    short search_range;
+    wcint_t search_range;
     double phase_step_amount;
     // working
     double root_phase_step;
@@ -88,12 +88,12 @@ private:
     double ac_size;
     double ac_out_left;
     double ac_out_right;
-    short ch;
+    wcint_t ch;
     samp_t sampletot;
     // private helper functions:
     inline void fill_buffer(samp_t);
     inline double calc_midpoint(double, double, double);
-    samp_t zero_search(samp_t, short range);
+    samp_t zero_search(samp_t, wcint_t range);
     void trigger_playback();
     void pos_wavlen();
     void pos_loopend();

@@ -52,7 +52,7 @@ class group_control: public synthmod
     /* params */
     char* group_name;
     /* working */
-    short stop_pending;
+    wcint_t stop_pending;
     group* grp;
     synthmod** runlist;
     synthmod** empty_run_list;

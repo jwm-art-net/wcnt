@@ -78,7 +78,7 @@ errors::TYPE dc_filter::validate()
 
 void dc_filter::init()
 {
-    filterarraymax = (short)((dc_time * jwm.samplerate()) / 1000);
+    filterarraymax = (wcint_t)((dc_time * jwm.samplerate()) / 1000);
     filter = new double[filterarraymax];
     if (!filter){
         invalidate();

@@ -15,7 +15,7 @@
 
 class inspect : public synthmod
 {
-public:
+ public:
     inspect(const char*);
     ~inspect();
     void run();
@@ -25,18 +25,18 @@ public:
     bool set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE) const;
 
-private:
+ private:
     /* inputs */
-    double const* in_df;            /* double float*/
-    STATUS const* in_df_trig;
-    short  const* in_si;            /* short int */
-    STATUS const* in_si_trig;
-    samp_t const* in_ul;            /* samp_t */
-    STATUS const* in_ul_trig;
-    STATUS const* in_st;            /* state */
-    STATUS const* in_st_trig;
-    char  const** in_str;           /* string */
-    STATUS const* in_str_trig;
+    double const*   in_df;            /* double float*/
+    STATUS const*   in_df_trig;
+    wcint_t const*  in_si;            /* int (previously short) */
+    STATUS const*   in_si_trig;
+    samp_t const*   in_ul;            /* samp_t (previously unsigned long)*/
+    STATUS const*   in_ul_trig;
+    STATUS const*   in_st;            /* state */
+    STATUS const*   in_st_trig;
+    char  const**   in_str;           /* string */
+    STATUS const*   in_str_trig;
 
     /* params */
     char* df_msg;
@@ -47,7 +47,6 @@ private:
 
     void set_message(const char* msg_from, char** msg_to);
     void init_first();
-    
 };
 
 #endif

@@ -12,7 +12,7 @@ meterchange::meterchange() :
     init_first();
 }
 
-meterchange::meterchange(short br, char btpb, char btval) :
+meterchange::meterchange(wcint_t br, char btpb, char btval) :
         dobj(dataobj::SIN_METER), bar(br)
 {
     time_sig.beatsperbar = btpb;
@@ -29,7 +29,7 @@ bool meterchange::set_param(param::TYPE pt, const void* data)
             set_beatvalue(((timesig*)data)->beatvalue);
             return true;
         case param::BAR:
-            bar = *(short*)data;
+            bar = *(wcint_t*)data;
             return true;
         default:
             return false;
@@ -58,8 +58,8 @@ errors::TYPE meterchange::validate()
         invalidate();
         return errors::RANGE_BEAT;
     }
-    if (!validate_param(param::BAR, errors::NEGATIVE))
-        return errors::NEGATIVE;
+    if (!validate_param(param::BAR, errors::RANGE_COUNT))
+        return errors::RANGE_COUNT;
 
     return errors::NO_ERROR;
 }

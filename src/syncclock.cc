@@ -52,9 +52,9 @@ const void* sync_clock::set_in(input::TYPE it, const void* o)
         case input::IN_POS_STEP_SIZE:
             return in_pos_stepsz = (double*)o;
         case input::IN_BEATS_PER_BAR:
-            return in_beats_per_bar = (short*)o;
+            return in_beats_per_bar = (wcint_t*)o;
         case input::IN_BEAT_VALUE:
-            return in_beat_value = (short*)o;
+            return in_beat_value = (wcint_t*)o;
         case input::IN_PHASE_TRIG:
             return in_phase_trig = (STATUS*)o;
         case input::IN_FREQ_MOD1:
@@ -100,7 +100,7 @@ bool sync_clock::set_param(param::TYPE pt, const void* data)
             freq_mod2size = *(double*)data;
             return true;
         case param::QUARTER_VAL:
-            tpqn = *(short*)data;
+            tpqn = *(wcint_t*)data;
             return true;
         case param::NOTE_LEN:
             note_length = *(double*)data;
@@ -128,11 +128,14 @@ const void* sync_clock::get_param(param::TYPE pt) const
 
 errors::TYPE sync_clock::validate()
 {
-    if (!validate_param(param::QUARTER_VAL, errors::NEGATIVE))
-        return errors::NEGATIVE;
+    if (!validate_param(param::QUARTER_VAL, errors::RANGE_COUNT1))
+        return errors::RANGE_COUNT1;
 
-    if (!validate_param(param::NOTE_LEN, errors::NEGATIVE))
-        return errors::NEGATIVE;
+    if (!validate_param(param::NOTE_LEN, errors::RANGE_COUNT1))
+        return errors::RANGE_COUNT1;
+
+    if (!validate_param(param::SNAP_TO, errors::RANGE_COUNT))
+        return errors::RANGE_COUNT;
 
     return errors::NO_ERROR;
 }

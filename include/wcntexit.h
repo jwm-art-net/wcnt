@@ -48,10 +48,10 @@ public:
     synthmod* duplicate_module(const char* uname, DUP_IO);
 private:
     // inputs
-    const short* in_bar;
+    const wcint_t* in_bar;
     // no outputs
     // params
-    short exit_bar;
+    wcint_t exit_bar;
     // synthmod stuff
     void init_first();
     

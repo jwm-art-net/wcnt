@@ -106,19 +106,19 @@ lt1
 
 inspector
 i1
-    _in_double_float_       m1 out_output
-    _in_double_float_trig_  c1 out_phase_trig
-    _in_short_int_          t out_count
-    _in_short_int_trig_     t out_trig
-    _in_samp_t_             tm out_sample_total
-    _in_samp_t_trig_        c2 out_phase_trig
+    _in_float_       m1 out_output
+    _in_float_trig_  c1 out_phase_trig
+    _in_int_          t out_count
+    _in_int_trig_     t out_trig
+    _in_sample_             tm out_sample_total
+    _in_sample_trig_        c2 out_phase_trig
     _in_state_              adsr1 out_play_state
     _in_state_trig_         lt1 out_trig
     _in_string_             n1 out_notename
     _in_string_trig_        t out_trig
-    _double_float_msg_  modifier_m1_output_is:
-    _short_int_msg_     ----------timer_t_trigger:
-    _samp_t_msg_      --------processed_samples:
+    _float_msg_  modifier_m1_output_is:
+    _int_msg_     ----------timer_t_trigger:
+    _sample_msg_      --------processed_samples:
     _state_msg_         (((((_adsr1_is:
     _string_msg_        ----------constant_note_n1_out_notename_is:
 i1

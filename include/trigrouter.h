@@ -31,9 +31,9 @@ public:
 private:
     /* inputs */
     STATUS const* in_trig;
-    short  const* in_count;
+    wcint_t  const* in_count;
     /* params */
-    short count;
+    wcint_t count;
     STATUS wrap;
     /* no outputs */
     group* grp;

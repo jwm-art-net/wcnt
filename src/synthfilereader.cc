@@ -151,7 +151,9 @@ bool synthfilereader::read_and_create()
     {
         // test for string being a data object name - there
         // are fewer data objects than modules...
-        if (dataobj::names::category(com) == dataobj::CAT_DEF)
+        if (*com == ';')
+            print_msg();
+        else if (dataobj::names::category(com) == dataobj::CAT_DEF)
         {
             if (!read_and_create_dobj(com))
                 return false;
@@ -168,6 +170,13 @@ bool synthfilereader::read_and_create()
     if (jwm.is_verbose())
         cout << "end wcnt/jwmsynth: " << wc_filename << endl;
     return true;
+}
+
+void synthfilereader::print_msg()
+{
+    string ln;
+    getline(*synthfile, ln);
+    cout << ";" << ln << std::endl;
 }
 
 bool synthfilereader::read_and_create_synthmod(const char* com)

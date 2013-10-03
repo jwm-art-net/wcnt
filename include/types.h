@@ -8,9 +8,16 @@ enum STATUS
 };
 
 typedef long samp_t;
+typedef unsigned long usamp_t;
+typedef int  wcint_t;
+typedef unsigned int  uwcint_t;
 
-#define SAMP_T_MAX ((long)(((unsigned long)-1) >> 2) - 1)
+#define SAMP_T_MAX ((samp_t)(((usamp_t)-1) >> 2))
+#define WCINT_T_MAX ((wcint_t)(((uwcint_t)-1) >> 2))
 
+
+#define STRING_JIFFY(x) #x
+#define TOSTRING(x) STRING_JIFFY(x)
 
 #define STRBUFLEN 4000
 

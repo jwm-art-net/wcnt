@@ -145,11 +145,11 @@ void* compute(T* obj, param::TYPE pt, void* data, int op)
             *(double*)data =
                 comp((double*)obj->get_param(pt), (double*)data, op);
             break;
-        case iocat::SHORT:
-            if (op == '/' && *(short*)data == 0)
+        case iocat::WCINT_T:
+            if (op == '/' && *(wcint_t*)data == 0)
                 return 0;
-            *(short*)data =
-                comp((short*)obj->get_param(pt), (short*)data, op);
+            *(wcint_t*)data =
+                comp((wcint_t*)obj->get_param(pt), (wcint_t*)data, op);
             break;
         case iocat::SAMP_T:
             if (op == '/' && *(samp_t*)data == 0)

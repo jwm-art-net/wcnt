@@ -28,6 +28,7 @@ public:
     const void* get_in(input::TYPE) const;
     bool set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE) const;
+    errors::TYPE validate();
 
 private:
     const double* in_signal;
@@ -35,8 +36,8 @@ private:
     double sig_range_lo;
     char* message;
     STATUS force_abort;
-    short max_peaks;
-    short peak_count;
+    wcint_t max_peaks;
+    wcint_t peak_count;
     bool check; // prevent wrap-around of peak_count.
     void set_message(const char* msg);
     void init_first();

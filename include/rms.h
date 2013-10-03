@@ -36,8 +36,8 @@ private:
     // working
     double output;
     double* rmsarr;//array
-    short arraymax;
-    short arrpos;
+    wcint_t arraymax;
+    wcint_t arrpos;
     double sqrsum;
     void init_first();
     

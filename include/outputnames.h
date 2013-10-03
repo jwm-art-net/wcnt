@@ -10,7 +10,7 @@ namespace output
  {
     ERR_TYPE,
     OUT_NONE_DOUBLE,
-    OUT_NONE_SHORT,
+    OUT_NONE_WCINT_T,
     OUT_NONE_SAMP_T,
     OUT_NONE_TRIG,
     OUT_NONE_STATE,

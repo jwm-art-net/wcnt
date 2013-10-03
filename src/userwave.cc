@@ -80,7 +80,7 @@ bool user_wave::set_param(param::TYPE pt, const void* data)
             zero_retrigger_mode = *(STATUS*)data;
             return true;
         case param::DROP_CHECK_RANGE:
-            drop_check_range = *(short*)data;
+            drop_check_range = *(wcint_t*)data;
             return true;
         default:
             return false;
@@ -142,8 +142,8 @@ synthmod* user_wave::duplicate_module(const char* uname, DUP_IO dupio)
 
 errors::TYPE user_wave::validate()
 {
-    if (!validate_param(param::DROP_CHECK_RANGE, errors::NEGATIVE))
-        return errors::NEGATIVE;
+    if (!validate_param(param::DROP_CHECK_RANGE, errors::RANGE_DEGS))
+        return errors::RANGE_DEGS;
 
     return errors::NO_ERROR;
 }

@@ -30,7 +30,7 @@ public:
     meterchange* add_meter_change(meterchange*);
 
     // general purpose method used for checking by other modules,
-    // bool check_position(short bar, double pos, short quarter_val);
+    // bool check_position(wcint_t bar, double pos, wcint_t quarter_val);
     // virtual methods
     void run();
     void init(); // init will grab global bpm to start with
@@ -41,15 +41,15 @@ public:
 
 private:
     // outputs
-    short out_bar;
+    wcint_t out_bar;
     STATUS out_bar_trig;
     samp_t out_pos_in_bar;
     double out_pos_step_size;
     double out_bpm;
     samp_t out_sample_total;
     samp_t out_sample_in_bar;
-    short out_beats_per_bar;
-    short out_beat_value;
+    wcint_t out_beats_per_bar;
+    wcint_t out_beat_value;
     STATUS out_bpm_change_trig;
     STATUS out_meter_change_trig;
     STATUS out_bpm_change_state;
@@ -68,17 +68,17 @@ private:
     double targbpm;
     double pos_in_bar;
     samp_t bpmchange_notelen;
-    short bpmchangebar;
+    wcint_t bpmchangebar;
     double barlength;
-    short beatlength;
-    short meterchangebar;
+    wcint_t beatlength;
+    wcint_t meterchangebar;
     // working methods
     double p_bpm;
-    samp_t notelen_to_samples(short) const;
+    samp_t notelen_to_samples(wcint_t) const;
     #ifdef UNUSED
     samp_t ms_to_samples(double) const;
-    double notelen_to_frequency(short) const;
-    double notelen_to_ms(short) const;
+    double notelen_to_frequency(wcint_t) const;
+    double notelen_to_ms(wcint_t) const;
     #endif
     // synthmod stuff for keeping things cushdy.
     void init_first();

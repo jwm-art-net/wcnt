@@ -2,6 +2,10 @@ wcnt-1.26/jwmsynth
 
 samplerate 96000
 
+;
+; excuse the high samplerate, but it gives a much brighter sound this way...
+;
+
 time_map
 time
     meter_map
@@ -9,7 +13,7 @@ time
     meter_map
     bpm_map
         tempo   bpm 140     bar 0
-        tempo   bpm 0       bar 12 // @ bar 4, is still 120
+        tempo   bpm 0       bar 12 // @ bar 4, is still 140
         tempo   bpm -60     bar 24 // @ from bar 4, graduates to 70.
     bpm_map
 time
@@ -219,7 +223,7 @@ wav
     in_bar      time out_bar
     snapshot_mode off
     data_format float32
-    filename    errors.wav
+    filename    errocid.wav
     start_bar   0
     end_bar     24
 wav

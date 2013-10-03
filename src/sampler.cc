@@ -7,7 +7,12 @@
 #include "../include/fxsparamlist.h"
 #include "../include/jwm_init.h"
 
+#ifdef CRAZY_SAMPLER
 #include <iostream>
+#endif
+
+
+/* YEAH GOOD LUCK DEBUGGING THIS SUCKER MWHAAA HA HA HA ! */
 
 sampler::sampler(const char* uname) :
  synthmod(module::SAMPLER, uname, SM_HAS_STEREO_OUTPUT),
@@ -140,16 +145,16 @@ bool sampler::set_param(param::TYPE pt, const void* data)
         loop_is_offset = *(STATUS*)data;
         return true;
     case param::LOOP_BI_OFFSET:
-        loop_bi_offset = *(short*)data;
+        loop_bi_offset = *(wcint_t*)data;
         return true;
     case param::ANTI_CLIP:
-        anti_clip_size = *(short*)data;
+        anti_clip_size = *(wcint_t*)data;
         return true;
     case param::AC_EACH_END:
         ac_each_end = *(STATUS*)data;
         return true;
     case param::ZERO_SEARCH_RANGE:
-        search_range = *(short*)data;
+        search_range = *(wcint_t*)data;
         if(search_range == 1) search_range++;
         return true;
     case param::PHASE_STEP_AMOUNT:
@@ -209,11 +214,11 @@ errors::TYPE sampler::validate()
         return errors::ERROR;
     }
 
-    if (!validate_param(param::START_POS_MIN, errors::NEGATIVE))
-        return errors::NEGATIVE;
+    if (!validate_param(param::START_POS_MIN, errors::RANGE_SAMPLE))
+        return errors::RANGE_SAMPLE;
 
-    if (!validate_param(param::START_POS_MAX, errors::NEGATIVE))
-        return errors::NEGATIVE;
+    if (!validate_param(param::START_POS_MAX, errors::RANGE_SAMPLE))
+        return errors::RANGE_SAMPLE;
 
     if (max_start_pos < min_start_pos) {
         sm_err("%s must not be less than %s.",
@@ -223,11 +228,11 @@ errors::TYPE sampler::validate()
         return errors::ERROR;
     }
     if (loop_is_offset == OFF) {
-        if (!validate_param(param::LOOP_BEGIN, errors::NEGATIVE))
-            return errors::NEGATIVE;
+        if (!validate_param(param::LOOP_BEGIN, errors::RANGE_SAMPLE))
+            return errors::RANGE_SAMPLE;
 
-        if (!validate_param(param::LOOP_END, errors::NEGATIVE))
-            return errors::NEGATIVE;
+        if (!validate_param(param::LOOP_END, errors::RANGE_SAMPLE))
+            return errors::RANGE_SAMPLE;
     }
     if (loop_end <= loop_begin) {
         sm_err("%s must be more than %s.",
@@ -245,8 +250,11 @@ errors::TYPE sampler::validate()
         invalidate();
         return errors::ERROR;
     }
-    if (!validate_param(param::ZERO_SEARCH_RANGE, errors::NEGATIVE))
-        return errors::NEGATIVE;
+    if (!validate_param(param::ZERO_SEARCH_RANGE, errors::RANGE_COUNT))
+        return errors::RANGE_COUNT;
+
+    if (!validate_param(param::LOOP_BI_OFFSET, errors::RANGE_COUNT))
+        return errors::RANGE_COUNT;
 
     return errors::NO_ERROR;
 }
@@ -300,8 +308,8 @@ void sampler::init()
         }
     } 
     else {
-        std::cout << "\nsampler "<< get_username();
-        std::cout << " has not got an open wav. expect a sigsegv!";
+        sm_err("sampler %s has not got an open wav. Expect sigsegv\n",
+                                                        get_username());
     }
     root_phase_step = wavfile->get_root_phase_step();
  // do a whole load of checks on the users input.
@@ -341,7 +349,7 @@ void sampler::init()
         else loop_fits_in_buffer = 0;
         loop_loaded = 0;
         if (loopsize != 0 && loopsize < anti_clip_size)
-            anti_clip_size=(short)(loopsize / 2.1);
+            anti_clip_size=(wcint_t)(loopsize / 2.1);
     }
     if (anti_clip_size > 0)	ac_step = 1.00 / (double)anti_clip_size;
     do_ac = OFF;
@@ -597,7 +605,7 @@ void sampler::trigger_playback()
     play_state = ON;
 }
 
-samp_t sampler::zero_search(samp_t pos, short range)
+samp_t sampler::zero_search(samp_t pos, wcint_t range)
 {
     if (range <= 0) return pos;
     double smallest1 = 10;

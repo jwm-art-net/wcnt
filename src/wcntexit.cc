@@ -20,7 +20,7 @@ wcnt_exit::~wcnt_exit()
 
 const void* wcnt_exit::set_in(input::TYPE it, const void* o)
 {
-    return (it == input::IN_BAR ? (in_bar = (short*)o) : 0);
+    return (it == input::IN_BAR ? (in_bar = (wcint_t*)o) : 0);
 }
 
 const void* wcnt_exit::get_in(input::TYPE it) const
@@ -31,7 +31,7 @@ const void* wcnt_exit::get_in(input::TYPE it) const
 bool wcnt_exit::set_param(param::TYPE pt, const void* data)
 {
     if (pt == param::EXIT_BAR) {
-        exit_bar = *(short*)data;
+        exit_bar = *(wcint_t*)data;
         return true;
     }
     return false;
@@ -51,8 +51,8 @@ synthmod* wcnt_exit::duplicate_module(const char* uname, DUP_IO dupio)
 
 errors::TYPE wcnt_exit::validate()
 {
-    if (!validate_param(param::EXIT_BAR, errors::NEGATIVE))
-        return errors::NEGATIVE;
+    if (!validate_param(param::EXIT_BAR, errors::RANGE_COUNT))
+        return errors::RANGE_COUNT;
 
     connector* con = jwm.get_connectlist()->get_connector_by_input(this,
                                                             input::IN_BAR);
@@ -60,9 +60,9 @@ errors::TYPE wcnt_exit::validate()
      && exit_bar != 0)
     {
         sm_err("Input %s is turned off, and parameter %s is not zero. "
-               "wcnt would never exit if allowed to run!", 
-                input::names::get(input::IN_BAR),
-                    param::names::get(param::EXIT_BAR));
+                           "wcnt would never exit if allowed to run!",
+                                    input::names::get(input::IN_BAR),
+                                    param::names::get(param::EXIT_BAR));
         invalidate();
         return errors::ERROR;
     }

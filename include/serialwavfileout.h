@@ -37,28 +37,28 @@ private:
     // inputs
     const double* in_l;
     const double* in_r;
-    const short* in_bar;
+    const wcint_t* in_bar;
     const STATUS* in_write_trig;
     const STATUS* in_stop_trig;
     // outputs
     STATUS write_status;
     // params
     DATA_FMT data_format;
-    short start_bar;
-    short end_bar;
+    wcint_t start_bar;
+    wcint_t end_bar;
     char* wav_basename;
-    short count;
+    wcint_t count;
     // other/working
     char* filepath;    /* path + wav_basename */
     char* wavfilename;  /* _basename + nnnn + .wav */
     SNDFILE* fileout;
-    short wavcount;
+    wcint_t wavcount;
     STATUS in_write_region; // no it's not an input
     WAV_STATUS status;
     st_data* st_buffer;
     samp_t sample_total;
     int state;
-    short buff_pos;
+    wcint_t buff_pos;
     void write_wav_at(st_data* buf, samp_t smp);
     void write_wav_chunk(st_data* buf, samp_t smp, int bsize);
     // other

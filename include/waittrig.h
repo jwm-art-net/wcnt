@@ -40,12 +40,12 @@ private:
     STATUS out_wait_state;
     double min_time;
     double max_time;
-    short count;
+    wcint_t count;
     long min_samples;
     long max_samples;
     long mins;
     long maxs;
-    short counter;
+    wcint_t counter;
     void init_first();
     
 };

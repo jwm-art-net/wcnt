@@ -1,0 +1,66 @@
+wcnt-1.26/jwmsynth
+
+samplerate 44100
+
+; simple.wc
+;   creates a simple audio file consisting of a 220hrtz tone
+;   for a duration of 1 second. it uses the fader to fade-in
+;   at the start and fade-out at the end.
+;
+
+timer
+t
+    timings
+        time seconds 0
+        time seconds 1
+    timings
+    time_is_relative off
+t
+
+clock
+c
+    in_freq_mod1 off
+    freq 220
+    freq_mod1_size 1.0
+c
+
+wave
+s
+    in_phase_step   c out_phase_step
+    type            sine
+s
+
+fader
+f
+    in_bar      t out_count
+    start_bar      0
+    end_bar        1
+    fade_in_time   10
+    fade_out_time  30
+f
+
+multiplier
+m
+    in_signal1 s out_output
+    in_signal2 f out_output
+m
+
+wavfile_out
+w
+    in_left         m out_output
+    in_right        m out_output
+    in_bar          f out_bar
+    snapshot_mode   off
+    data_format     float32
+    filename        simple.wav
+    start_bar       0
+    end_bar         1
+w
+
+wcnt_exit
+x
+    in_bar      f out_bar
+    exit_bar    1
+x
+
+wcnt-1.26/jwmsynth

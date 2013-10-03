@@ -66,7 +66,7 @@ bool freq_generator::set_param(param::TYPE pt, const void* data)
             freq_range_lo = *(double*)data;
             return true;
         case param::STEP_COUNT:
-            step_count = *(short*)data;
+            step_count = *(wcint_t*)data;
             return true;
         default:
             return false;
@@ -88,8 +88,8 @@ const void* freq_generator::get_param(param::TYPE pt) const
 
 errors::TYPE freq_generator::validate()
 {
-    if (!validate_param(param::STEP_COUNT, errors::ABOVE1))
-        return errors::ABOVE1;
+    if (!validate_param(param::STEP_COUNT, errors::RANGE_COUNT))
+        return errors::RANGE_COUNT;
 
     if (!validate_param(param::FREQ_RANGE_HI, errors::RANGE_FREQ))
         return errors::RANGE_FREQ;

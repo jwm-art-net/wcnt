@@ -35,7 +35,7 @@ private:
     STATUS play_state;
     STATUS recycle;
     STATUS zero_retrigger_mode;
-    short drop_check_range;
+    wcint_t drop_check_range;
     wave_vertex** vertices;
     wave_vertex* vertex;
     long vx_ix;

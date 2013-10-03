@@ -229,11 +229,11 @@ errors::TYPE note_data::validate()
     } else if (note_type == NOTE_TYPE_EDIT)
         return errors::NO_ERROR;
 
-    if (!validate_param(param::NOTE_POS, errors::NEGATIVE))
-        return errors::NEGATIVE;
+    if (!validate_param(param::NOTE_POS, errors::RANGE_COUNT))
+        return errors::RANGE_COUNT;
 
-    if (!validate_param(param::NOTE_LEN, errors::NEGATIVE))
-        return errors::NEGATIVE;
+    if (!validate_param(param::NOTE_LEN, errors::RANGE_COUNT))
+        return errors::RANGE_COUNT;
 
     return errors::NO_ERROR;
 }

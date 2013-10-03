@@ -105,13 +105,13 @@ const void* sequencer::set_in(input::TYPE it, const void* o)
     case input::IN_BAR_TRIG:
         return in_bar_trig = (STATUS*)o;
     case input::IN_BAR:
-        return in_bar = (short*)o;
+        return in_bar = (wcint_t*)o;
     case input::IN_POS_STEP_SIZE:
         return in_pos_step_size = (double*)o;
     case input::IN_BEATS_PER_BAR:
-        return in_beats_per_bar = (short*)o;
+        return in_beats_per_bar = (wcint_t*)o;
     case input::IN_BEAT_VALUE:
-        return in_beat_value = (short*)o;
+        return in_beat_value = (wcint_t*)o;
     default:
         return 0;
     }
@@ -144,7 +144,7 @@ bool sequencer::set_param(param::TYPE pt, const void* data)
             vel_response = *(double*)data;
             return true;
         case param::START_BAR:
-            start_bar = *(short*)data;
+            start_bar = *(wcint_t*)data;
             return true;
         default:
             return false;
@@ -189,8 +189,8 @@ errors::TYPE sequencer::validate()
 {
     if (!validate_param(param::VELOCITY_RESPONSE, errors::NEGATIVE))
         return errors::NEGATIVE;
-    if (!validate_param(param::START_BAR, errors::NEGATIVE))
-        return errors::NEGATIVE;
+    if (!validate_param(param::START_BAR, errors::RANGE_COUNT))
+        return errors::RANGE_COUNT;
 
     return errors::NO_ERROR;
 }
@@ -209,8 +209,8 @@ riff_node* sequencer::add_riff_node(riff_node* rn)
         return 0;
     llitem* oldrn_i = find_in_data_or_last_less_than(
         sneak_first(), rn, &riff_node::get_start_bar);
-    short rep = rn->get_repeat();
-    short repstr = rn->get_repeat_stripe();
+    wcint_t rep = rn->get_repeat();
+    wcint_t repstr = rn->get_repeat_stripe();
     do{
         if (oldrn_i) {
             if (oldrn_i->get_data()->get_start_bar()
@@ -356,7 +356,7 @@ void sequencer::run()
             riff_pos -= riff_len;
             riff_len = 0;
         }
-        short bl = (short)(timemap::TPQN * (4.0 / (double)*in_beat_value));
+        wcint_t bl = (wcint_t)(timemap::TPQN * (4.0 / (double)*in_beat_value));
         riff_len += (*in_beats_per_bar * bl);
     }
     else if (out_riff_start_trig == ON) {

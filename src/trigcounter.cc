@@ -63,10 +63,10 @@ bool trigcounter::set_param(param::TYPE pt, const void* data)
     switch(pt)
     {
         case param::PRE_COUNT:
-            pre_count = *(short*)data;
+            pre_count = *(wcint_t*)data;
             return true;
         case param::COUNT:
-            count = *(short*)data;
+            count = *(wcint_t*)data;
             return true;
         case param::WRAP:
             wrap = *(STATUS*)data;
@@ -89,17 +89,11 @@ const void* trigcounter::get_param(param::TYPE pt) const
 
 errors::TYPE trigcounter::validate()
 {
-    if (!validate_param(param::PRE_COUNT, errors::NEGATIVE))
-        return errors::NEGATIVE;
+    if (!validate_param(param::PRE_COUNT, errors::RANGE_COUNT))
+        return errors::RANGE_COUNT;
 
-    if (!validate_param(param::COUNT, errors::ABOVE1))
-        return errors::ABOVE1;
-
-    if (count < 1){
-        sm_err("PPO %s", "(I'm as confused as you).");
-        invalidate();
-        return errors::ERROR;
-    }
+    if (!validate_param(param::COUNT, errors::RANGE_COUNT1))
+        return errors::RANGE_COUNT1;
     return errors::NO_ERROR;
 }
 

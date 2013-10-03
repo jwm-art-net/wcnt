@@ -1,4 +1,6 @@
 #include "../include/stockerrs.h"
+#include "../include/types.h"
+
 #include <iostream>
 
 namespace errors
@@ -14,14 +16,16 @@ namespace errors
     // CAT_NUM_OUT_OF_RANGE: "exceeds range..."
     { RANGE_0_1,        "0.0 ~ 1.0",        CAT_NUM_OUT_OF_RANGE,       0   },
     { RANGE_M1_1,       "-1.0 ~ 1.0",       CAT_NUM_OUT_OF_RANGE,       0   },
-    { RANGE_CLIP,       "1 ~ 32767",        CAT_NUM_OUT_OF_RANGE,       0   },
-    { RANGE_AMP,        "-32767 ~ 32767",   CAT_NUM_OUT_OF_RANGE,       0   },
     { RANGE_FEED,       "-2.0 ~ 2.0",       CAT_NUM_OUT_OF_RANGE,       0   },
     { RANGE_DEGS,       "0.0 ~ 360.0",      CAT_NUM_OUT_OF_RANGE,       0   },
     { RANGE_SEMI,       "-12.0 ~ 12.0",     CAT_NUM_OUT_OF_RANGE,       0   },
+    { RANGE_SEMI2,      "-24.0 ~ 24.0",     CAT_NUM_OUT_OF_RANGE,       0   },
     { RANGE_OCT,        "-24.0 ~ 8.0",      CAT_NUM_OUT_OF_RANGE,       0   },
     { RANGE_BPM,        "-500 ~ 500",       CAT_NUM_OUT_OF_RANGE,       0   },
     { RANGE_BEAT,       "2 ~ 32",           CAT_NUM_OUT_OF_RANGE,       0   },
+    { RANGE_COUNT,      "0 ~ " TOSTRING(WCINT_T_MAX), CAT_NUM_OUT_OF_RANGE, 0},
+    { RANGE_COUNT1,     "1 ~ " TOSTRING(WCINT_T_MAX), CAT_NUM_OUT_OF_RANGE, 0},
+    { RANGE_SAMPLE,     "0 ~ " TOSTRING(SAMP_T_MAX),  CAT_NUM_OUT_OF_RANGE, 0},
     // CAT_NUM_OUT_OF_RANGE_OR_EQ: "should be within range..."
     { RANGE_0_1_IN,     "0.0 ~ 1.0",            CAT_NUM_OUT_OF_RANGE_OR_EQ, 0   },
     { RANGE_M1_1_IN,    "-1.0 ~ 1.0",           CAT_NUM_OUT_OF_RANGE_OR_EQ, 0   },

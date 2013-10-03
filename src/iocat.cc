@@ -6,8 +6,8 @@ namespace iocat
  {
     { ERR_TYPE,     "Error Cat",                    0, "Error Category!" },
     { DOUBLE,       "float_value",                  0, "Floating point value, ie 1.375." },
-    { SHORT,        "integer_value",                0, "Whole number, ie 124." },
-    { SAMP_T,       "integer_value",                0, "Whole number, ie 124." },
+    { WCINT_T,      "integer_value",                0, "Whole number, ie 12431." },
+    { SAMP_T,       "integer_value",                0, "Whole number, ie 124222211241." },
     { TRIG,         "on/off",                       0, "on or off." },
     { STATE,        "on/off",                       0, "on or off." },
     { STRING,       "text_string",                  0, "A sequence of characters not containing spaces." },

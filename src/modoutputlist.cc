@@ -77,8 +77,8 @@ modoutputlist* modoutputlist::list_of_category_orderpref(
         return 0;
     modoutputlist*
         sorted_outs = new modoutputlist;
-    short op_count = 0;
-    short nop_count = 0;
+    wcint_t op_count = 0;
+    wcint_t nop_count = 0;
     output::TYPE* op = out_prefs;
     while (*op > output::ERR_TYPE && *op < output::OUT_LAST) {
         op_count++;
@@ -89,7 +89,7 @@ modoutputlist* modoutputlist::list_of_category_orderpref(
         nop_count++;
         nop++;
     }
-    short a,b,c;
+    wcint_t a,b,c;
     for (a = 0; a < op_count; a++)
     {
         for (b = 0; b < nop_count; b++)
@@ -121,8 +121,8 @@ modoutputlist* modoutputlist::list_of_category_orderpref(
             }
         }
     }
-    short out_prefchk; // add remaining valid outputs
-    short not_prefchk;
+    wcint_t out_prefchk; // add remaining valid outputs
+    wcint_t not_prefchk;
     modoutput* output = pot_outs->goto_first();
     while(output != 0)
     {
@@ -139,7 +139,7 @@ modoutputlist* modoutputlist::list_of_category_orderpref(
             }
         }
         not_prefchk = 0;
-        for (short b = 0; b < nop_count; b++)
+        for (wcint_t b = 0; b < nop_count; b++)
         {
             if (not_out_prefs[b] == output->get_outputtype())
                 not_prefchk++;

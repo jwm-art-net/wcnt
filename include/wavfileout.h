@@ -31,7 +31,7 @@ private:
     // inputs
     const double* in_l;
     const double* in_r;
-    const short* in_bar;
+    const wcint_t* in_bar;
 
     // outputs
     STATUS out_write_start_trig;
@@ -41,8 +41,8 @@ private:
     // params
     STATUS snapshot_mode;
     DATA_FMT data_format;
-    short start_bar;
-    short end_bar;
+    wcint_t start_bar;
+    wcint_t end_bar;
     char* filename;
 
     // other/working
@@ -51,7 +51,7 @@ private:
     WAV_STATUS status;
     st_data * st_buffer;
     samp_t sample_total;
-    short buff_pos;
+    wcint_t buff_pos;
     void write_wav_at(st_data* buf, samp_t smp);
     void write_wav_chunk(st_data* buf, samp_t smp, int bsize);
     void timestamp_filename();

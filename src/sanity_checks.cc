@@ -104,8 +104,8 @@ bool mod_check_inputs(synthmod* sm)
             iocat::TYPE ioc = inputnames::get_category(it);
             // the 'outputs' to be used for setting the inputs...
             double          out_double  = 1.23456789;
-            short           out_short   = 32154;
-            samp_t   out_ulong   = 6754312;
+            wcint_t         out_wcint_t   = 32154;
+            samp_t          out_ulong   = 6754312;
             STATUS          out_trig    = OFF;
             STATUS          out_state   = ON;
             const char*     out_string  = "What's going on? Well....";
@@ -115,8 +115,8 @@ bool mod_check_inputs(synthmod* sm)
                 case iocat::DOUBLE:
                     in_ret = sm->set_in(it, &out_double);
                     break;
-                case iocat::SHORT:
-                    in_ret = sm->set_in(it, &out_short);
+                case iocat::WCINT_T:
+                    in_ret = sm->set_in(it, &out_wcint_t);
                     break;
                 case iocat::SAMP_T:
                     in_ret = sm->set_in(it, &out_ulong);
@@ -141,8 +141,8 @@ bool mod_check_inputs(synthmod* sm)
                     if (*(double*)in_ret != out_double)
                             mismatched = true;
                         break;
-                case iocat::SHORT:
-                    if (*(short*)in_ret != out_short)
+                case iocat::WCINT_T:
+                    if (*(wcint_t*)in_ret != out_wcint_t)
                         mismatched = true;
                     break;
                 case iocat::SAMP_T:
@@ -181,8 +181,8 @@ bool mod_check_inputs(synthmod* sm)
                     if (*(double*)sm->get_in(it) != out_double)
                             mismatched = true;
                         break;
-                case iocat::SHORT:
-                    if (*(short*)sm->get_in(it) != out_short)
+                case iocat::WCINT_T:
+                    if (*(wcint_t*)sm->get_in(it) != out_wcint_t)
                         mismatched = true;
                     break;
                 case iocat::SAMP_T:
@@ -256,7 +256,7 @@ bool mod_check_params(synthmod * sm)
         while(param) {
             // the values to be used for setting the params...
             double          par_double  = -0.789;
-            short           par_short   = 15241;
+            wcint_t           par_wcint_t   = 15241;
             samp_t   par_ulong   = 531627;
             STATUS          par_state   = ON;
             const char*     par_string  = "c#-1";
@@ -271,8 +271,8 @@ bool mod_check_params(synthmod * sm)
                 case iocat::DOUBLE:
                     set_ret = sm->set_param(pt, &par_double);
                     break;
-                case iocat::SHORT:
-                    set_ret = sm->set_param(pt, &par_short);
+                case iocat::WCINT_T:
+                    set_ret = sm->set_param(pt, &par_wcint_t);
                     break;
                 case iocat::SAMP_T:
                     set_ret = sm->set_param(pt, &par_ulong);
@@ -305,8 +305,8 @@ bool mod_check_params(synthmod * sm)
                     if (*(double*)sm->get_param(pt) != par_double)
                             mismatched = true;
                         break;
-                case iocat::SHORT:
-                    if (*(short*)sm->get_param(pt) != par_short)
+                case iocat::WCINT_T:
+                    if (*(wcint_t*)sm->get_param(pt) != par_wcint_t)
                         mismatched = true;
                     break;
                 case iocat::SAMP_T:

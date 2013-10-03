@@ -24,12 +24,12 @@ private:
     // outputs
     STATUS out_trig;
     STATUS out_not_trig;
-    short  out_pre_count;
-    short  out_count;
+    wcint_t  out_pre_count;
+    wcint_t  out_count;
     STATUS out_play_state;
     // params
-    short pre_count;
-    short count;
+    wcint_t pre_count;
+    wcint_t count;
     STATUS wrap;
     void init_first();
     

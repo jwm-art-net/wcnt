@@ -11,7 +11,7 @@ riff_node::riff_node() :
     init_first();
 }
 
-riff_node::riff_node(riffdata* rd, short barpos) :
+riff_node::riff_node(riffdata* rd, wcint_t barpos) :
  dobj(dataobj::SIN_RIFFNODE), start_bar(barpos), riff_source(rd),
  transpose(0), repeat(0), repeat_stripe(0)
 {
@@ -22,7 +22,7 @@ riff_node::~riff_node()
 {
 }
 
-riff_node* riff_node::duplicate_for_bar(short barpos)
+riff_node* riff_node::duplicate_for_bar(wcint_t barpos)
 {
     // don't duplicate repeat settings...
     riff_node* newrn = new riff_node(riff_source, barpos);
@@ -38,16 +38,16 @@ bool riff_node::set_param(param::TYPE pt, const void* data)
             set_riff_source((riffdata*)data);
             return true;
         case param::BAR:
-            set_start_bar(*(short*)data);
+            set_start_bar(*(wcint_t*)data);
             return true;
         case param::TRANSPOSE:
-            set_transpose(*(short*)data);
+            set_transpose(*(wcint_t*)data);
             return true;
         case param::REPEAT:
-            set_repeat(*(short*)data);
+            set_repeat(*(wcint_t*)data);
             return true;
         case param::REPEAT_STRIPE:
-            set_repeat_stripe(*(short*)data);
+            set_repeat_stripe(*(wcint_t*)data);
             return true;
         default:
             return false;
@@ -76,14 +76,17 @@ errors::TYPE riff_node::validate()
         return errors::ERROR;
     }
 
-    if (!validate_param(param::BAR, errors::NEGATIVE))
-        return errors::NEGATIVE;
+    if (!validate_param(param::BAR, errors::RANGE_COUNT))
+        return errors::RANGE_COUNT;
 
-    if (!validate_param(param::REPEAT, errors::NEGATIVE))
-        return errors::NEGATIVE;
+    if (!validate_param(param::REPEAT, errors::RANGE_COUNT))
+        return errors::RANGE_COUNT;
 
-    if (!validate_param(param::REPEAT_STRIPE, errors::NEG_OR_ZERO))
-        return errors::NEG_OR_ZERO;
+    if (!validate_param(param::REPEAT_STRIPE, errors::RANGE_COUNT1))
+        return errors::RANGE_COUNT1;
+
+    if (!validate_param(param::TRANSPOSE, errors::RANGE_SEMI2))
+        return errors::RANGE_SEMI2;
 
     return errors::NO_ERROR;
 }

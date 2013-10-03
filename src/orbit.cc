@@ -87,6 +87,14 @@ const void* orbit::get_param(param::TYPE pt) const
     }
 }
 
+errors::TYPE orbit::validate()
+{
+    if (!validate_param(param::TEST_ITER, errors::RANGE_SAMPLE))
+        return errors::RANGE_SAMPLE;
+
+    return errors::NO_ERROR;
+}
+
 void orbit::init()
 {
     double max_px = 0, max_py = 0, max_nx = 0, max_ny = 0;

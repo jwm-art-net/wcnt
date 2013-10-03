@@ -41,7 +41,7 @@ private:
     const double* in_freq_mod1;
     const double* in_freq_mod2;
 // parameters
-    short octave_offset;
+    wcint_t octave_offset;
     double semitones;
     double freq_mod1size;
     double freq_mod2size;

@@ -34,7 +34,7 @@ private:
     double pwdeg_rad;
     double poff_deg;
     double target;
-    short cycle;
+    wcint_t cycle;
     void init_first();
     
 };

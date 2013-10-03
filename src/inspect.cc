@@ -58,7 +58,7 @@ const void* inspect::set_in(input::TYPE it, const void* o)
     {
     case input::IN_INSP_DF:        return in_df = (const double*)o;
     case input::IN_INSP_DF_TRIG:   return in_df_trig = (const STATUS*)o;
-    case input::IN_INSP_SI:        return in_si = (const short*)o;
+    case input::IN_INSP_SI:        return in_si = (const wcint_t*)o;
     case input::IN_INSP_SI_TRIG:   return in_si_trig = (const STATUS*)o;
     case input::IN_INSP_UL:        return in_ul = (const samp_t*)o;
     case input::IN_INSP_UL_TRIG:   return in_ul_trig = (const STATUS*)o;

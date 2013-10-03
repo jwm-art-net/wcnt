@@ -116,7 +116,7 @@ void timemap::init()
     meterchangebar = currentmeter->get_bar();
     out_beats_per_bar = currentmeter->get_beatsperbar();
     out_beat_value = currentmeter->get_beatvalue();
-    beatlength = (short)(TPQN * (4.0 / (float)out_beat_value));
+    beatlength = (wcint_t)(TPQN * (4.0 / (float)out_beat_value));
     barlength = out_beats_per_bar * beatlength;
     pos_in_bar = barlength; // trig first bar - not favorite sollution
     out_bar = -1;           // ...it just gets worse!
@@ -135,7 +135,7 @@ void timemap::run()
         if (currentmeter) {
             out_beats_per_bar = currentmeter->get_beatsperbar();
             out_beat_value = currentmeter->get_beatvalue();
-            beatlength = (short)(TPQN * (4.0 / (double)out_beat_value));
+            beatlength = (wcint_t)(TPQN * (4.0 / (double)out_beat_value));
             barlength = out_beats_per_bar * beatlength;
             out_meter_change_trig = ON;
             currentmeter = meter_map->goto_next();
@@ -216,7 +216,7 @@ void timemap::run()
     pos_in_bar += out_pos_step_size;
 }
 
-samp_t timemap::notelen_to_samples(short nl) const
+samp_t timemap::notelen_to_samples(wcint_t nl) const
 {
     return (samp_t)(jwm.samplerate()
      * ((double) 60 / out_bpm) * ((double)nl / beatlength));
@@ -228,13 +228,13 @@ samp_t timemap::ms_to_samples(double ms) const
     return (samp_t)(jwm.samplerate() * (ms / 1000));
 }
 
-double timemap::notelen_to_frequency(short nl) const
+double timemap::notelen_to_frequency(wcint_t nl) const
 {
     return 1000 / (((double)60 / out_bpm) *
                    ((double)nl / beatlength) * 1000);
 }
 
-double timemap::notelen_to_ms(short nl) const
+double timemap::notelen_to_ms(wcint_t nl) const
 {
     return ((double)60 / out_bpm) * ((double)nl / beatlength) * 1000;
 }

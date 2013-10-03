@@ -35,9 +35,9 @@ bool modparam::validate(synthmod* sm, errors::TYPE et)
         return false;
     switch(param::names::category(param_type))
     {
-    case iocat::DOUBLE: return check_value(*(const double*)data, et);
-    case iocat::SHORT:  return check_value(*(const short*)data, et);
-    case iocat::SAMP_T: return check_value(*(const samp_t*)data, et);
+    case iocat::DOUBLE:     return check_value(*(const double*)data, et);
+    case iocat::WCINT_T:    return check_value(*(const wcint_t*)data, et);
+    case iocat::SAMP_T:     return check_value(*(const samp_t*)data, et);
     default:
         return false;
     }

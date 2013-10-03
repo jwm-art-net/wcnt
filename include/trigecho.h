@@ -23,13 +23,13 @@ private:
     // outputs
     STATUS out_trig;
     double out_velocity;
-    short  out_count;
+    wcint_t  out_count;
     // params
     double delay_time;
-    short count;
+    wcint_t count;
     STATUS send_input_out;
     // working
-    short* past_trigs; //array
+    wcint_t* past_trigs; //array
     samp_t pastmax;
     samp_t pastpos;
     double vel_count_ratio;

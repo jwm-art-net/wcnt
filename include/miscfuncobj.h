@@ -56,18 +56,18 @@ class _vel_
 class _start_bar_
 {
  public:
-    _start_bar_(short & n) : value(n) {};
-    _start_bar_(short const & n) : value(n) {};
+    _start_bar_(wcint_t & n) : value(n) {};
+    _start_bar_(wcint_t const & n) : value(n) {};
 
-    bool operator()(short & n) const {
+    bool operator()(wcint_t & n) const {
         return value == n;
     }
 
-    bool operator()(short const & n) const {
+    bool operator()(wcint_t const & n) const {
         return value == n;
     }
  private:
-    const short & value;
+    const wcint_t & value;
 };
 
 #endif

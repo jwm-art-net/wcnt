@@ -4,18 +4,16 @@
 
 nonezero::nonezero(const char* uname) :
 
- synthmod(
-    module::NONEZERO,
-    uname,
+ synthmod(module::NONEZERO, uname,
     SM_EMPTY_RUN | SM_UNGROUPABLE | SM_UNDUPLICABLE),
 
- out_none_double(0.00), out_none_short(0), out_none_samp_t(0),
+ out_none_double(0.00), out_none_wcint_t(0), out_none_samp_t(0),
  out_none_STATUS(OFF), out_none_string(0)
 {
     out_none_string = new char[1];
     *out_none_string = '\0';
     register_output(output::OUT_NONE_DOUBLE);
-    register_output(output::OUT_NONE_SHORT);
+    register_output(output::OUT_NONE_WCINT_T);
     register_output(output::OUT_NONE_SAMP_T);
     register_output(output::OUT_NONE_TRIG);
     register_output(output::OUT_NONE_STATE);
@@ -33,7 +31,7 @@ const void* nonezero::get_out(output::TYPE ot) const
     switch(ot)
     {
     case output::OUT_NONE_DOUBLE:  return &out_none_double;
-    case output::OUT_NONE_SHORT:   return &out_none_short;
+    case output::OUT_NONE_WCINT_T: return &out_none_wcint_t;
     case output::OUT_NONE_SAMP_T:  return &out_none_samp_t;
     case output::OUT_NONE_TRIG:    return &out_none_STATUS;
     case output::OUT_NONE_STATE:   return &out_none_STATUS;

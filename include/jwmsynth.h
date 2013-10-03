@@ -30,9 +30,9 @@ class jwmsynth
     char err_msg[STRBUFLEN];
 
 //--- when to stop ---//
-    short exit_bar;
+    wcint_t exit_bar;
     const STATUS* in_bar_trig;
-    const short*  in_bar;
+    const wcint_t*  in_bar;
 };
 
 #endif

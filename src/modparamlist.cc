@@ -22,7 +22,8 @@ modparam* modparamlist::add_param(module::TYPE smt, param::TYPE pt)
 
 bool modparamlist::validate(synthmod* sm, param::TYPE pt, errors::TYPE et)
 {
-    if (!sm) return false;
+    if (!sm)
+        return false;
     if (!errors::stock::chk(et))
         return false;
     #ifdef DEBUG

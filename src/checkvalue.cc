@@ -34,6 +34,11 @@ bool check_value(long double n, errors::TYPE et)
          && n <=  jwm_ranges::max_semitone)
             return true;
         break;
+    case errors::RANGE_SEMI2:
+        if (n >= -jwm_ranges::max_semitone * 2
+         && n <=  jwm_ranges::max_semitone * 2)
+            return true;
+        break;
     case errors::RANGE_OCT:
         if (n >= jwm_ranges::min_oct
          && n <= jwm_ranges::max_oct)
@@ -48,7 +53,19 @@ bool check_value(long double n, errors::TYPE et)
         if (n >= 2 && n <= 32)
             return true;
         break;
-    case errors::RANGE_0_1_IN:
+    case errors::RANGE_COUNT:
+        if (n >= 0 && n <= WCINT_T_MAX)
+            return true;
+        break;
+    case errors::RANGE_COUNT1:
+        if (n >= 1 && n <= WCINT_T_MAX)
+            return true;
+        break;
+     case errors::RANGE_SAMPLE:
+        if (n >= 0 && n <= SAMP_T_MAX)
+            return true;
+        break;
+   case errors::RANGE_0_1_IN:
         if (n > 0 && n < 1)
             return true;
         break;
@@ -73,6 +90,7 @@ bool check_value(long double n, errors::TYPE et)
             return true;
         break;
     default:
+        std::cout << "***** BADNESS: Unhandled error range :-/ *****" << std::endl;
         return false;
     }
     return false;

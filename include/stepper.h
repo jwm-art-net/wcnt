@@ -58,7 +58,7 @@ private:
     STATUS const* in_restart_trig;
     double const* in_modulation;
     // params
-    short step_count;
+    wcint_t step_count;
     double up_thresh;
     double lo_thresh;
     double rtime;
@@ -68,8 +68,8 @@ private:
     // working:
     double output;
     double last_output;
-    short step_no;
-    short next_step_no;
+    wcint_t step_no;
+    wcint_t next_step_no;
     double* up_levels; // two arrays of size step_count
     double* lo_levels; // hold the step shape split even.
     samp_t rtime_samp;

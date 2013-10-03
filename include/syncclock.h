@@ -21,8 +21,8 @@ private:
     // inputs
     const double* in_bpm;
     const double* in_pos_stepsz;
-    const short* in_beats_per_bar;
-    const short* in_beat_value;
+    const wcint_t* in_beats_per_bar;
+    const wcint_t* in_beat_value;
     const STATUS* in_phase_trig;
     const double* in_freq_mod1;
     const double* in_freq_mod2;
@@ -32,7 +32,7 @@ private:
     // parameters
     double freq_mod1size;
     double freq_mod2size;
-    short  tpqn;
+    wcint_t  tpqn;
     double note_length;
     double snap_to;
     // working

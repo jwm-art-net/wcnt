@@ -1,0 +1,69 @@
+wcnt-1.26/jwmsynth
+
+samplerate 44100
+
+; pattern_trig.wc
+;   creates a series of tone pulses, one every second.
+;   
+
+clock
+c
+    in_freq_mod1    off
+    freq   10
+    freq_mod1_size 1.0
+c
+
+pattern_trig
+pt
+    in_trig c out_phase_trig
+    pattern 110
+pt
+
+fader
+f
+    in_bar          pt out_count
+    start_bar       0
+    end_bar         1
+    fade_in_time   25
+    fade_out_time  125
+f
+
+constant_note
+c-1
+    name c-1
+c-1
+
+wave
+s
+    in_phase_step c-1 out_phase_step
+    type sine
+s
+
+multiplier
+m
+    in_signal1 s out_output
+    in_signal2 f out_output
+m
+
+wavfile_out
+w
+    in_left      m out_output
+    in_right     m out_output
+    in_bar       f out_bar
+    snapshot_mode  off
+    data_format    pcm16
+    filename       pattern_trig_test.wav
+    start_bar      0
+    end_bar        18200
+w
+
+wcnt_exit
+x
+    in_bar      f out_bar
+    exit_bar    18200
+x
+
+wcnt-1.26/jwmsynth
+
+
+

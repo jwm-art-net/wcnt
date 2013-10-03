@@ -106,7 +106,7 @@ bool peak_detector::set_param(param::TYPE pt, const void* data)
             force_abort = *(STATUS*)data;
             return true;
         case param::MAXPEAKS:
-            max_peaks = *(short*)data;
+            max_peaks = *(wcint_t*)data;
             return true;
         default:
             return false;
@@ -124,6 +124,14 @@ const void* peak_detector::get_param(param::TYPE pt) const
         case param::MAXPEAKS:      return &max_peaks;
         default: return 0;
     }
+}
+
+errors::TYPE peak_detector::validate()
+{
+    if (!validate_param(param::MAXPEAKS, errors::RANGE_COUNT))
+        return errors::RANGE_COUNT;
+
+    return errors::NO_ERROR;
 }
 
 void peak_detector::init_first()

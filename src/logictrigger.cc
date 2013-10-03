@@ -58,7 +58,7 @@ bool logictrigger::set_param(param::TYPE pt, const void* data)
             logicfunc = (LOGIC_FUNC)(*(int*)data);
             return true;
         case param::PRECISION:
-            precision = *(short*)data;
+            precision = *(wcint_t*)data;
             return true;
         default:
             return false;
@@ -73,6 +73,13 @@ const void* logictrigger::get_param(param::TYPE pt) const
         case param::PRECISION: return &precision;
         default: return 0;
     }
+}
+
+errors::TYPE logictrigger::validate()
+{
+    if (!validate_param(param::PRECISION, errors::RANGE_COUNT))
+        return errors::RANGE_COUNT;
+    return errors::NO_ERROR;
 }
 
 void logictrigger::run()

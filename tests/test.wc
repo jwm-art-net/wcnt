@@ -8,6 +8,7 @@ t
         time seconds 0
         time seconds 1
     timings
+    time_is_relative off
 t
 
 clock
@@ -26,7 +27,6 @@ s
 fader
 faded
     in_bar      t out_count
-    in_bar_trig t out_trig
     start_bar      0
     end_bar        1
     fade_in_time   10
@@ -44,7 +44,6 @@ w
     in_left     m out_output
     in_right    m out_output
     in_bar      faded out_bar
-    in_bar_trig faded out_bar_trig
     snapshot_mode off
     data_format float32
     filename    test.wav

@@ -69,7 +69,7 @@ serialwavfileout::set_in(input::TYPE it, const void* o)
         case input::IN_RIGHT:
             return in_r = (const double*)o;
         case input::IN_BAR:
-            return in_bar = (const short*)o;
+            return in_bar = (const wcint_t*)o;
         case input::IN_WRITE_TRIG:
             return in_write_trig = (STATUS*)o;
         case input::IN_STOP_TRIG:
@@ -110,13 +110,13 @@ serialwavfileout::set_param(param::TYPE pt, const void* data)
             set_wav_basename((const char*)data);
             return true;
         case param::START_BAR:
-            start_bar = *(short*)data;
+            start_bar = *(wcint_t*)data;
             return true;
         case param::END_BAR:
-            end_bar = *(short*)data;
+            end_bar = *(wcint_t*)data;
             return true;
         case param::COUNT:
-            count = *(short*)data;
+            count = *(wcint_t*)data;
             return true;
         default:
             return false;
@@ -138,8 +138,8 @@ const void* serialwavfileout::get_param(param::TYPE pt) const
 
 errors::TYPE serialwavfileout::validate()
 {
-    if (!validate_param(param::START_BAR, errors::NEGATIVE))
-        return errors::NEGATIVE;
+    if (!validate_param(param::START_BAR, errors::RANGE_COUNT))
+        return errors::RANGE_COUNT;
 
     if (end_bar <= start_bar) {
         sm_err("%s should be after %s.",
@@ -149,8 +149,8 @@ errors::TYPE serialwavfileout::validate()
         return errors::ERROR;
     }
 
-    if (!validate_param(param::COUNT, errors::NEGATIVE))
-        return errors::NEGATIVE;
+    if (!validate_param(param::COUNT, errors::RANGE_COUNT))
+        return errors::RANGE_COUNT;
 
     return errors::NO_ERROR;
 }

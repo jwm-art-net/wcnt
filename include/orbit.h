@@ -20,6 +20,8 @@ class orbit : public synthmod
     const void* get_out(output::TYPE) const;
     bool set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE) const;
+    errors::TYPE validate();
+
  private:
     double out_x;
     double out_y;

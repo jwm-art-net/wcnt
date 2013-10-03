@@ -24,6 +24,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <sstream>
+#include <iostream>
 
 
 cmdline::cmdline(int const argc, const char** const argv) :
@@ -117,8 +118,6 @@ cmdline::cmd_opts_data cmdline::data[OPTS_COUNT] =
     &cmdline::about
 }
 };
-
-#include <iostream>
 
 bool cmdline::scan()
 {
@@ -479,7 +478,7 @@ void cmdline::dobj_help(module::TYPE smt)
             msg += "\n        ";
             msg += dataobj::names::get(sprogtype);
             delete jwm.get_dobjlist()->create_dobj(sprogtype);
-            dobj_help_params(sprogtype);
+            dobj_help_params(sprogtype, 2);
             dd = ddlist->goto_next();
         }
         msg += "\n    ";
@@ -519,13 +518,14 @@ void cmdline::dobj_help()
 
     const char* descr = dataobj::names::descr(dt);
     if (descr) {
+        msg += "\n// ";
         std::string* d = justify(descr, 60, ' ', "\n// ", 0);
         msg += *d;
         delete d;
         msg += "\n//----";
     }
 
-    dobj_help_params(dt);
+    dobj_help_params(dt, 1);
 
     dobjdobjlist* ddlist = jwm.get_topdobjlist()->get_first_of_type(dt);
 
@@ -537,6 +537,15 @@ void cmdline::dobj_help()
             dataobj::TYPE sprogtype = dd->get_dobj_sprog();
             msg += "\n    ";
             msg += dataobj::names::get(sprogtype);
+
+            descr = dataobj::names::descr(sprogtype);
+            if (descr) {
+                msg += " // ";
+                std::string* d = justify(descr, 60, ' ', "\n    // ", 0);
+                msg += *d;
+                delete d;
+            }
+
             dobjdobjlist::linkedlist* sddlist = 0;
             sddlist = ddlist->get_dobjdobjlist_for_dobjtype(sprogtype);
             dobjdobj* sdd = sddlist->goto_first();
@@ -545,14 +554,14 @@ void cmdline::dobj_help()
                 msg += "\n        ";
                 msg += dataobj::names::get(ssprogtype);
                 delete jwm.get_dobjlist()->create_dobj(ssprogtype);
-                dobj_help_params(ssprogtype);
+                dobj_help_params(ssprogtype, 3);
                 sdd = sddlist->goto_next();
             }
             delete sddlist;
             msg += "\n    ";
             msg += dataobj::names::get(sprogtype);
             delete jwm.get_dobjlist()->create_dobj(sprogtype);
-            dobj_help_params(sprogtype);
+            dobj_help_params(sprogtype, 2);
             dd = ddlist->goto_next();
         }
         ddlist = jwm.get_topdobjlist()->get_next_of_type();
@@ -564,7 +573,7 @@ void cmdline::dobj_help()
     return;
 }
 
-void cmdline::dobj_help_params(dataobj::TYPE dt)
+void cmdline::dobj_help_params(dataobj::TYPE dt, int level)
 {
     char spaces[20];
     for (int i = 0; i < 20; spaces[i++] = ' ');
@@ -572,19 +581,17 @@ void cmdline::dobj_help_params(dataobj::TYPE dt)
     dobjparamlist::linkedlist*
         dparlist = new_list_of_by(jwm.get_dparlist(), dt);
 
-/*
-// debug
-*/
-
     if (!dparlist) {
         std::cout << "\nfailed to retrieve dobjparamlist for "
             << dataobj::names::get(dt);
         return;
     }
-/*
-// end debug
-*/
 
+    // display of strings like "parameters for /dobjname/" is
+    // somewhat problematic here, due to the fact many dobj
+    // contain other dobj and continually informing the user
+    // that here are parameters for them actually makes things
+    // more confusing by adding extraneous visual information.
 
     dobjparam* dparam = dparlist->goto_first();
     std::string dn;
@@ -597,9 +604,10 @@ void cmdline::dobj_help_params(dataobj::TYPE dt)
     }
     dparam = dparlist->goto_first();
     while(dparam) {
-        iocat::TYPE ioc = param::names::category(
-                                            dparam->get_partype());
-        msg += "\n            ";
+        iocat::TYPE ioc = param::names::category(dparam->get_partype());
+        msg += "\n";
+        for (int i = 0; i < level; ++i)
+            msg += "    ";
         param::TYPE pt = dparam->get_partype();
         dn = param::names::get(pt);
         msg += dn;
@@ -611,6 +619,13 @@ void cmdline::dobj_help_params(dataobj::TYPE dt)
         }
         else
             msg += iocat::names::get(ioc);
+
+        if (jwm.is_verbose()) {
+            const char* descr = param::names::descr(pt);
+            msg += " // ";
+            msg += descr;
+        }
+
         dparam = dparlist->goto_next();
     }
     delete dparlist;

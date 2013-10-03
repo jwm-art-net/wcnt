@@ -96,7 +96,7 @@ bool osc_clock::set_param(param::TYPE pt, const void* data)
     switch(pt)
     {
         case param::OCTAVE:
-            octave_offset = *(short*)data;
+            octave_offset = *(wcint_t*)data;
             return true;
         case param::TUNING_SEMITONES:
             semitones = *(double*)data;

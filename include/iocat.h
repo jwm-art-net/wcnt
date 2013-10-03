@@ -6,13 +6,7 @@
 // Used by triggers and switches and states
 
 // every input, output, and parameter, will be of a category from this
-// list
-
-// I was going to remove the CAT_SHORT type, based on the removal of
-// working with 16bit waveforms (ie passed through inputs/outpus) and
-// parameters for amplitude levels etc.
-// BUT, the CAT_SHORT is more appropriate for a number of other
-// ins/out/params which I'd overlooked...so keep :)
+// list... and then...
 
 namespace iocat
 {
@@ -23,7 +17,7 @@ namespace iocat
     // the following types cover all inputs and outputs:
     //----------------------------------------------------------------
     DOUBLE,     // signal, bpm, etc
-    SHORT,      // bar count, etc
+    WCINT_T,    // bar count, etc
     SAMP_T,     // sample positions etc
     TRIG,       // trigger      - ON/OFF - on for one sample only
     STATE,      // power/status - ON/OFF

@@ -78,7 +78,7 @@ glame_filter::set_param(param::TYPE pt, const void* data)
             freq_mod1size = *(double*)data;
             return true;
         case param::STAGES:
-            stages = *(short*)data;
+            stages = *(wcint_t*)data;
             return true;
         default:
             return false;
@@ -108,7 +108,7 @@ errors::TYPE glame_filter::validate()
     }
     if (stages < 1 || stages > 10){
         sm_err("%s must be within range 1 ~ 10",
-                    param::names::get(param::FREQ));
+                    param::names::get(param::STAGES));
         invalidate();
         return errors::ERROR;
     }

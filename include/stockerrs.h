@@ -23,21 +23,23 @@ namespace errors
     ERR_TYPE,       // erroneous error!
     NO_ERROR,       // no error
     // CAT_NUM_OUT_OF_RANGE:
-    RANGE_0_1,      // outside 0 ~ 1
-    RANGE_M1_1,     // outside -1 ~ 1
-    RANGE_CLIP,     // outside 1 ~ 32767
-    RANGE_AMP,      // outside -32767 ~ 32767
-    RANGE_FEED,     // outside feedback range prob -2 ~ 2
-    RANGE_DEGS,     // outside 0.0 ~ 360.0
-    RANGE_SEMI,     // outside -12.0 ~ 12.0
-    RANGE_OCT,      // outside -24.0 ~ 8.0 - overly generous.
-    RANGE_BPM,      // outside -500 ~ 500 (now relative)
-    RANGE_BEAT,     // outside 2 ~ 32
+    RANGE_0_1,      // 0 ~ 1
+    RANGE_M1_1,     // -1 ~ 1
+    RANGE_FEED,     // prob -2 ~ 2
+    RANGE_DEGS,     // 0.0 ~ 360.0
+    RANGE_SEMI,     // -12.0 ~ 12.0
+    RANGE_SEMI2,    // -24.0 ~ 24.0
+    RANGE_OCT,      // -24.0 ~ 8.0 - overly generous.
+    RANGE_BPM,      // -500 ~ 500 (now relative)
+    RANGE_BEAT,     // 2 ~ 32
+    RANGE_COUNT,    // 0 ~ WCINT_T_MAX
+    RANGE_COUNT1,   // 1 ~ WCINT_T_MAX
+    RANGE_SAMPLE,   // 0 ~ SAMP_T_MAX
     // CAT_NUM_OUT_OF_RANGE_OR_EQ:
-    RANGE_0_1_IN,   // outside 0 ~ 1 or is 0 or 1
-    RANGE_M1_1_IN,  // outside -1 ~ 1 or is -1 or 1
-    RANGE_FMOD,     // outside freq mod range prob 0 ~ 15
-    RANGE_FREQ,     // outside 0.0 ~ 1/4 samplerate or is either.
+    RANGE_0_1_IN,   // 0 ~ 1
+    RANGE_M1_1_IN,  // -1 ~ 1
+    RANGE_FMOD,     // 0 ~ 15
+    RANGE_FREQ,     // 0.0 ~ 1/4
     // CAT_NUM_BELOW:
     NEGATIVE,       // < 0 is bad
     NEG_OR_ZERO,    // <= 0 is bad

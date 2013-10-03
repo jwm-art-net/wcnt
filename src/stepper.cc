@@ -75,7 +75,7 @@ bool stepper::set_param(param::TYPE pt, const void* data)
     switch(pt)
     {
         case param::STEP_COUNT:
-            step_count = *(short*)data;
+            step_count = *(wcint_t*)data;
             return true;
         case param::UP_THRESH:
             up_thresh = *(double*)data;

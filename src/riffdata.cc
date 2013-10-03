@@ -7,8 +7,7 @@
 
 #include "../include/listwork.h"
 
-#include <iostream>
-
+#include <iostream> // for "ignoring note-edit" message
 
 #ifdef NOTE_EDIT_DEBUG
 using std::cout;
@@ -288,7 +287,7 @@ double riffdata::calc_riff_length(char beats_per_bar, char beat_value)
     if (!note)
         return 0;
     double note_off_pos = note->get_position() + note->get_length();
-    short bars = 1;
+    wcint_t bars = 1;
     double rifflen = 0;
     while (rifflen < note_off_pos){
         double beatlen = (tpqn * (4.0 / (double)beat_value));
@@ -304,7 +303,7 @@ bool riffdata::set_param(param::TYPE dt, const void* data)
     switch(dt)
     {
         case param::QUARTER_VAL:
-            set_tpqn(*(short*)data);
+            set_tpqn(*(wcint_t*)data);
             return true;
         default:
             return false;
@@ -367,8 +366,8 @@ dobj const* riffdata::add_dobj(dobj* dbj)
 
 errors::TYPE riffdata::validate()
 {
-    if (!validate_param(param::QUARTER_VAL, errors::NEGATIVE))
-        return errors::NEGATIVE;
+    if (!validate_param(param::QUARTER_VAL, errors::RANGE_COUNT1))
+        return errors::RANGE_COUNT1;
 
     return errors::NO_ERROR;
 }

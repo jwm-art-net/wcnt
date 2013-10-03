@@ -33,7 +33,7 @@ const void* trigrouter::set_in(input::TYPE it, const void* o)
     switch(it)
     {
         case input::IN_TRIG: return in_trig = (STATUS const*)o;
-        case input::IN_COUNT:return in_count = (short const*)o;
+        case input::IN_COUNT:return in_count = (wcint_t const*)o;
         default: return 0;
     }
 }
@@ -51,8 +51,8 @@ const void* trigrouter::get_in(input::TYPE it) const
 
 errors::TYPE trigrouter::validate()
 {
-    if (!validate_param(param::COUNT, errors::ABOVE1))
-        return errors::ABOVE1;
+    if (!validate_param(param::COUNT, errors::RANGE_COUNT))
+        return errors::RANGE_COUNT;
 
     return errors::NO_ERROR;
 }
@@ -62,7 +62,7 @@ bool trigrouter::set_param(param::TYPE pt, const void* data)
     switch(pt)
     {
         case param::COUNT:
-            count = *(short*)data;
+            count = *(wcint_t*)data;
             if (count > 0)
                 create_wcnt_triggers();
             return true;
@@ -129,10 +129,10 @@ void trigrouter::create_wcnt_triggers()
 void trigrouter::run()
 {
     STATUS* trg = trigs;
-    for (short ix = 0; ix <= count; trg++, ix++)
+    for (wcint_t ix = 0; ix <= count; trg++, ix++)
         *trg = OFF;
     if (*in_trig == ON) {
-        short ix = *in_count;
+        wcint_t ix = *in_count;
         if (wrap == ON) {
             while(ix < 0)
                 ix += count;

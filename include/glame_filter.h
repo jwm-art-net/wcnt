@@ -49,7 +49,7 @@ class glame_filter : public synthmod
     F_TYPE type;
     double cutoff_freq;
     double freq_mod1size;
-    short  stages;
+    wcint_t  stages;
 
     // LADSPA data
     const LADSPA_Descriptor* l_descriptor;

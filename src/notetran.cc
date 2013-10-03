@@ -64,7 +64,7 @@ const void* notetran::set_in(input::TYPE it, const void* o)
     case input::IN_NOTENAME:
         return in_notename = (const char**)o;
     case input::IN_DETRANSPOSE:
-        return in_detranspose = (short*)o;
+        return in_detranspose = (wcint_t*)o;
     case input::IN_NOTE_ON_TRIG:
         return in_note_on_trig = (STATUS*)o;
     case input::IN_NOTE_SLIDE_TRIG:

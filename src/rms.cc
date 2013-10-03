@@ -81,7 +81,7 @@ errors::TYPE rms::validate()
 
 void rms::init()
 {
-    arraymax = (short)((rms_time * jwm.samplerate()) / 1000);
+    arraymax = (wcint_t)((rms_time * jwm.samplerate()) / 1000);
     rmsarr = new double[arraymax];
     if (!rmsarr) {
         invalidate();

@@ -86,6 +86,7 @@ private:
     FILE_STATUS open_file();
     bool        read_header(samp_t* samplerate);
     const char* read_command();
+    void        print_msg();
     synthmod*   read_synthmodule(const char* command);
     dobj*       read_dobj(const char* command);
 

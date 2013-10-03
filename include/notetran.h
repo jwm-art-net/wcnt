@@ -54,7 +54,7 @@ public:
 private:
     // inputs
     char const ** in_notename;
-    short const * in_detranspose;
+    wcint_t const * in_detranspose;
     STATUS const* in_note_on_trig;
     STATUS const* in_note_slide_trig;
     // outputs

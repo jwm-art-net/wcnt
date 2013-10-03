@@ -37,8 +37,8 @@ class jwm_globals
     bool friend cmdline::set_jwm_globals();
     void friend wcnt_exit::init();
 
-    short get_exit_bar() const { return x_exit_bar; }
-    short const* get_exit_in_bar() const { return x_in_bar; }
+    wcint_t get_exit_bar() const { return x_exit_bar; }
+    wcint_t const* get_exit_in_bar() const { return x_in_bar; }
 
     const char* path() const    { return wc_path;   }
     const char* file() const    { return wc_file;   }
@@ -76,8 +76,8 @@ class jwm_globals
     char* wc_path;
     char* wc_file;
 
-    short x_exit_bar;
-    short const* x_in_bar;
+    wcint_t x_exit_bar;
+    wcint_t const* x_in_bar;
 
     bool verbose;
     bool dont_run;

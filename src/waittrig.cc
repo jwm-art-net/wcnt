@@ -63,7 +63,7 @@ bool waittrig::set_param(param::TYPE pt, const void* data)
             max_time = *(double*)data;
             return true;
         case param::COUNT:
-            count = *(short*)data;
+            count = *(wcint_t*)data;
             return true;
         default:
             return false;
@@ -89,8 +89,8 @@ errors::TYPE waittrig::validate()
     if (!validate_param(param::MAX_WAIT, errors::NEGATIVE))
         return errors::NEGATIVE;
 
-    if (!validate_param(param::COUNT, errors::NEG_OR_ZERO))
-        return errors::NEG_OR_ZERO;
+    if (!validate_param(param::COUNT, errors::RANGE_COUNT1))
+        return errors::RANGE_COUNT1;
 
     return errors::NO_ERROR;
 }

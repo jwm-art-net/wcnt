@@ -66,8 +66,8 @@ modinputlist::get_list_of_category_orderpref(iocat::TYPE in_cat,
         return 0;
     modinputlist*
         sorted_ins = new modinputlist(PRESERVE_DATA);
-    short op_count = 0;
-    short nop_count = 0;
+    wcint_t op_count = 0;
+    wcint_t nop_count = 0;
     input::TYPE* op = in_prefs;
     while (*op > input::ERR_TYPE && *op < input::LAST)
     {
@@ -80,7 +80,7 @@ modinputlist::get_list_of_category_orderpref(iocat::TYPE in_cat,
         nop_count++;
         nop++;
     }
-    short a,b,c;
+    wcint_t a,b,c;
     for (a = 0; a < op_count; a++)
     {
         for (b = 0; b < nop_count; b++)
@@ -112,8 +112,8 @@ modinputlist::get_list_of_category_orderpref(iocat::TYPE in_cat,
             }
         }
     }
-    short in_prefchk; // add remaining valid inputs
-    short not_prefchk;
+    wcint_t in_prefchk; // add remaining valid inputs
+    wcint_t not_prefchk;
     modinput* input = pot_ins->goto_first();
     while(input != 0)
     {

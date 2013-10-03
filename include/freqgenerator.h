@@ -27,7 +27,7 @@ private:
     freq_range_lo,
     sig_step_size,
     freq_step_size;
-    short step_count;
+    wcint_t step_count;
     void init_first();
     
 };

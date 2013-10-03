@@ -56,10 +56,10 @@ class sequencer : public synthmod, public linked_list<riff_node>
  private:
     // ***** inputs *****
     const STATUS* in_bar_trig;
-    const short* in_bar;
+    const wcint_t* in_bar;
     const double* in_pos_step_size;
-    const short* in_beats_per_bar;
-    const short* in_beat_value;
+    const wcint_t* in_beats_per_bar;
+    const wcint_t* in_beat_value;
     // ***** outpduts ******
     STATUS out_note_on_trig;
     STATUS out_note_slide_trig;
@@ -72,17 +72,17 @@ class sequencer : public synthmod, public linked_list<riff_node>
     double out_freq;
     double out_velocity;
     double out_velocity_ramp;
-    short out_transpose;
+    wcint_t out_transpose;
     STATUS riff_play_state;
     STATUS note_play_state;
     // ***** params *****
-    short start_bar;
+    wcint_t start_bar;
     double vel_response;
     // ***** working data *****
     riff_node* cur_node;
     riff_node* riff_node_ptr;
     riffdata* riff_ptr;
-    short riff_start_bar;
+    wcint_t riff_start_bar;
     double riff_pos;
     double riff_len;
     double posconv;

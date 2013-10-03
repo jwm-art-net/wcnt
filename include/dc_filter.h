@@ -40,8 +40,8 @@ private:
     double dc_time;
     // working
     double* filter;//array
-    short filterarraymax;
-    short fpos;
+    wcint_t filterarraymax;
+    wcint_t fpos;
     double filtertotal;
     void init_first();
     

@@ -9,7 +9,7 @@ bpmchange::bpmchange() :
     init_first();
 }
 
-bpmchange::bpmchange(short bar, double bpm) :
+bpmchange::bpmchange(wcint_t bar, double bpm) :
  dobj(dataobj::SIN_BPM),
  atbar(bar), tobpm(bpm)
 {
@@ -20,7 +20,7 @@ bool bpmchange::set_param(param::TYPE pt, const void* data)
 {
     switch(pt) {
     case param::BPM:    set_bpm(*(double*)data);    return true;
-    case param::BAR:    set_bar(*(short*)data);     return true;
+    case param::BAR:    set_bar(*(wcint_t*)data);     return true;
     default:
         return false;
     }
@@ -41,8 +41,8 @@ errors::TYPE bpmchange::validate()
     if (!validate_param(param::BPM, errors::RANGE_BPM))
         return errors::RANGE_BPM;
 
-    if (!validate_param(param::BAR, errors::NEGATIVE))
-        return errors::NEGATIVE;
+    if (!validate_param(param::BAR, errors::RANGE_COUNT))
+        return errors::RANGE_COUNT;
 
     return errors::NO_ERROR;
 }

@@ -121,8 +121,8 @@ bool jwmsynth::execute_synth()
         std::cout << "Not running synth, as instructed." << std::endl;
         return true;
     }
-    const short* bar = jwm.get_exit_in_bar();
-    short exit_bar = jwm.get_exit_bar();
+    const wcint_t* bar = jwm.get_exit_in_bar();
+    wcint_t exit_bar = jwm.get_exit_bar();
     // unlink any constant modules from list as it's pointless
     // calling run() on them...
     if (jwm.is_verbose())

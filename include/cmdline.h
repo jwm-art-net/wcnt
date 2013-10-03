@@ -61,7 +61,7 @@ class cmdline
  private:
     int const           opts_count;
     const char** const  opts;
-    short               opts_flags;
+    int                 opts_flags;
     bool good_opts;
     std::string msg;
     enum
@@ -88,9 +88,9 @@ class cmdline
         const char* const olong;
         const char* const oshort;
         const char* const odisplay;
-        short par1;
-        short par2;
-        short max_args;
+        int par1;
+        int par2;
+        int max_args;
         const char* const helptext;
         void (cmdline::*helpfunc)();
     };
@@ -110,7 +110,7 @@ class cmdline
     void about();
 
     void dobj_help(module::TYPE);
-    void dobj_help_params(dataobj::TYPE);
+    void dobj_help_params(dataobj::TYPE, int level);
 };
 
 #endif

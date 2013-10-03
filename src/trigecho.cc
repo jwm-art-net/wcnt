@@ -27,7 +27,7 @@ trigecho::~trigecho()
 void trigecho::init()
 {
     pastmax = ms_to_samples(delay_time);
-    past_trigs = new short[pastmax];
+    past_trigs = new wcint_t[pastmax];
     if(!past_trigs){
         invalidate();
         return;
@@ -66,7 +66,7 @@ bool trigecho::set_param(param::TYPE pt, const void* data)
             delay_time = *(double*)data;
             return true;
         case param::COUNT:
-            count = *(short*)data;
+            count = *(wcint_t*)data;
             return true;
         case param::SEND_INPUT_OUT:
             send_input_out = *(STATUS*)data;
@@ -92,8 +92,8 @@ errors::TYPE trigecho::validate()
     if (!validate_param(param::DELAY_TIME, errors::NEG_OR_ZERO))
         return errors::NEG_OR_ZERO;
 
-    if (!validate_param(param::COUNT, errors::NEGATIVE))
-        return errors::NEGATIVE;
+    if (!validate_param(param::COUNT, errors::RANGE_COUNT))
+        return errors::RANGE_COUNT;
 
     return errors::NO_ERROR;
 }

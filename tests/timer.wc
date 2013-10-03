@@ -1,6 +1,20 @@
 wcnt-1.26/jwmsynth
 
 samplerate 44100
+;
+; this test was created while developing new functionality for the
+; timer module allowing times to be specified as relative to each
+; other or as absolute values. the new parameter time_is_relative
+; controls how the times are interpreted by the module.
+;
+; because a user may decide to switch from using relative times to
+; absolute times, absolute times may be specified in any order. the
+; user may decide the timings sound better as relative after all.
+;
+; the timer is the only module where time is specified in seconds,
+; all other time parameters expect a time in milliseconds.
+;
+; this test does not write any audio files.
 
 timer
 time
@@ -11,6 +25,7 @@ time
         time seconds 0.5
         time seconds 0.1
         time seconds 1.3
+        time seconds 2
     timings
     time_is_relative off
 time
@@ -23,11 +38,10 @@ pat
 
 fader
 f1
-    in_bar       off            // as in_bar is off, the fade out will
-    in_bar_trig  time out_trig  // never be performed no matter how many
-    start_bar      0            // times triggered. this is because as
-    end_bar        1            // the fader recieves a zero for the bar
-    fade_in_time   1000         // number.
+    in_bar      time out_count
+    start_bar      0
+    end_bar        4
+    fade_in_time   1000
     fade_out_time  1000
 f1
 
@@ -61,7 +75,7 @@ i
 wcnt_exit
 exit
     in_bar      time out_count
-    exit_bar    5
+    exit_bar    6
 exit
 
 wcnt-1.26/jwmsynth

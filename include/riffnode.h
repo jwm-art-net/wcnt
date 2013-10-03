@@ -72,20 +72,20 @@ class riff_node : public dobj
 {
 public:
     riff_node();
-    riff_node(riffdata*, short barpos);
+    riff_node(riffdata*, wcint_t barpos);
     ~riff_node();
-    riff_node* duplicate_for_bar(short barpos);
-    void set_start_bar(short bp)        { start_bar = bp; }
+    riff_node* duplicate_for_bar(wcint_t barpos);
+    void set_start_bar(wcint_t bp)        { start_bar = bp; }
     void set_riff_source(riffdata* rs)  { riff_source = rs; }
-    void set_transpose(short t)         { transpose = t; }
-    void set_repeat(short r)            { repeat = r;}
-    void set_repeat_stripe(short rs)    { repeat_stripe = rs;}
+    void set_transpose(wcint_t t)         { transpose = t; }
+    void set_repeat(wcint_t r)            { repeat = r;}
+    void set_repeat_stripe(wcint_t rs)    { repeat_stripe = rs;}
 
-    short get_start_bar() const         { return start_bar; }
+    wcint_t get_start_bar() const         { return start_bar; }
     riffdata* get_riff_source() const   { return riff_source; }
-    short get_transpose() const         { return transpose; }
-    short get_repeat() const            { return repeat;}
-    short get_repeat_stripe() const     { return repeat_stripe;}
+    wcint_t get_transpose() const         { return transpose; }
+    wcint_t get_repeat() const            { return repeat;}
+    wcint_t get_repeat_stripe() const     { return repeat_stripe;}
     virtual errors::TYPE validate();
     bool set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE pt) const;
@@ -95,11 +95,11 @@ public:
     }
 
 private:
-    short start_bar;
+    wcint_t start_bar;
     riffdata* riff_source;
-    short transpose;
-    short repeat;
-    short repeat_stripe;
+    wcint_t transpose;
+    wcint_t repeat;
+    wcint_t repeat_stripe;
     void init_first();
     
 };

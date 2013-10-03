@@ -46,15 +46,15 @@ void* cstr_to_iocat(iocat::TYPE ioc, const char* cstrval,
         if (result)
             *result << *(double*)data;
         break;
-    case iocat::SHORT:
-        data = new short;
-        if (!(strstr >> *(short*)data)) {
+    case iocat::WCINT_T:
+        data = new wcint_t;
+        if (!(strstr >> *(wcint_t*)data)) {
             iocat_err("%s", "Expected integer value (hint:32767 max).");
-            delete (short*)data;
+            delete (wcint_t*)data;
             return 0;
         }
         if (result)
-            *result << *(short*)data;
+            *result << *(wcint_t*)data;
         break;
     case iocat::SAMP_T:
         data = new samp_t;
@@ -147,8 +147,8 @@ void destroy_iocat_data(iocat::TYPE ioc, const void* data)
     case iocat::DOUBLE:
         delete (double*)data;
         break;
-    case iocat::SHORT:
-        delete (short*)data;
+    case iocat::WCINT_T:
+        delete (wcint_t*)data;
         break;
     case iocat::SAMP_T:
         delete (samp_t*)data;

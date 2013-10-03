@@ -29,7 +29,7 @@ class timer : public synthmod, public linked_list<timing>
     dobj*       add_dobj(dobj*);
 
  private:
-    short out_count;
+    wcint_t out_count;
     STATUS out_trig;
     STATUS time_is_relative;
 

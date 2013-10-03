@@ -28,6 +28,7 @@ public:
     const void* get_in(input::TYPE) const;
     bool set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE) const;
+    errors::TYPE validate();
 
 private:
     STATUS const* in_trig1;
@@ -35,11 +36,11 @@ private:
     STATUS out_trig;
     // params
     LOGIC_FUNC logicfunc;
-    short precision;
+    wcint_t precision;
     // working
     STATUS const* next_trig;
-    short t1_samps;
-    short t2_samps;
+    wcint_t t1_samps;
+    wcint_t t2_samps;
     STATUS trig1;
     STATUS trig2;
     void init_first();
