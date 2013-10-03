@@ -44,7 +44,6 @@ private:
     wcint_t fpos;
     double filtertotal;
     void init_first();
-    
 };
 
 #endif

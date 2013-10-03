@@ -58,7 +58,6 @@ class group_control: public synthmod
     synthmod** empty_run_list;
     bool set_group_name(const char*);
     void init_first();
-    
 };
 
 #endif

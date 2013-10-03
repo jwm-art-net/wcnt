@@ -94,7 +94,6 @@ public:
 private:
     synthmod* synth_mod;
     void init_first();
-    
 };
 
 #endif

@@ -26,7 +26,6 @@ class inputeditor : public dobj, public linked_list<inputedit>
 
  private:
     void init_first();
-    
 };
 
 #endif

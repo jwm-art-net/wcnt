@@ -43,7 +43,6 @@ private:
     double feedamount;
     // synthmod kind of stuff
     void init_first();
-    
 };
 
 #endif

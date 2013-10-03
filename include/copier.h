@@ -40,7 +40,6 @@ class copier : public dobj
     dobj* from_dobj;
     dobj* to_dobj;
     void init_first();
-    
 };
 
 

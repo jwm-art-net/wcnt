@@ -28,7 +28,6 @@ private:
     samp_t ds;
     double decay_size;
     void init_first();
-    
 };
 
 #endif

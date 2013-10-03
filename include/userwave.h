@@ -46,7 +46,6 @@ private:
     double pdegs;
     void init_first();
     void create_dobj();
-    
     static bool done_dobj;
 };
 

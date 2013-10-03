@@ -34,7 +34,6 @@ private:
     char* modname;
     char* iostr;
     void init_first();
-    
 };
 
 #endif

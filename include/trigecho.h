@@ -34,7 +34,6 @@ private:
     samp_t pastpos;
     double vel_count_ratio;
     void init_first();
-    
 };
 
 #endif

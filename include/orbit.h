@@ -38,7 +38,6 @@ class orbit : public synthmod
     double cos_b_pc;
     double sin_abc;
     void init_first();
-    
 };
 
 #endif

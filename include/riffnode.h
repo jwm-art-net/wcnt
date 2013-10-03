@@ -101,7 +101,6 @@ private:
     wcint_t repeat;
     wcint_t repeat_stripe;
     void init_first();
-    
 };
 
 #endif

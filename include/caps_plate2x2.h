@@ -72,7 +72,6 @@ class caps_plate2x2 : public synthmod
     LADSPA_Data* l_out_right;
 
     void init_first();
-    
 };
 
 #endif // WITH_LADSPA

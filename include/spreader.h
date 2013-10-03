@@ -40,7 +40,6 @@ private:
     // working
     double seg_lvl;
     double const** sigs;
-    
     void init_first();
 };
 

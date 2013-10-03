@@ -1048,7 +1048,6 @@ bool synthfilereader::eff_ing_header_bodge(samp_t *samplerate)
         hf_name = path + tmp;
     } 
     headerfile.open(hf_name.c_str());// and open header file and be really
-    
     // fussy about layout 'cos i'm not messing about with whitespace
     // and remark processing here.  but first check it's opened oK
     if (!headerfile.is_open()) {

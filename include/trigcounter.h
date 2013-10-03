@@ -32,7 +32,6 @@ private:
     wcint_t count;
     STATUS wrap;
     void init_first();
-    
 };
 
 #endif

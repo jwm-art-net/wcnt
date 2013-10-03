@@ -31,7 +31,6 @@ private:
     samp_t release_samps;
     bool do_attack;// false == do_release
     void init_first();
-    
 };
 
 #endif

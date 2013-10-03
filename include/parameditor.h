@@ -22,7 +22,6 @@ class parameditor : public dobj, public linked_list<paramedit>
 
  private:
     void init_first();
-    
 };
 
 #endif

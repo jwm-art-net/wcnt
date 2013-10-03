@@ -29,7 +29,6 @@ private:
     freq_step_size;
     wcint_t step_count;
     void init_first();
-    
 };
 
 #endif

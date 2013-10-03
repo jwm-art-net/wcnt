@@ -57,7 +57,6 @@ private:
     double target_phase_step;
     samp_t slidesamples;
     void init_first();
-    
 };
 
 #endif

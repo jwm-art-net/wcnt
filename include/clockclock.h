@@ -26,7 +26,6 @@ class clockclock : public synthmod
     double mod1size;
     double degs;
     void init_first();
-    
 };
 
 #endif

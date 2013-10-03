@@ -39,7 +39,6 @@ private:
     const double* table;
     const double* shape_table;
     void init_first();
-    
 };
 
 #endif

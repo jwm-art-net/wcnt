@@ -127,7 +127,6 @@ class note_data : public dobj
     double length;
     double velocity;
     void init_first();
-    
 
     #ifdef DATA_STATS
     STATS_VARS

@@ -24,7 +24,6 @@ private:
     double rate;
     double target;
     void init_first();
-    
 };
 
 #endif

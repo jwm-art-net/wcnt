@@ -40,7 +40,6 @@ private:
     wcint_t arrpos;
     double sqrsum;
     void init_first();
-    
 };
 
 #endif

@@ -23,7 +23,6 @@ private:
     double probability;
     double not_probability;
     void init_first();
-    
 };
 
 #endif

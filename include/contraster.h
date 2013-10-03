@@ -40,7 +40,6 @@ private:
     double powerrad;
     double output;
     void init_first();
-    
 };
 
 #endif

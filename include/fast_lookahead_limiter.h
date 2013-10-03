@@ -41,6 +41,7 @@ class fast_lookahead_limiter : public synthmod
     const void* get_in(input::TYPE) const;
     bool        set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE) const;
+
  private:
     // inputs
     const double* in_left;
@@ -69,7 +70,6 @@ class fast_lookahead_limiter : public synthmod
     LADSPA_Data  l_out_latency;
 
     void init_first();
-    
 };
 
 #endif // WITH_LADSPA

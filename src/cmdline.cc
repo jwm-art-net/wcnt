@@ -203,7 +203,6 @@ bool cmdline::scan()
         invalid_args();
         return false;
     }
-    
     for (int o = 1; o < OPTS_COUNT; o++) {
         if ((data[o].type & opts_flags)) {
             if (opts_count > data[o].max_args) {

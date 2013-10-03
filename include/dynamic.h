@@ -78,7 +78,6 @@ class dynamic : public synthmod, public linked_list<dynvertex>
 
     void init_first();
     void create_dobj();
-    
     static bool done_dobj;
 };
 

@@ -42,7 +42,6 @@ private:
     double level_size;
     double current_level;
     void init_first();
-    
 };
 
 #endif

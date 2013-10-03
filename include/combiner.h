@@ -36,7 +36,6 @@ private:
     double total;
     double const** sigs;
     int sigcount;
-    
     void init_first();
 };
 

@@ -22,7 +22,6 @@
     name.
 
     how I imagine an example.
-    
     group
     group1
         name g1
@@ -112,7 +111,6 @@ class group : public dobj
     bool controlled; /* (by the group_control) */
 
     void init_first();
-    
 };
 
 

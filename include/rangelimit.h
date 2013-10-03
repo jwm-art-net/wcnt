@@ -26,6 +26,5 @@ class range_limit : public synthmod
     double sigrangehi;
     double sigrangelo;
     void init_first();
-    
 };
 #endif

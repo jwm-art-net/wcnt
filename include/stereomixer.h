@@ -31,7 +31,6 @@ private:
     double master_level;
     double const** chans_left;
     double const** chans_right;
-    
     void init_first();
 };
 

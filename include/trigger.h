@@ -24,7 +24,6 @@ private:
     double trigger_level;
     samp_t delay_samps;
     void init_first();
-    
 };
 
 #endif

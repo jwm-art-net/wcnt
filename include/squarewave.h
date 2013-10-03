@@ -36,7 +36,6 @@ private:
     double target;
     wcint_t cycle;
     void init_first();
-    
 };
 
 #endif

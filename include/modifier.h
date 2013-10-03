@@ -26,7 +26,6 @@ private:
     FUNC func;
     TYPE type;
     void init_first();
-    
 };
 
 #endif

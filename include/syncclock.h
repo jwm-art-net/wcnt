@@ -45,7 +45,6 @@ private:
     double phasepos;
     double snapto;
     void init_first();
-    
 };
 
 #endif

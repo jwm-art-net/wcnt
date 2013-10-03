@@ -60,7 +60,6 @@ private:
 
     // synthmod stuff
     void init_first();
-    
 };
 
 #endif // WAVFILEOUT

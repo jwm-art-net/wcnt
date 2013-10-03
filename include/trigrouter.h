@@ -40,7 +40,6 @@ private:
     STATUS* trigs;
     void init_first();
     void create_wcnt_triggers();
-    
 };
 
 #endif

@@ -35,7 +35,6 @@ private:
     double degsize1;
     double degsize2;
     void init_first();
-    
 };
 
 #endif

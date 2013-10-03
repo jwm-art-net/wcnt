@@ -106,7 +106,6 @@ class sequencer : public synthmod, public linked_list<riff_node>
     void init_next_note(ll_item<note_data>* riff_note_item);
     void output_note(note_data* note);
     // synthmod stuff
-    
     void init_first();
 };
 

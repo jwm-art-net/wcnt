@@ -147,7 +147,6 @@ justify(const char* src, int width, int splitchar, const char* seperator,
             w = width;
             lead_in = 0;
         }
-            
     } while(strlen(p1) > (size_t)width);
     *str += p1;
     return str;

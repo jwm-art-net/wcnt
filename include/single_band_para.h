@@ -64,7 +64,6 @@ class single_band_para : public synthmod
     float max_freq;
 
     void init_first();
-    
 };
 
 #endif // WITH_LADSPA

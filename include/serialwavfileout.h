@@ -66,7 +66,6 @@ private:
     void close_wav();
     // synthmod stuff
     void init_first();
-    
 };
 
 #endif

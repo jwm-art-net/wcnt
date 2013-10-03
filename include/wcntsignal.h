@@ -28,7 +28,6 @@ private:
     double out_output;
     double level;
     void init_first();
-    
 };
 
 #endif

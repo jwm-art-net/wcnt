@@ -42,7 +42,6 @@ private:
     double left;
     double right;
     void init_first();
-    
 };
 
 #endif

@@ -36,7 +36,6 @@ private:
     double filtertotal;
     double gainamount;
     void init_first();
-    
 };
 
 #endif

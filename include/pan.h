@@ -30,7 +30,6 @@ private:
     double pan_mod;
     double pan_pos;
     void init_first();
-    
 };
 
 #endif

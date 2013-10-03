@@ -91,7 +91,6 @@ private:
     void set_ns_lo_notename(const char* nsl);
     void set_ns_hi_notename(const char* nsh);
     void init_first();
-    
 };
 
 #endif

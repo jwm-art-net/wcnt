@@ -44,7 +44,6 @@ private:
     STATUS trig1;
     STATUS trig2;
     void init_first();
-    
 };
 
 #endif

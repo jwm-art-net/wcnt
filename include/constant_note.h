@@ -22,7 +22,6 @@ private:
     double out_phase_step;
     void set_note(const char*);
     void init_first();
-    
 };
 
 #endif

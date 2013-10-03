@@ -111,7 +111,6 @@ class riffdata : public dobj, public linked_list<note_data>
 
     static double calc_note_param(note_data::NOTE_OP, double, double);
     void init_first();
-    
 };
 
 #endif // RIFF_H

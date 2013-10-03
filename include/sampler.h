@@ -111,7 +111,6 @@ private:
     void ac_mix_rev_stereo(st_data*);
     // synthmod stuff
     void init_first();
-    
 };
 
 #endif

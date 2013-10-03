@@ -39,7 +39,6 @@ class riff_editor : public dobj
  private:
     riffdata* riff_source;
     void init_first();
-    
 };
 
 

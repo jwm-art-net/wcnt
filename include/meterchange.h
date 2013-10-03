@@ -34,7 +34,6 @@ class meterchange : public dobj
     wcint_t bar;
     timesig time_sig;
     void init_first();
-    
 };
 
 #endif

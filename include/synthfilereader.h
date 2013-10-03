@@ -111,7 +111,6 @@ private:
     // method for ......
     bool eff_ing_header_bodge(samp_t *samplerate);
     void init_first();
-    
 };
 
 #endif

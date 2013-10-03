@@ -41,7 +41,6 @@ private:
     bool check; // prevent wrap-around of peak_count.
     void set_message(const char* msg);
     void init_first();
-    
 };
 
 #endif

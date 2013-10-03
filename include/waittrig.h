@@ -47,7 +47,6 @@ private:
     long maxs;
     wcint_t counter;
     void init_first();
-    
 };
 
 #endif

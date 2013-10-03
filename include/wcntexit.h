@@ -54,7 +54,6 @@ private:
     wcint_t exit_bar;
     // synthmod stuff
     void init_first();
-    
 };
 
 #endif

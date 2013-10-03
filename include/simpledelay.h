@@ -31,7 +31,6 @@ private:
     long fpos;
     double filtertotal;
     void init_first();
-    
 };
 
 #endif

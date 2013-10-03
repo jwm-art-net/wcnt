@@ -29,7 +29,6 @@ private:
     long pastmax;
     long pastpos;
     void init_first();
-    
 };
 
 #endif

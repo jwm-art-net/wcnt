@@ -3,17 +3,17 @@
    Linux Audio Developer's Simple Plugin API Version 1.1[LGPL].
    Copyright (C) 2000-2002 Richard W.E. Furse, Paul Barton-Davis,
    Stefan Westerfeld.
-   
+
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public License
    as published by the Free Software Foundation; either version 2.1 of
    the License, or (at your option) any later version.
-   
+
    This library is distributed in the hope that it will be useful, but
    WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
    Lesser General Public License for more details.
-   
+
    You should have received a copy of the GNU Lesser General Public
    License along with this library; if not, write to the Free Software
    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
@@ -86,7 +86,7 @@ typedef float LADSPA_Data;
 /*****************************************************************************/
 
 /* Special Plugin Properties: 
- 
+
    Optional features of the plugin type are encapsulated in the
    LADSPA_Properties type. This is assembled by ORing individual
    properties together. */
@@ -122,7 +122,7 @@ typedef int LADSPA_Properties;
    (3) The plugin will not access files, devices, pipes, sockets, IPC
    or any other mechanism that might result in process or thread
    blocking.
-      
+
    (4) The plugin will take an amount of time to execute a run() or
    run_adding() call approximately of form (A+B*SampleCount) where A
    and B depend on the machine and host in use. This amount of time
@@ -172,23 +172,22 @@ typedef int LADSPA_PortDescriptor;
 
 /*****************************************************************************/
 
-/* Plugin Port Range Hints: 
+/* Plugin Port Range Hints:
 
    The host may wish to provide a representation of data entering or
    leaving a plugin (e.g. to generate a GUI automatically). To make
    this more meaningful, the plugin should provide `hints' to the host
    describing the usual values taken by the data.
-   
+
    Note that these are only hints. The host may ignore them and the
    plugin must not assume that data supplied to it is meaningful. If
    the plugin receives invalid input data it is expected to continue
    to run without failure and, where possible, produce a sensible
    output (e.g. a high-pass filter given a negative cutoff frequency
    might switch to an all-pass mode).
-    
+
    Hints are meaningful for all input and output ports but hints for
    input control ports are expected to be particularly useful.
-   
    More hint information is encapsulated in the
    LADSPA_PortRangeHintDescriptor type which is assembled by ORing
    individual hint types together. Hints may require further
@@ -551,7 +550,7 @@ typedef struct _LADSPA_Descriptor {
   /* Once an instance of a plugin has been finished with it can be
      deleted using the following function. The instance handle passed
      ceases to be valid after this call.
-  
+
      If activate() was called for a plugin instance then a
      corresponding call to deactivate() must be made before cleanup()
      is called. */

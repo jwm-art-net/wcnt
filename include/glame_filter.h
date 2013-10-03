@@ -66,7 +66,6 @@ class glame_filter : public synthmod
     float max_cutoff;
 
     void init_first();
-    
 };
 
 #endif // WITH_LADSPA

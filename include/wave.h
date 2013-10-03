@@ -24,7 +24,6 @@ private:
     unsigned long phase;
     const double* table;
     void init_first();
-    
 };
 
 #endif

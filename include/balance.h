@@ -24,7 +24,6 @@ private:
     FUNC func;
     double bias;
     void init_first();
-    
 };
 
 #endif

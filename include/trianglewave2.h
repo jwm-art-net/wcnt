@@ -39,7 +39,6 @@ private:
     double sectsample;
     double counter_ratio;
     void init_first();
-    
 };
 
 #endif

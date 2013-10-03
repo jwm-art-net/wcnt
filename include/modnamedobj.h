@@ -20,7 +20,6 @@ public:
 private:
     char* modname;
     void init_first();
-    
 };
 
 #endif

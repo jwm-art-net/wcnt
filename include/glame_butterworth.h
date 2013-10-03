@@ -70,7 +70,6 @@ class glame_butterworth : public synthmod
     float max_cut_off;
 
     void init_first();
-    
 };
 
 #endif // WITH_LADSPA

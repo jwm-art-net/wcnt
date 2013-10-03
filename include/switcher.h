@@ -40,7 +40,6 @@ private:
     double const* sig;
     double const* prevsig;
     double zero;// for initial stuff
-    
     void init_first();
 };
 

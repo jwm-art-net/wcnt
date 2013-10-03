@@ -20,7 +20,6 @@ public:
 private:
     char* dobjname;
     void init_first();
-    
 };
 
 #endif

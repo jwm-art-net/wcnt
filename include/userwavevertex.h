@@ -30,7 +30,6 @@ private:
     double lo_deg;
     double lo_pos;
     void init_first();
-    
 };
 
 #endif
