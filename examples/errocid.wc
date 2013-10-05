@@ -1,4 +1,4 @@
-wcnt-1.26/jwmsynth
+wcnt-1.30/jwmsynth
 
 samplerate 96000
 
@@ -234,7 +234,7 @@ exit
     exit_bar    24
 exit
 
-wcnt-1.26/jwmsynth
+wcnt-1.30/jwmsynth
 
 
 

@@ -99,9 +99,9 @@ bool mod_check_inputs(synthmod* sm)
     if (input) {
         while(input) {
             input::TYPE it = input->get_inputtype();
-            const char* const inname = input::name(it);
+            const char* const inname = input::names::get(it);
             std::cout << "\n\tChecking input: " << inname << "... ";
-            iocat::TYPE ioc = inputnames::get_category(it);
+            iocat::TYPE ioc = input::names::category(it);
             // the 'outputs' to be used for setting the inputs...
             double          out_double  = 1.23456789;
             wcint_t         out_wcint_t   = 32154;

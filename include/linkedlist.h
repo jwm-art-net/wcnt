@@ -17,6 +17,7 @@
 // but this class DOES NEED to be inherited if i wish to keep everything
 // except the navigation functions hidden from the outside world...
 //
+// FIXME:   this stuff needs re-assessing perhaps...
 */
 
 

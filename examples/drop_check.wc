@@ -1,4 +1,4 @@
-wcnt-1.26/jwmsynth
+wcnt-1.30/jwmsynth
 
 //------------------------------------------------------------------------
 //
@@ -36,6 +36,7 @@ t
         time seconds 110
     timings
     time_is_relative on
+    recycle_mode off
 t
 
 timer
@@ -50,6 +51,7 @@ tsw
         time seconds 10
     timings
     time_is_relative on
+    recycle_mode off
 tsw
 
 constant_freq lfo0 freq 0.15331 lfo0
@@ -194,6 +196,7 @@ tsw1
         time seconds 23
     timings
     time_is_relative on
+    recycle_mode off
 tsw1
 
 switcher
@@ -297,7 +300,7 @@ wavfile_out
 wav_out
     in_left     amp out_left
     in_right    amp out_right
-    in_bar      fade out_bar
+    in_bar      fade out_count
     snapshot_mode off
     data_format float32
     filename    drop_check.wav
@@ -307,8 +310,8 @@ wav_out
 
 wcnt_exit
 wcnt_exit_module
-    in_bar      fade out_bar
+    in_bar      fade out_count
     exit_bar    1
 wcnt_exit_module
 
-wcnt-1.26/jwmsynth
+wcnt-1.30/jwmsynth

@@ -1,4 +1,4 @@
-wcnt-1.26/jwmsynth
+wcnt-1.30/jwmsynth
 
 header header.wch
 
@@ -296,5 +296,5 @@ exit
     exit_bar    8
 exit
 
-wcnt-1.26/jwmsynth
+wcnt-1.30/jwmsynth
 

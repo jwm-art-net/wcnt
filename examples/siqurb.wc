@@ -1,4 +1,4 @@
-wcnt-1.26/jwmsynth
+wcnt-1.30/jwmsynth
 //------------------------------------------------------------------------
 //
 //  prettymuch unsequenced ---- but it could be sequenced if you add more
@@ -28,6 +28,7 @@ t1
         time seconds 30.0
     timings
     time_is_relative on
+    recycle_mode off
 t1
 
 osc_clock
@@ -283,7 +284,7 @@ wavfile_out
 wav1
     in_left     amp1    out_left
     in_right    amp1    out_right
-    in_bar      f1      out_bar
+    in_bar      f1      out_count
     snapshot_mode off
     data_format float32
     filename    siqurb.wav
@@ -295,11 +296,11 @@ wav1
 
 wcnt_exit
 wcnt_exit_module
-    in_bar      f1   out_bar
+    in_bar      f1   out_count
     exit_bar    1
 wcnt_exit_module
 
 //------------------------------------------------------------------------
 // End Of File _jwm 2005.
 //------------------------------------------------------------------------
-wcnt-1.26/jwmsynth
+wcnt-1.30/jwmsynth

@@ -1,19 +1,72 @@
-wcnt-1.26.4
+THIS IS THE NEWS - OCTOBER 2013 - THE NEWS IS THIS
 
-http://wcnt.sourceforge.net
+     **** Wav Composer Not Toilet 1.30.0 ****
 
-some minor adjustments to features and a bug fixed:
 
-    * param_editor
-      aswell as editing parameters to completely new values
-      (as it always has done) it can now add, subtract, divide
-      or multiply existing values (for numeric parameters only).
+                   [:::>  <:::]      /---O
+         .----------   wcnt   ---------- /
+             Wav Composer Not Toilet!     
+        / ----------  1.30.0  ----------' 
+        O---/     [::> ROTL <::]          
 
-    * LADSPA_PATH environment variable
-      only needs to be set if LADSPA plugins are not installed
-      in the path "/usr/local/lib/ladspa/:/usr/lib/ladspa/".
+     The runt of the litter for command line
+       modular audio synthesis in Linux!
 
-    * fixed logic of numeric parameters range checking code.
+After a break of five years from wcnt development
+I took it up again - just in time to celebrate
+wcnt's tenth anniversary. Intending simply to get
+it building again on modern Linux systemts (3.10!)
+something else happened instead...
 
-regards,
-james jwm-art net
+    * Added descriptions of modules, data objects,
+      inputs, outputs, and parameters for display
+      by command line help.
+
+    * Removed pointless in_bar_trig from modules
+      which used it to tell them when to check
+      their bar number input (wavfile_out,
+      serial_wavout, and fader modules).
+
+    * Added time_is_relative parameter to toggle
+      the interpretation of timings in the timer
+      module.
+
+    * Added recycle_mode parameter to timer to
+      allow it to loop endlessly.
+
+    * Added out_count output to pattern_trig to
+      increment at each trigger output in the
+      pattern - until the pattern starts over that
+      is.
+
+    * Changed the input/output/parameter names of
+      the inspector module to perhaps make sense
+      to those who aren't me.
+
+    * Fixes for serial_wavout. say no more.
+
+    * Fixes for fader to no longer ignore or
+      forget about early fade-outs.
+
+    * Added out_count output (a count of things)
+      to fader to exist alongside out_bar output
+      (a count of occurrences).
+
+    * Fixed data object help.
+
+    * Fixed sanity_checks to detect
+      inconsistencies between set/get_param values
+      like it was supposed to (and fixed the
+      inconsistencies it found).
+
+    * Removed compilation warnings
+
+    * Fixes for compilation issues on modern
+      systems.
+
+    * Some code refactoring allowing binary to be
+      a few K smaller inspite of addition of new
+      features.
+
+Download the tarball, extract the code, cd into it, and make examples.
+

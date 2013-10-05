@@ -191,7 +191,7 @@ bool cmdline::scan()
                 if(data[WC_IX].par1 == 0) {
 #ifdef DEBUG
                     std::cout << "\n    using '" << opts[arg] << "'";
-                    std::cout << " as .wc file.";
+                    std::cout << " as .wc file." << std::endl;
 #endif
                     data[WC_IX].par1 = arg;
                 }

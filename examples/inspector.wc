@@ -1,4 +1,4 @@
-wcnt-1.26/jwmsynth
+wcnt-1.30/jwmsynth
 
 //------------------------------------------------------------------------
 // examples/inspector.wc
@@ -28,6 +28,7 @@ t
         time seconds 0.5
     timings
     time_is_relative on
+    recycle_mode off
 t
 
 constant_note n1 name d-2 n1
@@ -129,4 +130,4 @@ x
     exit_bar    2
 x
 
-wcnt-1.26/jwmsynth
+wcnt-1.30/jwmsynth

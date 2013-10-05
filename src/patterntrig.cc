@@ -7,13 +7,13 @@
 patterntrig::patterntrig(const char* uname) :
  synthmod(module::PATTERNTRIG, uname, SM_HAS_OUT_TRIG),
  in_trig(0), out_trig(OFF), out_start_trig(OFF),
- out_end_trig(OFF), out_count(-1), pattern(0), ptr(0)
+ out_end_trig(OFF), out_index(-1), pattern(0), ptr(0)
 {
     register_input(input::IN_TRIG);
     register_output(output::OUT_TRIG);
     register_output(output::OUT_START_TRIG);
     register_output(output::OUT_END_TRIG);
-    register_output(output::OUT_COUNT);
+    register_output(output::OUT_INDEX);
     init_first();
 }
 
@@ -77,7 +77,7 @@ const void* patterntrig::get_out(output::TYPE ot) const
         case output::OUT_TRIG:         return &out_trig;
         case output::OUT_START_TRIG:   return &out_start_trig;
         case output::OUT_END_TRIG:     return &out_end_trig;
-        case output::OUT_COUNT:        return &out_count;
+        case output::OUT_INDEX:        return &out_index;
         default: return 0;
     }
 }
@@ -125,14 +125,15 @@ void patterntrig::run()
 {
     if (*in_trig == ON) {
         if (!ptr) {
-            out_count = -1;
+            out_index = -1;
             ptr = pattern;
             out_start_trig = ON;
         }
-        if (*ptr == '-') ptr++;
+        if (*ptr == '-')
+            ptr++;
         if (*ptr == '1') {
             out_trig = ON;
-            ++out_count;
+            ++out_index;
         }
         ptr++;
         if (*ptr == '\0') {
@@ -141,11 +142,13 @@ void patterntrig::run()
         }
     }
     else {
-        if (out_trig == ON) out_trig = OFF;
-        if (out_start_trig == ON) out_start_trig = OFF;
+        if (out_trig == ON)
+            out_trig = OFF;
+        if (out_start_trig == ON)
+            out_start_trig = OFF;
         if (out_end_trig == ON) {
             out_end_trig = OFF;
-            out_count = -1;
+            out_index = -1;
         }
     }
 }

@@ -1,0 +1,104 @@
+wcnt-1.30/jwmsynth
+
+samplerate 44100
+;
+; this test was created while developing new functionality for the
+; timer module allowing both relative and absolute times to be
+; recycled to allow the timer to loop endlessly.
+;
+; this stuff can become quite confusing if a timing is not added
+; at 0.0 seconds. The timer will output -1 from out_count until
+; the first timing is reached and maybe you forget this and wonder
+; why some module not set to start until the first timing appears
+; to start straight away in the audio file saved - forgetting the
+; audio file does not start writing until the first output either.
+; doh!
+
+
+timer
+t1
+    timings
+        time seconds 3
+        time seconds 6
+        time seconds 9
+        time seconds 12
+    timings
+    time_is_relative off
+    recycle_mode off
+t1
+
+timer
+t2
+    timings
+        time seconds 0.075
+        time seconds 0.025
+    timings
+    time_is_relative on
+    recycle_mode on
+t2
+
+fader
+f
+    in_bar t2 out_index
+    start_bar   0
+    end_bar     1
+    fade_in_time    10
+    fade_out_time   10
+f
+
+constant_freq
+cf
+    freq 150.0
+cf
+
+wave
+w
+    in_phase_step cf out_phase_step
+    type tri
+w
+
+multiplier
+m
+    in_signal1 w out_output
+    in_signal2 f out_output
+m
+
+wavfile_out
+wo
+    in_left     m out_output
+    in_right    m out_output
+    in_bar      t1 out_count
+    snapshot_mode   off
+    data_format     pcm16
+    filename        timer2_test.wav
+    start_bar       1
+    end_bar         2
+wo
+
+inspector
+i
+    _in_float_          off
+    _in_float_trig_     off
+    _in_int_            t1 out_count
+    _in_int_trig_       t1 out_trig
+    _in_sample_         off
+    _in_sample_trig_    off
+    _in_state_          off
+    _in_state_trig_     off
+    _in_string_         off
+    _in_string_trig_    off
+    _float_msg_         .
+    _int_msg_           t1_out_count:
+    _sample_msg_        .
+    _state_msg_         .
+    _string_msg_        .
+i
+
+wcnt_exit
+exit
+    in_bar      t1 out_count
+    exit_bar    3
+exit
+
+wcnt-1.30/jwmsynth
+

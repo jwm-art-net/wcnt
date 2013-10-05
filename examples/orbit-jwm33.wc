@@ -1,4 +1,4 @@
-wcnt-1.26/jwmsynth
+wcnt-1.30/jwmsynth
 
 // **-----------............._________>>>
 // examples/orbit-jwm33.wc
@@ -23,6 +23,7 @@ timer t1
         time seconds 30 // 300.0
     timings
     time_is_relative off
+    recycle_mode off
 t1
 
 // **-----------............._________>>>
@@ -119,5 +120,5 @@ orbit-dobjs
 orbit-dobjs
 
 
-wcnt-1.26/jwmsynth
+wcnt-1.30/jwmsynth
 

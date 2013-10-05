@@ -1,4 +1,4 @@
-wcnt-1.26/jwmsynth
+wcnt-1.30/jwmsynth
 //------------------------------------------------------------------------
 //
 // routed.wc
@@ -109,7 +109,7 @@ te
 trig_router
 tr
     in_trig   te out_trig
-    in_count  te out_count
+    in_count  te out_index
     count  5
     wrap   off
 tr
@@ -439,4 +439,4 @@ x
 //------------------------------------------------------------------------
 // End Of File _jwm 2005.
 //------------------------------------------------------------------------
-wcnt-1.26/jwmsynth
+wcnt-1.30/jwmsynth

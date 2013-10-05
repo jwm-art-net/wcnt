@@ -23,7 +23,7 @@ class fader: public synthmod
 
     double  out_output;
     STATUS  out_bar_trig;
-    wcint_t out_bar;
+    wcint_t out_index;
     wcint_t out_count;
     STATUS  out_play_state;
 

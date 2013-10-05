@@ -1,4 +1,4 @@
-wcnt-1.26/jwmsynth
+wcnt-1.30/jwmsynth
 
 //  wc file for testing modules implimenting LADSPA plugins
 //  -------------------------------------------------------
@@ -430,5 +430,5 @@ exit
     exit_bar    16
 exit
 
-wcnt-1.26/jwmsynth
+wcnt-1.30/jwmsynth
 

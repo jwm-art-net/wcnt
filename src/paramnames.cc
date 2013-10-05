@@ -33,7 +33,7 @@ namespace param
     { LOOP_MODE,        "loop_mode",            iocat::FIX_STR, "Loop mode." },
     { ANTI_CLIP,        "anti_clip_samples",    iocat::WCINT_T, "Number of samples to x-fade when playback starts or looping occurs." },
     { PHASE_STEP_AMOUNT,"phase_step_amount",    iocat::DOUBLE,  "Amount to adjust phase step. Should be set to 1.0 for normal operation." },
-    { RECYCLE_MODE,     "recycle_mode",         iocat::STATE,   "Whether to recycle the waveform when it ends and before it has been re-triggered." },
+    { RECYCLE_MODE,     "recycle_mode",         iocat::STATE,   "Whether to loop continuously or not." },
     { TRIG_RESET_PHASE, "on_trig_reset_phase",  iocat::STATE,   "Whether to hard-reset phase on re-trigger (may cause clicks, depends on usage)." },
     { CYCLES,           "phase_cycles",         iocat::DOUBLE,  "Amount of phase cycle(s) to run through, 1.0 for normal operation." },
     { PULSE_WIDTH,      "pulse_width",          iocat::DOUBLE,  "Pulse width, 0.5 for equal width positive and negative phase pulses."},

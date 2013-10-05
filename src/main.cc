@@ -94,16 +94,18 @@ int main(const int argc, const char** const argv)
 
 void title()
 {
-    std::cout << "O---\\      [:::>  <:::]      /---O" << std::endl;
-    std::cout << "\\ ----------   wcnt   ---------- /" << std::endl;
+    std::cout << "              .    .          |||/" << std::endl;
+    std::cout << "           [:::>  <:::]      /---O" << std::endl;
+    std::cout << " .----------   wcnt   ---------- /" << std::endl;
     std::cout << "     Wav Composer Not Toilet!     " << std::endl;
     std::cout << "/ ---------- " << std::setw(8) << wcnt_version
-              << " ---------- \\" << std::endl;
-    std::cout << "O---/      [::>    <::]      \\---O" << std::endl;
+              << " ----------'" << std::endl;
+    std::cout << "O---/     [::> ROTL <::]      " << std::endl;
+    std::cout << "/|||" << std::endl;
 }
 
 void exitramblings()
 {
-    std::cout << "\nFlush complete.  Please wash your &&s, ";
+    std::cout << "\nFlush complete. Please wash your &&s, ";
     std::cout << "naturally.\n";
 }

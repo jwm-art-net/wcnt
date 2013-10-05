@@ -1,4 +1,4 @@
-wcnt-1.26/jwmsynth
+wcnt-1.30/jwmsynth
 //------------------------------------------------------------------------
 // ressoffulate01.wc experimenting with pairs of resonating frequencies
 //------------------------------------------------------------------------
@@ -499,4 +499,4 @@ wcnt_exit_module
 wcnt_exit_module
 
 //------------------------------------------------------------------------
-wcnt-1.26/jwmsynth
+wcnt-1.30/jwmsynth

@@ -67,6 +67,7 @@ namespace output
     OUT_NOT_NO_TRIG,
     OUT_NOT_NS_TRIG,
     OUT_COUNT,
+    OUT_INDEX,
     OUT_WAIT_STATE,
     OUT_ATTACK_STATE,
     OUT_RELEASE_STATE,

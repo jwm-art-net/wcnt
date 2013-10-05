@@ -1,4 +1,4 @@
-wcnt-1.26/jwmsynth
+wcnt-1.30/jwmsynth
 
 // price_crash.mp3
 //
@@ -36,6 +36,7 @@ timer t1
 
     timings
     time_is_relative on
+    recycle_mode off
 t1
 
 timer t2
@@ -52,6 +53,7 @@ timer t2
 
     timings
     time_is_relative on
+    recycle_mode off
 t2
 
 // this is the 'master' envelope:
@@ -552,5 +554,5 @@ exit
     exit_bar    1
 exit
 
-wcnt-1.26/jwmsynth 
+wcnt-1.30/jwmsynth 
 

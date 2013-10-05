@@ -1,4 +1,4 @@
-wcnt-1.26/jwmsynth
+wcnt-1.30/jwmsynth
 
 // examples/sinewave.wc
 
@@ -15,6 +15,7 @@ t1
         time seconds 20.0
     timings
     time_is_relative off
+    recycle_mode off
 t1
 
 timer
@@ -23,6 +24,7 @@ t2
         time seconds 0.01
     timings
     time_is_relative off
+    recycle_mode off
 t2
 
 clock
@@ -441,5 +443,5 @@ wcnt_exit_module
     exit_bar    1
 wcnt_exit_module
 
-wcnt-1.26/jwmsynth
+wcnt-1.30/jwmsynth
 

@@ -1,4 +1,4 @@
-wcnt-1.26/jwmsynth
+wcnt-1.30/jwmsynth
 
 // examples/orbit.wc
 
@@ -17,6 +17,7 @@ timer t1
         time seconds 30.0
     timings
     time_is_relative on
+    recycle_mode off
 t1
 
 clock clock0
@@ -364,7 +365,7 @@ wcnt_exit wcnt_exit_module
     exit_bar    1
 wcnt_exit_module
 
-wcnt-1.26/jwmsynth
+wcnt-1.30/jwmsynth
 
 input_editor
 ie1

@@ -23,7 +23,7 @@ private:
     // outputs
     STATUS out_trig;
     double out_velocity;
-    wcint_t  out_count;
+    wcint_t  out_index;
     // params
     double delay_time;
     wcint_t count;

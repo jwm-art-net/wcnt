@@ -30,7 +30,7 @@ private:
     STATUS out_trig;
     STATUS out_start_trig;
     STATUS out_end_trig;
-    wcint_t out_count;
+    wcint_t out_index;
 
     char* pattern;
     char* ptr;

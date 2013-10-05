@@ -27,14 +27,19 @@ class timer : public synthmod, public linked_list<timing>
     bool        set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE) const;
     dobj*       add_dobj(dobj*);
+    errors::TYPE validate();
 
  private:
     wcint_t out_count;
     STATUS out_trig;
+    wcint_t out_index;
     STATUS time_is_relative;
+    STATUS recycle_mode;
 
     timing** timings;
-    long time_ix;
+    wcint_t reset_ix;
+    wcint_t next_ix;
+    double curtime;
     samp_t samples;
 
     void init_first();

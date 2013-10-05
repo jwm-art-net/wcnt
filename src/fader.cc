@@ -8,7 +8,7 @@
 fader::fader(const char* uname) :
  synthmod(module::FADER, uname, SM_HAS_OUT_TRIG),
  in_bar(0),
- out_output(0), out_bar_trig(OFF), out_bar(-1), out_count(-1),
+ out_output(0), out_bar_trig(OFF), out_index(-1), out_count(-1),
  out_play_state(OFF),
  start_bar(0), end_bar(1), fade_in_time(0), fade_out_time(0),
  fade_in_smps(0), fismp(0), fade_out_smps(0), fosmp(0),
@@ -17,7 +17,7 @@ fader::fader(const char* uname) :
     register_input(input::IN_BAR);
     register_output(output::OUT_OUTPUT);
     register_output(output::OUT_BAR_TRIG);
-    register_output(output::OUT_BAR);
+    register_output(output::OUT_INDEX);
     register_output(output::OUT_COUNT);
     register_output(output::OUT_PLAY_STATE);
     init_first();
@@ -51,7 +51,7 @@ const void* fader::get_out(output::TYPE ot) const
     {
     case output::OUT_OUTPUT:    return &out_output;
     case output::OUT_BAR_TRIG:  return &out_bar_trig;
-    case output::OUT_BAR:       return &out_bar;
+    case output::OUT_INDEX:     return &out_index;
     case output::OUT_PLAY_STATE:return &out_play_state;
     case output::OUT_COUNT:     return &out_count;
     default: return 0;
@@ -116,8 +116,8 @@ void fader::run()
         if (*in_bar == start_bar) {
             state = 1;
             fismp = fade_in_smps;
-            out_bar++;
-            out_count = 0;
+            out_count++;
+            out_index = 0;
             out_output = 0.0;
             out_play_state = out_bar_trig = ON;
         }
@@ -148,9 +148,9 @@ void fader::run()
             out_output = 0.0;
             out_play_state = OFF;
             out_bar_trig = ON;
-            out_count = 1;
-            if (++out_bar == WCINT_T_MAX)
-                out_bar = 1;
+            out_index = 1;
+            if (++out_count == WCINT_T_MAX)
+                out_count = 1;
         }
         break;
     case 4: // Finished, turn off bar trig.

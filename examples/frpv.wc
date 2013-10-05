@@ -1,4 +1,4 @@
-wcnt-1.26/jwmsynth
+wcnt-1.30/jwmsynth
 
 header header.wch
 
@@ -9,6 +9,7 @@ t
         time seconds 30
     timings
     time_is_relative off
+    recycle_mode off
 t
 
 constant_note n name c0 n
@@ -136,4 +137,4 @@ wcnt_exit_module
     exit_bar 1
 wcnt_exit_module
 
-wcnt-1.26/jwmsynth
+wcnt-1.30/jwmsynth

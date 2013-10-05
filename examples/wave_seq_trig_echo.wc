@@ -1,4 +1,4 @@
-wcnt-1.26/jwmsynth
+wcnt-1.30/jwmsynth
 
 // examples/wave_seq_trig_echo.wc
 // example of using the trig_echo and trig_counter modules.
@@ -17,6 +17,7 @@ t1
         time seconds 33.0
     timings
     time_is_relative off
+    recycle_mode off
 t1
 
 clock
@@ -156,7 +157,7 @@ wcnt_exit_module
     exit_bar    1
 wcnt_exit_module
 
-wcnt-1.26/jwmsynth
+wcnt-1.30/jwmsynth
 
 
 inspector

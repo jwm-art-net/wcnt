@@ -7,7 +7,7 @@
 trigcounter::trigcounter(const char* uname) :
  synthmod(module::TRIGCOUNTER, uname, SM_HAS_OUT_TRIG),
  in_trig(0), in_reset_trig(0),
- out_trig(OFF), out_not_trig(OFF), out_pre_count(0), out_count(-1),
+ out_trig(OFF), out_not_trig(OFF), out_pre_count(-1), out_count(-1),
  out_play_state(OFF),
  pre_count(0), count(0), wrap(OFF)
 {
