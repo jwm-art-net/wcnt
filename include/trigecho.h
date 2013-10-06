@@ -33,6 +33,7 @@ private:
     samp_t pastmax;
     samp_t pastpos;
     double vel_count_ratio;
+    wcint_t last;
     void init_first();
 };
 

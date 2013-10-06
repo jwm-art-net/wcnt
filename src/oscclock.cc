@@ -166,29 +166,27 @@ void osc_clock::run()
     if (*in_note_slide_trig == ON)
     {
         if (portamento == 0)
-            out_premod_phase_step 
-             = freq_to_step(*in_freq, octave_offset, semitones);
+            out_premod_phase_step = freq_to_step(*in_freq, octave_offset,
+                                                                semitones);
         else {
-            target_phase_step
-             = freq_to_step(*in_freq, octave_offset, semitones);
+            target_phase_step = freq_to_step(*in_freq, octave_offset,
+                                                                semitones);
             slidesamples = ms_to_samples(portamento);
-            slide_size = (double)
-                (target_phase_step - out_premod_phase_step)
-                    / slidesamples;
+            slide_size = (double)(target_phase_step - out_premod_phase_step)
+                                                            / slidesamples;
         }
     }
     else if (*in_note_on_trig == ON) {
         if (out_premod_phase_step == 0 || response_time == 0.0
-            || *in_play_state == OFF)
-            out_premod_phase_step 
-             = freq_to_step(*in_freq, octave_offset, semitones);
+                                       || *in_play_state == OFF)
+            out_premod_phase_step = freq_to_step(*in_freq, octave_offset,
+                                                                semitones);
         else {
-            target_phase_step
-             =  freq_to_step(*in_freq, octave_offset, semitones);
+            target_phase_step = freq_to_step(*in_freq, octave_offset,
+                                                                semitones);
             slidesamples = ms_to_samples(response_time);
-            slide_size = (double)
-                (target_phase_step - out_premod_phase_step)
-                    / slidesamples;
+            slide_size = (double)(target_phase_step - out_premod_phase_step)
+                                                            / slidesamples;
         }
     }
     if (slidesamples > 0)
@@ -201,10 +199,10 @@ void osc_clock::run()
     else {
         if (*in_freq_mod1 < 0)
             degsize1 = out_premod_phase_step
-             / (1 + mod1size * -*in_freq_mod1);
+                             / (1 + mod1size * -*in_freq_mod1);
         else
             degsize1 = out_premod_phase_step
-             * (1 + mod1size * *in_freq_mod1);
+                             * (1 + mod1size * *in_freq_mod1);
     }
     if (mod2size == 0)
         degsize2 = degsize1;
@@ -216,8 +214,7 @@ void osc_clock::run()
     }
     out_phase_step = degsize2;
     degs += out_phase_step;
-    if (degs > 360.00)
-    {
+    if (degs > 360.00) {
         degs -= 360.00;
         out_phase_trig = ON;
     }

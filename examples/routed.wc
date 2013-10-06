@@ -102,7 +102,7 @@ trig_echo
 te
     in_trig     seq out_note_on_trig
     delay_time      350
-    count           5
+    count           4 // + 1 for input when send_input_out is on.
     send_input_out  on
 te
 
@@ -230,7 +230,7 @@ out
 out
 
 group
-g1
+g0
     modules
         synthmod name vel
         synthmod name env
@@ -243,12 +243,21 @@ g1
         synthmod name lpf
         synthmod name out
     modules
-g1
+g0
 
-copier c1 from g1 to g2 c1
-copier c2 from g1 to g3 c2
-copier c3 from g1 to g4 c3
-copier c4 from g1 to g5 c4
+
+copier c0 from g0 to g1 c0
+copier c1 from g0 to g2 c1
+copier c2 from g0 to g3 c2
+copier c3 from g0 to g4 c3
+
+
+group_control
+gc0
+    in_play_trig  tr.0 out_trig
+    in_stop_trig  g0.env out_off_trig
+    group_name  g0
+gc0
 
 group_control
 gc1
@@ -278,80 +287,71 @@ gc4
     group_name  g4
 gc4
 
-group_control
-gc5
-    in_play_trig  tr.5 out_trig
-    in_stop_trig  g5.env out_off_trig
-    group_name  g5
-gc5
-
 input_editor
 ie
     editlist
-
+        connect g0.vel in_trig tr.0 out_trig
         connect g1.vel in_trig tr.1 out_trig
         connect g2.vel in_trig tr.2 out_trig
         connect g3.vel in_trig tr.3 out_trig
         connect g4.vel in_trig tr.4 out_trig
-        connect g5.vel in_trig tr.5 out_trig
 
+        connect g0.env in_note_on_trig tr.0 out_trig
         connect g1.env in_note_on_trig tr.1 out_trig
         connect g2.env in_note_on_trig tr.2 out_trig
         connect g3.env in_note_on_trig tr.3 out_trig
         connect g4.env in_note_on_trig tr.4 out_trig
-        connect g5.env in_note_on_trig tr.5 out_trig
 
+        connect g0.freq in_trig tr.0 out_trig
         connect g1.freq in_trig tr.1 out_trig
         connect g2.freq in_trig tr.2 out_trig
         connect g3.freq in_trig tr.3 out_trig
         connect g4.freq in_trig tr.4 out_trig
-        connect g5.freq in_trig tr.5 out_trig
 
+        connect g0.osc1 in_note_on_trig tr.0 out_trig
         connect g1.osc1 in_note_on_trig tr.1 out_trig
         connect g2.osc1 in_note_on_trig tr.2 out_trig
         connect g3.osc1 in_note_on_trig tr.3 out_trig
         connect g4.osc1 in_note_on_trig tr.4 out_trig
-        connect g5.osc1 in_note_on_trig tr.5 out_trig
 
+        connect g0.osc2 in_note_on_trig tr.0 out_trig
         connect g1.osc2 in_note_on_trig tr.1 out_trig
         connect g2.osc2 in_note_on_trig tr.2 out_trig
         connect g3.osc2 in_note_on_trig tr.3 out_trig
         connect g4.osc2 in_note_on_trig tr.4 out_trig
-        connect g5.osc2 in_note_on_trig tr.5 out_trig
-
     editlist
 ie
 
 param_editor
 pe
     editlist
-        edit g1.osc1 tuning_semitones 0.0
-        edit g2.osc1 tuning_semitones 2.0
-        edit g3.osc1 tuning_semitones 3.0
-        edit g4.osc1 tuning_semitones 5.0
-        edit g5.osc1 tuning_semitones 7.0
+        edit g0.osc1 tuning_semitones 0.0
+        edit g1.osc1 tuning_semitones 2.0
+        edit g2.osc1 tuning_semitones 3.0
+        edit g3.osc1 tuning_semitones 5.0
+        edit g4.osc1 tuning_semitones 7.0
 
-        edit g1.osc2
+        edit g0.osc2
             tuning_semitones 0.0
             octave_offset -1
-        edit g2.osc2
+        edit g1.osc2
             tuning_semitones 2.0
             octave_offset -1
-        edit g3.osc2
+        edit g2.osc2
             tuning_semitones 3.0
             octave_offset -1
-        edit g4.osc2
+        edit g3.osc2
             tuning_semitones 5.0
             octave_offset -1
-        edit g5.osc2
+        edit g4.osc2
             tuning_semitones 7.0
             octave_offset -1
 
-        edit g1.f freq 500
-        edit g2.f freq 800
-        edit g3.f freq 1400
-        edit g4.f freq 2600
-        edit g5.f freq 5000
+        edit g0.f freq 500
+        edit g1.f freq 800
+        edit g2.f freq 1400
+        edit g3.f freq 2600
+        edit g4.f freq 5000
 
     editlist
 pe
@@ -359,11 +359,11 @@ pe
 combiner
 c
     signals
+        synthmod name   g0.out
         synthmod name   g1.out
         synthmod name   g2.out
         synthmod name   g3.out
         synthmod name   g4.out
-        synthmod name   g5.out
     signals
     mean_total off
 c

@@ -3,18 +3,21 @@
 
 #include "synthmod.h"
 
+// bit of a relic from way back when the trig_switcher was first
+// implemented and could only accept wcnt_trigger modules.
+
 class wcnt_trigger : public synthmod
 {
-public:
+ public:
     wcnt_trigger(const char*);
     ~wcnt_trigger();
-    // this method needed by trigswitcher (etc?)...
-    const STATUS* get_out_trig() const { return in_trig; }
+
     void run(){};
     const void* get_out(output::TYPE) const;
     const void* set_in(input::TYPE, const void*);
     const void* get_in(input::TYPE) const;
-private:
+
+ private:
     const STATUS* in_trig;
 };
 

@@ -130,8 +130,8 @@ bool jwmsynth::execute_synth()
                                                         << std::endl;
     jwm.get_modlist()->remove_empty_run_modules();
     samp_t sample = 0;
-    char bigcount = '|';
-    char littlecount = '~';
+    char bigcount = '^';
+    char littlecount = '`';
     int samplesperbig = jwm.samplerate();
     int divisions = 4;
     int samplespersmall = samplesperbig / divisions;

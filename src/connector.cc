@@ -89,8 +89,8 @@ bool connector::connect()
     }
     if (!in_mod->set_in(in_type, out_data)) {
         connerr("*** MODULE ERROR *** In module %s not programmed to "
-                "accept connections for input %s.", *in_mod->get_username(),
-                                input::names::get(in_type));
+                "accept connections for input %s.", in_mod->get_username(),
+                                                input::names::get(in_type));
         return false;
     }
     return true;

@@ -56,6 +56,7 @@ namespace input
     IN_RESTART_TRIG,
     IN_RESET_TRIG,
     IN_COUNT,
+    IN_INDEX,
     IN_BIAS,
     IN_RES_MOD,
     IN_THRESH_MOD,

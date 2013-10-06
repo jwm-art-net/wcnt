@@ -1,16 +1,18 @@
 #ifndef TRIGROUTER_H
 #define TRIGROUTER_H
 
-#include "wcnttrigger.h"
-
+#include "synthmod.h"
 /*
 // trigrouter:
 //  creates an array of wcnt_trigger modules and adds them to a group
 //  (group has same name as the trigrouter's username). each wcnt_trigger
 //  is given a numerical name.
 //  and a list of hidden outputs (not available to user)
-//  connects the wcnt_trigger modules using the hidden outputs
-//  
+//  connects the wcnt_trigger modules using the hidden outputs.
+//
+//  note:   because wcnt_trigger modules have an empty run method, they
+//          are removed from the run list and consequently do not cost
+//          anything in terms of performance.
 */
 
 class group;
@@ -38,6 +40,7 @@ private:
     /* no outputs */
     group* grp;
     STATUS* trigs;
+    wcint_t last_ix;
     void init_first();
     void create_wcnt_triggers();
 };

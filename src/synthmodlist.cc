@@ -126,6 +126,9 @@ synthmodlist::create_module(
     case module::GROUPCONTROL:   return new group_control(uname);
     case module::FADER:          return new fader(uname);
     case module::SAMPLECLIMB:    return new sample_climb(uname);
+    case module::SEQ_ROUTER:     return new seq_router(uname);
+    case module::WCNT_NOTE:      return new wcnt_note(uname);
+    case module::SEQ_ECHO:       return new seq_echo(uname);
     default:
         return 0;
     }

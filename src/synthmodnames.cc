@@ -86,7 +86,10 @@ namespace module
     { TRIGROUTER,       "trig_router",      0, "Routes the trigger input amongst a group of wcnt_trigger modules which are created by the trig_router itself. The wcnt_trigger modules are added to a group of the same name." },
     { GROUPCONTROL,     "group_control",    0, "Used to stop or start processing for all modules within a specified group. Use in combination with the trig_router. Take care!" },
     { FADER,            "fader",            0, "Perform a fade in and fade out at specific bars in the time line. At the start of fade-in, out_bar is 0, and at the end of fade-out, it is 1." },
-    { SAMPLECLIMB,      "sample_climb",     0, "Similar to sample_hold, but instead of holding the value and decaying, this module optionally climbs to the sampled value before holding it." }
+    { SAMPLECLIMB,      "sample_climb",     0, "Similar to sample_hold, but instead of holding the value and decaying, this module optionally climbs to the sampled value before holding it." },
+    { WCNT_NOTE,        "wcnt_note",        0, "A module used by the seq_router for routing purposes." },
+    { SEQ_ROUTER,       "seq_router",       0, "Routes sequencer data to wcnt_note modules which are created by the module itself. The modules are added to a group of the same name." },
+    { SEQ_ECHO,         "seq_echo",         0, "Applies an echo style effect to sequencer note data, for use by the seq_router module." }
  };
 }; // namespace module
 

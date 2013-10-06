@@ -4,8 +4,7 @@
 #include "../include/modinputlist.h"
 
 wcnt_trigger::wcnt_trigger(const char* uname) :
- synthmod(module::WCNTTRIGGER, uname, SM_EMPTY_RUN
-                                           | SM_HAS_OUT_TRIG),
+ synthmod(module::WCNTTRIGGER, uname, SM_EMPTY_RUN | SM_HAS_OUT_TRIG),
  in_trig(0)
 {
     register_input(input::IN_TRIG);

@@ -88,6 +88,9 @@ namespace module
     GROUPCONTROL,
     FADER,
     SAMPLECLIMB,
+    WCNT_NOTE,
+    SEQ_ROUTER,
+    SEQ_ECHO,
     LAST_TYPE
  };
 

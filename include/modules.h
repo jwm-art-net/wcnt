@@ -93,4 +93,8 @@
 #include "fader.h"
 #include "sampleclimb.h"
 
+#include "seqecho.h"
+#include "seqrouter.h"
+#include "wcnt_note.h"
+
 #endif

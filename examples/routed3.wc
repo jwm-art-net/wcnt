@@ -2,7 +2,7 @@ wcnt-1.30/jwmsynth
 //------------------------------------------------------------------------
 //
 // routed.wc
-//  
+//
 //------------------------------------------------------------------------
 
 header header.wch
@@ -14,7 +14,7 @@ time1
         meter tsig 4/4 bar 0
     meter_map
     bpm_map
-        tempo bpm 40 bar 0
+        tempo bpm 140 bar 0
     bpm_map
 time1
 
@@ -23,7 +23,7 @@ timer
 cutitout
     timings
         time seconds 0.0
-        time seconds 35
+        time seconds 45
     timings
     time_is_relative off
     recycle_mode off
@@ -31,14 +31,15 @@ cutitout
 
 riff
 riff1
-    quarter_value   64
+    quarter_value   32
     notelist
-        note name c0   pos 0    len 89  vel 1.0
-        note name d0   pos 32    len 8  vel 1.0
+        note name c0   pos 0    len 6  vel 1.0
+        note name f0   pos 16    len 8  vel 1.0
+        note name d1   pos 32    len 8  vel 1.0
         note name f0   pos 64    len 15  vel 1.0
         note name e0   pos 128    len 8  vel 1.0
-        note name d0   pos 192    len 35  vel 1.0
-        note name f0   pos 224    len 6  vel 1.0
+        note name d0   pos 192    len 3  vel 1.0
+        note name f1   pos 224    len 6  vel 1.0
         note name e0   pos 240    len 12  vel 1.0
     notelist
 riff1
@@ -49,7 +50,7 @@ seq
     track
         riff_node   riff riff1
             bar 0       transpose 0
-            repeat 4    repeat_stripe 1
+            repeat 8    repeat_stripe 2
     track
 
     in_bar              time1 out_bar
@@ -61,61 +62,30 @@ seq
     velocity_response_time  5
 seq
 
-trig_echo
-te_on
-    in_trig     seq out_note_on_trig
-    delay_time      275
-    count           0
+
+seq_echo
+seqo
+    in_note_on_trig     seq out_note_on_trig
+    in_note_slide_trig  seq out_note_slide_trig
+    in_note_off_trig    seq out_note_off_trig
+    in_frequency        seq out_frequency
+    in_velocity         seq out_velocity
+    delay_time      277
+    count           19 // + 1 with send_input_out on
     send_input_out  on
-te_on
+seqo
 
-trig_echo
-te_sl
-    in_trig     seq out_note_slide_trig
-    delay_time      275
-    count           0
-    send_input_out  on
-te_sl
-
-trig_echo
-te_off
-    in_trig     seq out_note_off_trig
-    delay_time      275
-    count           0
-    send_input_out  on
-te_off
-
-
-trig_router
-tr_on
-    in_trig   te_on out_trig
-    in_count  te_on out_index
+seq_router
+seqr
+    in_index            seqo out_index
+    in_note_on_trig     seqo out_note_on_trig
+    in_note_slide_trig  seqo out_note_slide_trig
+    in_note_off_trig    seqo out_note_off_trig
+    in_frequency        seqo out_frequency
+    in_velocity         seqo out_velocity
     count  10
     wrap   on
-tr_on
-
-trig_router
-tr_sl
-    in_trig   te_sl out_trig
-    in_count  te_sl out_index
-    count  10
-    wrap   on
-tr_sl
-
-trig_router
-tr_off
-    in_trig   te_off out_trig
-    in_count  te_off out_index
-    count  10
-    wrap   on
-tr_off
-
-sample_hold
-vel
-    in_trig     off // later..
-    in_signal   te_on out_velocity
-    decay_time 0
-vel
+seqr
 
 adsr
 env
@@ -130,33 +100,26 @@ env
             ut  75.0    ul  0.0
             lt  45.0    ll  0.0
     envelope
-    // will connect later...
     in_note_on_trig     off
     in_note_off_trig    off
-    in_velocity         vel out_output
+    in_velocity         off
     up_thresh        1.0
     lo_thresh        0.0
     start_level      0.0
     min_time         0.0
     max_sustain_time 0.0
-    release_is_ratio off
+    release_is_ratio on
     sustain_state    on
     zero_retrigger   off
 env
 
-sample_hold
-freq
-    in_trig     off // later..
-    in_signal   seq out_frequency
-    decay_time 0
-freq
 
 osc_clock
 osc1
-    in_note_on_trig     off // later..
+    in_note_on_trig     off
     in_note_slide_trig  off
     in_play_state       env out_play_state
-    in_frequency        freq out_output
+    in_frequency        off
     in_freq_mod1        wvy out_output
     in_freq_mod2        off
     octave_offset       0
@@ -169,10 +132,10 @@ osc1
 
 osc_clock
 osc2
-    in_note_on_trig     off // later..
+    in_note_on_trig     off
     in_note_slide_trig  off
     in_play_state       env out_play_state
-    in_frequency        freq out_output
+    in_frequency        off
     in_freq_mod1        wvx out_output
     in_freq_mod2        off
     octave_offset       0
@@ -188,8 +151,8 @@ wvx
     in_phase_trig       osc1 out_phase_trig
     in_phase_step       osc1 out_phase_step
     in_shape_phase_step osc2 out_phase_step
-    type                saw
-    shape_type          tri
+    type                sine
+    shape_type          sine
     on_trig_reset_phase on
     recycle_mode        on
     sync_shape          on
@@ -202,8 +165,8 @@ wvy
     in_phase_trig       osc2 out_phase_trig
     in_phase_step       osc2 out_phase_step
     in_shape_phase_step osc1 out_phase_step
-    type                tri
-    shape_type          saw
+    type                sine
+    shape_type          sine
     on_trig_reset_phase on
     recycle_mode        on
     sync_shape          on
@@ -216,18 +179,17 @@ lpeg
     envelope
         section name attack
             ut  25.0    ul  1.0
-            lt  20.0   ll    1.0
+            lt  20.0   ll   1.0
         section name decay
-            ut  135.0    ul  0.45
-            lt  130.0    ll  0.3
+            ut  135.0    ul 0.45
+            lt  130.0    ll 0.3
         section name release
-            ut  125.0    ul  0.0
-            lt  118.0    ll  0.0
+            ut  125.0    ul 0.0
+            lt  118.0    ll 0.0
     envelope
-    // will connect later...
     in_note_on_trig     off
     in_note_off_trig    off
-    in_velocity         vel out_output
+    in_velocity         off
     up_thresh        1.0
     lo_thresh        0.0
     start_level      1.0
@@ -250,7 +212,7 @@ lpfx
     in_cutoff_phase_step  f out_phase_step
     in_res_mod            off
     filter_type   lowpass
-    resonance     0.25
+    resonance     0.125
     res_mod_size  0
 lpfx
 
@@ -260,14 +222,14 @@ lpfy
     in_cutoff_phase_step  f out_phase_step
     in_res_mod            off
     filter_type   lowpass
-    resonance     0.25
+    resonance     0.125
     res_mod_size  0
 lpfy
 
 stereo_amp
 amp
-    in_left   lpfx out_output
-    in_right   lpfy out_output
+    in_left     lpfx out_output
+    in_right    lpfy out_output
     in_amp_eg   env out_output
     in_amp_mod  off
     left_level      0.7
@@ -277,11 +239,9 @@ amp
 amp
 
 group
-g1
+g0
     modules
-        synthmod name vel
         synthmod name env
-        synthmod name freq
         synthmod name osc1
         synthmod name osc2
         synthmod name wvx
@@ -292,211 +252,197 @@ g1
         synthmod name lpfy
         synthmod name amp
     modules
-g1
+g0
 
-copier c1 from g1 to g2 c1
-copier c2 from g1 to g3 c2
-copier c3 from g1 to g4 c3
-copier c4 from g1 to g5 c4
+copier c0 from g0 to g1 c0
+copier c1 from g0 to g2 c1
+copier c2 from g0 to g3 c2
+copier c3 from g0 to g4 c3
+copier c4 from g0 to g5 c4
+copier c5 from g0 to g6 c5
+copier c6 from g0 to g7 c6
+copier c7 from g0 to g8 c7
+copier c8 from g0 to g9 c8
 
-copier c5 from g1 to g6 c5
-copier c6 from g1 to g7 c6
-copier c7 from g1 to g8 c7
-copier c8 from g1 to g9 c8
-copier c9 from g1 to g10 c9
+group_control gc0
+    in_play_trig  seqr.0 out_note_on_trig
+    in_stop_trig  g0.env out_off_trig
+    group_name  g0
+gc0
 
-
-group_control
-gc1
-    in_play_trig  tr_on.1 out_trig
+group_control gc1
+    in_play_trig  seqr.1 out_note_on_trig
     in_stop_trig  g1.env out_off_trig
     group_name  g1
 gc1
 
-group_control
-gc2
-    in_play_trig  tr_on.2 out_trig
+group_control gc2
+    in_play_trig  seqr.2 out_note_on_trig
     in_stop_trig  g2.env out_off_trig
     group_name  g2
 gc2
 
-group_control
-gc3
-    in_play_trig  tr_on.3 out_trig
+group_control gc3
+    in_play_trig  seqr.3 out_note_on_trig
     in_stop_trig  g3.env out_off_trig
     group_name  g3
 gc3
 
-group_control
-gc4
-    in_play_trig  tr_on.4 out_trig
+group_control gc4
+    in_play_trig  seqr.4 out_note_on_trig
     in_stop_trig  g4.env out_off_trig
     group_name  g4
 gc4
 
-group_control
-gc5
-    in_play_trig  tr_on.5 out_trig
+group_control gc5
+    in_play_trig  seqr.5 out_note_on_trig
     in_stop_trig  g5.env out_off_trig
     group_name  g5
 gc5
 
-group_control
-gc6
-    in_play_trig  tr_on.6 out_trig
+group_control gc6
+    in_play_trig  seqr.6 out_note_on_trig
     in_stop_trig  g6.env out_off_trig
     group_name  g6
 gc6
 
-group_control
-gc7
-    in_play_trig  tr_on.7 out_trig
+group_control gc7
+    in_play_trig  seqr.7 out_note_on_trig
     in_stop_trig  g7.env out_off_trig
     group_name  g7
 gc7
 
-group_control
-gc8
-    in_play_trig  tr_on.8 out_trig
+group_control gc8
+    in_play_trig  seqr.8 out_note_on_trig
     in_stop_trig  g8.env out_off_trig
     group_name  g8
 gc8
 
-group_control
-gc9
-    in_play_trig  tr_on.9 out_trig
+group_control gc9
+    in_play_trig  seqr.9 out_note_on_trig
     in_stop_trig  g9.env out_off_trig
     group_name  g9
 gc9
 
-group_control
-gc10
-    in_play_trig  tr_on.10 out_trig
-    in_stop_trig  g10.env out_off_trig
-    group_name  g10
-gc10
-
 input_editor
 ie
     editlist
+        connect g0.env in_note_on_trig seqr.0 out_note_on_trig
+        connect g1.env in_note_on_trig seqr.1 out_note_on_trig
+        connect g2.env in_note_on_trig seqr.2 out_note_on_trig
+        connect g3.env in_note_on_trig seqr.3 out_note_on_trig
+        connect g4.env in_note_on_trig seqr.4 out_note_on_trig
+        connect g5.env in_note_on_trig seqr.5 out_note_on_trig
+        connect g6.env in_note_on_trig seqr.6 out_note_on_trig
+        connect g7.env in_note_on_trig seqr.7 out_note_on_trig
+        connect g8.env in_note_on_trig seqr.8 out_note_on_trig
+        connect g9.env in_note_on_trig seqr.9 out_note_on_trig
 
-        connect g1.vel in_trig tr_on.1 out_trig
-        connect g2.vel in_trig tr_on.2 out_trig
-        connect g3.vel in_trig tr_on.3 out_trig
-        connect g4.vel in_trig tr_on.4 out_trig
-        connect g5.vel in_trig tr_on.5 out_trig
+        connect g0.env in_note_off_trig seqr.0 out_note_off_trig
+        connect g1.env in_note_off_trig seqr.1 out_note_off_trig
+        connect g2.env in_note_off_trig seqr.2 out_note_off_trig
+        connect g3.env in_note_off_trig seqr.3 out_note_off_trig
+        connect g4.env in_note_off_trig seqr.4 out_note_off_trig
+        connect g5.env in_note_off_trig seqr.5 out_note_off_trig
+        connect g6.env in_note_off_trig seqr.6 out_note_off_trig
+        connect g7.env in_note_off_trig seqr.7 out_note_off_trig
+        connect g8.env in_note_off_trig seqr.8 out_note_off_trig
+        connect g9.env in_note_off_trig seqr.9 out_note_off_trig
 
-        connect g6.vel in_trig tr_on.6 out_trig
-        connect g7.vel in_trig tr_on.7 out_trig
-        connect g8.vel in_trig tr_on.8 out_trig
-        connect g9.vel in_trig tr_on.9 out_trig
-        connect g10.vel in_trig tr_on.10 out_trig
+        connect g0.env in_velocity seqr.0 out_velocity
+        connect g1.env in_velocity seqr.1 out_velocity
+        connect g2.env in_velocity seqr.2 out_velocity
+        connect g3.env in_velocity seqr.3 out_velocity
+        connect g4.env in_velocity seqr.4 out_velocity
+        connect g5.env in_velocity seqr.5 out_velocity
+        connect g6.env in_velocity seqr.6 out_velocity
+        connect g7.env in_velocity seqr.7 out_velocity
+        connect g8.env in_velocity seqr.8 out_velocity
+        connect g9.env in_velocity seqr.9 out_velocity
 
+        connect g0.osc1 in_frequency seqr.0 out_frequency
+        connect g1.osc1 in_frequency seqr.1 out_frequency
+        connect g2.osc1 in_frequency seqr.2 out_frequency
+        connect g3.osc1 in_frequency seqr.3 out_frequency
+        connect g4.osc1 in_frequency seqr.4 out_frequency
+        connect g5.osc1 in_frequency seqr.5 out_frequency
+        connect g6.osc1 in_frequency seqr.6 out_frequency
+        connect g7.osc1 in_frequency seqr.7 out_frequency
+        connect g8.osc1 in_frequency seqr.8 out_frequency
+        connect g9.osc1 in_frequency seqr.9 out_frequency
 
-        connect g1.env in_note_on_trig tr_on.1 out_trig
-        connect g2.env in_note_on_trig tr_on.2 out_trig
-        connect g3.env in_note_on_trig tr_on.3 out_trig
-        connect g4.env in_note_on_trig tr_on.4 out_trig
-        connect g5.env in_note_on_trig tr_on.5 out_trig
+        connect g0.osc2 in_frequency seqr.0 out_frequency
+        connect g1.osc2 in_frequency seqr.1 out_frequency
+        connect g2.osc2 in_frequency seqr.2 out_frequency
+        connect g3.osc2 in_frequency seqr.3 out_frequency
+        connect g4.osc2 in_frequency seqr.4 out_frequency
+        connect g5.osc2 in_frequency seqr.5 out_frequency
+        connect g6.osc2 in_frequency seqr.6 out_frequency
+        connect g7.osc2 in_frequency seqr.7 out_frequency
+        connect g8.osc2 in_frequency seqr.8 out_frequency
+        connect g9.osc2 in_frequency seqr.9 out_frequency
 
-        connect g6.env in_note_on_trig tr_on.6 out_trig
-        connect g7.env in_note_on_trig tr_on.7 out_trig
-        connect g8.env in_note_on_trig tr_on.8 out_trig
-        connect g9.env in_note_on_trig tr_on.9 out_trig
-        connect g10.env in_note_on_trig tr_on.10 out_trig
+        connect g0.osc1 in_note_on_trig seqr.0 out_note_on_trig
+        connect g1.osc1 in_note_on_trig seqr.1 out_note_on_trig
+        connect g2.osc1 in_note_on_trig seqr.2 out_note_on_trig
+        connect g3.osc1 in_note_on_trig seqr.3 out_note_on_trig
+        connect g4.osc1 in_note_on_trig seqr.4 out_note_on_trig
+        connect g5.osc1 in_note_on_trig seqr.5 out_note_on_trig
+        connect g6.osc1 in_note_on_trig seqr.6 out_note_on_trig
+        connect g7.osc1 in_note_on_trig seqr.7 out_note_on_trig
+        connect g8.osc1 in_note_on_trig seqr.8 out_note_on_trig
+        connect g9.osc1 in_note_on_trig seqr.9 out_note_on_trig
 
-        connect g1.env in_note_off_trig tr_off.1 out_trig
-        connect g2.env in_note_off_trig tr_off.2 out_trig
-        connect g3.env in_note_off_trig tr_off.3 out_trig
-        connect g4.env in_note_off_trig tr_off.4 out_trig
-        connect g5.env in_note_off_trig tr_off.5 out_trig
+        connect g0.osc2 in_note_on_trig seqr.0 out_note_on_trig
+        connect g1.osc2 in_note_on_trig seqr.1 out_note_on_trig
+        connect g2.osc2 in_note_on_trig seqr.2 out_note_on_trig
+        connect g3.osc2 in_note_on_trig seqr.3 out_note_on_trig
+        connect g4.osc2 in_note_on_trig seqr.4 out_note_on_trig
+        connect g5.osc2 in_note_on_trig seqr.5 out_note_on_trig
+        connect g6.osc2 in_note_on_trig seqr.6 out_note_on_trig
+        connect g7.osc2 in_note_on_trig seqr.7 out_note_on_trig
+        connect g8.osc2 in_note_on_trig seqr.8 out_note_on_trig
+        connect g9.osc2 in_note_on_trig seqr.9 out_note_on_trig
 
-        connect g6.env in_note_off_trig tr_off.6 out_trig
-        connect g7.env in_note_off_trig tr_off.7 out_trig
-        connect g8.env in_note_off_trig tr_off.8 out_trig
-        connect g9.env in_note_off_trig tr_off.9 out_trig
-        connect g10.env in_note_off_trig tr_off.10 out_trig
+        connect g0.osc1 in_note_slide_trig seqr.0 out_note_slide_trig
+        connect g1.osc1 in_note_slide_trig seqr.1 out_note_slide_trig
+        connect g2.osc1 in_note_slide_trig seqr.2 out_note_slide_trig
+        connect g3.osc1 in_note_slide_trig seqr.3 out_note_slide_trig
+        connect g4.osc1 in_note_slide_trig seqr.4 out_note_slide_trig
+        connect g5.osc1 in_note_slide_trig seqr.5 out_note_slide_trig
+        connect g6.osc1 in_note_slide_trig seqr.6 out_note_slide_trig
+        connect g7.osc1 in_note_slide_trig seqr.7 out_note_slide_trig
+        connect g8.osc1 in_note_slide_trig seqr.8 out_note_slide_trig
+        connect g9.osc1 in_note_slide_trig seqr.9 out_note_slide_trig
 
-
-        connect g1.freq in_trig tr_on.1 out_trig
-        connect g2.freq in_trig tr_on.2 out_trig
-        connect g3.freq in_trig tr_on.3 out_trig
-        connect g4.freq in_trig tr_on.4 out_trig
-        connect g5.freq in_trig tr_on.5 out_trig
-
-        connect g6.freq in_trig tr_on.6 out_trig
-        connect g7.freq in_trig tr_on.7 out_trig
-        connect g8.freq in_trig tr_on.8 out_trig
-        connect g9.freq in_trig tr_on.9 out_trig
-        connect g10.freq in_trig tr_on.10 out_trig
-
-
-        connect g1.osc1 in_note_on_trig tr_on.1 out_trig
-        connect g2.osc1 in_note_on_trig tr_on.2 out_trig
-        connect g3.osc1 in_note_on_trig tr_on.3 out_trig
-        connect g4.osc1 in_note_on_trig tr_on.4 out_trig
-        connect g5.osc1 in_note_on_trig tr_on.5 out_trig
-
-        connect g6.osc1 in_note_on_trig tr_on.6 out_trig
-        connect g7.osc1 in_note_on_trig tr_on.7 out_trig
-        connect g8.osc1 in_note_on_trig tr_on.8 out_trig
-        connect g9.osc1 in_note_on_trig tr_on.9 out_trig
-        connect g10.osc1 in_note_on_trig tr_on.10 out_trig
-
-        connect g1.osc2 in_note_on_trig tr_on.1 out_trig
-        connect g2.osc2 in_note_on_trig tr_on.2 out_trig
-        connect g3.osc2 in_note_on_trig tr_on.3 out_trig
-        connect g4.osc2 in_note_on_trig tr_on.4 out_trig
-        connect g5.osc2 in_note_on_trig tr_on.5 out_trig
-
-        connect g6.osc2 in_note_on_trig tr_on.6 out_trig
-        connect g7.osc2 in_note_on_trig tr_on.7 out_trig
-        connect g8.osc2 in_note_on_trig tr_on.8 out_trig
-        connect g9.osc2 in_note_on_trig tr_on.9 out_trig
-        connect g10.osc2 in_note_on_trig tr_on.10 out_trig
-
-        connect g1.osc1 in_note_on_trig tr_sl.1 out_trig
-        connect g2.osc1 in_note_on_trig tr_sl.2 out_trig
-        connect g3.osc1 in_note_on_trig tr_sl.3 out_trig
-        connect g4.osc1 in_note_on_trig tr_sl.4 out_trig
-        connect g5.osc1 in_note_on_trig tr_sl.5 out_trig
-
-        connect g6.osc1 in_note_on_trig tr_sl.6 out_trig
-        connect g7.osc1 in_note_on_trig tr_sl.7 out_trig
-        connect g8.osc1 in_note_on_trig tr_sl.8 out_trig
-        connect g9.osc1 in_note_on_trig tr_sl.9 out_trig
-        connect g10.osc1 in_note_on_trig tr_sl.10 out_trig
-
-        connect g1.osc2 in_note_on_trig tr_sl.1 out_trig
-        connect g2.osc2 in_note_on_trig tr_sl.2 out_trig
-        connect g3.osc2 in_note_on_trig tr_sl.3 out_trig
-        connect g4.osc2 in_note_on_trig tr_sl.4 out_trig
-        connect g5.osc2 in_note_on_trig tr_sl.5 out_trig
-
-        connect g6.osc2 in_note_on_trig tr_sl.6 out_trig
-        connect g7.osc2 in_note_on_trig tr_sl.7 out_trig
-        connect g8.osc2 in_note_on_trig tr_sl.8 out_trig
-        connect g9.osc2 in_note_on_trig tr_sl.9 out_trig
-        connect g10.osc2 in_note_on_trig tr_sl.10 out_trig
-
+        connect g0.osc2 in_note_slide_trig seqr.0 out_note_slide_trig
+        connect g1.osc2 in_note_slide_trig seqr.1 out_note_slide_trig
+        connect g2.osc2 in_note_slide_trig seqr.2 out_note_slide_trig
+        connect g3.osc2 in_note_slide_trig seqr.3 out_note_slide_trig
+        connect g4.osc2 in_note_slide_trig seqr.4 out_note_slide_trig
+        connect g5.osc2 in_note_slide_trig seqr.5 out_note_slide_trig
+        connect g6.osc2 in_note_slide_trig seqr.6 out_note_slide_trig
+        connect g7.osc2 in_note_slide_trig seqr.7 out_note_slide_trig
+        connect g8.osc2 in_note_slide_trig seqr.8 out_note_slide_trig
+        connect g9.osc2 in_note_slide_trig seqr.9 out_note_slide_trig
     editlist
 ie
 
 param_editor
 pe
     editlist
-          edit g1.osc1 tuning_semitones 0.0
-          edit g2.osc1 tuning_semitones 0.01
-          edit g3.osc1 tuning_semitones 0.02
-          edit g4.osc1 tuning_semitones 0.03
-          edit g5.osc1 tuning_semitones 0.04
+        edit g0.osc1 tuning_semitones 0.0
+        edit g1.osc1 tuning_semitones 0.1
+        edit g2.osc1 tuning_semitones 0.2
+        edit g3.osc1 tuning_semitones 0.3
+        edit g4.osc1 tuning_semitones 0.4
+        edit g5.osc1 tuning_semitones 0.5
+        edit g6.osc1 tuning_semitones 0.6
+        edit g7.osc1 tuning_semitones 0.7
+        edit g8.osc1 tuning_semitones 0.8
+        edit g9.osc1 tuning_semitones 0.9
 
-          edit g6.osc1 tuning_semitones 0.05
-          edit g7.osc1 tuning_semitones 0.06
-          edit g8.osc1 tuning_semitones 0.07
-          edit g9.osc1 tuning_semitones 0.08
-          edit g10.osc1 tuning_semitones 0.09
-
+        edit g0.osc2 freq_mod1_size 1.0
         edit g1.osc2 freq_mod1_size 1.25
         edit g2.osc2 freq_mod1_size 1.5
         edit g3.osc2 freq_mod1_size 1.75
@@ -506,9 +452,7 @@ pe
         edit g7.osc2 freq_mod1_size 1.75
         edit g8.osc2 freq_mod1_size 1.0
         edit g9.osc2 freq_mod1_size 1.25
-       edit g10.osc2 freq_mod1_size 1.50
 
-       edit g10.osc1 freq_mod1_size 1.25
         edit g9.osc1 freq_mod1_size 1.5
         edit g8.osc1 freq_mod1_size 1.75
         edit g7.osc1 freq_mod1_size 1.0
@@ -517,79 +461,49 @@ pe
         edit g4.osc1 freq_mod1_size 1.75
         edit g3.osc1 freq_mod1_size 1.0
         edit g2.osc1 freq_mod1_size 1.25
-        edit g1.osc1 freq_mod1_size 1.50
+        edit g1.osc1 freq_mod1_size 1.5
+        edit g0.osc1 freq_mod1_size 1.75
 
+        edit g0.osc2    octave_offset -1
+        edit g1.osc2    octave_offset 1
+        edit g2.osc2    octave_offset -1
+        edit g3.osc2    octave_offset 1
+        edit g4.osc2    octave_offset -1
+        edit g5.osc2    octave_offset 1
+        edit g6.osc2    octave_offset -1
+        edit g7.osc2    octave_offset 1
+        edit g8.osc2    octave_offset -1
+        edit g9.osc2    octave_offset 1
 
-        edit g1.osc1
-            tuning_semitones 0.9
-            octave_offset 1
-        edit g2.osc2
-            tuning_semitones 0.8
-            octave_offset 1
-        edit g3.osc1
-            tuning_semitones 0.7
-            octave_offset -1
-        edit g4.osc2
-            tuning_semitones 0.6
-            octave_offset -1
-        edit g5.osc1
-            tuning_semitones 0.5
-            octave_offset 1
+        edit g0.f freq 10000
+        edit g1.f freq 9000
+        edit g2.f freq 7000
+        edit g3.f freq 5000
+        edit g4.f freq 2000
+        edit g5.f freq 1000
+        edit g6.f freq 800
+        edit g7.f freq 600
+        edit g8.f freq 500
+        edit g9.f freq 300
 
-        edit g6.osc2
-            tuning_semitones 0.4
-            octave_offset 1
-        edit g7.osc1
-            tuning_semitones 0.3
-            octave_offset -1
-        edit g8.osc2
-            tuning_semitones 0.2
-            octave_offset -1
-        edit g9.osc1
-            tuning_semitones 0.1
-            octave_offset 1
-        edit g10.osc2
-            tuning_semitones 0.0
-            octave_offset 1
+        edit g0.amp left_level  0.9 right_level 0.0
+        edit g1.amp left_level  0.0 right_level 0.9
+        edit g2.amp left_level  0.7 right_level 0.2
+        edit g3.amp left_level  0.2 right_level 0.7
+        edit g4.amp left_level  0.4 right_level 0.5
+        edit g5.amp left_level  0.5 right_level 0.4
+        edit g6.amp left_level  0.6 right_level 0.3
+        edit g7.amp left_level  0.3 right_level 0.6
+        edit g8.amp left_level  0.8 right_level 0.1
+        edit g9.amp left_level  0.1 right_level 0.8
 
-        edit g1.f freq 500
-        edit g2.f freq 800
-        edit g3.f freq 1400
-        edit g4.f freq 2600
-        edit g5.f freq 5000
-
-        edit g10.f freq 500
-        edit g9.f freq 800
-        edit g8.f freq 1400
-        edit g7.f freq 2600
-        edit g6.f freq 5000
-
-        edit g1.amp left_level  0.1
-                    right_level 0.7
-        edit g2.amp left_level  0.2
-                    right_level 0.6
-        edit g3.amp left_level  0.3
-                    right_level 0.5
-        edit g4.amp left_level  0.4
-                    right_level 0.4
-        edit g5.amp left_level  0.5
-                    right_level 0.3
-        edit g6.amp left_level  0.6
-                    right_level 0.2
-        edit g7.amp left_level  0.7
-                    right_level 0.1
-        edit g8.amp left_level  0.6
-                    right_level 0.2
-        edit g9.amp left_level  0.5
-                    right_level 0.3
-        edit g10.amp left_level  0.4
-                     right_level 0.4
     editlist
 pe
 
 mixer
 mix
     mix
+        synthmod name   g0.amp
         synthmod name   g1.amp
         synthmod name   g2.amp
         synthmod name   g3.amp
@@ -599,9 +513,8 @@ mix
         synthmod name   g7.amp
         synthmod name   g8.amp
         synthmod name   g9.amp
-        synthmod name   g10.amp
     mix
-    master_level 0.875
+    master_level 0.4
 mix
 
 fader
@@ -618,12 +531,12 @@ echol
     in_gain_mod      f out_output
     in_feedback      echor out_wet_output
     in_feedback_mod  off
-    delay_time         370
-    gain               0.65
+    delay_time         37
+    gain               1
     gain_mod_size      0.75
-    feedback           0.425
+    feedback           0.6425
     feedback_mod_size  0
-    wet/dry            0.0125
+    wet/dry            0.125
 echol
 
 echo
@@ -632,12 +545,12 @@ echor
     in_gain_mod      f out_output
     in_feedback      echol out_wet_output
     in_feedback_mod  off
-    delay_time         380
-    gain               0.65
+    delay_time         80
+    gain               1
     gain_mod_size      0.75
-    feedback           0.4825
+    feedback           0.825
     feedback_mod_size  0
-    wet/dry            0.0125
+    wet/dry            0.125
 echor
 
 

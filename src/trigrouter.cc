@@ -13,7 +13,7 @@ trigrouter::trigrouter(const char* uname) :
  synthmod(module::TRIGROUTER, uname, SM_UNGROUPABLE),
  in_trig(0), in_count(0),
  count(0), wrap(OFF),
- grp(0), trigs(0)
+ grp(0), trigs(0), last_ix(-1)
 {
     register_input(input::IN_TRIG);
     register_input(input::IN_COUNT);
@@ -100,18 +100,19 @@ void trigrouter::create_wcnt_triggers()
         delete [] trigs;
     trigs = new STATUS[count + 1];
     synthmodlist* sml = jwm.get_modlist();
-    for (int i = 0; i <= count; i++){
-        if (verbose){
+    for (int i = 0; i <= count; i++) {
+        trigs[i] = OFF;
+        if (verbose) {
             std::cout << "\n    creating " << wtn << "...";
             jwm.set_verbose(false);
         }
         std::ostringstream ostr;
         ostr << i;
-        synthmod* sm = sml->create_module(
-            module::WCNTTRIGGER, ostr.str().c_str());
+        synthmod* sm = sml->create_module(module::WCNTTRIGGER,
+                                                    ostr.str().c_str());
         sml->add_module(sm);
         grp->group_module(sm);
-        if (verbose){
+        if (verbose) {
             jwm.set_verbose(true);
             std::cout << "\n      grouped as " << sm->get_username();
             std::cout << "\n      connecting to trigger " << i;
@@ -128,19 +129,17 @@ void trigrouter::create_wcnt_triggers()
 
 void trigrouter::run()
 {
-    STATUS* trg = trigs;
-    for (wcint_t ix = 0; ix <= count; trg++, ix++)
-        *trg = OFF;
+    if (last_ix > -1)
+        trigs[last_ix] = OFF;
+
     if (*in_trig == ON) {
         wcint_t ix = *in_count;
-        if (wrap == ON) {
-            while(ix < 0)
-                ix += count;
-            while(ix > count)
-                ix -= count;
+        if (ix > -1) {
+            if (wrap == ON)
+                ix %= count;
+            if (ix < count)
+                trigs[last_ix = ix] = ON;
         }
-        if (ix >= 0 && ix <= count)
-            trigs[ix] = ON;
     }
 }
 

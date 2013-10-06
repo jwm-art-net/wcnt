@@ -21,8 +21,7 @@ public:
         return add_at_tail(sm)->get_data();
     }
 
-    synthmod* create_module(module::TYPE smt,
-                            const char* );
+    synthmod* create_module(module::TYPE smt,const char* );
 
     bool delete_module(synthmod* sm);
 
