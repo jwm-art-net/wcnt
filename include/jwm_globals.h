@@ -45,6 +45,7 @@ class jwm_globals
     bool is_verbose() const     { return verbose;   }
     bool is_dont_run() const    { return dont_run;  }
     bool is_no_title() const    { return no_title;  }
+    bool is_no_progress() const { return no_progress; }
 
     void set_verbose(bool v)    { verbose = v; }
 
@@ -82,6 +83,7 @@ class jwm_globals
     bool verbose;
     bool dont_run;
     bool no_title;
+    bool no_progress;
 
     samp_t sample_rate;
 
