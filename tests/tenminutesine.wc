@@ -3,16 +3,15 @@ wcnt-1.30/jwmsynth
 samplerate 44100
 
 ; simple.wc
-;   creates a simple audio file consisting of a 220hrtz tone
-;   for a duration of 1 second. it uses the fader to fade-in
-;   and out at the start and end.
+;   processes ten minutes worth of a sine wave with fade in and fade out
+;   at end. does not write to disk. used for timing purposes.
 ;
 
 timer
 t
     timings
         time seconds 0
-        time seconds 1
+        time seconds 6000
     timings
     time_is_relative off
     recycle_mode off
@@ -46,18 +45,6 @@ m
     in_signal2 f out_output
 m
 
-wavfile_out
-w
-    in_left         m out_output
-    in_right        m out_output
-    in_bar          f out_index
-    snapshot_mode   off
-    data_format     float32
-    filename        simple.wav
-    start_bar       0
-    end_bar         1
-w
-
 wcnt_exit
 x
     in_bar      f out_index
@@ -65,3 +52,15 @@ x
 x
 
 wcnt-1.30/jwmsynth
+
+wavfile_out
+w
+    in_left         m out_output
+    in_right        m out_output
+    in_bar          f out_index
+    snapshot_mode   off
+    data_format     float32
+    filename        tenminutesine.wav
+    start_bar       0
+    end_bar         1
+w

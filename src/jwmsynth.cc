@@ -129,42 +129,57 @@ bool jwmsynth::execute_synth()
         std::cout << "\nUnlinking empty-run modules from run list:"
                                                         << std::endl;
     jwm.get_modlist()->remove_empty_run_modules();
-    samp_t sample = 0;
-    char bigcount = '|';
-    char littlecount = '~';
-    int samplesperbig = jwm.samplerate();
-    int divisions = 4;
-    int samplespersmall = samplesperbig / divisions;
-    int counter = 0;
-    int divcounter = 0;
     if (jwm.is_verbose())
         std::cout << "\n";
-    std::cout << "Running synth (one '" << bigcount
-              << "' per second done)" << std::endl;
     const STATUS* force_abort = synthmod::get_abort_status();
     synthmod** runlist = jwm.get_modlist()->get_run_list();
 
     std::cout << "samplerate: " << jwm.samplerate() << std::endl;
 
-    while (*bar < exit_bar && *force_abort == OFF)
-    {
-        int count = 0;
-        synthmod* sm = runlist[count];
-        while(sm) {
-            sm->run();
-            sm = runlist[++count];
-        }
-        sample++;
-        counter++;
-        if (counter == samplespersmall)	{
-            divcounter++;
-            if (divcounter == divisions) {
-                std::cout << bigcount;
-                divcounter = 0;
+    if (jwm.is_no_progress()) {
+        while (*bar < exit_bar && *force_abort == OFF)
+        {
+            int count = 0;
+            synthmod* sm = runlist[count];
+            while(sm) {
+                sm->run();
+                sm = runlist[++count];
             }
-            else std::cout << littlecount;
-            std::cout.flush();
-            counter = 0;
+        }
+    }
+    else {
+        samp_t sample = 0;
+        char bigcount = '|';
+        char littlecount = '~';
+        int samplesperbig = jwm.samplerate();
+        int divisions = 4;
+        int samplespersmall = samplesperbig / divisions;
+        int counter = 0;
+        int divcounter = 0;
+
+        std::cout << "Running synth (one '" << bigcount
+                  << "' per second done)" << std::endl;
+
+        while (*bar < exit_bar && *force_abort == OFF)
+        {
+            int count = 0;
+            synthmod* sm = runlist[count];
+            while(sm) {
+                sm->run();
+                sm = runlist[++count];
+            }
+            sample++;
+            counter++;
+            if (counter == samplespersmall)	{
+                divcounter++;
+                if (divcounter == divisions) {
+                    std::cout << bigcount;
+                    divcounter = 0;
+                }
+                else std::cout << littlecount;
+                std::cout.flush();
+                counter = 0;
+            }
         }
     }
     if (runlist)

@@ -26,7 +26,7 @@
 jwm_globals::jwm_globals() :
  wc_path(0),    wc_file(0),
  x_exit_bar(0), x_in_bar(0),
- verbose(false), dont_run(false), no_title(false),
+ verbose(false), dont_run(false), no_title(false), no_progress(false),
  sample_rate(jwm_init::default_samplerate), mid_a_phase_step(0),
  modlist(0), inputlist(0), outputlist(0), paramlist(0),
  connectlist(0), moddbjlist(0), fxsparlist(0), dbjlist(0), dparlist(0),

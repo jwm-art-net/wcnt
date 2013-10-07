@@ -59,6 +59,11 @@ cmdline::cmd_opts_data cmdline::data[OPTS_COUNT] =
     "\tDon't display titles or flush complete message.",
     0
 },
+{ NO_PROGRESS,
+    "--no-progress",        "-np",  "<filename.wc>",                0,0,6,
+    "\tDon't display progress ticker.",
+    0
+},
 { MOD_HELP,
     "--module-help",        "-mh",  "[module_type]",                0,0,4,
     "\tDisplay a list of all wcnt synth modules, or display a specific\n"
@@ -159,6 +164,7 @@ bool cmdline::scan()
                     case VERBOSE:
                     case DONT_RUN:
                     case NO_TITLE:
+                    case NO_PROGRESS:
                     case HEADER:
                     case HELP:
                     case LONGHELP:
@@ -231,6 +237,7 @@ bool cmdline::set_jwm_globals()
     jwm.verbose  = (data[V_IX].par1) ? true : false;
     jwm.dont_run = (data[DONT_RUN_IX].par1) ? true : false;
     jwm.no_title = (data[NO_TITLE_IX].par1) ? true : false;
+    jwm.no_progress = (data[NO_PROGRESS_IX].par1) ? true : false;
 
     if (jwm.wc_path || jwm.wc_file){
         msg = "\nGlobals (path) being set again... I won't do it.";
