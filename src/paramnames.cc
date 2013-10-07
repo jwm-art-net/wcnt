@@ -155,7 +155,6 @@ namespace param
     { GAIN_DB,          "gain_db",              iocat::DOUBLE,  "Gain amount, in decibels." },
     { LIMIT_DB,         "limit_db",             iocat::DOUBLE,  "dB Limit." },
     { RELEASE_SECS,     "release_secs",         iocat::DOUBLE,  "Release time (seconds)." },
-    { ATTEN_DB,         "attenuation_db",       iocat::DOUBLE,  "Attenuation dB." },
     { THRESH_DB,        "threshold_db",         iocat::DOUBLE,  "Threshold dB." },
     { RATIO_1N,         "ratio_1:n",            iocat::DOUBLE,  "Ratio, 1 to n, where n is..." },
     { KNEE_DB,          "knee_db",              iocat::DOUBLE,  "Knee dB." },

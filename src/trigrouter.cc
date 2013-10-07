@@ -11,12 +11,13 @@
 trigrouter::trigrouter(const char* uname) :
 
  synthmod(module::TRIGROUTER, uname, SM_UNGROUPABLE),
- in_trig(0), in_count(0),
+ in_trig(0), in_index(0), in_all_off_trig(0),
  count(0), wrap(OFF),
  grp(0), trigs(0), last_ix(-1)
 {
     register_input(input::IN_TRIG);
-    register_input(input::IN_COUNT);
+    register_input(input::IN_INDEX);
+    register_input(input::IN_ALL_OFF_TRIG);
     init_first();
 }
 
@@ -30,21 +31,23 @@ trigrouter::~trigrouter()
 
 const void* trigrouter::set_in(input::TYPE it, const void* o)
 {
-    switch(it)
-    {
-        case input::IN_TRIG: return in_trig = (STATUS const*)o;
-        case input::IN_COUNT:return in_count = (wcint_t const*)o;
-        default: return 0;
+    switch(it) {
+    case input::IN_TRIG:        return in_trig = (STATUS const*)o;
+    case input::IN_INDEX:       return in_index = (wcint_t const*)o;
+    case input::IN_ALL_OFF_TRIG:return in_all_off_trig = (STATUS const*)o;
+    default:
+        return 0;
     }
 }
 
 const void* trigrouter::get_in(input::TYPE it) const
 {
-    switch(it)
-    {
-        case input::IN_TRIG: return in_trig;
-        case input::IN_COUNT:return in_count;
-        default: return 0;
+    switch(it) {
+    case input::IN_TRIG:        return in_trig;
+    case input::IN_INDEX:       return in_index;
+    case input::IN_ALL_OFF_TRIG:return in_all_off_trig;
+    default:
+        return 0;
     }
 }
 
@@ -98,9 +101,9 @@ void trigrouter::create_wcnt_triggers()
     grp->set_username(get_username());
     if (trigs)
         delete [] trigs;
-    trigs = new STATUS[count + 1];
+    trigs = new STATUS[count];
     synthmodlist* sml = jwm.get_modlist();
-    for (int i = 0; i <= count; i++) {
+    for (int i = 0; i < count; i++) {
         trigs[i] = OFF;
         if (verbose) {
             std::cout << "\n    creating " << wtn << "...";
@@ -133,7 +136,7 @@ void trigrouter::run()
         trigs[last_ix] = OFF;
 
     if (*in_trig == ON) {
-        wcint_t ix = *in_count;
+        wcint_t ix = *in_index;
         if (ix > -1) {
             if (wrap == ON)
                 ix %= count;

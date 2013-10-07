@@ -23,6 +23,7 @@ seq_router::seq_router(const char* uname) :
     register_input(input::IN_NOTE_OFF_TRIG);
     register_input(input::IN_FREQ);
     register_input(input::IN_VELOCITY);
+    register_input(input::IN_ALL_OFF_TRIG);
     init_first();
 }
 
@@ -58,6 +59,8 @@ const void* seq_router::set_in(input::TYPE it, const void* o)
         return in_freq = (const double*)o;
     case input::IN_VELOCITY:
         return in_velocity = (const double*)o;
+    case input::IN_ALL_OFF_TRIG:
+        return in_all_off_trig = (const STATUS*)o;
     default:
         return 0;
     }
@@ -73,7 +76,9 @@ const void* seq_router::get_in(input::TYPE it) const
     case input::IN_NOTE_OFF_TRIG:   return in_note_off_trig;
     case input::IN_FREQ:            return in_freq;
     case input::IN_VELOCITY:        return in_velocity;
-    default: return 0;
+    case input::IN_ALL_OFF_TRIG:    return in_all_off_trig;
+    default:
+        return 0;
     }
 }
 
@@ -197,6 +202,17 @@ void seq_router::create_wcnt_notes()
 
 void seq_router::run()
 {
+    if (*in_all_off_trig == ON) {
+        for (int i = 0; i < count; ++i) {
+            on_trigs[i] = OFF;
+            slide_trigs[i] = OFF;
+            off_trigs[i] = ON;
+            freqs[i] = 0.0f;
+            vels[i] = 0.0f;
+        }
+        return;
+    }
+
     if (last_on_ix > -1) {
         on_trigs[last_on_ix] = OFF;
         last_on_ix = -1;
@@ -209,6 +225,7 @@ void seq_router::run()
         off_trigs[last_off_ix] = OFF;
         last_off_ix = -1;
     }
+
     if (*in_note_on_trig == ON) {
         index = *in_index;
         if (wrap == ON)

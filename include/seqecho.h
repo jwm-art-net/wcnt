@@ -24,6 +24,7 @@ private:
     const STATUS*   in_note_off_trig;
     const double*   in_freq;
     const double*   in_velocity;
+    const STATUS*   in_reset_trig;
     // outputs
     STATUS  out_note_on_trig;
     STATUS  out_note_slide_trig;

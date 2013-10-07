@@ -85,7 +85,8 @@ seq
 
 trig_echo
 te
-    in_trig     seq out_note_on_trig
+    in_trig         seq out_note_on_trig
+    in_reset_trig   off
     delay_time      150
     count           49 // + 1 for input
     send_input_out  on
@@ -93,8 +94,9 @@ te
 
 trig_router
 tr
-    in_trig   te out_trig
-    in_count  te out_index
+    in_trig     te out_trig
+    in_index    te out_index
+    in_all_off_trig off
     count  5
     wrap   on
 tr
@@ -381,13 +383,13 @@ wav
     data_format pcm16
     filename    routed2.wav
     start_bar   0
-    end_bar     40
+    end_bar     36
 wav
 
 wcnt_exit
 x
     in_bar  time1   out_bar
-    exit_bar    40
+    exit_bar    36
 x
 
 //------------------------------------------------------------------------

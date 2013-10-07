@@ -158,7 +158,6 @@ namespace param
     GAIN_DB,
     LIMIT_DB,
     RELEASE_SECS,
-    ATTEN_DB,
     THRESH_DB,
     RATIO_1N,
     KNEE_DB,

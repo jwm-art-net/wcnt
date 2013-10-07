@@ -33,6 +33,7 @@ class seq_router: public synthmod
     const STATUS*   in_note_off_trig;
     const double*   in_freq;
     const double*   in_velocity;
+    const STATUS*   in_all_off_trig;
 
     /* params */
     wcint_t count;

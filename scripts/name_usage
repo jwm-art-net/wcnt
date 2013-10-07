@@ -7,6 +7,8 @@ echo "BUT MUCH MORE IMPORTANTLY, TESTING SHOWS THAT"
 echo "   optimization by re-ordering the names is  "
 echo "      ***** ENTIRELY NON-FRUITFUL *****      "
 echo "Or put another way, absolutely without merit."
+echo "*********************************************"
+echo
 
 
 
@@ -239,5 +241,15 @@ dump_sorted_names_decl
 echo;echo;echo
 
 dump_sorted_names_def
+
+    TMP=$(mktemp)
+    RC=${#ENAMES[@]}
+
+    for TYPE in "${!ENAMES[@]}"
+    do
+        printf "%s %d\n" $TYPE ${SRC_COUNT[$TYPE]}
+    done | sort -rn -k2
+
+
 
 rm $TMP

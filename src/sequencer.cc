@@ -171,7 +171,7 @@ dobj* sequencer::add_dobj(dobj* dbj)
             sm_err("Could not add riff node to %s", get_username());
         break;
     default:
-        sm_err("%s %s to %s.", errors::stock::major, errors::stock::bad_add, 
+        sm_err("%s %s to %s.", errors::stock::major, errors::stock::bad_add,
                                                     get_username());
         retv = 0;
     }

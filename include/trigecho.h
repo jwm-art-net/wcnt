@@ -20,6 +20,7 @@ public:
 private:
     // inputs
     const STATUS* in_trig;
+    const STATUS* in_reset_trig;
     // outputs
     STATUS out_trig;
     double out_velocity;

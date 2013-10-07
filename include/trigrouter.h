@@ -19,7 +19,7 @@ class group;
 
 class trigrouter: public synthmod
 {
-public:
+ public:
     trigrouter(const char*);
     ~trigrouter();
     // virtual funcs
@@ -30,10 +30,11 @@ public:
     bool set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE) const;
 
-private:
+ private:
     /* inputs */
-    STATUS const* in_trig;
-    wcint_t  const* in_count;
+    const STATUS* in_trig;
+    const wcint_t* in_index;
+    const STATUS* in_all_off_trig;
     /* params */
     wcint_t count;
     STATUS wrap;

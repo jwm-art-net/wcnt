@@ -3,7 +3,7 @@ wcnt-1.30/jwmsynth
 samplerate 44100
 
 ; simple.wc
-;   processes one hundred minutes worth of sine wave with fade in
+;   processes ten minutes worth of sine wave with fade in
 ;   and fade out at end. does not write to disk. used for timing
 ;   purposes, run with --no-progress.
 ;
@@ -12,7 +12,7 @@ timer
 t
     timings
         time seconds 0
-        time seconds 6000
+        time seconds 600
     timings
     time_is_relative off
     recycle_mode off

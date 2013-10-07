@@ -20,14 +20,23 @@ time1
 
 
 timer
-cutitout
+cutitout#1
     timings
         time seconds 0.0
-        time seconds 45
+        time seconds 62
     timings
     time_is_relative off
     recycle_mode off
-cutitout
+cutitout#1
+
+timer
+cutitout#2
+    timings
+        time seconds 58.0
+    timings
+    time_is_relative off
+    recycle_mode off
+cutitout#2
 
 riff
 riff1
@@ -51,6 +60,9 @@ seq
         riff_node   riff riff1
             bar 0       transpose 0
             repeat 8    repeat_stripe 2
+        riff_node   riff riff1
+            bar 23       transpose 0
+            repeat 6    repeat_stripe 1
     track
 
     in_bar              time1 out_bar
@@ -62,6 +74,18 @@ seq
     velocity_response_time  5
 seq
 
+; change seq_echo to note_echo
+; create new seq_echo module echo using time_map data
+; ..... but.... could we not process such echo data 
+; before hand... ? .. ?? ??
+
+
+pattern_trig
+altbar
+    in_trig time1 out_bar_trig
+    pattern 00001
+altbar
+
 
 seq_echo
 seqo
@@ -70,7 +94,8 @@ seqo
     in_note_off_trig    seq out_note_off_trig
     in_frequency        seq out_frequency
     in_velocity         seq out_velocity
-    delay_time      277
+    in_reset_trig      altbar out_trig
+    delay_time      275
     count           19 // + 1 with send_input_out on
     send_input_out  on
 seqo
@@ -83,6 +108,7 @@ seqr
     in_note_off_trig    seqo out_note_off_trig
     in_frequency        seqo out_frequency
     in_velocity         seqo out_velocity
+    in_all_off_trig     cutitout#2 out_trig
     count  10
     wrap   on
 seqr
@@ -126,7 +152,7 @@ osc1
     tuning_semitones    0
     portamento_time     125
     response_time       1
-    freq_mod1_size      1.25
+    freq_mod1_size      1
     freq_mod2_size      1
 osc1
 
@@ -142,7 +168,7 @@ osc2
     tuning_semitones    0
     portamento_time     125
     response_time       1
-    freq_mod1_size      1.25
+    freq_mod1_size      1
     freq_mod2_size      1
 osc2
 
@@ -155,9 +181,9 @@ wvx
     shape_type          sine
     on_trig_reset_phase on
     recycle_mode        on
-    sync_shape          on
+    sync_shape          off
     invert_alt          on
-    phase_cycles        0.75
+    phase_cycles        1
 wvx
 
 wave_phase
@@ -169,9 +195,9 @@ wvy
     shape_type          sine
     on_trig_reset_phase on
     recycle_mode        on
-    sync_shape          on
+    sync_shape          off
     invert_alt          on
-    phase_cycles        0.75
+    phase_cycles        1
 wvy
 
 adsr
@@ -442,27 +468,27 @@ pe
         edit g8.osc1 tuning_semitones 0.8
         edit g9.osc1 tuning_semitones 0.9
 
-        edit g0.osc2 freq_mod1_size 1.0
-        edit g1.osc2 freq_mod1_size 1.25
-        edit g2.osc2 freq_mod1_size 1.5
-        edit g3.osc2 freq_mod1_size 1.75
-        edit g4.osc2 freq_mod1_size 1.0
-        edit g5.osc2 freq_mod1_size 1.25
-        edit g6.osc2 freq_mod1_size 1.5
-        edit g7.osc2 freq_mod1_size 1.75
-        edit g8.osc2 freq_mod1_size 1.0
-        edit g9.osc2 freq_mod1_size 1.25
+        edit g0.osc2 freq_mod1_size 1.010
+        edit g1.osc2 freq_mod1_size 1.0125
+        edit g2.osc2 freq_mod1_size 1.015
+        edit g3.osc2 freq_mod1_size 1.0175
+        edit g4.osc2 freq_mod1_size 1.010
+        edit g5.osc2 freq_mod1_size 1.0125
+        edit g6.osc2 freq_mod1_size 1.015
+        edit g7.osc2 freq_mod1_size 1.0175
+        edit g8.osc2 freq_mod1_size 1.010
+        edit g9.osc2 freq_mod1_size 1.0125
 
-        edit g9.osc1 freq_mod1_size 1.5
-        edit g8.osc1 freq_mod1_size 1.75
-        edit g7.osc1 freq_mod1_size 1.0
-        edit g6.osc1 freq_mod1_size 1.25
-        edit g5.osc1 freq_mod1_size 1.5
-        edit g4.osc1 freq_mod1_size 1.75
-        edit g3.osc1 freq_mod1_size 1.0
-        edit g2.osc1 freq_mod1_size 1.25
-        edit g1.osc1 freq_mod1_size 1.5
-        edit g0.osc1 freq_mod1_size 1.75
+        edit g9.osc1 freq_mod1_size 1.015
+        edit g8.osc1 freq_mod1_size 1.0175
+        edit g7.osc1 freq_mod1_size 1.010
+        edit g6.osc1 freq_mod1_size 1.0125
+        edit g5.osc1 freq_mod1_size 1.015
+        edit g4.osc1 freq_mod1_size 1.0175
+        edit g3.osc1 freq_mod1_size 1.010
+        edit g2.osc1 freq_mod1_size 1.0125
+        edit g1.osc1 freq_mod1_size 1.015
+        edit g0.osc1 freq_mod1_size 1.0175
 
         edit g0.osc2    octave_offset -1
         edit g1.osc2    octave_offset 1
@@ -518,11 +544,11 @@ mix
 mix
 
 fader
-f   in_bar cutitout out_count
+f   in_bar cutitout#1 out_count
     start_bar 0
     end_bar 1
-    fade_in_time 50
-    fade_out_time 50
+    fade_in_time 500
+    fade_out_time 2500
 f
 
 echo
@@ -531,9 +557,9 @@ echol
     in_gain_mod      f out_output
     in_feedback      echor out_wet_output
     in_feedback_mod  off
-    delay_time         37
-    gain               1
-    gain_mod_size      0.75
+    delay_time         237
+    gain               0.9
+    gain_mod_size      1
     feedback           0.6425
     feedback_mod_size  0
     wet/dry            0.125
@@ -545,9 +571,9 @@ echor
     in_gain_mod      f out_output
     in_feedback      echol out_wet_output
     in_feedback_mod  off
-    delay_time         80
-    gain               1
-    gain_mod_size      0.75
+    delay_time         280
+    gain               0.9
+    gain_mod_size      1
     feedback           0.825
     feedback_mod_size  0
     wet/dry            0.125
@@ -558,7 +584,7 @@ wavfile_out
 wav
     in_left     echol out_output
     in_right    echor out_output
-    in_bar      cutitout   out_count
+    in_bar      f   out_count
     snapshot_mode off
     data_format pcm16
     filename    routed3.wav
@@ -568,7 +594,7 @@ wav
 
 wcnt_exit
 x
-    in_bar  cutitout out_count
+    in_bar  f out_count
     exit_bar   1
 x
 

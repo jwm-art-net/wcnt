@@ -8,7 +8,7 @@
 seq_echo::seq_echo(const char* uname) :
  synthmod(module::SEQ_ECHO, uname, SM_DEFAULT),
  in_note_on_trig(0), in_note_slide_trig(0), in_note_off_trig(0),
- in_freq(0), in_velocity(0),
+ in_freq(0), in_velocity(0), in_reset_trig(0),
  out_note_on_trig(OFF), out_note_slide_trig(OFF), out_note_off_trig(OFF),
  out_freq(0), out_velocity(0), out_index(-1),
  delay_time(0.0), count(0), send_input_out(OFF),
@@ -20,6 +20,7 @@ seq_echo::seq_echo(const char* uname) :
     register_input(input::IN_NOTE_OFF_TRIG);
     register_input(input::IN_FREQ);
     register_input(input::IN_VELOCITY);
+    register_input(input::IN_RESET_TRIG);
 
     register_output(output::OUT_INDEX);
     register_output(output::OUT_NOTE_ON_TRIG);
@@ -98,6 +99,8 @@ const void* seq_echo::set_in(input::TYPE it, const void* o)
         return in_freq = (const double*)o;
     case input::IN_VELOCITY:
         return in_velocity = (const double*)o;
+    case input::IN_RESET_TRIG:
+        return in_reset_trig = (const STATUS*)o;
     default:
         return 0;
     }
@@ -112,6 +115,7 @@ const void* seq_echo::get_in(input::TYPE it) const
     case input::IN_NOTE_OFF_TRIG:   return &in_note_off_trig;
     case input::IN_FREQ:            return &in_freq;
     case input::IN_VELOCITY:        return &in_velocity;
+    case input::IN_RESET_TRIG:      return &in_reset_trig;
     default: return 0;
     }
 }
@@ -158,33 +162,23 @@ errors::TYPE seq_echo::validate()
 
 void seq_echo::run()
 {
-    if (on_trigs[pastpos] > 0) {
-        out_note_on_trig = ON;
-        on_trigs[pastpos]--;
-        out_freq = freqs[pastpos];
-        out_velocity = (on_trigs[pastpos] / (double)count)
-                                             * vels[pastpos];
-        out_index = last - 1 - on_trigs[pastpos];
-    }
-    else if (out_note_on_trig == ON)
+    if (*in_reset_trig == ON) {
+        pastpos = 0;
+        out_index = -1;
         out_note_on_trig = OFF;
-
-    if (slide_trigs[pastpos] > 0) {
-        out_note_slide_trig = ON;
-        slide_trigs[pastpos]--;
-        out_freq = freqs[pastpos];
-        out_velocity = (slide_trigs[pastpos] / (double)count)
-                                             * vels[pastpos];
-    }
-    else if (out_note_slide_trig == ON)
         out_note_slide_trig = OFF;
-
-    if (off_trigs[pastpos] > 0) {
-        out_note_off_trig = ON;
-        off_trigs[pastpos]--;
-    }
-    else if (out_note_off_trig == ON)
         out_note_off_trig = OFF;
+        out_freq = 0.0f;
+        out_velocity = 0.0f;
+        for (int i = 0; i < pastmax; ++i) {
+            on_trigs[i] = 0;
+            slide_trigs[i] = 0;
+            off_trigs[i] = 0;
+            freqs[i] = 0.0f;
+            vels[i] = 0.0f;
+        }
+        return;
+    }
 
     if (*in_note_on_trig == ON) {
         on_trigs[pastpos] = last;
@@ -197,6 +191,16 @@ void seq_echo::run()
             out_velocity = *in_velocity;
         }
     }
+    else if (on_trigs[pastpos] > 0) {
+        out_note_on_trig = ON;
+        on_trigs[pastpos]--;
+        out_freq = freqs[pastpos];
+        out_velocity = (on_trigs[pastpos] / (double)count)
+                                             * vels[pastpos];
+        out_index = last - 1 - on_trigs[pastpos];
+    }
+    else if (out_note_on_trig == ON)
+        out_note_on_trig = OFF;
 
     if (*in_note_slide_trig == ON) {
         slide_trigs[pastpos] = last;
@@ -208,12 +212,27 @@ void seq_echo::run()
             out_velocity = *in_velocity;
         }
     }
+    else if (slide_trigs[pastpos] > 0) {
+        out_note_slide_trig = ON;
+        slide_trigs[pastpos]--;
+        out_freq = freqs[pastpos];
+        out_velocity = (slide_trigs[pastpos] / (double)count)
+                                             * vels[pastpos];
+    }
+    else if (out_note_slide_trig == ON)
+        out_note_slide_trig = OFF;
 
     if (*in_note_off_trig == ON) {
         off_trigs[pastpos] = last;
         if (send_input_out == ON)
             out_note_off_trig = ON;
     }
+    else if (off_trigs[pastpos] > 0) {
+        out_note_off_trig = ON;
+        off_trigs[pastpos]--;
+    }
+    else if (out_note_off_trig == ON)
+        out_note_off_trig = OFF;
 
     if (++pastpos == pastmax)
         pastpos = 0;

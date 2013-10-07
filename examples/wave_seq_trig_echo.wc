@@ -64,7 +64,8 @@ tcount
 
 trig_echo
 trigecho
-    in_trig  tcount out_trig
+    in_trig     tcount out_trig
+    in_reset_trig   off
     delay_time      650.1986755
     count           25
     send_input_out  on
