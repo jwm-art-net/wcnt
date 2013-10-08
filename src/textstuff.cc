@@ -165,3 +165,33 @@ size_t cfmt(char* buf, size_t bufsz, const char* fmt, ...)
     return n;
 }
 
+
+spaces::~spaces()
+{
+    if (data) {
+        delete [] data;
+        data = 0;
+        len = 0;
+    }
+}
+
+const char* spaces::get(int n)
+{
+    static spaces blanks;
+    if (n < 1)
+        return 0;
+    if (data) {
+        if (n <= len)
+            return &data[len - n];
+        delete [] data;
+    }
+    data = new char[n + 1];
+    for (int i = 0; i < n; ++i)
+        data[i] = ' ';
+    data[n] = '\0';
+    return data;
+}
+
+char* spaces::data = 0;
+int spaces::len = 0;
+

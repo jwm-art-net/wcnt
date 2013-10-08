@@ -83,8 +83,7 @@ void
 connectorlist::reconnect_output_module_by_name(
     const char* from, const char* to)
 {
-    char spaces[50];
-    for (int i = 0; i < 50; spaces[i] = ' ', i++);
+    const char* spc = spaces::get(40);
     std::string cmsg;
     connector* connect = goto_first();
     while(connect) {
@@ -97,7 +96,7 @@ connectorlist::reconnect_output_module_by_name(
                 cmsg += input::names::get(connect->get_input_type());
                 int i = cmsg.length();
                 if (i > 40) i = 40;
-                cmsg.append(spaces, 40 - i);
+                cmsg.append(spc, 40 - i);
                 std::cout << cmsg << "<-- ";
                 std::cout << "from " << from << " to " << to << " ";
                 std::cout << output::names::get(
@@ -110,21 +109,21 @@ connectorlist::reconnect_output_module_by_name(
 
 bool connectorlist::make_connections()
 {
-    char spaces[40];
-    for (int i = 0; i < 40; spaces[i] = ' ', i++);
     std::string cmsg;
     connector* connect = goto_first();
     while(connect){
         if (!connect->connect())
             return false;
         if (jwm.is_verbose()) {
+            const char* spc = spaces::get(40);
             cmsg = connect->get_output_module_name();
             cmsg += " ";
             cmsg += output::names::get(
                 connect->get_output_type());
             int i = cmsg.length();
-            if (i > 30) i = 30;
-            cmsg.append(spaces, 30 - i);
+            if (i > 30)
+                i = 30;
+            cmsg.append(spc, 30 - i);
             std::cout << "\n" << cmsg << "-->  ";
             std::cout << connect->get_input_module()->get_username();
             std::cout << " " << input::names::get(

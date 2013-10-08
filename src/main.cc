@@ -52,10 +52,9 @@ int main(const int argc, const char** const argv)
     // the above is needed before cmd->scan because scan might be
     // prompted (by commandline) to create help (ie for modules etc).
     cmd->scan();
-/*    cmd->set_jwm_globals();*/
     if (!jwm.is_no_title())
         title();
-    if (!cmd->is_good_opts()) {
+    if (cmd->show_help() || cmd->bad_opts()) {
         std::cout << cmd->get_message() << std::endl;
         delete cmd;
         delete modlist;

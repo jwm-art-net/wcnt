@@ -53,7 +53,8 @@ class cmdline
 
     bool scan();
 
-    bool is_good_opts() const { return good_opts; }
+    bool show_help();
+    bool bad_opts() const { return !good_opts; }
 
     bool set_jwm_globals();
 

@@ -46,6 +46,18 @@ std::string*
 justify(const char* src, int width, int splitchar, const char* seperator,
                                                    const char* lead_in);
 
+class spaces
+{
+ public:
+    static const char* get(int);
+ private:
+    spaces() {};
+    ~spaces();
+    static char* data;
+    static int len;
+};
+
+
 #if DEBUG
 /*  debug previously just #define'd itself as errmsg but i want to
     allow a high-level message routine (ie msg_log in libpetrifui)

@@ -17,7 +17,7 @@ namespace input
     { IN_PHASE_TRIG,        "in_phase_trig",        iocat::TRIG,    "Triggers a hard reset of phase. " },
     { IN_PHASE_STEP,        "in_phase_step",        iocat::DOUBLE,  "Amount in radians to step through the phase per sample. "},
     { IN_SIGNAL,            "in_signal",            iocat::DOUBLE,  "The input signal." },
-    { IN_EG,                "in_amp_eg",            iocat::DOUBLE,  "Amplitude Envelope Generator to apply to the signal, -1.0 ~ +1.0. "},
+    { IN_EG,                "in_amp_eg",            iocat::DOUBLE,  "Amplitude Envelope Generator (ie adsr) to apply to the signal, -1.0 ~ +1.0. "},
     { IN_AMP_MOD,           "in_amp_mod",           iocat::DOUBLE,  "Amplitude modulation input." },
     { IN_PAN_MOD,           "in_pan_mod",           iocat::DOUBLE,  "Panning modulation input." },
     { IN_TRIG,              "in_trig",              iocat::TRIG,    "Trigger input." },

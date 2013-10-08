@@ -221,16 +221,23 @@ bool cmdline::scan()
     if (!set_jwm_globals())
         return false;
 
+    return (good_opts = true);
+}
+
+
+bool cmdline::show_help()
+{
     for (int o = 1; o < OPTS_COUNT; o++) {
         if ((data[o].type & opts_flags)) {
             if (data[o].helpfunc){
                 (this->*data[o].helpfunc)();
-                return false;
+                return true;
             }
         }
     }
-    return (good_opts = true);
+    return false;
 }
+
 
 bool cmdline::set_jwm_globals()
 {
@@ -360,8 +367,7 @@ void cmdline::module_help()
         new_list_of_by(jwm.get_inputlist(), sm);
                     //jwm.get_inputlist()->getinputlist_for_module(sm);
     modinput* mi = inlist->goto_first();
-    char spaces[20];
-    for (int i = 0; i < 20; spaces[i++] = ' ');
+    const char* spc = spaces::get(40);
     if (mi) {
         msg += "\n// inputs for ";
         msg += module::names::get(smt);
@@ -379,7 +385,7 @@ void cmdline::module_help()
             input::TYPE it = mi->get_inputtype();
             std::string in = input::names::get(it);
             msg += "\n    " + in;
-            msg.append(spaces, mxl - in.length());
+            msg.append(spc, mxl - in.length());
             msg += "modulename outputname";
             mi = inlist->goto_next();
             if (jwm.is_verbose()) {
@@ -411,7 +417,7 @@ void cmdline::module_help()
             param::TYPE pt = param->get_paramtype();
             pn = param::names::get(pt);
             msg += "\n    " + pn;
-            msg.append(spaces, mxl - pn.length());
+            msg.append(spc, mxl - pn.length());
             iocat::TYPE ioc = param::names::category(pt);
             if (ioc == iocat::FIX_STR) {
                 fixstrparam* fsp;
@@ -581,9 +587,6 @@ void cmdline::dobj_help()
 
 void cmdline::dobj_help_params(dataobj::TYPE dt, int level)
 {
-    char spaces[20];
-    for (int i = 0; i < 20; spaces[i++] = ' ');
-
     dobjparamlist::linkedlist*
         dparlist = new_list_of_by(jwm.get_dparlist(), dt);
 
@@ -608,6 +611,7 @@ void cmdline::dobj_help_params(dataobj::TYPE dt, int level)
         if (l > mxl) mxl = l;
         dparam = dparlist->goto_next();
     }
+    const char* spc = spaces::get(40);
     dparam = dparlist->goto_first();
     while(dparam) {
         iocat::TYPE ioc = param::names::category(dparam->get_partype());
@@ -617,7 +621,7 @@ void cmdline::dobj_help_params(dataobj::TYPE dt, int level)
         param::TYPE pt = dparam->get_partype();
         dn = param::names::get(pt);
         msg += dn;
-        msg.append(spaces, mxl - dn.length() + 2);
+        msg.append(spc, mxl - dn.length() + 2);
         if (ioc == iocat::FIX_STR) {
             fixstrparam* fsp;
             fsp = jwm.get_fxsparamlist()->get_fix_str_param(pt);
@@ -653,12 +657,30 @@ void cmdline::input_help()
         msg += "\nAvailable input types are:\n";
         int incount = input::LAST_TYPE - 1;
         const char** innames = new const char*[incount];
-        for (int i = input::ERR_TYPE + 1;
-                 i < input::LAST_TYPE; i++)
+        size_t mxl = 0;
+        for (int i = input::ERR_TYPE + 1; i < input::LAST_TYPE; i++) {
             innames[i - 1] = input::names::get((input::TYPE)i);
-        std::string* str = collumnize(innames, incount, 40, 2, true);
-        msg += *str;
-        delete str;
+            size_t l = strlen(innames[i - 1]);
+            if (mxl < l)
+                mxl = l;
+        }
+        if (jwm.is_verbose()) {
+            const char* spc = spaces::get(40);
+            for (int i = input::ERR_TYPE + 1; i < input::LAST_TYPE; ++i) {
+                msg += "\n";
+                msg += innames[i - 1];
+                msg.append(spc, mxl - strlen(innames[i - 1]));
+                msg += "// ";
+                msg += input::names::descr((input::TYPE)i);
+            }
+        }
+        else {
+            int cc = 80 / (mxl + 2);
+            int cw = 80 / cc;
+            std::string* str = collumnize(innames, incount, cw, cc, true);
+            msg += *str;
+            delete str;
+        }
         delete [] innames;
         return;
     }
@@ -700,8 +722,7 @@ void cmdline::input_help()
     msg += input::names::get(intype);
     msg += " are:\n";
     // now get the outputs matching category of input
-    modoutputlist* outputs =
-        jwm.get_outputlist()->list_of_category(incat);
+    modoutputlist* outputs = jwm.get_outputlist()->list_of_category(incat);
     modoutput* output = outputs->goto_first();
     std::string mn;
     int mxl = 0;
@@ -713,18 +734,16 @@ void cmdline::input_help()
     }
     mxl += 2;
     output = outputs->goto_first();
-    char spaces[20];
-    for (int i = 0; i < 20; spaces[i++] = ' ');
+    const char* spc = spaces::get(40);
     while(output)
     { // this if statement prevents from displaying off off
         // now it only displays one off - less confusing.
         if (output->get_moduletype() != module::NONEZERO) {
             mn = output->get_synthmodule()->get_username();
             msg += mn;
-            msg.append(spaces, mxl - mn.length());
+            msg.append(spc, mxl - mn.length());
         }
-        msg += output::names::get(
-                                        output->get_outputtype());
+        msg += output::names::get(output->get_outputtype());
         msg += "\n";
         output = outputs->goto_next();
     }
