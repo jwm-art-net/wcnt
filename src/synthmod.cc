@@ -12,6 +12,68 @@
 
 #include <iostream>
 
+
+
+
+
+smod::smod(synthmod* _sm) :
+ sm(_sm), flags(0)
+{
+}
+
+const void* smod::set_in(input::TYPE, const void*)
+{
+    return 0;
+}
+
+const void* smod::get_in(input::TYPE) const
+{
+    return 0;
+}
+
+bool smod::set_param(param::TYPE, const void*)
+{
+    return 0;
+}
+
+const void* smod::get_param(param::TYPE) const
+{
+    return 0;
+}
+
+smod* smod::duplicate_smod()
+{
+    return 0;
+}
+
+bool smod::sm_done_first()
+{
+    return synthmod::first_done[sm->module_type];
+}
+
+void smod::register_sm_param(param::TYPE pt)
+{
+    sm->register_param(pt);
+}
+
+void smod::register_sm_param(param::TYPE pt, const char* fixed_string)
+{
+    sm->register_param(pt, fixed_string);
+}
+
+void smod::register_sm_input(input::TYPE it)
+{
+    sm->register_input(it);
+}
+
+bool smod::validate_sm_param(param::TYPE pt, errors::TYPE et)
+{
+    return sm->validate_param(pt, et);
+}
+
+
+
+
 //------------------------------------------------------------------------
 // public member methods
 //------------------------------------------------------------------------

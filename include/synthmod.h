@@ -22,6 +22,65 @@
 */
 
 class dobj;
+class synthmod;
+
+class smod
+{
+ public:
+    smod(synthmod* inheritor);
+
+    virtual ~smod(){};
+
+    /* virtuals */
+    virtual void run() = 0;
+    virtual void init(){};
+
+    /* input/output/param access */
+    virtual const void* set_in(input::TYPE, const void*);
+    virtual const void* get_in(input::TYPE) const;
+    virtual bool        set_param(param::TYPE, const void*);
+    virtual const void* get_param(param::TYPE) const;
+
+    /* duplicate module can't be const due to my linked_list impl. */
+    virtual smod* duplicate_smod();
+
+    // validation
+    virtual errors::TYPE validate()
+        { return errors::NO_ERROR; }
+
+    #ifdef DEBUG
+    bool check_inputs();
+    #endif
+
+ protected:
+    bool sm_done_first();
+//    void invalidate()           { flags &=~ synthmod::SM_VALID; }
+
+    /*  first instance initializations (ie parameter and data object
+        registration) should be performed in the init_first method of
+        derived objects.
+     */
+
+    void register_sm_param(param::TYPE);
+    void register_sm_param(param::TYPE, const char* fixed_string);
+
+    /*  inputs & outputs OTOH, are unique to each instance, so will need
+        registration per instance (ie in derived constructor).
+    */
+    void register_sm_input(input::TYPE);
+
+    bool validate_sm_param(param::TYPE, errors::TYPE);
+
+    static char err_msg[STRBUFLEN];
+
+ private:
+    synthmod* sm;
+    int flags;
+//  not to be used:
+    smod();
+    smod(const smod &);
+};
+
 
 class synthmod
 {
@@ -37,6 +96,8 @@ class synthmod
         SM_HAS_STEREO_OUTPUT =  0x0020,
         SM_HAS_OUT_TRIG =       0x0040
     };
+
+    friend smod;
 
     synthmod(module::TYPE, const char* const uname, int _flags_);
 
@@ -151,6 +212,7 @@ class synthmod
 
     static bool first_done[module::LAST_TYPE];
 };
+
 
 #ifdef DEBUG
 #define sm_err(fmt, ... )                              \

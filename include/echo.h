@@ -1,9 +1,9 @@
 #ifndef ECHO_H
 #define ECHO_H
 
-#include "synthmod.h"
+#include "gain.h"
 
-class echo : public synthmod
+class echo : public synthmod, public gain
 {
 public:
     echo(const char*);
@@ -21,7 +21,6 @@ public:
 private:
     // inputs
     const double* in_signal;
-    const double* in_gainmod;
     const double* in_feedback;
     const double* in_feed_mod;
     // output
@@ -29,8 +28,6 @@ private:
     double wet_output;
     // params
     double delay_time;
-    double gain;
-    double gain_modsize;
     double feed_level;
     double feed_modsize;
     double wetdry;
@@ -39,7 +36,6 @@ private:
     long filterarraymax;
     long fpos;
     double filtertotal;
-    double gainamount;
     double feedamount;
     // synthmod kind of stuff
     void init_first();

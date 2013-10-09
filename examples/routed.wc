@@ -206,10 +206,10 @@ wv
 mono_amp
 amp
     in_signal   wv out_output
+    in_gain_mod  off
     in_amp_eg   env out_output
-    in_amp_mod  off
-    level           1.0
-    amp_mod_size    0.0
+    gain           1.0
+    gain_mod_size    0.0
     clip_level      1.0
 amp
 
@@ -376,9 +376,9 @@ echol
     in_gain_mod      off
     in_feedback      echor out_wet_output
     in_feedback_mod  off
+    gain           1.0
+    gain_mod_size    0.0
     delay_time         170
-    gain               1
-    gain_mod_size      0
     feedback           0.725
     feedback_mod_size  0
     wet/dry            0.25
@@ -390,9 +390,9 @@ echor
     in_gain_mod      off
     in_feedback      echol out_wet_output
     in_feedback_mod  off
+    gain           1.0
+    gain_mod_size    0.0
     delay_time         180
-    gain               1
-    gain_mod_size      0
     feedback           0.725
     feedback_mod_size  0
     wet/dry            0.25

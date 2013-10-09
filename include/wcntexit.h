@@ -31,7 +31,7 @@ it is. (hmmm, talking to yourself again - yes i am).
 */
 
 
-class wcnt_exit: public synthmod
+class wcnt_exit: public synthmod::synthmod
 {
 public:
     wcnt_exit(const char*);
