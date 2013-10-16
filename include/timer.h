@@ -26,7 +26,7 @@ class timer : public synthmod::base, public linked_list<timing>
     const void* get_out(output::TYPE) const;
     bool        set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE) const;
-    dobj::base*       add_dobj(dobj::base*);
+    dobj::base* add_dobj(dobj::base*);
     errors::TYPE validate();
 
  private:

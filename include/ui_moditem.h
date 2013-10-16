@@ -34,7 +34,7 @@ namespace ui
     and dobj.
   */
 
- class moditem_list : protected linked_list<moditem>
+ class moditem_list : public linked_list<moditem>
  {
   public:
     moditem_list();

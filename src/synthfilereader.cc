@@ -787,8 +787,9 @@ bool synthfilereader::read_ui_moditems(synthmod::base* sm)
 
 bool synthfilereader::read_ui_dobjitems(dobj::base* dob)
 {
-    ui::dobjitem_list* items = wcnt::get_ui_dobjitem_list();
-    ui::dobjitem* item = items->get_first_of_type(dob->get_object_type());
+    ui::dobjitem_list::linkedlist* items = wcnt::get_ui_dobjitem_list()
+                                ->items_for_dobj(dob->get_object_type());
+    ui::dobjitem* item = items->goto_first();
 
     if (!item)
         return true;
@@ -797,25 +798,33 @@ bool synthfilereader::read_ui_dobjitems(dobj::base* dob)
         cout << "--------" << endl;
 
     while(item) {
+        cout << "switching on dobjitem... " << (void*)item << endl;
+        item->dump();
         switch(item->get_item_type()) {
+        cout << " dobjparam" << endl;
           case ui::UI_PARAM: {
             ui::dobjparam* dp = static_cast<ui::dobjparam*>(item);
-            if (!read_ui_dobjparam(dob, dp->get_param_type()))
+            if (!read_ui_dobjparam(dob, dp->get_param_type())) {
+    cout << "fail :-(" << endl;
                 return false;
+            }
             break;
           }
           case ui::UI_DOBJ: {
+        cout << " dobjdobj" << endl;
             ui::dobjdobj* dd = static_cast<ui::dobjdobj*>(item);
             if (!read_ui_dobjdobj(dob, dd->get_dobj_parent(),
-                                       dd->get_dobj_child()))
+                                       dd->get_dobj_child())) {
+    cout << "fail :-(" << endl;
                 return false;
+            }
             break;
           }
           default:
             wc_err("%s invalid ui element.", errors::stock::bad);
             return false;
         }
-        item = items->get_next_of_type();
+        item = items->goto_next();
     }
     return true;
 }
@@ -913,6 +922,8 @@ synthfilereader::read_ui_dobjparam(dobj::base* dob, param::TYPE partype)
     string datastr;
     *synthfile >> datastr;
 
+cout << "parname: " << parname << "datastr: " << datastr;
+
     if (include_dbj(dob->get_username())) {
         if (!setpar::set_param(dob, parname.c_str(), partype,
                                      datastr.c_str(), &conv))
@@ -1004,6 +1015,86 @@ synthfilereader::read_ui_moddobj(synthmod::base* sm, dobj::TYPE parent,
     return true;
 }
 
+
+bool
+synthfilereader::read_ui_dobjdobj(dobj::base* dob, dobj::TYPE parent,
+                                                   dobj::TYPE child)
+{
+    string dbjname = read_command();
+    const char* parentname = dobj::names::get(parent);
+
+    if (dbjname != parentname) {
+        wc_err("expected %s got %s instead", parentname, dbjname.c_str());
+        return false;
+    }
+
+    const char* childname = dobj::names::get(child);
+    const char* com = read_command();
+    // now read the list of items (each item's type is sprogtype)
+    while (strcmp(parentname, com) != 0) {
+        if (strcmp(com, childname) != 0) {
+            cout << "ooo shit\n";
+            // check name of item matches expected
+            wc_err("data object %s expected %s got %s instead",
+                                    parentname, childname, com);
+            return false;
+        }
+
+        if (wcnt::jwm.is_verbose())
+            cout << "-------- creating " << childname << endl;
+
+        dobj::base* cdob = wcnt::get_dobjlist()->create_dobj(child);
+
+        if (!cdob) {
+            wc_err("%s Could not create data object %s data object %s.",
+                            errors::stock::major, childname, parentname);
+            return false;
+        }
+
+        if (!read_ui_dobjitems(cdob)) {
+            wc_err("%s, %s %s", parentname, childname, wc_err_msg);
+            delete cdob;
+            return false;
+        }
+
+        if (include_dbj(dob->get_username())) {
+            errors::TYPE et = cdob->validate();
+            if (et!= errors::NO_ERROR) {
+                wc_err("data object %s %s %s %s.", parentname,
+                                        dobj::base::get_error_msg(),
+                                        errors::stock::get_prefix_msg(et),
+                                        errors::stock::get(et));
+                delete cdob;
+                return false;
+            }
+        }
+
+        if (include_dbj(dob->get_username())) {
+            // add to synthmodule, not dobjlist  . . .
+            if (!dob->add_dobj(cdob)) {
+                wc_err("%s Could not add data object %s %s in data"
+                        " object %s.", errors::stock::major,
+                                       childname,
+                                       dobj::base::get_error_msg(),
+                                                         parentname);
+                delete cdob;
+                return false;
+            }
+        }
+        else
+            delete cdob;
+
+        if (wcnt::jwm.is_verbose())
+            cout << "added data object " << childname << endl;
+
+        com = read_command();
+        cout << "com: " << com << "\tparent: " << parentname << endl;
+    }
+
+    cout << "breaking out, it's true!" << endl;
+
+    return true;
+}
 
 synthfilereader::FILE_STATUS
 synthfilereader::open_file()

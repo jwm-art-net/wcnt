@@ -248,7 +248,7 @@ namespace synthmod
     ui::moditem* item = items->get_first_of_type(modtype);
 
     while(item) {
-        if (*item == ui::UI_PARAM) {
+        if (*item == ui::UI_INPUT) {
             ui::modinput* mi = static_cast<ui::modinput*>(item);
             if (!get_in(mi->get_input_type())) {
                 sm_err("%s Module %s does not have its %s input set.",

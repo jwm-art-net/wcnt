@@ -5,6 +5,7 @@
 #include "listwork.h"
 #include "ui_item.h"
 
+#include <iostream>
 
 namespace dobj { class base; };
 
@@ -14,7 +15,7 @@ namespace ui
  typedef param_item<dobj::base*, dobj::TYPE> dobjparam;
  typedef  dobj_item<dobj::base*, dobj::TYPE> dobjdobj;
 
- class dobjitem_list : protected linked_list<dobjitem>
+ class dobjitem_list : public linked_list<dobjitem>
  {
   public:
     dobjitem_list();
@@ -31,7 +32,9 @@ namespace ui
     }
 
     dobjitem* get_next_of_type() {
+        std::cout << "result: "<<(void*)result<<std::endl;
         result = find_in_data(result->get_next(), search);
+        std::cout << "find in data... result: "<<(void*)result<<std::endl;
         return result->get_data();
     }
 

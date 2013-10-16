@@ -37,6 +37,10 @@ namespace ui
     bool operator()(DT & dt) const  { return (datatype == dt); }
     bool operator==(DT dt) const    { return (datatype == dt); }
 
+    #ifdef DEBUG
+    virtual void dump() {};
+    #endif
+
   private:
     TYPE    itemtype;
     DT      datatype;
@@ -58,6 +62,11 @@ namespace ui
     bool operator==(param::TYPE rhs) const  { return (partype == rhs); }
 
     bool validate(T, errors::TYPE);
+
+    #ifdef DEBUG
+    void dump()
+        { std::cout << "param: " << param::names::get(partype) << std::endl; }
+    #endif
 
   private:
     param::TYPE partype;
@@ -94,6 +103,11 @@ namespace ui
 
     bool validate(T, errors::TYPE) { return true; }
 
+    #ifdef DEBUG
+    void dump()
+        { std::cout << "input: " << input::names::get(intype) << std::endl; }
+    #endif
+
   private:
     input::TYPE intype;
 };
@@ -116,6 +130,12 @@ namespace ui
     bool operator==(dobj::TYPE rhs) const  { return (parent == rhs); }
     */
     bool validate(T, errors::TYPE) { return true; }
+
+    #ifdef DEBUG
+    void dump()
+        { std::cout << "dobj: parent: " << dobj::names::get(parent);
+          std::cout << "child: " << dobj::names::get(child) << std::endl; }
+    #endif
 
   private:
     dobj::TYPE parent;

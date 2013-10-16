@@ -21,17 +21,18 @@ adsr::adsr(const char* uname) :
 
 void adsr::register_ui()
 {
+    register_dobj(dobj::LST_ENVELOPE, dobj::SIN_COORD);
     register_input(input::IN_NOTE_ON_TRIG);
     register_param(param::ZERO_RETRIGGER);
-    register_input(input::IN_NOTE_OFF_TRIG);
-    register_input(input::IN_VELOCITY);
     register_param(param::START_LEVEL);
-    register_dobj(dobj::LST_ENVELOPE, dobj::SIN_COORD);
+    register_input(input::IN_VELOCITY);
     register_param(param::UP_THRESH);
     register_param(param::LO_THRESH);
+
     register_param(param::MIN_TIME);
     register_param(param::SUSTAIN_STATUS);
     register_param(param::MAX_SUSTAIN_TIME);
+    register_input(input::IN_NOTE_OFF_TRIG);
     register_param(param::RELEASE_RATIO);
 }
 
