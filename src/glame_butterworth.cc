@@ -1,26 +1,28 @@
 #include "../include/glame_butterworth.h"
 #ifdef WITH_LADSPA
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
-#include "../include/fxsparamlist.h"
+#include "../include/globals.h"
 
 glame_butterworth::glame_butterworth(const char* uname) :
- synthmod(module::GLAME_BUTTERWORTH, uname, SM_HAS_OUT_OUTPUT),
+ synthmod::base(synthmod::GLAME_BUTTERWORTH, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), in_phase_step(0), in_res_mod(0), output(0), type(LOPASS),
  resonance(0), res_mod_size(0), l_descriptor(0), l_inst_handle(0),
  l_input(0), l_output(0), l_cut_off(0), l_resonance(0)
 {
+    register_output(output::OUT_OUTPUT);
+    type_names[0] = "buttlow_iir";
+    type_names[1] = "butthigh_iir";
+    min_cut_off = 0.0001 * wcnt::jwm.samplerate();
+    max_cut_off = 0.45 * wcnt::jwm.samplerate();
+}
+
+void glame_butterworth::register_ui()
+{
     register_input(input::IN_SIGNAL);
     register_input(input::IN_CUTOFF_PHASE_STEP);
     register_input(input::IN_RES_MOD);
-    register_output(output::OUT_OUTPUT);
-    init_first();
-    type_names[0] = "buttlow_iir";
-    type_names[1] = "butthigh_iir";
-    min_cut_off = 0.0001 * jwm.samplerate();
-    max_cut_off = 0.45 * jwm.samplerate();
+    register_param(param::GLAME_FILTER_TYPE, "lowpass/highpass");
+    register_param(param::RESONANCE);
+    register_param(param::RES_MODSIZE);
 }
 
 glame_butterworth::~glame_butterworth()
@@ -109,7 +111,7 @@ errors::TYPE glame_butterworth::validate()
 
 void glame_butterworth::init()
 {
-    ladspa_loader* ll = jwm.get_ladspaloader();
+    ladspa_loader* ll = wcnt::jwm.get_ladspaloader();
     ladspa_plug* lp = ll->get_plugin("butterworth_1902",
                                      type_names[type]);
     if (lp == 0) {
@@ -139,7 +141,7 @@ void glame_butterworth::init()
 void glame_butterworth::run()
 {
     *l_input = *in_signal;
-    l_cut_off = (*in_phase_step * jwm.samplerate()) / 360;
+    l_cut_off = (*in_phase_step * wcnt::jwm.samplerate()) / 360;
     if (l_cut_off < min_cut_off) l_cut_off = min_cut_off;
     else if (l_cut_off > max_cut_off) l_cut_off = max_cut_off;
     l_resonance = resonance * (1 - res_mod_size) + resonance *
@@ -148,15 +150,6 @@ void glame_butterworth::run()
     else if(l_resonance > 1.41) l_resonance = 1.41;
     l_descriptor->run(l_inst_handle, 1);
     output = *l_output;
-}
-
-void glame_butterworth::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::GLAME_FILTER_TYPE, "lowpass/highpass");
-    register_param(param::RESONANCE);
-    register_param(param::RES_MODSIZE);
 }
 
 #endif // WITH_LADSPA

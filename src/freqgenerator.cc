@@ -1,20 +1,25 @@
 #include "../include/freqgenerator.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
+#include "../include/globals.h"
 
 freq_generator::freq_generator(const char* uname) :
- synthmod(module::FREQGEN, uname, SM_DEFAULT),
+ synthmod::base(synthmod::FREQGEN, uname, SM_DEFAULT),
  in_signal(0), out_freq(220.00), out_phase_step(0),
  sig_range_hi(1.00), sig_range_lo(-1.00),
  freq_range_hi(440.00), freq_range_lo(110.00), sig_step_size(0),
  freq_step_size(0), step_count(24)
 {
-    register_input(input::IN_SIGNAL);
     register_output(output::OUT_FREQ);
     register_output(output::OUT_PHASE_STEP);
-    init_first();
+}
+
+void freq_generator::register_ui()
+{
+    register_input(input::IN_SIGNAL);
+    register_param(param::STEP_COUNT);
+    register_param(param::SIG_RANGE_LO);
+    register_param(param::SIG_RANGE_HI);
+    register_param(param::FREQ_RANGE_LO);
+    register_param(param::FREQ_RANGE_HI);
 }
 
 freq_generator::~freq_generator()
@@ -111,17 +116,6 @@ void freq_generator::run()
     out_freq =
         freq_range_lo + ((int)((*in_signal - sig_range_lo)
                                / sig_step_size)) * freq_step_size;
-    out_phase_step = jwm.samplerate() / out_freq;
-}
-
-void freq_generator::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::STEP_COUNT);
-    register_param(param::SIG_RANGE_LO);
-    register_param(param::SIG_RANGE_HI);
-    register_param(param::FREQ_RANGE_LO);
-    register_param(param::FREQ_RANGE_HI);
+    out_phase_step = wcnt::jwm.samplerate() / out_freq;
 }
 

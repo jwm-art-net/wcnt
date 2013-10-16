@@ -1,83 +1,87 @@
 #include "../include/dobjlist.h"
-#include "../include/jwm_globals.h"
+#include "../include/globals.h"
 #include "../include/dataobjects.h"
 
-dobj* dobjlist::create_dobj(dataobj::TYPE dt)
+namespace dobj
 {
-    dobj* dobjy = 0;
+ dobj::base* list::create_dobj(dobj::TYPE dt)
+ {
+    dobj::base* dobjy = 0;
     switch(dt) {
-    case dataobj::SIN_NOTE:
+    case dobj::SIN_NOTE:
         dobjy = new note_data;
         break;
-    case dataobj::SIN_COORD:
+    case dobj::SIN_COORD:
         dobjy = new adsr_coord;
         break;
-    case dataobj::SIN_VERTEX:
+    case dobj::SIN_VERTEX:
         dobjy = new wave_vertex;
         break;
-    case dataobj::SIN_METER:
+    case dobj::SIN_METER:
         dobjy = new meterchange;
         break;
-    case dataobj::SIN_BPM:
+    case dobj::SIN_BPM:
         dobjy = new bpmchange;
         break;
-    case dataobj::SIN_RIFFNODE:
+    case dobj::SIN_RIFFNODE:
         dobjy = new riff_node;
         break;
-    case dataobj::SIN_DVERTEX:
+    case dobj::SIN_DVERTEX:
         dobjy = new dynvertex;
         break;
-    case dataobj::SIN_TIME:
+    case dobj::SIN_TIME:
         dobjy = new timing;
         break;
-    case dataobj::SIN_MODNAME:
+    case dobj::SIN_MODNAME:
         dobjy = new modnamedobj;
         break;
-    case dataobj::SIN_DOBJNAME:
+    case dobj::SIN_DOBJNAME:
         dobjy = new dobjnamedobj;
         break;
-    case dataobj::SIN_EDIT_PARAM:
+    case dobj::SIN_EDIT_PARAM:
         dobjy = new paramedit;
         break;
-    case dataobj::SIN_EDIT_INPUT:
+    case dobj::SIN_EDIT_INPUT:
         dobjy = new inputedit;
         break;
-    case dataobj::SIN_STEP:
+    case dobj::SIN_STEP:
         dobjy = new step_data;
         break;
-    case dataobj::DEF_WAVFILEIN:
+    case dobj::DEF_WAVFILEIN:
         dobjy = new wavfilein;
         break;
-    case dataobj::DEF_RIFF:
+    case dobj::DEF_RIFF:
         dobjy = new riffdata;
         break;
-    case dataobj::DEF_WCFILE:
+    case dobj::DEF_WCFILE:
         dobjy = new synthfilereader;
         break;
-    case dataobj::DEF_PARAMEDITOR:
+    case dobj::DEF_PARAMEDITOR:
         dobjy = new parameditor;
         break;
-    case dataobj::DEF_INPUTEDITOR:
+    case dobj::DEF_INPUTEDITOR:
         dobjy = new inputeditor;
         break;
-    case dataobj::DEF_RIFFEDITOR:
+    case dobj::DEF_RIFFEDITOR:
         dobjy = new riff_editor;
         break;
-    case dataobj::DEF_COPIER:
+    case dobj::DEF_COPIER:
         dobjy = new copier;
         break;
-    case dataobj::DEF_GROUP:
+    case dobj::DEF_GROUP:
         dobjy = new group;
         break;
-    case dataobj::DEF_ADSR_SCALER:
+    case dobj::DEF_ADSR_SCALER:
         dobjy = new adsr_scaler;
         break;
-    case dataobj::DOBJ_SYNTHMOD:
+    case dobj::DOBJ_SYNTHMOD:
         dobjy = new dobjmod;
         break;
     default:
         dobjy = 0;
     }
+    if (dobjy)
+        dobjy->ui_register();
     return dobjy;
-}
-
+ }
+}; // namespace dobj

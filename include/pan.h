@@ -3,7 +3,7 @@
 
 #include "synthmod.h"
 
-class pan : public synthmod
+class pan : public synthmod::base
 {
 public:
     pan(const char*);
@@ -29,7 +29,7 @@ private:
     // working
     double pan_mod;
     double pan_pos;
-    void init_first();
+    void register_ui();
 };
 
 #endif

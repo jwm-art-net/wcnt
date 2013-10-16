@@ -1,15 +1,17 @@
 #include "../include/multiplier.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
+#include "../include/globals.h"
 
 multiplier::multiplier(const char* uname) :
- synthmod(module::MULTIPLIER, uname, SM_HAS_OUT_OUTPUT),
+ synthmod::base(synthmod::MULTIPLIER, uname, SM_HAS_OUT_OUTPUT),
  in_signal1(0), in_signal2(0), out_output(0.00)
+{
+    register_output(output::OUT_OUTPUT);
+}
+
+void multiplier::register_ui()
 {
     register_input(input::IN_SIGNAL1);
     register_input(input::IN_SIGNAL2);
-    register_output(output::OUT_OUTPUT);
 }
 
 multiplier::~multiplier()

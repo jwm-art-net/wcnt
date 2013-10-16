@@ -19,7 +19,7 @@
 //  so, the user must create when using the timemap, a bpm change
 //  and a meter change. which really speaking, is how it should be.
 
-class timemap : public synthmod
+class timemap : public synthmod::base
 {
 public:
     enum { TPQN = 6720 }; // Ticks Per Quarter Note
@@ -36,8 +36,8 @@ public:
     void init(); // init will grab global bpm to start with
     errors::TYPE validate();
     const void* get_out(output::TYPE) const;
-    synthmod* duplicate_module(const char* uname, DUP_IO);
-    dobj* add_dobj(dobj*);
+    synthmod::base* duplicate_module(const char* uname, DUP_IO);
+    dobj::base* add_dobj(dobj::base*);
 
 private:
     // outputs
@@ -81,7 +81,7 @@ private:
     double notelen_to_ms(wcint_t) const;
     #endif
     // synthmod stuff for keeping things cushdy.
-    void init_first();
+    void register_ui();
 };
 
 #endif

@@ -1,24 +1,33 @@
 #include "../include/lfocontroller.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
 #include "../include/conversions.h"
 
 lfo_controller::lfo_controller(const char* uname) :
- synthmod(module::LFOCONTROL, uname, SM_HAS_OUT_OUTPUT),
+ synthmod::base(synthmod::LFOCONTROL, uname, SM_HAS_OUT_OUTPUT),
  in_trig(0), in_wave(0), in_amp_mod(0), out_preampmod(0), output(0),
  delay_time(0), ramp_time(0), start_level(0), end_level(0),
- response_time(0), amp_modsize(0), ams_r(0), delay_samples(0),
- ramp_samples(0), resp_size(0), resp_fa_level(0), resp_ac(0),
- level_size(0), current_level(0)
+ response_time(0), amp_modsize(0),
+ total_resp_samples(0), resp_samples(0),
+ resp_step(0.0f), resp_level(0.0f), resp_level_grab(0.0f),
+ total_delay_samples(0), delay_samples(0),
+ total_ramp_samples(0), ramp_samples(0), ramp_step(0.0f), ramp_level(0.0f),
+ amp_center(0.0f), amp_half_range(0.0f)
+
+{
+    register_output(output::OUT_OUTPUT);
+    register_output(output::OUT_PRE_AMP_MOD);
+}
+
+void lfo_controller::register_ui()
 {
     register_input(input::IN_TRIG);
     register_input(input::IN_WAVE);
     register_input(input::IN_AMP_MOD);
-    register_output(output::OUT_OUTPUT);
-    register_output(output::OUT_PRE_AMP_MOD);
-    init_first();
+    register_param(param::DELAY_TIME);
+    register_param(param::RAMP_TIME);
+    register_param(param::START_LEVEL);
+    register_param(param::END_LEVEL);
+    register_param(param::RESPONSE_TIME);
+    register_param(param::AMP_MODSIZE);
 }
 
 lfo_controller::~lfo_controller()
@@ -119,52 +128,55 @@ errors::TYPE lfo_controller::validate()
 
 void lfo_controller::init()
 {
-    resp_size = (double) 1 / ms_to_samples(response_time);
-    ams_r = 1 - amp_modsize;
+    total_resp_samples = ms_to_samples(response_time);
+    if (total_resp_samples > 0)
+        resp_step = 1.0f / total_resp_samples;
+
+    total_delay_samples = ms_to_samples(delay_time);
+    total_ramp_samples = ms_to_samples(ramp_time);
+    if (total_ramp_samples > 0)
+        ramp_step = (end_level - start_level) / total_ramp_samples;
+    else
+        ramp_level = end_level;
+    amp_half_range = amp_modsize / 2.0f;
+    amp_center = 1.0 - amp_half_range;
 }
 
 void lfo_controller::run()
 {
     if (*in_trig == ON)	{
-        resp_fa_level = output;
-        resp_ac = 1;
-        current_level = start_level;
-        delay_samples = ms_to_samples(delay_time);
-        ramp_samples = ms_to_samples(ramp_time);
-        level_size = (end_level - start_level) / ramp_samples;
+        if (total_resp_samples > 0) {
+            resp_samples = total_resp_samples;
+            resp_level_grab = out_preampmod;
+            resp_level = 1.0f;
+        }
+        delay_samples = total_delay_samples;
+        if (total_ramp_samples > 0) {
+            ramp_samples = total_ramp_samples;
+            ramp_level = start_level;
+        }
     }
     else if (delay_samples > 0)
         delay_samples--;
     else if (ramp_samples > 0) {
-        current_level += level_size;
-        ramp_samples--;
+        ramp_level += ramp_step;
+        if (--ramp_samples == 0)
+            ramp_level = 1.0f;
     }
-    if (resp_ac > 0) {
-        // out_preampmod = *in_wave * resp_fa_level * resp_ac
-        // + *in_wave * current_level * (1 - resp_ac);
-        out_preampmod = resp_fa_level * resp_ac
-                        + *in_wave * current_level * (1 - resp_ac);
-        resp_ac -= resp_size;
+
+    if (resp_samples > 0) {
+        out_preampmod = resp_level_grab * resp_level
+                        + *in_wave * ramp_level * (1.0f - resp_level);
+        resp_level -= resp_step;
+        --resp_samples;
     }
     else
-        out_preampmod = *in_wave * current_level;
-    if (out_preampmod > 1)
-        out_preampmod = 1;
-    else if (out_preampmod < -1)
-        out_preampmod = -1;
-    output = 
-     out_preampmod * ams_r + out_preampmod * *in_amp_mod * amp_modsize;
-}
+        out_preampmod = *in_wave * ramp_level;
 
-void lfo_controller::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::DELAY_TIME);
-    register_param(param::RAMP_TIME);
-    register_param(param::START_LEVEL);
-    register_param(param::END_LEVEL);
-    register_param(param::RESPONSE_TIME);
-    register_param(param::AMP_MODSIZE);
-}
+    if (out_preampmod > 1.0f)
+        out_preampmod = 1.0f;
+    else if (out_preampmod < -1.0f)
+        out_preampmod = -1.0f;
 
+    output = out_preampmod * (amp_center + amp_half_range * *in_amp_mod);
+}

@@ -7,7 +7,7 @@
 // so when tobpm is 10, the tempo will increase by 10 bpm.
 // obvious: negative tempo decrease speed
 
-class bpmchange : public dobj
+class bpmchange : public dobj::base
 {
 public:
     bpmchange();
@@ -23,7 +23,7 @@ public:
 private:
     wcint_t atbar;
     double tobpm;
-    void init_first();
+    void register_ui();
 };
 
 #endif

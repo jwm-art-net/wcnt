@@ -9,7 +9,7 @@
 //  during init (init method required only for this)
 //  connectorlist::remake_connections is called.
 
-class wcnt_signal : public synthmod
+class wcnt_signal : public synthmod::base
 {
 public:
     wcnt_signal(const char*);
@@ -27,7 +27,7 @@ private:
     const double* in_signal;
     double out_output;
     double level;
-    void init_first();
+    void register_ui();
 };
 
 #endif

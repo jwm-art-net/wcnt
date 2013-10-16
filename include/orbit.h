@@ -3,7 +3,7 @@
 
 #include "synthmod.h"
 
-class orbit : public synthmod
+class orbit : public synthmod::base
 {
  public:
     orbit(const char*);
@@ -37,7 +37,7 @@ class orbit : public synthmod
     double scale;
     double cos_b_pc;
     double sin_abc;
-    void init_first();
+    void register_ui();
 };
 
 #endif

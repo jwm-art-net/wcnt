@@ -1,19 +1,20 @@
 #include "../include/balance.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
-#include "../include/fxsparamlist.h"
 
 balance::balance(const char* uname) :
- synthmod(module::BALANCE, uname, SM_HAS_OUT_OUTPUT),
+ synthmod::base(synthmod::BALANCE, uname, SM_HAS_OUT_OUTPUT),
  in_signal1(0), in_signal2(0),out_output(0), func(ADD), bias(0)
+{
+    register_output(output::OUT_OUTPUT);
+}
+
+void balance::register_ui()
 {
     register_input(input::IN_SIGNAL1);
     register_input(input::IN_SIGNAL2);
-    register_output(output::OUT_OUTPUT);
-    init_first();
+    register_param(param::FUNC, "add/sub/mul");
+    register_param(param::BIAS);
 }
+
 
 balance::~balance()
 {
@@ -83,12 +84,3 @@ void balance::run()
         out_output = *in_signal1 * (1 - bias)
             + *in_signal2 * bias * *in_signal1;
 }
-
-void balance::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::FUNC, "add/sub/mul");
-    register_param(param::BIAS);
-}
-

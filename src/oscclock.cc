@@ -1,12 +1,8 @@
 #include "../include/oscclock.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
 #include "../include/conversions.h"
 
 osc_clock::osc_clock(const char* uname) :
- synthmod(module::OSCCLOCK, uname, SM_DEFAULT),
+ synthmod::base(synthmod::OSCCLOCK, uname, SM_DEFAULT),
  out_phase_trig(OFF), out_phase_step(0.00), out_premod_phase_step(0.00),
  in_freq(NULL), in_note_on_trig(NULL), in_note_slide_trig(NULL),
  in_play_state(NULL), in_freq_mod1(NULL), in_freq_mod2(NULL),
@@ -16,18 +12,28 @@ osc_clock::osc_clock(const char* uname) :
  target_phase_step(0.00),
  slidesamples(0)
 {
-// degs initialised with 360 so that it 
-// immediately triggers if in_phase_trig is off
-    register_input(input::IN_NOTE_ON_TRIG);
-    register_input(input::IN_NOTE_SLIDE_TRIG);
-    register_input(input::IN_PLAY_STATE);
-    register_input(input::IN_FREQ);
-    register_input(input::IN_FREQ_MOD1);
-    register_input(input::IN_FREQ_MOD2);
     register_output(output::OUT_PHASE_TRIG);
     register_output(output::OUT_PREMOD_PHASE_STEP);
     register_output(output::OUT_PHASE_STEP);
-    init_first();
+}
+
+void osc_clock::register_ui()
+{
+    register_input(input::IN_NOTE_ON_TRIG);
+    register_input(input::IN_NOTE_SLIDE_TRIG);
+    register_input(input::IN_PLAY_STATE);
+
+    register_param(param::OCTAVE);
+    register_param(param::TUNING_SEMITONES);
+
+    register_input(input::IN_FREQ);
+    register_input(input::IN_FREQ_MOD1);
+    register_param(param::FREQ_MOD1SIZE);
+    register_input(input::IN_FREQ_MOD2);
+    register_param(param::FREQ_MOD2SIZE);
+
+    register_param(param::PORTAMENTO);
+    register_param(param::RESPONSE_TIME);
 }
 
 osc_clock::~osc_clock()
@@ -220,17 +226,5 @@ void osc_clock::run()
     }
     else if (out_phase_trig == ON)
         out_phase_trig = OFF;
-}
-
-void osc_clock::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::OCTAVE);
-    register_param(param::TUNING_SEMITONES);
-    register_param(param::PORTAMENTO);
-    register_param(param::RESPONSE_TIME);
-    register_param(param::FREQ_MOD1SIZE);
-    register_param(param::FREQ_MOD2SIZE);
 }
 

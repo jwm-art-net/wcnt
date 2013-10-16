@@ -7,6 +7,9 @@
 #include "linkedlist.h"
 #include "modnamedobj.h"
 #include "dobjnamedobj.h"
+#include "inputnames.h"
+#include "paramnames.h"
+#include "dobjnames.h"
 
 /*
 //  synthfilereader(FILE_TYPE) constructor should be only called
@@ -20,9 +23,9 @@
 //  actually used anywhere.
 */
 
-class synthmod;
+namespace synthmod { class base; }
 
-class synthfilereader : public dobj
+class synthfilereader : public dobj::base
 {
 public:
     enum FILE_STATUS
@@ -55,7 +58,7 @@ public:
     virtual errors::TYPE validate();
     bool set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE pt) const;
-    dobj const* add_dobj(dobj*);
+    const dobj::base* add_dobj(dobj::base*);
 
 private:
 
@@ -87,8 +90,8 @@ private:
     bool        read_header(samp_t* samplerate);
     const char* read_command();
     void        print_msg();
-    synthmod*   read_synthmodule(const char* command);
-    dobj*       read_dobj(const char* command);
+    synthmod::base*   read_synthmodule(const char* command);
+    dobj::base*       read_dobj(const char* command);
 
     bool include_mod(const char* name);
     bool include_dbj(const char* name);
@@ -97,20 +100,26 @@ private:
     bool skip_remarks();
 
     // methods to read various parts of a module
-    bool read_dobjs(synthmod*);
-    bool read_inputs(synthmod*);
-    bool read_params(synthmod*);
+    bool read_ui_moditems(synthmod::base*);
+    bool read_ui_modinput(synthmod::base*, input::TYPE);
+    bool read_ui_modparam(synthmod::base*, param::TYPE);
+    bool read_ui_moddobj(synthmod::base*, dobj::TYPE, dobj::TYPE);
 
+    bool read_ui_dobjitems(dobj::base*);
+    bool read_ui_dobjparam(dobj::base*, param::TYPE);
+    bool read_ui_dobjdobj(dobj::base*, dobj::TYPE, dobj::TYPE);
+/*
     // method to read sub-parts of standalone dobjs
-    bool read_dobjs(dobj*);
+    bool read_dobjs(dobj::base*);
 
     // method to read parameters of dobjs
-    bool read_dobj_params(dobj*, const char* endterm);
+    bool read_dobj_params(dobj::base*, const char* endterm);
+*/
     const std::string*
         read_string_list_param(const char* enda, const char* endb);
     // method for ......
     bool eff_ing_header_bodge(samp_t *samplerate);
-    void init_first();
+    void register_ui();
 };
 
 #endif

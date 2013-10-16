@@ -12,7 +12,7 @@
     output count of how many durations have elapsed.
 */
 
-class timer : public synthmod, public linked_list<timing>
+class timer : public synthmod::base, public linked_list<timing>
 {
  public:
     timer(const char*);
@@ -26,7 +26,7 @@ class timer : public synthmod, public linked_list<timing>
     const void* get_out(output::TYPE) const;
     bool        set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE) const;
-    dobj*       add_dobj(dobj*);
+    dobj::base*       add_dobj(dobj::base*);
     errors::TYPE validate();
 
  private:
@@ -41,8 +41,7 @@ class timer : public synthmod, public linked_list<timing>
     wcint_t next_ix;
     double curtime;
     samp_t samples;
-
-    void init_first();
+    void register_ui();
 };
 
 #endif

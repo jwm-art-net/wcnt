@@ -23,7 +23,7 @@ Ports:  "Frequency shift" input, control, 0 to 5000, default 0
         "latency" output, control
 */
 
-class bode_freq_shifter : public synthmod
+class bode_freq_shifter : public synthmod::base
 {
  public:
 
@@ -62,8 +62,7 @@ class bode_freq_shifter : public synthmod
     LADSPA_Data* l_out_down;
     LADSPA_Data* l_out_up;
     LADSPA_Data* l_out_latency;
-
-    void init_first();
+    void register_ui();
 };
 
 #endif // WITH_LADSPA

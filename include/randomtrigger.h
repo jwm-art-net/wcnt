@@ -3,7 +3,7 @@
 
 #include "synthmod.h"
 
-class randomtrigger: public synthmod
+class randomtrigger: public synthmod::base
 {
 public:
     randomtrigger(const char*);
@@ -22,7 +22,7 @@ private:
     STATUS out_not_trig;
     double probability;
     double not_probability;
-    void init_first();
+    void register_ui();
 };
 
 #endif

@@ -1,21 +1,21 @@
 #include "../include/wave.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
 #include "../include/dtr.h"
 #include "../include/wave_tables.h"
-#include "../include/modparamlist.h"
-#include "../include/fxsparamlist.h"
 
 wave::wave(const char* uname) :
- synthmod(module::WAVE, uname, SM_HAS_OUT_OUTPUT),
+ synthmod::base(synthmod::WAVE, uname, SM_HAS_OUT_OUTPUT),
  output(0.00), in_phase_step(NULL), type(wave_tables::ONE), phase(0),
  table(0)
 {
-    register_input(input::IN_PHASE_STEP);
     register_output(output::OUT_OUTPUT);
-    init_first();
 }
+
+void wave::register_ui()
+{
+    register_input(input::IN_PHASE_STEP);
+    register_param(param::WAVE_TYPE, wave_tables::fxstring);
+}
+
 wave::~wave()
 {
 }
@@ -82,13 +82,3 @@ void wave::run()
     phase += (unsigned long)
         (*in_phase_step * wave_tables::phase_step_base);
 }
-
-void wave::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::WAVE_TYPE, wave_tables::fxstring);
-}
-
-
-

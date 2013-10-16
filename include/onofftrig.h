@@ -3,7 +3,7 @@
 
 #include "synthmod.h"
 
-class onofftrig: public synthmod
+class onofftrig: public synthmod::base
 {
 public:
     onofftrig(const char*);
@@ -30,7 +30,7 @@ private:
     samp_t attack_samps;
     samp_t release_samps;
     bool do_attack;// false == do_release
-    void init_first();
+    void register_ui();
 };
 
 #endif

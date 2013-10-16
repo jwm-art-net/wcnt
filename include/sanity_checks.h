@@ -7,9 +7,9 @@ class synthmod;
 
 void sanity_checks();
 
-bool mod_check_inputs(synthmod*);
-bool mod_check_outputs(synthmod*);
-bool mod_check_params(synthmod*);
+bool mod_check_inputs(synthmod::base*);
+bool mod_check_outputs(synthmod::base*);
+bool mod_check_params(synthmod::base*);
 
 #endif // SANITY_CHECKS
 

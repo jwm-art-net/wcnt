@@ -23,7 +23,7 @@ needed a better solution so created the nonezero module.......*/
 // yet... other things ta dee first like...
 // 7th december 2007
 
-class nonezero: public synthmod
+class nonezero: public synthmod::base
 {
 public:
     nonezero(const char*);
@@ -45,6 +45,7 @@ private:
     const samp_t out_none_samp_t;
     const STATUS out_none_STATUS;
     char* out_none_string;
+    void register_ui() {};
 };
 
 #endif

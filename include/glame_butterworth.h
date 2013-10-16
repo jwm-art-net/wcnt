@@ -29,7 +29,7 @@ Ports:
     "Output" output, audio
 */
 
-class glame_butterworth : public synthmod
+class glame_butterworth : public synthmod::base
 {
  public:
     glame_butterworth(const char*);
@@ -68,8 +68,7 @@ class glame_butterworth : public synthmod
     // working
     float min_cut_off;
     float max_cut_off;
-
-    void init_first();
+    void register_ui();
 };
 
 #endif // WITH_LADSPA

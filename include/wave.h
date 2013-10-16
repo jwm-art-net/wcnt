@@ -4,9 +4,9 @@
 #include "synthmod.h"
 #include "wave_tables.h"
 
-class wave : public synthmod
+class wave : public synthmod::base
 {
-public:
+ public:
     wave(const char*);
     ~wave();
     void run();
@@ -17,13 +17,13 @@ public:
     bool set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE) const;
 
-private:
+ private:
     double output;
     const double* in_phase_step;
     wave_tables::WT type;
     unsigned long phase;
     const double* table;
-    void init_first();
+    void register_ui();
 };
 
 #endif

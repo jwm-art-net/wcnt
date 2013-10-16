@@ -1,0 +1,212 @@
+wcnt-1.30/jwmsynth
+
+samplerate 44100
+
+timer
+t
+    timings
+        time seconds 0.0
+        time seconds 0.5
+        time seconds 1.0
+        time seconds 2.5
+        time seconds 2.75
+        time seconds 3.0
+        time seconds 5.0
+    timings
+    time_is_relative    off
+    recycle_mode        off
+t
+
+lfo_clock freq
+    in_phase_trig   t out_trig
+    in_freq_mod1    off
+    in_freq_mod2    off
+    freq            8.6
+    freq_mod1_size  1.0
+    freq_mod2_size  1.0
+freq
+
+wave_phase wave
+    in_phase_trig       freq out_phase_trig
+    in_phase_step       freq out_phase_step
+    in_shape_phase_step off
+    type                sine
+    shape_type          one
+    on_trig_reset_phase on
+    recycle_mode        off
+    sync_shape          off
+    invert_alt          off
+    phase_cycles        1.0
+wave
+
+lfo_controller
+out
+    in_trig         t      out_trig
+    in_waveform     wave   out_output
+    in_amp_mod      off
+    delay_time      25.0
+    ramp_time       50.0
+    start_level     0.0
+    end_level       1.0
+    response_time   15
+    amp_mod_size    0.0
+out
+
+group lfo1
+    modules
+        synthmod name freq
+        synthmod name wave
+        synthmod name out
+    modules
+lfo1
+
+copier cc1 from lfo1 to lfo2 cc1
+copier cc2 from lfo1 to lfo3 cc2
+copier cc3 from lfo1 to lfo4 cc3
+
+input_editor ie1
+    editlist
+        // LFO1
+        connect lfo1.freq
+            in_freq_mod1    lfo2.out out_output
+        connect lfo1.out
+            in_amp_mod      lfo3.out out_output
+        // LFO3
+        connect lfo3.freq
+            in_phase_trig   off
+        // LFO4
+        connect lfo4.freq
+            in_freq_mod1    lfo2.out out_output
+    editlist
+ie1
+
+param_editor pe1
+    editlist
+        // LFO1
+        edit lfo1.freq
+            freq_mod1_size  2.0
+        edit lfo1.out
+            amp_mod_size    0.375
+
+        // LFO2
+        edit lfo2.freq
+            freq 0.333
+        edit lfo2.wave
+            type sine
+        edit lfo2.out
+            delay_time      0.0
+            ramp_time       15
+            response_time   15
+
+        // LFO3
+        edit lfo3.freq
+            freq 50.0
+        edit lfo3.wave
+            on_trig_reset_phase on
+            recycle_mode        off
+        edit lfo3.out
+            delay_time      0.0
+            ramp_time       0.0
+            response_time   0.0
+
+        // LFO4
+        edit lfo4.freq
+            freq           4.0
+            freq_mod1_size 2.0
+    editlist
+pe1
+
+constant_note c0 name c0 c0
+
+clock osc1
+    in_freq_mod1    lfo1.out out_output
+    freq            220
+    freq_mod1_size  2.0
+osc1
+
+wave wv1
+    in_phase_step osc1 out_phase_step
+    type saw
+wv1
+
+clock lpf1c
+    in_freq_mod1    lfo2.out out_output
+    freq            2000
+    freq_mod1_size  4.0
+lpf1c
+
+glame_butterworth
+lpf1
+    in_signal             wv1 out_output
+    in_cutoff_phase_step  lpf1c out_phase_step
+    in_res_mod            off
+    filter_type   lowpass
+    resonance     0.5
+    res_mod_size  0.0
+lpf1
+
+
+echo
+echo
+    in_signal        lpf1 out_output
+    in_gain_mod      off
+    in_feedback      echo out_wet_output
+    in_feedback_mod  off
+    gain           0.75
+    gain_mod_size    0.0
+    delay_time         23.4
+    feedback           0.3
+    feedback_mod_size  0
+    wet/dry            0.1235
+echo
+
+
+timer
+process_time
+    timings
+        time seconds 0.0
+        time seconds 10.0
+    timings
+    time_is_relative off
+    recycle_mode on
+process_time
+
+fader fader
+    in_bar  process_time out_count
+    start_bar   0
+    end_bar     1
+    fade_in_time    250
+    fade_out_time   1.50
+fader
+
+mono_amp amp1
+    in_signal   echo out_output
+    in_gain_mod lfo4.out out_output
+    in_amp_eg   fader out_output
+    gain            0.875
+    gain_mod_size   0.75
+    clip_level      0.9999
+amp1
+
+wavfile_out
+w
+    in_left      amp1 out_output
+    in_right     amp1 out_output
+    in_bar       fader out_count
+    snapshot_mode  off
+    data_format    pcm16
+    filename       lfo_controller_output.wav
+    start_bar      0
+    end_bar        1
+w
+
+wcnt_exit
+x
+    in_bar      fader out_count
+    exit_bar    1
+x
+
+wcnt-1.30/jwmsynth
+
+
+

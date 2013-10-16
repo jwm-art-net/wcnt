@@ -3,7 +3,7 @@
 
 #include "synthmod.h"
 
-class trigcounter : public synthmod
+class trigcounter : public synthmod::base
 {
 public:
     trigcounter(const char*);
@@ -31,7 +31,7 @@ private:
     wcint_t pre_count;
     wcint_t count;
     STATUS wrap;
-    void init_first();
+    void register_ui();
 };
 
 #endif

@@ -1,10 +1,10 @@
 #include "../include/nonezero.h"
-#include "../include/jwm_globals.h"
+#include "../include/globals.h"
 #include "../include/modoutputlist.h"
 
 nonezero::nonezero(const char* uname) :
 
- synthmod(module::NONEZERO, uname,
+ synthmod::base(synthmod::NONEZERO, uname,
     SM_EMPTY_RUN | SM_UNGROUPABLE | SM_UNDUPLICABLE),
 
  out_none_double(0.00), out_none_wcint_t(0), out_none_samp_t(0),

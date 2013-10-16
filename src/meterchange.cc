@@ -1,23 +1,26 @@
 #include "../include/meterchange.h"
-#include "../include/jwm_globals.h"
-#include "../include/dobjparamlist.h"
+#include "../include/globals.h"
 
 
 meterchange::meterchange() :
- dobj(dataobj::SIN_METER),
+ dobj::base(dobj::SIN_METER),
  bar(0)
 {
     time_sig.beatsperbar = 0;
     time_sig.beatvalue = 0;
-    init_first();
 }
 
 meterchange::meterchange(wcint_t br, char btpb, char btval) :
-        dobj(dataobj::SIN_METER), bar(br)
+        dobj::base(dobj::SIN_METER), bar(br)
 {
     time_sig.beatsperbar = btpb;
     time_sig.beatvalue = btval;
-    init_first();
+}
+
+void meterchange::register_ui()
+{
+    register_param(param::METER);
+    register_param(param::BAR);
 }
 
 bool meterchange::set_param(param::TYPE pt, const void* data)
@@ -62,15 +65,5 @@ errors::TYPE meterchange::validate()
         return errors::RANGE_COUNT;
 
     return errors::NO_ERROR;
-}
-
-
-
-void meterchange::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::METER);
-    register_param(param::BAR);
 }
 

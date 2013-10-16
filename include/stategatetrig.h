@@ -5,7 +5,7 @@
 
 /*    only outputs the input trigger when the input state is ON */
 
-class stategatetrig: public synthmod
+class stategatetrig: public synthmod::base
 {
 public:
     stategatetrig(const char*);
@@ -20,6 +20,7 @@ private:
     STATUS const* in_state;
     STATUS out_trig;
     STATUS out_not_trig;
+    void register_ui();
 };
 
 #endif

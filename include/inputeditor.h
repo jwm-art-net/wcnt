@@ -4,7 +4,7 @@
 #include "inputedit.h"
 #include "linkedlist.h"
 
-class inputeditor : public dobj, public linked_list<inputedit>
+class inputeditor : public dobj::base, public linked_list<inputedit>
 {
  public:
     inputeditor();
@@ -22,10 +22,10 @@ class inputeditor : public dobj, public linked_list<inputedit>
         return errors::NO_ERROR;
     }
 
-    dobj const* add_dobj(dobj* dbj);
+    const dobj::base* add_dobj(dobj::base*);
 
  private:
-    void init_first();
+    void register_ui();
 };
 
 #endif

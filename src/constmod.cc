@@ -1,14 +1,15 @@
 #include "../include/constmod.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modparamlist.h"
 
 constmod::constmod(const char* uname) :
- synthmod(module::CONSTMOD, uname, SM_EMPTY_RUN | SM_HAS_OUT_OUTPUT),
+ synthmod::base(synthmod::CONSTMOD, uname, SM_EMPTY_RUN | SM_HAS_OUT_OUTPUT),
  output(0)
 {
     register_output(output::OUT_OUTPUT);
-    init_first();
+}
+
+void constmod::register_ui()
+{
+    register_param(param::VALUE);
 }
 
 constmod::~constmod()
@@ -43,14 +44,5 @@ const void* constmod::get_param(param::TYPE pt) const
         case param::VALUE: return &output;
         default: return 0;
     }
-}
-
-
-
-void constmod::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::VALUE);
 }
 

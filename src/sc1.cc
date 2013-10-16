@@ -1,24 +1,28 @@
 #include "../include/sc1.h"
 #ifdef WITH_LADSPA
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
+#include "../include/globals.h"
 
 sc1::sc1(const char* uname) :
- synthmod(module::SC1, uname, SM_HAS_OUT_OUTPUT),
+ synthmod::base(synthmod::SC1, uname, SM_HAS_OUT_OUTPUT),
  input(0), in_thresh_mod(0), in_ratio_mod(0), in_knee_mod(0),
  in_makeup_mod(0), output(0),
  attack(101.5), release(401), thresh(0), ratio(1), knee(3.25), makeup(0),
  l_descriptor(0), l_inst_handle(0),
  l_attack(0), l_release(0), l_thresh(0), l_ratio(0), l_knee(0),
  l_makeup(0), l_input(0), l_output(0)
+{
+    register_output(output::OUT_OUTPUT);
+}
 
+void sc1::register_ui()
 {
     register_input(input::IN_SIGNAL);
-    register_output(output::OUT_OUTPUT);
-    init_first();
-
+    register_param(param::ATTACK_TIME);
+    register_param(param::RELEASE_TIME);
+    register_param(param::THRESH_DB);
+    register_param(param::RATIO_1N);
+    register_param(param::KNEE_DB);
+    register_param(param::MAKEUP_DB);
 }
 
 sc1::~sc1()
@@ -135,7 +139,7 @@ errors::TYPE sc1::validate()
 
 void sc1::init()
 {
-    ladspa_loader* ll = jwm.get_ladspaloader();
+    ladspa_loader* ll = wcnt::jwm.get_ladspaloader();
     ladspa_plug* lp = ll->get_plugin("sc1_1425",
                                      "sc1");
     if (lp == 0) {
@@ -180,16 +184,5 @@ void sc1::run()
     output = *l_output;
 }
 
-void sc1::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::ATTACK_TIME);
-    register_param(param::RELEASE_TIME);
-    register_param(param::THRESH_DB);
-    register_param(param::RATIO_1N);
-    register_param(param::KNEE_DB);
-    register_param(param::MAKEUP_DB);
-}
 
 #endif // WITH_LADSPA

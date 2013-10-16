@@ -1,19 +1,19 @@
 #include "../include/samplehold.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
 #include "../include/conversions.h"
 
 sample_hold::sample_hold(const char* uname) :
- synthmod(module::SAMPLEHOLD, uname, SM_HAS_OUT_OUTPUT),
+ synthmod::base(synthmod::SAMPLEHOLD, uname, SM_HAS_OUT_OUTPUT),
  in_trig(0), in_signal(0), output(0.00), decay_time(0.00), 
  decay_samps(0), ds(0), decay_size(0.00)
 {
+    register_output(output::OUT_OUTPUT);
+}
+
+void sample_hold::register_ui()
+{
     register_input(input::IN_TRIG);
     register_input(input::IN_SIGNAL);
-    register_output(output::OUT_OUTPUT);
-    init_first();
+    register_param(param::DECAY_TIME);
 }
 
 sample_hold::~sample_hold()
@@ -103,10 +103,4 @@ void sample_hold::run()
     }
 }
 
-void sample_hold::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::DECAY_TIME);
-}
 

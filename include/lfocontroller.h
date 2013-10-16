@@ -3,7 +3,7 @@
 
 #include "synthmod.h"
 
-class lfo_controller : public synthmod
+class lfo_controller : public synthmod::base
 {
 public:
     lfo_controller(const char*);
@@ -32,16 +32,24 @@ private:
     double end_level;
     double response_time;
     double amp_modsize;
-    // working
-    double ams_r;
+    //--
+    samp_t total_resp_samples;
+    samp_t resp_samples;
+    double resp_step;
+    double resp_level;
+    double resp_level_grab;
+
+    samp_t total_delay_samples;
     samp_t delay_samples;
+
+    samp_t total_ramp_samples;
     samp_t ramp_samples;
-    double resp_size;
-    double resp_fa_level;
-    double resp_ac;
-    double level_size;
-    double current_level;
-    void init_first();
+    double ramp_step;
+    double ramp_level;
+
+    double amp_center;
+    double amp_half_range;
+    void register_ui();
 };
 
 #endif

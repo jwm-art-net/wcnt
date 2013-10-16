@@ -1,13 +1,9 @@
 #include "../include/notetran.h"
-#include "../include/jwm_globals.h"
-#include "../include/jwm_init.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
+#include "../include/globals.h"
 #include "../include/conversions.h"
 
 notetran::notetran(const char* uname) :
- synthmod(module::NOTETRAN, uname, SM_DEFAULT),
+ synthmod::base(synthmod::NOTETRAN, uname, SM_DEFAULT),
  in_notename(0), in_detranspose(0), in_note_on_trig(0),
  in_note_slide_trig(0), out_no_value(0), out_ns_value(0),
  out_note_on_trig(OFF), out_not_no_trig(OFF), out_note_slide_trig(OFF),
@@ -18,21 +14,36 @@ notetran::notetran(const char* uname) :
  nslo_freq(0),nshi_freq(0), nort_samples(0), nsrt_samples(0),
  no_respsize(0), ns_respsize(0)
 {
-    no_lo_notename = new char[jwm_init::note_array_size];
-    no_hi_notename = new char[jwm_init::note_array_size];
-    ns_lo_notename = new char[jwm_init::note_array_size];
-    ns_hi_notename = new char[jwm_init::note_array_size];
-    register_input(input::IN_NOTENAME);
-    register_input(input::IN_NOTE_ON_TRIG);
-    register_input(input::IN_NOTE_SLIDE_TRIG);
-    register_input(input::IN_DETRANSPOSE);
+    no_lo_notename = new char[wcnt::note_array_size];
+    no_hi_notename = new char[wcnt::note_array_size];
+    ns_lo_notename = new char[wcnt::note_array_size];
+    ns_hi_notename = new char[wcnt::note_array_size];
     register_output(output::OUT_NOVALUE);
     register_output(output::OUT_NSVALUE);
     register_output(output::OUT_NOTE_ON_TRIG);
     register_output(output::OUT_NOT_NO_TRIG);
     register_output(output::OUT_NOTE_SLIDE_TRIG);
     register_output(output::OUT_NOT_NS_TRIG);
-    init_first();
+}
+
+void notetran::register_ui()
+{
+    register_input(input::IN_NOTENAME);
+    register_input(input::IN_NOTE_ON_TRIG);
+    register_param(param::NO_LONOTE);
+    register_param(param::NO_HINOTE);
+    register_param(param::MINNO_OUT);
+    register_param(param::MAXNO_OUT);
+    register_param(param::DETRAN_NO);
+    register_param(param::NO_RESPTIME);
+    register_input(input::IN_NOTE_SLIDE_TRIG);
+    register_param(param::NS_LONOTE);
+    register_param(param::NS_HINOTE);
+    register_param(param::MINNS_OUT);
+    register_param(param::MAXNS_OUT);
+    register_param(param::DETRAN_NS);
+    register_param(param::NS_RESPTIME);
+    register_input(input::IN_DETRANSPOSE);
 }
 
 notetran::~notetran()
@@ -189,8 +200,8 @@ errors::TYPE notetran::validate()
 void notetran::set_no_lo_notename(const char* nol)
 {
     int n = strlen(nol);
-    if (n > jwm_init::note_name_len)
-        n = jwm_init::note_name_len;
+    if (n > wcnt::note_name_len)
+        n = wcnt::note_name_len;
     strncpy(no_lo_notename, nol, n);
     no_lo_notename[n] = '\0';
 }
@@ -198,8 +209,8 @@ void notetran::set_no_lo_notename(const char* nol)
 void notetran::set_no_hi_notename(const char* noh)
 {
     int n = strlen(noh);
-    if (n > jwm_init::note_name_len)
-        n = jwm_init::note_name_len;
+    if (n > wcnt::note_name_len)
+        n = wcnt::note_name_len;
     strncpy(no_hi_notename, noh, n);
     no_hi_notename[n] = '\0';
 }
@@ -207,8 +218,8 @@ void notetran::set_no_hi_notename(const char* noh)
 void notetran::set_ns_lo_notename(const char* nsl)
 {
     int n = strlen(nsl);
-    if (n > jwm_init::note_name_len)
-        n = jwm_init::note_name_len;
+    if (n > wcnt::note_name_len)
+        n = wcnt::note_name_len;
     strncpy(ns_lo_notename, nsl, n);
     ns_lo_notename[n] = '\0';
 }
@@ -216,8 +227,8 @@ void notetran::set_ns_lo_notename(const char* nsl)
 void notetran::set_ns_hi_notename(const char* nsh)
 {
     int n = strlen(nsh);
-    if (n > jwm_init::note_name_len)
-        n = jwm_init::note_name_len;
+    if (n > wcnt::note_name_len)
+        n = wcnt::note_name_len;
     strncpy(ns_hi_notename, nsh, n);
     ns_hi_notename[n] = '\0';
 }
@@ -280,24 +291,5 @@ void notetran::run()
             out_ns_value += ns_respsize;
         }
     }
-}
-
-void notetran::init_first()
-{
-    if (done_first())
-        return;
-    // inserted in order to be defined by user
-    register_param(param::NO_LONOTE);
-    register_param(param::NO_HINOTE);
-    register_param(param::MINNO_OUT);
-    register_param(param::MAXNO_OUT);
-    register_param(param::DETRAN_NO);
-    register_param(param::NO_RESPTIME);
-    register_param(param::NS_LONOTE);
-    register_param(param::NS_HINOTE);
-    register_param(param::MINNS_OUT);
-    register_param(param::MAXNS_OUT);
-    register_param(param::DETRAN_NS);
-    register_param(param::NS_RESPTIME);
 }
 

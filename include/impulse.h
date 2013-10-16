@@ -3,7 +3,7 @@
 
 #include "synthmod.h"
 
-class impulse : public synthmod
+class impulse : public synthmod::base
 {
 public:
     impulse(const char*);
@@ -15,6 +15,7 @@ public:
 private:
     const STATUS* in_trig;
     double out_output;
+    void register_ui();
 };
 
 #endif

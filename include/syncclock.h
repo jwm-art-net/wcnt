@@ -3,7 +3,7 @@
 
 #include "synthmod.h"
 
-class sync_clock : public synthmod
+class sync_clock : public synthmod::base
 {
 public:
     sync_clock(const char*);
@@ -44,7 +44,7 @@ private:
     double beatlen;
     double phasepos;
     double snapto;
-    void init_first();
+    void register_ui();
 };
 
 #endif

@@ -1,14 +1,15 @@
 #include "../include/invert.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
 
 invert::invert(const char* uname) :
- synthmod(module::INVERT, uname, SM_HAS_OUT_OUTPUT),
+ synthmod::base(synthmod::INVERT, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), out_output(0.00)
 {
-    register_input(input::IN_SIGNAL);
     register_output(output::OUT_OUTPUT);
+}
+
+void invert::register_ui()
+{
+    register_input(input::IN_SIGNAL);
 }
 
 invert::~invert()

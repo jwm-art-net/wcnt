@@ -3,7 +3,7 @@
 
 #include "dobj.h"
 
-class modnamedobj : public dobj
+class modnamedobj : public dobj::base
 {
 public:
     modnamedobj();
@@ -19,7 +19,7 @@ public:
 
 private:
     char* modname;
-    void init_first();
+    void register_ui();
 };
 
 #endif

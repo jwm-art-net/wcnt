@@ -1,23 +1,16 @@
 #include "../include/cmdline.h"
-#include "../include/jwm_globals.h"
+#include "../include/globals.h"
 #include "../include/conversions.h"
 #include "../include/wavfilein.h"
 #include "../include/synthmod.h"
 
 #include "../include/synthmodlist.h"
-#include "../include/modinputlist.h"
 #include "../include/modoutputlist.h"
-#include "../include/modparamlist.h"
-
 #include "../include/fxsparamlist.h"
 
-#include "../include/topdobjlist.h"
-#include "../include/moddobjlist.h"
 #include "../include/dobjlist.h"
-#include "../include/dobjparamlist.h"
-#include "../include/dobjdobj.h"
 
-#include "../include/jwmsynth.h"
+#include "../include/synth.h"
 
 #include "../include/textstuff.h"
 
@@ -241,12 +234,12 @@ bool cmdline::show_help()
 
 bool cmdline::set_jwm_globals()
 {
-    jwm.verbose  = (data[V_IX].par1) ? true : false;
-    jwm.dont_run = (data[DONT_RUN_IX].par1) ? true : false;
-    jwm.no_title = (data[NO_TITLE_IX].par1) ? true : false;
-    jwm.no_progress = (data[NO_PROGRESS_IX].par1) ? true : false;
+    wcnt::jwm.verbose  = (data[V_IX].par1) ? true : false;
+    wcnt::jwm.dont_run = (data[DONT_RUN_IX].par1) ? true : false;
+    wcnt::jwm.no_title = (data[NO_TITLE_IX].par1) ? true : false;
+    wcnt::jwm.no_progress = (data[NO_PROGRESS_IX].par1) ? true : false;
 
-    if (jwm.wc_path || jwm.wc_file){
+    if (wcnt::jwm.wc_path || wcnt::jwm.wc_file){
         msg = "\nGlobals (path) being set again... I won't do it.";
         return false;
     }
@@ -269,9 +262,9 @@ bool cmdline::set_jwm_globals()
         strncpy(path, filename, fnptr - filename);
         path[fnptr - filename] = '\0';
     }
-    jwm.wc_path  = path;
-    jwm.wc_file  = new char[strlen(filename) + 1];
-    strcpy(jwm.wc_file, filename);
+    wcnt::jwm.wc_path  = path;
+    wcnt::jwm.wc_file  = new char[strlen(filename) + 1];
+    strcpy(wcnt::jwm.wc_file, filename);
     return true;
 }
 
@@ -292,16 +285,16 @@ void cmdline::invalid_args()
 void cmdline::module_help()
 {
     int n = data[MH_IX].par1;
-    module::TYPE smt =
-        module::names::type((n != 0 && n < opts_count)
+    synthmod::TYPE smt =
+        synthmod::names::type((n != 0 && n < opts_count)
             ? opts[n] : "" );
-    if (smt == module::NONEZERO) {
+    if (smt == synthmod::NONEZERO) {
         msg="\nThe module definition requested is a secret module which"
             " is used whenever an\ninput is turned 'off'. What did you"
             " expect?";
         return;
     }
-    if (smt == module::ERR_TYPE) {
+    if (smt == synthmod::ERR_TYPE) {
         if (data[MH_IX].par1 != 0) {
             msg = "\nUnknown synth module: ";
             if (data[MH_IX].par1 < opts_count)
@@ -310,13 +303,13 @@ void cmdline::module_help()
         }
         msg += "\nAvailable module types are:\n";
 
-        if (jwm.is_verbose()) {
-            for (int i = module::ERR_TYPE + 2;
-                     i < module::LAST_TYPE; ++i)
+        if (wcnt::jwm.is_verbose()) {
+            for (int i = synthmod::ERR_TYPE + 2;
+                     i < synthmod::LAST_TYPE; ++i)
             {
-                smt = (module::TYPE)i;
-                std::string mhv = module::names::get(smt);
-                const char* descr = module::names::descr(smt);
+                smt = (synthmod::TYPE)i;
+                std::string mhv = synthmod::names::get(smt);
+                const char* descr = synthmod::names::descr(smt);
                 mhv += " - ";
                 std::string* d = justify(descr, 60, ' ', "\n    ",
                                                             mhv.c_str());
@@ -328,12 +321,12 @@ void cmdline::module_help()
         }
         else
         {
-            int modcount = module::LAST_TYPE - 2;
+            int modcount = synthmod::LAST_TYPE - 2;
             const char** modnames = new const char*[modcount];
-            for (int i = module::ERR_TYPE + 2;
-                     i < module::LAST_TYPE; i++) {
-                modnames[i - 2] = module::names::get(
-                                    (module::TYPE)i);
+            for (int i = synthmod::ERR_TYPE + 2;
+                     i < synthmod::LAST_TYPE; i++) {
+                modnames[i - 2] = synthmod::names::get(
+                                    (synthmod::TYPE)i);
             }
             std::string* str = collumnize(modnames, modcount, 26, 3, true);
             msg += *str;
@@ -342,9 +335,10 @@ void cmdline::module_help()
             return;
         }
     }
-    synthmod* sm = jwm.get_modlist()->create_module(smt, "username");
+    synthmod::base* sm =
+                wcnt::jwm.get_modlist()->create_module(smt, "username");
     msg = "\n";
-    msg += module::names::get(smt);
+    msg += synthmod::names::get(smt);
     if (sm == 0) {
         msg += " module has not been fully\nincorporated into the ";
         msg += "wcnt user interface.  Oops! \n Send an email to ";
@@ -354,7 +348,7 @@ void cmdline::module_help()
     msg += "\n";
     msg += sm->get_username();
 
-    const char* descr = module::names::descr(smt);
+    const char* descr = synthmod::names::descr(smt);
     if (descr) {
         msg += "\n// ";
         std::string* d = justify(descr, 60, ' ', "\n// ", 0);
@@ -362,15 +356,20 @@ void cmdline::module_help()
         delete d;
         msg += "\n//----";
     }
+
+    std::cout << "***** FIXME *****\nuse new ui_moditem derived classes"
+                                                            << std::endl;
+
+/*
     dobj_help(smt);
     modinputlist::linkedlist* inlist =
-        new_list_of_by(jwm.get_inputlist(), sm);
+        new_list_of_by(wcnt::get_inputlist(), sm->get_module_type());
                     //jwm.get_inputlist()->getinputlist_for_module(sm);
     modinput* mi = inlist->goto_first();
     const char* spc = spaces::get(40);
     if (mi) {
         msg += "\n// inputs for ";
-        msg += module::names::get(smt);
+        msg += synthmod::names::get(smt);
         int mxl = 0;
         std::string in;
         while(mi) { // get max len of input name
@@ -388,7 +387,7 @@ void cmdline::module_help()
             msg.append(spc, mxl - in.length());
             msg += "modulename outputname";
             mi = inlist->goto_next();
-            if (jwm.is_verbose()) {
+            if (wcnt::jwm.is_verbose()) {
                 const char* descr = input::names::descr(it);
                 msg += " // ";
                 msg += descr;
@@ -397,12 +396,11 @@ void cmdline::module_help()
     }
     delete inlist;
     modparamlist::linkedlist* parlist =
-        new_list_of_by(jwm.get_paramlist(), sm->get_module_type());
-
+            new_list_of_by(wcnt::get_paramlist(), sm->get_module_type());
     modparam* param = parlist->goto_first();
     if (param) {
         msg += "\n// parameters for ";
-        msg += module::names::get(smt);
+        msg += synthmod::names::get(smt);
         int mxl = 0;
         std::string pn;
         while(param) {
@@ -421,7 +419,7 @@ void cmdline::module_help()
             iocat::TYPE ioc = param::names::category(pt);
             if (ioc == iocat::FIX_STR) {
                 fixstrparam* fsp;
-                fsp = jwm.get_fxsparamlist()->get_fix_str_param(pt);
+                fsp = wcnt::get_fxsparamlist()->get_fix_str_param(pt);
                 if (fsp)
                     msg += fsp->get_string_list();
                 else
@@ -430,7 +428,7 @@ void cmdline::module_help()
             else
                 msg += iocat::names::get(ioc);
 
-            if (jwm.is_verbose()) {
+            if (wcnt::jwm.is_verbose()) {
                 const char* descr = param::names::descr(pt);
                 msg += " // ";
                 msg += descr;
@@ -440,20 +438,20 @@ void cmdline::module_help()
         }
     }
     delete parlist;
-
+*/
     modoutputlist::linkedlist* outlist =
-        new_list_of_by(jwm.get_outputlist(), sm);
+        new_list_of_by(wcnt::get_outputlist(), sm);
 
     modoutput* output = outlist->goto_first();
     if (output) {
         msg += "\n// outputs for ";
-        msg += module::names::get(smt);
+        msg += synthmod::names::get(smt);
         while(output) {
             msg += "\n// ";
             output::TYPE ot = output->get_outputtype();
             msg += output::names::get(ot);
             output = outlist->goto_next();
-            if (jwm.is_verbose()) {
+            if (wcnt::jwm.is_verbose()) {
                 const char* descr = output::names::descr(ot);
                 msg += " // ";
                 msg += descr;
@@ -468,47 +466,54 @@ void cmdline::module_help()
     return;
 }
 
-void cmdline::dobj_help(module::TYPE smt)
+void cmdline::dobj_help(synthmod::TYPE smt)
 {
-    moddobj* mdbj = jwm.get_moddobjlist()->get_first_of_type(smt);
+    std::cout << "***** FIXME *****\nuse new ui_moditem derived classes"
+                                                            << std::endl;
+/*
+    moddobj* mdbj = wcnt::get_moddobjlist()->get_first_of_type(smt);
     // forgot that some modules have more than one list.... so we do want
     // to get a moddobjlist and not just a moddobj from moddobjlist.
     if (!mdbj)
         return;
     msg += "\n// data objects for ";
-    msg += module::names::get(smt);
+    msg += synthmod::names::get(smt);
     while(mdbj) {
         dobjdobjlist* mod_ddlist = mdbj->get_dobjdobjlist();
-        dataobj::TYPE dt = mdbj->get_first_child();
+        dobj::TYPE dt = mdbj->get_first_child();
         dobjdobjlist* ddlist =
             mod_ddlist->get_dobjdobjlist_for_dobjtype(dt);
         dobjdobj* dd = ddlist->goto_first();
         msg += "\n    ";
-        msg += dataobj::names::get(dt);
+        msg += dobj::names::get(dt);
         while(dd) {
-            dataobj::TYPE sprogtype = dd->get_dobj_sprog();
+            dobj::TYPE sprogtype = dd->get_dobj_sprog();
             msg += "\n        ";
-            msg += dataobj::names::get(sprogtype);
-            delete jwm.get_dobjlist()->create_dobj(sprogtype);
+            msg += dobj::names::get(sprogtype);
+            delete wcnt::get_dobjlist()->create_dobj(sprogtype);
             dobj_help_params(sprogtype, 2);
             dd = ddlist->goto_next();
         }
         msg += "\n    ";
-        msg += dataobj::names::get(dt);
+        msg += dobj::names::get(dt);
         delete ddlist;
-        mdbj = jwm.get_moddobjlist()->get_next_of_type();
+        mdbj = wcnt::get_moddobjlist()->get_next_of_type();
     }
     msg += "\n";
-    return;
+*/
 }
 
 void cmdline::dobj_help()
 {
+    std::cout << "***** FIXME *****\nuse new ui_dobjitem derived classes"
+                                                            << std::endl;
+#if 0
+/*
     int n = data[DH_IX].par1;
     std::string dname = (n != 0 && n < opts_count) ? opts[n] : "";
-    dataobj::TYPE dt = dataobj::names::type(dname.c_str());
+    dobj::TYPE dt = dobj::names::type(dname.c_str());
 
-    dobj* dbj = jwm.get_dobjlist()->create_dobj(dt);
+    dobj::base* dbj = wcnt::get_dobjlist()->create_dobj(dt);
     if (!dbj) {
         // incorrect dobj name or no name specified
         if (opts_count == 3)
@@ -516,7 +521,7 @@ void cmdline::dobj_help()
         msg += "\navailable data object types are:\n\n";
         int count = 0;
         const char** dbjnames =
-            dataobj::names::all_in_category(dataobj::CAT_DEF, &count);
+            dobj::names::all_in_category(dobj::CAT_DEF, &count);
         std::string* str = collumnize(dbjnames, count, 20, 2, true);
         msg += *str;
         delete str;
@@ -525,10 +530,10 @@ void cmdline::dobj_help()
     }
 
     msg += "\n";
-    msg += dataobj::names::get(dt);
+    msg += dobj::names::get(dt);
     msg += "\nusername";
 
-    const char* descr = dataobj::names::descr(dt);
+    const char* descr = dobj::names::descr(dt);
     if (descr) {
         msg += "\n// ";
         std::string* d = justify(descr, 60, ' ', "\n// ", 0);
@@ -539,18 +544,18 @@ void cmdline::dobj_help()
 
     dobj_help_params(dt, 1);
 
-    dobjdobjlist* ddlist = jwm.get_topdobjlist()->get_first_of_type(dt);
+    dobjdobjlist* ddlist = wcnt::get_topdobjlist()->get_first_of_type(dt);
 
     int p = 10;
 
     while(ddlist && p) {
         dobjdobj* dd = ddlist->goto_first();
         while(dd) {
-            dataobj::TYPE sprogtype = dd->get_dobj_sprog();
+            dobj::TYPE sprogtype = dd->get_dobj_sprog();
             msg += "\n    ";
-            msg += dataobj::names::get(sprogtype);
+            msg += dobj::names::get(sprogtype);
 
-            descr = dataobj::names::descr(sprogtype);
+            descr = dobj::names::descr(sprogtype);
             if (descr) {
                 msg += " // ";
                 std::string* d = justify(descr, 60, ' ', "\n    // ", 0);
@@ -562,37 +567,41 @@ void cmdline::dobj_help()
             sddlist = ddlist->get_dobjdobjlist_for_dobjtype(sprogtype);
             dobjdobj* sdd = sddlist->goto_first();
             while(sdd) {
-                dataobj::TYPE ssprogtype = sdd->get_dobj_sprog();
+                dobj::TYPE ssprogtype = sdd->get_dobj_sprog();
                 msg += "\n        ";
-                msg += dataobj::names::get(ssprogtype);
-                delete jwm.get_dobjlist()->create_dobj(ssprogtype);
+                msg += dobj::names::get(ssprogtype);
+                delete wcnt::get_dobjlist()->create_dobj(ssprogtype);
                 dobj_help_params(ssprogtype, 3);
                 sdd = sddlist->goto_next();
             }
             delete sddlist;
             msg += "\n    ";
-            msg += dataobj::names::get(sprogtype);
-            delete jwm.get_dobjlist()->create_dobj(sprogtype);
+            msg += dobj::names::get(sprogtype);
+            delete wcnt::get_dobjlist()->create_dobj(sprogtype);
             dobj_help_params(sprogtype, 2);
             dd = ddlist->goto_next();
         }
-        ddlist = jwm.get_topdobjlist()->get_next_of_type();
+        ddlist = wcnt::get_topdobjlist()->get_next_of_type();
         p--;
     }
     msg += "\nusername";
     delete ddlist;
     delete dbj;
     return;
+*/
+#endif
 }
 
-void cmdline::dobj_help_params(dataobj::TYPE dt, int level)
+void cmdline::dobj_help_params(dobj::TYPE dt, int level)
 {
-    dobjparamlist::linkedlist*
-        dparlist = new_list_of_by(jwm.get_dparlist(), dt);
+    std::cout << "***** FIXME *****\nuse new ui_moditem derived classes"
+                                                            << std::endl;
+/*    dobjparamlist::linkedlist*
+        dparlist = new_list_of_by(wcnt::get_dparlist(), dt);
 
     if (!dparlist) {
         std::cout << "\nfailed to retrieve dobjparamlist for "
-            << dataobj::names::get(dt);
+            << dobj::names::get(dt);
         return;
     }
 
@@ -624,13 +633,13 @@ void cmdline::dobj_help_params(dataobj::TYPE dt, int level)
         msg.append(spc, mxl - dn.length() + 2);
         if (ioc == iocat::FIX_STR) {
             fixstrparam* fsp;
-            fsp = jwm.get_fxsparamlist()->get_fix_str_param(pt);
+            fsp = wcnt::get_fxsparamlist()->get_fix_str_param(pt);
             msg += fsp->get_string_list();
         }
         else
             msg += iocat::names::get(ioc);
 
-        if (jwm.is_verbose()) {
+        if (wcnt::jwm.is_verbose()) {
             const char* descr = param::names::descr(pt);
             msg += " // ";
             msg += descr;
@@ -639,7 +648,7 @@ void cmdline::dobj_help_params(dataobj::TYPE dt, int level)
         dparam = dparlist->goto_next();
     }
     delete dparlist;
-    return;
+*/
 }
 
 void cmdline::input_help()
@@ -664,7 +673,7 @@ void cmdline::input_help()
             if (mxl < l)
                 mxl = l;
         }
-        if (jwm.is_verbose()) {
+        if (wcnt::jwm.is_verbose()) {
             const char* spc = spaces::get(40);
             for (int i = input::ERR_TYPE + 1; i < input::LAST_TYPE; ++i) {
                 msg += "\n";
@@ -688,7 +697,7 @@ void cmdline::input_help()
     iocat::TYPE incat = input::names::category(intype);
     if (data[WC_IX].par1 > 0) {
         // must create all modules to gain access to compatible outputs
-        jwmsynth jwm_synth;
+        wcnt::synth jwm_synth;
         if (!jwm_synth.is_valid() || !jwm_synth.generate_synth()) {
             msg =
                 "\nproblems reading synthfile:\n" +
@@ -697,24 +706,21 @@ void cmdline::input_help()
     }
     else {
         // only create modules within a .wc file to access outputs
-        synthmod* sm;
+        synthmod::base* sm;
         int i;
-        for (i = module::ERR_TYPE + 1;
-                i < module::LAST_TYPE; i++)
+        for (i = synthmod::ERR_TYPE + 1; i < synthmod::LAST_TYPE; i++)
         {
-            if (i != module::NONEZERO) {
-                sm = jwm.get_modlist()->create_module(
-                    (module::TYPE) i,
-                        module::names::get(
-                            (module::TYPE)i));
+            if (i != synthmod::NONEZERO) {
+                sm = wcnt::jwm.get_modlist()->create_module(
+                                            (synthmod::TYPE) i,
+                                synthmod::names::get((synthmod::TYPE)i));
                 if (!sm) {
                     msg += "\nnot enough memory to process request to"
                         "create synthmodule type: ";
-                    msg += module::names::get(
-                            (module::TYPE)i);
+                    msg += synthmod::names::get((synthmod::TYPE)i);
                     return;
                 }
-                jwm.get_modlist()->add_module(sm);
+                wcnt::jwm.get_modlist()->add_module(sm);
             }
         }
     }
@@ -722,12 +728,13 @@ void cmdline::input_help()
     msg += input::names::get(intype);
     msg += " are:\n";
     // now get the outputs matching category of input
-    modoutputlist* outputs = jwm.get_outputlist()->list_of_category(incat);
+    modoutputlist* outputs =
+                        wcnt::get_outputlist()->list_of_category(incat);
     modoutput* output = outputs->goto_first();
     std::string mn;
     int mxl = 0;
     while(output) {
-        mn = output->get_synthmodule()->get_username();
+        mn = output->get_module()->get_username();
         int l = mn.length();
         if (l > mxl) mxl = l;
         output = outputs->goto_next();
@@ -738,8 +745,8 @@ void cmdline::input_help()
     while(output)
     { // this if statement prevents from displaying off off
         // now it only displays one off - less confusing.
-        if (output->get_moduletype() != module::NONEZERO) {
-            mn = output->get_synthmodule()->get_username();
+        if (output->get_moduletype() != synthmod::NONEZERO) {
+            mn = output->get_module()->get_username();
             msg += mn;
             msg.append(spc, mxl - mn.length());
         }
@@ -790,7 +797,7 @@ void cmdline::sample_info()
     std::ostringstream conv;
     conv << "\n\t" << wavfile.get_sample_rate() << " hz";
     conv << "\n\tlength: " << wavfile.get_length() << " samples (";
-    conv << (double)wavfile.get_length() / jwm.samplerate();
+    conv << (double)wavfile.get_length() / wcnt::jwm.samplerate();
     conv << " seconds)\n";
     msg += conv.str();
     return;
@@ -827,18 +834,18 @@ void cmdline::freq_info()
         return;
     }
     double frequency = atof(opts[data[FI_IX].par1]);
-    jwm.samplerate(atol(opts[data[FI_IX].par2]));
+    wcnt::jwm.samplerate(atol(opts[data[FI_IX].par2]));
     if (frequency == 0) {
         msg = "\nInvalid frequency";
         return;
     }
-    if (jwm.samplerate() == 0) {
+    if (wcnt::jwm.samplerate() == 0) {
         msg = "\nInvalid sample rate";
         return;
     }
     std::ostringstream conv;
     conv << "\nFrequency " << frequency;
-    conv << " at samplerate " << jwm.samplerate();
+    conv << " at samplerate " << wcnt::jwm.samplerate();
     conv << "\n\tphase_step " << freq_to_step(frequency);
     conv << "\n\tsamples  " << freq_to_samples(frequency);
     msg = conv.str();
@@ -847,7 +854,7 @@ void cmdline::freq_info()
 void cmdline::header()
 {
     msg = "\nwcnt .wc file header (and footer) is:\n\t";
-    msg += wcnt_id;
+    msg += wcnt::wcnt_id;
 }
 
 void cmdline::help()

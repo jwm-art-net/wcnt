@@ -1,21 +1,25 @@
 #include "../include/userwavevertex.h"
-#include "../include/jwm_globals.h"
-#include "../include/dobjparamlist.h"
 
 
 wave_vertex::wave_vertex() :
- dobj(dataobj::SIN_VERTEX), out_deg(0), out_pos(0),
+ dobj::base(dobj::SIN_VERTEX), out_deg(0), out_pos(0),
  up_deg(0), up_pos(0), lo_deg(0), lo_pos(0)
 {
-    init_first();
 }
 
 wave_vertex::wave_vertex(
     double udeg, double upos, double ldeg, double lpos) :
- dobj(dataobj::SIN_VERTEX), out_deg(0), out_pos(0),
+ dobj::base(dobj::SIN_VERTEX), out_deg(0), out_pos(0),
  up_deg(udeg), up_pos(upos), lo_deg(ldeg), lo_pos(lpos)
 {
-    init_first();
+}
+
+void wave_vertex::register_ui()
+{
+    register_param(param::UPDEG);
+    register_param(param::UPLEVEL);
+    register_param(param::LODEG);
+    register_param(param::LOLEVEL);
 }
 
 void wave_vertex::modulate(double vmod, double hmod)
@@ -72,15 +76,4 @@ errors::TYPE wave_vertex::validate()
 
     return errors::NO_ERROR;
 }
-
-void wave_vertex::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::UPDEG);
-    register_param(param::UPLEVEL);
-    register_param(param::LODEG);
-    register_param(param::LOLEVEL);
-}
-
 

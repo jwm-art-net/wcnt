@@ -8,7 +8,7 @@
 // we no longer have 16bit integer input/output and amplitude levels
 */
 
-class stereo_amp : public synthmod
+class stereo_amp : public synthmod::base
 {
 public:
     stereo_amp(const char*);
@@ -41,7 +41,7 @@ private:
     // working
     double left;
     double right;
-    void init_first();
+    void register_ui();
 };
 
 #endif

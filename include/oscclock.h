@@ -14,7 +14,7 @@
         (as opposed to note slide trig & portamento time)
 */
 
-class osc_clock : public synthmod
+class osc_clock : public synthmod::base
 {
 public:
     osc_clock(const char*);
@@ -56,7 +56,7 @@ private:
     double slide_size;
     double target_phase_step;
     samp_t slidesamples;
-    void init_first();
+    void register_ui();
 };
 
 #endif

@@ -16,7 +16,7 @@
         with time_map, sequencer, and sync_clock, as I've
         failed to achieve 100% sample accuracy, boooo.  */
 
-class logictrigger: public synthmod
+class logictrigger: public synthmod::base
 {
 public:
     enum LOGIC_FUNC{ AND, OR, XOR, XORNOT };
@@ -43,7 +43,7 @@ private:
     wcint_t t2_samps;
     STATUS trig1;
     STATUS trig2;
-    void init_first();
+    void register_ui();
 };
 
 #endif

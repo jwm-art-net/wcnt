@@ -1,9 +1,9 @@
 #include "../include/noisegenerator.h"
-#include "../include/jwm_globals.h"
+#include "../include/globals.h"
 #include "../include/modoutputlist.h"
 
 noise_generator::noise_generator(const char* uname) :
- synthmod(module::NOISEGEN, uname, SM_HAS_OUT_OUTPUT),
+ synthmod::base(synthmod::NOISEGEN, uname, SM_HAS_OUT_OUTPUT),
  output(0.00)
 {
     srandom(time(0));

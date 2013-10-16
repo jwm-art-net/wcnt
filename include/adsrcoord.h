@@ -3,7 +3,7 @@
 
 #include "dobj.h"
 
-class adsr_coord : public dobj
+class adsr_coord : public dobj::base
 {
 public:
     enum SECT
@@ -51,7 +51,7 @@ private:
     double upper_level;
     double lower_time;
     double lower_level;
-    void init_first();
+    void register_ui();
 };
 
 #endif

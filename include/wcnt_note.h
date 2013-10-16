@@ -3,7 +3,7 @@
 
 #include "synthmod.h"
 
-class wcnt_note : public synthmod
+class wcnt_note : public synthmod::base
 {
  public:
     wcnt_note(const char*);
@@ -20,6 +20,7 @@ class wcnt_note : public synthmod
     const STATUS*   io_note_off_trig;
     const double*   io_freq;
     const double*   io_velocity;
+    void register_ui();
 };
 
 #endif

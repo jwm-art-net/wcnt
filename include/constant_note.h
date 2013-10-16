@@ -2,9 +2,8 @@
 #define CONSTANT_NOTE_H
 
 #include "synthmod.h"
-#include "jwm_init.h"
 
-class constant_note : public synthmod
+class constant_note : public synthmod::base
 {
 public:
     constant_note(const char*);
@@ -21,7 +20,7 @@ private:
     double out_freq;
     double out_phase_step;
     void set_note(const char*);
-    void init_first();
+    void register_ui();
 };
 
 #endif

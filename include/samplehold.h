@@ -5,7 +5,7 @@
 
 /* decay time of 0 means do not decay to zero */
 
-class sample_hold : public synthmod
+class sample_hold : public synthmod::base
 {
 public:
     sample_hold(const char*);
@@ -27,7 +27,7 @@ private:
     samp_t decay_samps;
     samp_t ds;
     double decay_size;
-    void init_first();
+    void register_ui();
 };
 
 #endif

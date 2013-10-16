@@ -5,16 +5,17 @@
 #include "linkedlist.h"
 #include "duplicate_list_module.h"
 
-class trigswitcher: public synthmod, public linked_list<synthmod>
+class trigswitcher: public synthmod::base,
+                    public linked_list<synthmod::base>
 {
-public:
+ public:
     trigswitcher(const char*);
     ~trigswitcher();
 
-    friend synthmod*
-        duplicate_list_module<trigswitcher, synthmod>
-            (trigswitcher* sm, synthmod* _data,
-                const char* uname, synthmod::DUP_IO dupio);
+    friend synthmod::base*
+        duplicate_list_module<trigswitcher, synthmod::base>
+                            (trigswitcher*, synthmod::base*,
+                            const char* uname, synthmod::base::DUP_IO);
 
     // virtual funcs
     void run();
@@ -23,16 +24,16 @@ public:
     const void* get_out(output::TYPE) const;
     const void* set_in(input::TYPE, const void*);
     const void* get_in(input::TYPE) const;
-    synthmod* duplicate_module(const char* uname, DUP_IO);
-    dobj* add_dobj(dobj*);
+    synthmod::base* duplicate_module(const char*, synthmod::base::DUP_IO);
+    dobj::base* add_dobj(dobj::base*);
 
-private:
+ private:
     STATUS const* in_trig;
     STATUS out_trig;
     STATUS const** trigs;
     long trig_ix;
     STATUS const* trig;
-    void init_first();
+    void register_ui();
 };
 
 #endif

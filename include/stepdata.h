@@ -18,7 +18,7 @@
     to step to the next.
 */
 
-class step_data : public dobj
+class step_data : public dobj::base
 {
  public:
     step_data();
@@ -46,7 +46,7 @@ class step_data : public dobj
     double position;
     double up_level;
     double lo_level;
-    void init_first();
+    void register_ui();
 };
 
 #endif

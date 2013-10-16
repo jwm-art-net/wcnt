@@ -3,7 +3,7 @@
 
 #include "synthmod.h"
 
-class constmod : public synthmod
+class constmod : public synthmod::base
 {
 public:
     constmod(const char*);
@@ -15,7 +15,7 @@ public:
 
 private:
     double output;
-    void init_first();
+    void register_ui();
 };
 
 #endif

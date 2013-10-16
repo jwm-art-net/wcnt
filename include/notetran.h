@@ -37,7 +37,7 @@
 // corresponding note range.
 */
 
-class notetran: public synthmod
+class notetran: public synthmod::base
 {
 public:
     notetran(const char*);
@@ -90,7 +90,7 @@ private:
     void set_no_hi_notename(const char* noh);
     void set_ns_lo_notename(const char* nsl);
     void set_ns_hi_notename(const char* nsh);
-    void init_first();
+    void register_ui();
 };
 
 #endif

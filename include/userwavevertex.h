@@ -3,7 +3,7 @@
 
 #include "dobj.h"
 
-class wave_vertex : public dobj
+class wave_vertex : public dobj::base
 {
 public:
     wave_vertex();
@@ -29,7 +29,7 @@ private:
     double up_pos;
     double lo_deg;
     double lo_pos;
-    void init_first();
+    void register_ui();
 };
 
 #endif

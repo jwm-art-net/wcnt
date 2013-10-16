@@ -1,39 +1,48 @@
 #include "../include/caps_plate2x2.h"
 #ifdef WITH_LADSPA
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
+#include "../include/globals.h"
 
 caps_plate2x2::caps_plate2x2(const char* uname) :
- synthmod(module::CAPS_PLATE2X2, uname, SM_HAS_STEREO_OUTPUT),
+ synthmod::base(synthmod::CAPS_PLATE2X2, uname, SM_HAS_STEREO_OUTPUT),
  in_left(0), in_right(0), out_left(0), out_right(0),
  bandwidth(0.502), tail(0.3745), damping(0.250375), blend(0.25),
  l_descriptor(0), l_inst_handle(0),
  l_in_left(0), l_in_right(0), l_bandwidth(0), l_tail(0), l_damping(0),
  l_blend(0), l_out_left(0), l_out_right(0)
 {
-    register_input(input::IN_LEFT);
-    register_input(input::IN_RIGHT);
     register_output(output::OUT_LEFT);
     register_output(output::OUT_RIGHT);
-    init_first();
+}
+
+void caps_plate2x2::register_ui()
+{
+    register_input(input::IN_LEFT);
+    register_input(input::IN_RIGHT);
+    register_param(param::BANDWIDTH);
+    register_param(param::TAIL);
+    register_param(param::DAMPING);
+    register_param(param::WETDRY);
 }
 
 caps_plate2x2::~caps_plate2x2()
 {
-    if (l_descriptor) l_descriptor->cleanup(l_inst_handle);
-    if (l_in_left) delete [] l_in_left;
-    if (l_in_right) delete [] l_in_right;
-    if (l_out_left) delete [] l_out_left;
-    if (l_out_right) delete [] l_out_right;
+    if (l_descriptor)
+        l_descriptor->cleanup(l_inst_handle);
+    if (l_in_left)
+        delete [] l_in_left;
+    if (l_in_right)
+        delete [] l_in_right;
+    if (l_out_left)
+        delete [] l_out_left;
+    if (l_out_right)
+        delete [] l_out_right;
 }
 
 const void* caps_plate2x2::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case output::OUT_LEFT: return &out_left;
+        case output::OUT_LEFT:  return &out_left;
         case output::OUT_RIGHT: return &out_right;
         default: return 0;
     }
@@ -124,7 +133,7 @@ errors::TYPE caps_plate2x2::validate()
 
 void caps_plate2x2::init()
 {
-    ladspa_loader* ll = jwm.get_ladspaloader();
+    ladspa_loader* ll = wcnt::jwm.get_ladspaloader();
     ladspa_plug* lp = ll->get_plugin("caps", "Plate2x2");
     if (lp == 0) {
         sm_err("%s", ladspa_loader::get_error_msg());
@@ -167,16 +176,6 @@ void caps_plate2x2::run()
     l_descriptor->run(l_inst_handle, 1);
     out_left = *l_out_left;
     out_right = *l_out_right;
-}
-
-void caps_plate2x2::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::BANDWIDTH);
-    register_param(param::TAIL);
-    register_param(param::DAMPING);
-    register_param(param::WETDRY);
 }
 
 #endif // WITH_LADSPA

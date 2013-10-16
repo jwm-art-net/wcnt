@@ -17,7 +17,7 @@
 // of dc, but some waveforms get inverted etc, but it does not
 // seem to add artifacts that i have noticed....
 
-class dc_filter : public synthmod
+class dc_filter : public synthmod::base
 {
 public:
     dc_filter(const char*);
@@ -43,7 +43,7 @@ private:
     wcint_t filterarraymax;
     wcint_t fpos;
     double filtertotal;
-    void init_first();
+    void register_ui();
 };
 
 #endif

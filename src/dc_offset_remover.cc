@@ -1,16 +1,17 @@
 #include "../include/dc_offset_remover.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
+#include "../include/globals.h"
 
 dc_offset_remover::dc_offset_remover(const char* uname) :
- synthmod(module::DC_OFFSET_REMOVER, uname, SM_HAS_OUT_OUTPUT),
+ synthmod::base(synthmod::DC_OFFSET_REMOVER, uname, SM_HAS_OUT_OUTPUT),
  input(0), output(0),
  l_descriptor(0), l_inst_handle(0), l_input(0), l_output(0)
 {
-    register_input(input::IN_SIGNAL);
     register_output(output::OUT_OUTPUT);
+}
+
+void dc_offset_remover::register_ui()
+{
+    register_input(input::IN_SIGNAL);
 }
 
 dc_offset_remover::~dc_offset_remover()
@@ -22,7 +23,7 @@ dc_offset_remover::~dc_offset_remover()
 
 void dc_offset_remover::init()
 {
-    ladspa_loader* ll = jwm.get_ladspaloader();
+    ladspa_loader* ll = wcnt::jwm.get_ladspaloader();
     ladspa_plug* lp = ll->get_plugin("dc_remove_1207",
                                      "dcRemove");
     if (lp == 0) {

@@ -1,6 +1,6 @@
 #include "../include/iocatconvert.h"
 #include "../include/meterchange.h"
-#include "../include/jwm_globals.h"
+#include "../include/globals.h"
 #include "../include/synthmodlist.h"
 #include "../include/dobjlist.h"
 
@@ -116,7 +116,7 @@ void* cstr_to_iocat(iocat::TYPE ioc, const char* cstrval,
         }
         break;
     case iocat::DOBJ:
-        data = jwm.get_dobjlist()->get_dobj_by_name(cstrval);
+        data = wcnt::get_dobjlist()->get_dobj_by_name(cstrval);
         if (!data) {
             iocat_err("No data object named %s found.", cstrval);
             return 0;
@@ -125,7 +125,7 @@ void* cstr_to_iocat(iocat::TYPE ioc, const char* cstrval,
             *result << cstrval;
         break;
     case iocat::SYNTHMOD:
-        data = jwm.get_modlist()->get_synthmod_by_name(cstrval);
+        data = wcnt::jwm.get_modlist()->get_synthmod_by_name(cstrval);
         if (!data) {
             iocat_err("No synthmod named %s found.", cstrval);
             return 0;

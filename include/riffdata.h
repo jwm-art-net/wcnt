@@ -67,7 +67,7 @@ the method requires both elements of the time signature to be passed.
 
 */
 
-class riffdata : public dobj, public linked_list<note_data>
+class riffdata : public dobj::base, public linked_list<note_data>
 {
  public:
     riffdata();
@@ -101,8 +101,8 @@ class riffdata : public dobj, public linked_list<note_data>
     errors::TYPE validate();
     bool set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE) const;
-    dobj const* add_dobj(dobj*);
-    dobj* duplicate_dobj(const char*);
+    const dobj::base* add_dobj(dobj::base*);
+    dobj::base* duplicate_dobj(const char*);
 
  private:
     wcint_t tpqn;
@@ -110,7 +110,7 @@ class riffdata : public dobj, public linked_list<note_data>
     linkedlist* editlist;
 
     static double calc_note_param(note_data::NOTE_OP, double, double);
-    void init_first();
+    void register_ui();
 };
 
 #endif // RIFF_H

@@ -18,8 +18,9 @@ class wave_tables
         SAW_01,
         WT_LAST
     };
-    wave_tables();
-    ~wave_tables();
+
+    static void instantiate() { wave_tables making_waves; }
+
     static void calc_phase_step_scalar(unsigned long samplerate);
     static const double* get_table(WT);
 
@@ -30,6 +31,8 @@ class wave_tables
     static double phase_step_scalar;
 
   private:
+    wave_tables();
+    ~wave_tables();
     static unsigned long table_size;
     static double* table[WT_LAST];
     static void create_table(WT);

@@ -19,9 +19,9 @@
         wait times of zero mean wait times ignored.
 */
 
-class waittrig: public synthmod
+class waittrig: public synthmod::base
 {
-public:
+ public:
     waittrig(const char*);
     ~waittrig();
     void run();
@@ -33,7 +33,7 @@ public:
     bool set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE) const;
 
-private:
+ private:
     STATUS const* in_trig1;
     STATUS const* in_trig2;
     STATUS out_trig;
@@ -46,7 +46,7 @@ private:
     long mins;
     long maxs;
     wcint_t counter;
-    void init_first();
+    void register_ui();
 };
 
 #endif

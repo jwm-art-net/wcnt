@@ -1,13 +1,12 @@
 #include "../include/wavfileheader.h"
-#include "../include/jwm_init.h"
-#include "../include/jwm_globals.h"
+#include "../include/globals.h"
 
 
 SNDFILE* open_wav_write(const char* filename, DATA_FMT data_format)
 {
     SF_INFO sfinfo;
     sfinfo.frames = 0;
-    sfinfo.samplerate = jwm.samplerate();
+    sfinfo.samplerate = wcnt::jwm.samplerate();
     sfinfo.channels = 2;
     int fmt = 0;
     switch(data_format){

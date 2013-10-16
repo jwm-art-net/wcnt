@@ -1,17 +1,22 @@
 #include "../include/sequencer.h"
-#include "../include/jwm_globals.h"
+/*
+#include "../include/globals.h"
 #include "../include/modoutputlist.h"
 #include "../include/modinputlist.h"
 #include "../include/modparamlist.h"
-#include "../include/conversions.h"
-#include "../include/timemap.h"
 #include "../include/moddobjlist.h"
 #include "../include/dobjdobjlist.h"
+*/
+
+#include "../include/conversions.h"
+#include "../include/listwork.h"
+#include "../include/timemap.h"
 
 #include <iostream>
 
 sequencer::sequencer(const char* uname) :
- synthmod(module::SEQUENCER, uname, SM_UNDUPLICABLE | SM_UNGROUPABLE),
+ synthmod::base(synthmod::SEQUENCER, uname, SM_UNDUPLICABLE
+                                          | SM_UNGROUPABLE),
  in_bar_trig(0), in_bar(0), in_pos_step_size(0), in_beats_per_bar(0),
  in_beat_value(0),
  out_note_on_trig(OFF), out_note_slide_trig(OFF),
@@ -28,11 +33,6 @@ sequencer::sequencer(const char* uname) :
  play_item(0), next_in_riff(0), play_note(0), next_note(0), note_ptr(0),
  next_note_on_pos(-1), play_note_off_pos(-1)
 {
-    register_input(input::IN_BAR);
-    register_input(input::IN_BAR_TRIG);
-    register_input(input::IN_POS_STEP_SIZE);
-    register_input(input::IN_BEATS_PER_BAR);
-    register_input(input::IN_BEAT_VALUE);
     register_output(output::OUT_NOTE_ON_TRIG);
     register_output(output::OUT_NOTE_SLIDE_TRIG);
     register_output(output::OUT_NOTE_OFF_TRIG);
@@ -48,7 +48,18 @@ sequencer::sequencer(const char* uname) :
     register_output(output::OUT_RIFF_PLAY_STATE);
     register_output(output::OUT_NOTE_PLAY_STATE);
     play_list = new linked_list<note_data>;
-    init_first();
+}
+
+void sequencer::register_ui()
+{
+    register_dobj(dobj::LST_TRACK, dobj::SIN_RIFFNODE);
+    register_input(input::IN_BAR);
+    register_input(input::IN_BAR_TRIG);
+    register_input(input::IN_POS_STEP_SIZE);
+    register_input(input::IN_BEATS_PER_BAR);
+    register_input(input::IN_BEAT_VALUE);
+    register_param(param::START_BAR);
+    register_param(param::VELOCITY_RESPONSE);
 }
 
 sequencer::~sequencer()
@@ -161,12 +172,12 @@ const void* sequencer::get_param(param::TYPE pt) const
     }
 }
 
-dobj* sequencer::add_dobj(dobj* dbj)
+dobj::base* sequencer::add_dobj(dobj::base* dbj)
 {
-    dobj* retv = 0;
+    dobj::base* retv = 0;
     switch(dbj->get_object_type())
     {
-    case dataobj::SIN_RIFFNODE:
+    case dobj::SIN_RIFFNODE:
         if (!(retv = add_riff_node((riff_node*)dbj)))
             sm_err("Could not add riff node to %s", get_username());
         break;
@@ -178,9 +189,9 @@ dobj* sequencer::add_dobj(dobj* dbj)
     return retv;
 }
 
-synthmod* sequencer::duplicate_module(const char* uname, DUP_IO dupio)
+synthmod::base*
+sequencer::duplicate_module(const char*, synthmod::base::DUP_IO)
 {
-    (void)uname; (void)dupio; // stop unused param warns
     sm_err("%s", "sequencer does not allow copies to be made of it.");
     return 0;
 }
@@ -195,8 +206,8 @@ errors::TYPE sequencer::validate()
     return errors::NO_ERROR;
 }
 
-// add_riff_node(riff_node*) is used exclusively by add_dobj(dobj*)
-// add_dobj(dobj*) cannot be passed a riff, because it lacks the
+// add_riff_node(riff_node*) is used exclusively by add_dobj(dobj::base*)
+// add_dobj(dobj::base*) cannot be passed a riff, because it lacks the
 // information of which bar to place it in.
 // -- wcnt 1.25 --
 // Previously, adding a riff to a bar which already contained a riff
@@ -442,11 +453,3 @@ void sequencer::run()
     riff_pos += *in_pos_step_size;
 }
 
-void sequencer::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::START_BAR);
-    register_param(param::VELOCITY_RESPONSE);
-    register_moddobj(dataobj::LST_TRACK, dataobj::SIN_RIFFNODE);
-}

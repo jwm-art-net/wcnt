@@ -1,12 +1,14 @@
 #include "../include/dobjnamedobj.h"
-#include "../include/jwm_globals.h"
-#include "../include/dobjparamlist.h"
 
 dobjnamedobj::dobjnamedobj() :
- dobj(dataobj::SIN_DOBJNAME),
+ dobj::base(dobj::SIN_DOBJNAME),
  dobjname(0)
 {
-    init_first();
+}
+
+void dobjnamedobj::register_ui()
+{
+    register_param(param::NAME);
 }
 
 dobjnamedobj::~dobjnamedobj()
@@ -43,13 +45,6 @@ const void* dobjnamedobj::get_param(param::TYPE dt) const
         case param::NAME: return dobjname;
         default: return 0;
     }
-}
-
-void dobjnamedobj::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::NAME);
 }
 
 

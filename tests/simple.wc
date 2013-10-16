@@ -51,11 +51,11 @@ w
     in_left         m out_output
     in_right        m out_output
     in_bar          f out_index
-    snapshot_mode   off
-    data_format     float32
     filename        simple.wav
+    data_format     float32
     start_bar       0
     end_bar         1
+    snapshot_mode   off
 w
 
 wcnt_exit

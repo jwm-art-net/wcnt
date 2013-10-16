@@ -84,6 +84,21 @@ find_in_data_or_last_less_than(ll_item<T>* from, T* data,
 }
 
 template <typename T, typename R>
+size_t
+copy_by_to_list(linked_list<T>* dest, linked_list<T>* src, R needle)
+{
+    size_t count = 0;
+    ll_item<T>*
+        tmp = find_in_data(src->sneak_first(), needle);
+    while(tmp){
+        if (dest->add_at_tail(tmp->get_data()))
+            ++count;
+        tmp = find_in_data(tmp->get_next(), needle);
+    }
+    return count;
+}
+
+template <typename T, typename R>
 linked_list<T>*
 new_list_of_by(linked_list<T>* list, R needle)
 {

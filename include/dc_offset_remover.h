@@ -22,7 +22,7 @@ Ports:  "Input" input, audio
 
 */
 
-class dc_offset_remover : public synthmod
+class dc_offset_remover : public synthmod::base
 {
 public:
     dc_offset_remover(const char*);
@@ -44,6 +44,7 @@ private:
     LADSPA_Handle            l_inst_handle;
     LADSPA_Data* l_input;
     LADSPA_Data* l_output;
+    void register_ui();
 };
 
 #endif /* WITH_LADSPA */

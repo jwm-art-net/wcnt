@@ -21,7 +21,7 @@
 //  sampler::wavfilein hat
 */
 
-class wavfilein : public dobj
+class wavfilein : public dobj::base
 {
  public:
     wavfilein();
@@ -52,7 +52,7 @@ class wavfilein : public dobj
     SNDFILE* filein;
     SF_INFO sfinfo;
     WAV_STATUS status;
-    void init_first();
+    void register_ui();
 };
 
 #endif

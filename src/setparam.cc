@@ -1,5 +1,5 @@
 #include "../include/setparam.h"
-#include "../include/jwm_globals.h"
+#include "../include/globals.h"
 #include "../include/iocatconvert.h"
 #include "../include/fxsparamlist.h"
 #include "../include/synthmod.h"
@@ -28,21 +28,21 @@ namespace setpar
 static char err_msg[STRBUFLEN] = "";
 
 template
-bool set_param<synthmod>
-    (synthmod* sm, const char* param, param::TYPE pt,
+bool set_param<synthmod::base>
+    (synthmod::base* sm, const char* param, param::TYPE pt,
         const char* value, std::ostringstream* result);
 
 template
-bool set_param<dobj>
-    (dobj*, const char* param, param::TYPE pt,
+bool set_param<dobj::base>
+    (dobj::base*, const char* param, param::TYPE pt,
         const char* value, std::ostringstream* result);
 
 template
-void* compute<synthmod>
-    (synthmod*, param::TYPE pt, void* data, int op);
+void* compute<synthmod::base>
+    (synthmod::base*, param::TYPE pt, void* data, int op);
 
 template
-void* compute<dobj>(dobj*, param::TYPE pt, void* data, int op);
+void* compute<dobj::base>(dobj::base*, param::TYPE pt, void* data, int op);
 
 template <typename T>
 bool set_param(T* obj, const char* par,     param::TYPE pt,
@@ -85,7 +85,7 @@ bool set_param(T* obj, const char* par,     param::TYPE pt,
     void* datatmp = data;
     if (ioc == iocat::FIX_STR) {
         fixstrparam* fsp;
-        fsp = jwm.get_fxsparamlist()->get_fix_str_param(pt);
+        fsp =wcnt::get_fxsparamlist()->get_fix_str_param(pt);
         if (!fsp) {
             iocatconv::destroy_iocat_data(ioc, data);
             setpar_err("No registered fixed string for %s parameter.", par);

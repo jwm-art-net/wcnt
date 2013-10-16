@@ -16,7 +16,7 @@
 
 */
 
-class peak_detector : public synthmod
+class peak_detector : public synthmod::base
 {
 public:
     peak_detector(const char*);
@@ -40,7 +40,7 @@ private:
     wcint_t peak_count;
     bool check; // prevent wrap-around of peak_count.
     void set_message(const char* msg);
-    void init_first();
+    void register_ui();
 };
 
 #endif

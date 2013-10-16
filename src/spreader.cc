@@ -1,27 +1,24 @@
 #include "../include/spreader.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
-#include "../include/synthmod.h"
-#include "../include/synthmodlist.h"
-#include "../include/moddobjlist.h"
-#include "../include/dobjlist.h"
 #include "../include/dobjmod.h"
-#include "../include/dobjdobjlist.h"
-#include "../include/duplicate_list_module.h"
+#include "../include/dobjlist.h"
 
 #include <math.h>
 
 spreader::spreader(const char* uname) :
- synthmod(module::SPREADER, uname, SM_HAS_OUT_OUTPUT),
+ synthmod::base(synthmod::SPREADER, uname, SM_HAS_OUT_OUTPUT),
  linkedlist(MULTIREF_ON, PRESERVE_DATA),
  in_mod(0), out_output(0), start_level(0), end_level(0), seg_lvl(0),
  sigs(0)
 {
-    register_input(input::IN_MODULATION);
     register_output(output::OUT_OUTPUT);
-    init_first();
+}
+
+void spreader::register_ui()
+{
+    register_dobj(dobj::LST_SIGNALS, dobj::DOBJ_SYNTHMOD);
+    register_input(input::IN_MODULATION);
+    register_param(param::START_LEVEL);
+    register_param(param::END_LEVEL);
 }
 
 spreader::~spreader()
@@ -82,7 +79,7 @@ const void* spreader::get_param(param::TYPE pt) const
     }
 }
 
-synthmod* spreader::duplicate_module(const char* uname, DUP_IO dupio)
+synthmod::base* spreader::duplicate_module(const char* uname, DUP_IO dupio)
 {
     return duplicate_list_module(this, goto_first(), uname, dupio);
 }
@@ -97,17 +94,16 @@ errors::TYPE spreader::validate()
     return errors::NO_ERROR;
 }
 
-dobj* spreader::add_dobj(dobj* dbj)
+dobj::base* spreader::add_dobj(dobj::base* dbj)
 {
-    if (dbj->get_object_type() == dataobj::DOBJ_SYNTHMOD) {
-        synthmod* sm = ((dobjmod*)dbj)->get_synthmod();
+    if (dbj->get_object_type() == dobj::DOBJ_SYNTHMOD) {
+        synthmod::base* sm = ((dobjmod*)dbj)->get_synthmod();
         if (!sm->flag(SM_HAS_OUT_OUTPUT)) {
             sm_err("%s will not accept the module %s because modules of "
                     "type %s do not have the %s output.",
                     get_username(), sm->get_username(),
-                    module::names::get(sm->get_module_type()),
-                    output::names::get(
-                                                output::OUT_OUTPUT));
+                    synthmod::names::get(sm->get_module_type()),
+                    output::names::get(output::OUT_OUTPUT));
             return 0;
         }
         if (!add_at_tail(sm)) {
@@ -117,7 +113,7 @@ dobj* spreader::add_dobj(dobj* dbj)
         }
         // add the dobj synthmod wrapper to the dobjlist
         // so it gets deleted in the end.
-        jwm.get_dobjlist()->add_dobj(dbj);
+        wcnt::get_dobjlist()->add_dobj(dbj);
         return dbj;
     }
     sm_err("%s %s to %s", errors::stock::major, errors::stock::bad_add,
@@ -128,7 +124,7 @@ dobj* spreader::add_dobj(dobj* dbj)
 void spreader::init()
 {
     sigs = new double const*[get_count() + 1];
-    synthmod* sm = goto_first();
+    synthmod::base* sm = goto_first();
     long ix = 0;
     while(sm) {
         sigs[ix] = (double const*)sm->get_out(output::OUT_OUTPUT);
@@ -165,16 +161,5 @@ void spreader::run()
         out_output += *o * vol;
         o = sigs[++ix];
     }
-}
-
-
-
-void spreader::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::START_LEVEL);
-    register_param(param::END_LEVEL);
-    register_moddobj(dataobj::LST_SIGNALS, dataobj::DOBJ_SYNTHMOD);
 }
 

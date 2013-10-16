@@ -13,7 +13,7 @@ struct timesig
     wcint_t beatvalue;
 };
 
-class meterchange : public dobj
+class meterchange : public dobj::base
 {
  public:
     meterchange();
@@ -33,7 +33,7 @@ class meterchange : public dobj
  private:
     wcint_t bar;
     timesig time_sig;
-    void init_first();
+    void register_ui();
 };
 
 #endif

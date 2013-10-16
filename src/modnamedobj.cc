@@ -1,11 +1,14 @@
 #include "../include/modnamedobj.h"
-#include "../include/dobjparamlist.h"
 
 modnamedobj::modnamedobj() :
- dobj(dataobj::SIN_MODNAME),
+ dobj::base(dobj::SIN_MODNAME),
  modname(0)
 {
-    init_first();
+}
+
+void modnamedobj::register_ui()
+{
+    register_param(param::NAME);
 }
 
 modnamedobj::~modnamedobj()
@@ -42,13 +45,6 @@ const void* modnamedobj::get_param(param::TYPE dt) const
         case param::NAME: return modname;
         default: return 0;
     }
-}
-
-void modnamedobj::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::NAME);
 }
 
 

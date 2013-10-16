@@ -1,13 +1,9 @@
 #include "../include/inspect.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
 
 #include <iostream>
 
 inspect::inspect(const char* uname) :
- synthmod(module::INSPECT, uname, SM_DEFAULT),
+ synthmod::base(synthmod::INSPECT, uname, SM_DEFAULT),
  in_df(0),  in_df_trig(0),
  in_si(0),  in_si_trig(0),
  in_ul(0),  in_ul_trig(0),
@@ -15,17 +11,29 @@ inspect::inspect(const char* uname) :
  in_str(0), in_str_trig(0),
  df_msg(0), si_msg(0), ul_msg(0), st_msg(0), str_msg(0)
 {
+}
+
+void inspect::register_ui()
+{
     register_input(input::IN_INSP_DF);
+    register_param(param::INSPECT_DF_MSG);
     register_input(input::IN_INSP_DF_TRIG);
+
     register_input(input::IN_INSP_SI);
+    register_param(param::INSPECT_SI_MSG);
     register_input(input::IN_INSP_SI_TRIG);
+
     register_input(input::IN_INSP_UL);
+    register_param(param::INSPECT_UL_MSG);
     register_input(input::IN_INSP_UL_TRIG);
+
     register_input(input::IN_INSP_ST);
+    register_param(param::INSPECT_ST_MSG);
     register_input(input::IN_INSP_ST_TRIG);
+
     register_input(input::IN_INSP_STR);
+    register_param(param::INSPECT_STR_MSG);
     register_input(input::IN_INSP_STR_TRIG);
-    init_first();
 }
 
 inspect::~inspect()
@@ -145,15 +153,3 @@ const void* inspect::get_param(param::TYPE pt) const
     }
 }
 
-
-
-void inspect::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::INSPECT_DF_MSG);
-    register_param(param::INSPECT_SI_MSG);
-    register_param(param::INSPECT_UL_MSG);
-    register_param(param::INSPECT_ST_MSG);
-    register_param(param::INSPECT_STR_MSG);
-}

@@ -1,15 +1,17 @@
 #include "../include/adder.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
+
 
 adder::adder(const char* uname) :
- synthmod(module::ADDER, uname, SM_HAS_OUT_OUTPUT),
+ synthmod::base(synthmod::ADDER, uname, SM_HAS_OUT_OUTPUT),
  in_signal1(0), in_signal2(0), out_output(0.00)
+{
+    register_output(output::OUT_OUTPUT);
+}
+
+void adder::register_ui()
 {
     register_input(input::IN_SIGNAL1);
     register_input(input::IN_SIGNAL2);
-    register_output(output::OUT_OUTPUT);
 }
 
 adder::~adder()

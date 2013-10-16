@@ -1,26 +1,30 @@
 #include "../include/squarewave.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
+#include "../include/globals.h"
 
 #include <cstdlib>
 
 square_wave::square_wave(const char* uname) :
- synthmod(module::SQUAREWAVE, uname, SM_HAS_OUT_OUTPUT),
+ synthmod::base(synthmod::SQUAREWAVE, uname, SM_HAS_OUT_OUTPUT),
  output(0.00), out_offpulse(OFF), play_state(OFF),
  in_phase_trig(NULL), in_phase_step(NULL), in_pwm(NULL),
  rate(1.0), pulse_width(0.50), pwm_size(0.00), recycle(OFF),
  pulse(OFF), degs(0.00), podeg(0), pwdeg_rad(0), poff_deg(0.00),
  target(0), cycle(0)
 {
-    register_input(input::IN_PHASE_TRIG);
-    register_input(input::IN_PHASE_STEP);
-    register_input(input::IN_PWM);
     register_output(output::OUT_OUTPUT);
     register_output(output::OUT_OFF_PULSE);
     register_output(output::OUT_PLAY_STATE);
-    init_first();
+}
+
+void square_wave::register_ui()
+{
+    register_input(input::IN_PHASE_TRIG);
+    register_input(input::IN_PHASE_STEP);
+    register_input(input::IN_PWM);
+    register_param(param::RATE);
+    register_param(param::PULSE_WIDTH);
+    register_param(param::PWM_SIZE);
+    register_param(param::RECYCLE_MODE);
 }
 
 square_wave::~square_wave()
@@ -166,13 +170,4 @@ void square_wave::run()
     output += (target - output) * rate;
 }
 
-void square_wave::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::RATE);
-    register_param(param::PULSE_WIDTH);
-    register_param(param::PWM_SIZE);
-    register_param(param::RECYCLE_MODE);
-}
 

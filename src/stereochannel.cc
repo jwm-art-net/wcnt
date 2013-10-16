@@ -1,17 +1,18 @@
 #include "../include/stereochannel.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
 
 stereo_channel::stereo_channel(const char* uname) :
- synthmod(module::STEREOCHANNEL, uname, SM_HAS_STEREO_OUTPUT
+ synthmod::base(synthmod::STEREOCHANNEL, uname, SM_HAS_STEREO_OUTPUT
                                       | SM_EMPTY_RUN),
  io_left(0), io_right(0)
 {
-    register_input(input::IN_LEFT);
-    register_input(input::IN_RIGHT);
     register_output(output::OUT_LEFT);
     register_output(output::OUT_RIGHT);
+}
+
+void stereo_channel::register_ui()
+{
+    register_input(input::IN_LEFT);
+    register_input(input::IN_RIGHT);
 }
 
 stereo_channel::~stereo_channel()

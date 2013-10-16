@@ -33,7 +33,7 @@
 //        max_sus_time
 //          maximum execution time of sustain
 
-class adsr : public synthmod, public linked_list<adsr_coord>
+class adsr : public synthmod::base, public linked_list<adsr_coord>
 {
 public:
     adsr(const char* uname);
@@ -63,8 +63,8 @@ public:
     const void* get_in(input::TYPE) const;
     bool        set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE) const;
-    dobj*       add_dobj(dobj*);
-    synthmod* duplicate_module(const char* uname, DUP_IO);
+    dobj::base* add_dobj(dobj::base*);
+    synthmod::base* duplicate_module(const char* uname, DUP_IO);
 
 private:
     // inputs
@@ -103,8 +103,7 @@ private:
     long sustain_ix;
     long release_ix;
     void ready_section();
-
-    void init_first();
+    void register_ui();
 };
 
 #endif

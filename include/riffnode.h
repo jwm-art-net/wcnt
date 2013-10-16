@@ -68,7 +68,7 @@ time signatures.
 
 */
 
-class riff_node : public dobj
+class riff_node : public dobj::base
 {
 public:
     riff_node();
@@ -100,7 +100,7 @@ private:
     wcint_t transpose;
     wcint_t repeat;
     wcint_t repeat_stripe;
-    void init_first();
+    void register_ui();
 };
 
 #endif

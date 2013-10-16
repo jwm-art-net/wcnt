@@ -3,7 +3,7 @@
 
 #include "synthmod.h"
 
-class range_limit : public synthmod
+class range_limit : public synthmod::base
 {
  public:
     range_limit(const char*);
@@ -25,6 +25,6 @@ class range_limit : public synthmod
     // params
     double sigrangehi;
     double sigrangelo;
-    void init_first();
+    void register_ui();
 };
 #endif

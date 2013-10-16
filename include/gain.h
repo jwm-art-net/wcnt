@@ -1,16 +1,16 @@
 #ifndef GAIN_H
 #define GAIN_H
 
-#include "synthmod.h"
+#include "modpart.h"
 
 
-class gain : protected smod
+class gain : protected modpart::base
 {
  public:
-    gain(synthmod* inheritor);
+    gain(synthmod::base* inheritor);
     ~gain();
     errors::TYPE validate();
-    const void* get_out(output::TYPE) const;
+    const void* get_out(output::TYPE) const { return 0; }
     const void* set_in(input::TYPE, const void*);
     const void* get_in(input::TYPE) const;
     bool set_param(param::TYPE, const void*);
@@ -29,7 +29,6 @@ class gain : protected smod
     double mod_amount;
     double center;
     double half_range;
-    void init_first();
 };
 
 #endif

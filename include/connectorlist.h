@@ -11,8 +11,8 @@
 //  what it got the hump with....
 //  the first constructor sets delete_connections to true,
 //  the second constructor sets delete_connections to false.
-//  connectorlist* duplicate_connections_for_module(synthmod* from,
-//  synthmod* to) creates a connectorlist using the second constructor.
+//  connectorlist* duplicate_connections_for_module(synthmod::base* from,
+//  synthmod::base* to) creates a connectorlist using the second constructor.
 //  it is assumed that the connections will be added to a connectorlist
 //  created using the first constructor, (thus get deleted). if not you
 //  can call set_delete_connections() to cancel this behaviour and get
@@ -26,24 +26,25 @@ public:
     connectorlist(DESTRUCTION);
     ~connectorlist();
 
-    connector* get_connector_by_input(const synthmod*, input::TYPE);
+    connector* get_connector_by_input(const synthmod::base*, input::TYPE);
 
     connector* add_connector(connector* rd);
-
+    connector* add_connector(synthmod::base* sm, input::TYPE,
+                             const char* out_mod, output::TYPE);
     bool delete_connector(connector*);
 
     /*
     // duplicate_connections
     //  duplicates and adds the connections
     */
-    bool duplicate_connections(const synthmod* from, synthmod* to);
+    bool duplicate_connections(const synthmod::base* from, synthmod::base* to);
 
     /*
     // duplicates_connections_for_module
     //  duplicates connections into a new list for further processing
     */
     linkedlist*
-    duplicate_connections_for_module(const synthmod* from, synthmod* to);
+    duplicate_connections_for_module(const synthmod::base* from, synthmod::base* to);
 
     void reconnect_output_module_by_name(const char*from, const char*to);
 
@@ -65,7 +66,7 @@ public:
     // wcnt_signal::init to sort out the problem. other modules may
     // also utilise this method if possible.
     bool remake_connections(
-        synthmod*, output::TYPE, output::TYPE new_ot);
+        synthmod::base*, output::TYPE, output::TYPE new_ot);
     #endif
 };
 

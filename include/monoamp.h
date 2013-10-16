@@ -2,11 +2,10 @@
 #define MONOAMP_H
 
 #include "gain.h"
+#include "synthmod.h"
 
-// because we're now using libsndfile to handle file input/output
-// we no longer have 16bit integer input/output and amplitude levels
 
-class mono_amp : public synthmod, public gain
+class mono_amp : public synthmod::base, public gain
 {
  public:
     mono_amp(const char*);
@@ -30,9 +29,7 @@ class mono_amp : public synthmod, public gain
 
     // params
     double clip_level;
-
-    // working
-    void init_first();
+    void register_ui();
 };
 
 #endif

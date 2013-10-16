@@ -1,15 +1,17 @@
 #include "../include/riffeditor.h"
 #include "../include/riffdata.h"
-#include "../include/jwm_globals.h"
-#include "../include/topdobjlist.h"
-#include "../include/dobjparamlist.h"
-#include "../include/dobjdobjlist.h"
+#include "../include/globals.h"
 
 
 riff_editor::riff_editor() :
- dobj(dataobj::DEF_RIFFEDITOR), riff_source(0)
+ dobj::base(dobj::DEF_RIFFEDITOR), riff_source(0)
 {
-    init_first();
+}
+
+void riff_editor::register_ui()
+{
+    register_param(param::RIFFNAME);
+    register_dobj(dobj::LST_NOTES, dobj::SIN_NOTE);
 }
 
 riff_editor::~riff_editor()
@@ -21,7 +23,7 @@ bool riff_editor::set_param(param::TYPE pt, const void* data)
     switch(pt)
     {
     case param::RIFFNAME:
-        if (((dobj*)data)->get_object_type() == dataobj::DEF_RIFF) {
+        if (((dobj::base*)data)->get_object_type() == dobj::DEF_RIFF) {
             set_riff_source((riffdata*)data);// pass pointer
             return true;
         }
@@ -42,13 +44,13 @@ const void* riff_editor::get_param(param::TYPE pt) const
     }
 }
 
-dobj const* riff_editor::add_dobj(dobj* dbj)
+const dobj::base* riff_editor::add_dobj(dobj::base* dbj)
 {
-    dobj* retv = 0;
-    dataobj::TYPE dbjtype = dbj->get_object_type();
+    dobj::base* retv = 0;
+    dobj::TYPE dbjtype = dbj->get_object_type();
     switch(dbjtype)
     {
-    case dataobj::SIN_NOTE:
+    case dobj::SIN_NOTE:
         retv = riff_source->insert_and_position_note((note_data*)dbj);
         if (!retv)
             dobjerr("Could not add note change to %s by way of "
@@ -68,12 +70,5 @@ errors::TYPE riff_editor::validate()
     return errors::NO_ERROR;
 }
 
-void riff_editor::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::RIFFNAME);
-    register_dobjdobj(dataobj::LST_NOTES, dataobj::SIN_NOTE);
-}
 
 

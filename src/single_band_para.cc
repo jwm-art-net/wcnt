@@ -1,12 +1,9 @@
 #include "../include/single_band_para.h"
 #ifdef WITH_LADSPA
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
+#include "../include/globals.h"
 
 single_band_para::single_band_para(const char* uname) :
- synthmod(module::SINGLE_BAND_PARA, uname, SM_HAS_OUT_OUTPUT),
+ synthmod::base(synthmod::SINGLE_BAND_PARA, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), in_phase_step(0), in_gain_mod(0), in_bandwidth_mod(0),
  output(0),
  gain_db(0), gain_mod_size(0), bandwidth(0), bandwidth_mod_size(0),
@@ -14,13 +11,21 @@ single_band_para::single_band_para(const char* uname) :
  l_input(0), l_output(0),
  l_gain_db(0), l_frequency(440), l_bandwidth(1)
 {
+    register_output(output::OUT_OUTPUT);
+
+    max_freq = 0.4 * wcnt::jwm.samplerate();
+}
+
+void single_band_para::register_ui()
+{
     register_input(input::IN_SIGNAL);
     register_input(input::IN_PHASE_STEP);
+    register_param(param::GAIN_DB);
     register_input(input::IN_GAIN_MOD);
+    register_param(param::GAIN_MODSIZE);
+    register_param(param::BANDWIDTH);
     register_input(input::IN_BANDWIDTH_MOD);
-    register_output(output::OUT_OUTPUT);
-    init_first();
-    max_freq = 0.4 * jwm.samplerate();
+    register_param(param::BANDWIDTH_MODSIZE);
 }
 
 single_band_para::~single_band_para()
@@ -122,7 +127,7 @@ errors::TYPE single_band_para::validate()
 
 void single_band_para::init()
 {
-    ladspa_loader* ll = jwm.get_ladspaloader();
+    ladspa_loader* ll = wcnt::jwm.get_ladspaloader();
     ladspa_plug* lp = ll->get_plugin("single_para_1203", "singlePara");
     if (lp == 0) {
         sm_err("%s", ladspa_loader::get_error_msg());
@@ -152,7 +157,7 @@ void single_band_para::init()
 void single_band_para::run()
 {
     *l_input = *in_signal;
-    l_frequency = (*in_phase_step * jwm.samplerate()) / 360;
+    l_frequency = (*in_phase_step * wcnt::jwm.samplerate()) / 360;
     if (l_frequency < 0) l_frequency = 0;
     else if (l_frequency > max_freq) l_frequency = max_freq;
     l_gain_db = gain_db * (1 - gain_mod_size) + gain_db *
@@ -167,14 +172,5 @@ void single_band_para::run()
     output = *l_output;
 }
 
-void single_band_para::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::GAIN_DB);
-    register_param(param::GAIN_MODSIZE);
-    register_param(param::BANDWIDTH);
-    register_param(param::BANDWIDTH_MODSIZE);
-}
 
 #endif // WITH_LADSPA

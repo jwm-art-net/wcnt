@@ -18,7 +18,7 @@ a number between 1 and 9999.  No, surely not, you want to
 automatically write more wavs than that? are you mad?  Go change 
 the code yourself then!                             */
 
-class serialwavfileout: public synthmod
+class serialwavfileout: public synthmod::base
 {
 public:
     serialwavfileout(const char*);
@@ -65,7 +65,7 @@ private:
     WAV_STATUS open_wav(const char* fname);
     void close_wav();
     // synthmod stuff
-    void init_first();
+    void register_ui();
 };
 
 #endif

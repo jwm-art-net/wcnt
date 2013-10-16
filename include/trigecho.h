@@ -3,9 +3,9 @@
 
 #include "synthmod.h"
 
-class trigecho : public synthmod
+class trigecho : public synthmod::base
 {
-public:
+ public:
     trigecho(const char*);
     ~trigecho();
     void run();
@@ -17,7 +17,7 @@ public:
     bool set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE) const;
 
-private:
+ private:
     // inputs
     const STATUS* in_trig;
     const STATUS* in_reset_trig;
@@ -35,7 +35,7 @@ private:
     samp_t pastpos;
     double vel_count_ratio;
     wcint_t last;
-    void init_first();
+    void register_ui();
 };
 
 #endif

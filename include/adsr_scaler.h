@@ -26,7 +26,7 @@
 //  release_scale, are multipliers for the current values of the adsr
 //  to be scaled. a scale value of 1.0 will leave the section unscaled.
 
-class adsr_scaler : public dobj
+class adsr_scaler : public dobj::base
 {
  public:
     adsr_scaler();
@@ -42,7 +42,7 @@ class adsr_scaler : public dobj
     double attack_scale;
     double decay_scale;
     double release_scale;
-    void init_first();
+    void register_ui();
 };
 
 #endif

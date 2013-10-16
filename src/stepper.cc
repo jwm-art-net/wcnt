@@ -1,18 +1,9 @@
 #include "../include/stepper.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
-#include "../include/synthmod.h"
-#include "../include/synthmodlist.h"
-#include "../include/conversions.h"
-#include "../include/moddobjlist.h"
-#include "../include/dobjdobjlist.h"
 #include "../include/listwork.h"
-#include "../include/miscfuncobj.h"
+#include "../include/conversions.h"
 
 stepper::stepper(const char* uname) :
- synthmod(module::STEPPER, uname, SM_HAS_OUT_OUTPUT),
+ synthmod::base(synthmod::STEPPER, uname, SM_HAS_OUT_OUTPUT),
  in_trig(0), in_restart_trig(0), in_modulation(0),
  step_count(0), up_thresh(0), lo_thresh(0), rtime(0), recycle(OFF),
  out_output(0),
@@ -20,13 +11,22 @@ stepper::stepper(const char* uname) :
  lo_levels(0),
  rtime_samp(0), rtime_max_samps(0), rtime_stpsz(0), rtime_size(0)
 {
-    register_input(input::IN_TRIG);
-    register_input(input::IN_RESTART_TRIG);
-    register_input(input::IN_MODULATION);
     register_output(output::OUT_OUTPUT);
     insert_step(0.0, 0.0, 0.0);
     insert_step(1.0, 1.0, 1.0);
-    init_first();
+}
+
+void stepper::register_ui()
+{
+    register_dobj(dobj::LST_STEPS, dobj::SIN_STEP);
+    register_input(input::IN_TRIG);
+    register_input(input::IN_RESTART_TRIG);
+    register_input(input::IN_MODULATION);
+    register_param(param::STEP_COUNT);
+    register_param(param::UP_THRESH);
+    register_param(param::LO_THRESH);
+    register_param(param::RESPONSE_TIME);
+    register_param(param::RECYCLE_MODE);
 }
 
 stepper::~stepper()
@@ -107,7 +107,7 @@ const void* stepper::get_param(param::TYPE pt) const
     }
 }
 
-synthmod* stepper::duplicate_module(const char* uname, DUP_IO dupio)
+synthmod::base* stepper::duplicate_module(const char* uname, DUP_IO dupio)
 {
     stepper* dup = new stepper(uname);
     if (dupio == AUTO_CONNECT)
@@ -172,13 +172,13 @@ step_data* stepper::insert_step(step_data* newstep)
                 )->get_data();
 }
 
-dobj* stepper::add_dobj(dobj* dbj)
+dobj::base* stepper::add_dobj(dobj::base* dbj)
 {
-    if (dbj->get_object_type() == dataobj::SIN_STEP) {
+    if (dbj->get_object_type() == dobj::SIN_STEP) {
         if (insert_step((step_data*)dbj))
             return dbj;
         sm_err("Could not insert %s into stepper.",
-                dataobj::names::get(dataobj::SIN_STEP));
+                dobj::names::get(dobj::SIN_STEP));
         return 0;
     }
     sm_err("%s %s to %s.", errors::stock::major, errors::stock::bad_add,
@@ -258,15 +258,4 @@ void stepper::run()
     else out_output = output;
 }
 
-void stepper::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::STEP_COUNT);
-    register_param(param::UP_THRESH);
-    register_param(param::LO_THRESH);
-    register_param(param::RESPONSE_TIME);
-    register_param(param::RECYCLE_MODE);
-    register_moddobj(dataobj::LST_STEPS, dataobj::SIN_STEP);
-}
 

@@ -1,25 +1,29 @@
 #include "../include/adsrcoord.h"
-#include "../include/jwm_globals.h"
-#include "../include/dobjparamlist.h"
-#include "../include/fxsparamlist.h"
-
 
 adsr_coord::adsr_coord() :
- dobj(dataobj::SIN_COORD),
+ dobj::base(dobj::SIN_COORD),
  output_time(0), output_level(0), sect(ADSR_ATTACK),
  upper_time(0), upper_level(0), lower_time(0), lower_level(0)
 {
-    init_first();
 }
 
 adsr_coord::adsr_coord
  (adsr_coord::SECT s, double ut, double ul, double lt, double ll) :
- dobj(dataobj::SIN_COORD),
+ dobj::base(dobj::SIN_COORD),
  output_time(0), output_level(0), sect(s),
  upper_time(ut), upper_level(ul),
  lower_time(lt), lower_level(ll)
 {
-    init_first();
+}
+
+
+void adsr_coord::register_ui()
+{
+    register_param(param::ADSRSECT, "attack/decay/sustain/release");
+    register_param(param::UPTIME);
+    register_param(param::UPLEVEL);
+    register_param(param::LOTIME);
+    register_param(param::LOLEVEL);
 }
 
 adsr_coord::~adsr_coord()
@@ -80,16 +84,5 @@ errors::TYPE adsr_coord::validate()
         return errors::NEGATIVE;
 
     return errors::NO_ERROR;
-}
-
-void adsr_coord::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::ADSRSECT, "attack/decay/sustain/release");
-    register_param(param::UPTIME);
-    register_param(param::UPLEVEL);
-    register_param(param::LOTIME);
-    register_param(param::LOLEVEL);
 }
 

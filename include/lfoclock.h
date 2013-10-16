@@ -3,7 +3,7 @@
 
 #include "synthmod.h"
 
-class lfo_clock : public synthmod
+class lfo_clock : public synthmod::base
 {
 public:
     lfo_clock(const char*);
@@ -34,7 +34,7 @@ private:
     double degs;
     double degsize1;
     double degsize2;
-    void init_first();
+    void register_ui();
 };
 
 #endif

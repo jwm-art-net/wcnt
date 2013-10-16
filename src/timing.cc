@@ -1,19 +1,21 @@
 #include "../include/timing.h"
-#include "../include/jwm_globals.h"
-#include "../include/dobjparamlist.h"
+#include "../include/globals.h"
 
 
 timing::timing():
- dobj(dataobj::SIN_TIME), seconds(0.0)
+ dobj::base(dobj::SIN_TIME), seconds(0.0)
 {
-    init_first();
 }
 
 timing::timing(double s):
- dobj(dataobj::SIN_BPM),
+ dobj::base(dobj::SIN_BPM),
  seconds(s)
 {
-    init_first();
+}
+
+void timing::register_ui()
+{
+    register_param(param::SECONDS);
 }
 
 bool timing::set_param(param::TYPE pt, const void* data)
@@ -45,13 +47,5 @@ errors::TYPE timing::validate()
         return errors::NEGATIVE;
 
     return errors::NO_ERROR;
-}
-
-
-
-void timing::init_first()
-{
-    if (done_first()) return;
-    register_param(param::SECONDS);
 }
 

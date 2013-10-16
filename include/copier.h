@@ -17,9 +17,9 @@
     appropriate storage list, be it the dobj list or mod list.
 */
 
-class synthmod;
+namespace synthmod { class base; }
 
-class copier : public dobj
+class copier : public dobj::base
 {
  public:
     copier();
@@ -35,11 +35,11 @@ class copier : public dobj
  private:
     char* from_name;
     char* to_name;
-    synthmod* from_mod;
-    synthmod* to_mod;
-    dobj* from_dobj;
-    dobj* to_dobj;
-    void init_first();
+    synthmod::base* from_mod;
+    synthmod::base* to_mod;
+    dobj::base* from_dobj;
+    dobj::base* to_dobj;
+    void register_ui();
 };
 
 

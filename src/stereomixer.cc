@@ -1,25 +1,21 @@
 #include "../include/stereomixer.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
-#include "../include/synthmod.h"
-#include "../include/synthmodlist.h"
-#include "../include/moddobjlist.h"
-#include "../include/dobjlist.h"
 #include "../include/dobjmod.h"
-#include "../include/dobjdobjlist.h"
-#include "../include/duplicate_list_module.h"
+#include "../include/dobjlist.h"
 
 stereomixer::stereomixer(const char* uname) :
- synthmod(module::STEREOMIXER, uname, SM_HAS_STEREO_OUTPUT),
+ synthmod::base(synthmod::STEREOMIXER, uname, SM_HAS_STEREO_OUTPUT),
  linkedlist(MULTIREF_ON, PRESERVE_DATA),
  out_left(0), out_right(0), master_level(0.75),
  chans_left(0), chans_right(0)
 {
     register_output(output::OUT_LEFT);
     register_output(output::OUT_RIGHT);
-    init_first();
+}
+
+void stereomixer::register_ui()
+{
+    register_dobj(dobj::LST_MIX, dobj::DOBJ_SYNTHMOD);
+    register_param(param::MASTER_LEVEL);
 }
 
 stereomixer::~stereomixer()
@@ -61,7 +57,8 @@ const void* stereomixer::get_param(param::TYPE pt) const
     }
 }
 
-synthmod* stereomixer::duplicate_module(const char* uname, DUP_IO dupio)
+synthmod::base*
+stereomixer::duplicate_module(const char* uname, DUP_IO dupio)
 {
     return duplicate_list_module(this, goto_first(), uname, dupio);
 }
@@ -78,17 +75,17 @@ errors::TYPE stereomixer::validate()
     return errors::NO_ERROR;
 }
 
-dobj* stereomixer::add_dobj(dobj* dbj)
+dobj::base* stereomixer::add_dobj(dobj::base* dbj)
 {
-    if (dbj->get_object_type() == dataobj::DOBJ_SYNTHMOD) {
-        synthmod* sm = ((dobjmod*)dbj)->get_synthmod();
-        if (sm->get_module_type() != module::STEREOCHANNEL
+    if (dbj->get_object_type() == dobj::DOBJ_SYNTHMOD) {
+        synthmod::base* sm = ((dobjmod*)dbj)->get_synthmod();
+        if (sm->get_module_type() != synthmod::STEREOCHANNEL
             && !sm->get_out(output::OUT_LEFT))
         {
             sm_err("%s will not accept the module %s because modules of "
                     "type %s do not have the %s or %s output types.",
                     get_username(), sm->get_username(),
-                    module::names::get(sm->get_module_type()),
+                    synthmod::names::get(sm->get_module_type()),
                     output::names::get(output::OUT_LEFT),
                     output::names::get(
                                                 output::OUT_RIGHT));
@@ -100,7 +97,7 @@ dobj* stereomixer::add_dobj(dobj* dbj)
         }
         // add the dobj synthmod wrapper to the dobjlist
         // so it gets deleted in the end.
-        jwm.get_dobjlist()->add_dobj(dbj);
+        wcnt::get_dobjlist()->add_dobj(dbj);
         return dbj;
     }
     sm_err("%s %s to %s", errors::stock::major, errors::stock::bad_add,
@@ -112,7 +109,7 @@ void stereomixer::init()
 {
     chans_left  = new double const*[get_count() + 1];
     chans_right = new double const*[get_count()];
-    synthmod* sm = goto_first();
+    synthmod::base* sm = goto_first();
     long ix = 0;
     while(sm) {
         chans_left[ix] =
@@ -135,13 +132,5 @@ void stereomixer::run()
     }
     out_left  *= master_level;
     out_right *= master_level;
-}
-
-void stereomixer::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::MASTER_LEVEL);
-    register_moddobj(dataobj::LST_MIX, dataobj::DOBJ_SYNTHMOD);
 }
 

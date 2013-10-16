@@ -1,90 +1,35 @@
 #ifndef SYNTHMODULE_H
 #define SYNTHMODULE_H
 
-#include "types.h"
-#include "synthmodnames.h"
-#include "outputnames.h"
+#include "boolfuncobj.h"
+#include "dobjnames.h"
+#include "groupnames.h"
 #include "inputnames.h"
+#include "outputnames.h"
 #include "paramnames.h"
 #include "stockerrs.h"
-#include "groupnames.h"
-#include "boolfuncobj.h"
+#include "synthmodnames.h"
 #include "textstuff.h"
+#include "types.h"
 
 #ifdef DEBUG
 #include <cstdio>
 #endif
 
-#include "dobjnames.h"
 
 /*
 //  synthmod - pure abstract base class for jwm synth modules.
 */
 
-class dobj;
-class synthmod;
+namespace dobj      { class base; }
+namespace modpart   { class base; };
 
-class smod
+namespace synthmod
 {
- public:
-    smod(synthmod* inheritor);
 
-    virtual ~smod(){};
-
-    /* virtuals */
-    virtual void run() = 0;
-    virtual void init(){};
-
-    /* input/output/param access */
-    virtual const void* set_in(input::TYPE, const void*);
-    virtual const void* get_in(input::TYPE) const;
-    virtual bool        set_param(param::TYPE, const void*);
-    virtual const void* get_param(param::TYPE) const;
-
-    /* duplicate module can't be const due to my linked_list impl. */
-    virtual smod* duplicate_smod();
-
-    // validation
-    virtual errors::TYPE validate()
-        { return errors::NO_ERROR; }
-
-    #ifdef DEBUG
-    bool check_inputs();
-    #endif
-
- protected:
-    bool sm_done_first();
-//    void invalidate()           { flags &=~ synthmod::SM_VALID; }
-
-    /*  first instance initializations (ie parameter and data object
-        registration) should be performed in the init_first method of
-        derived objects.
-     */
-
-    void register_sm_param(param::TYPE);
-    void register_sm_param(param::TYPE, const char* fixed_string);
-
-    /*  inputs & outputs OTOH, are unique to each instance, so will need
-        registration per instance (ie in derived constructor).
-    */
-    void register_sm_input(input::TYPE);
-
-    bool validate_sm_param(param::TYPE, errors::TYPE);
-
-    static char err_msg[STRBUFLEN];
-
- private:
-    synthmod* sm;
-    int flags;
-//  not to be used:
-    smod();
-    smod(const smod &);
-};
-
-
-class synthmod
-{
- public:
+ class base
+ {
+  public:
     enum SM_FLAGS
     {
         SM_DEFAULT,
@@ -97,16 +42,15 @@ class synthmod
         SM_HAS_OUT_TRIG =       0x0040
     };
 
-    friend smod;
+//    friend modpart::base;
 
-    synthmod(module::TYPE, const char* const uname, int _flags_);
+    base(TYPE, const char* const uname, int _flags_);
+    virtual ~base();
 
-    virtual ~synthmod();
+    TYPE        get_module_type() const { return modtype; }
+    const char* get_username()  const   { return username; }
 
-    module::TYPE    get_module_type() const { return module_type; }
-    const char*     get_username()    const { return username; }
-
-    const char*     get_group_name() const {
+    const char* get_group_name() const {
             return ((flags & SM_UNGROUPABLE)
                         ? 0 : get_groupname(username));
         }
@@ -117,14 +61,14 @@ class synthmod
     virtual void run() = 0;
     virtual void init(){};
 
-    /* input/output/param access */
+    /* UI access to inputs/outputs/params.. */
     virtual const void* set_in(input::TYPE, const void*);
     virtual const void* get_in(input::TYPE) const;
     virtual const void* get_out(output::TYPE) const;
     virtual bool        set_param(param::TYPE, const void*);
     virtual const void* get_param(param::TYPE) const;
 
-    virtual dobj*       add_dobj(dobj*);
+    virtual dobj::base* add_dobj(dobj::base*);
 
     enum DUP_IO
     {
@@ -133,7 +77,7 @@ class synthmod
     };
 
     /* duplicate module can't be const due to my linked_list impl. */
-    virtual synthmod* duplicate_module(const char* const uname, DUP_IO);
+    virtual base* duplicate_module(const char* const uname, DUP_IO);
 
     // validation
     virtual errors::TYPE validate()
@@ -147,14 +91,13 @@ class synthmod
 
     // should only be used by jwmsynth::run()
     static const STATUS* get_abort_status()
-        { return &abort_status;}
+                                        { return &abort_status;}
 
-    bool operator()(module::TYPE & smt) const
-        { return module_type == smt; }
+    bool operator()(TYPE & smt) const   { return modtype == smt; }
 
-    bool operator()(name & n) const { return n(username); }
+    bool operator()(name & n) const     { return n(username); }
 
-    bool operator()(groupname & n) const {
+    bool operator()(groupname & n) const{
         if (flags & SM_UNGROUPABLE)
             return false;
         const char* grpname = get_groupname(username);
@@ -170,62 +113,82 @@ class synthmod
     STATS_FUNCS
     #endif
 
- protected:
-    void invalidate()           { flags &=~ SM_VALID; }
-    static void force_abort()   { abort_status = ON; }
-    void duplicate_inputs_to(synthmod*) const;
-    void duplicate_params_to(synthmod*) const;
-
-    /*  first instance initializations (ie parameter and data object
-        registration) should be performed in the init_first method of
-        derived objects.
+    /*  Has the module registered its params, inputs, outputs, and
+        data objects yet? The registration is a per-type initialization
+        and not a per-instance initialization.
      */
-    virtual void init_first();
-    bool done_first() const;
+    bool type_registered() const;
+    void ui_register();
+
+  protected:
+    static void force_abort()   { abort_status = ON; }
+    void invalidate()           { flags &=~ SM_VALID; }
+
+    friend modpart::base;
+
+    /*  if the module has inputs, parameters, or data objects, they
+        should be registered within register_ui by using the register
+        methods below, it should register each in turn.
+        register_ui itself will be called after object creat
+     */
+    virtual void register_ui() = 0;
+
+    /*  Methods for registering params, inputs, and data objects with
+        the UI. These should be called only once when a call to
+        do_registration() returns true.
+     */
     void register_param(param::TYPE);
     void register_param(param::TYPE, const char* fixed_string);
-    void register_moddobj(dataobj::TYPE parent, dataobj::TYPE sprog);
-
-    /*  inputs & outputs OTOH, are unique to each instance, so will need
-        registration per instance (ie in derived constructor).
-    */
     void register_input(input::TYPE);
+    void register_dobj(dobj::TYPE parent, dobj::TYPE sprog);
+
+    /*  Method for output registration, outputs must be registered per
+        instance.
+     */
     void register_output(output::TYPE);
 
+    /*  Method to be called by a module to validate a single parameter.
+        To be called only by the validate method.
+     */
     bool validate_param(param::TYPE, errors::TYPE);
+
+    void duplicate_inputs_to(base*) const;
+    void duplicate_params_to(base*) const;
 
     static char err_msg[STRBUFLEN];
 
- private:
-    module::TYPE    module_type;
+  private:
+    TYPE            modtype;
     char*           username;
     int             flags;
     static STATUS   abort_status;
 
 //  not to be used:
-    synthmod();
-    synthmod(const synthmod &);
+    base();
+    base(const base &);
 
     #ifdef DATA_STATS
     STATS_VARS
     #endif
 
-    static bool first_done[module::LAST_TYPE];
-};
+    static bool first_done[LAST_TYPE];
+ };
 
 
-#ifdef DEBUG
-#define sm_err(fmt, ... )                              \
-{                                                       \
+ #ifdef DEBUG
+ #define sm_err(fmt, ... )                              \
+ {                                                       \
     printf("%40s:%5d %-35s\n",                          \
                     __FILE__, __LINE__, __FUNCTION__);  \
-    cfmt(synthmod::err_msg, STRBUFLEN, fmt, __VA_ARGS__);   \
-}
-#else
-#define sm_err(fmt, ... ) \
-    cfmt(synthmod::err_msg, STRBUFLEN, fmt, __VA_ARGS__)
-#endif
+    cfmt(synthmod::base::err_msg, STRBUFLEN, fmt, __VA_ARGS__);   \
+ }
+ #else
+ #define sm_err(fmt, ... ) \
+    cfmt(synthmod::base::err_msg, STRBUFLEN, fmt, __VA_ARGS__)
+ #endif
 
+
+}; // namespace synthmod
 
 
 #endif

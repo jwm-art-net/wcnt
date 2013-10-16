@@ -1,17 +1,18 @@
 #include "../include/simpledelay.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
+#include "../include/globals.h"
 
 simple_delay::simple_delay(const char* uname) :
- synthmod(module::SIMPLEDELAY, uname, SM_HAS_OUT_OUTPUT),
+ synthmod::base(synthmod::SIMPLEDELAY, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), out_output(0), delay_time(0), output(0),
  filter(0), filterarraymax(0), fpos(0), filtertotal(0)
 {
-    register_input(input::IN_SIGNAL);
     register_output(output::OUT_OUTPUT);
-    init_first();
+}
+
+void simple_delay::register_ui()
+{
+    register_input(input::IN_SIGNAL);
+    register_param(param::DELAY_TIME);
 }
 
 simple_delay::~simple_delay()
@@ -22,7 +23,7 @@ simple_delay::~simple_delay()
 
 void simple_delay::init()
 {
-    filterarraymax = (long)((delay_time * jwm.samplerate()) / 1000);
+    filterarraymax = (long)((delay_time * wcnt::jwm.samplerate()) / 1000);
     filter = new double[filterarraymax];
     if (!filter){
         invalidate();
@@ -94,12 +95,5 @@ void simple_delay::run()
     filter[fpos] = *in_signal;
     fpos--;
     if (fpos < 0) fpos = filterarraymax - 1;
-}
-
-void simple_delay::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::DELAY_TIME);
 }
 

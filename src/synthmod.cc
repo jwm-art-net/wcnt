@@ -1,334 +1,276 @@
 #include "../include/synthmod.h"
-#include "../include/synthmodlist.h"
-#include "../include/jwm_globals.h"
+
 #include "../include/connectorlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modoutputlist.h"
-#include "../include/modparamlist.h"
-#include "../include/groupnames.h"
 #include "../include/fxsparamlist.h"
-#include "../include/moddobjlist.h"
-#include "../include/dobjdobjlist.h"
+#include "../include/groupnames.h"
+#include "../include/globals.h"
+#include "../include/modoutputlist.h"
+#include "../include/synthmodlist.h"
+#include "../include/ui_moditem.h"
 
 #include <iostream>
-
-
-
-
-
-smod::smod(synthmod* _sm) :
- sm(_sm), flags(0)
-{
-}
-
-const void* smod::set_in(input::TYPE, const void*)
-{
-    return 0;
-}
-
-const void* smod::get_in(input::TYPE) const
-{
-    return 0;
-}
-
-bool smod::set_param(param::TYPE, const void*)
-{
-    return 0;
-}
-
-const void* smod::get_param(param::TYPE) const
-{
-    return 0;
-}
-
-smod* smod::duplicate_smod()
-{
-    return 0;
-}
-
-bool smod::sm_done_first()
-{
-    return synthmod::first_done[sm->module_type];
-}
-
-void smod::register_sm_param(param::TYPE pt)
-{
-    sm->register_param(pt);
-}
-
-void smod::register_sm_param(param::TYPE pt, const char* fixed_string)
-{
-    sm->register_param(pt, fixed_string);
-}
-
-void smod::register_sm_input(input::TYPE it)
-{
-    sm->register_input(it);
-}
-
-bool smod::validate_sm_param(param::TYPE pt, errors::TYPE et)
-{
-    return sm->validate_param(pt, et);
-}
-
-
 
 
 //------------------------------------------------------------------------
 // public member methods
 //------------------------------------------------------------------------
 
-synthmod::synthmod(module::TYPE mt, const char* const uname, int _flags_)
- : module_type(mt), username(0)
+namespace synthmod
 {
+ base::base(TYPE mt, const char* const uname, int _flags_)
+  : modtype(mt), username(0)
+ {
     flags = _flags_ | SM_VALID;
     username = new char[strlen(uname) + 1];
     strcpy(username, uname);
+
     #ifdef DATA_STATS
     STATS_INC
     #endif
-}
+ }
 
-synthmod::~synthmod()
-{
-    jwm.get_outputlist()->delete_module_outputs(this);
-    jwm.get_inputlist()->delete_module_inputs(this);
+ base::~base()
+ {
+    wcnt::get_outputlist()->delete_module_outputs(this);
     delete [] username;
     #ifdef DATA_STATS
     STATS_DEC
     #endif
-}
+ }
 
-void synthmod::set_group_name(const char* const gname)
-{
+ void base::set_group_name(const char* const gname)
+ {
     const char* oldname = username;
     username = set_groupname(gname, username);
     delete [] oldname;
-}
+ }
 
-const void* synthmod::get_out(output::TYPE) const
-{
+ const void* base::get_out(output::TYPE) const
+ {
     #ifdef IO_PARANOIA
     sm_err("%s %s get output where none exist.", errors::stock::major,
-                                                 errors::stock::bad, username);
+                                            errors::stock::bad, username);
     #endif
     return 0;
-}
+ }
 
-const void* synthmod::set_in(input::TYPE, const void*)
-{
+ const void* base::set_in(input::TYPE, const void*)
+ {
     #ifdef IO_PARANOIA
     sm_err("%s %s set input where none exist.", errors::stock::major,
-                                                errors::stock::bad, username);
+                                            errors::stock::bad, username);
     #endif
     return 0;
-}
+ }
 
-const void* synthmod::get_in(input::TYPE) const
-{
+ const void* base::get_in(input::TYPE) const
+ {
     #ifdef IO_PARANOIA
     sm_err("%s %s get input where none exist.", errors::stock::major,
-                                                errors::stock::bad, username);
+                                            errors::stock::bad, username);
     #endif
     return 0;
 }
 
-bool synthmod::set_param(param::TYPE, const void*)
-{
+ bool base::set_param(param::TYPE, const void*)
+ {
     #ifdef IO_PARANOIA
     sm_err("%s %s set parameter where none exist.", errors::stock::major,
-                                                errors::stock::bad, username);
+                                            errors::stock::bad, username);
     #endif
     return false;
-}
+ }
 
-const void* synthmod::get_param(param::TYPE) const
-{
+ const void* base::get_param(param::TYPE) const
+ {
     #ifdef IO_PARANOIA
     sm_err("%s %s get parameter where none exist.", errors::stock::major,
-                                                errors::stock::bad, username);
+                                            errors::stock::bad, username);
     #endif
     return 0;
-}
+ }
 
-dobj* synthmod::add_dobj(dobj*)
-{
+ dobj::base* base::add_dobj(dobj::base*)
+ {
     #ifdef IO_PARANOIA
-    sm_err("%s %s module unable to contain data objects.", errors::stock::major,
-                                              errors::stock::bad_add, username);
+    sm_err("%s %s module unable to contain data objects.",
+                    errors::stock::major, errors::stock::bad_add, username);
     #endif
     return 0;
-}
+ }
 
-synthmod*
-synthmod::duplicate_module(const char* uname, DUP_IO iocon)
-{
+ base* base::duplicate_module(const char* uname, DUP_IO iocon)
+ {
     if (flag(SM_UNDUPLICABLE)) {
         sm_err("Duplication of module %s is forbidden due to type %s.",
-                username, module::names::get(module_type));
+                username, synthmod::names::get(modtype));
         return 0;
     }
-    synthmod* dup = jwm.get_modlist()->create_module(module_type, uname);
+    base* dup = wcnt::jwm.get_modlist()->create_module(modtype, uname);
     if (iocon == AUTO_CONNECT)
         duplicate_inputs_to(dup);
     duplicate_params_to(dup);
     return dup;
-}
+ }
+
+ bool base::type_registered() const
+ {
+    return first_done[modtype];
+ }
+
+ void base::ui_register()
+ {
+    if (!first_done[modtype]) {
+        register_ui();
+        first_done[modtype] = true;
+    }
+ }
 
 //------------------------------------------------------------------------
 // protected member methods
 //------------------------------------------------------------------------
 
-void synthmod::duplicate_inputs_to(synthmod* to_mod) const
-{
-    jwm.get_connectlist()->duplicate_connections(this, to_mod);
-}
+ void base::duplicate_inputs_to(base* to_mod) const
+ {
+    wcnt::get_connectlist()->duplicate_connections(this, to_mod);
+ }
 
-void synthmod::duplicate_params_to(synthmod* to_mod) const
-{
-    modparamlist::linkedlist* mplist =
-        new_list_of_by(jwm.get_paramlist(), to_mod->get_module_type());
-    if (mplist) {
-        modparam* mp = mplist->goto_first();
-        while(mp) {
-            param::TYPE pt = mp->get_paramtype();
-            to_mod->set_param(pt, get_param(pt));
-            mp = mplist->goto_next();
-        }
-        delete mplist;
+ void base::duplicate_params_to(base* to_mod) const
+ {
+    if (modtype != to_mod->get_module_type()) {
+        sm_err("Failed to duplicate parameters from module %s "
+               "to module %s. Module types differ.", username,
+                                                 to_mod->get_username());
+        to_mod->invalidate();
+        return;
     }
-}
 
-void synthmod::init_first()
-{
-    #ifdef IO_PARANOIA
-    sm_err("%s, Module %s: call to base method "
-           "synthmod::init_first. This method should be implemented "
-           "in the derived class.", errors::stock::major, username);
-    #endif
-}
+    ui::moditem_list* items = wcnt::get_ui_moditem_list();
+    ui::moditem* item = items->get_first_of_type(modtype);
 
-bool synthmod::done_first() const
-{
-    bool r = first_done[module_type];
-    first_done[module_type] = true;
-    return r;
-}
+    while(item) {
+        if (item->get_item_type() == ui::UI_PARAM) {
+            ui::modparam* mp = static_cast<ui::modparam*>(item);
+            if (!to_mod->set_param(mp->get_param_type(),
+                         get_param(mp->get_param_type())))
+            {
+                sm_err("Failed to duplicate parameter %s from mod %s "
+                           "to module %s.",
+                            param::names::get(mp->get_param_type()),
+                            username, to_mod->get_username());
+                to_mod->invalidate();
+                return;
+            }
+        }
+        item = items->get_next_of_type();
+    }
+ }
 
-void synthmod::register_param(param::TYPE pt)
-{
+ void base::register_param(param::TYPE pt)
+ {
     if (!(flags & SM_VALID))
         return;
-    if (!jwm.get_paramlist()->add_param(module_type, pt))
-    {
+
+    if (!wcnt::get_ui_moditem_list()->add_item(modtype, pt)) {
         sm_err("Failed to register param %s with module type %s.",
                 param::names::get(pt),
-                module::names::get(module_type));
+                synthmod::names::get(modtype));
         invalidate();
     }
-}
+ }
 
-void synthmod::register_param(param::TYPE pt, const char* fixstr)
-{
+ void base::register_param(param::TYPE pt, const char* fixstr)
+ {
     if (!(flags & SM_VALID))
         return;
 
-    modparam* mp = jwm.get_paramlist()->add_param(module_type, pt);
-    fixstrparam* fsp = 0;
-    if (mp)
-        fsp = jwm.get_fxsparamlist()->add_param(fixstr, pt);
-    if (!mp || !fsp)
-    {
+    if (!wcnt::get_ui_moditem_list()->add_item(modtype, pt, fixstr)) {
         sm_err("Failed to register fixed string param %s (%s) "
                "with module type %s,",  param::names::get(pt),
                                         fixstr,
-                                        module::names::get(module_type));
+                                        synthmod::names::get(modtype));
         invalidate();
     }
-}
+ }
 
-void synthmod::register_input(input::TYPE t)
-{
+ void base::register_input(input::TYPE t)
+ {
     if (!(flags & SM_VALID))
         return;
-    if (!jwm.get_inputlist()->register_input(this, t))
-    {
+
+    if (!wcnt::get_ui_moditem_list()->add_item(modtype, t)) {
         sm_err("Failed to register input %s with module %s.",
                 input::names::get(t), username);
         invalidate();
     }
-}
+ }
 
-void synthmod::register_output(output::TYPE t)
-{
+ void base::register_output(output::TYPE t)
+ {
     if (!(flags & SM_VALID))
         return;
-    if (!jwm.get_outputlist()->register_output(this, t))
-    {
+    if (!wcnt::get_outputlist()->register_output(this, t)) {
         sm_err("Failed to register output %s with module %s.",
                 output::names::get(t), username);
         invalidate();
     }
-}
+ }
 
-void synthmod::register_moddobj(dataobj::TYPE parent, dataobj::TYPE sprog)
-{
+ void base::register_dobj(dobj::TYPE parent, dobj::TYPE sprog)
+ {
     if (!(flags & SM_VALID))
         return;
-    moddobj* mdbj;
-    dobjdobj* ddbj = 0;
-    mdbj = jwm.get_moddobjlist()->register_moddobj(module_type, parent);
-    if (mdbj)
-        ddbj = mdbj->get_dobjdobjlist()->register_dobjdobj(parent, sprog);
-    if (!mdbj || !ddbj)
-    {
+
+    if (!wcnt::get_ui_moditem_list()->add_item(modtype, parent, sprog)) {
         sm_err("Failed to register data object %s (child %s) with "
-               "module type %s.", dataobj::names::get(parent),
-                                  dataobj::names::get(sprog),
-                                  module::names::get(module_type));
+               "module type %s.", dobj::names::get(parent),
+                                  dobj::names::get(sprog),
+                                  synthmod::names::get(modtype));
         invalidate();
     }
-}
+ }
 
-bool synthmod::validate_param(param::TYPE pt, errors::TYPE et)
-{
-    if (!jwm.get_paramlist()->validate(this, pt, et))
-    {
+ bool base::validate_param(param::TYPE pt, errors::TYPE et)
+ {
+    if (!wcnt::get_ui_moditem_list()->validate(this, pt, et)) {
         sm_err("%s", param::names::get(pt));
         invalidate();
         return false;
     }
     return true;
-}
+ }
 
 
-#ifdef DEBUG
-bool synthmod::check_inputs()
-{
-    modinputlist::linkedlist* modinps =
-        new_list_of_by(jwm.get_inputlist(), this);
-    modinput* modinp = modinps->goto_first();
-    while(modinp) {
-        if (!get_in(modinp->get_inputtype())) {
-            sm_err("%s Module %s does not have its %s "
-                    "input set.", errors::stock::major, get_username(), 
-                        input::names::get(modinp->get_inputtype()));
-            delete modinps;
-            return false;
+ #ifdef DEBUG
+ bool base::check_inputs()
+ {
+    ui::moditem_list* items = wcnt::get_ui_moditem_list();
+    ui::moditem* item = items->get_first_of_type(modtype);
+
+    while(item) {
+        if (*item == ui::UI_PARAM) {
+            ui::modinput* mi = static_cast<ui::modinput*>(item);
+            if (!get_in(mi->get_input_type())) {
+                sm_err("%s Module %s does not have its %s input set.",
+                                errors::stock::major, get_username(),
+                                input::names::get(mi->get_input_type()));
+                return false;
+            }
         }
-        modinp = modinps->goto_next();
+        item = items->get_next_of_type();
     }
-    delete modinps;
     return true;
-}
-#endif
+ }
+ #endif
 
-char synthmod::err_msg[] = "";
-STATUS synthmod::abort_status = OFF; // don't force an abort just yet.
+ char base::err_msg[] = "";
+ STATUS base::abort_status = OFF; // don't force an abort just yet.
 
-#ifdef DATA_STATS
-STATS_INIT(synthmod)
-#endif
+ #ifdef DATA_STATS
+ STATS_INIT(synthmod)
+ #endif
 
 
-bool synthmod::first_done[module::LAST_TYPE] = { false };
+ bool base::first_done[synthmod::LAST_TYPE] = { false };
+
+}; // namespace synthmod

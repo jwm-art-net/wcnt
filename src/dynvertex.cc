@@ -1,21 +1,25 @@
 #include "../include/dynvertex.h"
-#include "../include/jwm_globals.h"
-#include "../include/dobjparamlist.h"
-
+#include "../include/globals.h"
 
 dynvertex::dynvertex() :
- dobj(dataobj::SIN_DVERTEX),
+ dobj::base(dobj::SIN_DVERTEX),
  si_level(0), uso_level(0), lso_level(0)
 {
-    init_first();
 }
 
 dynvertex::dynvertex(double sil, double usol, double lsol) :
-        dobj(dataobj::SIN_DVERTEX),
+        dobj::base(dobj::SIN_DVERTEX),
         si_level(sil), uso_level(usol), lso_level(lsol)
 {
-    init_first();
 }
+
+void dynvertex::register_ui()
+{
+    register_param(param::SIGIN_LEVEL);
+    register_param(param::SIGOUT_UPLEVEL);
+    register_param(param::SIGOUT_LOLEVEL);
+}
+
 
 errors::TYPE dynvertex::validate()
 {
@@ -50,14 +54,4 @@ const void* dynvertex::get_param(param::TYPE pt) const
         default: return 0;
     }
 }
-
-void dynvertex::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::SIGIN_LEVEL);
-    register_param(param::SIGOUT_UPLEVEL);
-    register_param(param::SIGOUT_LOLEVEL);
-}
-
 

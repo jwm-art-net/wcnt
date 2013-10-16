@@ -3,7 +3,7 @@
 
 #include "synthmod.h"
 
-class triangle_wave2 : public synthmod
+class triangle_wave2 : public synthmod::base
 {
 public:
     triangle_wave2(const char*);
@@ -38,7 +38,7 @@ private:
     double sectmaxsamps;
     double sectsample;
     double counter_ratio;
-    void init_first();
+    void register_ui();
 };
 
 #endif

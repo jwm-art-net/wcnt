@@ -1,24 +1,20 @@
 #include "../include/combiner.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
-#include "../include/synthmodlist.h"
 #include "../include/dobjlist.h"
-#include "../include/moddobjlist.h"
-#include "../include/dobjdobjlist.h"
 #include "../include/dobjmod.h"
-#include "../include/wcntsignal.h"
-#include "../include/duplicate_list_module.h"
 
 combiner::combiner(const char* uname) :
- synthmod(module::COMBINER, uname, SM_HAS_OUT_OUTPUT),
+ synthmod::base(synthmod::COMBINER, uname, SM_HAS_OUT_OUTPUT),
  linkedlist(MULTIREF_OFF, PRESERVE_DATA),
  out_output(0), meantotal(OFF),
  total(0), sigs(0), sigcount(0)
 {
     register_output(output::OUT_OUTPUT);
-    init_first();
+}
+
+void combiner::register_ui()
+{
+    register_dobj(dobj::LST_SIGNALS, dobj::DOBJ_SYNTHMOD);
+    register_param(param::MEAN_TOTAL);
 }
 
 combiner::~combiner()
@@ -57,7 +53,7 @@ const void* combiner::get_param(param::TYPE pt) const
     }
 }
 
-synthmod* combiner::duplicate_module(const char* uname, DUP_IO dupio)
+synthmod::base* combiner::duplicate_module(const char* uname, DUP_IO dupio)
 {
     return duplicate_list_module(this, goto_first(), uname, dupio);
 }
@@ -72,17 +68,16 @@ errors::TYPE combiner::validate()
     return errors::NO_ERROR;
 }
 
-dobj* combiner::add_dobj(dobj* dbj)
+dobj::base* combiner::add_dobj(dobj::base* dbj)
 {
-    if (dbj->get_object_type() == dataobj::DOBJ_SYNTHMOD) {
-        synthmod* sm = ((dobjmod*)dbj)->get_synthmod();
+    if (dbj->get_object_type() == dobj::DOBJ_SYNTHMOD) {
+        synthmod::base* sm = ((dobjmod*)dbj)->get_synthmod();
         if (!sm->flag(SM_HAS_OUT_OUTPUT)) {
             sm_err("%s will not accept the module %s because modules "
                     "of type %s do not have the %s output type.",
                     get_username(), sm->get_username(),
-                    module::names::get(sm->get_module_type()),
-                    output::names::get(
-                                                output::OUT_OUTPUT));
+                    synthmod::names::get(sm->get_module_type()),
+                    output::names::get(output::OUT_OUTPUT));
             return 0;
         }
         if (!add_at_tail(sm)) {
@@ -92,7 +87,7 @@ dobj* combiner::add_dobj(dobj* dbj)
         }
         // add the dobj synthmod wrapper to the dobjlist
         // so it gets deleted in the end.
-        jwm.get_dobjlist()->add_dobj(dbj);
+        wcnt::get_dobjlist()->add_dobj(dbj);
         return dbj;
     }
     sm_err("%s %s to %s", errors::stock::major, errors::stock::bad_add,
@@ -104,7 +99,7 @@ void combiner::init()
 {
     sigcount = get_count();
     sigs = new double const*[sigcount + 1];
-    synthmod* sm = goto_first();
+    synthmod::base* sm = goto_first();
     long ix = 0;
     while(sm) {
         sigs[ix] = (double const*)sm->get_out(output::OUT_OUTPUT);
@@ -132,14 +127,5 @@ void combiner::run()
         out_output = total / sigcount;
     else
         out_output = total;
-}
-
-
-void combiner::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::MEAN_TOTAL);
-    register_moddobj(dataobj::LST_SIGNALS, dataobj::DOBJ_SYNTHMOD);
 }
 

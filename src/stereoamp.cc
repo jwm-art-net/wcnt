@@ -1,23 +1,26 @@
 #include "../include/stereoamp.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
 
 stereo_amp::stereo_amp(const char* uname) :
- synthmod(module::STEREOAMP, uname, SM_HAS_STEREO_OUTPUT),
+ synthmod::base(synthmod::STEREOAMP, uname, SM_HAS_STEREO_OUTPUT),
  in_left(0), in_right(0), in_amp_eg(0), in_amp_mod(0),
  out_left(0), out_right(0),
  left_level(0), right_level(0), amp_modsize(0), clip_level(0),
  left(0), right(0)
 {
+    register_output(output::OUT_LEFT);
+    register_output(output::OUT_RIGHT);
+}
+
+void stereo_amp::register_ui()
+{
     register_input(input::IN_LEFT);
     register_input(input::IN_RIGHT);
     register_input(input::IN_EG);
+    register_param(param::LEFT_LEVEL);
+    register_param(param::RIGHT_LEVEL);
     register_input(input::IN_AMP_MOD);
-    register_output(output::OUT_LEFT);
-    register_output(output::OUT_RIGHT);
-    init_first();
+    register_param(param::AMP_MODSIZE);
+    register_param(param::CLIP_LEVEL);
 }
 
 stereo_amp::~stereo_amp()
@@ -118,15 +121,5 @@ void stereo_amp::run()
         out_right = -clip_level;
     else if (right > clip_level)
         out_right = clip_level;
-}
-
-void stereo_amp::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::LEFT_LEVEL);
-    register_param(param::RIGHT_LEVEL);
-    register_param(param::AMP_MODSIZE);
-    register_param(param::CLIP_LEVEL);
 }
 

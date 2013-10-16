@@ -3,6 +3,8 @@
 
 #include "dobj.h"
 
+#include "synthmod.h"
+
 /*
 dobjmod.h
 
@@ -76,15 +78,14 @@ the user and will be deleted when wcnt exits.
      ***************** ---------- hope that's clear for you.
 */
 
-class synthmod;
 
-class dobjmod : public dobj
+class dobjmod : public dobj::base
 {
 public:
     dobjmod();
     ~dobjmod(){};
-    void set_synthmod(synthmod* sm){ synth_mod = sm;}
-    synthmod* get_synthmod(){ return synth_mod;}
+    void set_synthmod(synthmod::base* sm){ synth_mod = sm;}
+    synthmod::base* get_synthmod(){ return synth_mod;}
     virtual errors::TYPE validate(){ 
         return errors::NO_ERROR; 
     }
@@ -92,8 +93,8 @@ public:
     const void* get_param(param::TYPE pt) const;
 
 private:
-    synthmod* synth_mod;
-    void init_first();
+    synthmod::base* synth_mod;
+    void register_ui();
 };
 
 #endif

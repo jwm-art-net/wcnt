@@ -1,15 +1,16 @@
 #include "../include/subtracter.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
 
 subtracter::subtracter(const char* uname) :
- synthmod(module::SUBTRACTER, uname, SM_HAS_OUT_OUTPUT),
+ synthmod::base(synthmod::SUBTRACTER, uname, SM_HAS_OUT_OUTPUT),
  in_signal1(0), in_signal2(0), out_output(0)
+{
+    register_output(output::OUT_OUTPUT);
+}
+
+void subtracter::register_ui()
 {
     register_input(input::IN_SIGNAL1);
     register_input(input::IN_SIGNAL2);
-    register_output(output::OUT_OUTPUT);
 }
 
 subtracter::~subtracter()

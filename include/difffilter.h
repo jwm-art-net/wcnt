@@ -3,7 +3,7 @@
 
 #include "synthmod.h"
 
-class diff_filter : public synthmod
+class diff_filter : public synthmod::base
 {
 public:
     diff_filter(const char*);
@@ -16,6 +16,7 @@ private:
     const double* in_signal;
     double out_output;
     double oldinsig;
+    void register_ui();
 };
 
 #endif

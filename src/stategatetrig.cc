@@ -1,16 +1,17 @@
 #include "../include/stategatetrig.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
 
 stategatetrig::stategatetrig(const char* uname) :
- synthmod(module::STATEGATETRIG, uname, SM_HAS_OUT_TRIG),
+ synthmod::base(synthmod::STATEGATETRIG, uname, SM_HAS_OUT_TRIG),
  in_trig(0), in_state(0), out_trig(OFF), out_not_trig(OFF)
+{
+    register_output(output::OUT_TRIG);
+    register_output(output::OUT_NOT_TRIG);
+}
+
+void stategatetrig::register_ui()
 {
     register_input(input::IN_TRIG);
     register_input(input::IN_STATE);
-    register_output(output::OUT_TRIG);
-    register_output(output::OUT_NOT_TRIG);
 }
 
 stategatetrig::~stategatetrig()

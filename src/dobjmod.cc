@@ -1,21 +1,23 @@
 #include "../include/dobjmod.h"
-#include "../include/jwm_globals.h"
-#include "../include/dobjparamlist.h"
 
 dobjmod::dobjmod() :
- dobj(dataobj::DOBJ_SYNTHMOD), synth_mod(0)
+ dobj::base(dobj::DOBJ_SYNTHMOD), synth_mod(0)
 {
-    init_first();
+}
+
+void dobjmod::register_ui()
+{
+    register_param(param::MODNAME);
 }
 
 bool dobjmod::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-    case param::MODNAME:
-        set_synthmod((synthmod*)data);
-         return true;
-   default:
+     case param::MODNAME:
+        set_synthmod((synthmod::base*)data);
+        return true;
+     default:
         return false;
     }
 }
@@ -29,9 +31,3 @@ const void* dobjmod::get_param(param::TYPE pt) const
     }
 }
 
-void dobjmod::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::MODNAME);
-}

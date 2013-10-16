@@ -3,7 +3,7 @@
 
 #include "dobj.h"
 
-class dobjnamedobj : public dobj
+class dobjnamedobj : public dobj::base
 {
 public:
     dobjnamedobj();
@@ -19,7 +19,7 @@ public:
 
 private:
     char* dobjname;
-    void init_first();
+    void register_ui();
 };
 
 #endif

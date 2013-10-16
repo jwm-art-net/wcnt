@@ -1,10 +1,5 @@
 #include "../include/serialwavfileout.h"
-#include "../include/jwm_globals.h"
-#include "../include/jwm_init.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
-#include "../include/fxsparamlist.h"
+#include "../include/globals.h"
 
 
 // for wav open errors while run()ing:
@@ -12,7 +7,7 @@
 
 
 serialwavfileout::serialwavfileout(const char* uname) :
- synthmod(module::SERIALWAVFILEOUT, uname, SM_DEFAULT),
+ synthmod::base(synthmod::SERIALWAVFILEOUT, uname, SM_DEFAULT),
  in_l(0), in_r(0), in_bar(0),
  in_write_trig(0), in_stop_trig(0), write_status(OFF),
  data_format(FMT_FLT32), start_bar(0),
@@ -20,16 +15,26 @@ serialwavfileout::serialwavfileout(const char* uname) :
  wavcount(0), in_write_region(OFF), status(WAV_STATUS_INIT),
  st_buffer(NULL), sample_total(0), state(0), buff_pos(0)
 {
+    register_output(output::OUT_WRITE_STATE);
+
+    st_buffer = new st_data[wcnt::wav_buffer_size];
+    for(int i = 0; i < wcnt::wav_buffer_size; i++)
+        st_buffer[i].left = st_buffer[i].right = 0.0f;
+}
+
+void serialwavfileout::register_ui()
+{
     register_input(input::IN_LEFT);
     register_input(input::IN_RIGHT);
     register_input(input::IN_BAR);
     register_input(input::IN_WRITE_TRIG);
     register_input(input::IN_STOP_TRIG);
-    register_output(output::OUT_WRITE_STATE);
-    st_buffer = new st_data[jwm_init::wav_buffer_size];
-    for(int i = 0; i < jwm_init::wav_buffer_size; i++)
-        st_buffer[i].left = st_buffer[i].right = 0.0f;
-    init_first();
+    register_param(param::DATA_FMT,
+                    "pcm16/pcm24/pcm32/float32/float64");
+    register_param(param::WAV_BASENAME);
+    register_param(param::START_BAR);
+    register_param(param::END_BAR);
+    register_param(param::COUNT);
 }
 
 serialwavfileout::~serialwavfileout()
@@ -157,7 +162,7 @@ errors::TYPE serialwavfileout::validate()
 
 void serialwavfileout::set_wav_basename(const char* fname)
 {
-    const char* path = jwm.path();
+    const char* path = wcnt::jwm.path();
     if (wav_basename)
         delete [] wav_basename;
     if (filepath)
@@ -178,7 +183,7 @@ void serialwavfileout::set_wav_basename(const char* fname)
 
 WAV_STATUS serialwavfileout::open_wav(const char* fname)
 {
-    if (!jwm.is_dont_run()) {
+    if (!wcnt::jwm.is_dont_run()) {
         if (status == WAV_STATUS_OPEN) {
             #ifdef DEBUG
             std::cout << "why well i never..." << std::endl;
@@ -261,9 +266,9 @@ void serialwavfileout::run()
             st_buffer[buff_pos].left = *in_l;
             st_buffer[buff_pos].right = *in_r;
             buff_pos++;
-            if (buff_pos == jwm_init::wav_buffer_size) {
+            if (buff_pos == wcnt::wav_buffer_size) {
                 write_wav_at(st_buffer, sample_total -
-                                            jwm_init::wav_buffer_size);
+                                            wcnt::wav_buffer_size);
                 buff_pos = 0;
             }
         }
@@ -288,7 +293,7 @@ void serialwavfileout::write_wav_at(st_data* buf, samp_t smp)
     if (status == WAV_STATUS_OPEN)
     {
         sf_seek(fileout, smp, SEEK_SET);
-        sf_writef_double(fileout, (double*)buf, jwm_init::wav_buffer_size);
+        sf_writef_double(fileout, (double*)buf, wcnt::wav_buffer_size);
     }
 }
 
@@ -301,14 +306,4 @@ void serialwavfileout::write_wav_chunk(st_data* buf, samp_t smp, int bsize)
     }
 }
 
-void serialwavfileout::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::DATA_FMT, "pcm16/pcm24/pcm32/float32/float64");
-    register_param(param::WAV_BASENAME);
-    register_param(param::START_BAR);
-    register_param(param::END_BAR);
-    register_param(param::COUNT);
-}
 

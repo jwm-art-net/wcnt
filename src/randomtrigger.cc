@@ -1,21 +1,22 @@
 #include "../include/randomtrigger.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
 
 #include <cstdlib>
 
 randomtrigger::randomtrigger(const char* uname) :
- synthmod(module::RANDTRIGGER, uname, SM_HAS_OUT_TRIG),
+ synthmod::base(synthmod::RANDTRIGGER, uname, SM_HAS_OUT_TRIG),
  in_trig(0), out_trig(OFF), out_not_trig(OFF), probability(0.5),
  not_probability(0.5)
 {
-    register_input(input::IN_TRIG);
     register_output(output::OUT_TRIG);
     register_output(output::OUT_NOT_TRIG);
-    init_first();
     srandom(time(0)); //srand(time(0));
+}
+
+void randomtrigger::register_ui()
+{
+    register_input(input::IN_TRIG);
+    register_param(param::PROBABILITY);
+    register_param(param::NOTPROBABILITY);
 }
 
 randomtrigger::~randomtrigger()
@@ -99,13 +100,5 @@ void randomtrigger::run()
         if (out_not_trig == ON)
             out_not_trig = OFF;
     }
-}
-
-void randomtrigger::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::PROBABILITY);
-    register_param(param::NOTPROBABILITY);
 }
 

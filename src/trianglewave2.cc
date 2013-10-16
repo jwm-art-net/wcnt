@@ -1,12 +1,9 @@
 #include "../include/trianglewave2.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
 #include "../include/conversions.h"
 
+
 triangle_wave2::triangle_wave2(const char* uname) :
- synthmod(module::TRIWAVE2, uname, SM_HAS_OUT_OUTPUT),
+ synthmod::base(synthmod::TRIWAVE2, uname, SM_HAS_OUT_OUTPUT),
  in_phase_trig(0), in_phase_step(0), in_normal_mod(0), output(0.00),
  play_state(OFF), normal_freq(440.00), norm_modsize(0), recycle(OFF),
  zero_retrigger_mode(OFF), nf_phase_step(0), nf_pre_phase_step(0),
@@ -14,12 +11,19 @@ triangle_wave2::triangle_wave2(const char* uname) :
  sect_spanlvl(0), sect_startlvl(0), old_maxsamps(0), sectmaxsamps(1),
  sectsample(0), counter_ratio(0)
 {
-    register_input(input::IN_PHASE_TRIG);
-    register_input(input::IN_PHASE_STEP);
-    register_input(input::IN_NORM_MOD);
     register_output(output::OUT_OUTPUT);
     register_output(output::OUT_PLAY_STATE);
-    init_first();
+}
+
+void triangle_wave2::register_ui()
+{
+    register_input(input::IN_PHASE_TRIG);
+    register_input(input::IN_PHASE_STEP);
+    register_param(param::NORM_FREQ);
+    register_input(input::IN_NORM_MOD);
+    register_param(param::NORM_MODSIZE);
+    register_param(param::RECYCLE_MODE);
+    register_param(param::ZERO_RETRIGGER);
 }
 
 triangle_wave2::~triangle_wave2()
@@ -171,15 +175,5 @@ void triangle_wave2::run()
             }
         }
     }
-}
-
-void triangle_wave2::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::NORM_FREQ);
-    register_param(param::NORM_MODSIZE);
-    register_param(param::RECYCLE_MODE);
-    register_param(param::ZERO_RETRIGGER);
 }
 

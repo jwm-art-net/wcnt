@@ -6,7 +6,7 @@
 #include "synthmod.h"
 #include "wavfileheader.h"
 
-class wavfileout: public synthmod
+class wavfileout: public synthmod::base
 {
 public:
     wavfileout(const char*);
@@ -55,11 +55,8 @@ private:
     void write_wav_at(st_data* buf, samp_t smp);
     void write_wav_chunk(st_data* buf, samp_t smp, int bsize);
     void timestamp_filename();
-
     int state;
-
-    // synthmod stuff
-    void init_first();
+    void register_ui();
 };
 
 #endif // WAVFILEOUT

@@ -1,18 +1,18 @@
 #include "../include/dc_filter.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
-#include "../include/dtr.h"
+#include "../include/globals.h"
 
 dc_filter::dc_filter(const char* uname) :
- synthmod(module::DCFILTER, uname, SM_HAS_OUT_OUTPUT),
+ synthmod::base(synthmod::DCFILTER, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), output(0), dc_time(0), filter(0), filterarraymax(0),
  fpos(0), filtertotal(0)
 {
-    register_input(input::IN_SIGNAL);
     register_output(output::OUT_OUTPUT);
-    init_first();
+}
+
+void dc_filter::register_ui()
+{
+    register_input(input::IN_SIGNAL);
+    register_param(param::DC_TIME);
 }
 
 dc_filter::~dc_filter()
@@ -78,7 +78,7 @@ errors::TYPE dc_filter::validate()
 
 void dc_filter::init()
 {
-    filterarraymax = (wcint_t)((dc_time * jwm.samplerate()) / 1000);
+    filterarraymax = (wcint_t)((dc_time * wcnt::jwm.samplerate()) / 1000);
     filter = new double[filterarraymax];
     if (!filter){
         invalidate();
@@ -95,12 +95,5 @@ void dc_filter::run()
     fpos++;
     if (fpos == filterarraymax)
         fpos = 0;
-}
-
-void dc_filter::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::DC_TIME);
 }
 

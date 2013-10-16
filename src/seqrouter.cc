@@ -1,21 +1,23 @@
 #include "../include/seqrouter.h"
-#include "../include/jwm_globals.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
-#include "../include/synthmodlist.h"
+#include "../include/globals.h"
 #include "../include/group.h"
+#include "../include/synthmodlist.h"
 
 #include <iostream>
 #include <sstream>
 
 seq_router::seq_router(const char* uname) :
 
- synthmod(module::SEQ_ROUTER, uname, SM_UNGROUPABLE),
+ synthmod::base(synthmod::SEQ_ROUTER, uname, SM_UNGROUPABLE),
  in_index(0), in_note_on_trig(0), in_note_slide_trig(0),
  in_note_off_trig(0), in_freq(0), in_velocity(0),
  count(0), wrap(OFF),
  index(-1), last_on_ix(-1), last_slide_ix(-1), last_off_ix(-1),
  grp(0), on_trigs(0), slide_trigs(0), off_trigs(0), vels(0), freqs(0)
+{
+}
+
+void seq_router::register_ui()
 {
     register_input(input::IN_INDEX);
     register_input(input::IN_NOTE_ON_TRIG);
@@ -24,7 +26,8 @@ seq_router::seq_router(const char* uname) :
     register_input(input::IN_FREQ);
     register_input(input::IN_VELOCITY);
     register_input(input::IN_ALL_OFF_TRIG);
-    init_first();
+    register_param(param::COUNT);
+    register_param(param::WRAP);
 }
 
 seq_router::~seq_router()
@@ -120,9 +123,9 @@ const void* seq_router::get_param(param::TYPE pt) const
 
 void seq_router::create_wcnt_notes()
 {
-    const char* wtn = module::names::get(module::WCNT_NOTE);
+    const char* wtn = synthmod::names::get(synthmod::WCNT_NOTE);
     const char* un = get_username();
-    bool verbose = jwm.is_verbose();
+    bool verbose = wcnt::jwm.is_verbose();
     if (verbose){
         std::cout << "\nPre-initialising " << un << " module...";
         std::cout << "\n  creating group " << un;
@@ -146,9 +149,9 @@ void seq_router::create_wcnt_notes()
     freqs = new double[count];
     vels = new double[count];
 
-    synthmodlist* sml = jwm.get_modlist();
-    synthmodlist::linkedlist* grpmodlist
-                            = sml->remove_modules_of_group(get_username());
+    synthmod::list* sml = wcnt::jwm.get_modlist();
+    synthmod::list::linkedlist*
+                grpmodlist = sml->remove_modules_of_group(get_username());
     if (grpmodlist) {
         grpmodlist->empty_list(DELETE_DATA);
         delete grpmodlist;
@@ -162,16 +165,16 @@ void seq_router::create_wcnt_notes()
         vels[i] = 0.0f;
         if (verbose) {
             std::cout << "\n    creating " << wtn << "...";
-            jwm.set_verbose(false);
+            wcnt::jwm.set_verbose(false);
         }
         std::ostringstream ostr;
         ostr << i;
-        synthmod* sm = sml->create_module(module::WCNT_NOTE,
+        synthmod::base* sm = sml->create_module(synthmod::WCNT_NOTE,
                                                     ostr.str().c_str());
         sml->add_module(sm);
         grp->group_module(sm);
         if (verbose) {
-            jwm.set_verbose(true);
+            wcnt::jwm.set_verbose(true);
             std::cout << "\n      grouped as " << sm->get_username();
             std::cout << "\n      connecting to wcnt_note " << i;
         }
@@ -252,13 +255,5 @@ void seq_router::run()
             off_trigs[index] = ON;
         }
     }
-}
-
-void seq_router::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::COUNT);
-    register_param(param::WRAP);
 }
 

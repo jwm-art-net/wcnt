@@ -65,18 +65,18 @@ seq
 
 osc_clock
 osc
-        in_note_on_trig     seq out_note_on_trig
-        in_note_slide_trig  seq out_note_slide_trig
-        in_play_state       adsr out_play_state
-        in_frequency        seq out_frequency
+    in_note_on_trig     seq out_note_on_trig
+    in_note_slide_trig  seq out_note_slide_trig
+    in_play_state       adsr out_play_state
+    octave_offset       -3
+    tuning_semitones    0
+    in_frequency    seq out_frequency
         in_freq_mod1        off
-        in_freq_mod2        off
-        octave_offset       -3
-        tuning_semitones    0
-        portamento_time     50
-        response_time       10
         freq_mod1_size      1
+        in_freq_mod2        off
         freq_mod2_size      1
+    portamento_time     50
+    response_time       10
 osc
 
 copier cp1 from osc to osc_lpf cp1
@@ -172,13 +172,13 @@ lpf1
 
 echo
 ek1
-    in_signal        lpf1 out_output
-    in_gain_mod      off
+    in_signal   lpf1 out_output
+    gain        0.65
+        in_gain_mod     off
+        gain_mod_size   0.0
     in_feedback      ek2 out_wet_output
     in_feedback_mod  off
     delay_time         275
-    gain               0.65
-    gain_mod_size      0.0
     feedback           0.75
     feedback_mod_size  0.0
     wet/dry            0.1
@@ -187,13 +187,13 @@ ek1
 
 echo
 ek2
-    in_signal        lpf1 out_output
-    in_gain_mod      off
+    in_signal   lpf1 out_output
+    gain        0.65
+        in_gain_mod     off
+        gain_mod_size   0.0
     in_feedback      ek1 out_wet_output
     in_feedback_mod  off
     delay_time         375
-    gain               0.65
-    gain_mod_size      0.0
     feedback           0.75
     feedback_mod_size  0.0
     wet/dry            0.1
@@ -206,14 +206,14 @@ bass
 
 single_band_parametric
 eq
-    in_signal         ek2 out_output
-    in_phase_step     bass out_phase_step
-    in_gain_mod       off
-    in_bandwidth_mod  off
-    gain_db             4.0
-    gain_mod_size       0
-    bandwidth           2.0
-    bandwidth_mod_size  0
+    in_signal       ek2 out_output
+    in_phase_step   bass out_phase_step
+    gain_db         4.0
+        in_gain_mod         off
+        gain_mod_size       0
+    bandwidth       2.0
+        in_bandwidth_mod    off
+        bandwidth_mod_size  0
 eq
 
 wavfile_out
@@ -221,11 +221,11 @@ wav
     in_left     ek1 out_output
     in_right    ek2 out_output
     in_bar      time out_bar
-    snapshot_mode off
-    data_format float32
     filename    errocid.wav
+    data_format float32
     start_bar   0
     end_bar     24
+    snapshot_mode off
 wav
 
 wcnt_exit

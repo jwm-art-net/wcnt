@@ -30,8 +30,7 @@ it is. (hmmm, talking to yourself again - yes i am).
 
 */
 
-
-class wcnt_exit: public synthmod::synthmod
+class wcnt_exit: public synthmod::base
 {
 public:
     wcnt_exit(const char*);
@@ -45,7 +44,7 @@ public:
     const void* get_in(input::TYPE) const;
     bool set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE) const;
-    synthmod* duplicate_module(const char* uname, DUP_IO);
+    base* duplicate_module(const char* uname, DUP_IO);
 private:
     // inputs
     const wcint_t* in_bar;
@@ -53,7 +52,8 @@ private:
     // params
     wcint_t exit_bar;
     // synthmod stuff
-    void init_first();
+    void register_ui();
 };
+
 
 #endif

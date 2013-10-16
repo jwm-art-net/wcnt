@@ -7,28 +7,27 @@
 
 class wcnt_signal;
 
-class combiner: public synthmod, public linked_list<synthmod>
+class combiner: public synthmod::base,
+                public linked_list<synthmod::base>
 {
 public:
     combiner(const char*);
     ~combiner();
 
-    friend synthmod*
-        duplicate_list_module<combiner, synthmod>
-            (combiner* sm, synthmod* _data,
-                const char* uname, synthmod::DUP_IO dupio);
-
-    // virtual funcs
+    friend synthmod::base*
+        duplicate_list_module<combiner, synthmod::base>
+                            (combiner*, synthmod::base*,
+                            const char* uname, synthmod::base::DUP_IO);
     void run();
     void init();
     errors::TYPE validate();
-    // wcnt_signal is not a dobj, but a synthmod, so a dobj wrapper class
-    // - dobjmod, is passed which contains a pointer to the wcnt_signal
-    dobj* add_dobj(dobj*);
+    // Modules are not a data objects! A dobj wrapper class (dobjmod)
+    // is used which contains a pointer to a module to be added.
+    dobj::base* add_dobj(dobj::base*);
     const void* get_out(output::TYPE) const;
     bool set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE) const;
-    synthmod* duplicate_module(const char* uname, DUP_IO);
+    synthmod::base* duplicate_module(const char* uname, DUP_IO);
 
 private:
     double out_output;
@@ -36,7 +35,7 @@ private:
     double total;
     double const** sigs;
     int sigcount;
-    void init_first();
+    void register_ui();
 };
 
 #endif

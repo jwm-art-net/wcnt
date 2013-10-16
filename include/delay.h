@@ -2,8 +2,9 @@
 #define DELAY_H
 
 #include "synthmod.h"
+#include "gain.h"
 
-class delay : public synthmod
+class delay : public synthmod::base, public gain
 {
 public:
     delay(const char*);
@@ -18,15 +19,10 @@ public:
     const void* get_param(param::TYPE) const;
 
 private:
-    // inputs
-    const double* in_signal;
-    const double* in_gainmod;
     // outputs
     double out_output;
     // params
     double delay_time;
-    double gain;
-    double gain_modsize;
     double wetdry;
     // working
     double output;
@@ -34,8 +30,7 @@ private:
     long filterarraymax;
     long fpos;
     double filtertotal;
-    double gainamount;
-    void init_first();
+    void register_ui();
 };
 
 #endif

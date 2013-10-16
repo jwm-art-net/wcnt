@@ -1,18 +1,12 @@
 #include "../include/wavfileout.h"
-#include "../include/jwm_globals.h"
-#include "../include/jwm_init.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
+#include "../include/globals.h"
 #include "../include/conversions.h"
-#include "../include/dobjparamlist.h"
-#include "../include/fxsparamlist.h"
 
 #include <iostream>         // <-- for messages while running
 #include <sys/timeb.h>      // <-- filename timestamp
 
 wavfileout::wavfileout(const char* uname) :
- synthmod(module::WAVFILEOUT, uname, SM_DEFAULT),
+ synthmod::base(synthmod::WAVFILEOUT, uname, SM_DEFAULT),
  in_l(0), in_r(0), in_bar(0),
  out_write_start_trig(OFF), out_write_end_trig(OFF),
  write_status(OFF),
@@ -23,19 +17,28 @@ wavfileout::wavfileout(const char* uname) :
  status(WAV_STATUS_INIT), st_buffer(0), sample_total(0), buff_pos(0),
  state(0)
 {
-    register_input(input::IN_LEFT);
-    register_input(input::IN_RIGHT);
-    register_input(input::IN_BAR);
     register_output(output::OUT_WRITE_START_TRIG);
     register_output(output::OUT_WRITE_END_TRIG);
     register_output(output::OUT_WRITE_STATE);
-    st_buffer = new st_data[jwm_init::wav_buffer_size];
-    for(int i = 0; i < jwm_init::wav_buffer_size; i++){
+
+    st_buffer = new st_data[wcnt::wav_buffer_size];
+    for(int i = 0; i < wcnt::wav_buffer_size; i++){
         st_buffer[i].left = 0;
         st_buffer[i].right = 0;
     }
     status = WAV_STATUS_OK;
-    init_first();
+}
+
+void wavfileout::register_ui()
+{
+    register_input(input::IN_LEFT);
+    register_input(input::IN_RIGHT);
+    register_input(input::IN_BAR);
+    register_param(param::FILENAME);
+    register_param(param::DATA_FMT,"pcm16/pcm24/pcm32/float32/float64");
+    register_param(param::START_BAR);
+    register_param(param::END_BAR);
+    register_param(param::SNAPSHOT_MODE);
 }
 
 wavfileout::~wavfileout()
@@ -139,7 +142,7 @@ errors::TYPE wavfileout::validate()
 
 void wavfileout::set_wav_filename(char* fname)
 {
-    const char* path = jwm.path();
+    const char* path = wcnt::jwm.path();
     if (_filename)
         delete [] _filename;
     if (*fname == '/' || path == NULL) {
@@ -184,7 +187,7 @@ WAV_STATUS wavfileout::open_wav()
     if (snapshot_mode == ON)
         timestamp_filename();
 
-    if (!jwm.is_dont_run()) {
+    if (!wcnt::jwm.is_dont_run()) {
         if (status == WAV_STATUS_OPEN) {
             #ifdef DEBUG
             std::cout << "why well i never..." << std::endl;
@@ -203,7 +206,7 @@ void wavfileout::close_wav()
     if (status == WAV_STATUS_OPEN) {
         if (buff_pos > 0)
             write_wav_chunk(st_buffer, sample_total-buff_pos, buff_pos);
-        if (!jwm.is_dont_run()) {
+        if (!wcnt::jwm.is_dont_run()) {
             std::cout << "\nFinished writing to " << filename;
             sf_close(fileout);
         }
@@ -220,7 +223,7 @@ void wavfileout::run()
             if (open_wav() != WAV_STATUS_OPEN) {
                 std::cout << "\nCould not open WAV file " << filename
                           << " for writing. Abort forced...";
-                synthmod::force_abort();
+                synthmod::base::force_abort();
                 invalidate();
                 return;
             }
@@ -238,9 +241,8 @@ void wavfileout::run()
         st_buffer[buff_pos].left = *in_l;
         st_buffer[buff_pos].right = *in_r;
         buff_pos++;
-        if (buff_pos == jwm_init::wav_buffer_size) {
-            write_wav_at(st_buffer, sample_total
-                                        - jwm_init::wav_buffer_size);
+        if (buff_pos == wcnt::wav_buffer_size) {
+            write_wav_at(st_buffer, sample_total - wcnt::wav_buffer_size);
             buff_pos = 0;
         }
         if (*in_bar == end_bar) {
@@ -266,7 +268,7 @@ void wavfileout::write_wav_at(st_data* buf, samp_t smp)
     if (status == WAV_STATUS_OPEN)
     {
         sf_seek(fileout, smp, SEEK_SET);
-        sf_writef_double(fileout, (double*)buf, jwm_init::wav_buffer_size);
+        sf_writef_double(fileout, (double*)buf, wcnt::wav_buffer_size);
     }
 }
 
@@ -277,16 +279,5 @@ void wavfileout::write_wav_chunk(st_data* buf, samp_t smp, int bsize)
         sf_seek(fileout, smp, SEEK_SET);
         sf_writef_double(fileout, (double*)buf, bsize);
     }
-}
-
-void wavfileout::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::SNAPSHOT_MODE);
-    register_param(param::DATA_FMT, "pcm16/pcm24/pcm32/float32/float64");
-    register_param(param::FILENAME);
-    register_param(param::START_BAR);
-    register_param(param::END_BAR);
 }
 

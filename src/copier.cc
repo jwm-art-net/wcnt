@@ -3,17 +3,21 @@
 #include "../include/synthmod.h"
 #include "../include/synthmodlist.h"
 #include "../include/groupnames.h"
-#include "../include/jwm_globals.h"
-#include "../include/dobjparamlist.h"
+#include "../include/globals.h"
 
 
 copier::copier() :
- dobj(dataobj::DEF_COPIER),
+ dobj::base(dobj::DEF_COPIER),
  from_name(0), to_name(0),
  from_mod(0), to_mod(0),
  from_dobj(0), to_dobj(0)
 {
-    init_first();
+}
+
+void copier::register_ui()
+{
+    register_param(param::COPYFROM);
+    register_param(param::COPYTO);
 }
 
 copier::~copier()
@@ -29,9 +33,9 @@ bool copier::set_from_name(const char* name)
         from_name = new char[strlen(name) + 1];
         strcpy(from_name, name); // copy to from_name.
     }
-    if ((from_dobj = jwm.get_dobjlist()->get_dobj_by_name(name)))
+    if ((from_dobj = wcnt::get_dobjlist()->get_dobj_by_name(name)))
         return true;
-    if ((from_mod = jwm.get_modlist()->get_synthmod_by_name(name)))
+    if ((from_mod = wcnt::jwm.get_modlist()->get_synthmod_by_name(name)))
         return true;
     return false;
 }
@@ -43,12 +47,12 @@ bool copier::set_to_name(const char* name)
         to_name = new char[strlen(name) + 1];
         strcpy(to_name, name); // copy to to_name
     }
-    if (strcmp(name, dataobj::names::get(
-            dataobj::LST_EDITS)) == 0)
+    if (strcmp(name, dobj::names::get(
+            dobj::LST_EDITS)) == 0)
         return false;
-    if (jwm.get_dobjlist()->get_dobj_by_name(name))
+    if (wcnt::get_dobjlist()->get_dobj_by_name(name))
         return false;
-    if (jwm.get_modlist()->get_synthmod_by_name(name))
+    if (wcnt::jwm.get_modlist()->get_synthmod_by_name(name))
         return false;
     return true;
 }
@@ -78,8 +82,7 @@ bool copier::set_param(param::TYPE pt, const void* data)
         }
         if (!set_to_name((const char*)data))
         {
-            const char* d = dataobj::names::get(
-                                                    dataobj::LST_EDITS);
+            const char* d = dobj::names::get(dobj::LST_EDITS);
             const char* e = (strcmp(to_name, d) == 0
                                             ? "is reserved"
                                             : "already in use");
@@ -112,12 +115,12 @@ errors::TYPE copier::validate()
         return errors::ERROR;
     if (from_mod) {
         if (!(to_mod = from_mod->duplicate_module(to_name,
-                                    synthmod::AUTO_CONNECT)))
+                                    synthmod::base::AUTO_CONNECT)))
         {
-            dobjerr("%s", synthmod::get_error_msg());
+            dobjerr("%s", synthmod::base::get_error_msg());
             return errors::ERROR;
         }
-        if (!jwm.get_modlist()->add_module(to_mod)) {
+        if (!wcnt::jwm.get_modlist()->add_module(to_mod)) {
             dobjerr("Could not add module %s copied from %s to module "
                                                        "run list. Bad.",
                         to_mod->get_username(), from_mod->get_username());
@@ -128,19 +131,9 @@ errors::TYPE copier::validate()
     else if (from_dobj) {
         if (!(to_dobj = from_dobj->duplicate_dobj(to_name)))
             return errors::ERROR;
-        jwm.get_dobjlist()->add_dobj(to_dobj);
+        wcnt::get_dobjlist()->add_dobj(to_dobj);
         return errors::NO_ERROR;
     }
     return errors::ERROR;
 }
-
-void copier::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::COPYFROM);
-    register_param(param::COPYTO);
-}
-
-
 

@@ -1,16 +1,11 @@
 #include "../include/timemap.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
-#include "../include/moddobjlist.h"
-#include "../include/dobjdobjlist.h"
-#include "../include/jwm_init.h"
+#include "../include/globals.h"
+#include "../include/listwork.h"
 
 #include <sstream>
 
 timemap::timemap(const char* uname) :
- synthmod(module::TIMEMAP, uname, SM_UNGROUPABLE | SM_UNDUPLICABLE),
+ synthmod::base(synthmod::TIMEMAP, uname, SM_UNGROUPABLE | SM_UNDUPLICABLE),
  out_bar(0), out_bar_trig(OFF), out_pos_in_bar(0), out_pos_step_size(0),
  out_bpm(0.0), out_sample_total(0), out_sample_in_bar(0),
  out_beats_per_bar(0), out_beat_value(0), out_bpm_change_trig(OFF),
@@ -35,7 +30,12 @@ timemap::timemap(const char* uname) :
 
     bpm_map = new linked_list<bpmchange>;
     meter_map = new linked_list<meterchange>;
-    init_first();
+}
+
+void timemap::register_ui()
+{
+    register_dobj(dobj::LST_METER, dobj::SIN_METER);
+    register_dobj(dobj::LST_BPM, dobj::SIN_BPM);
 }
 
 timemap::~timemap()
@@ -88,17 +88,17 @@ errors::TYPE timemap::validate()
     double bpm = 0;
     while(currentbpm){
         bpm += currentbpm->get_bpm();
-        if (bpm < jwm_init::min_bpm) {
+        if (bpm < wcnt::min_bpm) {
             sm_err("At bar %d BPM change takes tempo below minimum "
                                     "BPM of %d.", currentbpm->get_bar(),
-                                                    jwm_init::min_bpm);
+                                                    wcnt::min_bpm);
             invalidate();
             return errors::ERROR;
         }
-        if (bpm > jwm_init::max_bpm) {
+        if (bpm > wcnt::max_bpm) {
             sm_err("At bar %d BPM change takes tempo above maximum "
                                     "BPM of %d.", currentbpm->get_bar(),
-                                                    jwm_init::max_bpm);
+                                                    wcnt::max_bpm);
             invalidate();
             return errors::ERROR;
         }
@@ -184,7 +184,7 @@ void timemap::run()
                 out_bpm_change_state = ON;
             }
         }
-        out_pos_step_size = barlength / (jwm.samplerate() *
+        out_pos_step_size = barlength / (wcnt::jwm.samplerate() *
          (60.0 / out_bpm) * out_beats_per_bar);
     }
     else {
@@ -196,16 +196,16 @@ void timemap::run()
                 bpmchange_pos = 0;
                 bpmsampletot = notelen_to_samples(bpmchange_notelen);
                 bpmrampsize = (targbpm - out_bpm) / (double) bpmsampletot;
-                out_pos_step_size = barlength / (jwm.samplerate()
+                out_pos_step_size = barlength / (wcnt::jwm.samplerate()
                                   * (60.0 / out_bpm) * out_beats_per_bar);
             }
             out_bpm += bpmrampsize;
             bpmchange_ratio = (double) bpmchange_pos / bpmchange_notelen;
-            bpmsampletot = (samp_t)(jwm.samplerate() * (60 / out_bpm)
+            bpmsampletot = (samp_t)(wcnt::jwm.samplerate() * (60 / out_bpm)
                          * ((double) (bpmchange_notelen - bpmchange_pos) 
                          / beatlength));
             bpmrampsize = (targbpm - out_bpm) / (double) bpmsampletot;
-            out_pos_step_size = barlength / (jwm.samplerate()
+            out_pos_step_size = barlength / (wcnt::jwm.samplerate()
                               * (60 / out_bpm) * out_beats_per_bar);
             bpmchange_pos += out_pos_step_size;
         } else out_bpm_change_state = OFF;
@@ -218,14 +218,14 @@ void timemap::run()
 
 samp_t timemap::notelen_to_samples(wcint_t nl) const
 {
-    return (samp_t)(jwm.samplerate()
+    return (samp_t)(wcnt::jwm.samplerate()
      * ((double) 60 / out_bpm) * ((double)nl / beatlength));
 }
 
 #ifdef UNUSED
 samp_t timemap::ms_to_samples(double ms) const
 {
-    return (samp_t)(jwm.samplerate() * (ms / 1000));
+    return (samp_t)(wcnt::jwm.samplerate() * (ms / 1000));
 }
 
 double timemap::notelen_to_frequency(wcint_t nl) const
@@ -272,17 +272,17 @@ const void* timemap::get_out(output::TYPE ot) const
     }
 }
 
-dobj* timemap::add_dobj(dobj* dbj)
+dobj::base* timemap::add_dobj(dobj::base* dbj)
 {
-    dobj* retv = 0;
-    dataobj::TYPE dbjtype = dbj->get_object_type();
+    dobj::base* retv = 0;
+    dobj::TYPE dbjtype = dbj->get_object_type();
     switch(dbjtype)
     {
-    case dataobj::SIN_METER:
+    case dobj::SIN_METER:
         if (!(retv = add_meter_change((meterchange*)dbj)))
             sm_err("Could not add meter change to %s.", get_username());
         break;
-    case dataobj::SIN_BPM:
+    case dobj::SIN_BPM:
         if (!(retv = add_bpm_change((bpmchange*)dbj)))
             sm_err("Could not add bpm change to %s.", get_username());
         break;
@@ -294,18 +294,10 @@ dobj* timemap::add_dobj(dobj* dbj)
     return retv;
 }
 
-synthmod* timemap::duplicate_module(const char* uname, DUP_IO dupio)
+synthmod::base* timemap::duplicate_module(const char* uname, DUP_IO dupio)
 {
     (void)uname; (void)dupio; // stop unused param warns
     sm_err("%s", "The time_map module does not allow duplication.");
     return 0;
-}
-
-void timemap::init_first()
-{
-    if (done_first())
-        return;
-    register_moddobj(dataobj::LST_METER, dataobj::SIN_METER);
-    register_moddobj(dataobj::LST_BPM, dataobj::SIN_BPM);
 }
 

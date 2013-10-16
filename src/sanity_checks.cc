@@ -2,7 +2,7 @@
 #include "../include/sanity_checks.h"
 
 #ifdef SANITY_CHECKS
-#include "../include/jwm_globals.h"
+#include "../include/globals.h"
 #include "../include/ladspa_loader.h"
 #include "../include/synthmod.h"
 #include "../include/synthmodlist.h"
@@ -23,10 +23,10 @@ void sanity_checks()
 // start up
     #ifdef WITH_LADSPA
     ladspa_loader* ladspaloader = new ladspa_loader;
-    jwm.register_ladspaloader(ladspaloader);
+    wcnt::jwm.register_ladspaloader(ladspaloader);
     #endif
     synthmodlist* modlist = new synthmodlist(DELETE_DATA);
-    jwm.register_modlist(modlist);
+    wcnt::jwm.register_modlist(modlist);
 
     std::cout << "\nPerforming sanity checks...";
 
@@ -56,12 +56,12 @@ void module_iop_checks()
     std::cout << "\nSanity checking module's inputs/outputs/params..."
         "\nNote: Data objects within certain types of module will not be"
         " checked.";
-    synthmodlist* modlist = jwm.get_modlist();
+    synthmodlist* modlist = wcnt::jwm.get_modlist();
     bool sanity = true;
     for (int i = module::ERR_TYPE + 2; i < module::LAST_TYPE; i++)
     {
-        module::TYPE smt =
-            (module::TYPE)i;
+        synthmod::TYPE smt =
+            (synthmod::TYPE)i;
         const char* const modname = module::names::get(smt);
         std::cout << "\n--------------------------------------------"
             "\nChecking module type: " << modname;
@@ -92,7 +92,7 @@ void module_iop_checks()
 bool mod_check_inputs(synthmod* sm)
 {
     modinputlist::linkedlist* inlist =
-        new_list_of_by(jwm.get_inputlist(), sm);
+        new_list_of_by(wcnt::get_inputlist(), sm);
 
     modinput* input = inlist->goto_first();
     bool fail = false;
@@ -223,7 +223,7 @@ bool mod_check_inputs(synthmod* sm)
 bool mod_check_outputs(synthmod* sm)
 {
     modoutputlist::linkedlist* outlist =
-        new_list_of_by(jwm.get_outputlist(), sm);
+        new_list_of_by(wcnt::get_outputlist(), sm);
     modoutput* output = outlist->goto_first();
     bool fail = false;
     if (output) {
@@ -249,7 +249,7 @@ bool mod_check_outputs(synthmod* sm)
 bool mod_check_params(synthmod * sm)
 {
     modparamlist::linkedlist* parlist =
-        new_list_of_by(jwm.get_paramlist(), sm->get_module_type());
+        new_list_of_by(wcnt::get_paramlist(), sm->get_module_type());
     modparam* param = parlist->goto_first();
     bool fail = false;
     if (param) {
@@ -349,7 +349,7 @@ bool mod_check_params(synthmod * sm)
 
 int check_mod_param_fixed_string(synthmod* sm, param::TYPE pt)
 {
-    fixstrparam* fxspar = jwm.get_fxsparamlist()->get_fix_str_param(pt);
+    fixstrparam* fxspar =wcnt::get_fxsparamlist()->get_fix_str_param(pt);
     int count = fxspar->get_substring_count();
     std::cout << "(multiple choice)... ";
     if (count < 2) {

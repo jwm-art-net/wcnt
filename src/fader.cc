@@ -1,12 +1,8 @@
 #include "../include/fader.h"
-#include "../include/jwm_globals.h"
-#include "../include/modinputlist.h"
-#include "../include/modoutputlist.h"
-#include "../include/modparamlist.h"
 #include "../include/conversions.h"
 
 fader::fader(const char* uname) :
- synthmod(module::FADER, uname, SM_HAS_OUT_TRIG),
+ synthmod::base(synthmod::FADER, uname, SM_HAS_OUT_TRIG),
  in_bar(0),
  out_output(0), out_bar_trig(OFF), out_index(-1), out_count(-1),
  out_play_state(OFF),
@@ -14,13 +10,20 @@ fader::fader(const char* uname) :
  fade_in_smps(0), fismp(0), fade_out_smps(0), fosmp(0),
  fisz(0), fosz(0), state(0)
 {
-    register_input(input::IN_BAR);
     register_output(output::OUT_OUTPUT);
     register_output(output::OUT_BAR_TRIG);
     register_output(output::OUT_INDEX);
     register_output(output::OUT_COUNT);
     register_output(output::OUT_PLAY_STATE);
-    init_first();
+}
+
+void fader::register_ui()
+{
+    register_input(input::IN_BAR);
+    register_param(param::START_BAR);
+    register_param(param::END_BAR);
+    register_param(param::FADE_IN_TIME);
+    register_param(param::FADE_OUT_TIME);
 }
 
 fader::~fader()
@@ -160,12 +163,3 @@ void fader::run()
     }
 }
 
-void fader::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::START_BAR);
-    register_param(param::END_BAR);
-    register_param(param::FADE_IN_TIME);
-    register_param(param::FADE_OUT_TIME);
-}

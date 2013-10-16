@@ -6,7 +6,7 @@
 
 #include "synthmod.h"
 
-class noise_generator : public synthmod
+class noise_generator : public synthmod::base
 {
 public:
     noise_generator(const char*);
@@ -16,6 +16,7 @@ public:
 
 private:
     double output;
+    void register_ui() {};
 };
 
 #endif

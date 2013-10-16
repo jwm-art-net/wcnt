@@ -4,9 +4,9 @@
 #include "synthmod.h"
 
 
-class sample_climb : public synthmod
+class sample_climb : public synthmod::base
 {
-public:
+ public:
     sample_climb(const char*);
     ~sample_climb();
     void run();
@@ -17,13 +17,13 @@ public:
     bool set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE) const;
 
-private:
+ private:
     const STATUS* in_trig;
     const double* in_signal;
     double output;
     double rate;
     double target;
-    void init_first();
+    void register_ui();
 };
 
 #endif

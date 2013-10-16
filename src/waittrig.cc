@@ -1,21 +1,23 @@
 #include "../include/waittrig.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
 #include "../include/conversions.h"
 
 waittrig::waittrig(const char* uname) :
- synthmod(module::WAITTRIG, uname, SM_HAS_OUT_TRIG),
+ synthmod::base(synthmod::WAITTRIG, uname, SM_HAS_OUT_TRIG),
  in_trig1(0), in_trig2(0), out_trig(OFF), out_wait_state(ON),
  min_time(0), max_time(0), count(1), min_samples(0), max_samples(0),
  mins(0), maxs(0), counter(0)
 {
-    register_input(input::IN_TRIG1);
-    register_input(input::IN_TRIG2);
     register_output(output::OUT_TRIG);
     register_output(output::OUT_WAIT_STATE);
-    init_first();
+}
+
+void waittrig::register_ui()
+{
+    register_input(input::IN_TRIG1);
+    register_input(input::IN_TRIG2);
+    register_param(param::MIN_WAIT);
+    register_param(param::MAX_WAIT);
+    register_param(param::COUNT);
 }
 
 waittrig::~waittrig()
@@ -136,12 +138,4 @@ void waittrig::run()
         out_trig = OFF;
 }
 
-void waittrig::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::MIN_WAIT);
-    register_param(param::MAX_WAIT);
-    register_param(param::COUNT);
-}
 

@@ -5,9 +5,9 @@
 #include "synthmod.h"
 #include "linkedlist.h"
 
-class user_wave : public synthmod, public linked_list<wave_vertex>
+class user_wave : public synthmod::base, public linked_list<wave_vertex>
 {
-public:
+ public:
     user_wave(const char*);
     ~user_wave();
 
@@ -23,9 +23,9 @@ public:
     const void* get_in(input::TYPE) const;
     bool set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE) const;
-    dobj* add_dobj(dobj*);
-    synthmod* duplicate_module(const char* uname, DUP_IO);
-private:
+    dobj::base* add_dobj(dobj::base*);
+    synthmod::base* duplicate_module(const char* uname, DUP_IO);
+ private:
     STATUS const* in_phase_trig;
     double const* in_phase_step;
     double const* in_pwm;
@@ -44,9 +44,7 @@ private:
     double sectdegs;
     double degs;
     double pdegs;
-    void init_first();
-    void create_dobj();
-    static bool done_dobj;
+    void register_ui();
 };
 
 #endif

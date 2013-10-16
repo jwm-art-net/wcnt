@@ -3,7 +3,7 @@
 
 #include "getnames.h"
 
-namespace module
+namespace synthmod
 {
  enum TYPE
  {
@@ -104,6 +104,6 @@ namespace module
     ~names() {}
     static const struct gn_data data[LAST_TYPE];
  };
-}; // namespace module
+}; // namespace synthmod
 
 #endif

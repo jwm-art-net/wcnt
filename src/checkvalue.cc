@@ -1,5 +1,5 @@
 #include "../include/checkvalue.h"
-#include "../include/jwm_globals.h"
+#include "../include/globals.h"
 #include "../include/jwm_ranges.h"
 
 #include <iostream>
@@ -74,7 +74,7 @@ bool check_value(long double n, errors::TYPE et)
             return true;
         break;
     case errors::RANGE_FREQ:
-        if (n > 0 && n < jwm.samplerate() * jwm_ranges::max_freq_sr_ratio)
+        if (n > 0 && n < wcnt::jwm.samplerate() * jwm_ranges::max_freq_sr_ratio)
             return true;
         break;
     case errors::NEGATIVE:

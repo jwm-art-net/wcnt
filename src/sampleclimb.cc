@@ -1,18 +1,17 @@
 #include "../include/sampleclimb.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
-#include "../include/conversions.h"
 
 sample_climb::sample_climb(const char* uname) :
- synthmod(module::SAMPLECLIMB, uname, SM_HAS_OUT_OUTPUT),
+ synthmod::base(synthmod::SAMPLECLIMB, uname, SM_HAS_OUT_OUTPUT),
  in_trig(0), in_signal(0), output(0), rate(1), target(0)
+{
+    register_output(output::OUT_OUTPUT);
+}
+
+void sample_climb::register_ui()
 {
     register_input(input::IN_TRIG);
     register_input(input::IN_SIGNAL);
-    register_output(output::OUT_OUTPUT);
-    init_first();
+    register_param(param::RATE);
 }
 
 sample_climb::~sample_climb()
@@ -84,9 +83,3 @@ void sample_climb::run()
     output += (target - output) * rate;
 }
 
-void sample_climb::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::RATE);
-}

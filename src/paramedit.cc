@@ -1,20 +1,23 @@
 #include "../include/paramedit.h"
-#include "../include/synthmod.h"
-#include "../include/synthmodlist.h"
 #include "../include/dobjlist.h"
-#include "../include/modparamlist.h"
-#include "../include/dobjparamlist.h"
+#include "../include/globals.h"
 #include "../include/setparam.h"
-#include "../include/jwm_globals.h"
+#include "../include/synthmodlist.h"
+#include "../include/ui_moditem.h"
+#include "../include/ui_dobjitem.h"
 
 #include <iostream>
 
-
 paramedit::paramedit() :
- dobj(dataobj::SIN_EDIT_PARAM),
+ dobj::base(dobj::SIN_EDIT_PARAM),
  name(0), parstr(0)
 {
-    init_first();
+}
+
+void paramedit::register_ui()
+{
+    register_param(param::STR_UNNAMED);
+    register_param(param::STR_LIST);
 }
 
 paramedit::~paramedit()
@@ -27,8 +30,8 @@ paramedit::~paramedit()
 
 bool paramedit::set_name(const char* n)
 {
-    synthmod* sm = jwm.get_modlist()->get_synthmod_by_name(n);
-    dobj* dbj = jwm.get_dobjlist()->get_dobj_by_name(n);
+    synthmod::base* sm = wcnt::jwm.get_modlist()->get_synthmod_by_name(n);
+    dobj::base* dbj =wcnt::get_dobjlist()->get_dobj_by_name(n);
     if (!sm && !dbj)
         return false;
     if (name)
@@ -49,8 +52,9 @@ void paramedit::set_parstr(const char* n)
 
 bool paramedit::do_param_edits()
 {
-    synthmod* sm = jwm.get_modlist()->get_synthmod_by_name(name);
-    dobj* dbj = jwm.get_dobjlist()->get_dobj_by_name(name);
+    synthmod::base* sm =
+                wcnt::jwm.get_modlist()->get_synthmod_by_name(name);
+    dobj::base* dbj =wcnt::get_dobjlist()->get_dobj_by_name(name);
     if (sm && dbj) {
         dobjerr("A data object and module share the username %s. Cannot "
                     "edit parameters %s", name, parstr);
@@ -86,98 +90,100 @@ bool paramedit::do_param_edits()
                 return false;
             }
         }
-        if (jwm.is_verbose())
+        if (wcnt::jwm.is_verbose())
             std::cout << "\n    " << parname << " " << valstr;
         strm >> parname;
     }while (!strm.eof());
     return true;
 }
 
-bool paramedit::mod_param_edit(synthmod* module, const char* parname,
-                               const char* valstr)
+bool paramedit::mod_param_edit(synthmod::base* mod, const char* parname,
+                                                    const char* valstr)
 {
-    module::TYPE smt = module->get_module_type();
-    modparamlist::linkedlist*
-        parlist = new_list_of_by(jwm.get_paramlist(),smt);
+    param::TYPE partype = param::names::type(parname);
 
-    modparam* mp = parlist->goto_first();
-    param::TYPE pt = param::ERR_TYPE;
-    bool confused = false;
-    while(mp) {
-        param::TYPE mpt = mp->get_paramtype();
-        const char* mparname = param::names::get(mpt);
-        if (strcmp(parname, mparname) == 0) {
-            if (pt != param::ERR_TYPE)
-                confused = true;
-            pt = mpt;
+    if (partype == param::ERR_TYPE) {
+        dobjerr("No such parameter as '%s'.", parname);
+        invalidate();
+        return false;
+    }
+
+    ui::moditem_list* items = wcnt::get_ui_moditem_list();
+    ui::moditem* item;
+    {
+        synthmod::TYPE smt = mod->get_module_type();
+        item = items->get_first_of_type(smt);
+    }
+
+    ui::modparam* mp = 0;
+
+    while(item) {
+        if (item->get_item_type() == ui::UI_PARAM) {
+            mp = static_cast<ui::modparam*>(item);
+            if (*mp == partype)
+                break;
         }
-        mp = parlist->goto_next();
+        item = items->get_next_of_type();
     }
-    if (confused) {
-        dobjerr("There seems to be more than one parameter named %s "
-                                            "- this is a bug.", parname);
-        invalidate();
-        delete parlist;
-        return false;
-    }
-    if (pt == param::ERR_TYPE) {
+
+    if (!mp) {
         dobjerr("Module %s does not have any parameter named %s.",
-                                        module->get_username(), parname);
+                                        mod->get_username(), parname);
         invalidate();
-        delete parlist;
         return false;
     }
-    if (!setpar::set_param(module, parname, pt, valstr, 0)) {
+
+    if (!setpar::set_param(mod, parname, partype, valstr, 0)) {
         dobjerr("%s", setpar::get_error_msg());
         invalidate();
-        delete parlist;
         return false;
     }
-    delete parlist;
+
     return true;
 }
 
-bool paramedit::dobj_param_edit(dobj* dobject, const char* parname, 
-                                const char* valstr)
+bool paramedit::dobj_param_edit(dobj::base* dob, const char* parname,
+                                                 const char* valstr)
 {
-    dataobj::TYPE dt = dobject->get_object_type();
-    dobjparamlist::linkedlist*
-        parlist = new_list_of_by(jwm.get_dparlist(), dt);
+    param::TYPE partype = param::names::type(parname);
 
-    dobjparam* dp = parlist->goto_first();
-    param::TYPE pt = param::ERR_TYPE;
-    bool confused = false;
-    while(dp) {
-        param::TYPE dpt = dp->get_partype();
-        const char* mparname = param::names::get(dpt);
-        if (strcmp(parname, mparname) == 0) {
-            if (pt != param::ERR_TYPE)
-                confused = true;
-            pt = dpt;
+    if (partype == param::ERR_TYPE) {
+        dobjerr("No such parameter as '%s'.", parname);
+        invalidate();
+        return false;
+    }
+
+    ui::dobjitem_list* items = wcnt::get_ui_dobjitem_list();
+    ui::dobjitem* item;
+    {
+        dobj::TYPE dt = dob->get_object_type();
+        item = items->get_first_of_type(dt);
+    }
+
+    ui::dobjparam* dp = 0;
+
+    while(item) {
+        if (item->get_item_type() == ui::UI_PARAM) {
+            dp = static_cast<ui::dobjparam*>(item);
+            if (*dp == partype)
+                break;
         }
-        dp = parlist->goto_next();
+        item = items->get_next_of_type();
     }
-    if (confused) {
-        dobjerr("There seems to be more than one parameter named %s "
-                                            "- this is a bug.", parname);
-        invalidate();
-        delete parlist;
-        return false;
-    }
-    if (pt == param::ERR_TYPE) {
+
+    if (!dp) {
         dobjerr("Data object %s does not have any parameter named %s.",
-                                        dobject->get_username(), parname);
+                                        dob->get_username(), parname);
         invalidate();
-        delete parlist;
         return false;
     }
-    if (!setpar::set_param(dobject, parname, pt, valstr, 0)) {
+
+    if (!setpar::set_param(dob, parname, partype, valstr, 0)) {
         dobjerr("%s", setpar::get_error_msg());
         invalidate();
-        delete parlist;
         return false;
     }
-    delete parlist;
+
     return true;
 }
 
@@ -210,14 +216,4 @@ const void* paramedit::get_param(param::TYPE dt) const
         default: return 0;
     }
 }
-
-void paramedit::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::STR_UNNAMED);
-    register_param(param::STR_LIST);
-}
-
-
 

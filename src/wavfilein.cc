@@ -1,16 +1,19 @@
 #include "../include/wavfilein.h"
-#include "../include/jwm_globals.h"
-#include "../include/jwm_init.h"
+#include "../include/globals.h"
 #include "../include/conversions.h"
-#include "../include/dobjparamlist.h"
 
 
 wavfilein::wavfilein() :
- dobj(dataobj::DEF_WAVFILEIN),
+ dobj::base(dobj::DEF_WAVFILEIN),
  fname(0), rootnote(0),
  filein(0), status(WAV_STATUS_INIT)
 {
-    init_first();
+}
+
+void wavfilein::register_ui()
+{
+    register_param(param::FILENAME);
+    register_param(param::ROOT_NOTE);
 }
 
 wavfilein::~wavfilein()
@@ -69,7 +72,7 @@ void wavfilein::set_wav_filename(const char* filename)
 {
     if (fname)
         delete [] fname;
-    const char* path = jwm.path();
+    const char* path = wcnt::jwm.path();
     if (*filename == '/' || path == NULL) {
         fname = new char[strlen(filename)+1];
         strcpy(fname, filename);
@@ -98,9 +101,9 @@ WAV_STATUS wavfilein::open_wav()
 void wavfilein::set_root_note(const char* rn)
 {
     if (rootnote) delete [] rootnote;
-    rootnote = new char[jwm_init::note_array_size];
-    strncpy(rootnote, rn, jwm_init::note_name_len);
-    rootnote[jwm_init::note_name_len] = '\0';
+    rootnote = new char[wcnt::note_array_size];
+    strncpy(rootnote, rn, wcnt::note_name_len);
+    rootnote[wcnt::note_name_len] = '\0';
 }
 
 double wavfilein::get_root_phase_step() const
@@ -114,7 +117,7 @@ void wavfilein::read_wav_at(void * buf, samp_t smp)
     {
         sf_seek(filein, smp, SEEK_SET);
         sf_read_double(filein, (double*)buf,
-                       jwm_init::wav_buffer_size * sfinfo.channels);
+                       wcnt::wav_buffer_size * sfinfo.channels);
     }
 }
 
@@ -162,14 +165,4 @@ errors::TYPE wavfilein::validate()
     }
     return errors::NO_ERROR;
 }
-
-void wavfilein::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::FILENAME);
-    register_param(param::ROOT_NOTE);
-}
-
-
 

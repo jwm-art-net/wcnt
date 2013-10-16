@@ -84,9 +84,9 @@ yeah well --jwm2008.
 
 */
 
-class synthmod;
+namespace synthmod { class base; }
 
-class group : public dobj
+class group : public dobj::base
 {
  public:
     group();
@@ -95,22 +95,22 @@ class group : public dobj
     bool is_controlled()  const { return controlled; }
     void set_controlled() { controlled = true; }
 
-    synthmod* group_module(synthmod* s);
+    synthmod::base* group_module(synthmod::base* s);
 
-    void cancel_duplicate_status(){is_duplicate = false;}
+    void cancel_duplicate_status() { is_duplicate = false; }
     // virtuals from dobj
-    dobj* add_dobj(dobj*);
+    dobj::base* add_dobj(dobj::base*);
     errors::TYPE validate();
-    dobj* duplicate_dobj(const char*);
+    dobj::base* duplicate_dobj(const char*);
 
  private:
-    enum CLONE {DUPLICATE = 1};
+    enum CLONE { DUPLICATE = 1 };
     group(CLONE);
-    bool groupify(synthmod*);
+    bool groupify(synthmod::base*);
     bool is_duplicate;
     bool controlled; /* (by the group_control) */
 
-    void init_first();
+    void register_ui();
 };
 
 

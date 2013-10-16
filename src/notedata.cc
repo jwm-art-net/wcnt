@@ -1,8 +1,6 @@
 #include "../include/notedata.h"
-#include "../include/jwm_init.h"
-#include "../include/jwm_globals.h"
+#include "../include/globals.h"
 #include "../include/conversions.h"
-#include "../include/dobjparamlist.h"
 
 #ifdef NOTE_EDIT_DEBUG
 #include <iostream>
@@ -11,45 +9,47 @@
 
 
 note_data::note_data() :
- dobj(dataobj::SIN_NOTE),
+ dobj::base(dobj::SIN_NOTE),
  note_type(NOTE_TYPE_ERR),position(0), length(0), velocity(0)
 {
     notename[0] = '\0';
-    init_first();
-
-#ifdef DATA_STATS
-STATS_INC
-#endif
-
+    #ifdef DATA_STATS
+    STATS_INC
+    #endif
 }
+
+void note_data::register_ui()
+{
+    register_param(param::NAME);
+    register_param(param::NOTE_POS);
+    register_param(param::NOTE_LEN);
+    register_param(param::NOTE_VEL);
+}
+
 
 note_data::note_data(const char *name, double pos, double len, double vel)
  :
- dobj(dataobj::SIN_NOTE),
+ dobj::base(dobj::SIN_NOTE),
  note_type(NOTE_TYPE_ERR), position(pos), length(len), velocity(vel)
 {
     set_name(name);
-    init_first();
-
-#ifdef DATA_STATS
-STATS_INC
-#endif
+    #ifdef DATA_STATS
+    STATS_INC
+    #endif
 
 }
 
 note_data::~note_data()
 {
-
-#ifdef DATA_STATS
-STATS_DEC
-#endif
-
+    #ifdef DATA_STATS
+    STATS_DEC
+    #endif
 }
 
 void note_data::set_name(const char *name)
 {
-    strncpy(notename, name, jwm_init::note_name_len);
-    notename[jwm_init::note_name_len] = '\0';
+    strncpy(notename, name, wcnt::note_name_len);
+    notename[wcnt::note_name_len] = '\0';
     get_note_type();
 }
 
@@ -236,16 +236,6 @@ errors::TYPE note_data::validate()
         return errors::RANGE_COUNT;
 
     return errors::NO_ERROR;
-}
-
-void note_data::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::NAME);
-    register_param(param::NOTE_POS);
-    register_param(param::NOTE_LEN);
-    register_param(param::NOTE_VEL);
 }
 
 #ifdef DATA_STATS

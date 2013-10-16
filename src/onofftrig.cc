@@ -1,26 +1,30 @@
 
 #include "../include/onofftrig.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
 #include "../include/conversions.h"
 
 #include <math.h>
 
 onofftrig::onofftrig(const char* uname) :
- synthmod(module::ONOFFTRIG, uname, SM_HAS_OUT_TRIG),
+ synthmod::base(synthmod::ONOFFTRIG, uname, SM_HAS_OUT_TRIG),
  in_signal(0), out_trig(OFF), out_not_trig(OFF), out_attack_state(OFF),
  out_release_state(OFF), attack_time(0.0), release_time(0.0),
  attack_level(0.0), release_level(0.0), check_levels(OFF), 
  attack_samps(0), release_samps(0), do_attack(true)
 {
-    register_input(input::IN_SIGNAL);
     register_output(output::OUT_TRIG);
     register_output(output::OUT_NOT_TRIG);
     register_output(output::OUT_ATTACK_STATE);
     register_output(output::OUT_RELEASE_STATE);
-    init_first();
+}
+
+void onofftrig::register_ui()
+{
+    register_input(input::IN_SIGNAL);
+    register_param(param::ATTACK_TIME);
+    register_param(param::ATTACK_LEVEL);
+    register_param(param::RELEASE_TIME);
+    register_param(param::RELEASE_LEVEL);
+    register_param(param::CHECK_LEVELS);
 }
 
 onofftrig::~onofftrig()
@@ -169,13 +173,3 @@ void onofftrig::run()
     }
 }
 
-void onofftrig::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::ATTACK_TIME);
-    register_param(param::ATTACK_LEVEL);
-    register_param(param::RELEASE_TIME);
-    register_param(param::RELEASE_LEVEL);
-    register_param(param::CHECK_LEVELS);
-}

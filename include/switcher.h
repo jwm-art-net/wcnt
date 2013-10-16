@@ -5,18 +5,16 @@
 #include "linkedlist.h"
 #include "duplicate_list_module.h"
 
-class switcher: public synthmod, public linked_list<synthmod>
+class switcher: public synthmod::base, public linked_list<synthmod::base>
 {
 public:
     switcher(const char*);
     ~switcher();
 
-    friend synthmod*
-        duplicate_list_module<switcher, synthmod>
-            (switcher* sm, synthmod* _data,
-                const char* uname, synthmod::DUP_IO dupio);
-
-    // virtual funcs
+    friend synthmod::base*
+        duplicate_list_module<switcher, synthmod::base>
+                                (switcher*, synthmod::base*,
+                                const char* uname, synthmod::base::DUP_IO);
     void run();
     void init();
     errors::TYPE validate();
@@ -25,8 +23,8 @@ public:
     const void* get_in(input::TYPE) const;
     bool set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE) const;
-    synthmod* duplicate_module(const char* uname, DUP_IO);
-    dobj* add_dobj(dobj*);
+    synthmod::base* duplicate_module(const char*, synthmod::base::DUP_IO);
+    dobj::base* add_dobj(dobj::base*);
 private:
     STATUS const* in_trig;
     double xfadetime;
@@ -40,7 +38,7 @@ private:
     double const* sig;
     double const* prevsig;
     double zero;// for initial stuff
-    void init_first();
+    void register_ui();
 };
 
 #endif

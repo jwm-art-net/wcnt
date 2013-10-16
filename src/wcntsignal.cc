@@ -1,18 +1,17 @@
 #include "../include/wcntsignal.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
-#include "../include/connectorlist.h"
 
 wcnt_signal::wcnt_signal(const char* uname) :
- synthmod(module::WCNTSIGNAL, uname, SM_HAS_OUT_OUTPUT),
+ synthmod::base(synthmod::WCNTSIGNAL, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), out_output(0.0), level(0.0)
 {
-    register_input(input::IN_SIGNAL);
     register_output(output::OUT_OUTPUT);
     register_output(output::OUT_THROUGH);
-    init_first();
+}
+
+void wcnt_signal::register_ui()
+{
+    register_input(input::IN_SIGNAL);
+    register_param(param::LEVEL);
 }
 
 wcnt_signal::~wcnt_signal()
@@ -66,12 +65,5 @@ const void* wcnt_signal::get_param(param::TYPE pt) const
         case param::LEVEL: return &level;
         default: return 0;
     }
-}
-
-void wcnt_signal::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::LEVEL);
 }
 

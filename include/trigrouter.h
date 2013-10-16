@@ -17,7 +17,7 @@
 
 class group;
 
-class trigrouter: public synthmod
+class trigrouter: public synthmod::base
 {
  public:
     trigrouter(const char*);
@@ -42,8 +42,8 @@ class trigrouter: public synthmod
     group* grp;
     STATUS* trigs;
     wcint_t last_ix;
-    void init_first();
     void create_wcnt_triggers();
+    void register_ui();
 };
 
 #endif

@@ -112,8 +112,8 @@ class cmdline
     void help();
     void about();
 
-    void dobj_help(module::TYPE);
-    void dobj_help_params(dataobj::TYPE, int level);
+    void dobj_help(synthmod::TYPE);
+    void dobj_help_params(dobj::TYPE, int level);
 };
 
 #endif

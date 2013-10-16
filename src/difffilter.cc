@@ -1,15 +1,15 @@
 #include "../include/difffilter.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
 
 diff_filter::diff_filter(const char* uname) :
- synthmod(module::DIFFFILTER, uname, SM_HAS_OUT_OUTPUT),
+ synthmod::base(synthmod::DIFFFILTER, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), out_output(0.0), oldinsig(0.0)
 {
-    register_input(input::IN_SIGNAL);
     register_output(output::OUT_OUTPUT);
+}
+
+void diff_filter::register_ui()
+{
+    register_input(input::IN_SIGNAL);
 }
 
 diff_filter::~diff_filter()

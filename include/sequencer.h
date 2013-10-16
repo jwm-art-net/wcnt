@@ -30,7 +30,7 @@
 
 */
 
-class sequencer : public synthmod, public linked_list<riff_node>
+class sequencer : public synthmod::base, public linked_list<riff_node>
 {
  public:
     sequencer(const char*);
@@ -51,8 +51,8 @@ class sequencer : public synthmod, public linked_list<riff_node>
     const void* get_in(input::TYPE) const;
     bool set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE) const;
-    synthmod* duplicate_module(const char* uname, DUP_IO dupio);
-    dobj* add_dobj(dobj*);
+    synthmod::base* duplicate_module(const char* uname, DUP_IO dupio);
+    dobj::base* add_dobj(dobj::base*);
  private:
     // ***** inputs *****
     const STATUS* in_bar_trig;
@@ -106,7 +106,7 @@ class sequencer : public synthmod, public linked_list<riff_node>
     void init_next_note(ll_item<note_data>* riff_note_item);
     void output_note(note_data* note);
     // synthmod stuff
-    void init_first();
+    void register_ui();
 };
 
 #endif

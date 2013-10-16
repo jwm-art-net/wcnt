@@ -2,8 +2,10 @@
 #define ECHO_H
 
 #include "gain.h"
+#include "synthmod.h"
 
-class echo : public synthmod, public gain
+
+class echo : public synthmod::base, public gain
 {
 public:
     echo(const char*);
@@ -38,7 +40,7 @@ private:
     double filtertotal;
     double feedamount;
     // synthmod kind of stuff
-    void init_first();
+    void register_ui();
 };
 
 #endif

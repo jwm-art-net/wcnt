@@ -13,7 +13,7 @@
 // connection could not be made.
 */
 
-class stereo_channel : public synthmod
+class stereo_channel : public synthmod::base
 {
 public:
     stereo_channel(const char*);
@@ -29,6 +29,7 @@ public:
 private:
     const double* io_left;
     const double* io_right;
+    void register_ui();
 };
 
 #endif

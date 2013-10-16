@@ -4,7 +4,7 @@
 #include "paramedit.h"
 #include "linkedlist.h"
 
-class parameditor : public dobj, public linked_list<paramedit>
+class parameditor : public dobj::base, public linked_list<paramedit>
 {
  public:
     parameditor();
@@ -18,10 +18,10 @@ class parameditor : public dobj, public linked_list<paramedit>
         return errors::NO_ERROR;
     }
 
-    dobj const* add_dobj(dobj* dbj);
+    const dobj::base* add_dobj(dobj::base* dbj);
 
  private:
-    void init_first();
+    void register_ui();
 };
 
 #endif

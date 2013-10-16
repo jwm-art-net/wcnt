@@ -6,7 +6,7 @@
 // bit of a relic from way back when the trig_switcher was first
 // implemented and could only accept wcnt_trigger modules.
 
-class wcnt_trigger : public synthmod
+class wcnt_trigger : public synthmod::base
 {
  public:
     wcnt_trigger(const char*);
@@ -19,6 +19,7 @@ class wcnt_trigger : public synthmod
 
  private:
     const STATUS* in_trig;
+    void register_ui();
 };
 
 #endif

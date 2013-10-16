@@ -1,19 +1,21 @@
 #include "../include/pan.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
+#include "../include/globals.h"
 
 pan::pan(const char* uname) :
- synthmod(module::PAN, uname, SM_HAS_STEREO_OUTPUT),
+ synthmod::base(synthmod::PAN, uname, SM_HAS_STEREO_OUTPUT),
  in_signal(0), in_pan_mod(0), out_l(0), out_r(0), panpos(0),
  pan_modsize(0), pan_mod(0), pan_pos(0)
 {
-    register_input(input::IN_SIGNAL);
-    register_input(input::IN_PAN_MOD);
     register_output(output::OUT_LEFT);
     register_output(output::OUT_RIGHT);
-    init_first();
+}
+
+void pan::register_ui()
+{
+    register_input(input::IN_SIGNAL);
+    register_param(param::PAN);
+    register_input(input::IN_PAN_MOD);
+    register_param(param::PAN_MODSIZE);
 }
 
 pan::~pan()
@@ -101,12 +103,3 @@ void pan::run()
     }
 }
 
-
-
-void pan::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::PAN);
-    register_param(param::PAN_MODSIZE);
-}

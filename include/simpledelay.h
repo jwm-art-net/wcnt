@@ -3,9 +3,9 @@
 
 #include "synthmod.h"
 
-class simple_delay : public synthmod
+class simple_delay : public synthmod::base
 {
-public:
+ public:
     simple_delay(const char*);
     ~simple_delay();
     void run();
@@ -17,7 +17,7 @@ public:
     bool set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE) const;
 
-private:
+ private:
     // inputs
     const double* in_signal;
     // outputs
@@ -30,7 +30,7 @@ private:
     long filterarraymax;
     long fpos;
     double filtertotal;
-    void init_first();
+    void register_ui();
 };
 
 #endif

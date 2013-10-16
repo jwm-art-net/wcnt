@@ -1,28 +1,28 @@
 #include "../include/groupcontrol.h"
-#include "../include/jwm_globals.h"
-#include "../include/modinputlist.h"
-#include "../include/modoutputlist.h"
-#include "../include/modparamlist.h"
-#include "../include/synthmodlist.h"
-#include "../include/group.h"
 #include "../include/dobjlist.h"
-#include "../include/jwm_init.h"
+#include "../include/globals.h"
+#include "../include/group.h"
+#include "../include/synthmodlist.h"
 
 #include <iostream>
 #include <sstream>
 
 group_control::group_control(const char* uname) :
- synthmod(module::GROUPCONTROL, uname, SM_UNGROUPABLE | SM_UNDUPLICABLE),
+ synthmod::base(synthmod::GROUPCONTROL, uname, SM_UNGROUPABLE | SM_UNDUPLICABLE),
  in_play_trig(0), in_stop_trig(0),
  out_play_state(OFF),
  group_name(0),
  stop_pending(0),
  grp(0), runlist(0), empty_run_list(0)
 {
+    register_output(output::OUT_PLAY_STATE);
+}
+
+void group_control::register_ui()
+{
     register_input(input::IN_PLAY_TRIG);
     register_input(input::IN_STOP_TRIG);
-    register_output(output::OUT_PLAY_STATE);
-    init_first();
+    register_param(param::GROUP_NAME);
 }
 
 group_control::~group_control()
@@ -101,17 +101,16 @@ void group_control::init()
     // MUST have been created BEFORE the group_control - - - -
     // the modules will ALREADY have been initialised (and validated).
 
-    synthmodlist::linkedlist*
-        grpmodlist = jwm.get_modlist()
+    synthmod::list::linkedlist*
+        grpmodlist = wcnt::jwm.get_modlist()
             ->remove_modules_of_group(group_name);
 
     if (!grpmodlist) {
         invalidate();
         return;
     }
-    synthmodlist::linkedlist*
-        emptyrunlist =
-            move_to_new_list_of_by(grpmodlist, synthmod::SM_EMPTY_RUN);
+    synthmod::list::linkedlist* emptyrunlist =
+        move_to_new_list_of_by(grpmodlist, synthmod::base::SM_EMPTY_RUN);
     empty_run_list = move_to_array(emptyrunlist);
     emptyrunlist->empty_list(PRESERVE_DATA);
     delete emptyrunlist;
@@ -132,7 +131,7 @@ void group_control::run()
         stop_pending = false;
     }
     else if (*in_stop_trig == ON)
-        stop_pending = jwm_init::group_control_stopping_samples;
+        stop_pending = wcnt::group_control_stopping_samples;
     else if (stop_pending > 0) {
         stop_pending--;
         if (stop_pending == 0)
@@ -140,7 +139,7 @@ void group_control::run()
     }
     if (out_play_state == ON) {
         long count = 0;
-        synthmod* sm = runlist[0];
+        synthmod::base* sm = runlist[0];
         while(sm) {
             sm->run();
             sm = runlist[++count];
@@ -158,13 +157,13 @@ bool group_control::set_group_name(const char* name)
     // group_control must be forced into being created only
     // after the group it is to control has been created.
 
-    dobj* grp_dbj = jwm.get_dobjlist()->get_dobj_by_name(group_name);
+    dobj::base* grp_dbj =wcnt::get_dobjlist()->get_dobj_by_name(group_name);
     if (!grp_dbj) {
         invalidate();
         sm_err("No group named %s exists.", group_name);
         return false;
     }
-    if (grp_dbj->get_object_type() != dataobj::DEF_GROUP){
+    if (grp_dbj->get_object_type() != dobj::DEF_GROUP){
         invalidate();
         sm_err("%s is not a group.", group_name);
         return false;
@@ -179,12 +178,5 @@ bool group_control::set_group_name(const char* name)
     grp->set_controlled();
     return true;
 
-}
-
-void group_control::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::GROUP_NAME);
 }
 

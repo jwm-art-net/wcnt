@@ -1,15 +1,17 @@
-#ifndef JWMSYNTH
-#define JWMSYNTH
+#ifndef WCNT_SYNTH_H
+#define WCNT_SYNTH_H
 
 #include "types.h"
 
 class synthfilereader;
 
-class jwmsynth
+namespace wcnt
 {
- public:
-    jwmsynth();
-    ~jwmsynth();
+ class synth
+ {
+  public:
+    synth();
+    ~synth();
 
     // must call these functions  in order stated
     bool is_valid() const { return valid;}// 1
@@ -21,18 +23,19 @@ class jwmsynth
 
     const char* get_error_msg() const { return err_msg;}
 
- private:
-//--- dobj and synthmod static member variables ---//
+  private:
+    //--- dobj and synthmod static member variables ---//
     synthfilereader* synthfile_reader;
 
-//--- validation and error messages ---//
+    //--- validation and error messages ---//
     bool valid;
     char err_msg[STRBUFLEN];
 
-//--- when to stop ---//
+    //--- when to stop ---//
     wcint_t exit_bar;
     const STATUS* in_bar_trig;
     const wcint_t*  in_bar;
+ };
 };
 
 #endif

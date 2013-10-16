@@ -1,24 +1,24 @@
 #include "../include/wcnt_note.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
 
 wcnt_note::wcnt_note(const char* uname) :
- synthmod(module::WCNT_NOTE, uname, SM_EMPTY_RUN),
+ synthmod::base(synthmod::WCNT_NOTE, uname, SM_EMPTY_RUN),
  io_note_on_trig(0), io_note_slide_trig(0), io_note_off_trig(0),
  io_freq(0), io_velocity(0)
+{
+    register_output(output::OUT_NOTE_ON_TRIG);
+    register_output(output::OUT_NOTE_SLIDE_TRIG);
+    register_output(output::OUT_NOTE_OFF_TRIG);
+    register_output(output::OUT_FREQ);
+    register_output(output::OUT_VELOCITY);
+}
+
+void wcnt_note::register_ui()
 {
     register_input(input::IN_NOTE_ON_TRIG);
     register_input(input::IN_NOTE_SLIDE_TRIG);
     register_input(input::IN_NOTE_OFF_TRIG);
     register_input(input::IN_FREQ);
     register_input(input::IN_VELOCITY);
-
-    register_output(output::OUT_NOTE_ON_TRIG);
-    register_output(output::OUT_NOTE_SLIDE_TRIG);
-    register_output(output::OUT_NOTE_OFF_TRIG);
-    register_output(output::OUT_FREQ);
-    register_output(output::OUT_VELOCITY);
 }
 
 wcnt_note::~wcnt_note()

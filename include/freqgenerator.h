@@ -3,7 +3,7 @@
 
 #include "synthmod.h"
 
-class freq_generator : public synthmod
+class freq_generator : public synthmod::base
 {
 public:
     freq_generator(const char*);
@@ -28,7 +28,7 @@ private:
     sig_step_size,
     freq_step_size;
     wcint_t step_count;
-    void init_first();
+    void register_ui();
 };
 
 #endif

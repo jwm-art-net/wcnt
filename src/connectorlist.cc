@@ -1,6 +1,6 @@
 #include "../include/connectorlist.h"
 #include "../include/synthmod.h"
-#include "../include/jwm_globals.h"
+#include "../include/globals.h"
 #include "../include/listwork.h"
 
 #include <iostream>
@@ -15,7 +15,8 @@ connectorlist::~connectorlist()
 }
 
 connector*
-connectorlist::get_connector_by_input(const synthmod* sm, input::TYPE it)
+connectorlist::get_connector_by_input(const synthmod::base* sm,
+                                                input::TYPE it)
 {
     if (!sm)
         return 0;
@@ -36,6 +37,19 @@ connector* connectorlist::add_connector(connector* c)
     return add_at_head(c)->get_data();
 }
 
+connector* connectorlist::add_connector(synthmod::base* sm, input::TYPE it,
+                                    const char* out_mod, output::TYPE ot)
+{
+    connector* c = new connector(sm, it, out_mod, ot);
+    if (c) {
+        if (!add_at_head(c)) {
+            delete c;
+            c = 0;
+        }
+    }
+    return c;
+}
+
 bool connectorlist::delete_connector(connector* c)
 {
     if (!c)
@@ -49,8 +63,8 @@ bool connectorlist::delete_connector(connector* c)
 }
 
 bool
-connectorlist::duplicate_connections(
-    const synthmod* from_mod, synthmod* to_mod)
+connectorlist::duplicate_connections(const synthmod::base* from_mod,
+                                           synthmod::base* to_mod)
 {
     if (from_mod->get_module_type() != to_mod->get_module_type())
         return false;
@@ -65,7 +79,7 @@ connectorlist::duplicate_connections(
 
 connectorlist::linkedlist*
 connectorlist::duplicate_connections_for_module(
-    const synthmod* from_mod, synthmod* to_mod)
+                const synthmod::base* from_mod, synthmod::base* to_mod)
 {
     if (from_mod->get_module_type() != to_mod->get_module_type())
         return 0;
@@ -89,7 +103,7 @@ connectorlist::reconnect_output_module_by_name(
     while(connect) {
         if (strcmp(connect->get_output_module_name(), from) == 0) {
             connect->set_output_module_name(to);
-            if (jwm.is_verbose()) {
+            if (wcnt::jwm.is_verbose()) {
                 cmsg = "\nreforming connection: ";
                 cmsg += connect->get_input_module()->get_username();
                 cmsg += " ";
@@ -114,7 +128,7 @@ bool connectorlist::make_connections()
     while(connect){
         if (!connect->connect())
             return false;
-        if (jwm.is_verbose()) {
+        if (wcnt::jwm.is_verbose()) {
             const char* spc = spaces::get(40);
             cmsg = connect->get_output_module_name();
             cmsg += " ";
@@ -170,7 +184,7 @@ connectorlist::remake_connections(
     llitem* i = find_in_data(sneak_first(), name(smname));
     if (!i)
         return false;
-    if (jwm.is_verbose())
+    if (wcnt::jwm.is_verbose())
         std::cout << "\nRemaking connections for " << smname;
     while(i){
         connector* connect = i->get_data();

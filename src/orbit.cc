@@ -1,26 +1,30 @@
 #include "../include/orbit.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
-#include "../include/fxsparamlist.h"
+#include "../include/globals.h"
 
 #include <iostream>
 #include <math.h>
 
 orbit::orbit(const char* uname) :
- synthmod(module::ORBIT, uname, SM_DEFAULT),
+ synthmod::base(synthmod::ORBIT, uname, SM_DEFAULT),
  out_x(0.0), out_y(0.0),
  in_restart_trig(0), in_trig(0), type(ORB_HOPALONG),
  const_a(0.0), const_b(0.0), const_c(0.0),
  test_iter(0),
  x(0.0), y(0.0), scale(1.0), cos_b_pc(0), sin_abc(0)
 {
-    register_input(input::IN_RESTART_TRIG);
-    register_input(input::IN_TRIG);
     register_output(output::OUT_X);
     register_output(output::OUT_Y);
-    init_first();
+}
+
+void orbit::register_ui()
+{
+    register_param(param::ORBIT_TYPE, "hopalong/threeply/quadrup");
+    register_input(input::IN_TRIG);
+    register_input(input::IN_RESTART_TRIG);
+    register_param(param::A);
+    register_param(param::B);
+    register_param(param::C);
+    register_param(param::TEST_ITER);
 }
 
 orbit::~orbit()
@@ -119,10 +123,10 @@ void orbit::init()
     if(max < -max_ny) max = -max_ny;
     if(max < max_py) max = max_py;
     scale = 1 / max;
-    if(jwm.is_verbose()){
+    if(wcnt::jwm.is_verbose()){
         std::cout << "\ntest report for orbit synthmod";
         std::cout << "\n------------------------------";
-        std::cout << "\nmodule name: " << synthmod::get_username();
+        std::cout << "\nmodule name: " << get_username();
         std::cout << "\n after " << test_iter << " iterations...";
         std::cout << "\n x range: " << max_nx << " " << max_px;
         std::cout << "\n y range: " << max_ny << " " << max_py;
@@ -179,14 +183,4 @@ const void* orbit::get_out(output::TYPE ot) const
     }
 }
 
-void orbit::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::ORBIT_TYPE, "hopalong/threeply/quadrup");
-    register_param(param::A);
-    register_param(param::B);
-    register_param(param::C);
-    register_param(param::TEST_ITER);
-}
 

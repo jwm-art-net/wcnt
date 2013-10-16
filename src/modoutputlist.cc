@@ -1,5 +1,5 @@
 #include "../include/modoutputlist.h"
-#include "../include/jwm_globals.h"
+#include "../include/globals.h"
 #include "../include/synthmod.h"
 #include "../include/listwork.h"
 
@@ -9,7 +9,7 @@ modoutputlist::modoutputlist(DESTRUCTION d) :
 }
 
 modoutput*
-modoutputlist::register_output(synthmod* sm, output::TYPE ot)
+modoutputlist::register_output(synthmod::base* sm, output::TYPE ot)
 {
     modoutput* mo = new modoutput(sm, ot);
     if (!add_at_tail(mo)){
@@ -19,7 +19,7 @@ modoutputlist::register_output(synthmod* sm, output::TYPE ot)
     return mo;
 }
 
-void modoutputlist::delete_module_outputs(synthmod* sm)
+void modoutputlist::delete_module_outputs(synthmod::base* sm)
 {
     llitem* outitem = find_in_data(sneak_first(), sm);
     while(outitem) {
@@ -42,20 +42,20 @@ modoutputlist* modoutputlist::list_of_category(iocat::TYPE oc)
     {
         output::TYPE ot = output->get_outputtype();
         if (output::names::category(ot) == oc)
-            outcatlist->register_output(output->get_synthmodule(), ot);
+            outcatlist->register_output(output->get_module(), ot);
         output = goto_next();
     }
     return outcatlist;
 }
 
 #ifdef UNUSED
-bool modoutputlist::is_registered(synthmod* mod)
+bool modoutputlist::is_registered(synthmod::base* sm)
 {
-    if (!mod)
+    if (!sm)
         return 0;
     modoutput* output = goto_first();
     while(output) {
-        if (output->get_synthmodule() == mod)
+        if (output->get_synthmodule() == sm)
             return true;
         output = goto_next();
     }
@@ -64,7 +64,7 @@ bool modoutputlist::is_registered(synthmod* mod)
 
 modoutputlist* modoutputlist::list_of_category_orderpref(
                                     iocat::TYPE out_cat,
-                                    module::TYPE* sm_prefs,
+                                    synthmod::TYPE* sm_prefs,
                                     output::TYPE* out_prefs,
                                     output::TYPE* not_out_prefs);
 {

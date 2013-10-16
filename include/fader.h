@@ -3,7 +3,7 @@
 
 #include "synthmod.h"
 
-class fader: public synthmod
+class fader: public synthmod::base
 {
  public:
     fader(const char*);
@@ -41,8 +41,8 @@ class fader: public synthmod
     double  fosz;
 
     int     state;
+    void register_ui();
 
-    void init_first();
 };
 
 #endif

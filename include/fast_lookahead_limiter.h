@@ -28,7 +28,7 @@ Ports:
     8 "latency" output, control
 */
 
-class fast_lookahead_limiter : public synthmod
+class fast_lookahead_limiter : public synthmod::base
 {
  public:
     fast_lookahead_limiter(const char*);
@@ -68,8 +68,7 @@ class fast_lookahead_limiter : public synthmod
     LADSPA_Data* l_out_left;
     LADSPA_Data* l_out_right;
     LADSPA_Data  l_out_latency;
-
-    void init_first();
+    void register_ui();
 };
 
 #endif // WITH_LADSPA

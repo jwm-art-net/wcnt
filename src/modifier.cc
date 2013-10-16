@@ -1,21 +1,22 @@
 #include "../include/modifier.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
-#include "../include/fxsparamlist.h"
 
 modifier::modifier(const char* uname) :
- synthmod(module::MODIFIER, uname, SM_HAS_OUT_OUTPUT),
+ synthmod::base(synthmod::MODIFIER, uname, SM_HAS_OUT_OUTPUT),
  in_signal1(0), in_signal2(0), in_bias(0),
  out_output(0),
  func(ADD), type(M1)
 {
+    register_output(output::OUT_OUTPUT);
+}
+
+void modifier::register_ui()
+{
     register_input(input::IN_SIGNAL1);
     register_input(input::IN_SIGNAL2);
     register_input(input::IN_BIAS);
-    register_output(output::OUT_OUTPUT);
-    init_first();
+    register_param(param::FUNC, "add/sub/mul");
+    register_param(param::MODIFIER_TYPE, "m1/m2");
+//  register_param(param::BIAS);
 }
 
 modifier::~modifier()
@@ -120,14 +121,4 @@ void modifier::run()
     }
 }
 
-void modifier::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::FUNC, "add/sub/mul");
-    register_param(param::MODIFIER_TYPE, "m1/m2");
-/*
-    register_param(param::BIAS);
-*/
-}
 

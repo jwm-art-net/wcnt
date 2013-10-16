@@ -1,19 +1,22 @@
 #include "../include/bpmchange.h"
-#include "../include/jwm_globals.h"
-#include "../include/dobjparamlist.h"
 
 
 bpmchange::bpmchange() :
- dobj(dataobj::SIN_BPM), atbar(0), tobpm(0)
+ dobj::base(dobj::SIN_BPM), atbar(0), tobpm(0)
 {
-    init_first();
 }
 
 bpmchange::bpmchange(wcint_t bar, double bpm) :
- dobj(dataobj::SIN_BPM),
+ dobj::base(dobj::SIN_BPM),
  atbar(bar), tobpm(bpm)
 {
-    init_first();
+}
+
+
+void bpmchange::register_ui()
+{
+    register_param(param::BPM);
+    register_param(param::BAR);
 }
 
 bool bpmchange::set_param(param::TYPE pt, const void* data)
@@ -45,13 +48,5 @@ errors::TYPE bpmchange::validate()
         return errors::RANGE_COUNT;
 
     return errors::NO_ERROR;
-}
-
-void bpmchange::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::BPM);
-    register_param(param::BAR);
 }
 

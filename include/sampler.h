@@ -9,9 +9,9 @@
 class wavfilein;
 class st_data;
 
-class sampler : public synthmod
+class sampler : public synthmod::base
 {
-public:
+ public:
     sampler(const char*);
     ~sampler();
     // virtual funcs
@@ -24,7 +24,7 @@ public:
     bool set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE) const;
 
-private:
+ private:
     // inputs
     const STATUS* in_play_trig;
     const STATUS* in_stop_trig;
@@ -110,7 +110,7 @@ private:
     void ac_mix_rev_mono(double*);
     void ac_mix_rev_stereo(st_data*);
     // synthmod stuff
-    void init_first();
+    void register_ui();
 };
 
 #endif

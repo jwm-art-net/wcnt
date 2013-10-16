@@ -3,7 +3,7 @@
 
 #include "synthmod.h"
 
-class balance : public synthmod
+class balance : public synthmod::base
 {
 public:
     balance(const char*);
@@ -23,7 +23,7 @@ private:
     double out_output;
     FUNC func;
     double bias;
-    void init_first();
+    void register_ui();
 };
 
 #endif

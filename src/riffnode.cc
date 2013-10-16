@@ -1,21 +1,26 @@
 #include "../include/riffnode.h"
-#include "../include/jwm_globals.h"
-#include "../include/topdobjlist.h"
-#include "../include/dobjparamlist.h"
+#include "../include/globals.h"
 
 
 riff_node::riff_node() :
- dobj(dataobj::SIN_RIFFNODE), start_bar(0), riff_source(0),
+ dobj::base(dobj::SIN_RIFFNODE), start_bar(0), riff_source(0),
  transpose(0), repeat(0), repeat_stripe(0)
 {
-    init_first();
 }
 
 riff_node::riff_node(riffdata* rd, wcint_t barpos) :
- dobj(dataobj::SIN_RIFFNODE), start_bar(barpos), riff_source(rd),
+ dobj::base(dobj::SIN_RIFFNODE), start_bar(barpos), riff_source(rd),
  transpose(0), repeat(0), repeat_stripe(0)
 {
-    init_first();
+}
+
+void riff_node::register_ui()
+{
+    register_param(param::RIFFNAME);
+    register_param(param::BAR);
+    register_param(param::TRANSPOSE);
+    register_param(param::REPEAT);
+    register_param(param::REPEAT_STRIPE);
 }
 
 riff_node::~riff_node()
@@ -69,7 +74,7 @@ const void* riff_node::get_param(param::TYPE pt) const
 
 errors::TYPE riff_node::validate()
 {
-    if (((dobj*)riff_source)->get_object_type() != dataobj::DEF_RIFF) 
+    if (((dobj::base*)riff_source)->get_object_type() != dobj::DEF_RIFF) 
     {
         dobjerr("%s is not a riff and cannot be used as one.",
                                     riff_source->get_username());
@@ -89,16 +94,5 @@ errors::TYPE riff_node::validate()
         return errors::RANGE_SEMI2;
 
     return errors::NO_ERROR;
-}
-
-void riff_node::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::RIFFNAME);
-    register_param(param::BAR);
-    register_param(param::TRANSPOSE);
-    register_param(param::REPEAT);
-    register_param(param::REPEAT_STRIPE);
 }
 

@@ -3,7 +3,7 @@
 
 #include "synthmod.h"
 
-class clockclock : public synthmod
+class clockclock : public synthmod::base
 {
  public:
     clockclock(const char* uname);
@@ -25,7 +25,7 @@ class clockclock : public synthmod
     double freq_mod1size;
     double mod1size;
     double degs;
-    void init_first();
+    void register_ui();
 };
 
 #endif

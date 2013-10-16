@@ -1,6 +1,6 @@
 #include "../include/dobjnames.h"
 
-namespace dataobj
+namespace dobj
 {
  const struct names::gn_data names::data[LAST_TYPE] =
  {
@@ -44,5 +44,5 @@ namespace dataobj
     { DEF_ADSR_SCALER,  "adsr_scaler",      CAT_DEF,    "Allows editing of ADSR envelopes after their creation/duplication." },
     { DOBJ_SYNTHMOD,    "synthmod",         CAT_SYNTHMOD, "Module to process." }
  };
-}; // namespace dataobj
+}; // namespace dobj
 

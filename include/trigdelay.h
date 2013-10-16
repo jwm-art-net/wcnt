@@ -3,7 +3,7 @@
 
 #include "synthmod.h"
 
-class trigdelay : public synthmod
+class trigdelay : public synthmod::base
 {
 public:
     trigdelay(const char*);
@@ -28,7 +28,7 @@ private:
     STATUS* past_trigs; //array
     long pastmax;
     long pastpos;
-    void init_first();
+    void register_ui();
 };
 
 #endif

@@ -26,7 +26,7 @@ Ports: 0 "Attack time (ms)" input, control, 2 to 400, default 101.5
        7 "Output" output, audio
 */
 
-class sc1 : public synthmod
+class sc1 : public synthmod::base
 {
  public:
     sc1(const char*);
@@ -69,8 +69,7 @@ class sc1 : public synthmod
     LADSPA_Data  l_makeup;
     LADSPA_Data* l_input;
     LADSPA_Data* l_output;
-
-    void init_first();
+    void register_ui();
 };
 
 #endif // WITH_LADSPA

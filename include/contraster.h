@@ -12,7 +12,7 @@
 // yeah, um, right, my version does not do quite the same thing, but it
 // does something to the sound which is enough in my book....
 
-class contraster : public synthmod
+class contraster : public synthmod::base
 {
 public:
     contraster(const char*);
@@ -39,7 +39,7 @@ private:
     double power_mod;
     double powerrad;
     double output;
-    void init_first();
+    void register_ui();
 };
 
 #endif

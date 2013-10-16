@@ -3,7 +3,7 @@
 
 #include "synthmod.h"
 
-class constant_freq : public synthmod
+class constant_freq : public synthmod::base
 {
 public:
     constant_freq(const char*);
@@ -18,7 +18,7 @@ public:
 private:
     double out_freq; /* is param and output */
     double out_phase_step;
-    void init_first();
+    void register_ui();
 };
 
 #endif

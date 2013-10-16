@@ -22,7 +22,7 @@ Ports:  "Cutoff Frequency" input, control, 1e-04*srate to 0.45*srate, default 0.
         "Output" output, audio
 */
 
-class glame_filter : public synthmod
+class glame_filter : public synthmod::base
 {
  public:
     glame_filter(const char*);
@@ -64,8 +64,7 @@ class glame_filter : public synthmod
     // working
     float min_cutoff;
     float max_cutoff;
-
-    void init_first();
+    void register_ui();
 };
 
 #endif // WITH_LADSPA

@@ -1,14 +1,16 @@
 #include "../include/wcnttrigger.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
 
 wcnt_trigger::wcnt_trigger(const char* uname) :
- synthmod(module::WCNTTRIGGER, uname, SM_EMPTY_RUN | SM_HAS_OUT_TRIG),
+ synthmod::base(synthmod::WCNTTRIGGER, uname, SM_EMPTY_RUN |
+                                              SM_HAS_OUT_TRIG),
  in_trig(0)
 {
-    register_input(input::IN_TRIG);
     register_output(output::OUT_TRIG);
+}
+
+void wcnt_trigger::register_ui()
+{
+    register_input(input::IN_TRIG);
 }
 
 wcnt_trigger::~wcnt_trigger()

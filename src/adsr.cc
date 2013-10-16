@@ -1,14 +1,8 @@
 #include "../include/adsr.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
-#include "../include/moddobjlist.h"
-#include "../include/dobjdobjlist.h"
 #include "../include/conversions.h"
 
 adsr::adsr(const char* uname) :
- synthmod(module::ADSR, uname, SM_HAS_OUT_OUTPUT),
+ synthmod::base(synthmod::ADSR, uname, SM_HAS_OUT_OUTPUT),
  in_note_on_trig(0), in_note_off_trig(0), in_velocity(0), output(0),
  out_off_trig(OFF), play_state(OFF), up_thresh(0), lo_thresh(0),
  start_level(0), min_time(0), max_sus_time(0), sustain_status(OFF),
@@ -18,16 +12,27 @@ adsr::adsr(const char* uname) :
  run_coords(0), coord(0), coord_ix(0),
  decay_ix(0), sustain_ix(0), release_ix(0)
 {
-    register_input(input::IN_NOTE_ON_TRIG);
-    register_input(input::IN_NOTE_OFF_TRIG);
-    register_input(input::IN_VELOCITY);
     register_output(output::OUT_OUTPUT);
     register_output(output::OUT_OFF_TRIG);
     register_output(output::OUT_PLAY_STATE);
 
     add_at_head(new adsr_coord(adsr_coord::ADSR_SUSTAIN, 0 ,0 ,0 ,0));
+}
 
-    init_first();
+void adsr::register_ui()
+{
+    register_input(input::IN_NOTE_ON_TRIG);
+    register_param(param::ZERO_RETRIGGER);
+    register_input(input::IN_NOTE_OFF_TRIG);
+    register_input(input::IN_VELOCITY);
+    register_param(param::START_LEVEL);
+    register_dobj(dobj::LST_ENVELOPE, dobj::SIN_COORD);
+    register_param(param::UP_THRESH);
+    register_param(param::LO_THRESH);
+    register_param(param::MIN_TIME);
+    register_param(param::SUSTAIN_STATUS);
+    register_param(param::MAX_SUSTAIN_TIME);
+    register_param(param::RELEASE_RATIO);
 }
 
 adsr::~adsr()
@@ -155,13 +160,13 @@ errors::TYPE adsr::validate()
     return errors::NO_ERROR;
 }
 
-dobj* adsr::add_dobj(dobj* dbj)
+dobj::base* adsr::add_dobj(dobj::base* dbj)
 {
-    dobj* retv = 0;
-    dataobj::TYPE dbjtype = dbj->get_object_type();
+    dobj::base* retv = 0;
+    dobj::TYPE dbjtype = dbj->get_object_type();
     switch(dbjtype)
     {
-    case dataobj::SIN_COORD:
+    case dobj::SIN_COORD:
         if (!(retv = insert_coord((adsr_coord*)dbj)))
             sm_err("Could not add section to %s.", get_username());
         break;
@@ -183,8 +188,8 @@ adsr_coord* adsr::insert_coord(adsr_coord* ac)
     return tmp->get_data();
 }
 
-adsr_coord* adsr::insert_coord(
- adsr_coord::SECT adsrsect, double ut, double ul, double lt, double ll)
+adsr_coord* adsr::insert_coord(adsr_coord::SECT adsrsect,
+                               double ut, double ul, double lt, double ll)
 {
     adsr_coord* nc = new adsr_coord(adsrsect, ut, ul, lt, ll);
     if (!insert_coord(nc)) {
@@ -334,7 +339,7 @@ void adsr::ready_section()
     }
 }
 
-synthmod* adsr::duplicate_module(const char* uname, DUP_IO dupio)
+synthmod::base* adsr::duplicate_module(const char* uname, DUP_IO dupio)
 {
     adsr* dupadsr = new adsr(uname);
     if (dupio == AUTO_CONNECT)
@@ -355,18 +360,3 @@ synthmod* adsr::duplicate_module(const char* uname, DUP_IO dupio)
     return dupadsr;
 }
 
-
-void adsr::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::UP_THRESH);
-    register_param(param::LO_THRESH);
-    register_param(param::START_LEVEL);
-    register_param(param::MIN_TIME);
-    register_param(param::MAX_SUSTAIN_TIME);
-    register_param(param::RELEASE_RATIO);
-    register_param(param::SUSTAIN_STATUS);
-    register_param(param::ZERO_RETRIGGER);
-    register_moddobj(dataobj::LST_ENVELOPE, dataobj::SIN_COORD);
-}

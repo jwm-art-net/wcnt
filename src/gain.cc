@@ -1,19 +1,18 @@
 #include "../include/gain.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
 
 
 #include <iostream>
 
-gain::gain(synthmod* _sm) :
- smod(_sm),
+gain::gain(synthmod::base* _sm) :
+ modpart::base(_sm),
  in_mod(0), level(0.0), mod_amount(0.0), center(0.0), half_range(0.0)
 {
-    register_sm_input(input::IN_SIGNAL);
-    register_sm_input(input::IN_GAIN_MOD);
-    init_first();
+    if (!sm_done_first()) {
+        register_sm_input(input::IN_SIGNAL);
+        register_sm_param(param::GAIN);
+        register_sm_input(input::IN_GAIN_MOD);
+        register_sm_param(param::GAIN_MODSIZE);
+    }
 }
 
 gain::~gain()
@@ -80,14 +79,5 @@ errors::TYPE gain::validate()
         return errors::RANGE_0_1;
 
     return errors::NO_ERROR;
-}
-
-void gain::init_first()
-{
-    if (sm_done_first())
-        return;
-    std::cout << "registering smod/gain params...\n";
-    register_sm_param(param::GAIN);
-    register_sm_param(param::GAIN_MODSIZE);
 }
 

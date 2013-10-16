@@ -13,7 +13,7 @@
 
 */
 
-class inspect : public synthmod
+class inspect : public synthmod::base
 {
  public:
     inspect(const char*);
@@ -46,7 +46,7 @@ class inspect : public synthmod
     char* str_msg;
 
     void set_message(const char* msg_from, char** msg_to);
-    void init_first();
+    void register_ui();
 };
 
 #endif

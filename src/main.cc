@@ -20,11 +20,12 @@
 #include <iomanip>
 
 #include "../include/cmdline.h"
-#include "../include/jwmsynth.h"
-#include "../include/jwm_globals.h"
+#include "../include/synth.h"
+#include "../include/globals.h"
 #include "../include/ladspa_loader.h"
 #include "../include/synthmodlist.h"
 #include "../include/sanity_checks.h"
+
 
 void title();
 void exitramblings();
@@ -44,15 +45,14 @@ int main(const int argc, const char** const argv)
     // with modlist which needed to be delete BEFORE ladspa_loader.
     #ifdef WITH_LADSPA
     ladspa_loader* ladspaloader = new ladspa_loader;
-    jwm.register_ladspaloader(ladspaloader);
+    wcnt::jwm.register_ladspaloader(ladspaloader);
     #endif
-    synthmodlist*
-        modlist = new synthmodlist(DELETE_DATA);
-    jwm.register_modlist(modlist);
+    synthmod::list* modlist = new synthmod::list(DELETE_DATA);
+    wcnt::jwm.register_modlist(modlist);
     // the above is needed before cmd->scan because scan might be
     // prompted (by commandline) to create help (ie for modules etc).
     cmd->scan();
-    if (!jwm.is_no_title())
+    if (!wcnt::jwm.is_no_title())
         title();
     if (cmd->show_help() || cmd->bad_opts()) {
         std::cout << cmd->get_message() << std::endl;
@@ -63,7 +63,7 @@ int main(const int argc, const char** const argv)
         #endif
         return -1;
     }
-    jwmsynth* thesynth = new jwmsynth();
+    wcnt::synth* thesynth = new wcnt::synth();
     if (   !thesynth->is_valid()       || !thesynth->generate_synth()
         || !thesynth->validate_synth() || !thesynth->connect_synth()
         || !thesynth->init_synth()     || !thesynth->execute_synth())
@@ -80,7 +80,7 @@ int main(const int argc, const char** const argv)
     }
     delete thesynth;
     delete cmd;
-    if (jwm.is_no_title())
+    if (wcnt::jwm.is_no_title())
         std::cout << std::endl;
     else
         exitramblings();
@@ -97,7 +97,7 @@ void title()
     std::cout << "           [:::>  <:::]      /---O" << std::endl;
     std::cout << " .----------   wcnt   ---------- /" << std::endl;
     std::cout << "     Wav Composer Not Toilet!     " << std::endl;
-    std::cout << "/ ---------- " << std::setw(8) << wcnt_version
+    std::cout << "/ ---------- " << std::setw(8) << wcnt::wcnt_version
               << " ----------'" << std::endl;
     std::cout << "O---/     [::> ROTL <::]      " << std::endl;
     std::cout << "/|||" << std::endl;

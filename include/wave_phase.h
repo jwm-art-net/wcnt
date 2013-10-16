@@ -4,9 +4,9 @@
 #include "synthmod.h"
 #include "wave_tables.h"
 
-class wave_phase : public synthmod
+class wave_phase : public synthmod::base
 {
-public:
+ public:
     wave_phase(const char*);
     ~wave_phase();
     void run();
@@ -17,7 +17,8 @@ public:
     bool set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE) const;
     errors::TYPE validate();
-private:
+
+ private:
     STATUS const* in_phase_trig;
     double const* in_phase_step;
     double const* in_shape_phase_step;
@@ -38,7 +39,7 @@ private:
     int invph;
     const double* table;
     const double* shape_table;
-    void init_first();
+    void register_ui();
 };
 
 #endif

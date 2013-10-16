@@ -22,7 +22,7 @@ Ports: 0 "Gain (dB)" input, control, -70 to 30, default 0
        3 "Input" input, audio, -1 to 1
        4 "Output" output, audio, -1 to 1
 */
-class single_band_para : public synthmod
+class single_band_para : public synthmod::base
 {
  public:
     single_band_para(const char*);
@@ -62,8 +62,7 @@ class single_band_para : public synthmod
     // working
     // float min_freq;
     float max_freq;
-
-    void init_first();
+    void register_ui();
 };
 
 #endif // WITH_LADSPA

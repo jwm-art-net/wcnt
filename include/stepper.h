@@ -33,7 +33,7 @@
     for modulation purposes, which is what in_modulation is for.
 */
 
-class stepper: public synthmod, public linked_list<step_data>
+class stepper: public synthmod::base, public linked_list<step_data>
 {
 public:
     stepper(const char*);
@@ -50,8 +50,8 @@ public:
     const void* get_in(input::TYPE) const;
     bool set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE) const;
-    synthmod* duplicate_module(const char* uname, DUP_IO);
-    dobj* add_dobj(dobj*);
+    synthmod::base* duplicate_module(const char* uname, DUP_IO);
+    dobj::base* add_dobj(dobj::base*);
 private:
     // inputs
     STATUS const* in_trig;
@@ -76,8 +76,7 @@ private:
     samp_t rtime_max_samps;
     double rtime_stpsz;
     double rtime_size;
-
-    void init_first();
+    void register_ui();
 };
 
 #endif

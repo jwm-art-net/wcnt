@@ -3,9 +3,9 @@
 
 #include "synthmod.h"
 
-class seq_echo : public synthmod
+class seq_echo : public synthmod::base
 {
-public:
+ public:
     seq_echo(const char*);
     ~seq_echo();
     void run();
@@ -17,7 +17,7 @@ public:
     bool set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE) const;
 
-private:
+ private:
     // inputs
     const STATUS*   in_note_on_trig;
     const STATUS*   in_note_slide_trig;
@@ -45,7 +45,7 @@ private:
     samp_t pastmax;
     samp_t pastpos;
     wcint_t last;
-    void init_first();
+    void register_ui();
 };
 
 #endif

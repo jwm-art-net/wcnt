@@ -1,23 +1,25 @@
 #include "../include/bode_freq_shifter.h"
 #ifdef WITH_LADSPA
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
+#include "../include/globals.h"
 
 bode_freq_shifter::bode_freq_shifter(const char* uname) :
- synthmod(module::BODE_FREQ_SHIFTER, uname, SM_DEFAULT),
+ synthmod::base(synthmod::BODE_FREQ_SHIFTER, uname, SM_DEFAULT),
  in_signal(0), in_shift_mod(0), out_up(0), out_down(0),
  freq_shift(0), shift_modsize(0.0),
  l_descriptor(0), l_inst_handle(0),
  l_freq_shift(0.0), l_input(0), l_out_down(0), l_out_up(0),
  l_out_latency(0)
 {
-    register_input(input::IN_SIGNAL);
-    register_input(input::IN_SHIFT_MOD);
     register_output(output::OUT_UP);
     register_output(output::OUT_DOWN);
-    init_first();
+}
+
+void bode_freq_shifter::register_ui()
+{
+    register_input(input::IN_SIGNAL);
+    register_input(input::IN_SHIFT_MOD);
+    register_param(param::FREQ_SHIFT);
+    register_param(param::SHIFT_MODSIZE);
 }
 
 bode_freq_shifter::~bode_freq_shifter()
@@ -96,7 +98,7 @@ errors::TYPE bode_freq_shifter::validate()
 
 void bode_freq_shifter::init()
 {
-    ladspa_loader* ll = jwm.get_ladspaloader();
+    ladspa_loader* ll = wcnt::jwm.get_ladspaloader();
     ladspa_plug* lp = ll->get_plugin("bode_shifter_1431", "bodeShifter");
     if (lp == 0) {
         sm_err("%s", ladspa_loader::get_error_msg());
@@ -136,14 +138,6 @@ void bode_freq_shifter::run()
     l_descriptor->run(l_inst_handle, 1);
     out_up = *l_out_up;
     out_down = *l_out_down;
-}
-
-void bode_freq_shifter::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::FREQ_SHIFT);
-    register_param(param::SHIFT_MODSIZE);
 }
 
 #endif // WITH_LADSPA

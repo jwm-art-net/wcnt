@@ -1,19 +1,20 @@
 #include "../include/monoamp.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
+#include "../include/globals.h"
 
 mono_amp::mono_amp(const char* uname) :
- synthmod(module::MONOAMP, uname, SM_HAS_OUT_OUTPUT),
+ synthmod::base(synthmod::MONOAMP, uname, SM_HAS_OUT_OUTPUT),
  gain(this),
  in_signal(0), in_amp_eg(0),
  out_output(0),
  clip_level(0)
 {
-    register_input(input::IN_EG);
     register_output(output::OUT_OUTPUT);
-    init_first();
+}
+
+void mono_amp::register_ui()
+{
+    register_input(input::IN_EG);
+    register_param(param::CLIP_LEVEL);
 }
 
 mono_amp::~mono_amp()
@@ -89,10 +90,4 @@ void mono_amp::run()
         out_output = clip_level;
 }
 
-void mono_amp::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::CLIP_LEVEL);
-}
 

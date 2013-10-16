@@ -11,7 +11,7 @@
 
 class group;
 
-class seq_router: public synthmod
+class seq_router: public synthmod::base
 {
  public:
     seq_router(const char*);
@@ -53,8 +53,8 @@ class seq_router: public synthmod
     double* vels;
     double* freqs;
 
-    void init_first();
     void create_wcnt_notes();
+    void register_ui();
 };
 
 #endif

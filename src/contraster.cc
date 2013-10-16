@@ -1,20 +1,23 @@
 #include "../include/contraster.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
 
 contraster::contraster(const char* uname) :
- synthmod(module::CONTRASTER, uname, SM_HAS_OUT_OUTPUT),
+ synthmod::base(synthmod::CONTRASTER, uname, SM_HAS_OUT_OUTPUT),
  out_output(0.0), in_signal(0), in_power_mod(0),
  in_rude_switch_trig(0), power_min(1.0), power_max(2.0), rude_mode(OFF),
  wetdry(0), power(0.0), power_mod(0), powerrad(0.0), output(0)
 {
+    register_output(output::OUT_OUTPUT);
+}
+
+void contraster::register_ui()
+{
     register_input(input::IN_SIGNAL);
     register_input(input::IN_POWER_MOD);
     register_input(input::IN_RUDE_SWITCH_TRIG);
-    register_output(output::OUT_OUTPUT);
-    init_first();
+    register_param(param::POWER_MIN);
+    register_param(param::POWER_MAX);
+    register_param(param::RUDE_MODE);
+    register_param(param::WETDRY);
 }
 
 contraster::~contraster()
@@ -139,17 +142,5 @@ void contraster::run()
         }
     }
     out_output = output * wetdry + *in_signal * (1.0 - wetdry);
-}
-
-
-
-void contraster::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::POWER_MIN);
-    register_param(param::POWER_MAX);
-    register_param(param::RUDE_MODE);
-    register_param(param::WETDRY);
 }
 

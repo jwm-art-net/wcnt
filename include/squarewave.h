@@ -3,7 +3,7 @@
 
 #include "synthmod.h"
 
-class square_wave : public synthmod
+class square_wave : public synthmod::base
 {
 public:
     square_wave(const char*);
@@ -35,7 +35,7 @@ private:
     double poff_deg;
     double target;
     wcint_t cycle;
-    void init_first();
+    void register_ui();
 };
 
 #endif

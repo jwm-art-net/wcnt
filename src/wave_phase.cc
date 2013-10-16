@@ -1,13 +1,8 @@
 #include "../include/wave_phase.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
 #include "../include/wave_tables.h"
-#include "../include/fxsparamlist.h"
 
 wave_phase::wave_phase(const char* uname) :
- synthmod(module::WAVE_PHASE, uname, SM_HAS_OUT_OUTPUT),
+ synthmod::base(synthmod::WAVE_PHASE, uname, SM_HAS_OUT_OUTPUT),
  in_phase_trig(0), in_phase_step(0), in_shape_phase_step(0),
  output(0), pre_shape_output(0), play_state(OFF),
  type(wave_tables::SINE), shape_type(wave_tables::SINE),
@@ -16,12 +11,22 @@ wave_phase::wave_phase(const char* uname) :
  phase(0), shape_phase(0), degs(0), max_degs(0), invph(1),
  table(0), shape_table(0)
 {
-    register_input(input::IN_PHASE_TRIG);
-    register_input(input::IN_PHASE_STEP);
-    register_input(input::IN_SHAPE_PHASE_STEP);
     register_output(output::OUT_OUTPUT);
     register_output(output::OUT_PLAY_STATE);
-    init_first();
+}
+
+void wave_phase::register_ui()
+{
+    register_param(param::WAVE_TYPE, wave_tables::fxstring);
+    register_input(input::IN_PHASE_TRIG);
+    register_input(input::IN_PHASE_STEP);
+    register_param(param::TRIG_RESET_PHASE);
+    register_param(param::CYCLES);
+    register_param(param::WAVE_SHAPE_TYPE, wave_tables::fxstring);
+    register_input(input::IN_SHAPE_PHASE_STEP);
+    register_param(param::SYNC_SHAPE);
+    register_param(param::RECYCLE_MODE);
+    register_param(param::INVERT_ALT);
 }
 
 wave_phase::~wave_phase()
@@ -165,18 +170,5 @@ void wave_phase::run()
         shape_table[shape_phase >> wave_tables::table_shift];
     shape_phase += (unsigned long)
         (*in_shape_phase_step * wave_tables::phase_step_base);
-}
-
-void wave_phase::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::WAVE_TYPE, wave_tables::fxstring);
-    register_param(param::WAVE_SHAPE_TYPE, wave_tables::fxstring);
-    register_param(param::TRIG_RESET_PHASE);
-    register_param(param::RECYCLE_MODE);
-    register_param(param::SYNC_SHAPE);
-    register_param(param::INVERT_ALT);
-    register_param(param::CYCLES);
 }
 

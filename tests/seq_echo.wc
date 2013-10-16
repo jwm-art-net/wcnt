@@ -64,7 +64,7 @@ seq_echo seqo
     in_note_off_trig    seq     out_note_off_trig
     in_frequency        seq     out_frequency
     in_velocity         seq     out_velocity
-
+    in_reset_trig       off
     delay_time      345 //230
     count           10
     send_input_out  off
@@ -74,15 +74,15 @@ osc_clock osc
     in_note_on_trig     seq     out_note_on_trig
     in_note_slide_trig  seq     out_note_slide_trig
     in_play_state       aeg     out_play_state
-    in_frequency        seq     out_frequency
-    in_freq_mod1        off
-    in_freq_mod2        off
     octave_offset       0
     tuning_semitones    0
+    in_frequency        seq     out_frequency
+    in_freq_mod1        off
+    freq_mod1_size      1.0
+    in_freq_mod2        off
+    freq_mod2_size      1.0
     portamento_time     15.0
     response_time       5.0
-    freq_mod1_size      1.0
-    freq_mod2_size      1.0
 osc
 
 wave sine
@@ -106,8 +106,6 @@ adsr aeg
             lt  25.0    ll  0.0
     envelope
 
-    in_note_on_trig     seq    out_note_on_trig
-    in_note_off_trig    seq    out_note_off_trig
     in_velocity         seq    out_velocity
     up_thresh           1.0
     lo_thresh           0.0
@@ -121,10 +119,10 @@ aeg
 
 mono_amp amp
     in_signal   sine out_output
+    gain        0.7
+    in_gain_mod  off
+    gain_mod_size 0.0
     in_amp_eg   aeg out_output
-    in_amp_mod  off
-    level       0.975
-    amp_mod_size 0.0
     clip_level  0.999
 amp
 
@@ -159,9 +157,9 @@ param_editor pe1
         edit g2.osc
             tuning_semitones 0.1313
         edit g1.amp
-            level       0.7
+            gain       0.7
         edit g2.amp
-            level       0.3
+            gain       0.3
     editlist
 pe1
 
@@ -184,11 +182,11 @@ wavfile_out wav
     in_left         lmt out_output  //g1.amp  out_output
     in_right        lmt out_output  //g2.amp  out_output
     in_bar          tmap out_bar
-    snapshot_mode   off
-    data_format     pcm16
     filename        seq_echo_output.wav
+    data_format     pcm16
     start_bar       0
     end_bar         8
+    snapshot_mode   off
 wav
 
 wcnt_exit xxx

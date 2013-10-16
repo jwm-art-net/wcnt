@@ -1,18 +1,22 @@
 #include "../include/peakdetector.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
 
 #include <iostream>
 
 peak_detector::peak_detector(const char* uname) :
- synthmod(module::PEAKDETECTOR, uname, SM_DEFAULT),
+ synthmod::base(synthmod::PEAKDETECTOR, uname, SM_DEFAULT),
  in_signal(0), sig_range_hi(0.0), sig_range_lo(0.0), message(0),
  force_abort(OFF), max_peaks(0), peak_count(0), check(true)
 {
+}
+
+void peak_detector::register_ui()
+{
     register_input(input::IN_SIGNAL);
-    init_first();
+    register_param(param::SIG_RANGE_HI);
+    register_param(param::SIG_RANGE_LO);
+    register_param(param::MSG);
+    register_param(param::FORCE_ABORT);
+    register_param(param::MAXPEAKS);
 }
 
 peak_detector::~peak_detector()
@@ -57,7 +61,7 @@ void peak_detector::run()
             }
             else if (force_abort == ON) {
                 std::cout << "\nToo many peaks detected, abort forced!";
-                synthmod::force_abort();
+                synthmod::base::force_abort();
             }
             else
                 check = false;
@@ -70,7 +74,7 @@ void peak_detector::run()
             }
             else if (force_abort == ON) {
                 std::cout << "\nToo many peaks detected, abort forced!";
-                synthmod::force_abort();
+                synthmod::base::force_abort();
             }
             else
                 check = false;
@@ -132,16 +136,5 @@ errors::TYPE peak_detector::validate()
         return errors::RANGE_COUNT;
 
     return errors::NO_ERROR;
-}
-
-void peak_detector::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::SIG_RANGE_HI);
-    register_param(param::SIG_RANGE_LO);
-    register_param(param::MSG);
-    register_param(param::FORCE_ABORT);
-    register_param(param::MAXPEAKS);
 }
 

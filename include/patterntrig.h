@@ -10,7 +10,7 @@
     would, and the fourth wouldn't, the fifth would - would be the first
     again.                                                          */
 
-class patterntrig: public synthmod
+class patterntrig: public synthmod::base
 {
 public:
     patterntrig(const char*);
@@ -34,7 +34,7 @@ private:
 
     char* pattern;
     char* ptr;
-    void init_first();
+    void register_ui();
 };
 
 #endif

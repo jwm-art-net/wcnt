@@ -1,14 +1,11 @@
 #include "../include/syncclock.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
+#include "../include/globals.h"
 #include "../include/timemap.h"
 
 #include <math.h>
 
 sync_clock::sync_clock(const char* uname) :
- synthmod(module::SYNCCLOCK, uname, SM_DEFAULT),
+ synthmod::base(synthmod::SYNCCLOCK, uname, SM_DEFAULT),
  in_bpm(0), in_pos_stepsz(0), in_beats_per_bar(0), in_beat_value(0),
  in_phase_trig(0), in_freq_mod1(0), in_freq_mod2(0), out_phase_trig(OFF),
  out_phase_step(0), freq_mod1size(0), freq_mod2size(0), tpqn(0),
@@ -16,17 +13,24 @@ sync_clock::sync_clock(const char* uname) :
  posconv(0), phaselen(0), beatlen(0),
  phasepos(0), snapto(0)
 {
-// degs initialised at 360 so immediately triggers if in_phase_trig is off
+    register_output(output::OUT_PHASE_TRIG);
+    register_output(output::OUT_PHASE_STEP);
+}
+
+void sync_clock::register_ui()
+{
     register_input(input::IN_BPM);
     register_input(input::IN_POS_STEP_SIZE);
     register_input(input::IN_BEATS_PER_BAR);
     register_input(input::IN_BEAT_VALUE);
     register_input(input::IN_PHASE_TRIG);
     register_input(input::IN_FREQ_MOD1);
+    register_param(param::FREQ_MOD1SIZE);
     register_input(input::IN_FREQ_MOD2);
-    register_output(output::OUT_PHASE_TRIG);
-    register_output(output::OUT_PHASE_STEP);
-    init_first();
+    register_param(param::FREQ_MOD2SIZE);
+    register_param(param::QUARTER_VAL);
+    register_param(param::NOTE_LEN);
+    register_param(param::SNAP_TO);
 }
 
 sync_clock::~sync_clock()
@@ -184,19 +188,9 @@ void sync_clock::run()
         else phaselen = nlen2;
     } else if (out_phase_trig == ON) out_phase_trig = OFF;
     beatlen = (timemap::TPQN * (4.0 / (double)*in_beat_value));
-    out_phase_step = 360.0 * (1 / ((jwm.samplerate() * (60.0 / *in_bpm)
+    out_phase_step = 360.0 * (1 / ((wcnt::jwm.samplerate()
+                                                    * (60.0 / *in_bpm)
      * (phaselen / beatlen))));
     phasepos += *in_pos_stepsz;
-}
-
-void sync_clock::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::FREQ_MOD1SIZE);
-    register_param(param::FREQ_MOD2SIZE);
-    register_param(param::QUARTER_VAL);
-    register_param(param::NOTE_LEN);
-    register_param(param::SNAP_TO);
 }
 

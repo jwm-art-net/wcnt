@@ -4,7 +4,7 @@
 #include "getnames.h"
 
 
-namespace dataobj
+namespace dobj
 {
  enum CAT
  {
@@ -95,6 +95,6 @@ namespace dataobj
     ~names() {}
     static const struct gn_data data[LAST_TYPE];
  };
-}; // namespace dataobj
+}; // namespace dobj
 
 #endif

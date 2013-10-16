@@ -12,7 +12,7 @@
 // step 4) calculate the square root of mean average
 */
 
-class rms : public synthmod
+class rms : public synthmod::base
 {
 public:
     rms(const char*);
@@ -39,7 +39,7 @@ private:
     wcint_t arraymax;
     wcint_t arrpos;
     double sqrsum;
-    void init_first();
+    void register_ui();
 };
 
 #endif

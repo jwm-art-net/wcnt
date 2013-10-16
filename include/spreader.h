@@ -5,18 +5,16 @@
 #include "linkedlist.h"
 #include "duplicate_list_module.h"
 
-class spreader: public synthmod, public linked_list<synthmod>
+class spreader: public synthmod::base, public linked_list<synthmod::base>
 {
-public:
+ public:
     spreader(const char*);
     ~spreader();
 
-    friend synthmod*
-        duplicate_list_module<spreader, synthmod>
-            (spreader* sm, synthmod* _data,
-                const char* uname, synthmod::DUP_IO dupio);
-
-    // virtual funcs
+    friend synthmod::base*
+        duplicate_list_module<spreader, synthmod::base>
+                                (spreader*, synthmod::base*,
+                                const char* uname, synthmod::base::DUP_IO);
     void run();
     void init();
     errors::TYPE validate();
@@ -25,11 +23,11 @@ public:
     const void* get_in(input::TYPE) const;
     bool set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE) const;
-    synthmod* duplicate_module(const char* uname, DUP_IO);
+    synthmod::base* duplicate_module(const char*, synthmod::base::DUP_IO);
     // wcnt_signal is not a dobj, but a synthmod, so a dobj wrapper class
     // - dobjmod, is passed which contains a pointer to the wcnt_signal
-    dobj* add_dobj(dobj*);
-private:
+    dobj::base* add_dobj(dobj::base*);
+ private:
     // inputs
     double const* in_mod;
     // outputs
@@ -40,7 +38,7 @@ private:
     // working
     double seg_lvl;
     double const** sigs;
-    void init_first();
+    void register_ui();
 };
 
 #endif

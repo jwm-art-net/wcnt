@@ -1,17 +1,19 @@
 #include "../include/wcntexit.h"
-#include "../include/jwm_globals.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
+#include "../include/globals.h"
 #include "../include/connectorlist.h"
 
 wcnt_exit::wcnt_exit(const char* uname) :
 
- synthmod(module::WCNTEXIT, uname, SM_EMPTY_RUN | SM_UNGROUPABLE
+ synthmod::base(synthmod::WCNTEXIT, uname, SM_EMPTY_RUN | SM_UNGROUPABLE
                                                 | SM_UNDUPLICABLE),
  in_bar(0), exit_bar(0)
 {
+}
+
+void wcnt_exit::register_ui()
+{
     register_input(input::IN_BAR);
-    init_first();
+    register_param(param::EXIT_BAR);
 }
 
 wcnt_exit::~wcnt_exit()
@@ -42,9 +44,8 @@ const void* wcnt_exit::get_param(param::TYPE pt) const
     return (pt == param::EXIT_BAR ? &exit_bar : 0);
 }
 
-synthmod* wcnt_exit::duplicate_module(const char* uname, DUP_IO dupio)
+synthmod::base* wcnt_exit::duplicate_module(const char*, DUP_IO)
 {
-    (void)uname; (void)dupio; // stop unused param warns
     sm_err("%s", "wcnt_exit module does not allow duplication.");
     return 0;
 }
@@ -54,10 +55,10 @@ errors::TYPE wcnt_exit::validate()
     if (!validate_param(param::EXIT_BAR, errors::RANGE_COUNT))
         return errors::RANGE_COUNT;
 
-    connector* con = jwm.get_connectlist()->get_connector_by_input(this,
-                                                            input::IN_BAR);
-    if (strcmp(con->get_output_module_name(), "off") == 0
-     && exit_bar != 0)
+    connector* con = wcnt::get_connectlist()
+                   ->get_connector_by_input(this, input::IN_BAR);
+
+    if (strcmp(con->get_output_module_name(), "off") == 0 && exit_bar != 0)
     {
         sm_err("Input %s is turned off, and parameter %s is not zero. "
                            "wcnt would never exit if allowed to run!",
@@ -71,14 +72,7 @@ errors::TYPE wcnt_exit::validate()
 
 void wcnt_exit::init()
 {
-    jwm.x_exit_bar = exit_bar;
-    jwm.x_in_bar = in_bar;
-}
-
-void wcnt_exit::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::EXIT_BAR);
+    wcnt::jwm.x_exit_bar = exit_bar;
+    wcnt::jwm.x_in_bar = in_bar;
 }
 

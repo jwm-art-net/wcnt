@@ -7,38 +7,37 @@
 #include "namefuncobj.h"
 #include "boolfuncobj.h"
 
-class synthmod;
 class nonezero;
 #include "synthmod.h"
 
-class synthmodlist : public linked_list<synthmod>
+namespace synthmod
 {
-public:
-    synthmodlist(DESTRUCTION);
-    ~synthmodlist();
+ class list : public linked_list<base>
+ {
+  public:
+    list(DESTRUCTION);
+    ~list();
 
-    synthmod* add_module(synthmod* sm) {
+    static synthmod::base* create_module(synthmod::TYPE, const char*);
+
+    synthmod::base* add_module(synthmod::base* sm) {
         return add_at_tail(sm)->get_data();
     }
 
-    synthmod* create_module(module::TYPE smt,const char* );
+    bool delete_module(synthmod::base*);
 
-    bool delete_module(synthmod* sm);
-
-    synthmod* get_synthmod_by_name(const char* const n) {
+    synthmod::base* get_synthmod_by_name(const char* const n) {
         return find_in_data(sneak_first(), name(n))->get_data();
     }
 
-    synthmod* get_first_of_type(module::TYPE smt) {
-        return (search_result =
-            find_in_data(sneak_first(), search_type = smt)
-                )->get_data();
+    synthmod::base* get_first_of_type(synthmod::TYPE smt) {
+        result = find_in_data(sneak_first(), search = smt);
+        return result->get_data();
     }
 
-    synthmod* get_next_of_type() {
-        return (search_result =
-            find_in_data(search_result->get_next(), search_type)
-                )->get_data();
+    synthmod::base* get_next_of_type() {
+        result = find_in_data(result->get_next(), search);
+        return result->get_data();
     }
 
     /*
@@ -55,9 +54,9 @@ public:
     void remove_empty_run_modules();
 
     /*
-    // returns 0 terminated synthmod* array:
+    // returns 0 terminated synthmod::base* array:
     */
-    synthmod** get_run_list() {
+    synthmod::base** get_run_list() {
         return move_to_array(this);
     }
 
@@ -75,11 +74,12 @@ public:
     //  * init_modules should be called after jwmsynth::connect_synth
     */
 
-private:
-    linkedlist* emptyrunlist;
-    module::TYPE search_type;
-    llitem* search_result;
-    static nonezero* off;
-};
+  private:
+    linkedlist*         emptyrunlist;
+    synthmod::TYPE      search;
+    llitem*             result;
+    static nonezero*    off;
+ };
+}; // namespace synthmod
 
 #endif

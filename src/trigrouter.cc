@@ -1,7 +1,5 @@
 #include "../include/trigrouter.h"
-#include "../include/jwm_globals.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
+#include "../include/globals.h"
 #include "../include/synthmodlist.h"
 #include "../include/group.h"
 
@@ -10,15 +8,20 @@
 
 trigrouter::trigrouter(const char* uname) :
 
- synthmod(module::TRIGROUTER, uname, SM_UNGROUPABLE),
+ synthmod::base(synthmod::TRIGROUTER, uname, SM_UNGROUPABLE),
  in_trig(0), in_index(0), in_all_off_trig(0),
  count(0), wrap(OFF),
  grp(0), trigs(0), last_ix(-1)
 {
+}
+
+void trigrouter::register_ui()
+{
     register_input(input::IN_TRIG);
     register_input(input::IN_INDEX);
     register_input(input::IN_ALL_OFF_TRIG);
-    init_first();
+    register_param(param::COUNT);
+    register_param(param::WRAP);
 }
 
 trigrouter::~trigrouter()
@@ -89,10 +92,9 @@ const void* trigrouter::get_param(param::TYPE pt) const
 
 void trigrouter::create_wcnt_triggers()
 {
-    const char* wtn =
-        module::names::get(module::WCNTTRIGGER);
+    const char* wtn = synthmod::names::get(synthmod::WCNTTRIGGER);
     const char* un = get_username();
-    bool verbose = jwm.is_verbose();
+    bool verbose = wcnt::jwm.is_verbose();
     if (verbose){
         std::cout << "\nPre-initialising " << un << " module...";
         std::cout << "\n  creating group " << un;
@@ -102,21 +104,21 @@ void trigrouter::create_wcnt_triggers()
     if (trigs)
         delete [] trigs;
     trigs = new STATUS[count];
-    synthmodlist* sml = jwm.get_modlist();
+    synthmod::list* sml = wcnt::jwm.get_modlist();
     for (int i = 0; i < count; i++) {
         trigs[i] = OFF;
         if (verbose) {
             std::cout << "\n    creating " << wtn << "...";
-            jwm.set_verbose(false);
+            wcnt::jwm.set_verbose(false);
         }
         std::ostringstream ostr;
         ostr << i;
-        synthmod* sm = sml->create_module(module::WCNTTRIGGER,
+        synthmod::base* sm = sml->create_module(synthmod::WCNTTRIGGER,
                                                     ostr.str().c_str());
         sml->add_module(sm);
         grp->group_module(sm);
         if (verbose) {
-            jwm.set_verbose(true);
+            wcnt::jwm.set_verbose(true);
             std::cout << "\n      grouped as " << sm->get_username();
             std::cout << "\n      connecting to trigger " << i;
         }
@@ -144,13 +146,5 @@ void trigrouter::run()
                 trigs[last_ix = ix] = ON;
         }
     }
-}
-
-void trigrouter::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::COUNT);
-    register_param(param::WRAP);
 }
 

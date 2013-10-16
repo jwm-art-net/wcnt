@@ -13,7 +13,7 @@
 // and the words turn out to be alternating between an input name
 // name, and the output module and it's output to connect to.
 
-class inputedit : public dobj
+class inputedit : public dobj::base
 {
 public:
     inputedit();
@@ -33,7 +33,7 @@ public:
 private:
     char* modname;
     char* iostr;
-    void init_first();
+    void register_ui();
 };
 
 #endif

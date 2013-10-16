@@ -1,13 +1,11 @@
 #include "../include/timer.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
-#include "../include/moddobjlist.h"
-#include "../include/dobjdobjlist.h"
+
+#include "../include/listwork.h"
+#include "../include/globals.h"
+
 
 timer::timer(const char* uname) :
- synthmod(module::TIMER, uname, SM_UNDUPLICABLE | SM_UNGROUPABLE
+ synthmod::base(synthmod::TIMER, uname, SM_UNDUPLICABLE | SM_UNGROUPABLE
                                                 | SM_HAS_OUT_TRIG),
  out_count(0), out_trig(OFF), out_index(-1), time_is_relative(OFF),
  recycle_mode(OFF), timings(0), reset_ix(0), next_ix(0),
@@ -16,7 +14,13 @@ timer::timer(const char* uname) :
     register_output(output::OUT_TRIG);
     register_output(output::OUT_COUNT);
     register_output(output::OUT_INDEX);
-    init_first();
+}
+
+void timer::register_ui()
+{
+    register_dobj(dobj::LST_TIMINGS, dobj::SIN_TIME);
+    register_param(param::TIME_IS_RELATIVE);
+    register_param(param::RECYCLE_MODE);
 }
 
 timer::~timer()
@@ -67,7 +71,7 @@ void timer::init()
         next_ix = 1;
         timing* t = timings[0];
         curtime = t->get_time();
-        samples = curtime * jwm.samplerate();
+        samples = curtime * wcnt::jwm.samplerate();
     }
 
     out_count = -1;
@@ -88,10 +92,10 @@ void timer::run()
             next = timings[out_index = next_ix = reset_ix];
         if (next) {
             if (time_is_relative)
-                samples = next->get_time() * jwm.samplerate();
+                samples = next->get_time() * wcnt::jwm.samplerate();
             else {
                 double nexttime = next->get_time();
-                samples = (nexttime - curtime) * jwm.samplerate();
+                samples = (nexttime - curtime) * wcnt::jwm.samplerate();
                 curtime = nexttime;
             }
             ++next_ix;
@@ -150,7 +154,7 @@ errors::TYPE timer::validate()
             timing* t = tmp->get_data();
             if (t->get_time() == 0.0f) {
                 rm = unlink_item(tmp);
-                if (jwm.is_verbose())
+                if (wcnt::jwm.is_verbose())
                     std::cout << "In module " << get_username()
                               << " pruning extraneous timing of 0.0 "
                                             " seconds." << std::endl;
@@ -173,7 +177,7 @@ errors::TYPE timer::validate()
                 double s2 = t2->get_time();
                 if (s1 == s2) {
                     rm = unlink_item(tmp);
-                    if (jwm.is_verbose())
+                    if (wcnt::jwm.is_verbose())
                         std::cout << "In module " << get_username()
                                   << " pruning extraneous timing of "
                                   << s2 << " seconds." << std::endl;
@@ -191,13 +195,13 @@ errors::TYPE timer::validate()
     return errors::NO_ERROR;
 }
 
-dobj* timer::add_dobj(dobj* dbj)
+dobj::base* timer::add_dobj(dobj::base* dbj)
 {
-    dobj* retv = 0;
-    dataobj::TYPE dbjtype = dbj->get_object_type();
+    dobj::base* retv = 0;
+    dobj::TYPE dbjtype = dbj->get_object_type();
     switch(dbjtype)
     {
-    case dataobj::SIN_TIME:
+    case dobj::SIN_TIME:
         if (!(retv = add_timing((timing*)dbj)))
             sm_err("Could not add timing to %s", get_username());
         break;
@@ -209,12 +213,4 @@ dobj* timer::add_dobj(dobj* dbj)
     return retv;
 }
 
-void timer::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::TIME_IS_RELATIVE);
-    register_param(param::RECYCLE_MODE);
-    register_moddobj(dataobj::LST_TIMINGS, dataobj::SIN_TIME);
-}
 

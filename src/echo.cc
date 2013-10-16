@@ -1,22 +1,26 @@
 #include "../include/echo.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
+#include "../include/globals.h"
 
 echo::echo(const char* uname) :
- synthmod(module::ECHO, uname, SM_HAS_OUT_OUTPUT),
+ synthmod::base(synthmod::ECHO, uname, SM_HAS_OUT_OUTPUT),
  gain(this),
  in_signal(0), in_feedback(0), in_feed_mod(0), output(0),
  wet_output(0), delay_time(0), feed_level(0),
  feed_modsize(0), wetdry(0), filter(0), filterarraymax(0), fpos(0),
  filtertotal(0), feedamount(0)
 {
-    register_input(input::IN_FEEDBACK);
-    register_input(input::IN_FB_MOD);
     register_output(output::OUT_OUTPUT);
     register_output(output::OUT_WET_OUTPUT);
-    init_first();
+}
+
+void echo::register_ui()
+{
+    register_input(input::IN_FEEDBACK);
+    register_input(input::IN_FB_MOD);
+    register_param(param::DELAY_TIME);
+    register_param(param::FEED_LEVEL);
+    register_param(param::FEED_MODSIZE);
+    register_param(param::WETDRY);
 }
 
 echo::~echo()
@@ -109,13 +113,14 @@ errors::TYPE echo::validate()
 
 void echo::init()
 {
-    filterarraymax = (long)((delay_time * jwm.samplerate()) / 1000);
+    filterarraymax = (long)((delay_time * wcnt::jwm.samplerate()) / 1000);
     filter = new double[filterarraymax];
     if (!filter){
         invalidate();
         return;
     }
-    for (long i = 0; i < filterarraymax; i++) filter[i] = 0;
+    for (long i = 0; i < filterarraymax; i++)
+        filter[i] = 0;
     fpos = filterarraymax - 1;
 
     gain::init();
@@ -125,22 +130,11 @@ void echo::run()
 {
     gain::run();
     feedamount = feed_level * (1 - feed_modsize)
-     + (feed_level * feed_modsize * *in_feed_mod);
+                        + (feed_level * feed_modsize * *in_feed_mod);
     output = gain::out * (1 - wetdry)
                         + (wet_output = filter[fpos]) * wetdry;
     filter[fpos] = gain::out + *in_feedback * feedamount;
-    fpos--;
-    if (fpos < 0)
+    if (--fpos < 0)
         fpos = filterarraymax - 1;
-}
-
-void echo::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::DELAY_TIME);
-    register_param(param::FEED_LEVEL);
-    register_param(param::FEED_MODSIZE);
-    register_param(param::WETDRY);
 }
 

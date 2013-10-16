@@ -5,7 +5,7 @@
 
 // a length of time
 
-class timing : public dobj
+class timing : public dobj::base
 {
 public:
     timing();
@@ -20,7 +20,7 @@ public:
     }
 private:
     double seconds;
-    void init_first();
+    void register_ui();
 };
 
 #endif

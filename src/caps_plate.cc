@@ -1,22 +1,26 @@
 #include "../include/caps_plate.h"
 #ifdef WITH_LADSPA
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
+#include "../include/globals.h"
 
 caps_plate::caps_plate(const char* uname) :
- synthmod(module::CAPS_PLATE, uname, SM_HAS_STEREO_OUTPUT),
+ synthmod::base(synthmod::CAPS_PLATE, uname, SM_HAS_STEREO_OUTPUT),
  in_signal(0), out_left(0), out_right(0),
  bandwidth(0.502), tail(0.3745), damping(0.250375), blend(0.25),
  l_descriptor(0), l_inst_handle(0),
  l_input(0), l_bandwidth(0), l_tail(0), l_damping(0), l_blend(0),
  l_out_left(0), l_out_right(0)
 {
-    register_input(input::IN_SIGNAL);
     register_output(output::OUT_LEFT);
     register_output(output::OUT_RIGHT);
-    init_first();
+}
+
+void caps_plate::register_ui()
+{
+    register_input(input::IN_SIGNAL);
+    register_param(param::BANDWIDTH);
+    register_param(param::TAIL);
+    register_param(param::DAMPING);
+    register_param(param::WETDRY);
 }
 
 caps_plate::~caps_plate()
@@ -119,7 +123,7 @@ errors::TYPE caps_plate::validate()
 
 void caps_plate::init()
 {
-    ladspa_loader* ll = jwm.get_ladspaloader();
+    ladspa_loader* ll = wcnt::jwm.get_ladspaloader();
     ladspa_plug* lp = ll->get_plugin("caps", "Plate");
     if (lp == 0) {
         sm_err("%s", ladspa_loader::get_error_msg());
@@ -159,16 +163,6 @@ void caps_plate::run()
     l_descriptor->run(l_inst_handle, 1);
     out_left = *l_out_left;
     out_right = *l_out_right;
-}
-
-void caps_plate::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::BANDWIDTH);
-    register_param(param::TAIL);
-    register_param(param::DAMPING);
-    register_param(param::WETDRY);
 }
 
 #endif // WITH_LADSPA

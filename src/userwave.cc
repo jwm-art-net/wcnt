@@ -1,16 +1,11 @@
 #include "../include/userwave.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
-#include "../include/moddobjlist.h"
-#include "../include/dobjdobjlist.h"
+#include "../include/listwork.h"
 
 #include <iostream>
 #include <math.h>
 
 user_wave::user_wave(const char* uname) :
- synthmod(module::USERWAVE, uname, SM_HAS_OUT_OUTPUT),
+ synthmod::base(synthmod::USERWAVE, uname, SM_HAS_OUT_OUTPUT),
  in_phase_trig(0), in_phase_step(0), in_pwm(0), in_h_mod(0), in_v_mod(0),
  output(0.0), play_state(OFF),
  recycle(OFF), zero_retrigger_mode(OFF), drop_check_range(2),
@@ -18,15 +13,22 @@ user_wave::user_wave(const char* uname) :
  sect_spanlvl(0.0), sect_startlvl(0.0),
  sectdegs(0), degs(360), pdegs(0)
 {
-    register_input(input::IN_PHASE_TRIG);
-    register_input(input::IN_PHASE_STEP);
-    register_input(input::IN_V_MOD);
-    register_input(input::IN_H_MOD);
     register_output(output::OUT_OUTPUT);
     register_output(output::OUT_PLAY_STATE);
     add_at_head(new wave_vertex(  0.0, 0.0,   0.0, 0.0));
     add_at_tail(new wave_vertex(360.0, 0.0, 360.0, 0.0));
-    init_first();
+}
+
+void user_wave::register_ui()
+{
+    register_input(input::IN_PHASE_TRIG);
+    register_param(param::ZERO_RETRIGGER);
+    register_input(input::IN_PHASE_STEP);
+    register_dobj(dobj::LST_WAVEFORM, dobj::SIN_VERTEX);
+    register_input(input::IN_V_MOD);
+    register_input(input::IN_H_MOD);
+    register_param(param::RECYCLE_MODE);
+    register_param(param::DROP_CHECK_RANGE);
 }
 
 user_wave::~user_wave()
@@ -98,13 +100,13 @@ const void* user_wave::get_param(param::TYPE pt) const
     }
 }
 
-dobj* user_wave::add_dobj(dobj* dbj)
+dobj::base* user_wave::add_dobj(dobj::base* dbj)
 {
-    dobj* retv = 0;
-    dataobj::TYPE dbjtype = dbj->get_object_type();
+    dobj::base* retv = 0;
+    dobj::TYPE dbjtype = dbj->get_object_type();
     switch(dbjtype)
     {
-    case dataobj::SIN_VERTEX:
+    case dobj::SIN_VERTEX:
         if (!(retv = add_vertex((wave_vertex*)dbj)))
             sm_err("Could not add vertex to %s.", get_username());
         break;
@@ -116,7 +118,7 @@ dobj* user_wave::add_dobj(dobj* dbj)
     return retv;
 }
 
-synthmod* user_wave::duplicate_module(const char* uname, DUP_IO dupio)
+synthmod::base* user_wave::duplicate_module(const char* uname, DUP_IO dupio)
 {
     user_wave* dup = new user_wave(uname);
     if (dupio == AUTO_CONNECT)
@@ -272,13 +274,4 @@ void user_wave::run()
     }
 }
 
-void user_wave::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::RECYCLE_MODE);
-    register_param(param::ZERO_RETRIGGER);
-    register_param(param::DROP_CHECK_RANGE);
-    register_moddobj(dataobj::LST_WAVEFORM, dataobj::SIN_VERTEX);
-}
 

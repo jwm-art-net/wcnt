@@ -26,7 +26,7 @@ Ports: 0 "in:l" input, audio, -1 to 1
        7 "out:r" output, audio
 */
 
-class caps_plate2x2 : public synthmod
+class caps_plate2x2 : public synthmod::base
 {
  public:
 
@@ -70,8 +70,7 @@ class caps_plate2x2 : public synthmod
     LADSPA_Data  l_blend;
     LADSPA_Data* l_out_left;
     LADSPA_Data* l_out_right;
-
-    void init_first();
+    void register_ui();
 };
 
 #endif // WITH_LADSPA

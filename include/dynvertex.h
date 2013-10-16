@@ -26,7 +26,7 @@ get_out_level(height)
     *** height MUST be in range of 0.0 to 1.0 ***
 
 */
-class dynvertex : public dobj
+class dynvertex : public dobj::base
 {
  public:
     dynvertex();
@@ -48,7 +48,7 @@ class dynvertex : public dobj
     double si_level;
     double uso_level;
     double lso_level;
-    void init_first();
+    void register_ui();
 };
 
 #endif

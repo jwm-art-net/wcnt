@@ -5,7 +5,7 @@
 
 #include "synthmod.h"
 
-class multiplier : public synthmod
+class multiplier : public synthmod::base
 {
 public:
     multiplier(const char*);
@@ -19,5 +19,6 @@ private:
     const double* in_signal1;
     const double* in_signal2;
     double out_output;
+    void register_ui();
 };
 #endif

@@ -1,20 +1,20 @@
 #include "../include/logictrigger.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
-#include "../include/fxsparamlist.h"
 
 logictrigger::logictrigger(const char* uname) :
 
- synthmod(module::LOGICTRIGGER, uname, SM_HAS_OUT_TRIG),
+ synthmod::base(synthmod::LOGICTRIGGER, uname, SM_HAS_OUT_TRIG),
  in_trig1(0), in_trig2(0), out_trig(OFF), logicfunc(AND), precision(0),
  next_trig(0), t1_samps(0), t2_samps(0), trig1(OFF), trig2(OFF)
 {
+    register_output(output::OUT_TRIG);
+}
+
+void logictrigger::register_ui()
+{
     register_input(input::IN_TRIG1);
     register_input(input::IN_TRIG2);
-    register_output(output::OUT_TRIG);
-    init_first();
+    register_param(param::LOGICFUNC, "and/or/xor/xornot");
+    register_param(param::PRECISION);
 }
 
 logictrigger::~logictrigger()
@@ -183,12 +183,3 @@ void logictrigger::run()
     }
 }
 
-
-
-void logictrigger::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::LOGICFUNC, "and/or/xor/xornot");
-    register_param(param::PRECISION);
-}

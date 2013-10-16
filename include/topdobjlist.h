@@ -27,17 +27,17 @@
 // level dobj down to it's smallest components while allowing other top
 // level dobj to use the same dobj type with different components.
 // (but obviously you cannot have two different dobj based classes
-// using the same dataobj::TYPE.)
+// using the same dobj::TYPE.)
 
 class topdobjlist : public linked_list<dobjdobjlist>
 {
 public:
     topdobjlist();
     ~topdobjlist();
-    dobjdobjlist* create_dobjdobjlist(dataobj::TYPE parent,
-                                        dataobj::TYPE child);
+    dobjdobjlist* create_dobjdobjlist(dobj::TYPE parent,
+                                        dobj::TYPE child);
 
-    dobjdobjlist* get_first_of_type(dataobj::TYPE dt) {
+    dobjdobjlist* get_first_of_type(dobj::TYPE dt) {
         search_type = dt;
         search_result = sneak_first();
         while(search_result) {
@@ -66,7 +66,7 @@ public:
 
 private:
     llitem* search_result;
-    dataobj::TYPE search_type;
+    dobj::TYPE search_type;
 };
 
 

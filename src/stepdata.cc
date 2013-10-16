@@ -1,20 +1,22 @@
 #include "../include/stepdata.h"
-#include "../include/jwm_globals.h"
-#include "../include/dobjparamlist.h"
-
 
 step_data::step_data() :
- dobj(dataobj::SIN_STEP),
+ dobj::base(dobj::SIN_STEP),
  position(0), up_level(0), lo_level(0)
 {
-    init_first();
 }
 
 step_data::step_data(double pos, double ul, double ll) :
- dobj(dataobj::SIN_STEP),
+ dobj::base(dobj::SIN_STEP),
  position(pos), up_level(ul), lo_level(ll)
 {
-    init_first();
+}
+
+void step_data::register_ui()
+{
+    register_param(param::POS);
+    register_param(param::UPLEVEL);
+    register_param(param::LOLEVEL);
 }
 
 step_data::~step_data()
@@ -56,14 +58,5 @@ errors::TYPE step_data::validate()
         return errors::RANGE_0_1;
 
     return errors::NO_ERROR;
-}
-
-void step_data::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::POS);
-    register_param(param::UPLEVEL);
-    register_param(param::LOLEVEL);
 }
 

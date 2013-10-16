@@ -1,15 +1,17 @@
 #include "../include/inputeditor.h"
 #include "../include/connectorlist.h"
-#include "../include/jwm_globals.h"
-#include "../include/topdobjlist.h"
-#include "../include/dobjdobjlist.h"
+#include "../include/globals.h"
 
 #include <iostream>
 
 inputeditor::inputeditor() :
- dobj(dataobj::DEF_INPUTEDITOR)
+ dobj::base(dobj::DEF_INPUTEDITOR)
 {
-    init_first();
+}
+
+void inputeditor::register_ui()
+{
+    register_dobj(dobj::LST_EDITS, dobj::SIN_EDIT_INPUT);
 }
 
 inputeditor::~inputeditor()
@@ -20,13 +22,13 @@ bool inputeditor::create_connectors()
 {
     inputedit* ie = goto_first();
     while(ie) {
-        if (jwm.is_verbose()) {
+        if (wcnt::jwm.is_verbose()) {
             std::cout
                 << "\nsetting inputs for " << ie->get_modname();
         }
         if (!ie->create_connectors()) {
             dobjerr("In %s %s connection attempt failed %s.",
-                        dataobj::names::get(get_object_type()),
+                        dobj::names::get(get_object_type()),
                         get_username(), err_msg);
             return false;
         }
@@ -35,13 +37,13 @@ bool inputeditor::create_connectors()
     return true;
 }
 
-dobj const* inputeditor::add_dobj(dobj* dbj)
+const dobj::base* inputeditor::add_dobj(dobj::base* dbj)
 {
-    dobj* retv = 0;
-    dataobj::TYPE dbjtype = dbj->get_object_type();
+    dobj::base* retv = 0;
+    dobj::TYPE dbjtype = dbj->get_object_type();
     switch(dbjtype)
     {
-        case dataobj::SIN_EDIT_INPUT:
+        case dobj::SIN_EDIT_INPUT:
             if (!(retv = add_at_tail((inputedit*)dbj)->get_data())) {
                 dobjerr("Could not add parameter edit to %s",
                                                     get_username());
@@ -54,13 +56,5 @@ dobj const* inputeditor::add_dobj(dobj* dbj)
     }
     return retv;
 }
-
-void inputeditor::init_first()
-{
-    if (done_first())
-        return;
-    register_dobjdobj(dataobj::LST_EDITS, dataobj::SIN_EDIT_INPUT);
-}
-
 
 

@@ -1,17 +1,11 @@
 #include "../include/fast_lookahead_limiter.h"
 #ifdef WITH_LADSPA
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
+#include "../include/globals.h"
 
 fast_lookahead_limiter::fast_lookahead_limiter(const char* uname) :
 
- synthmod(
-    module::FAST_LOOKAHEAD_LIMITER,
-    uname,
-    SM_HAS_STEREO_OUTPUT),
-
+ synthmod::base(synthmod::FAST_LOOKAHEAD_LIMITER, uname,
+                                                    SM_HAS_STEREO_OUTPUT),
  in_left(0), in_right(0),
  out_left(0), out_right(0),
  gain_db(0), limit_db(0), release_secs(0.5),
@@ -21,11 +15,17 @@ fast_lookahead_limiter::fast_lookahead_limiter(const char* uname) :
  l_in_left(0), l_in_right(0), l_out_left(0), l_out_right(0),
  l_out_latency(0)
 {
-    register_input(input::IN_LEFT);
-    register_input(input::IN_RIGHT);
     register_output(output::OUT_LEFT);
     register_output(output::OUT_RIGHT);
-    init_first();
+}
+
+void fast_lookahead_limiter::register_ui()
+{
+    register_input(input::IN_LEFT);
+    register_input(input::IN_RIGHT);
+    register_param(param::GAIN_DB);
+    register_param(param::LIMIT_DB);
+    register_param(param::RELEASE_SECS);
 }
 
 fast_lookahead_limiter::~fast_lookahead_limiter()
@@ -126,7 +126,7 @@ errors::TYPE fast_lookahead_limiter::validate()
 
 void fast_lookahead_limiter::init()
 {
-    ladspa_loader* ll = jwm.get_ladspaloader();
+    ladspa_loader* ll = wcnt::jwm.get_ladspaloader();
     ladspa_plug* lp = ll->get_plugin("fast_lookahead_limiter_1913",
                                      "fastLookaheadLimiter");
     if (lp == 0) {
@@ -172,13 +172,5 @@ void fast_lookahead_limiter::run()
     out_right = *l_out_right;
 }
 
-void fast_lookahead_limiter::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::GAIN_DB);
-    register_param(param::LIMIT_DB);
-    register_param(param::RELEASE_SECS);
-}
 
 #endif // WITH_LADSPA

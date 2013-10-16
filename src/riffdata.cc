@@ -1,9 +1,6 @@
 #include "../include/riffdata.h"
-#include "../include/jwm_globals.h"
+#include "../include/globals.h"
 #include "../include/conversions.h"
-#include "../include/topdobjlist.h"
-#include "../include/dobjparamlist.h"
-#include "../include/dobjdobjlist.h"
 
 #include "../include/listwork.h"
 
@@ -14,11 +11,16 @@ using std::cout;
 #endif
 
 riffdata::riffdata() :
- dobj(dataobj::DEF_RIFF),
+ dobj::base(dobj::DEF_RIFF),
  tpqn(0),
  editlist(0)
 {
-    init_first();
+}
+
+void riffdata::register_ui()
+{
+    register_param(param::QUARTER_VAL);
+    register_dobj(dobj::LST_NOTES, dobj::SIN_NOTE);
 }
 
 riffdata::~riffdata()
@@ -319,7 +321,7 @@ const void* riffdata::get_param(param::TYPE dt) const
     }
 }
 
-dobj* riffdata::duplicate_dobj(const char* name)
+dobj::base* riffdata::duplicate_dobj(const char* name)
 {
     riffdata* dupriff = new riffdata;
     dupriff->set_username(name);
@@ -346,13 +348,13 @@ dobj* riffdata::duplicate_dobj(const char* name)
     return dupriff;
 }
 
-dobj const* riffdata::add_dobj(dobj* dbj)
+const dobj::base* riffdata::add_dobj(dobj::base* dbj)
 {
-    dobj* retv = 0;
-    dataobj::TYPE dbjtype = dbj->get_object_type();
+    dobj::base* retv = 0;
+    dobj::TYPE dbjtype = dbj->get_object_type();
     switch(dbjtype)
     {
-    case dataobj::SIN_NOTE:
+    case dobj::SIN_NOTE:
         if (!(retv = insert_and_position_note((note_data*)dbj)))
             dobjerr("Could not add note change to %s.", get_username());
         break;
@@ -371,14 +373,5 @@ errors::TYPE riffdata::validate()
 
     return errors::NO_ERROR;
 }
-
-void riffdata::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::QUARTER_VAL);
-    register_dobjdobj(dataobj::LST_NOTES, dataobj::SIN_NOTE);
-}
-
 
 

@@ -8,8 +8,7 @@
 #include <cstdio>
 #include <cstdlib>
 
-#include "../include/jwm_globals.h"
-#include "../include/jwm_init.h"
+#include "../include/globals.h"
 
 
 #ifdef DEBUG
@@ -55,7 +54,7 @@ LADSPA_Handle ladspa_plug::instantiate()
         return 0;
     }
     LADSPA_Handle lh;
-    if(!(lh = descriptor->instantiate(descriptor, jwm.samplerate())))
+    if(!(lh = descriptor->instantiate(descriptor, wcnt::jwm.samplerate())))
     {
         ladspa_err("Failed to instantiate LADSPA plugin %s.", label);
         return 0;
@@ -167,7 +166,7 @@ void* ladspa_loader::dlopen_plugin(const char* fname, int flag)
     }
     else {
         if(!(start = getenv("LADSPA_PATH")))
-            start = jwm_init::ladspa_path_if_env_not_set;
+            start = wcnt::ladspa_path_if_env_not_set;
         while (*start != '\0') {
             end = start;
             while (*end != ':' && *end != '\0') end++;

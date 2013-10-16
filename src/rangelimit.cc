@@ -1,16 +1,17 @@
 #include "../include/rangelimit.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
 
 range_limit::range_limit(const char* uname) :
- synthmod(module::RANGELIMIT, uname, SM_HAS_OUT_OUTPUT),
+ synthmod::base(synthmod::RANGELIMIT, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), out_output(0), sigrangehi(0), sigrangelo(0)
 {
-    register_input(input::IN_SIGNAL);
     register_output(output::OUT_OUTPUT);
-    init_first();
+}
+
+void range_limit::register_ui()
+{
+    register_input(input::IN_SIGNAL);
+    register_param(param::SIG_RANGE_HI);
+    register_param(param::SIG_RANGE_LO);
 }
 
 range_limit::~range_limit()
@@ -86,13 +87,5 @@ void range_limit::run()
         out_output = sigrangelo;
     else if (out_output > sigrangehi)
         out_output = sigrangehi;
-}
-
-void range_limit::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::SIG_RANGE_HI);
-    register_param(param::SIG_RANGE_LO);
 }
 

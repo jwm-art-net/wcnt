@@ -3,7 +3,7 @@
 
 #include "synthmod.h"
 
-class subtracter : public synthmod
+class subtracter : public synthmod::base
 {
 public:
     subtracter(const char*);
@@ -17,6 +17,7 @@ private:
     const double* in_signal1;
     const double* in_signal2;
     double out_output;
+    void register_ui();
 };
 
 #endif

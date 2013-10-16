@@ -38,6 +38,11 @@ time_map tmap
     bpm_map
 tmap
 
+pattern_trig pt1
+    in_trig tmap out_bar_trig
+    pattern 000010
+pt1
+
 riff rf1
     quarter_value   64
     notelist
@@ -75,6 +80,7 @@ seq_echo seqo
     in_note_off_trig    seq     out_note_off_trig
     in_frequency        seq     out_frequency
     in_velocity         seq     out_velocity
+    in_reset_trig       pt1 out_trig
     delay_time      345 //230
     count           15
     send_input_out  off
@@ -87,6 +93,7 @@ seq_router seqr
     in_note_off_trig    seqo    out_note_off_trig
     in_frequency        seqo    out_frequency
     in_velocity         seqo    out_velocity
+    in_all_off_trig     off
     count           5
     wrap            on
 seqr
@@ -142,10 +149,10 @@ aeg
 
 mono_amp amp
     in_signal   sine out_output
+    in_gain_mod  off
     in_amp_eg   aeg out_output
-    in_amp_mod  off
-    level       0.975
-    amp_mod_size 0.0
+    gain       0.975
+    gain_mod_size 0.0
     clip_level  0.999
 amp
 
@@ -229,12 +236,12 @@ param_editor pe1
         edit g4.osc
             tuning_semitones 0.5
 
-        edit main.amp   level   0.75
-        edit g0.amp     level   0.4
-        edit g1.amp     level   0.3
-        edit g2.amp     level   0.2
-        edit g3.amp     level   0.15
-        edit g4.amp     level   0.1
+        edit main.amp   gain   0.75
+        edit g0.amp     gain   0.4
+        edit g1.amp     gain   0.3
+        edit g2.amp     gain   0.2
+        edit g3.amp     gain   0.15
+        edit g4.amp     gain   0.1
     editlist
 pe1
 

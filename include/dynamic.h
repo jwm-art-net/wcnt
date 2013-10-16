@@ -23,7 +23,7 @@
     usol - upper_signal_out_level
     lsol - lower_signal_out_level                   */
 
-class dynamic : public synthmod, public linked_list<dynvertex>
+class dynamic : public synthmod::base, public linked_list<dynvertex>
 {
  public:
     dynamic(const char*);
@@ -49,8 +49,8 @@ class dynamic : public synthmod, public linked_list<dynvertex>
     const void* get_in(input::TYPE) const;
     bool set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE) const;
-    dobj* add_dobj(dobj*);
-    synthmod* duplicate_module(const char* uname, DUP_IO);
+    dobj::base* add_dobj(dobj::base*);
+    synthmod::base* duplicate_module(const char* uname, DUP_IO);
 
  private:
     // inputs
@@ -76,9 +76,9 @@ class dynamic : public synthmod, public linked_list<dynvertex>
     */
     dynvertex* goto_dvertex(double sil);
 
-    void init_first();
     void create_dobj();
     static bool done_dobj;
+    void register_ui();
 };
 
 #endif

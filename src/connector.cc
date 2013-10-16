@@ -1,7 +1,7 @@
 #include "../include/connector.h"
 #include "../include/synthmod.h"
 #include "../include/synthmodlist.h"
-#include "../include/jwm_globals.h"
+#include "../include/globals.h"
 
 
 #ifdef DEBUG
@@ -18,7 +18,7 @@
 
 
 connector::connector(
- synthmod* input_module, input::TYPE input_type,
+ synthmod::base* input_module, input::TYPE input_type,
  const char* output_module_name, output::TYPE output_type) :
   in_mod(input_module), in_type(input_type), out_mod_uname(0),
   out_type(output_type)
@@ -50,7 +50,7 @@ connector* connector::duplicate()
     return new connector(in_mod, in_type, out_mod_uname, out_type);
 }
 
-connector* connector::duplicate(synthmod* sm)
+connector* connector::duplicate(synthmod::base* sm)
 {
     if (in_mod->get_module_type() == sm->get_module_type())
         return new connector(sm, in_type, out_mod_uname, out_type);
@@ -63,8 +63,8 @@ bool connector::connect()
         connerr("%s", "Cannot make connection, connection does not exist!");
         return false;
     }
-    const synthmod* outmod =
-        jwm.get_modlist()->get_synthmod_by_name(out_mod_uname);
+    const synthmod::base* outmod =
+        wcnt::jwm.get_modlist()->get_synthmod_by_name(out_mod_uname);
     if (!in_mod) {
         connerr("Connection error! Input module not set, nothing to "
                 "connect to. FYI input type is set as %s and out module "

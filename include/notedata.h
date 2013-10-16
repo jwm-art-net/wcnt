@@ -2,7 +2,7 @@
 #define NOTEDATA_H
 
 #include "dobj.h"
-#include "jwm_init.h"
+#include "globals.h"
 
 // note_data
 // there used to be a whole load of comments with regards to note length
@@ -34,7 +34,7 @@
                 and editnote len and multiply their name by editnote vel.
 */
 
-class note_data : public dobj
+class note_data : public dobj::base
 {
  public:
     enum NOTE_TYPE {
@@ -122,15 +122,16 @@ class note_data : public dobj
 
  private:
     NOTE_TYPE note_type;
-    char notename[jwm_init::note_array_size];
+    char notename[wcnt::note_array_size];
     double position;
     double length;
     double velocity;
-    void init_first();
 
     #ifdef DATA_STATS
     STATS_VARS
     #endif
+
+    void register_ui();
 };
 
 #endif

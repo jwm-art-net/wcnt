@@ -1,20 +1,20 @@
 #include "../include/patterntrig.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
 
 patterntrig::patterntrig(const char* uname) :
- synthmod(module::PATTERNTRIG, uname, SM_HAS_OUT_TRIG),
+ synthmod::base(synthmod::PATTERNTRIG, uname, SM_HAS_OUT_TRIG),
  in_trig(0), out_trig(OFF), out_start_trig(OFF),
  out_end_trig(OFF), out_index(-1), pattern(0), ptr(0)
 {
-    register_input(input::IN_TRIG);
     register_output(output::OUT_TRIG);
     register_output(output::OUT_START_TRIG);
     register_output(output::OUT_END_TRIG);
     register_output(output::OUT_INDEX);
-    init_first();
+}
+
+void patterntrig::register_ui()
+{
+    register_input(input::IN_TRIG);
+    register_param(param::TRIG_STRING);
 }
 
 patterntrig::~patterntrig()
@@ -153,12 +153,4 @@ void patterntrig::run()
     }
 }
 
-
-
-void patterntrig::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::TRIG_STRING);
-}
 

@@ -1,26 +1,30 @@
 #include "../include/glame_filter.h"
 #ifdef WITH_LADSPA
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
+#include "../include/globals.h"
 
 glame_filter::glame_filter(const char* uname) :
- synthmod(module::GLAME_FILTER, uname, SM_HAS_OUT_OUTPUT),
+ synthmod::base(synthmod::GLAME_FILTER, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), in_freq_mod1(0), output(0),
  type(LOPASS), cutoff_freq(440.0), freq_mod1size(1.0), stages(1),
  l_descriptor(0), l_inst_handle(0),
  l_cutoff_freq(440.0), l_stages(1),
  l_input(0), l_output(0)
 {
-    register_input(input::IN_SIGNAL);
-    register_input(input::IN_FREQ_MOD1);
     register_output(output::OUT_OUTPUT);
-    init_first();
     type_names[0] = "lowpass_iir";
     type_names[1] = "highpass_iir";
-    min_cutoff = 0.0001 * jwm.samplerate();
-    max_cutoff = 0.45 * jwm.samplerate();
+    min_cutoff = 0.0001 * wcnt::jwm.samplerate();
+    max_cutoff = 0.45 * wcnt::jwm.samplerate();
+}
+
+void glame_filter::register_ui()
+{
+    register_input(input::IN_SIGNAL);
+    register_input(input::IN_FREQ_MOD1);
+    register_param(param::GLAME_FILTER_TYPE, "lowpass/highpass");
+    register_param(param::FREQ);
+    register_param(param::FREQ_MOD1SIZE);
+    register_param(param::STAGES);
 }
 
 glame_filter::~glame_filter()
@@ -120,7 +124,7 @@ errors::TYPE glame_filter::validate()
 
 void glame_filter::init()
 {
-    ladspa_loader* ll = jwm.get_ladspaloader();
+    ladspa_loader* ll = wcnt::jwm.get_ladspaloader();
     ladspa_plug* lp = 0;
     if(type == LOPASS)
         lp = ll->get_plugin("lowpass_iir_1891", "lowpass_iir");
@@ -166,16 +170,6 @@ void glame_filter::run()
         l_cutoff_freq = max_cutoff;
     l_descriptor->run(l_inst_handle, 1);
     output = *l_output;
-}
-
-void glame_filter::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::GLAME_FILTER_TYPE, "lowpass/highpass");
-    register_param(param::FREQ);
-    register_param(param::FREQ_MOD1SIZE);
-    register_param(param::STAGES);
 }
 
 #endif // WITH_LADSPA

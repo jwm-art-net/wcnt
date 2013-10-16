@@ -1,21 +1,22 @@
 #include "../include/trigger.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
 #include "../include/conversions.h"
 
 #include <math.h>
 
 trigger::trigger(const char* uname) :
- synthmod(module::TRIGGER, uname, SM_HAS_OUT_TRIG),
+ synthmod::base(synthmod::TRIGGER, uname, SM_HAS_OUT_TRIG),
  in_signal(0), out_trig(OFF), out_not_trig(OFF), out_wait_state(OFF),
  delay_time(0.0), trigger_level(0.0), delay_samps(0)
 {
-    register_input(input::IN_SIGNAL);
     register_output(output::OUT_TRIG);
     register_output(output::OUT_WAIT_STATE);
-    init_first();
+}
+
+void trigger::register_ui()
+{
+    register_input(input::IN_SIGNAL);
+    register_param(param::DELAY_TIME);
+    register_param(param::TRIGGER_LEVEL);
 }
 
 trigger::~trigger()
@@ -111,12 +112,4 @@ void trigger::run()
         if (out_trig == ON)
             out_trig = OFF;
     }
-}
-
-void trigger::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::DELAY_TIME);
-    register_param(param::TRIGGER_LEVEL);
 }

@@ -1,17 +1,18 @@
 #include "../include/trigdelay.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
+#include "../include/globals.h"
 
 trigdelay::trigdelay(const char* uname) :
- synthmod(module::TRIGDELAY, uname, SM_HAS_OUT_TRIG),
+ synthmod::base(synthmod::TRIGDELAY, uname, SM_HAS_OUT_TRIG),
  in_trig(0), out_trig(OFF), delay_time(0.0),
  past_trigs(0), pastmax(0), pastpos(0)
 {
-    register_input(input::IN_TRIG);
     register_output(output::OUT_TRIG);
-    init_first();
+}
+
+void trigdelay::register_ui()
+{
+    register_input(input::IN_TRIG);
+    register_param(param::DELAY_TIME);
 }
 
 trigdelay::~trigdelay()
@@ -22,7 +23,7 @@ trigdelay::~trigdelay()
 
 void trigdelay::init()
 {
-    pastmax = (long)((delay_time * jwm.samplerate()) / 1000);
+    pastmax = (long)((delay_time * wcnt::jwm.samplerate()) / 1000);
     past_trigs = new STATUS[pastmax];
     if(!past_trigs){
         invalidate();
@@ -75,12 +76,5 @@ void trigdelay::run()
     past_trigs[pastpos] = *in_trig;
     pastpos--;
     if (pastpos < 0) pastpos = pastmax - 1;
-}
-
-void trigdelay::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::DELAY_TIME);
 }
 

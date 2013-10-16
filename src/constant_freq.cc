@@ -1,16 +1,18 @@
 #include "../include/constant_freq.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modparamlist.h"
+#include "../include/globals.h"
 #include "../include/conversions.h"
 
 constant_freq::constant_freq(const char* uname) :
- synthmod(module::CONSTANT_FREQ, uname, SM_EMPTY_RUN),
+ synthmod::base(synthmod::CONSTANT_FREQ, uname, SM_EMPTY_RUN),
  out_freq(0.0), out_phase_step(0.0)
 {
     register_output(output::OUT_FREQ);
     register_output(output::OUT_PHASE_STEP);
-    init_first();
+}
+
+void constant_freq::register_ui()
+{
+    register_param(param::FREQ);
 }
 
 constant_freq::~constant_freq()
@@ -60,10 +62,4 @@ void constant_freq::init()
     out_phase_step = freq_to_step(out_freq);
 }
 
-void constant_freq::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::FREQ);
-}
 

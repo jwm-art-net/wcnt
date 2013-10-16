@@ -28,7 +28,7 @@
 class group;
 class synthmodlist;
 
-class group_control: public synthmod
+class group_control: public synthmod::base
 {
  public:
     group_control(const char*);
@@ -54,10 +54,10 @@ class group_control: public synthmod
     /* working */
     wcint_t stop_pending;
     group* grp;
-    synthmod** runlist;
-    synthmod** empty_run_list;
+    synthmod::base** runlist;
+    synthmod::base** empty_run_list;
     bool set_group_name(const char*);
-    void init_first();
+    void register_ui();
 };
 
 #endif

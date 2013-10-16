@@ -3,9 +3,9 @@
 
 #include "synthmod.h"
 
-class trigger: public synthmod
+class trigger: public synthmod::base
 {
-public:
+ public:
     trigger(const char*);
     ~trigger();
     void run();
@@ -15,7 +15,7 @@ public:
     const void* get_in(input::TYPE) const;
     bool set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE) const;
-private:
+ private:
     double const* in_signal;
     STATUS out_trig;
     STATUS out_not_trig;
@@ -23,7 +23,7 @@ private:
     double delay_time;
     double trigger_level;
     samp_t delay_samps;
-    void init_first();
+    void register_ui();
 };
 
 #endif

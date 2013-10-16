@@ -1,13 +1,19 @@
 #include "../include/adsr_scaler.h"
-#include "../include/jwm_globals.h"
-#include "../include/dobjparamlist.h"
+#include "../include/globals.h"
 
 adsr_scaler::adsr_scaler() :
- dobj(dataobj::DEF_ADSR_SCALER),
+ dobj::base(dobj::DEF_ADSR_SCALER),
  padsr(0),
  attack_scale(1.0), decay_scale(1.0), release_scale(1.0)
 {
-    init_first();
+}
+
+void adsr_scaler::register_ui()
+{
+    register_param(param::ADSR_NAME);
+    register_param(param::ATTACK_SCALE);
+    register_param(param::DECAY_SCALE);
+    register_param(param::RELEASE_SCALE);
 }
 
 adsr_scaler::~adsr_scaler()
@@ -18,12 +24,12 @@ bool adsr_scaler::set_param(param::TYPE pt, const void* data)
 {
     switch(pt) {
     case param::ADSR_NAME:
-        if(((synthmod*)data)->get_module_type() == module::ADSR) {
+        if (((synthmod::base*)data)->get_module_type() == synthmod::ADSR) {
             padsr = (adsr*)data;
             return true;
         }
-        dobjerr("%s is not an %s.", ((synthmod*)data)->get_username(),
-                                    module::names::get(module::ADSR));
+        dobjerr("%s is not an %s.", ((synthmod::base*)data)->get_username(),
+                                      synthmod::names::get(synthmod::ADSR));
         return false;
     case param::ATTACK_SCALE:
         attack_scale = *(double*)data;
@@ -89,13 +95,4 @@ errors::TYPE adsr_scaler::validate()
     return errors::NO_ERROR;
 }
 
-void adsr_scaler::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::ADSR_NAME);
-    register_param(param::ATTACK_SCALE);
-    register_param(param::DECAY_SCALE);
-    register_param(param::RELEASE_SCALE);
-}
 

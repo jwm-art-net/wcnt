@@ -1,24 +1,26 @@
 #include "../include/trigcounter.h"
-#include "../include/jwm_globals.h"
-#include "../include/modoutputlist.h"
-#include "../include/modinputlist.h"
-#include "../include/modparamlist.h"
 
 trigcounter::trigcounter(const char* uname) :
- synthmod(module::TRIGCOUNTER, uname, SM_HAS_OUT_TRIG),
+ synthmod::base(synthmod::TRIGCOUNTER, uname, SM_HAS_OUT_TRIG),
  in_trig(0), in_reset_trig(0),
  out_trig(OFF), out_not_trig(OFF), out_pre_count(-1), out_count(-1),
  out_play_state(OFF),
  pre_count(0), count(0), wrap(OFF)
 {
-    register_input(input::IN_TRIG);
-    register_input(input::IN_RESET_TRIG);
     register_output(output::OUT_TRIG);
     register_output(output::OUT_NOT_TRIG);
     register_output(output::OUT_COUNT);
     register_output(output::OUT_PRE_COUNT);
     register_output(output::OUT_PLAY_STATE);
-    init_first();
+}
+
+void trigcounter::register_ui()
+{
+    register_input(input::IN_TRIG);
+    register_input(input::IN_RESET_TRIG);
+    register_param(param::PRE_COUNT);
+    register_param(param::COUNT);
+    register_param(param::WRAP);
 }
 
 trigcounter::~trigcounter()
@@ -138,16 +140,5 @@ void trigcounter::run()
         if (out_not_trig == ON)
             out_not_trig = OFF;
     }
-}
-
-
-
-void trigcounter::init_first()
-{
-    if (done_first())
-        return;
-    register_param(param::PRE_COUNT);
-    register_param(param::COUNT);
-    register_param(param::WRAP);
 }
 
