@@ -4,9 +4,9 @@
 adsr::adsr(const char* uname) :
  synthmod::base(synthmod::ADSR, uname, SM_HAS_OUT_OUTPUT),
  in_note_on_trig(0), in_note_off_trig(0), in_velocity(0), output(0),
- out_off_trig(OFF), play_state(OFF), up_thresh(0), lo_thresh(0),
+ out_off_trig(OFF), play_state(OFF), up_thresh(1.00), lo_thresh(0.0),
  start_level(0), min_time(0), max_sus_time(0), sustain_status(OFF),
- release_ratio(OFF), zero_retrigger(OFF), thresh_range(0), end_level(0),
+ release_ratio(ON), zero_retrigger(OFF), thresh_range(0), end_level(0),
  released(OFF), tsamps(0), min_samps(0), max_samps(0), max_sus_samps(0),
  sect(0), sectsample(0), sectmaxsamples(0), levelsize(0),
  run_coords(0), coord(0), coord_ix(0),
@@ -23,17 +23,16 @@ void adsr::register_ui()
 {
     register_dobj(dobj::LST_ENVELOPE, dobj::SIN_COORD);
     register_input(input::IN_NOTE_ON_TRIG);
-    register_param(param::ZERO_RETRIGGER);
-    register_param(param::START_LEVEL);
+    register_param(param::ZERO_RETRIGGER)   ->set_flags(ui::UI_OPTIONAL);
+    register_param(param::START_LEVEL)      ->set_flags(ui::UI_OPTIONAL);
     register_input(input::IN_VELOCITY);
-    register_param(param::UP_THRESH);
-    register_param(param::LO_THRESH);
-
-    register_param(param::MIN_TIME);
+    register_param(param::UP_THRESH)        ->set_flags(ui::UI_OPTIONAL);
+    register_param(param::LO_THRESH)        ->set_flags(ui::UI_OPTIONAL);
+    register_param(param::MIN_TIME)         ->set_flags(ui::UI_OPTIONAL);
     register_param(param::SUSTAIN_STATUS);
-    register_param(param::MAX_SUSTAIN_TIME);
+    register_param(param::MAX_SUSTAIN_TIME) ->set_flags(ui::UI_OPTIONAL);
     register_input(input::IN_NOTE_OFF_TRIG);
-    register_param(param::RELEASE_RATIO);
+    register_param(param::RELEASE_RATIO)    ->set_flags(ui::UI_OPTIONAL);
 }
 
 adsr::~adsr()
@@ -167,10 +166,12 @@ dobj::base* adsr::add_dobj(dobj::base* dbj)
     dobj::TYPE dbjtype = dbj->get_object_type();
     switch(dbjtype)
     {
-    case dobj::SIN_COORD:
-        if (!(retv = insert_coord((adsr_coord*)dbj)))
-            sm_err("Could not add section to %s.", get_username());
+    case dobj::SIN_COORD: {
+        adsr_coord* ac = static_cast<adsr_coord*>(dbj);
+        if (!(retv = insert_coord(ac)))
+            sm_err("ummm Could not add section to %s.", get_username());
         break;
+    }
     default:
         sm_err("%s %s to %s.", errors::stock::major, errors::stock::bad_add,
                                                     get_username());

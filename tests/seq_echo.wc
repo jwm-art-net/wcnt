@@ -45,16 +45,17 @@ rf1
 sequencer seq
     track
         riff_node
-            riff rf1    bar 0   transpose 0
+            riff rf1    bar 0
             repeat 8    repeat_stripe 1
+            transpose 0
     track
 
+    start_bar               0
     in_bar              tmap    out_bar
     in_bar_trig         tmap    out_bar_trig
-    in_pos_step_size    tmap    out_pos_step_size
     in_beats_per_bar    tmap    out_beats_per_bar
     in_beat_value       tmap    out_beat_value
-    start_bar               0
+    in_pos_step_size    tmap    out_pos_step_size
     velocity_response_time  5
 seq
 
@@ -74,9 +75,9 @@ osc_clock osc
     in_note_on_trig     seq     out_note_on_trig
     in_note_slide_trig  seq     out_note_slide_trig
     in_play_state       aeg     out_play_state
+    in_frequency        seq     out_frequency
     octave_offset       0
     tuning_semitones    0
-    in_frequency        seq     out_frequency
     in_freq_mod1        off
     freq_mod1_size      1.0
     in_freq_mod2        off

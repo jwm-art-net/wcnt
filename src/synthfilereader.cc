@@ -227,7 +227,7 @@ bool synthfilereader::read_and_create_dobj(const char* com)
                 break;
             case dobj::DEF_WCFILE:
             {
-                synthfilereader* wcf = (synthfilereader*)dbj;
+                synthfilereader* wcf = static_cast<synthfilereader*>(dbj);
                 if (!(wcf->read_and_create())) { // ooooh
                     wc_err("%s", wcf->get_wc_error_msg());
                     return false;
@@ -236,7 +236,7 @@ bool synthfilereader::read_and_create_dobj(const char* com)
             }
             case dobj::DEF_PARAMEDITOR:
             {
-                parameditor* pe = (parameditor*)dbj;
+                parameditor* pe = static_cast<parameditor*>(dbj);
                 if (!pe->do_param_edits()) {
                     wc_err("%s", dobj::base::get_error_msg());
                     return false;
@@ -245,7 +245,7 @@ bool synthfilereader::read_and_create_dobj(const char* com)
             }
             case dobj::DEF_INPUTEDITOR:
             {
-                inputeditor* ie = (inputeditor*)dbj;
+                inputeditor* ie = static_cast<inputeditor*>(dbj);
                 if (!ie->create_connectors()) {
                     wc_err("%s", dobj::base::get_error_msg());
                     return false;
@@ -349,23 +349,6 @@ synthmod::base* synthfilereader::read_synthmodule(const char* com)
     }
     synthmod::base* sm
         = synthmod::list::create_module(smt,modname.c_str());
-    /*
-    if (!read_dobjs(sm)){
-        wc_err("In module %s, %s.", sm->get_username(), wc_err_msg);
-        delete sm;
-        return 0;
-    }
-    if (!read_inputs(sm)){
-        wc_err("In module %s, %s.", sm->get_username(), wc_err_msg);
-        delete sm;
-        return 0;
-    }
-    if (!read_params(sm)){
-        wc_err("In module %s, %s.", sm->get_username(), wc_err_msg);
-        delete sm;
-        return 0;
-    }
-    */
 
     if (!read_ui_moditems(sm)) {
         wc_err("In module %s, %s.", sm->get_username(), wc_err_msg);
@@ -457,25 +440,12 @@ dobj::base* synthfilereader::read_dobj(const char* com)
     }
     dob->set_username(dobjname.c_str());
 
-    if (!read_ui_dobjitems(dob)) {
+    if (!read_ui_dobjitems(dob, 0)) {
         wc_err("In data object %s, %s.", dob->get_username(), wc_err_msg);
         delete dob;
         return 0;
     }
 
-/*
-    // read dobj parameters (if any)
-    if (!read_dobj_params(dbj, 0)){
-        wc_err("In data object %s %s.", dbj->get_username(), wc_err_msg);
-        delete dbj;
-        return 0;
-    }
-    // read dobj's dobjies (if any)
-    if (!read_dobjs(dbj)){
-        delete dbj;
-        return 0;
-    }
-*/
     if (include_dbj(dob->get_username())) {
         if (wcnt::jwm.is_verbose()) cout << "---- validating..." << endl;
         errors::TYPE et = dob->validate();
@@ -497,186 +467,11 @@ dobj::base* synthfilereader::read_dobj(const char* com)
         delete dob;
         return 0;
     }
-    // read_dobjs(dobj::base*) stops when it encounters the username of the dobj
     return dob;
 }
 
-//------------------------------------------------------------------------
-// bool synthfilereader::read_dobjs(dobj::base* dbj)
-// only reads those data objects which are defined within a dobj
-//------------------------------------------------------------------------
-// read the dobjs (data objects) for the dobj.
-//---
-// return true  if succesful.
-// return true  if dobj contains no dobjies
-// return false if it landed on it's backside.
-//--
-/*
-bool synthfilereader::read_dobjs(dobj::base* dbj)
-{
-    dobj::TYPE dt = dbj->get_object_type();
-
-    ui::dobjitem_list* p_items = wcnt::get_ui_dobjitem_list();
-    ui::dobjitem* p_item = p_items->get_first_of_type(dt);
-
-    while(p_item) {
-        if (*p_item == ui::UI_DOBJ) {
-            
-        }
-        p_item = p_items->get_next_of_type();
-    }
-
-    return true;
-
-    dobjdobjlist* enc_list = wcnt::get_topdobjlist()->get_first_of_type(dt);
-    if (!enc_list) // not dobjs in this dbj dobj
-        return true;
-    while(enc_list) {
-        dobjdobj* enc_dobj = enc_list->goto_first();
-        string enc_com = read_command();
-        dobj::TYPE enc_type = enc_dobj->get_dobj_sprog();
-        const char* enc_name = dobj::names::get(enc_type);
-        if (enc_com != enc_name) {
-            wc_err("In data object %s expected %s got %s instead.",
-                    dbj->get_username(), enc_name, enc_com.c_str());
-            return false;
-        }
-        dobjdobjlist* dd_list;
-        dd_list = enc_list->get_dobjdobjlist_for_dobjtype(enc_type);
-        dobjdobj* dd = dd_list->goto_first();
-        if (wcnt::jwm.is_verbose())
-            cout << "-------- for " << enc_name << endl;
-        while(dd) {
-            const char* com = read_command();
-            dobj::TYPE sprogtype = dd->get_dobj_sprog();
-            const char* sprogname = dobj::names::get(sprogtype);
-            while (strcmp(com, enc_name) != 0) {
-                if (strcmp(com, sprogname) != 0) {
-                    wc_err("In data object %s expected %s got %s instead.",
-                            dbj->get_username(), sprogname, com);
-                    delete dd_list;
-                    return false;
-                }
-                dobj::base* sprog =
-                    wcnt::get_dobjlist()->create_dobj(sprogtype);
-                if (sprog == 0) {
-                    wc_err("%s could not create data object %s for data "
-                                        " object %s.", errors::stock::major,
-                                        sprogname, dbj->get_username());
-                    delete dd_list;
-                    return false;
-                }
-                if (wcnt::jwm.is_verbose())
-                    cout << "-------- creating " << sprogname << endl;
-                if (!read_dobj_params(sprog, enc_com.c_str())) {
-                    wc_err("In data object %s %s.", dbj->get_username(),
-                                                    wc_err_msg);
-                    delete sprog;
-                    delete dd_list;
-                    return false;
-                }
-                if (include_dbj(dbj->get_username())) {
-                    errors::TYPE et = sprog->validate();
-                    if (et != errors::NO_ERROR) {
-                        wc_err("Data object %s has error in %s %s %s %s.",
-                                dbj->get_username(),
-                                sprogname,
-                                dobj::base::get_error_msg(),
-                                errors::stock::get_prefix_msg(et),
-                                errors::stock::get(et));
-                        delete sprog;
-                        delete dd_list;
-                        return false;
-                    }
-                    // add sprog to dbj, not dobjlist  . . .
-                    if (!dbj->add_dobj(sprog)) {
-                        wc_err("%s Could not add data object %s to data"
-                                        " object %s.", errors::stock::major,
-                                           sprogname, dbj->get_username(),
-                                            dobj::base::get_error_msg());
-                        delete sprog;
-                        delete dd_list;
-                        return false;
-                    }
-                }
-                else
-                    delete sprog;
-                if (wcnt::jwm.is_verbose())
-                    cout << "added " << sprogname << endl;
-                com = read_command();
-            }
-            dd = dd_list->goto_next();
-        }
-        delete dd_list;
-        enc_list = wcnt::get_topdobjlist()->get_next_of_type();
-    }
-    return true;
-}
-
-//------------------------------------------------------------------------
-// bool synthfilereader::read_dobj_params(dobj::base* dbj)
-// reads dparams for all data objects
-//------------------------------------------------------------------------
-// return true  if succesful.
-// return false on fail.
-// enda & endb in most instances are both NULL. they should only be used
-// when reading an EDIT dobj type contained in an EDIT_LST dobjtype. they
-// point to a char string which is the EDIT dobj name, and another which 
-// is the EDITLIST dobj name and are used to terminate reading strings
-// to add to the string list param::TYPE PAR_STR_LIST.
-
-bool synthfilereader::
-read_dobj_params(dobj::base* dbj, const char* endterm)
-{
-    dobj::TYPE dobjtype = dbj->get_object_type();
-    dobjparamlist::linkedlist*
-        parlist = new_list_of_by(wcnt::get_dparlist(), dobjtype);
-
-    dobjparam* param = parlist->goto_first();
-    const char* enda = dobj::names::get(dobjtype);
-    while(param) {
-        ostringstream conv;
-        param::TYPE pt = param->get_partype();
-        const char* parname = 0;
-        if (pt != param::STR_UNNAMED && pt != param::STR_LIST)
-            parname = read_command();
-        string* datastr;
-        if (pt == param::STR_LIST) {
-            datastr = (string*)read_string_list_param(enda, endterm);
-            if (!datastr) {
-                delete parlist;
-                return false;
-            }
-        }
-        else {
-            datastr = new string;
-            *synthfile >> *datastr;
-        }
-        if (inc_current) {
-            const char* val = datastr->c_str();
-            if (!setpar::set_param(dbj, parname, pt, val, &conv)) {
-                wc_err("%s %s", setpar::get_error_msg(),
-                                dobj::base::get_error_msg());
-                delete datastr;
-                delete parlist;
-                return false;
-            }
-        }
-        delete datastr;
-        if (wcnt::jwm.is_verbose()) {
-            if (parname)
-                cout << "parameter " << parname;
-            cout << "\t" << conv.str() << endl;
-        }
-        param = parlist->goto_next();
-    }
-    delete parlist;
-    return true;
-}
-*/
-const string* 
-synthfilereader::read_string_list_param
-    (const char* enda, const char* endb)
+string*  synthfilereader::read_string_list_param (const char* enda,
+                                                  const char* endb)
 {
     #ifdef STR_DEBUG
     cout << "read_string_list_param:";
@@ -754,17 +549,19 @@ bool synthfilereader::read_ui_moditems(synthmod::base* sm)
     if (wcnt::jwm.is_verbose())
         cout << "--------" << endl;
 
+    ui::FLAGS flags = ui::UI_DEFAULT;
+
     while(item) {
         switch(item->get_item_type()) {
           case ui::UI_PARAM: {
             ui::modparam* mp = static_cast<ui::modparam*>(item);
-            if (!read_ui_modparam(sm, mp->get_param_type()))
+            if (!read_ui_modparam(sm, mp, flags))
                 return false;
             break;
           }
           case ui::UI_INPUT: {
             ui::modinput* mi = static_cast<ui::modinput*>(item);
-            if (!read_ui_modinput(sm, mi->get_input_type()))
+            if (!read_ui_modinput(sm, mi, flags))
                 return false;
             break;
           }
@@ -785,73 +582,87 @@ bool synthfilereader::read_ui_moditems(synthmod::base* sm)
 }
 
 
-bool synthfilereader::read_ui_dobjitems(dobj::base* dob)
+bool synthfilereader::read_ui_dobjitems(dobj::base* dob, const char* parent)
 {
     ui::dobjitem_list::linkedlist* items = wcnt::get_ui_dobjitem_list()
-                                ->items_for_dobj(dob->get_object_type());
-    ui::dobjitem* item = items->goto_first();
-
-    if (!item)
+                        ->items_for_data_object(dob->get_object_type());
+    if (!items)
         return true;
+
+    ui::dobjitem* item = items->goto_first();
 
     if (wcnt::jwm.is_verbose())
         cout << "--------" << endl;
 
+    ui::FLAGS flags = ui::UI_DEFAULT;
+
     while(item) {
-        cout << "switching on dobjitem... " << (void*)item << endl;
-        item->dump();
         switch(item->get_item_type()) {
-        cout << " dobjparam" << endl;
           case ui::UI_PARAM: {
             ui::dobjparam* dp = static_cast<ui::dobjparam*>(item);
-            if (!read_ui_dobjparam(dob, dp->get_param_type())) {
-    cout << "fail :-(" << endl;
+            if (!read_ui_dobjparam(dob, dp, flags, parent)) {
+                delete items;
                 return false;
             }
             break;
           }
           case ui::UI_DOBJ: {
-        cout << " dobjdobj" << endl;
             ui::dobjdobj* dd = static_cast<ui::dobjdobj*>(item);
             if (!read_ui_dobjdobj(dob, dd->get_dobj_parent(),
-                                       dd->get_dobj_child())) {
-    cout << "fail :-(" << endl;
+                                       dd->get_dobj_child()))
+            {
+                delete items;
                 return false;
             }
             break;
           }
           default:
             wc_err("%s invalid ui element.", errors::stock::bad);
+            delete items;
             return false;
         }
         item = items->goto_next();
     }
+    delete items;
     return true;
 }
 
 bool
-synthfilereader::read_ui_modinput(synthmod::base* sm, input::TYPE intype)
+synthfilereader::read_ui_modinput(synthmod::base* sm, ui::modinput* inp,
+                                                      ui::FLAGS flags)
 {
-    const char* inname = read_command();
+    const char* inpname = read_command();
+    input::TYPE inptype = inp->get_input_type();
+    input::TYPE it = input::names::type(inpname, inptype);
 
-    if (strcmp(input::names::get(intype), inname) != 0) {
-        wc_err("expected input type %s got %s instead.",
-                        input::names::get(intype), inname);
-        return false;
+    bool unspecified = false;
+
+    if (it != inptype) {
+        if (inp->is_optional()) {
+            command = new string(inpname);
+            unspecified = true;
+        }
+        else {
+            wc_err("Unexpected input '%s', expected '%s'.",
+                        inpname, input::names::get(inptype));
+            return false;
+        }
     }
 
-    string outmod;
-    *synthfile >> outmod;
+    string outmod = "off";
+
+    if (!unspecified)
+        *synthfile >> outmod;
 
     if (outmod == "off") {
         if (include_mod(sm->get_username())) {
             output::TYPE offout = output::names::get_off_type(
-                                     input::names::category(intype));
-            wcnt::get_connectlist()->add_connector(sm, intype,
+                                     input::names::category(inptype));
+            wcnt::get_connectlist()->add_connector(sm, inptype,
                                                        outmod.c_str(),
                                                        offout);
             if (wcnt::jwm.is_verbose())
-                cout << "added connector " << inname << "\toff" << endl;
+                cout << "added connector " << inpname << "\toff" << endl;
         }
         return true;
     }
@@ -861,24 +672,24 @@ synthfilereader::read_ui_modinput(synthmod::base* sm, input::TYPE intype)
     output::TYPE outtype = output::names::type(outname.c_str());
 
     if (outtype == output::ERR_TYPE) {
-        wc_err("Input %s set with unknown output type %s.", inname,
+        wc_err("Input %s set with unknown output type %s.", inpname,
                                                         outname.c_str());
         return false;
     }
 
-    if (input::names::category(intype) != output::names::category(outtype))
+    if (input::names::category(inptype) != output::names::category(outtype))
     {
-        wc_err("Input %s set with wrong category of output %s.", inname,
+        wc_err("Input %s set with wrong category of output %s.", inpname,
                                                         outname.c_str());
         return false;
     }
 
     if (include_mod(sm->get_username())) {
-        wcnt::get_connectlist()->add_connector(sm, intype,
+        wcnt::get_connectlist()->add_connector(sm, inptype,
                                                    outmod.c_str(),
                                                    outtype);
         if (wcnt::jwm.is_verbose()) {
-            cout << "added connector " << inname << "\t"
+            cout << "added connector " << inpname << "\t"
                  << outmod << "\t" << outname << endl;
         }
     }
@@ -887,17 +698,30 @@ synthfilereader::read_ui_modinput(synthmod::base* sm, input::TYPE intype)
 
 
 bool
-synthfilereader::read_ui_modparam(synthmod::base* sm, param::TYPE partype)
+synthfilereader::read_ui_modparam(synthmod::base* sm, ui::modparam* par,
+                                                      ui::FLAGS flags)
 {
-    string parname = read_command();
+    const char* parname = read_command();
+    param::TYPE partype = par->get_param_type();
+    param::TYPE pt = param::names::type(parname, partype);
+
+    if (pt != partype) {
+        if (par->is_optional()) {
+            command = new string(parname);
+            return true;
+        }
+
+        wc_err("Unexpected parameter '%s', expected '%s'.",
+                        parname, param::names::get(partype));
+        return false;
+    }
 
     ostringstream conv;
     string datastr;
     *synthfile >> datastr;
 
     if (include_mod(sm->get_username())) {
-        if (!setpar::set_param(sm, parname.c_str(), partype,
-                                     datastr.c_str(), &conv))
+        if (!setpar::set_param(sm, partype, datastr.c_str(), &conv))
         {
             wc_err("%s", setpar::get_error_msg());
             return false;
@@ -914,25 +738,50 @@ synthfilereader::read_ui_modparam(synthmod::base* sm, param::TYPE partype)
 
 
 bool
-synthfilereader::read_ui_dobjparam(dobj::base* dob, param::TYPE partype)
+synthfilereader::read_ui_dobjparam(dobj::base* dob, ui::dobjparam* par,
+                                                    ui::FLAGS flags,
+                                                    const char* parent)
 {
-    string parname = read_command();
+    const char* parname;
+    param::TYPE partype = par->get_param_type();
 
-    ostringstream conv;
-    string datastr;
-    *synthfile >> datastr;
-
-cout << "parname: " << parname << "datastr: " << datastr;
-
-    if (include_dbj(dob->get_username())) {
-        if (!setpar::set_param(dob, parname.c_str(), partype,
-                                     datastr.c_str(), &conv))
-        {
-            wc_err("%s", setpar::get_error_msg());
+    if (partype != param::STR_UNNAMED && partype != param::STR_LIST) {
+        parname = read_command();
+        param::TYPE pt = param::names::type(parname, partype);
+        if (pt != partype) {
+            if (par->is_optional()) {
+                command = new string(parname);
+                return true;
+            }
+            wc_err("Unexpected parameter '%s', expected '%s'.",
+                            parname, param::names::get(partype));
             return false;
         }
     }
 
+    ostringstream conv;
+    string* datastr = 0;
+
+    if (partype == param::STR_LIST) {
+        const char* dobjname = dobj::names::get(dob->get_object_type());
+        datastr = read_string_list_param(dobjname, parent);
+        if (!datastr)
+            return false;
+    }
+    else {
+        datastr = new string;
+        *synthfile >> *datastr;
+    }
+
+    if (include_dbj(dob->get_username())) {
+        if (!setpar::set_param(dob, partype, datastr->c_str(), &conv))
+        {
+            wc_err("%s", setpar::get_error_msg());
+            delete datastr;
+            return false;
+        }
+    }
+    delete datastr;
     if (wcnt::jwm.is_verbose()) {
         cout << "parameter ";
         cout << parname << "\t" << conv.str() << endl;
@@ -975,7 +824,7 @@ synthfilereader::read_ui_moddobj(synthmod::base* sm, dobj::TYPE parent,
             return false;
         }
 
-        if (!read_ui_dobjitems(dob)) {
+        if (!read_ui_dobjitems(dob, 0)) {
             wc_err("%s, %s %s", parentname, childname, wc_err_msg);
             delete dob;
             return false;
@@ -1033,7 +882,6 @@ synthfilereader::read_ui_dobjdobj(dobj::base* dob, dobj::TYPE parent,
     // now read the list of items (each item's type is sprogtype)
     while (strcmp(parentname, com) != 0) {
         if (strcmp(com, childname) != 0) {
-            cout << "ooo shit\n";
             // check name of item matches expected
             wc_err("data object %s expected %s got %s instead",
                                     parentname, childname, com);
@@ -1051,7 +899,7 @@ synthfilereader::read_ui_dobjdobj(dobj::base* dob, dobj::TYPE parent,
             return false;
         }
 
-        if (!read_ui_dobjitems(cdob)) {
+        if (!read_ui_dobjitems(cdob, parentname)) {
             wc_err("%s, %s %s", parentname, childname, wc_err_msg);
             delete cdob;
             return false;
@@ -1088,10 +936,7 @@ synthfilereader::read_ui_dobjdobj(dobj::base* dob, dobj::TYPE parent,
             cout << "added data object " << childname << endl;
 
         com = read_command();
-        cout << "com: " << com << "\tparent: " << parentname << endl;
     }
-
-    cout << "breaking out, it's true!" << endl;
 
     return true;
 }

@@ -10,8 +10,8 @@ balance::balance(const char* uname) :
 void balance::register_ui()
 {
     register_input(input::IN_SIGNAL1);
-    register_input(input::IN_SIGNAL2);
     register_param(param::FUNC, "add/sub/mul");
+    register_input(input::IN_SIGNAL2);
     register_param(param::BIAS);
 }
 

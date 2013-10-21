@@ -20,7 +20,7 @@ namespace dobj
     }
 
     // create_dobj does not add to list.
-    dobj::base* create_dobj(dobj::TYPE);
+    static dobj::base* create_dobj(dobj::TYPE);
 
     dobj::base* get_dobj_by_name(const char* n) {
         return find_in_data(sneak_first(), name(n))->get_data();

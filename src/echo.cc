@@ -15,10 +15,10 @@ echo::echo(const char* uname) :
 
 void echo::register_ui()
 {
-    register_input(input::IN_FEEDBACK);
-    register_input(input::IN_FB_MOD);
     register_param(param::DELAY_TIME);
+    register_input(input::IN_FEEDBACK);
     register_param(param::FEED_LEVEL);
+    register_input(input::IN_FB_MOD);
     register_param(param::FEED_MODSIZE);
     register_param(param::WETDRY);
 }

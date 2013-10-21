@@ -112,8 +112,8 @@ class cmdline
     void help();
     void about();
 
-    void dobj_help(synthmod::TYPE);
-    void dobj_help_params(dobj::TYPE, int level);
+    void dobj_help(dobj::TYPE parent, dobj::TYPE child, int indent_level);
+    void dobj_help_items(dobj::TYPE, int indent_level);
 };
 
 #endif

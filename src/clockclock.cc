@@ -5,7 +5,7 @@ clockclock::clockclock(const char* uname) :
  synthmod::base(synthmod::CLOCK, uname, SM_DEFAULT),
  out_phase_trig(OFF),
  out_premod_phase_step(0.00), out_phase_step(0.00),
- in_freq_mod1(0), hrtz_freq(0.00), freq_mod1size(0.00),
+ in_freq_mod1(0), hrtz_freq(0.00), freq_mod1size(1.00),
  mod1size(0),degs(360.00)
 {
     // degs initialised to 360 to cause immediate triggering
@@ -16,9 +16,9 @@ clockclock::clockclock(const char* uname) :
 
 void clockclock::register_ui()
 {
-    register_input(input::IN_FREQ_MOD1);
     register_param(param::FREQ);
-    register_param(param::FREQ_MOD1SIZE);
+    register_input(input::IN_FREQ_MOD1)->set_flags(ui::UI_OPTIONAL);
+    register_param(param::FREQ_MOD1SIZE)->set_flags(ui::UI_OPTIONAL);
 }
 
 clockclock::~clockclock()

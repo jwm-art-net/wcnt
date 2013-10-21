@@ -24,16 +24,16 @@ serialwavfileout::serialwavfileout(const char* uname) :
 
 void serialwavfileout::register_ui()
 {
+    register_param(param::WAV_BASENAME);
+    register_param(param::DATA_FMT,
+                    "pcm16/pcm24/pcm32/float32/float64");
     register_input(input::IN_LEFT);
     register_input(input::IN_RIGHT);
     register_input(input::IN_BAR);
-    register_input(input::IN_WRITE_TRIG);
-    register_input(input::IN_STOP_TRIG);
-    register_param(param::DATA_FMT,
-                    "pcm16/pcm24/pcm32/float32/float64");
-    register_param(param::WAV_BASENAME);
     register_param(param::START_BAR);
     register_param(param::END_BAR);
+    register_input(input::IN_WRITE_TRIG);
+    register_input(input::IN_STOP_TRIG);
     register_param(param::COUNT);
 }
 

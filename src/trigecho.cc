@@ -15,11 +15,11 @@ trigecho::trigecho(const char* uname) :
 
 void trigecho::register_ui()
 {
-    register_input(input::IN_TRIG);
-    register_input(input::IN_RESET_TRIG);
-    register_param(param::DELAY_TIME);
     register_param(param::COUNT);
+    register_param(param::DELAY_TIME);
+    register_input(input::IN_RESET_TRIG);
     register_param(param::SEND_INPUT_OUT);
+    register_input(input::IN_TRIG);
 }
 
 trigecho::~trigecho()

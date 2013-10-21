@@ -53,12 +53,12 @@ sequencer::sequencer(const char* uname) :
 void sequencer::register_ui()
 {
     register_dobj(dobj::LST_TRACK, dobj::SIN_RIFFNODE);
+    register_param(param::START_BAR);
     register_input(input::IN_BAR);
     register_input(input::IN_BAR_TRIG);
-    register_input(input::IN_POS_STEP_SIZE);
     register_input(input::IN_BEATS_PER_BAR);
     register_input(input::IN_BEAT_VALUE);
-    register_param(param::START_BAR);
+    register_input(input::IN_POS_STEP_SIZE);
     register_param(param::VELOCITY_RESPONSE);
 }
 

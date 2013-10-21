@@ -8,6 +8,7 @@ namespace errors
  const char* stock::major =   "*** MAJOR ERROR ***";
  const char* stock::bad =     "Bad attempt made to";
  const char* stock::bad_add = "Bad attempt made to add invalid object type";
+ const char* stock::paramname = "Unknown parameter name '%s'.";
 
  const struct stock::gn_data stock::data[LAST_TYPE] =
  {

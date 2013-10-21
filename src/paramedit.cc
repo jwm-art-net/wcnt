@@ -16,8 +16,11 @@ paramedit::paramedit() :
 
 void paramedit::register_ui()
 {
-    register_param(param::STR_UNNAMED);
-    register_param(param::STR_LIST);
+    ui::dobjitem* i = 0;
+    if ((i = register_param(param::STR_UNNAMED)))
+        i->add_comment("module_name");
+    if ((i = register_param(param::STR_LIST)))
+        i->add_comment("parameter_name parameter_value (...)");
 }
 
 paramedit::~paramedit()
@@ -133,7 +136,7 @@ bool paramedit::mod_param_edit(synthmod::base* mod, const char* parname,
         return false;
     }
 
-    if (!setpar::set_param(mod, parname, partype, valstr, 0)) {
+    if (!setpar::set_param(mod, partype, valstr, 0)) {
         dobjerr("%s", setpar::get_error_msg());
         invalidate();
         return false;
@@ -178,7 +181,7 @@ bool paramedit::dobj_param_edit(dobj::base* dob, const char* parname,
         return false;
     }
 
-    if (!setpar::set_param(dob, parname, partype, valstr, 0)) {
+    if (!setpar::set_param(dob, partype, valstr, 0)) {
         dobjerr("%s", setpar::get_error_msg());
         invalidate();
         return false;

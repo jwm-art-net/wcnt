@@ -22,7 +22,10 @@ namespace dobj
     ERR_TYPE,
     //---------------------------------------------
     // lists to be defined within a module
-    // or data object
+    // or data object... these lack any corresponding
+    // data structure, they merely exist to textually
+    // demarcate the start and end of a list in a
+    // module or data object definition.
     //---------------------------------------------
     LST_ENVELOPE,
     LST_WAVEFORM,

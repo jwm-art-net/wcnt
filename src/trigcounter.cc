@@ -17,10 +17,10 @@ trigcounter::trigcounter(const char* uname) :
 void trigcounter::register_ui()
 {
     register_input(input::IN_TRIG);
-    register_input(input::IN_RESET_TRIG);
     register_param(param::PRE_COUNT);
     register_param(param::COUNT);
     register_param(param::WRAP);
+    register_input(input::IN_RESET_TRIG);
 }
 
 trigcounter::~trigcounter()

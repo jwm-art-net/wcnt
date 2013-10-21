@@ -12,9 +12,9 @@ modifier::modifier(const char* uname) :
 void modifier::register_ui()
 {
     register_input(input::IN_SIGNAL1);
+    register_param(param::FUNC, "add/sub/mul");
     register_input(input::IN_SIGNAL2);
     register_input(input::IN_BIAS);
-    register_param(param::FUNC, "add/sub/mul");
     register_param(param::MODIFIER_TYPE, "m1/m2");
 //  register_param(param::BIAS);
 }

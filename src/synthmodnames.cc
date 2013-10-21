@@ -6,7 +6,7 @@ namespace synthmod
  {
     { ERR_TYPE,         "BAD_MODULE_TYPE",  0, "ERROR!"   },
     { NONEZERO,         "none",             0, "A module providing outputs which are used when an input is turned off."        },
-    { ADSR,             "adsr",             0, "A dual shaped modulatable multi-sectioned ADSR Envelope Generator with more settings than you can shake a spicy bean burger at. Smoothing not included." },
+    { ADSR,             "adsr",             0, "A dual shaped modulatable multi-sectioned ADSR Envelope Generator (smoothing not included)." },
     { STEREOAMP,        "stereo_amp",       0, "A module used to shape, modulate, and adjust the levels of a pair of signals." },
     { CLOCK,            "clock",            0, "A basic clock source providing a phase trigger and step outputs."              },
     { CONSTMOD,         "constant",         0, "Provides a constant unchanging value."                                         },
@@ -46,7 +46,7 @@ namespace synthmod
     { DYNAMIC,          "dynamic",          0, "User defined and modulatable dynamic mapping of signal levels." },
     { SPREADER,         "spreader",         0, "Dependant on value of input signal, outputs one of a number of signals. The signals are specified as a list of modules." },
     { NOTETRAN,         "note_tran",        0, "Performs some sort of difficult to comprehend translation of note data!" },
-    { WAITTRIG,         "wait_trig",        0, "Waits for trigger one before outputting trigger two a specified number of times." },
+    { WAITTRIG,         "wait_trig",        0, "Waits for trigger1 before outputting trigger2 a specified number of times." },
     { PATTERNTRIG,      "pattern_trig",     0, "A binary pattern is used to decide if the input trigger should be passed through to output or not. out_count increases with every trigger output and resets when the pattern starts over." },
     { STATEGATETRIG,    "state_gate_trig",  0, "The input trigger is allowed through to output only if the state input is on." },
     { INVERT,           "invert",           0, "Flips the sign of a signal." },

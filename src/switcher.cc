@@ -16,8 +16,8 @@ switcher::switcher(const char* uname) :
 
 void switcher::register_ui()
 {
-    register_dobj(dobj::LST_SIGNALS, dobj::DOBJ_SYNTHMOD);
     register_input(input::IN_TRIG);
+    register_dobj(dobj::LST_SIGNALS, dobj::DOBJ_SYNTHMOD);
     register_param(param::XFADE_TIME);
 }
 

@@ -19,15 +19,15 @@ seq_router::seq_router(const char* uname) :
 
 void seq_router::register_ui()
 {
+    register_param(param::COUNT);
     register_input(input::IN_INDEX);
+    register_param(param::WRAP);
     register_input(input::IN_NOTE_ON_TRIG);
     register_input(input::IN_NOTE_SLIDE_TRIG);
     register_input(input::IN_NOTE_OFF_TRIG);
     register_input(input::IN_FREQ);
     register_input(input::IN_VELOCITY);
     register_input(input::IN_ALL_OFF_TRIG);
-    register_param(param::COUNT);
-    register_param(param::WRAP);
 }
 
 seq_router::~seq_router()

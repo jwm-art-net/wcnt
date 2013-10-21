@@ -31,11 +31,11 @@ wavfileout::wavfileout(const char* uname) :
 
 void wavfileout::register_ui()
 {
+    register_param(param::FILENAME);
+    register_param(param::DATA_FMT,"pcm16/pcm24/pcm32/float32/float64");
     register_input(input::IN_LEFT);
     register_input(input::IN_RIGHT);
     register_input(input::IN_BAR);
-    register_param(param::FILENAME);
-    register_param(param::DATA_FMT,"pcm16/pcm24/pcm32/float32/float64");
     register_param(param::START_BAR);
     register_param(param::END_BAR);
     register_param(param::SNAPSHOT_MODE);

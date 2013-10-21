@@ -17,8 +17,11 @@ inputedit::inputedit() :
 
 void inputedit::register_ui()
 {
-    register_param(param::STR_UNNAMED);
-    register_param(param::STR_LIST);
+    ui::dobjitem* i = 0;
+    if ((i = register_param(param::STR_UNNAMED)))
+        i->add_comment("module_name");
+    if ((i = register_param(param::STR_LIST)))
+        i->add_comment("input_name output_module output_name (...)");
 }
 
 inputedit::~inputedit()

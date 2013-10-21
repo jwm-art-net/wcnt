@@ -17,8 +17,8 @@ bode_freq_shifter::bode_freq_shifter(const char* uname) :
 void bode_freq_shifter::register_ui()
 {
     register_input(input::IN_SIGNAL);
-    register_input(input::IN_SHIFT_MOD);
     register_param(param::FREQ_SHIFT);
+    register_input(input::IN_SHIFT_MOD);
     register_param(param::SHIFT_MODSIZE);
 }
 

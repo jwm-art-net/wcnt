@@ -12,8 +12,8 @@ wave::wave(const char* uname) :
 
 void wave::register_ui()
 {
-    register_input(input::IN_PHASE_STEP);
     register_param(param::WAVE_TYPE, wave_tables::fxstring);
+    register_input(input::IN_PHASE_STEP);
 }
 
 wave::~wave()

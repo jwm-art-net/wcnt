@@ -7,10 +7,12 @@
 #include "dobjnames.h"
 #include "namefuncobj.h"
 #include "textstuff.h"
+#include "ui_dobjitem.h"
 
 #ifdef DEBUG
 #include <cstdio>
 #endif
+
 
 namespace dobj
 {
@@ -55,10 +57,11 @@ namespace dobj
     static char err_msg[STRBUFLEN];
     void invalidate(){ valid = false;}
     virtual void register_ui() = 0;
-    void register_param(param::TYPE);
-    void register_param(param::TYPE, const char* fixed_string);
-    void register_dobj(TYPE parent, TYPE sprog);
-    bool validate_param(param::TYPE, errors::TYPE);
+    ui::dobjitem* register_param(param::TYPE);
+    ui::dobjitem* register_param(param::TYPE, const char* fixed_string);
+    ui::dobjitem* register_dobj(TYPE parent, TYPE sprog);
+    ui::dobjitem* register_comment(const char* literal);
+    bool    validate_param(param::TYPE, errors::TYPE);
 
   private:
     TYPE object_type;

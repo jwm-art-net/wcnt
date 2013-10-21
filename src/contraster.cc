@@ -13,10 +13,10 @@ void contraster::register_ui()
 {
     register_input(input::IN_SIGNAL);
     register_input(input::IN_POWER_MOD);
-    register_input(input::IN_RUDE_SWITCH_TRIG);
     register_param(param::POWER_MIN);
     register_param(param::POWER_MAX);
     register_param(param::RUDE_MODE);
+    register_input(input::IN_RUDE_SWITCH_TRIG);
     register_param(param::WETDRY);
 }
 

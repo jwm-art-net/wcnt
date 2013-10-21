@@ -20,14 +20,14 @@ lfo_controller::lfo_controller(const char* uname) :
 void lfo_controller::register_ui()
 {
     register_input(input::IN_TRIG);
-    register_input(input::IN_WAVE);
-    register_input(input::IN_AMP_MOD);
+    register_param(param::START_LEVEL);
     register_param(param::DELAY_TIME);
     register_param(param::RAMP_TIME);
-    register_param(param::START_LEVEL);
     register_param(param::END_LEVEL);
-    register_param(param::RESPONSE_TIME);
+    register_input(input::IN_WAVE);
+    register_input(input::IN_AMP_MOD);
     register_param(param::AMP_MODSIZE);
+    register_param(param::RESPONSE_TIME);
 }
 
 lfo_controller::~lfo_controller()

@@ -20,13 +20,13 @@ void wave_phase::register_ui()
     register_param(param::WAVE_TYPE, wave_tables::fxstring);
     register_input(input::IN_PHASE_TRIG);
     register_input(input::IN_PHASE_STEP);
+    register_param(param::INVERT_ALT);
     register_param(param::TRIG_RESET_PHASE);
     register_param(param::CYCLES);
     register_param(param::WAVE_SHAPE_TYPE, wave_tables::fxstring);
     register_input(input::IN_SHAPE_PHASE_STEP);
     register_param(param::SYNC_SHAPE);
     register_param(param::RECYCLE_MODE);
-    register_param(param::INVERT_ALT);
 }
 
 wave_phase::~wave_phase()

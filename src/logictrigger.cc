@@ -12,8 +12,8 @@ logictrigger::logictrigger(const char* uname) :
 void logictrigger::register_ui()
 {
     register_input(input::IN_TRIG1);
-    register_input(input::IN_TRIG2);
     register_param(param::LOGICFUNC, "and/or/xor/xornot");
+    register_input(input::IN_TRIG2);
     register_param(param::PRECISION);
 }
 

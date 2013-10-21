@@ -25,7 +25,7 @@
 // note: how rock-steady this is not is quite a lot...
 // i suspect..
 //
-// this is something of a bodge.
+// this is something of a bodge.  (is it??)
 */
 
 /*
@@ -38,8 +38,8 @@
 namespace setpar
 {
  template <typename T>
- bool set_param(T* obj, const char* param, param::TYPE pt,
-                        const char* value, std::ostringstream* result);
+ bool set_param(T* obj, param::TYPE pt, const char* value,
+                                        std::ostringstream* result);
 
  template <typename T>
  void* compute(T* obj, param::TYPE pt, void* data, int op);

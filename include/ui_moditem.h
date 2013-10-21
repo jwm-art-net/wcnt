@@ -27,6 +27,7 @@ namespace ui
  typedef param_item<synthmod::base*, synthmod::TYPE> modparam;
  typedef input_item<synthmod::base*, synthmod::TYPE> modinput;
  typedef  dobj_item<synthmod::base*, synthmod::TYPE> moddobj;
+ typedef comment_item<synthmod::base*, synthmod::TYPE> modcomment;
 
  /* moditem_list could be a template but the convolution cost didn't...
     (as far as my awesome skills at this moment it time are concerned)
@@ -45,6 +46,7 @@ namespace ui
     moditem* add_item(synthmod::TYPE, param::TYPE);
     moditem* add_item(synthmod::TYPE, param::TYPE, const char* fixed_str);
     moditem* add_item(synthmod::TYPE, dobj::TYPE parent, dobj::TYPE child);
+    moditem* add_item(synthmod::TYPE, const char* comment);
 
     moditem* get_first_of_type(synthmod::TYPE smt) {
         result = find_in_data(sneak_first(), search = smt);
@@ -59,6 +61,9 @@ namespace ui
     linkedlist* items_for_module(synthmod::TYPE smt) {
         return new_list_of_by(this, smt);
     }
+
+    moditem* match_begin(const char*);
+    moditem* match_next(const char*);
 
     bool validate(synthmod::base*, param::TYPE, errors::TYPE);
 

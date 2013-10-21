@@ -64,6 +64,7 @@ namespace errors
     static const char* bad;     // "Bad attempt made to"
     static const char* bad_add; // "Bad attempt made to add "
                                 // "invalid object type"
+    static const char* paramname; // unknown parameter name '%s'.
 
     static void instantiate() { static stock stockerrs; }
 

@@ -18,9 +18,9 @@ void riff_node::register_ui()
 {
     register_param(param::RIFFNAME);
     register_param(param::BAR);
-    register_param(param::TRANSPOSE);
     register_param(param::REPEAT);
     register_param(param::REPEAT_STRIPE);
+    register_param(param::TRANSPOSE);
 }
 
 riff_node::~riff_node()

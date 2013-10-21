@@ -102,6 +102,19 @@ namespace ui
  }
 
 
+ dobjitem* dobjitem_list::add_item(dobj::TYPE dt, const char* comment)
+ {
+    dobjitem* i = new dobjcomment(dt, comment);
+    if (i) {
+        if (!ordered_insert(this, i, &dobjitem::get_data_type)) {
+            delete i;
+            i = 0;
+        }
+    }
+    return i;
+ }
+
+
  bool dobjitem_list::validate(dobj::base* dob, param::TYPE pt,
                                                errors::TYPE et)
  {

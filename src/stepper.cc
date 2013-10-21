@@ -19,10 +19,10 @@ stepper::stepper(const char* uname) :
 void stepper::register_ui()
 {
     register_dobj(dobj::LST_STEPS, dobj::SIN_STEP);
+    register_param(param::STEP_COUNT);
     register_input(input::IN_TRIG);
     register_input(input::IN_RESTART_TRIG);
     register_input(input::IN_MODULATION);
-    register_param(param::STEP_COUNT);
     register_param(param::UP_THRESH);
     register_param(param::LO_THRESH);
     register_param(param::RESPONSE_TIME);

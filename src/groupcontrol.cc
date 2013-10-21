@@ -20,9 +20,9 @@ group_control::group_control(const char* uname) :
 
 void group_control::register_ui()
 {
+    register_param(param::GROUP_NAME);
     register_input(input::IN_PLAY_TRIG);
     register_input(input::IN_STOP_TRIG);
-    register_param(param::GROUP_NAME);
 }
 
 group_control::~group_control()

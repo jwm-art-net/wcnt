@@ -29,13 +29,13 @@ static char err_msg[STRBUFLEN] = "";
 
 template
 bool set_param<synthmod::base>
-    (synthmod::base* sm, const char* param, param::TYPE pt,
-        const char* value, std::ostringstream* result);
+    (synthmod::base* sm, param::TYPE pt, const char* value,
+                                         std::ostringstream* result);
 
 template
 bool set_param<dobj::base>
-    (dobj::base*, const char* param, param::TYPE pt,
-        const char* value, std::ostringstream* result);
+    (dobj::base*, param::TYPE pt, const char* value,
+                                  std::ostringstream* result);
 
 template
 void* compute<synthmod::base>
@@ -44,34 +44,13 @@ void* compute<synthmod::base>
 template
 void* compute<dobj::base>(dobj::base*, param::TYPE pt, void* data, int op);
 
-template <typename T>
-bool set_param(T* obj, const char* par,     param::TYPE pt,
-                       const char* value,   std::ostringstream* result)
-{
-    /*#ifdef DEBUG
-    std::cout << "set_param: ";
-    if (obj->get_username())
-        std::cout << "\tobj: " << obj->get_username();
-    if (par)
-        std::cout << "\tparam: "  << par;
-    std::cout << "\texpecting: " << param::names::get(pt);
-    if (value)
-        std::cout << "\tvalue: " << value;
-    std::cout << std::endl;
-    #endif*/
 
-    const char* parname = param::names::get(pt);
-    if (pt != param::STR_UNNAMED && pt != param::STR_LIST) {
-        if (strcmp(par, parname) != 0) {
-            setpar_err("expected %s got %s instead. %s", parname, par,
-                    ((param::names::type(par) == param::ERR_TYPE
-                        && (time(0) % 8) == 0)
-                                ? "Just can't get the staff these days."
-                                : ""));
-            return false;
-        }
-    }
+template <typename T>
+bool set_param(T* obj, param::TYPE pt, const char* value,
+                                       std::ostringstream* result)
+{
     iocat::TYPE ioc = param::names::category(pt);
+    const char* par = param::names::get(pt);
     int op = get_operator(value);
     if (op)
         value += 2; // value == ptr to txt-representation of value ;-)

@@ -10,6 +10,7 @@
 #include "inputnames.h"
 #include "paramnames.h"
 #include "dobjnames.h"
+#include "ui_moditem.h"
 
 /*
 //  synthfilereader(FILE_TYPE) constructor should be only called
@@ -101,12 +102,13 @@ private:
 
     // methods to read various parts of a module
     bool read_ui_moditems(synthmod::base*);
-    bool read_ui_modinput(synthmod::base*, input::TYPE);
-    bool read_ui_modparam(synthmod::base*, param::TYPE);
+    bool read_ui_modinput(synthmod::base*, ui::modinput*, ui::FLAGS);
+    bool read_ui_modparam(synthmod::base*, ui::modparam*, ui::FLAGS flags);
     bool read_ui_moddobj(synthmod::base*, dobj::TYPE, dobj::TYPE);
 
-    bool read_ui_dobjitems(dobj::base*);
-    bool read_ui_dobjparam(dobj::base*, param::TYPE);
+    bool read_ui_dobjitems(dobj::base*, const char* parent);
+    bool read_ui_dobjparam(dobj::base*, ui::dobjparam*, ui::FLAGS flags,
+                                        const char* parent);
     bool read_ui_dobjdobj(dobj::base*, dobj::TYPE, dobj::TYPE);
 /*
     // method to read sub-parts of standalone dobjs
@@ -115,8 +117,7 @@ private:
     // method to read parameters of dobjs
     bool read_dobj_params(dobj::base*, const char* endterm);
 */
-    const std::string*
-        read_string_list_param(const char* enda, const char* endb);
+    std::string* read_string_list_param(const char* enda, const char* endb);
     // method for ......
     bool eff_ing_header_bodge(samp_t *samplerate);
     void register_ui();

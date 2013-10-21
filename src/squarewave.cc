@@ -20,9 +20,9 @@ void square_wave::register_ui()
 {
     register_input(input::IN_PHASE_TRIG);
     register_input(input::IN_PHASE_STEP);
-    register_input(input::IN_PWM);
     register_param(param::RATE);
     register_param(param::PULSE_WIDTH);
+    register_input(input::IN_PWM);
     register_param(param::PWM_SIZE);
     register_param(param::RECYCLE_MODE);
 }

@@ -28,6 +28,13 @@ namespace ui
         std::cout << "ui::moditem::"
                   << synthmod::names::get(ui->get_data_type()) << "\t";
         switch(ui->get_item_type()) {
+        case ui::UI_COMMENT: {
+            modcomment* mc = static_cast<modcomment*>(ui);
+            std::cout << "UI_COMMENT:\t\""
+                      << mc->get_comment()
+                      << "\"";
+            break;
+        }
         case ui::UI_PARAM: {
             modparam* mp = static_cast<modparam*>(ui);
             std::cout << "UI_PARAM:\t"
@@ -118,6 +125,25 @@ namespace ui
     return i;
  }
 
+ moditem* moditem_list::add_item(synthmod::TYPE dt, const char* comment)
+ {
+    moditem* i = new modcomment(dt, comment);
+    if (i) {
+        if (!ordered_insert(this, i, &moditem::get_data_type)) {
+            delete i;
+            i = 0;
+        }
+    }
+    return i;
+ }
+
+ moditem* moditem_list::match_begin(const char* str)
+ {
+ }
+
+ moditem* moditem_list::match_next(const char* str)
+ {
+ }
 
  bool moditem_list::validate(synthmod::base* sm, param::TYPE pt,
                                                 errors::TYPE et)

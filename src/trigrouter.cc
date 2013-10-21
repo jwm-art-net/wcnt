@@ -17,11 +17,11 @@ trigrouter::trigrouter(const char* uname) :
 
 void trigrouter::register_ui()
 {
-    register_input(input::IN_TRIG);
     register_input(input::IN_INDEX);
-    register_input(input::IN_ALL_OFF_TRIG);
     register_param(param::COUNT);
     register_param(param::WRAP);
+    register_input(input::IN_TRIG);
+    register_input(input::IN_ALL_OFF_TRIG);
 }
 
 trigrouter::~trigrouter()

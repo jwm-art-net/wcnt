@@ -106,43 +106,68 @@ namespace dobj
 
  char base::err_msg[STRBUFLEN] = "";
 
- void base::register_param(param::TYPE pt)
+ ui::dobjitem* base::register_param(param::TYPE pt)
  {
     if (!valid)
-        return;
+        return 0;
 
-    if (!wcnt::get_ui_dobjitem_list()->add_item(object_type, pt)) {
+    ui::dobjitem* i = wcnt::get_ui_dobjitem_list()->add_item(object_type,
+                                                                        pt);
+    if (!i) {
         dobjerr("Failed to register param %s with data object type %s.",
                             param::names::get(pt), names::get(object_type));
         valid = false;
     }
+    return i;
  }
 
- void base::register_param(param::TYPE pt, const char* fixstr)
+ ui::dobjitem* base::register_param(param::TYPE pt, const char* fixstr)
  {
     if (!valid)
-        return;
+        return 0;
 
-    if (!wcnt::get_ui_dobjitem_list()->add_item(object_type, pt, fixstr)) {
+    ui::dobjitem* i = wcnt::get_ui_dobjitem_list()->add_item(object_type,
+                                                                pt, fixstr);
+    if (!i) {
         dobjerr("Failed to register fixed string param %s (%s) "
                             "with data object type %s.",
                             param::names::get(pt), fixstr,
                             names::get(object_type));
         valid = false;
     }
+    return i;
  }
 
- void base::register_dobj(TYPE parent, TYPE sprog)
+ ui::dobjitem* base::register_dobj(TYPE parent, TYPE sprog)
  {
     if (!valid)
-        return;
-    if (!wcnt::get_ui_dobjitem_list()->add_item(object_type, parent, sprog))
+        return 0;
+    ui::dobjitem* i = wcnt::get_ui_dobjitem_list()->add_item(object_type,
+                                                            parent, sprog);
+    if (!i)
     {
         dobjerr("Failed to register parent data object %s with child data "
                 "object %s as part of data object %s", names::get(parent),
                                 names::get(sprog), names::get(object_type));
         valid = false;
     }
+    return i;
+ }
+
+ ui::dobjitem* base::register_comment(const char* literal)
+ {
+    if (!valid)
+        return 0;
+
+    ui::dobjitem* i = wcnt::get_ui_dobjitem_list()->add_item(object_type,
+                                                                literal);
+    if (!i) {
+        dobjerr("Failed to register comment \"%s\" "
+                                     "with data object type %s.", literal,
+                                                names::get(object_type));
+        valid = false;
+    }
+    return i;
  }
 
  bool base::validate_param(param::TYPE pt, errors::TYPE et)

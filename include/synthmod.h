@@ -11,18 +11,21 @@
 #include "synthmodnames.h"
 #include "textstuff.h"
 #include "types.h"
+#include "ui_moditem.h"
 
 #ifdef DEBUG
 #include <cstdio>
 #endif
 
 
+namespace dobj      { class base; }
+namespace modpart   { class base; };
+
+
 /*
 //  synthmod - pure abstract base class for jwm synth modules.
 */
 
-namespace dobj      { class base; }
-namespace modpart   { class base; };
 
 namespace synthmod
 {
@@ -137,13 +140,14 @@ namespace synthmod
         the UI. These should be called only once when a call to
         do_registration() returns true.
      */
-    void register_param(param::TYPE);
-    void register_param(param::TYPE, const char* fixed_string);
-    void register_input(input::TYPE);
-    void register_dobj(dobj::TYPE parent, dobj::TYPE sprog);
+    ui::moditem* register_param(param::TYPE);
+    ui::moditem* register_param(param::TYPE, const char* fixed_string);
+    ui::moditem* register_input(input::TYPE);
+    ui::moditem* register_dobj(dobj::TYPE parent, dobj::TYPE sprog);
+    ui::moditem* register_comment(const char* literal);
 
     /*  Method for output registration, outputs must be registered per
-        instance.
+        instance.S
      */
     void register_output(output::TYPE);
 

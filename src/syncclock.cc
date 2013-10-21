@@ -19,18 +19,18 @@ sync_clock::sync_clock(const char* uname) :
 
 void sync_clock::register_ui()
 {
+    register_param(param::QUARTER_VAL);
+    register_param(param::NOTE_LEN);
+    register_param(param::SNAP_TO);
     register_input(input::IN_BPM);
-    register_input(input::IN_POS_STEP_SIZE);
     register_input(input::IN_BEATS_PER_BAR);
     register_input(input::IN_BEAT_VALUE);
+    register_input(input::IN_POS_STEP_SIZE);
     register_input(input::IN_PHASE_TRIG);
     register_input(input::IN_FREQ_MOD1);
     register_param(param::FREQ_MOD1SIZE);
     register_input(input::IN_FREQ_MOD2);
     register_param(param::FREQ_MOD2SIZE);
-    register_param(param::QUARTER_VAL);
-    register_param(param::NOTE_LEN);
-    register_param(param::SNAP_TO);
 }
 
 sync_clock::~sync_clock()

@@ -166,43 +166,84 @@ namespace synthmod
     }
  }
 
- void base::register_param(param::TYPE pt)
+ ui::moditem* base::register_param(param::TYPE pt)
  {
     if (!(flags & SM_VALID))
-        return;
+        return 0;
 
-    if (!wcnt::get_ui_moditem_list()->add_item(modtype, pt)) {
+    ui::moditem* i = wcnt::get_ui_moditem_list()->add_item(modtype, pt);
+
+    if (!i) {
         sm_err("Failed to register param %s with module type %s.",
                 param::names::get(pt),
                 synthmod::names::get(modtype));
         invalidate();
     }
+    return i;
  }
 
- void base::register_param(param::TYPE pt, const char* fixstr)
+ ui::moditem* base::register_param(param::TYPE pt, const char* fixstr)
  {
     if (!(flags & SM_VALID))
-        return;
+        return 0;
 
-    if (!wcnt::get_ui_moditem_list()->add_item(modtype, pt, fixstr)) {
+    ui::moditem* i = wcnt::get_ui_moditem_list()->add_item(modtype, pt,
+                                                                    fixstr);
+    if (!i) {
         sm_err("Failed to register fixed string param %s (%s) "
                "with module type %s,",  param::names::get(pt),
                                         fixstr,
                                         synthmod::names::get(modtype));
         invalidate();
     }
+    return i;
  }
 
- void base::register_input(input::TYPE t)
+ ui::moditem* base::register_input(input::TYPE t)
  {
     if (!(flags & SM_VALID))
-        return;
+        return 0;
 
-    if (!wcnt::get_ui_moditem_list()->add_item(modtype, t)) {
+    ui::moditem* i = wcnt::get_ui_moditem_list()->add_item(modtype, t);
+
+    if (!i) {
         sm_err("Failed to register input %s with module %s.",
                 input::names::get(t), username);
         invalidate();
     }
+    return i;
+ }
+
+ ui::moditem* base::register_dobj(dobj::TYPE parent, dobj::TYPE sprog)
+ {
+    if (!(flags & SM_VALID))
+        return 0;
+
+    ui::moditem* i = wcnt::get_ui_moditem_list()->add_item(modtype, parent,
+                                                                    sprog);
+    if (!i) {
+        sm_err("Failed to register data object %s (child %s) with "
+               "module type %s.", dobj::names::get(parent),
+                                  dobj::names::get(sprog),
+                                  synthmod::names::get(modtype));
+        invalidate();
+    }
+    return i;
+ }
+
+ ui::moditem* base::register_comment(const char* literal)
+ {
+    if (!(flags & SM_VALID))
+        return 0;
+
+    ui::moditem* i = wcnt::get_ui_moditem_list()->add_item(modtype,
+                                                            literal);
+    if (!i) {
+        sm_err("Failed to register comment \"%s\" with "
+               "module type %s.", literal, synthmod::names::get(modtype));
+        invalidate();
+    }
+    return i;
  }
 
  void base::register_output(output::TYPE t)
@@ -212,20 +253,6 @@ namespace synthmod
     if (!wcnt::get_outputlist()->register_output(this, t)) {
         sm_err("Failed to register output %s with module %s.",
                 output::names::get(t), username);
-        invalidate();
-    }
- }
-
- void base::register_dobj(dobj::TYPE parent, dobj::TYPE sprog)
- {
-    if (!(flags & SM_VALID))
-        return;
-
-    if (!wcnt::get_ui_moditem_list()->add_item(modtype, parent, sprog)) {
-        sm_err("Failed to register data object %s (child %s) with "
-               "module type %s.", dobj::names::get(parent),
-                                  dobj::names::get(sprog),
-                                  synthmod::names::get(modtype));
         invalidate();
     }
  }

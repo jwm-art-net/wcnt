@@ -21,55 +21,27 @@ t-off
     recycle_mode    off
 t-off
 
-adsr env        // the shape of this envelope is purposely made
-                // so the actual insertion order can be checked
-    envelope    // by looking at its output when written to a file.
+adsr env
+    envelope
         section name attack
-            ut  50  ul  0.333
-            lt  50  ll  0.333
-        section name attack
-            ut  950 ul  0.666
-            lt  950 ll  0.666
-        section name attack
-            ut  250 ul  1.00
-            lt  250 ll  1.00
+            ut  50  ul  1
+            lt  50  ll  1
         section name decay
-            ut  50  ul  0.777
-            lt  50  ll  0.777
-        section name decay
-            ut  950 ul  0.666
-            lt  950 ll  0.666
-        section name decay
-            ut  250 ul  0.555
-            lt  250 ll  0.555
+            ut  50  ul  0.75
+            lt  50  ll  0.75
         section name release
-            ut  50  ul  0.444
-            lt  50  ll  0.444
-        section name release
-            ut  950 ul  0.350
-            lt  950 ll  0.350
-        section name release
-            ut  150 ul  0.1
-            lt  150 ll  0.1
+            ut  150 ul  0.0
+            lt  150 ll  0.0
     envelope
     in_note_on_trig     t-on    out_trig
-//    zero_retrigger      off
-//    start_level         0.0
     in_velocity         off
-//    up_thresh           1.0
-//    lo_thresh           0.0
-//    min_time            0.0
     sustain_state       on
-//    max_sustain_time    1000.0
     in_note_off_trig    t-off   out_trig
-//    release_is_ratio    on
 env
 
 clock
 cc
     freq 16
-//    in_freq_mod1 off
-//    freq_mod1_size 1
 cc
 
 inspector

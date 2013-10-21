@@ -7,7 +7,9 @@ dobjmod::dobjmod() :
 
 void dobjmod::register_ui()
 {
-    register_param(param::MODNAME);
+    ui::dobjitem* i = register_param(param::MODNAME);
+    if (i)
+        i->add_comment("A module to be contained by group.");
 }
 
 bool dobjmod::set_param(param::TYPE pt, const void* data)

@@ -17,6 +17,7 @@ class getnames
     static T chk(T t) { return t; }
     #endif
     static T            type(const char* name);
+    static T            type(const char* name, T type_hint);
     static const char*  get(T t)        { return gn_data[chk(t)].name;    }
     static C category(T t)              { return gn_data[chk(t)].cat;     }
     static C category(const char* name) { return gn_data[type(name)].cat; }
@@ -63,6 +64,14 @@ T getnames<T, C>::type(const char* name)
         if (strcmp(name, gn_data[i].name) == 0)
             return (T)i;
     return (T)0;
+}
+
+template <typename T, typename C>
+T getnames<T, C>::type(const char* name, T type_hint)
+{
+    if (strcmp(name, gn_data[chk(type_hint)].name) == 0)
+        return type_hint;
+    return type(name);
 }
 
 #ifdef UNUSED
