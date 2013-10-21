@@ -45,6 +45,7 @@ private:
     double phasepos;
     double snapto;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

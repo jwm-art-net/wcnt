@@ -101,6 +101,7 @@ private:
     wcint_t repeat;
     wcint_t repeat_stripe;
     void register_ui();
+    ui::dobjitem_list* get_ui_items();
 };
 
 #endif

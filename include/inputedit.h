@@ -34,6 +34,7 @@ private:
     char* modname;
     char* iostr;
     void register_ui();
+    ui::dobjitem_list* get_ui_items();
 };
 
 #endif

@@ -26,5 +26,6 @@ class range_limit : public synthmod::base
     double sigrangehi;
     double sigrangelo;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 #endif

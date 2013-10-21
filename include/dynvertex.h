@@ -49,6 +49,7 @@ class dynvertex : public dobj::base
     double uso_level;
     double lso_level;
     void register_ui();
+    ui::dobjitem_list* get_ui_items();
 };
 
 #endif

@@ -53,6 +53,7 @@ class wavfilein : public dobj::base
     SF_INFO sfinfo;
     WAV_STATUS status;
     void register_ui();
+    ui::dobjitem_list* get_ui_items();
 };
 
 #endif

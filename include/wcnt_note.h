@@ -21,6 +21,7 @@ class wcnt_note : public synthmod::base
     const double*   io_freq;
     const double*   io_velocity;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

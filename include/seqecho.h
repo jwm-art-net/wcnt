@@ -46,6 +46,7 @@ class seq_echo : public synthmod::base
     samp_t pastpos;
     wcint_t last;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

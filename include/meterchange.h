@@ -34,6 +34,7 @@ class meterchange : public dobj::base
     wcint_t bar;
     timesig time_sig;
     void register_ui();
+    ui::dobjitem_list* get_ui_items();
 };
 
 #endif

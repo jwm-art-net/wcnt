@@ -32,6 +32,7 @@ class stereomixer: public synthmod::base,
     double const** chans_left;
     double const** chans_right;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

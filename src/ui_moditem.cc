@@ -11,12 +11,14 @@ namespace ui
 {
 
  moditem_list::moditem_list() :
-  search(synthmod::ERR_TYPE), result(0)
+ linkedlist(MULTIREF_OFF),
+ skip_id(UI_DEFAULT), match_id(UI_DEFAULT)
  {
  }
 
  moditem_list::moditem_list(DESTRUCTION d) :
- linkedlist(MULTIREF_OFF, d)
+ linkedlist(MULTIREF_OFF, d),
+ skip_id(UI_DEFAULT), match_id(UI_DEFAULT)
  {
  }
  moditem_list::~moditem_list()
@@ -25,8 +27,6 @@ namespace ui
     std::cout << "~ui::moditem_list()" << std::endl;
     moditem* ui = goto_first();
     while(ui) {
-        std::cout << "ui::moditem::"
-                  << synthmod::names::get(ui->get_data_type()) << "\t";
         switch(ui->get_item_type()) {
         case ui::UI_COMMENT: {
             modcomment* mc = static_cast<modcomment*>(ui);
@@ -64,11 +64,11 @@ namespace ui
     #endif
  }
 
- moditem* moditem_list::add_item(synthmod::TYPE smt, input::TYPE it)
+ moditem* moditem_list::add_item(input::TYPE it)
  {
-    moditem* i = new modinput(smt, it);
+    moditem* i = new modinput(it);
     if (i) {
-        if (!ordered_insert(this, i, &moditem::get_data_type)) {
+        if (!add_at_tail(i)) {
             delete i;
             i = 0;
         }
@@ -76,11 +76,11 @@ namespace ui
     return i;
  }
 
- moditem* moditem_list::add_item(synthmod::TYPE smt, param::TYPE pt)
+ moditem* moditem_list::add_item(param::TYPE pt)
  {
-    moditem* i = new modparam(smt, pt);
+    moditem* i = new modparam(pt);
     if (i) {
-        if (!ordered_insert(this, i, &moditem::get_data_type)) {
+        if (!add_at_tail(i)) {
             delete i;
             i = 0;
         }
@@ -88,15 +88,14 @@ namespace ui
     return i;
  }
 
- moditem* moditem_list::add_item(synthmod::TYPE smt, param::TYPE pt,
-                                                     const char* fixstr)
+ moditem* moditem_list::add_item(param::TYPE pt, const char* fixstr)
  {
     if (!fixstr)
         return 0;
 
-    moditem* i = new modparam(smt, pt);
+    moditem* i = new modparam(pt);
     if (i) {
-        llitem * li = ordered_insert(this, i, &moditem::get_data_type);
+        llitem * li = add_at_tail(i);
         if (li) {
             if (!wcnt::get_fxsparamlist()->add_param(fixstr, pt)) {
                 delete unlink_item(li);
@@ -112,12 +111,11 @@ namespace ui
     return i;
  }
 
- moditem* moditem_list::add_item(synthmod::TYPE smt, dobj::TYPE parent,
-                                                     dobj::TYPE child)
+ moditem* moditem_list::add_item(dobj::TYPE parent, dobj::TYPE child)
  {
-    moditem* i = new moddobj(smt, parent, child);
+    moditem* i = new moddobj(parent, child);
     if (i) {
-        if (!ordered_insert(this, i, &moditem::get_data_type)) {
+        if (!add_at_tail(i)) {
             delete i;
             i = 0;
         }
@@ -125,11 +123,11 @@ namespace ui
     return i;
  }
 
- moditem* moditem_list::add_item(synthmod::TYPE dt, const char* comment)
+ moditem* moditem_list::add_item(const char* comment)
  {
-    moditem* i = new modcomment(dt, comment);
+    moditem* i = new modcomment(comment);
     if (i) {
-        if (!ordered_insert(this, i, &moditem::get_data_type)) {
+        if (!add_at_tail(i)) {
             delete i;
             i = 0;
         }
@@ -137,27 +135,20 @@ namespace ui
     return i;
  }
 
- moditem* moditem_list::match_begin(const char* str)
- {
- }
-
- moditem* moditem_list::match_next(const char* str)
- {
- }
 
  bool moditem_list::validate(synthmod::base* sm, param::TYPE pt,
                                                 errors::TYPE et)
  {
     synthmod::TYPE smt = sm->get_module_type();
-    moditem* ui = get_first_of_type(smt);
+    moditem* ui = goto_first();
 
-    while(result) {
+    while(ui) {
         if (*ui == ui::UI_PARAM) {
             modparam* mp = static_cast<modparam*>(ui);
             if (*mp == pt)
                 return ui->validate(sm, et);
         }
-        ui = get_next_of_type();
+        ui = goto_next();
     }
 
     std::cout << "FIXME: parameter validation failed. Attempt to validate "

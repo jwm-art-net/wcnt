@@ -42,6 +42,7 @@ private:
     double left;
     double right;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

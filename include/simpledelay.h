@@ -31,6 +31,7 @@ class simple_delay : public synthmod::base
     long fpos;
     double filtertotal;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

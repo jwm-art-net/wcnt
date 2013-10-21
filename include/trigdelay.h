@@ -29,6 +29,7 @@ private:
     long pastmax;
     long pastpos;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

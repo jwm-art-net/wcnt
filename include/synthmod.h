@@ -123,6 +123,8 @@ namespace synthmod
     bool type_registered() const;
     void ui_register();
 
+    virtual ui::moditem_list* get_ui_items() = 0;
+
   protected:
     static void force_abort()   { abort_status = ON; }
     void invalidate()           { flags &=~ SM_VALID; }

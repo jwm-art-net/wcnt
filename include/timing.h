@@ -21,6 +21,7 @@ public:
 private:
     double seconds;
     void register_ui();
+    ui::dobjitem_list* get_ui_items();
 };
 
 #endif

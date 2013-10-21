@@ -57,6 +57,7 @@ private:
     double target_phase_step;
     samp_t slidesamples;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

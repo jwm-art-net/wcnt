@@ -42,6 +42,7 @@ class fader: public synthmod::base
 
     int     state;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 
 };
 

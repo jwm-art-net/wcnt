@@ -45,6 +45,7 @@ private:
     LADSPA_Data* l_input;
     LADSPA_Data* l_output;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif /* WITH_LADSPA */

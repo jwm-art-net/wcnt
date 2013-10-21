@@ -44,6 +44,7 @@ private:
     wcint_t fpos;
     double filtertotal;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

@@ -43,6 +43,7 @@ class adsr_scaler : public dobj::base
     double decay_scale;
     double release_scale;
     void register_ui();
+    ui::dobjitem_list* get_ui_items();
 };
 
 #endif

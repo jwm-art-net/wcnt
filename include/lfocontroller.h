@@ -50,6 +50,7 @@ private:
     double amp_center;
     double amp_half_range;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

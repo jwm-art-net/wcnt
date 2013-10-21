@@ -38,6 +38,7 @@ class orbit : public synthmod::base
     double cos_b_pc;
     double sin_abc;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

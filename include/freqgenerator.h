@@ -29,6 +29,7 @@ private:
     freq_step_size;
     wcint_t step_count;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

@@ -111,13 +111,8 @@ bool paramedit::mod_param_edit(synthmod::base* mod, const char* parname,
         return false;
     }
 
-    ui::moditem_list* items = wcnt::get_ui_moditem_list();
-    ui::moditem* item;
-    {
-        synthmod::TYPE smt = mod->get_module_type();
-        item = items->get_first_of_type(smt);
-    }
-
+    ui::moditem_list* items = mod->get_ui_items();
+    ui::moditem* item = items->goto_first();
     ui::modparam* mp = 0;
 
     while(item) {
@@ -126,7 +121,7 @@ bool paramedit::mod_param_edit(synthmod::base* mod, const char* parname,
             if (*mp == partype)
                 break;
         }
-        item = items->get_next_of_type();
+        item = items->goto_next();
     }
 
     if (!mp) {
@@ -156,13 +151,8 @@ bool paramedit::dobj_param_edit(dobj::base* dob, const char* parname,
         return false;
     }
 
-    ui::dobjitem_list* items = wcnt::get_ui_dobjitem_list();
-    ui::dobjitem* item;
-    {
-        dobj::TYPE dt = dob->get_object_type();
-        item = items->get_first_of_type(dt);
-    }
-
+    ui::dobjitem_list* items = dob->get_ui_items();
+    ui::dobjitem* item = items->goto_first();
     ui::dobjparam* dp = 0;
 
     while(item) {
@@ -171,7 +161,7 @@ bool paramedit::dobj_param_edit(dobj::base* dob, const char* parname,
             if (*dp == partype)
                 break;
         }
-        item = items->get_next_of_type();
+        item = items->goto_next();
     }
 
     if (!dp) {

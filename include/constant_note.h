@@ -21,6 +21,7 @@ private:
     double out_phase_step;
     void set_note(const char*);
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

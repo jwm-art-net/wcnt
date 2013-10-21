@@ -42,4 +42,3 @@ const void* adder::get_in(input::TYPE it) const
         default: return 0;
     }
 }
-

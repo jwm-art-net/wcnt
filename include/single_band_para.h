@@ -63,6 +63,7 @@ class single_band_para : public synthmod::base
     // float min_freq;
     float max_freq;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif // WITH_LADSPA

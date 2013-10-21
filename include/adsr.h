@@ -104,6 +104,7 @@ private:
     long release_ix;
     void ready_section();
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

@@ -65,6 +65,7 @@ class glame_filter : public synthmod::base
     float min_cutoff;
     float max_cutoff;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif // WITH_LADSPA

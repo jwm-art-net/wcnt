@@ -36,6 +36,7 @@ private:
     double target;
     wcint_t cycle;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

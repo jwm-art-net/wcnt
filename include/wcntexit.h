@@ -53,6 +53,7 @@ private:
     wcint_t exit_bar;
     // synthmod stuff
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 

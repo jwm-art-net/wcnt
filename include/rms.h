@@ -40,6 +40,7 @@ private:
     wcint_t arrpos;
     double sqrsum;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

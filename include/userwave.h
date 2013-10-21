@@ -45,6 +45,7 @@ class user_wave : public synthmod::base, public linked_list<wave_vertex>
     double degs;
     double pdegs;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

@@ -52,6 +52,7 @@ private:
     double lower_time;
     double lower_level;
     void register_ui();
+    ui::dobjitem_list* get_ui_items();
 };
 
 #endif

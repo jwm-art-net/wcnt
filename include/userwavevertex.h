@@ -30,6 +30,7 @@ private:
     double lo_deg;
     double lo_pos;
     void register_ui();
+    ui::dobjitem_list* get_ui_items();
 };
 
 #endif

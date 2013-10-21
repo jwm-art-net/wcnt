@@ -42,6 +42,7 @@ class timer : public synthmod::base, public linked_list<timing>
     double curtime;
     samp_t samples;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

@@ -68,6 +68,7 @@ class caps_plate : public synthmod::base
     LADSPA_Data* l_out_left;
     LADSPA_Data* l_out_right;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif // WITH_LADSPA

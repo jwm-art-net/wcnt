@@ -22,6 +22,7 @@ class parameditor : public dobj::base, public linked_list<paramedit>
 
  private:
     void register_ui();
+    ui::dobjitem_list* get_ui_items();
 };
 
 #endif

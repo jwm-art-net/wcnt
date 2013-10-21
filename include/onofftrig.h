@@ -31,6 +31,7 @@ private:
     samp_t release_samps;
     bool do_attack;// false == do_release
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

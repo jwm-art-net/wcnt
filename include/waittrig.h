@@ -47,6 +47,7 @@ class waittrig: public synthmod::base
     long maxs;
     wcint_t counter;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

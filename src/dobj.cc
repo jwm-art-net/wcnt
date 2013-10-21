@@ -111,8 +111,7 @@ namespace dobj
     if (!valid)
         return 0;
 
-    ui::dobjitem* i = wcnt::get_ui_dobjitem_list()->add_item(object_type,
-                                                                        pt);
+    ui::dobjitem* i = get_ui_items()->add_item(pt);
     if (!i) {
         dobjerr("Failed to register param %s with data object type %s.",
                             param::names::get(pt), names::get(object_type));
@@ -126,8 +125,7 @@ namespace dobj
     if (!valid)
         return 0;
 
-    ui::dobjitem* i = wcnt::get_ui_dobjitem_list()->add_item(object_type,
-                                                                pt, fixstr);
+    ui::dobjitem* i = get_ui_items()->add_item(pt, fixstr);
     if (!i) {
         dobjerr("Failed to register fixed string param %s (%s) "
                             "with data object type %s.",
@@ -142,8 +140,7 @@ namespace dobj
  {
     if (!valid)
         return 0;
-    ui::dobjitem* i = wcnt::get_ui_dobjitem_list()->add_item(object_type,
-                                                            parent, sprog);
+    ui::dobjitem* i = get_ui_items()->add_item(parent, sprog);
     if (!i)
     {
         dobjerr("Failed to register parent data object %s with child data "
@@ -159,8 +156,7 @@ namespace dobj
     if (!valid)
         return 0;
 
-    ui::dobjitem* i = wcnt::get_ui_dobjitem_list()->add_item(object_type,
-                                                                literal);
+    ui::dobjitem* i = get_ui_items()->add_item(literal);
     if (!i) {
         dobjerr("Failed to register comment \"%s\" "
                                      "with data object type %s.", literal,
@@ -172,7 +168,7 @@ namespace dobj
 
  bool base::validate_param(param::TYPE pt, errors::TYPE et)
  {
-   if (!wcnt::get_ui_dobjitem_list()->validate(this, pt, et))
+   if (!get_ui_items()->validate(this, pt, et))
     {
         dobjerr("%s", param::names::get(pt));
         invalidate();

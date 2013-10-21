@@ -26,6 +26,7 @@ class inputeditor : public dobj::base, public linked_list<inputedit>
 
  private:
     void register_ui();
+    ui::dobjitem_list* get_ui_items();
 };
 
 #endif

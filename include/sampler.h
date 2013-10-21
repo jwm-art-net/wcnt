@@ -111,6 +111,7 @@ class sampler : public synthmod::base
     void ac_mix_rev_stereo(st_data*);
     // synthmod stuff
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

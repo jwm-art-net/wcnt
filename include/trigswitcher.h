@@ -34,6 +34,7 @@ class trigswitcher: public synthmod::base,
     long trig_ix;
     STATUS const* trig;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

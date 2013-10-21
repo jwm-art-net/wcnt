@@ -35,6 +35,7 @@ private:
     char* pattern;
     char* ptr;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

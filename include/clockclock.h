@@ -26,6 +26,7 @@ class clockclock : public synthmod::base
     double mod1size;
     double degs;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

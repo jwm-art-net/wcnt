@@ -44,6 +44,7 @@ private:
     STATUS trig1;
     STATUS trig2;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

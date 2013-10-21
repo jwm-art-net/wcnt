@@ -23,11 +23,11 @@ namespace synthmod { class base; };
 
 namespace ui
 {
- typedef       base<synthmod::base*, synthmod::TYPE> moditem;
- typedef param_item<synthmod::base*, synthmod::TYPE> modparam;
- typedef input_item<synthmod::base*, synthmod::TYPE> modinput;
- typedef  dobj_item<synthmod::base*, synthmod::TYPE> moddobj;
- typedef comment_item<synthmod::base*, synthmod::TYPE> modcomment;
+ typedef         base<synthmod::base*> moditem;
+ typedef   param_item<synthmod::base*> modparam;
+ typedef   input_item<synthmod::base*> modinput;
+ typedef    dobj_item<synthmod::base*> moddobj;
+ typedef comment_item<synthmod::base*> modcomment;
 
  /* moditem_list could be a template but the convolution cost didn't...
     (as far as my awesome skills at this moment it time are concerned)
@@ -42,34 +42,17 @@ namespace ui
     moditem_list(DESTRUCTION);
     ~moditem_list();
 
-    moditem* add_item(synthmod::TYPE, input::TYPE);
-    moditem* add_item(synthmod::TYPE, param::TYPE);
-    moditem* add_item(synthmod::TYPE, param::TYPE, const char* fixed_str);
-    moditem* add_item(synthmod::TYPE, dobj::TYPE parent, dobj::TYPE child);
-    moditem* add_item(synthmod::TYPE, const char* comment);
-
-    moditem* get_first_of_type(synthmod::TYPE smt) {
-        result = find_in_data(sneak_first(), search = smt);
-        return result->get_data();
-    }
-
-    moditem* get_next_of_type() {
-        result = find_in_data(result->get_next(), search);
-        return result->get_data();
-    }
-
-    linkedlist* items_for_module(synthmod::TYPE smt) {
-        return new_list_of_by(this, smt);
-    }
-
-    moditem* match_begin(const char*);
-    moditem* match_next(const char*);
+    moditem* add_item(input::TYPE);
+    moditem* add_item(param::TYPE);
+    moditem* add_item(param::TYPE, const char* fixed_str);
+    moditem* add_item(dobj::TYPE parent, dobj::TYPE child);
+    moditem* add_item(const char* comment);
 
     bool validate(synthmod::base*, param::TYPE, errors::TYPE);
 
   private:
-    synthmod::TYPE  search;
-    llitem*         result;
+    FLAGS skip_id;
+    FLAGS match_id;
  };
 };
 

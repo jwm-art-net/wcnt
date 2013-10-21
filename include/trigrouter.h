@@ -44,6 +44,7 @@ class trigrouter: public synthmod::base
     wcint_t last_ix;
     void create_wcnt_triggers();
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

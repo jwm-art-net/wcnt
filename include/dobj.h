@@ -52,6 +52,7 @@ namespace dobj
     #endif
 
     void ui_register();
+    virtual ui::dobjitem_list* get_ui_items() = 0;
 
   protected:
     static char err_msg[STRBUFLEN];

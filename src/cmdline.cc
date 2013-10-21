@@ -360,8 +360,8 @@ void cmdline::module_help()
         msg += "\n//----";
     }
 
-    ui::moditem_list::linkedlist* items = wcnt::get_ui_moditem_list()
-                                                ->items_for_module(smt);
+    ui::moditem_list* items = sm->get_ui_items();
+
     ui::moditem* item = items->goto_first();
     const char* spc = spaces::get(40);
     const char* outstr = "module_name output_name";
@@ -530,8 +530,7 @@ cmdline::dobj_help(dobj::TYPE parent, dobj::TYPE child, int indent_level)
 void cmdline::dobj_help_items(dobj::TYPE dt, int indent_level)
 {
     dobj::base* dob = dobj::list::create_dobj(dt);
-    ui::dobjitem_list::linkedlist* items = wcnt::get_ui_dobjitem_list()
-                                         ->items_for_data_object(dt);
+    ui::dobjitem_list* items = dob->get_ui_items();
     const char* spc = spaces::get(40);
 
     if (indent_level > 4)
@@ -608,8 +607,8 @@ void cmdline::dobj_help()
     std::string dname = (n != 0 && n < opts_count) ? opts[n] : "";
     dobj::TYPE dt = dobj::names::type(dname.c_str());
 
-    dobj::base* dbj = wcnt::get_dobjlist()->create_dobj(dt);
-    if (!dbj) {
+    dobj::base* dob = wcnt::get_dobjlist()->create_dobj(dt);
+    if (!dob) {
         // incorrect dobj name or no name specified
         // (dt will be dobj::ERR_TYPE).
         if (opts_count == 3)
@@ -638,8 +637,7 @@ void cmdline::dobj_help()
         msg += "\n//----";
     }
 
-    ui::dobjitem_list::linkedlist* items = wcnt::get_ui_dobjitem_list()
-                                                ->items_for_data_object(dt);
+    ui::dobjitem_list* items = dob->get_ui_items();
     ui::dobjitem* item = items->goto_first();
     int mxl = 0;
     const char* spc = spaces::get(40);

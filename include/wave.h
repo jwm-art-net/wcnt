@@ -24,6 +24,7 @@ class wave : public synthmod::base
     unsigned long phase;
     const double* table;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

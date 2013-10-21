@@ -47,6 +47,7 @@ class step_data : public dobj::base
     double up_level;
     double lo_level;
     void register_ui();
+    ui::dobjitem_list* get_ui_items();
 };
 
 #endif

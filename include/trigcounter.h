@@ -32,6 +32,7 @@ private:
     wcint_t count;
     STATUS wrap;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

@@ -30,6 +30,7 @@ private:
     double pan_mod;
     double pan_pos;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

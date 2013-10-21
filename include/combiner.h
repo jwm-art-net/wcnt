@@ -36,6 +36,7 @@ private:
     double const** sigs;
     int sigcount;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

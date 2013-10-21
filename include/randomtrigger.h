@@ -23,6 +23,7 @@ private:
     double probability;
     double not_probability;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

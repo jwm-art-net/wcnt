@@ -47,6 +47,7 @@ class inspect : public synthmod::base
 
     void set_message(const char* msg_from, char** msg_to);
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

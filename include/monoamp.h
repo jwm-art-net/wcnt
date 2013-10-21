@@ -30,6 +30,7 @@ class mono_amp : public synthmod::base, public gain
     // params
     double clip_level;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

@@ -95,6 +95,7 @@ public:
 private:
     synthmod::base* synth_mod;
     void register_ui();
+    ui::dobjitem_list* get_ui_items();
 };
 
 #endif

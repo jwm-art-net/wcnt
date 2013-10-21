@@ -111,6 +111,7 @@ class group : public dobj::base
     bool controlled; /* (by the group_control) */
 
     void register_ui();
+    ui::dobjitem_list* get_ui_items();
 };
 
 

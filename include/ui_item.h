@@ -42,22 +42,18 @@ namespace ui
     UI_SET_MASK =   0xf000
  };
 
- template <class T, typename DT>
+ template <class T>
  class base
  {
   public:
-    base(TYPE it, DT dt);
-    base(TYPE it, DT dt, const char* comment_literal);
+    base(TYPE it);
+    base(TYPE it, const char* comment_literal);
 
     virtual ~base() {};
     virtual bool validate(T, errors::TYPE) = 0;
 
     TYPE    get_item_type() const   { return itemtype; }
     bool operator==(TYPE it) const  { return (itemtype == it); }
-
-    DT      get_data_type() const   { return datatype; }
-    bool operator()(DT & dt) const  { return (datatype == dt); }
-    bool operator==(DT dt) const    { return (datatype == dt); }
 
     void add_comment(const char* literal)   { item_comment = literal; }
     virtual const char* get_comment()       { return item_comment; }
@@ -80,26 +76,25 @@ namespace ui
   private:
     int         flags;
     TYPE        itemtype;
-    DT          datatype;
     const char* item_comment;
     base(){};
     base(const base&){};
  };
 
- template <class T, typename DT>
- base<T, DT>::base(TYPE it, DT dt)
-  : flags(0), itemtype(it), datatype(dt), item_comment(0)
+ template <class T>
+ base<T>::base(TYPE it)
+  : flags(0), itemtype(it), item_comment(0)
  {
  }
 
- template <class T, typename DT>
- base<T, DT>::base(TYPE it, DT dt, const char* comment)
-  : flags(0), itemtype(it), datatype(dt), item_comment(comment)
+ template <class T>
+ base<T>::base(TYPE it, const char* comment)
+  : flags(0), itemtype(it), item_comment(comment)
  {
  }
 
- template <class T, typename DT>
- void base<T, DT>::set_flags(int f)
+ template <class T>
+ void base<T>::set_flags(int f)
  {
     flags = f;
 
@@ -137,8 +132,8 @@ namespace ui
     #endif
  }
 
- template <class T, typename DT>
- int base<T, DT>::is_match(const char* str, int skip, int match)
+ template <class T>
+ int base<T>::is_match(const char* str, int skip, int match)
  {
 /*
     FLAGS skip_id = (skip & UI_SET_MASK);
@@ -187,12 +182,12 @@ namespace ui
     return 0;
  }
 
- template <class T, typename DT>
- class comment_item : public base<T, DT>
+ template <class T>
+ class comment_item : public base<T>
  {
   public:
-    comment_item(DT dt, const char* literal)
-     : base<T, DT>(UI_COMMENT, dt, literal) {};
+    comment_item(const char* literal)
+     : base<T>(UI_COMMENT, literal) {};
 
     ~comment_item() {};
 
@@ -201,18 +196,18 @@ namespace ui
 
     #ifdef DEBUG
     void dump() {
-        std::cout << "comment: " << base<T, DT>::get_comment() << std::endl;
+        std::cout << "comment: " << base<T>::get_comment() << std::endl;
     }
     #endif
  };
 
 
- template <class T, typename DT>
- class param_item : public base<T, DT>
+ template <class T>
+ class param_item : public base<T>
  {
   public:
-    param_item(DT dt, param::TYPE pt)
-     : base<T, DT>(UI_PARAM, dt), partype(pt) {};
+    param_item(param::TYPE pt)
+     : base<T>(UI_PARAM), partype(pt) {};
 
     ~param_item() {};
 
@@ -236,8 +231,8 @@ namespace ui
     param::TYPE partype;
  };
 
- template<class T, typename DT>
- bool param_item<T, DT>::validate(T obj, errors::TYPE et)
+ template<class T>
+ bool param_item<T>::validate(T obj, errors::TYPE et)
  {
     const void* data = obj->get_param(partype);
     if (!data)
@@ -252,12 +247,12 @@ namespace ui
  }
 
 
- template <class T, typename DT>
- class input_item : public base<T, DT>
+ template <class T>
+ class input_item : public base<T>
  {
   public:
-    input_item(DT dt, input::TYPE it)
-     : base<T, DT>(UI_INPUT, dt), intype(it) {};
+    input_item(input::TYPE it)
+     : base<T>(UI_INPUT), intype(it) {};
 
     ~input_item() {};
 
@@ -281,12 +276,12 @@ namespace ui
     input::TYPE intype;
 };
 
- template <class T, typename DT>
- class dobj_item : public base<T, DT>
+ template <class T>
+ class dobj_item : public base<T>
  {
   public:
-    dobj_item(DT dt, dobj::TYPE p, dobj::TYPE c)
-     : base<T, DT>(UI_DOBJ, dt), parent(p), child(c) {};
+    dobj_item(dobj::TYPE p, dobj::TYPE c)
+     : base<T>(UI_DOBJ), parent(p), child(c) {};
 
     ~dobj_item() {};
 

@@ -58,8 +58,6 @@ namespace wcnt
  connectorlist*     get_connectlist();
  fxsparamlist*      get_fxsparamlist();
  dobj::list*        get_dobjlist();
- ui::moditem_list*  get_ui_moditem_list();
- ui::dobjitem_list* get_ui_dobjitem_list();
 
  class globals
  {

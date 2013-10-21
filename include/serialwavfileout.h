@@ -66,6 +66,7 @@ private:
     void close_wav();
     // synthmod stuff
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

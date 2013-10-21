@@ -111,6 +111,7 @@ class riffdata : public dobj::base, public linked_list<note_data>
 
     static double calc_note_param(note_data::NOTE_OP, double, double);
     void register_ui();
+    ui::dobjitem_list* get_ui_items();
 };
 
 #endif // RIFF_H

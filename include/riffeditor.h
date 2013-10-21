@@ -39,6 +39,7 @@ class riff_editor : public dobj::base
  private:
     riffdata* riff_source;
     void register_ui();
+    ui::dobjitem_list* get_ui_items();
 };
 
 #endif

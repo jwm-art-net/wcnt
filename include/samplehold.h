@@ -28,6 +28,7 @@ private:
     samp_t ds;
     double decay_size;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

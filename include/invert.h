@@ -19,5 +19,6 @@ private:
     const double* in_signal;
     double out_output;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 #endif

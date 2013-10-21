@@ -107,6 +107,7 @@ class sequencer : public synthmod::base, public linked_list<riff_node>
     void output_note(note_data* note);
     // synthmod stuff
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

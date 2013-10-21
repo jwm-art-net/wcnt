@@ -79,6 +79,7 @@ class dynamic : public synthmod::base, public linked_list<dynvertex>
     void create_dobj();
     static bool done_dobj;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

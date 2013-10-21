@@ -57,6 +57,7 @@ private:
     void timestamp_filename();
     int state;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif // WAVFILEOUT

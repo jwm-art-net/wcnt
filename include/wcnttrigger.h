@@ -20,6 +20,7 @@ class wcnt_trigger : public synthmod::base
  private:
     const STATUS* in_trig;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

@@ -24,6 +24,7 @@ private:
     FUNC func;
     double bias;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

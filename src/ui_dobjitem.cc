@@ -12,22 +12,21 @@ namespace ui
 {
 
  dobjitem_list::dobjitem_list() :
-  search(dobj::ERR_TYPE), result(0)
+ linkedlist(MULTIREF_OFF),
+ skip_id(UI_DEFAULT), match_id(UI_DEFAULT)
  {
  }
 
  dobjitem_list::dobjitem_list(DESTRUCTION d) :
- linkedlist(MULTIREF_OFF, d)
+ linkedlist(MULTIREF_OFF, d),
+ skip_id(UI_DEFAULT), match_id(UI_DEFAULT)
  {
  }
  dobjitem_list::~dobjitem_list()
  {
     #ifdef DEBUG
-    std::cout << "~ui::dobjitem_list()" << std::endl;
     dobjitem* ui = goto_first();
     while(ui) {
-        std::cout << "ui::dobjitem::"
-                  << dobj::names::get(ui->get_data_type()) << "\t";
         switch(ui->get_item_type()) {
         case ui::UI_PARAM: {
             dobjparam* mp = static_cast<dobjparam*>(ui);
@@ -52,11 +51,11 @@ namespace ui
     #endif
  }
 
- dobjitem* dobjitem_list::add_item(dobj::TYPE dt, param::TYPE pt)
+ dobjitem* dobjitem_list::add_item(param::TYPE pt)
  {
-    dobjitem* i = new dobjparam(dt, pt);
+    dobjitem* i = new dobjparam(pt);
     if (i) {
-        if (!ordered_insert(this, i, &dobjitem::get_data_type)) {
+        if (!add_at_tail(i)) {
             delete i;
             i = 0;
         }
@@ -64,15 +63,14 @@ namespace ui
     return i;
  }
 
- dobjitem* dobjitem_list::add_item(dobj::TYPE dt, param::TYPE pt,
-                                                     const char* fixstr)
+ dobjitem* dobjitem_list::add_item(param::TYPE pt, const char* fixstr)
  {
     if (!fixstr)
         return 0;
 
-    dobjitem* i = new dobjparam(dt, pt);
+    dobjitem* i = new dobjparam(pt);
     if (i) {
-        llitem * li = ordered_insert(this, i, &dobjitem::get_data_type);
+        llitem * li = add_at_tail(i);
         if (li) {
             if (!wcnt::get_fxsparamlist()->add_param(fixstr, pt)) {
                 delete unlink_item(li);
@@ -88,12 +86,11 @@ namespace ui
     return i;
  }
 
- dobjitem* dobjitem_list::add_item(dobj::TYPE dt, dobj::TYPE parent,
-                                                  dobj::TYPE child)
+ dobjitem* dobjitem_list::add_item(dobj::TYPE parent, dobj::TYPE child)
  {
-    dobjitem* i = new dobjdobj(dt, parent, child);
+    dobjitem* i = new dobjdobj(parent, child);
     if (i) {
-        if (!ordered_insert(this, i, &dobjitem::get_data_type)) {
+        if (!add_at_tail(i)) {
             delete i;
             i = 0;
         }
@@ -102,11 +99,11 @@ namespace ui
  }
 
 
- dobjitem* dobjitem_list::add_item(dobj::TYPE dt, const char* comment)
+ dobjitem* dobjitem_list::add_item(const char* comment)
  {
-    dobjitem* i = new dobjcomment(dt, comment);
+    dobjitem* i = new dobjcomment(comment);
     if (i) {
-        if (!ordered_insert(this, i, &dobjitem::get_data_type)) {
+        if (!add_at_tail(i)) {
             delete i;
             i = 0;
         }
@@ -119,15 +116,15 @@ namespace ui
                                                errors::TYPE et)
  {
     dobj::TYPE dt = dob->get_object_type();
-    dobjitem* ui = get_first_of_type(dt);
+    dobjitem* ui = goto_first();
 
-    while(result) {
+    while(ui) {
         if (*ui == ui::UI_PARAM) {
             dobjparam* mp = static_cast<dobjparam*>(ui);
             if (*mp == pt)
                 return ui->validate(dob, et);
         }
-        ui = get_next_of_type();
+        ui = goto_next();
     }
 
     std::cout << "FIXME: parameter validation failed. Attempt to validate "

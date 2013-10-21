@@ -40,6 +40,7 @@ class wave_phase : public synthmod::base
     const double* table;
     const double* shape_table;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

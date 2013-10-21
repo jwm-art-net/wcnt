@@ -58,6 +58,7 @@ class group_control: public synthmod::base
     synthmod::base** empty_run_list;
     bool set_group_name(const char*);
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

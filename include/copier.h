@@ -40,6 +40,7 @@ class copier : public dobj::base
     dobj::base* from_dobj;
     dobj::base* to_dobj;
     void register_ui();
+    ui::dobjitem_list* get_ui_items();
 };
 
 

@@ -540,8 +540,8 @@ string*  synthfilereader::read_string_list_param (const char* enda,
 
 bool synthfilereader::read_ui_moditems(synthmod::base* sm)
 {
-    ui::moditem_list* items = wcnt::get_ui_moditem_list();
-    ui::moditem* item = items->get_first_of_type(sm->get_module_type());
+    ui::moditem_list* items = sm->get_ui_items();
+    ui::moditem* item = items->goto_first();
 
     if (!item)
         return true;
@@ -576,7 +576,7 @@ bool synthfilereader::read_ui_moditems(synthmod::base* sm)
             wc_err("%s invalid ui element.", errors::stock::bad);
             return false;
         }
-        item = items->get_next_of_type();
+        item = items->goto_next();
     }
     return true;
 }
@@ -584,12 +584,11 @@ bool synthfilereader::read_ui_moditems(synthmod::base* sm)
 
 bool synthfilereader::read_ui_dobjitems(dobj::base* dob, const char* parent)
 {
-    ui::dobjitem_list::linkedlist* items = wcnt::get_ui_dobjitem_list()
-                        ->items_for_data_object(dob->get_object_type());
-    if (!items)
-        return true;
-
+    ui::dobjitem_list* items = dob->get_ui_items();
     ui::dobjitem* item = items->goto_first();
+
+    if (!item)
+        return true;
 
     if (wcnt::jwm.is_verbose())
         cout << "--------" << endl;

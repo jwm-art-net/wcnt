@@ -66,7 +66,6 @@ bool inputedit::create_connectors()
     strm << iostr;
     std::string input_name;
     strm >> input_name;
-    ui::moditem_list* items = wcnt::get_ui_moditem_list();
     do{
         input::TYPE in_type;
         in_type = input::names::type(input_name.c_str());
@@ -105,11 +104,8 @@ bool inputedit::create_connectors()
             }
         }
 
-        ui::moditem* item;
-        {
-            synthmod::TYPE smt = in_sm->get_module_type();
-            item = items->get_first_of_type(smt);
-        }
+        ui::moditem_list* items = in_sm->get_ui_items();
+        ui::moditem* item = items->goto_first();
 
         bool success = false;
 
@@ -127,7 +123,7 @@ bool inputedit::create_connectors()
                     success = true;
                 }
             }
-            item = items->get_next_of_type();
+            item = items->goto_next();
         }
         if (!success) {
             dobjerr("The module %s lacks any %s input.", modname,

@@ -69,6 +69,7 @@ class glame_butterworth : public synthmod::base
     float min_cut_off;
     float max_cut_off;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif // WITH_LADSPA

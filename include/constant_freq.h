@@ -19,6 +19,7 @@ private:
     double out_freq; /* is param and output */
     double out_phase_step;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

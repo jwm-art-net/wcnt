@@ -41,6 +41,7 @@ private:
     bool check; // prevent wrap-around of peak_count.
     void set_message(const char* msg);
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

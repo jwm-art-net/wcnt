@@ -45,18 +45,6 @@ namespace wcnt
     return &dbjlist;
  }
 
- ui::moditem_list* get_ui_moditem_list()
- {
-    static ui::moditem_list moditemlist;
-    return &moditemlist;
- }
-
- ui::dobjitem_list* get_ui_dobjitem_list()
- {
-    static ui::dobjitem_list dobjitemlist;
-    return &dobjitemlist;
- }
-
  globals::globals() :
   wc_path(0),    wc_file(0),
   x_exit_bar(0), x_in_bar(0),

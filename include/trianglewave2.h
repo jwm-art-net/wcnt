@@ -39,6 +39,7 @@ private:
     double sectsample;
     double counter_ratio;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

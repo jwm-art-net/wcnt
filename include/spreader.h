@@ -39,6 +39,7 @@ class spreader: public synthmod::base, public linked_list<synthmod::base>
     double seg_lvl;
     double const** sigs;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

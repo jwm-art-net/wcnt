@@ -36,6 +36,7 @@ private:
                                          const char* valstr);
     bool dobj_param_edit(dobj::base*, const char* parname, const char* valstr);
     void register_ui();
+    ui::dobjitem_list* get_ui_items();
 };
 
 #endif

@@ -17,6 +17,7 @@ private:
     double out_output;
     double oldinsig;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

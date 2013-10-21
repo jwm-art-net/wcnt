@@ -24,6 +24,7 @@ class sample_climb : public synthmod::base
     double rate;
     double target;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

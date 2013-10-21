@@ -132,6 +132,7 @@ class note_data : public dobj::base
     #endif
 
     void register_ui();
+    ui::dobjitem_list* get_ui_items();
 };
 
 #endif

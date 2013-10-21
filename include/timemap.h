@@ -82,6 +82,7 @@ private:
     #endif
     // synthmod stuff for keeping things cushdy.
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

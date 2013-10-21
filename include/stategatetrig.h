@@ -21,6 +21,7 @@ private:
     STATUS out_trig;
     STATUS out_not_trig;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

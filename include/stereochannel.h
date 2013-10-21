@@ -30,6 +30,7 @@ private:
     const double* io_left;
     const double* io_right;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

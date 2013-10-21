@@ -24,6 +24,7 @@ class trigger: public synthmod::base
     double trigger_level;
     samp_t delay_samps;
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif

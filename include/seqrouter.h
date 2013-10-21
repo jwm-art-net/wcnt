@@ -55,6 +55,7 @@ class seq_router: public synthmod::base
 
     void create_wcnt_notes();
     void register_ui();
+    ui::moditem_list* get_ui_items();
 };
 
 #endif
