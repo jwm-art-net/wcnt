@@ -22,6 +22,12 @@ void freq_generator::register_ui()
     register_param(param::FREQ_RANGE_HI);
 }
 
+ui::moditem_list* freq_generator::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 freq_generator::~freq_generator()
 {
 }

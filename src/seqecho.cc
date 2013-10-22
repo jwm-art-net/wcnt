@@ -37,6 +37,12 @@ void seq_echo::register_ui()
     register_input(input::IN_VELOCITY);
 }
 
+ui::moditem_list* seq_echo::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 
 seq_echo::~seq_echo()
 {

@@ -46,7 +46,7 @@ private:
     const STATUS out_none_STATUS;
     char* out_none_string;
     void register_ui() {};
-    ui::moditem_list* get_ui_items();
+    ui::moditem_list* get_ui_items() { return 0; }
 };
 
 #endif

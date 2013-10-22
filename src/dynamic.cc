@@ -22,6 +22,12 @@ void dynamic::register_ui()
     register_param(param::USE_RATIOS);
 }
 
+ui::moditem_list* dynamic::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 dynamic::~dynamic()
 {
     if (dynvertices)

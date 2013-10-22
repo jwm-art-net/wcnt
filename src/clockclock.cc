@@ -21,6 +21,12 @@ void clockclock::register_ui()
     register_param(param::FREQ_MOD1SIZE)->set_flags(ui::UI_OPTIONAL);
 }
 
+ui::moditem_list* clockclock::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 clockclock::~clockclock()
 {
 }

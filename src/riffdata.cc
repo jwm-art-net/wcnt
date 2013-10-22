@@ -23,6 +23,12 @@ void riffdata::register_ui()
     register_dobj(dobj::LST_NOTES, dobj::SIN_NOTE);
 }
 
+ui::dobjitem_list* riffdata::get_ui_items()
+{
+    static ui::dobjitem_list items;
+    return &items;
+}
+
 riffdata::~riffdata()
 {
     if (editlist)

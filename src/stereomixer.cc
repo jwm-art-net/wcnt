@@ -18,6 +18,12 @@ void stereomixer::register_ui()
     register_param(param::MASTER_LEVEL);
 }
 
+ui::moditem_list* stereomixer::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 stereomixer::~stereomixer()
 {
     if (chans_left)

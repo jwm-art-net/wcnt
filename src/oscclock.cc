@@ -37,6 +37,12 @@ void osc_clock::register_ui()
     register_param(param::RESPONSE_TIME);
 }
 
+ui::moditem_list* osc_clock::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 osc_clock::~osc_clock()
 {
 }

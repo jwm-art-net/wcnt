@@ -26,6 +26,12 @@ void group::register_ui()
     register_dobj(dobj::LST_MODULES, dobj::DOBJ_SYNTHMOD);
 }
 
+ui::dobjitem_list* group::get_ui_items()
+{
+    static ui::dobjitem_list items;
+    return &items;
+}
+
 group::~group()
 {
 }

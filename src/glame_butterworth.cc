@@ -25,6 +25,12 @@ void glame_butterworth::register_ui()
     register_param(param::RES_MODSIZE);
 }
 
+ui::moditem_list* glame_butterworth::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 glame_butterworth::~glame_butterworth()
 {
     if (l_descriptor) l_descriptor->cleanup(l_inst_handle);

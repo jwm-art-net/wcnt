@@ -26,6 +26,12 @@ void triangle_wave2::register_ui()
     register_param(param::ZERO_RETRIGGER);
 }
 
+ui::moditem_list* triangle_wave2::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 triangle_wave2::~triangle_wave2()
 {
 }

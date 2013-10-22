@@ -23,6 +23,12 @@ void meterchange::register_ui()
     register_param(param::BAR);
 }
 
+ui::dobjitem_list* meterchange::get_ui_items()
+{
+    static ui::dobjitem_list items;
+    return &items;
+}
+
 bool meterchange::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)

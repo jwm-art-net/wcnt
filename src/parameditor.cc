@@ -15,6 +15,12 @@ void parameditor::register_ui()
     register_dobj(dobj::LST_EDITS, dobj::SIN_EDIT_PARAM);
 }
 
+ui::dobjitem_list* parameditor::get_ui_items()
+{
+    static ui::dobjitem_list items;
+    return &items;
+}
+
 bool parameditor::do_param_edits()
 {
     paramedit* pe = goto_first();

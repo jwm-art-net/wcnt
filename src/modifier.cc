@@ -19,6 +19,12 @@ void modifier::register_ui()
 //  register_param(param::BIAS);
 }
 
+ui::moditem_list* modifier::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 modifier::~modifier()
 {
 }

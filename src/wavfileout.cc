@@ -41,6 +41,12 @@ void wavfileout::register_ui()
     register_param(param::SNAPSHOT_MODE);
 }
 
+ui::moditem_list* wavfileout::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 wavfileout::~wavfileout()
 {
     close_wav();

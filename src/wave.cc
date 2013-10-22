@@ -16,6 +16,12 @@ void wave::register_ui()
     register_input(input::IN_PHASE_STEP);
 }
 
+ui::moditem_list* wave::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 wave::~wave()
 {
 }

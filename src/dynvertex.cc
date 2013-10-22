@@ -20,6 +20,12 @@ void dynvertex::register_ui()
     register_param(param::SIGOUT_LOLEVEL);
 }
 
+ui::dobjitem_list* dynvertex::get_ui_items()
+{
+    static ui::dobjitem_list items;
+    return &items;
+}
+
 
 errors::TYPE dynvertex::validate()
 {

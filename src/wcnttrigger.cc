@@ -13,6 +13,12 @@ void wcnt_trigger::register_ui()
     register_input(input::IN_TRIG);
 }
 
+ui::moditem_list* wcnt_trigger::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 wcnt_trigger::~wcnt_trigger()
 {
 }

@@ -21,6 +21,12 @@ void switcher::register_ui()
     register_param(param::XFADE_TIME);
 }
 
+ui::moditem_list* switcher::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 switcher::~switcher()
 {
     if (sigs)

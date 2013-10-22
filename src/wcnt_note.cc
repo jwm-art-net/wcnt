@@ -21,6 +21,12 @@ void wcnt_note::register_ui()
     register_input(input::IN_VELOCITY);
 }
 
+ui::moditem_list* wcnt_note::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 wcnt_note::~wcnt_note()
 {
 }

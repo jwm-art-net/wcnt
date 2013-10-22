@@ -18,6 +18,12 @@ void trigswitcher::register_ui()
     register_dobj(dobj::LST_TRIGGERS, dobj::DOBJ_SYNTHMOD);
 }
 
+ui::moditem_list* trigswitcher::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 trigswitcher::~trigswitcher()
 {
     if (trigs)

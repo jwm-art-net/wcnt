@@ -19,6 +19,12 @@ void rms::register_ui()
     register_param(param::RMS_TIME);
 }
 
+ui::moditem_list* rms::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 rms::~rms()
 {
     if (rmsarr)

@@ -30,6 +30,12 @@ void lfo_controller::register_ui()
     register_param(param::RESPONSE_TIME);
 }
 
+ui::moditem_list* lfo_controller::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 lfo_controller::~lfo_controller()
 {
 }

@@ -33,6 +33,12 @@ void sync_clock::register_ui()
     register_param(param::FREQ_MOD2SIZE);
 }
 
+ui::moditem_list* sync_clock::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 sync_clock::~sync_clock()
 {
 }

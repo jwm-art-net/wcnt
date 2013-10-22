@@ -14,6 +14,12 @@ void range_limit::register_ui()
     register_param(param::SIG_RANGE_LO);
 }
 
+ui::moditem_list* range_limit::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 range_limit::~range_limit()
 {
 }

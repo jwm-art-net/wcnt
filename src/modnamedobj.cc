@@ -13,6 +13,12 @@ void modnamedobj::register_ui()
         i->add_comment("Name of module.");
 }
 
+ui::dobjitem_list* modnamedobj::get_ui_items()
+{
+    static ui::dobjitem_list items;
+    return &items;
+}
+
 modnamedobj::~modnamedobj()
 {
     if (modname)

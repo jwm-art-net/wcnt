@@ -22,6 +22,12 @@ void trigecho::register_ui()
     register_input(input::IN_TRIG);
 }
 
+ui::moditem_list* trigecho::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 trigecho::~trigecho()
 {
     if (past_trigs)

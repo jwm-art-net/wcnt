@@ -21,6 +21,12 @@ void spreader::register_ui()
     register_param(param::END_LEVEL);
 }
 
+ui::moditem_list* spreader::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 spreader::~spreader()
 {
     if (sigs)

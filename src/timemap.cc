@@ -38,6 +38,12 @@ void timemap::register_ui()
     register_dobj(dobj::LST_BPM, dobj::SIN_BPM);
 }
 
+ui::moditem_list* timemap::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 timemap::~timemap()
 {
     if (bpm_map)

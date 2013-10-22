@@ -12,6 +12,12 @@ void impulse::register_ui()
     register_input(input::IN_TRIG);
 }
 
+ui::moditem_list* impulse::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 impulse::~impulse()
 {
 }

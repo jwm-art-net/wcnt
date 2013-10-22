@@ -37,6 +37,12 @@ void serialwavfileout::register_ui()
     register_param(param::COUNT);
 }
 
+ui::moditem_list* serialwavfileout::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 serialwavfileout::~serialwavfileout()
 {
     if (in_write_region == ON && write_status == ON) {

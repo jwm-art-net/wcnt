@@ -17,6 +17,12 @@ void logictrigger::register_ui()
     register_param(param::PRECISION);
 }
 
+ui::moditem_list* logictrigger::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 logictrigger::~logictrigger()
 {
 }

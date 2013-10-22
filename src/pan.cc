@@ -18,6 +18,12 @@ void pan::register_ui()
     register_param(param::PAN_MODSIZE);
 }
 
+ui::moditem_list* pan::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 pan::~pan()
 {
 }

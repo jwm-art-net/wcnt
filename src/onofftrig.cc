@@ -27,6 +27,12 @@ void onofftrig::register_ui()
     register_param(param::CHECK_LEVELS);
 }
 
+ui::moditem_list* onofftrig::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 onofftrig::~onofftrig()
 {
 }

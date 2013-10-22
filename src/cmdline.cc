@@ -361,8 +361,8 @@ void cmdline::module_help()
     }
 
     ui::moditem_list* items = sm->get_ui_items();
+    ui::moditem* item = (items != 0 ? items->goto_first() : 0);
 
-    ui::moditem* item = items->goto_first();
     const char* spc = spaces::get(40);
     const char* outstr = "module_name output_name";
 
@@ -397,7 +397,8 @@ void cmdline::module_help()
     }
     mxl1 += 2;
 
-    item = items->goto_first();
+    item = (items != 0 ? items->goto_first() : 0);
+
     while(item) {
         switch(item->get_item_type()) {
           case ui::UI_COMMENT: {
@@ -467,8 +468,6 @@ void cmdline::module_help()
         item = items->goto_next();
     }
 
-    delete items;
-
     modoutputlist::linkedlist* outlist =
         new_list_of_by(wcnt::get_outputlist(), sm);
 
@@ -531,6 +530,10 @@ void cmdline::dobj_help_items(dobj::TYPE dt, int indent_level)
 {
     dobj::base* dob = dobj::list::create_dobj(dt);
     ui::dobjitem_list* items = dob->get_ui_items();
+
+    if (!items)
+        return;
+
     const char* spc = spaces::get(40);
 
     if (indent_level > 4)
@@ -598,7 +601,6 @@ void cmdline::dobj_help_items(dobj::TYPE dt, int indent_level)
         }
         item = items->goto_next();
     }
-    delete items;
 }
 
 void cmdline::dobj_help()
@@ -639,6 +641,12 @@ void cmdline::dobj_help()
 
     ui::dobjitem_list* items = dob->get_ui_items();
     ui::dobjitem* item = items->goto_first();
+
+    if (!items) {
+        msg += "\nlusername";
+        return;
+    }
+
     int mxl = 0;
     const char* spc = spaces::get(40);
 
@@ -708,8 +716,7 @@ void cmdline::dobj_help()
         }
         item = items->goto_next();
     }
-
-    delete items;
+    msg += "\nusername";
 }
 
 

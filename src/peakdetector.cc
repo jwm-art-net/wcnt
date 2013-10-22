@@ -19,6 +19,12 @@ void peak_detector::register_ui()
     register_param(param::MAXPEAKS);
 }
 
+ui::moditem_list* peak_detector::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 peak_detector::~peak_detector()
 {
     if (message)

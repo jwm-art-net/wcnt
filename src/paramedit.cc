@@ -23,6 +23,12 @@ void paramedit::register_ui()
         i->add_comment("parameter_name parameter_value (...)");
 }
 
+ui::dobjitem_list* paramedit::get_ui_items()
+{
+    static ui::dobjitem_list items;
+    return &items;
+}
+
 paramedit::~paramedit()
 {
     if (name)
@@ -112,7 +118,7 @@ bool paramedit::mod_param_edit(synthmod::base* mod, const char* parname,
     }
 
     ui::moditem_list* items = mod->get_ui_items();
-    ui::moditem* item = items->goto_first();
+    ui::moditem* item = (items != 0 ? items->goto_first() : 0);
     ui::modparam* mp = 0;
 
     while(item) {
@@ -152,7 +158,7 @@ bool paramedit::dobj_param_edit(dobj::base* dob, const char* parname,
     }
 
     ui::dobjitem_list* items = dob->get_ui_items();
-    ui::dobjitem* item = items->goto_first();
+    ui::dobjitem* item = (items != 0 ? items->goto_first() : 0);
     ui::dobjparam* dp = 0;
 
     while(item) {

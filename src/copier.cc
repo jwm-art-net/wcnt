@@ -20,6 +20,12 @@ void copier::register_ui()
     register_param(param::COPYTO);
 }
 
+ui::dobjitem_list* copier::get_ui_items()
+{
+    static ui::dobjitem_list items;
+    return &items;
+}
+
 copier::~copier()
 {
     if (from_name) delete [] from_name;

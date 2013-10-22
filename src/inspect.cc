@@ -36,6 +36,12 @@ void inspect::register_ui()
     register_input(input::IN_INSP_STR_TRIG);
 }
 
+ui::moditem_list* inspect::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 inspect::~inspect()
 {
     if (df_msg)

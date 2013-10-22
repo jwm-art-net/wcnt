@@ -28,6 +28,12 @@ void fast_lookahead_limiter::register_ui()
     register_param(param::RELEASE_SECS);
 }
 
+ui::moditem_list* fast_lookahead_limiter::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 fast_lookahead_limiter::~fast_lookahead_limiter()
 {
     if (l_descriptor) l_descriptor->cleanup(l_inst_handle);

@@ -19,6 +19,12 @@ void bpmchange::register_ui()
     register_param(param::BAR);
 }
 
+ui::dobjitem_list* bpmchange::get_ui_items()
+{
+    static ui::dobjitem_list items;
+    return &items;
+}
+
 bool bpmchange::set_param(param::TYPE pt, const void* data)
 {
     switch(pt) {

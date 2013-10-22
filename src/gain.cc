@@ -7,12 +7,14 @@ gain::gain(synthmod::base* _sm) :
  modpart::base(_sm),
  in_mod(0), level(0.0), mod_amount(0.0), center(0.0), half_range(0.0)
 {
-    if (!sm_done_first()) {
-        register_sm_input(input::IN_SIGNAL);
-        register_sm_param(param::GAIN);
-        register_sm_input(input::IN_GAIN_MOD);
-        register_sm_param(param::GAIN_MODSIZE);
-    }
+}
+
+void gain::register_ui()
+{
+    register_sm_input(input::IN_SIGNAL);
+    register_sm_param(param::GAIN);
+    register_sm_input(input::IN_GAIN_MOD);
+    register_sm_param(param::GAIN_MODSIZE);
 }
 
 gain::~gain()

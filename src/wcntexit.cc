@@ -16,6 +16,12 @@ void wcnt_exit::register_ui()
     register_param(param::EXIT_BAR);
 }
 
+ui::moditem_list* wcnt_exit::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 wcnt_exit::~wcnt_exit()
 {
 }

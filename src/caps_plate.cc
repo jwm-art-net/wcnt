@@ -23,6 +23,12 @@ void caps_plate::register_ui()
     register_param(param::WETDRY);
 }
 
+ui::moditem_list* caps_plate::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 caps_plate::~caps_plate()
 {
     if (l_descriptor) l_descriptor->cleanup(l_inst_handle);

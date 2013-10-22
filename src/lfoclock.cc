@@ -24,6 +24,12 @@ void lfo_clock::register_ui()
     register_param(param::FREQ_MOD2SIZE);
 }
 
+ui::moditem_list* lfo_clock::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 lfo_clock::~lfo_clock()
 {
 }

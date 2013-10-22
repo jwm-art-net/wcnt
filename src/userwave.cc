@@ -31,6 +31,12 @@ void user_wave::register_ui()
     register_param(param::DROP_CHECK_RANGE);
 }
 
+ui::moditem_list* user_wave::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 user_wave::~user_wave()
 {
     if (vertices)

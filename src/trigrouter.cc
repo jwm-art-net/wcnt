@@ -24,6 +24,12 @@ void trigrouter::register_ui()
     register_input(input::IN_ALL_OFF_TRIG);
 }
 
+ui::moditem_list* trigrouter::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 trigrouter::~trigrouter()
 {
     if (grp)

@@ -15,6 +15,12 @@ void balance::register_ui()
     register_param(param::BIAS);
 }
 
+ui::moditem_list* balance::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 
 balance::~balance()
 {

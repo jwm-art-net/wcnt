@@ -15,6 +15,12 @@ void dc_filter::register_ui()
     register_param(param::DC_TIME);
 }
 
+ui::moditem_list* dc_filter::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 dc_filter::~dc_filter()
 {
     delete [] filter;

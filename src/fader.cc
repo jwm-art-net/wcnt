@@ -26,6 +26,12 @@ void fader::register_ui()
     register_param(param::FADE_OUT_TIME);
 }
 
+ui::moditem_list* fader::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 fader::~fader()
 {
 }

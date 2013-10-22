@@ -14,6 +14,12 @@ void dc_offset_remover::register_ui()
     register_input(input::IN_SIGNAL);
 }
 
+ui::moditem_list* dc_offset_remover::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 dc_offset_remover::~dc_offset_remover()
 {
     if (l_descriptor) l_descriptor->cleanup(l_inst_handle);

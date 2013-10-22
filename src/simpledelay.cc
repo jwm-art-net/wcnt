@@ -15,6 +15,12 @@ void simple_delay::register_ui()
     register_param(param::DELAY_TIME);
 }
 
+ui::moditem_list* simple_delay::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 simple_delay::~simple_delay()
 {
     if (filter)

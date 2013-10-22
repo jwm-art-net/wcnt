@@ -14,6 +14,12 @@ void adder::register_ui()
     register_input(input::IN_SIGNAL2);
 }
 
+ui::moditem_list* adder::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 adder::~adder()
 {
 }

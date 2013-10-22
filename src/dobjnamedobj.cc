@@ -13,6 +13,12 @@ void dobjnamedobj::register_ui()
         i->add_comment("Name of data object.");
 }
 
+ui::dobjitem_list* dobjnamedobj::get_ui_items()
+{
+    static ui::dobjitem_list items;
+    return &items;
+}
+
 dobjnamedobj::~dobjnamedobj()
 {
     if (dobjname)

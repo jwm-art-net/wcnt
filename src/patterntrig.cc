@@ -17,6 +17,12 @@ void patterntrig::register_ui()
     register_param(param::TRIG_STRING);
 }
 
+ui::moditem_list* patterntrig::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 patterntrig::~patterntrig()
 {
     if (pattern) delete [] pattern;

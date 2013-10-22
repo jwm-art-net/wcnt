@@ -28,6 +28,12 @@ void single_band_para::register_ui()
     register_param(param::BANDWIDTH_MODSIZE);
 }
 
+ui::moditem_list* single_band_para::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 single_band_para::~single_band_para()
 {
     if (l_descriptor) l_descriptor->cleanup(l_inst_handle);

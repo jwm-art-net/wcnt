@@ -50,6 +50,8 @@ namespace modpart
         registration) should be performed in the register_ui method of
         derived objects.
      */
+    // register_ui should only be called within synthmod::register_ui.
+    virtual void register_ui() = 0;
 
     void register_sm_param(param::TYPE);
     void register_sm_param(param::TYPE, const char* fixed_string);

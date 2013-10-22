@@ -13,8 +13,15 @@ mono_amp::mono_amp(const char* uname) :
 
 void mono_amp::register_ui()
 {
+    gain::register_ui();
     register_input(input::IN_EG);
     register_param(param::CLIP_LEVEL);
+}
+
+ui::moditem_list* mono_amp::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
 }
 
 mono_amp::~mono_amp()

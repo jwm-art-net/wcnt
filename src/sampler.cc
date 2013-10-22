@@ -68,6 +68,12 @@ void sampler::register_ui()
     register_param(param::PHASE_STEP_AMOUNT);
 }
 
+ui::moditem_list* sampler::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 sampler::~sampler()
 {
     if (mono_buffer)

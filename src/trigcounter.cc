@@ -23,6 +23,12 @@ void trigcounter::register_ui()
     register_input(input::IN_RESET_TRIG);
 }
 
+ui::moditem_list* trigcounter::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 trigcounter::~trigcounter()
 {
 }

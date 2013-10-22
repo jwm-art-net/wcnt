@@ -24,6 +24,12 @@ void caps_plate2x2::register_ui()
     register_param(param::WETDRY);
 }
 
+ui::moditem_list* caps_plate2x2::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 caps_plate2x2::~caps_plate2x2()
 {
     if (l_descriptor)

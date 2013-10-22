@@ -14,6 +14,12 @@ void riff_editor::register_ui()
     register_dobj(dobj::LST_NOTES, dobj::SIN_NOTE);
 }
 
+ui::dobjitem_list* riff_editor::get_ui_items()
+{
+    static ui::dobjitem_list items;
+    return &items;
+}
+
 riff_editor::~riff_editor()
 {
 }

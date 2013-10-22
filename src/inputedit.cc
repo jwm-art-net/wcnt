@@ -24,6 +24,12 @@ void inputedit::register_ui()
         i->add_comment("input_name output_module output_name (...)");
 }
 
+ui::dobjitem_list* inputedit::get_ui_items()
+{
+    static ui::dobjitem_list items;
+    return &items;
+}
+
 inputedit::~inputedit()
 {
     if (modname)
@@ -105,7 +111,7 @@ bool inputedit::create_connectors()
         }
 
         ui::moditem_list* items = in_sm->get_ui_items();
-        ui::moditem* item = items->goto_first();
+        ui::moditem* item = (items != 0 ? items->goto_first() : 0);
 
         bool success = false;
 

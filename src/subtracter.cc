@@ -13,6 +13,12 @@ void subtracter::register_ui()
     register_input(input::IN_SIGNAL2);
 }
 
+ui::moditem_list* subtracter::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 subtracter::~subtracter()
 {
 }

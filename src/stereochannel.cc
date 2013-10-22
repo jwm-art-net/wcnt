@@ -15,6 +15,12 @@ void stereo_channel::register_ui()
     register_input(input::IN_RIGHT);
 }
 
+ui::moditem_list* stereo_channel::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 stereo_channel::~stereo_channel()
 {
 }

@@ -146,6 +146,10 @@ namespace synthmod
     }
 
     ui::moditem_list* items = to_mod->get_ui_items();
+
+    if (!items)
+        return;
+
     ui::moditem* item = items->goto_first();
 
     while(item) {
@@ -269,6 +273,10 @@ namespace synthmod
  bool base::check_inputs()
  {
     ui::moditem_list* items = get_ui_items();
+
+    if(!items)
+        return true;
+
     ui::moditem* item = items->goto_first();
 
     while(item) {

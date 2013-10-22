@@ -22,6 +22,12 @@ void bode_freq_shifter::register_ui()
     register_param(param::SHIFT_MODSIZE);
 }
 
+ui::moditem_list* bode_freq_shifter::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 bode_freq_shifter::~bode_freq_shifter()
 {
     if (l_descriptor) l_descriptor->cleanup(l_inst_handle);

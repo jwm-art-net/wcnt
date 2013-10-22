@@ -18,6 +18,12 @@ void timing::register_ui()
     register_param(param::SECONDS);
 }
 
+ui::dobjitem_list* timing::get_ui_items()
+{
+    static ui::dobjitem_list items;
+    return &items;
+}
+
 bool timing::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)

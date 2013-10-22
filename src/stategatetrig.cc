@@ -14,6 +14,12 @@ void stategatetrig::register_ui()
     register_input(input::IN_STATE);
 }
 
+ui::moditem_list* stategatetrig::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 stategatetrig::~stategatetrig()
 {
 }

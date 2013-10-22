@@ -16,6 +16,12 @@ void wavfilein::register_ui()
     register_param(param::ROOT_NOTE);
 }
 
+ui::dobjitem_list* wavfilein::get_ui_items()
+{
+    static ui::dobjitem_list items;
+    return &items;
+}
+
 wavfilein::~wavfilein()
 {
     if (fname)

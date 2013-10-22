@@ -25,6 +25,12 @@ void group_control::register_ui()
     register_input(input::IN_STOP_TRIG);
 }
 
+ui::moditem_list* group_control::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 group_control::~group_control()
 {
     if (group_name)

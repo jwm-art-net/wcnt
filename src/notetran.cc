@@ -46,6 +46,12 @@ void notetran::register_ui()
     register_input(input::IN_DETRANSPOSE);
 }
 
+ui::moditem_list* notetran::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 notetran::~notetran()
 {
     delete [] no_lo_notename;

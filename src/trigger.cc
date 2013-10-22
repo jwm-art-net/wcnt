@@ -19,6 +19,12 @@ void trigger::register_ui()
     register_param(param::TRIGGER_LEVEL);
 }
 
+ui::moditem_list* trigger::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 trigger::~trigger()
 {
 }

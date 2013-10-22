@@ -26,6 +26,12 @@ void adsr_coord::register_ui()
     register_param(param::LOLEVEL);
 }
 
+ui::dobjitem_list* adsr_coord::get_ui_items()
+{
+    static ui::dobjitem_list items;
+    return &items;
+}
+
 adsr_coord::~adsr_coord()
 {
 }

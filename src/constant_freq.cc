@@ -15,6 +15,12 @@ void constant_freq::register_ui()
     register_param(param::FREQ);
 }
 
+ui::moditem_list* constant_freq::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 constant_freq::~constant_freq()
 {
 }

@@ -23,6 +23,12 @@ void echo::register_ui()
     register_param(param::WETDRY);
 }
 
+ui::moditem_list* echo::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 echo::~echo()
 {
     delete [] filter;

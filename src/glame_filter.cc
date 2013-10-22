@@ -27,6 +27,12 @@ void glame_filter::register_ui()
     register_param(param::STAGES);
 }
 
+ui::moditem_list* glame_filter::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 glame_filter::~glame_filter()
 {
     if (l_descriptor) l_descriptor->cleanup(l_inst_handle);

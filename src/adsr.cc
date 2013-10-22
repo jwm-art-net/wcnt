@@ -35,6 +35,12 @@ void adsr::register_ui()
     register_param(param::RELEASE_RATIO)    ->set_flags(ui::UI_OPTIONAL);
 }
 
+ui::moditem_list* adsr::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 adsr::~adsr()
 {
     if (run_coords)

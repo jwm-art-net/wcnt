@@ -23,6 +23,12 @@ void timer::register_ui()
     register_param(param::RECYCLE_MODE);
 }
 
+ui::moditem_list* timer::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 timer::~timer()
 {
     if (timings)

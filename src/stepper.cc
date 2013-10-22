@@ -29,6 +29,12 @@ void stepper::register_ui()
     register_param(param::RECYCLE_MODE);
 }
 
+ui::moditem_list* stepper::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 stepper::~stepper()
 {
     if (up_levels) delete [] up_levels;

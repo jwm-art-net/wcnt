@@ -17,6 +17,12 @@ void constant_note::register_ui()
     register_param(param::NAME);
 }
 
+ui::moditem_list* constant_note::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 constant_note::~constant_note()
 {
     if (note)

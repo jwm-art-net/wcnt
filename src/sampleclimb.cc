@@ -14,6 +14,12 @@ void sample_climb::register_ui()
     register_param(param::RATE);
 }
 
+ui::moditem_list* sample_climb::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 sample_climb::~sample_climb()
 {
 }

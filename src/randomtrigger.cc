@@ -19,6 +19,12 @@ void randomtrigger::register_ui()
     register_param(param::NOTPROBABILITY);
 }
 
+ui::moditem_list* randomtrigger::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 randomtrigger::~randomtrigger()
 {
 }

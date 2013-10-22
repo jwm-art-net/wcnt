@@ -25,6 +25,12 @@ void sc1::register_ui()
     register_param(param::MAKEUP_DB);
 }
 
+ui::moditem_list* sc1::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 sc1::~sc1()
 {
     if (l_descriptor) l_descriptor->cleanup(l_inst_handle);

@@ -48,6 +48,10 @@ sequencer seq
             riff rf1    bar 0
             repeat 8    repeat_stripe 1
             transpose 0
+        riff_node
+            riff rf1    bar 11
+            repeat 4    repeat_stripe 1
+            transpose 1
     track
 
     start_bar               0
@@ -60,16 +64,18 @@ sequencer seq
 seq
 
 seq_echo seqo
+    count           10
+    delay_time      345 //230
+    in_reset_trig       off
+    send_input_out  off
     in_note_on_trig     seq     out_note_on_trig
     in_note_slide_trig  seq     out_note_slide_trig
     in_note_off_trig    seq     out_note_off_trig
     in_frequency        seq     out_frequency
     in_velocity         seq     out_velocity
-    in_reset_trig       off
-    delay_time      345 //230
-    count           10
-    send_input_out  off
 seqo
+
+noise_generator ng1 ng1
 
 osc_clock osc
     in_note_on_trig     seq     out_note_on_trig
@@ -78,7 +84,7 @@ osc_clock osc
     in_frequency        seq     out_frequency
     octave_offset       0
     tuning_semitones    0
-    in_freq_mod1        off
+    in_freq_mod1        ng1 out_output
     freq_mod1_size      1.0
     in_freq_mod2        off
     freq_mod2_size      1.0
@@ -87,8 +93,8 @@ osc_clock osc
 osc
 
 wave sine
-    in_phase_step   osc out_phase_step
     type            sine
+    in_phase_step   osc out_phase_step
 sine
 
 adsr aeg
@@ -131,6 +137,7 @@ amp
 
 group g1
     modules
+        synthmod name ng1
         synthmod name osc
         synthmod name sine
         synthmod name aeg
@@ -157,12 +164,15 @@ ie1
 
 param_editor pe1
     editlist
+        edit g2.sine
+            type saw
         edit g2.osc
             tuning_semitones 0.1313
+            freq_mod1_size 2.0
         edit g1.amp
             gain       0.7
         edit g2.amp
-            gain       0.3
+            gain       0.125
     editlist
 pe1
 
@@ -182,19 +192,19 @@ range_limit lmt
 lmt
 
 wavfile_out wav
+    filename        seq_echo_output.wav
+    data_format     pcm16
     in_left         lmt out_output  //g1.amp  out_output
     in_right        lmt out_output  //g2.amp  out_output
     in_bar          tmap out_bar
-    filename        seq_echo_output.wav
-    data_format     pcm16
     start_bar       0
-    end_bar         8
+    end_bar         16
     snapshot_mode   off
 wav
 
 wcnt_exit xxx
     in_bar      tmap out_bar
-    exit_bar    8
+    exit_bar    16
 xxx
 
 wcnt-1.30/jwmsynth

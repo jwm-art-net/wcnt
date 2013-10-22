@@ -12,6 +12,12 @@ void diff_filter::register_ui()
     register_input(input::IN_SIGNAL);
 }
 
+ui::moditem_list* diff_filter::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 diff_filter::~diff_filter()
 {
 }

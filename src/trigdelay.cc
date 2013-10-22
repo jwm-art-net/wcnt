@@ -15,6 +15,12 @@ void trigdelay::register_ui()
     register_param(param::DELAY_TIME);
 }
 
+ui::moditem_list* trigdelay::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 trigdelay::~trigdelay()
 {
     if (past_trigs)

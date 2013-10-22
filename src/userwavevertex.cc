@@ -22,6 +22,12 @@ void wave_vertex::register_ui()
     register_param(param::LOLEVEL);
 }
 
+ui::dobjitem_list* wave_vertex::get_ui_items()
+{
+    static ui::dobjitem_list items;
+    return &items;
+}
+
 void wave_vertex::modulate(double vmod, double hmod)
 {
     out_deg = lo_deg + (up_deg - lo_deg) * (( hmod < 0) ? -hmod : hmod);

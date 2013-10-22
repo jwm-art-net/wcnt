@@ -23,6 +23,12 @@ void riff_node::register_ui()
     register_param(param::TRANSPOSE);
 }
 
+ui::dobjitem_list* riff_node::get_ui_items()
+{
+    static ui::dobjitem_list items;
+    return &items;
+}
+
 riff_node::~riff_node()
 {
 }

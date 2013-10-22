@@ -62,6 +62,12 @@ void sequencer::register_ui()
     register_param(param::VELOCITY_RESPONSE);
 }
 
+ui::moditem_list* sequencer::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 sequencer::~sequencer()
 {
     if (next_note

@@ -23,6 +23,12 @@ void stereo_amp::register_ui()
     register_param(param::CLIP_LEVEL);
 }
 
+ui::moditem_list* stereo_amp::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 stereo_amp::~stereo_amp()
 {
 }

@@ -27,6 +27,12 @@ void square_wave::register_ui()
     register_param(param::RECYCLE_MODE);
 }
 
+ui::moditem_list* square_wave::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 square_wave::~square_wave()
 {
 }

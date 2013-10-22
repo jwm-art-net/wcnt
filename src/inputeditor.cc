@@ -14,6 +14,12 @@ void inputeditor::register_ui()
     register_dobj(dobj::LST_EDITS, dobj::SIN_EDIT_INPUT);
 }
 
+ui::dobjitem_list* inputeditor::get_ui_items()
+{
+    static ui::dobjitem_list items;
+    return &items;
+}
+
 inputeditor::~inputeditor()
 {
 }

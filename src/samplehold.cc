@@ -16,6 +16,12 @@ void sample_hold::register_ui()
     register_param(param::DECAY_TIME);
 }
 
+ui::moditem_list* sample_hold::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 sample_hold::~sample_hold()
 {
 }

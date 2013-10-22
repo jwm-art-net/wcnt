@@ -16,6 +16,12 @@ void adsr_scaler::register_ui()
     register_param(param::RELEASE_SCALE);
 }
 
+ui::dobjitem_list* adsr_scaler::get_ui_items()
+{
+    static ui::dobjitem_list items;
+    return &items;
+}
+
 adsr_scaler::~adsr_scaler()
 {
 }

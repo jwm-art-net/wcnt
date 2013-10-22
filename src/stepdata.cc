@@ -19,6 +19,12 @@ void step_data::register_ui()
     register_param(param::LOLEVEL);
 }
 
+ui::dobjitem_list* step_data::get_ui_items()
+{
+    static ui::dobjitem_list items;
+    return &items;
+}
+
 step_data::~step_data()
 {
 }

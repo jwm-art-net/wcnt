@@ -17,7 +17,7 @@ public:
 private:
     double output;
     void register_ui() {};
-    ui::moditem_list* get_ui_items();
+    ui::moditem_list* get_ui_items() { return 0;}
 };
 
 #endif

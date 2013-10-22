@@ -30,6 +30,12 @@ void seq_router::register_ui()
     register_input(input::IN_ALL_OFF_TRIG);
 }
 
+ui::moditem_list* seq_router::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 seq_router::~seq_router()
 {
     if (grp)

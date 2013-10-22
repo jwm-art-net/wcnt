@@ -12,6 +12,12 @@ void dobjmod::register_ui()
         i->add_comment("A module to be contained by group.");
 }
 
+ui::dobjitem_list* dobjmod::get_ui_items()
+{
+    static ui::dobjitem_list items;
+    return &items;
+}
+
 bool dobjmod::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)

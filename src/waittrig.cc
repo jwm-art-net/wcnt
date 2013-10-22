@@ -20,6 +20,12 @@ void waittrig::register_ui()
     register_param(param::COUNT);
 }
 
+ui::moditem_list* waittrig::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 waittrig::~waittrig()
 {
 }

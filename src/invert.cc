@@ -12,6 +12,12 @@ void invert::register_ui()
     register_input(input::IN_SIGNAL);
 }
 
+ui::moditem_list* invert::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 invert::~invert()
 {
 }

@@ -28,6 +28,12 @@ void note_data::register_ui()
     register_param(param::NOTE_VEL);
 }
 
+ui::dobjitem_list* note_data::get_ui_items()
+{
+    static ui::dobjitem_list items;
+    return &items;
+}
+
 
 note_data::note_data(const char *name, double pos, double len, double vel)
  :

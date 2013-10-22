@@ -541,10 +541,11 @@ string*  synthfilereader::read_string_list_param (const char* enda,
 bool synthfilereader::read_ui_moditems(synthmod::base* sm)
 {
     ui::moditem_list* items = sm->get_ui_items();
-    ui::moditem* item = items->goto_first();
 
-    if (!item)
+    if (!items)
         return true;
+
+    ui::moditem* item = items->goto_first();
 
     if (wcnt::jwm.is_verbose())
         cout << "--------" << endl;
@@ -553,6 +554,8 @@ bool synthfilereader::read_ui_moditems(synthmod::base* sm)
 
     while(item) {
         switch(item->get_item_type()) {
+          case ui::UI_COMMENT:
+            break;
           case ui::UI_PARAM: {
             ui::modparam* mp = static_cast<ui::modparam*>(item);
             if (!read_ui_modparam(sm, mp, flags))
@@ -585,10 +588,11 @@ bool synthfilereader::read_ui_moditems(synthmod::base* sm)
 bool synthfilereader::read_ui_dobjitems(dobj::base* dob, const char* parent)
 {
     ui::dobjitem_list* items = dob->get_ui_items();
-    ui::dobjitem* item = items->goto_first();
 
-    if (!item)
+    if (!items)
         return true;
+
+    ui::dobjitem* item = items->goto_first();
 
     if (wcnt::jwm.is_verbose())
         cout << "--------" << endl;
@@ -597,32 +601,27 @@ bool synthfilereader::read_ui_dobjitems(dobj::base* dob, const char* parent)
 
     while(item) {
         switch(item->get_item_type()) {
+          case ui::UI_COMMENT:
+            break;
           case ui::UI_PARAM: {
             ui::dobjparam* dp = static_cast<ui::dobjparam*>(item);
-            if (!read_ui_dobjparam(dob, dp, flags, parent)) {
-                delete items;
+            if (!read_ui_dobjparam(dob, dp, flags, parent))
                 return false;
-            }
             break;
           }
           case ui::UI_DOBJ: {
             ui::dobjdobj* dd = static_cast<ui::dobjdobj*>(item);
             if (!read_ui_dobjdobj(dob, dd->get_dobj_parent(),
                                        dd->get_dobj_child()))
-            {
-                delete items;
                 return false;
-            }
             break;
           }
           default:
             wc_err("%s invalid ui element.", errors::stock::bad);
-            delete items;
             return false;
         }
         item = items->goto_next();
     }
-    delete items;
     return true;
 }
 
@@ -1160,4 +1159,10 @@ void synthfilereader::register_ui()
     register_dobj(dobj::LST_MODULES, dobj::SIN_MODNAME);
     register_param(param::DOBJ_ACTION, "include/exclude");
     register_dobj(dobj::LST_DOBJS, dobj::SIN_DOBJNAME);
+}
+
+ui::dobjitem_list* synthfilereader::get_ui_items()
+{
+    static ui::dobjitem_list items;
+    return &items;
 }

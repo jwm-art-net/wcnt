@@ -17,6 +17,12 @@ void delay::register_ui()
     register_param(param::WETDRY);
 }
 
+ui::moditem_list* delay::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 delay::~delay()
 {
     if (filter)

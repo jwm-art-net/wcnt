@@ -14,6 +14,12 @@ void wcnt_signal::register_ui()
     register_param(param::LEVEL);
 }
 
+ui::moditem_list* wcnt_signal::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 wcnt_signal::~wcnt_signal()
 {
 }

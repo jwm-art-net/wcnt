@@ -27,6 +27,12 @@ void orbit::register_ui()
     register_param(param::TEST_ITER);
 }
 
+ui::moditem_list* orbit::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 orbit::~orbit()
 {
 }

@@ -12,6 +12,12 @@ void constmod::register_ui()
     register_param(param::VALUE);
 }
 
+ui::moditem_list* constmod::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 constmod::~constmod()
 {
 }

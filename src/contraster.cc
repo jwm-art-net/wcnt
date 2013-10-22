@@ -20,6 +20,12 @@ void contraster::register_ui()
     register_param(param::WETDRY);
 }
 
+ui::moditem_list* contraster::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 contraster::~contraster()
 {
 }

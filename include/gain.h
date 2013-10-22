@@ -21,6 +21,7 @@ class gain : protected modpart::base
 
  protected:
     double out;
+    void register_ui();
 
  private:
     const double* in_signal;

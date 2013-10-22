@@ -17,6 +17,12 @@ void combiner::register_ui()
     register_param(param::MEAN_TOTAL);
 }
 
+ui::moditem_list* combiner::get_ui_items()
+{
+    static ui::moditem_list items;
+    return &items;
+}
+
 combiner::~combiner()
 {
     if (sigs)
