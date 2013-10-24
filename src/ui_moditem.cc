@@ -28,6 +28,11 @@ namespace ui
     moditem* ui = goto_first();
     while(ui) {
         switch(ui->get_item_type()) {
+        case ui::UI_ERROR: {
+            std::cout << "UI_ERROR:\t\""
+                      << ui->get_comment() << "\"";
+            break;
+        }
         case ui::UI_COMMENT: {
             modcomment* mc = static_cast<modcomment*>(ui);
             std::cout << "UI_COMMENT:\t\""
@@ -56,7 +61,7 @@ namespace ui
             break;
         }
         default:
-            std::cout << "UI_ERROR";
+            std::cout << "ERROR: Unknown moditem";
         }
         std::cout << std::endl;
         ui = goto_next();
@@ -158,5 +163,43 @@ namespace ui
               << std::endl;
     return false;
  }
+
+
+ moditem* moditem_list::match_begin(const char* str)
+ {
+    if (!str)
+        return 0;
+
+    moditem* item = goto_first();
+
+    if (!item)
+        return 0;
+
+    skip_id = match_id = UI_DEFAULT;
+    int result = item->is_match(str, skip_id, match_id);
+ }
+
+ moditem* moditem_list::match_next(const char* str)
+ {
+    if (!str)
+        return 0;
+
+    moditem* prev = sneak_current()->get_data();
+    moditem* next = goto_next();
+
+    if (!next)
+        return 0;
+
+    if ((prev->get_set_id() != next->get_sed_id())
+     || (prev->get_choice_id() != next->get_choice_id()))
+    {
+        skip_id = match_id = UI_DEFAULT;
+    }
+
+    int result = next->is_match(str, skip_id, match_id);
+ }
+
+
+
 
 }; //namespace ui

@@ -24,6 +24,7 @@ namespace synthmod { class base; };
 namespace ui
 {
  typedef         base<synthmod::base*> moditem;
+ typedef   error_item<synthmod::base*> moderror;
  typedef   param_item<synthmod::base*> modparam;
  typedef   input_item<synthmod::base*> modinput;
  typedef    dobj_item<synthmod::base*> moddobj;
@@ -34,6 +35,8 @@ namespace ui
     ... didn't outweigh the cost of code duplication between synthmod
     and dobj.
   */
+
+
 
  class moditem_list : public linked_list<moditem>
  {
@@ -49,6 +52,9 @@ namespace ui
     moditem* add_item(const char* comment);
 
     bool validate(synthmod::base*, param::TYPE, errors::TYPE);
+
+    moditem* match_begin(const char*);
+    moditem* match_next(const char*);
 
   private:
     FLAGS skip_id;

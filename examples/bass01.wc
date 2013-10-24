@@ -13,9 +13,9 @@ synth_file_reader
 timefile
     filename time.wch
     mod_action  exclude
+    modules
+    modules
     dobj_action exclude
-    modules
-    modules
     data_objects
     data_objects
 timefile

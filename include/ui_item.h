@@ -18,7 +18,7 @@ namespace ui
 { // where T is type* and DT is enum { type1, type2... }
 
  enum TYPE {
-    UI_ERR,
+    UI_ERROR,
     UI_COMMENT,
     UI_INPUT,
     UI_PARAM,
@@ -58,7 +58,7 @@ namespace ui
     void add_comment(const char* literal)   { item_comment = literal; }
     virtual const char* get_comment()       { return item_comment; }
 
-    int is_match(const char* str, int skip, int match);
+    int is_match(const char* str, FLAGS skip_id, FLAGS match_id);
 
     void set_flags(int f);
     bool is_optional()      { return (flags & UI_OPTIONAL); }
@@ -132,10 +132,11 @@ namespace ui
     #endif
  }
 
+/*
+
  template <class T>
  int base<T>::is_match(const char* str, int skip, int match)
  {
-/*
     FLAGS skip_id = (skip & UI_SET_MASK);
 
     if (skip_id) {
@@ -178,9 +179,40 @@ namespace ui
             }
         }
     }
-*/
     return 0;
  }
+*/
+
+
+ template <class T>
+ class error_item : public base<T>
+ {
+  public:
+
+    static error_item<T>* err(char* msg)
+    {
+        error_item<T> err;
+        err->set_msg(msg);
+        return &err;
+    }
+
+    bool validate(T, errors::TYPE)  { return false; }
+    bool name_match(const char*)    { return false; }
+    const char* get_comment()       { return err_msg; }
+
+  private:
+    error_item() : base<T>(UI_ERROR), err_msg(0) {};
+
+    ~error_item() {
+        if (err_msg) delete [] err_msg;
+    }
+
+    void set_msg(char* msg) {
+        if (err_msg) delete [] err_msg;
+        err_msg = msg;
+    }
+    char* err_msg;
+ };
 
  template <class T>
  class comment_item : public base<T>
