@@ -545,6 +545,55 @@ bool synthfilereader::read_ui_moditems(synthmod::base* sm)
     if (!items)
         return true;
 
+    if (wcnt::jwm.is_verbose())
+        cout << "--------" << endl;
+
+    ui::moditem* item = items->match_begin(sm);
+
+    while(item) {
+        const char* str = read_command();
+        std::cout << "reading...  str: " << str << std::endl;
+        if (!(item = items->match_item(str))) {
+            command = new string(str);
+            break;
+        }
+        switch(item->get_item_type()) {
+          case ui::UI_ERROR:
+            std::cout << "***** ERROR ERROR ERROR *****" << std::endl;
+            wc_err("%s", item->get_comment());
+            return false;
+          case ui::UI_COMMENT:
+            break;
+          case ui::UI_PARAM: {
+            ui::modparam* mp = static_cast<ui::modparam*>(item);
+            mp->dump();
+            if (!read_ui_modparam(sm, mp->get_param_type()))
+                return false;
+            break;
+          }
+          case ui::UI_INPUT: {
+            ui::modinput* mi = static_cast<ui::modinput*>(item);
+            mi->dump();
+            if (!read_ui_modinput(sm, mi->get_input_type()))
+                return false;
+            break;
+          }
+          case ui::UI_DOBJ: {
+            ui::moddobj* md = static_cast<ui::moddobj*>(item);
+            if (!read_ui_moddobj(sm, md->get_dobj_parent(),
+                                     md->get_dobj_child()))
+                return false;
+            break;
+          }
+          default:
+            wc_err("%s invalid ui element.", errors::stock::bad);
+            return false;
+        }
+        items->goto_next();
+    }
+    return true;
+}
+/*
     ui::moditem* item = items->goto_first();
 
     if (wcnt::jwm.is_verbose())
@@ -583,7 +632,7 @@ bool synthfilereader::read_ui_moditems(synthmod::base* sm)
     }
     return true;
 }
-
+*/
 
 bool synthfilereader::read_ui_dobjitems(dobj::base* dob, const char* parent)
 {
@@ -626,39 +675,16 @@ bool synthfilereader::read_ui_dobjitems(dobj::base* dob, const char* parent)
 }
 
 bool
-synthfilereader::read_ui_modinput(synthmod::base* sm, ui::modinput* inp,
-                                                      ui::FLAGS flags)
+synthfilereader::read_ui_modinput(synthmod::base* sm, input::TYPE inptype)
 {
-    const char* inpname = read_command();
-    input::TYPE inptype = inp->get_input_type();
-    input::TYPE it = input::names::type(inpname, inptype);
+    const char* inpname = input::names::get(inptype);
 
-    bool unspecified = false;
-
-    if (it != inptype) {
-        if (inp->is_optional()) {
-            command = new string(inpname);
-            unspecified = true;
-        }
-        else {
-            wc_err("Unexpected input '%s', expected '%s'.",
-                        inpname, input::names::get(inptype));
-            return false;
-        }
-    }
-
-    string outmod = "off";
-
-    if (!unspecified)
-        *synthfile >> outmod;
+    string outmod;
+    *synthfile >> outmod;
 
     if (outmod == "off") {
         if (include_mod(sm->get_username())) {
-            output::TYPE offout = output::names::get_off_type(
-                                     input::names::category(inptype));
-            wcnt::get_connectlist()->add_connector(sm, inptype,
-                                                       outmod.c_str(),
-                                                       offout);
+            wcnt::get_connectlist()->add_connector_off(sm, inptype);
             if (wcnt::jwm.is_verbose())
                 cout << "added connector " << inpname << "\toff" << endl;
         }
@@ -696,24 +722,8 @@ synthfilereader::read_ui_modinput(synthmod::base* sm, ui::modinput* inp,
 
 
 bool
-synthfilereader::read_ui_modparam(synthmod::base* sm, ui::modparam* par,
-                                                      ui::FLAGS flags)
+synthfilereader::read_ui_modparam(synthmod::base* sm, param::TYPE partype)
 {
-    const char* parname = read_command();
-    param::TYPE partype = par->get_param_type();
-    param::TYPE pt = param::names::type(parname, partype);
-
-    if (pt != partype) {
-        if (par->is_optional()) {
-            command = new string(parname);
-            return true;
-        }
-
-        wc_err("Unexpected parameter '%s', expected '%s'.",
-                        parname, param::names::get(partype));
-        return false;
-    }
-
     ostringstream conv;
     string datastr;
     *synthfile >> datastr;
@@ -728,7 +738,7 @@ synthfilereader::read_ui_modparam(synthmod::base* sm, ui::modparam* par,
 
     if (wcnt::jwm.is_verbose()) {
         cout << "parameter ";
-        cout << parname << "\t" << conv.str() << endl;
+        cout << param::names::get(partype) << "\t" << conv.str() << endl;
     }
 
    return true;
@@ -792,14 +802,14 @@ bool
 synthfilereader::read_ui_moddobj(synthmod::base* sm, dobj::TYPE parent,
                                                      dobj::TYPE child)
 {
-    string dbjname = read_command();
     const char* parentname = dobj::names::get(parent);
+/*    string dbjname = read_command();
 
     if (dbjname != parentname) {
         wc_err("expected %s got %s instead", parentname, dbjname.c_str());
         return false;
     }
-
+*/
     const char* childname = dobj::names::get(child);
     const char* com = read_command();
     // now read the list of items (each item's type is sprogtype)

@@ -17,10 +17,10 @@ sampler::sampler(const char* uname) :
  wavfile(0),
  play_dir(PLAY_FWD), play_mode(PLAY_STOP), jump_mode(JUMP_PLAY_DIR),
  min_start_pos(0), max_start_pos(0),
- loop_begin(0), loop_end(0), loop_is_offset(OFF), loop_mode(LOOP_OFF),
+ loop_begin(0), loop_end(1), loop_is_offset(OFF), loop_mode(LOOP_OFF),
  loop_bi_offset(0),
  anti_clip_size(0), ac_each_end(OFF), search_range(0),
- phase_step_amount(0), root_phase_step(1.0),
+ phase_step_amount(1.0), root_phase_step(1.0),
  playdir(PLAY_FWD), acplaydir(PLAY_FWD), loop_yet(false),
  mono_buffer(0), ac_m_buf(0), st_buffer(0), ac_st_buf(0),
  buffer_start_pos(0), buff_pos(0),
@@ -44,28 +44,36 @@ sampler::sampler(const char* uname) :
 void sampler::register_ui()
 {
     register_param(param::WAVFILEIN);
-    register_param(param::PLAY_DIR,     "fwd/rev");
+    register_param(param::PLAY_DIR, "fwd/rev")->set_flags(ui::UI_OPTIONAL);
     register_input(input::IN_PLAY_TRIG);
-    register_input(input::IN_STOP_TRIG);
+    register_input(input::IN_STOP_TRIG)->set_flags(ui::UI_OPTIONAL);
     register_input(input::IN_PHASE_STEP);
+    register_param(param::PHASE_STEP_AMOUNT)->set_flags(ui::UI_OPTIONAL);
 
-    register_param(param::PLAY_MODE,    "stop/wrap/bounce/jump");
-    register_param(param::JUMP_MODE,    "play/loop");
+    register_param(param::PLAY_MODE, "stop/wrap/bounce/jump")
+                               ->set_flags(ui::UI_OPTIONAL | ui::UI_SET1);
+    register_param(param::JUMP_MODE, "play/loop")->set_flags(ui::UI_SET1);
 
-    register_input(input::IN_START_POS_MOD);
-    register_param(param::START_POS_MIN);
-    register_param(param::START_POS_MAX);
+    register_comment("Static start position:");
+    register_param(param::START_POS)       ->set_flags(ui::UI_CHOICE1);
+    register_comment("Or modulated start position:");
+    register_input(input::IN_START_POS_MOD)->set_flags(ui::UI_CHOICE2);
+    register_param(param::START_POS_MIN)   ->set_flags(ui::UI_CHOICE2);
+    register_param(param::START_POS_MAX)   ->set_flags(ui::UI_CHOICE2);
 
-    register_param(param::LOOP_MODE,    "off/fwd/rev/bi");
-    register_param(param::LOOP_BEGIN);
-    register_param(param::LOOP_END);
-    register_param(param::LOOP_IS_OFFSET);
-    register_param(param::LOOP_BI_OFFSET);
+    register_comment("Optional loop:");
+    register_param(param::LOOP_MODE, "off/fwd/rev/bi")
+                       ->set_flags(ui::UI_OPTIONAL | ui::UI_SET2);
+    register_param(param::LOOP_BEGIN)    ->set_flags(ui::UI_SET2);
+    register_param(param::LOOP_END)      ->set_flags(ui::UI_SET2);
+    register_param(param::LOOP_IS_OFFSET)->set_flags(ui::UI_SET2);
+    register_param(param::LOOP_BI_OFFSET)->set_flags(ui::UI_SET2);
 
-    register_param(param::ANTI_CLIP);
-    register_param(param::AC_EACH_END);
-    register_param(param::ZERO_SEARCH_RANGE);
-    register_param(param::PHASE_STEP_AMOUNT);
+    register_comment("Optional xfades:");
+    register_param(param::ANTI_CLIP)
+                          ->set_flags(ui::UI_OPTIONAL | ui::UI_SET3);
+    register_param(param::AC_EACH_END)      ->set_flags(ui::UI_SET3);
+    register_param(param::ZERO_SEARCH_RANGE)->set_flags(ui::UI_SET3);
 }
 
 ui::moditem_list* sampler::get_ui_items()
@@ -148,6 +156,10 @@ bool sampler::set_param(param::TYPE pt, const void* data)
         return true;
     case param::JUMP_MODE:
         jump_mode = (JUMP_DIR)(*(int*)data);
+        return true;
+    case param::START_POS:
+        min_start_pos = *(samp_t*)data;
+        max_start_pos = min_start_pos + 1;
         return true;
     case param::START_POS_MIN:
         min_start_pos = *(samp_t*)data;

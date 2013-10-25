@@ -42,7 +42,6 @@ namespace ui
  {
   public:
     moditem_list();
-    moditem_list(DESTRUCTION);
     ~moditem_list();
 
     moditem* add_item(input::TYPE);
@@ -53,12 +52,16 @@ namespace ui
 
     bool validate(synthmod::base*, param::TYPE, errors::TYPE);
 
-    moditem* match_begin(const char*);
-    moditem* match_next(const char*);
+    moditem* match_begin(synthmod::base*);
+    moditem* match_item(const char*);
 
   private:
-    FLAGS skip_id;
-    FLAGS match_id;
+    FLAGS    skip_id;
+    FLAGS    match_id;
+    moditem* match_prev;
+    moditem* choice;
+    synthmod::base* sm;
+    static char err_msg[STRBUFLEN];
  };
 };
 

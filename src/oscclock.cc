@@ -6,7 +6,7 @@ osc_clock::osc_clock(const char* uname) :
  out_phase_trig(OFF), out_phase_step(0.00), out_premod_phase_step(0.00),
  in_freq(NULL), in_note_on_trig(NULL), in_note_slide_trig(NULL),
  in_play_state(NULL), in_freq_mod1(NULL), in_freq_mod2(NULL),
- octave_offset(0), semitones(0), freq_mod1size(0.00), freq_mod2size(0.00),
+ octave_offset(0), semitones(0), freq_mod1size(1.00), freq_mod2size(1.00),
  mod1size(0.00), mod2size(0.00), degs(360.00), degsize1(0.00),
  degsize2(0.00), portamento(0.0), response_time(0.0), slide_size(0.00),
  target_phase_step(0.00),
@@ -27,12 +27,10 @@ void osc_clock::register_ui()
     register_param(param::TUNING_SEMITONES);
     register_input(input::IN_FREQ_MOD1) ->set_flags(ui::UI_OPTIONAL |
                                                     ui::UI_SET1);
-    register_param(param::FREQ_MOD1SIZE)->set_flags(ui::UI_OPTIONAL |
-                                                    ui::UI_SET1);
+    register_param(param::FREQ_MOD1SIZE)->set_flags(ui::UI_SET1);
     register_input(input::IN_FREQ_MOD2) ->set_flags(ui::UI_OPTIONAL |
                                                     ui::UI_SET2);
-    register_param(param::FREQ_MOD2SIZE)->set_flags(ui::UI_OPTIONAL |
-                                                    ui::UI_SET2);
+    register_param(param::FREQ_MOD2SIZE)->set_flags(ui::UI_SET2);
     register_param(param::PORTAMENTO);
     register_param(param::RESPONSE_TIME);
 }

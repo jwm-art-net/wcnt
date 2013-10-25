@@ -37,6 +37,19 @@ connector* connectorlist::add_connector(connector* c)
     return add_at_head(c)->get_data();
 }
 
+connector* connectorlist::add_connector_off(synthmod::base* sm, input::TYPE it)
+{
+    connector* c = new connector(sm, it, "off",
+                output::names::get_off_type(input::names::category(it)));
+    if (c) {
+        if (!add_at_head(c)) {
+            delete c;
+            c = 0;
+        }
+    }
+    return c;
+}
+
 connector* connectorlist::add_connector(synthmod::base* sm, input::TYPE it,
                                     const char* out_mod, output::TYPE ot)
 {

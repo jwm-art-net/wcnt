@@ -20,10 +20,16 @@ adsr_coord::adsr_coord
 void adsr_coord::register_ui()
 {
     register_param(param::ADSRSECT, "attack/decay/sustain/release");
-    register_param(param::UPTIME);
-    register_param(param::UPLEVEL);
-    register_param(param::LOTIME);
-    register_param(param::LOLEVEL);
+    register_param(param::TIME,
+                    "Specify section time for both upper and lower shapes."
+                                )->set_flags(ui::UI_CHOICE1);
+    register_param(param::LEVEL,
+                    "Specify section level for both upper and lower shapes."
+                                )->set_flags(ui::UI_CHOICE1);
+    register_param(param::UPTIME)->set_flags(ui::UI_CHOICE2);
+    register_param(param::UPLEVEL)->set_flags(ui::UI_CHOICE2);
+    register_param(param::LOTIME)->set_flags(ui::UI_CHOICE2);
+    register_param(param::LOLEVEL)->set_flags(ui::UI_CHOICE2);
 }
 
 ui::dobjitem_list* adsr_coord::get_ui_items()
@@ -51,6 +57,14 @@ bool adsr_coord::set_param(param::TYPE pt, const void* data)
     switch(pt) { // PAR_ADSRSECT is iocat::CAT_FIX_STR.
     case param::ADSRSECT:
         set_adsr_section((SECT)(*(int*)data));
+        return true;
+    case param::TIME:
+        set_upper_time(*(double*)data);
+        set_lower_time(*(double*)data);
+        return true;
+    case param::LEVEL:
+        set_upper_level(*(double*)data);
+        set_lower_level(*(double*)data);
         return true;
     case param::UPTIME:
         set_upper_time(*(double*)data);

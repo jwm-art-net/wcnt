@@ -9,75 +9,52 @@ t-on
         time seconds 6.0
     timings
     time_is_relative off
-    recycle_mode    off
 t-on
 
-timer
-t-off
-    timings
-        time seconds 5.0
-    timings
-    time_is_relative off
-    recycle_mode    off
-t-off
+lfo_clock
+lfoc
+    freq    7.0
+    in_phase_trig off
+lfoc
 
-adsr env
-    envelope
-        section name attack
-            ut  50  ul  1
-            lt  50  ll  1
-        section name decay
-            ut  50  ul  0.75
-            lt  50  ll  0.75
-        section name release
-            ut  150 ul  0.0
-            lt  150 ll  0.0
-    envelope
-    in_note_on_trig     t-on    out_trig
-    in_velocity         off
-    sustain_state       on
-    in_note_off_trig    t-off   out_trig
-env
+constant_freq f1
+    freq 0.01
+f1
 
-clock
-cc
-    freq 16
-cc
+wave w1 type sine in_phase_step f1 out_phase_step w1
 
-inspector
-i
-    _in_float_          env out_output
-    _float_msg_         env:out_output=
-    _in_float_trig_     cc out_phase_trig
+wavfilein
+crappytv
+    filename    ../examples/samples/crappytvsamplev2.wav
+    root_note   c0
+crappytv
 
-    _in_int_            off
-    _int_msg_           .
-    _in_int_trig_       off
+constant_note
+n1
+    name c#0
+n1
 
-    _in_sample_         off
-    _sample_msg_        .
-    _in_sample_trig_    off
-
-    _in_state_          off
-    _state_msg_         .
-    _in_state_trig_     off
-
-    _in_string_         off
-    _string_msg_        .
-    _in_string_trig_    off
-i
+sampler
+s1
+    wavfile             crappytv
+    in_play_trig        lfoc out_phase_trig
+    in_phase_step       n1 out_phase_step
+//    start_pos           0
+    in_start_pos_mod    w1 out_output
+    start_pos_min       0
+//    start_pos_max       100000
+s1
 
 wavfile_out
-wav
-    filename       adsr_output.wav
-    data_format    pcm16
-    in_left      env    out_output
-    in_right     env    out_output
-    in_bar       t-on   out_count
-    start_bar      0
-    end_bar        1
-    snapshot_mode  off
-wav
+file
+    filename    optional_output.wav
+    data_format pcm16
+    in_left     s1 out_left
+    in_right    s1 out_right
+    in_bar      t-on out_count
+    start_bar   0
+    end_bar     1
+file
 
 wcnt_exit
 exit

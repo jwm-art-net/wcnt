@@ -42,6 +42,16 @@ namespace ui
     UI_SET_MASK =   0xf000
  };
 
+ enum {
+    ITEM_CHOICE_UNEXPECTED = -5,// first item chosen, and so was this.
+    ITEM_CHOICE_EXPECTED = -4,  // first item chosen but this wasnt.
+    ITEM_SET_UNEXPECTED = -3,   // first item skipped but this wasnt.
+    ITEM_SET_EXPECTED = -2,     // first item specified but this wasnt.
+    ITEM_UNEXPECTED = -1,       // item did not match
+    ITEM_MATCH = 0,             // item did match
+    ITEM_SKIPPED                // item was optional and skipped
+ };
+
  template <class T>
  class base
  {
@@ -55,6 +65,8 @@ namespace ui
     TYPE    get_item_type() const   { return itemtype; }
     bool operator==(TYPE it) const  { return (itemtype == it); }
 
+    virtual const char* get_name() { return 0; }
+
     void add_comment(const char* literal)   { item_comment = literal; }
     virtual const char* get_comment()       { return item_comment; }
 
@@ -64,8 +76,12 @@ namespace ui
     bool is_optional()      { return (flags & UI_OPTIONAL); }
     bool has_flag(FLAGS f)  { return !!(flags & f); }
 
-    FLAGS get_choice_id()   { return (flags & UI_CHOICE_MASK); }
-    FLAGS get_set_id()      { return (flags & UI_SET_MASK); }
+    FLAGS get_choice_id() {
+        return static_cast<FLAGS>(flags & UI_CHOICE_MASK);
+    }
+    FLAGS get_set_id() {
+        return static_cast<FLAGS>(flags & UI_SET_MASK);
+    }
 
     #ifdef DEBUG
     virtual void dump() {};
@@ -77,8 +93,8 @@ namespace ui
     int         flags;
     TYPE        itemtype;
     const char* item_comment;
-    base(){};
-    base(const base&){};
+    base() {};
+    base(const base&) {};
  };
 
  template <class T>
@@ -132,67 +148,61 @@ namespace ui
     #endif
  }
 
-/*
-
  template <class T>
- int base<T>::is_match(const char* str, int skip, int match)
+ int base<T>::is_match(const char* str, FLAGS skip_id, FLAGS match_id)
  {
-    FLAGS skip_id = (skip & UI_SET_MASK);
-
-    if (skip_id) {
-        if (get_set_id() == skip_id && name_match(str)) {
-            // warning, previous items in set not specified
-            return 1;
-        }
-    }
-
     if (name_match(str)) {
-        if (get_set_id()) {
-            if (!(running_flags & UI_SET_MASK)) {
-                // previous items in set were skipped, why start now?
-                return -1;
+        std::cout << "::: item name '" << str << "' matched.. " << std::endl;
+        if (skip_id == UI_CHOICE_MASK) {
+            std::cout << "::: processing choice " << match_id << std::endl;
+            if (match_id == get_choice_id()) {
+                std::cout << "::: choice match." << std::endl;
+                return ITEM_MATCH;
             }
-            if ((running_flags & UI_SET_MASK) != get_set_id()) {
-                // set id mismatch (????)
-                return -1;
+            else {
+                std::cout << "::: choice mismatch." << std::endl;
+                return ITEM_CHOICE_UNEXPECTED;
             }
-            return 0;
         }
-        if (get_choice_id()) {
-            if (!(running_flags & UI_CHOICE_MASK)) {
-                // skipped a choice item, bugger.
-                return -1;
-            }
-            if ((running_flags & UI_CHOICE_MASK) != get_choice_id()) {
-                // only one choice may be chosen!
-                return -1;
-            }
-            return 0;
-        }
-        return 0; // got there eventually
+        if (skip_id != UI_DEFAULT && skip_id == get_set_id())
+            return ITEM_SET_UNEXPECTED;
+        return ITEM_MATCH;
     }
-    else { // str does not match name of expected type
-        if (get_set_id()) {
-            if (!(running_flags & UI_SET_MASK)) {
-                
-                return -1;
+    else {
+        std::cout << "::: item name '" << str << "' unmatched.. " << std::endl;
+        if (skip_id == UI_CHOICE_MASK) {
+            std::cout << "::: processing choice " << match_id << std::endl;
+            if (match_id == get_choice_id()) {
+                std::cout << "::: choice mismatch " << std::endl;
+                return ITEM_CHOICE_EXPECTED;
+            }
+            else {
+                std::cout << "::: choice skipped" << std::endl;
+                return ITEM_SKIPPED;
             }
         }
+        if (get_choice_id() != UI_DEFAULT)
+            return ITEM_SKIPPED;
+        if (is_optional())
+            return ITEM_SKIPPED;
+        if ((skip_id != UI_DEFAULT && skip_id == get_set_id()))
+            return ITEM_SKIPPED;
+        if (match_id != UI_DEFAULT && match_id == get_set_id())
+            return ITEM_SET_EXPECTED;
+        return ITEM_UNEXPECTED;
     }
-    return 0;
  }
-*/
-
 
  template <class T>
  class error_item : public base<T>
  {
   public:
 
-    static error_item<T>* err(char* msg)
+    static error_item<T>* err(const char* err_buf = 0)
     {
-        error_item<T> err;
-        err->set_msg(msg);
+        static error_item<T> err;
+        if (err_buf)
+            err.err_msg = err_buf;
         return &err;
     }
 
@@ -201,17 +211,9 @@ namespace ui
     const char* get_comment()       { return err_msg; }
 
   private:
-    error_item() : base<T>(UI_ERROR), err_msg(0) {};
-
-    ~error_item() {
-        if (err_msg) delete [] err_msg;
-    }
-
-    void set_msg(char* msg) {
-        if (err_msg) delete [] err_msg;
-        err_msg = msg;
-    }
-    char* err_msg;
+    error_item() : base<T>(UI_ERROR) {};
+    ~error_item() {}
+    const char* err_msg;
  };
 
  template <class T>
@@ -243,6 +245,8 @@ namespace ui
 
     ~param_item() {};
 
+    const char* get_name() { return param::names::get(partype); }
+
     param::TYPE get_param_type() const      { return partype; }
     bool operator()(param::TYPE & pt) const { return (partype == pt); }
     bool operator==(param::TYPE rhs) const  { return (partype == rhs); }
@@ -250,6 +254,8 @@ namespace ui
     bool validate(T, errors::TYPE);
 
     bool name_match(const char* str) {
+        std::cout << "checking \"" << str << "\" against "
+                  << param::names::get(partype) << std::endl;
         return (strcmp(str, param::names::get(partype)) == 0);
     }
 
@@ -288,6 +294,8 @@ namespace ui
 
     ~input_item() {};
 
+    const char* get_name() { return input::names::get(intype); }
+
     input::TYPE get_input_type() const      { return intype; }
     bool operator()(input::TYPE & it) const { return (intype == it); }
     bool operator==(input::TYPE rhs) const  { return (intype == rhs); }
@@ -316,6 +324,8 @@ namespace ui
      : base<T>(UI_DOBJ), parent(p), child(c) {};
 
     ~dobj_item() {};
+
+    const char* get_name() { return dobj::names::get(parent); }
 
     dobj::TYPE get_dobj_parent() const     { return parent; }
     dobj::TYPE get_dobj_child() const      { return child; }

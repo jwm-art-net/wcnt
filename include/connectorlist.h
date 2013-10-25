@@ -29,6 +29,7 @@ public:
     connector* get_connector_by_input(const synthmod::base*, input::TYPE);
 
     connector* add_connector(connector* rd);
+    connector* add_connector_off(synthmod::base* sm, input::TYPE);
     connector* add_connector(synthmod::base* sm, input::TYPE,
                              const char* out_mod, output::TYPE);
     bool delete_connector(connector*);
@@ -44,7 +45,8 @@ public:
     //  duplicates connections into a new list for further processing
     */
     linkedlist*
-    duplicate_connections_for_module(const synthmod::base* from, synthmod::base* to);
+    duplicate_connections_for_module(const synthmod::base* from,
+                                           synthmod::base* to);
 
     void reconnect_output_module_by_name(const char*from, const char*to);
 

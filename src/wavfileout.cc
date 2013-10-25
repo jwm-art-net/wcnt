@@ -38,7 +38,7 @@ void wavfileout::register_ui()
     register_input(input::IN_BAR);
     register_param(param::START_BAR);
     register_param(param::END_BAR);
-    register_param(param::SNAPSHOT_MODE);
+    register_param(param::SNAPSHOT_MODE)->set_flags(ui::UI_OPTIONAL);
 }
 
 ui::moditem_list* wavfileout::get_ui_items()

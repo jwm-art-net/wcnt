@@ -102,8 +102,8 @@ private:
 
     // methods to read various parts of a module
     bool read_ui_moditems(synthmod::base*);
-    bool read_ui_modinput(synthmod::base*, ui::modinput*, ui::FLAGS);
-    bool read_ui_modparam(synthmod::base*, ui::modparam*, ui::FLAGS flags);
+    bool read_ui_modinput(synthmod::base*, input::TYPE);
+    bool read_ui_modparam(synthmod::base*, param::TYPE);
     bool read_ui_moddobj(synthmod::base*, dobj::TYPE, dobj::TYPE);
 
     bool read_ui_dobjitems(dobj::base*, const char* parent);

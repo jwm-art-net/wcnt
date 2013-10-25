@@ -20,7 +20,7 @@ void timer::register_ui()
 {
     register_dobj(dobj::LST_TIMINGS, dobj::SIN_TIME);
     register_param(param::TIME_IS_RELATIVE);
-    register_param(param::RECYCLE_MODE);
+    register_param(param::RECYCLE_MODE)->set_flags(ui::UI_OPTIONAL);
 }
 
 ui::moditem_list* timer::get_ui_items()

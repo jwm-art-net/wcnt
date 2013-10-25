@@ -3,6 +3,7 @@
 #include "../include/fxsparamlist.h"
 #include "../include/globals.h"
 #include "../include/listwork.h"
+#include "../include/connectorlist.h"
 
 #include <iostream>
 
@@ -10,17 +11,28 @@
 namespace ui
 {
 
+ #ifdef DEBUG
+ #define uimoderr(fmt, ... )                              \
+ {                                                       \
+    printf("%40s:%5d %-35s\n",                          \
+                    __FILE__, __LINE__, __FUNCTION__);  \
+    cfmt(moditem_list::err_msg, STRBUFLEN, fmt, __VA_ARGS__);   \
+ }
+ #else
+ #define uimoderr(fmt, ... ) \
+    cfmt(moditem_list::err_msg, STRBUFLEN, fmt, __VA_ARGS__)
+ #endif
+
+ char moditem_list::err_msg[STRBUFLEN] = "";
+
  moditem_list::moditem_list() :
  linkedlist(MULTIREF_OFF),
- skip_id(UI_DEFAULT), match_id(UI_DEFAULT)
+ skip_id(UI_DEFAULT), match_id(UI_DEFAULT), match_prev(0), choice(0), sm(0)
  {
+    moderror::err(err_msg);
  }
 
- moditem_list::moditem_list(DESTRUCTION d) :
- linkedlist(MULTIREF_OFF, d),
- skip_id(UI_DEFAULT), match_id(UI_DEFAULT)
- {
- }
+
  moditem_list::~moditem_list()
  {
     #ifdef DEBUG
@@ -165,38 +177,106 @@ namespace ui
  }
 
 
- moditem* moditem_list::match_begin(const char* str)
+ moditem* moditem_list::match_begin(synthmod::base* mod)
  {
-    if (!str)
-        return 0;
-
-    moditem* item = goto_first();
-
-    if (!item)
-        return 0;
-
+    sm = mod;
+    match_prev = 0;
     skip_id = match_id = UI_DEFAULT;
-    int result = item->is_match(str, skip_id, match_id);
+    return goto_first();
  }
 
- moditem* moditem_list::match_next(const char* str)
+ moditem* moditem_list::match_item(const char* str)
  {
     if (!str)
         return 0;
 
-    moditem* prev = sneak_current()->get_data();
-    moditem* next = goto_next();
+    llitem* li = sneak_current();
 
-    if (!next)
+    if (!li)
         return 0;
 
-    if ((prev->get_set_id() != next->get_sed_id())
-     || (prev->get_choice_id() != next->get_choice_id()))
-    {
-        skip_id = match_id = UI_DEFAULT;
-    }
+    moditem* item = li->get_data();
 
-    int result = next->is_match(str, skip_id, match_id);
+    do {
+        if (item->get_item_type() == UI_COMMENT) {
+            std::cout << "skipping comment '"
+                      << item->get_comment() << "'" << std::endl;
+            continue;
+        }
+
+        item->dump();
+        if (match_prev) {
+            if (match_prev->get_set_id() != item->get_set_id())
+            {
+                std::cout << "resetting skip/match id " << std::endl;
+                skip_id = match_id = UI_DEFAULT;
+            }
+        }
+
+        moditem* prev = match_prev;
+        match_prev = item;
+        FLAGS setid = item->get_set_id();
+        FLAGS choiceid = item->get_choice_id();
+
+        int ret = item->is_match(str, skip_id, match_id);
+
+        switch(ret) {
+          case ITEM_SKIPPED:
+            break;
+          case ITEM_MATCH:
+            if (setid != UI_DEFAULT)
+                match_id = setid;
+            else if (choiceid != UI_DEFAULT) {
+                std::cout << "setting choice..." << item->get_name()<<std::endl;
+                skip_id = UI_CHOICE_MASK;
+                match_id = choiceid;
+                choice = item;
+            }
+            else
+                choice = 0;
+            return item;
+          case ITEM_UNEXPECTED:
+            uimoderr("unexpected '%s', expected '%s'.", str, item->get_name());
+            return moderror::err();
+          case ITEM_SET_EXPECTED:
+            uimoderr("'%s' must be specified after '%s'.", item->get_name(),
+                                                           prev->get_name());
+            return moderror::err();
+          case ITEM_SET_UNEXPECTED:
+            uimoderr("'%s' should not be specified when '%s' was not.",
+                                         item->get_name(), prev->get_name());
+            return moderror::err();
+          case ITEM_CHOICE_EXPECTED:
+            uimoderr("'%s' must be specified after '%s'.", item->get_name(),
+                                                           prev->get_name());
+            return moderror::err();
+          case ITEM_CHOICE_UNEXPECTED:
+            uimoderr("'%s' should not be specified after '%s'.",
+                                         item->get_name(), choice->get_name());
+            return moderror::err();
+          default:
+            uimoderr("%s unhandled ui item match return code (%d)",
+                                            errors::stock::major, ret);
+            return moderror::err();
+            break;
+        }
+
+        //  item was skipped... 
+        if (setid != UI_DEFAULT)
+            skip_id = setid;
+
+        // if it is an input then we must create
+        //  a connector to ensure it is properly turned off...
+        if (item->get_item_type() == UI_INPUT) {
+            modinput* mi = static_cast<modinput*>(item);
+            wcnt::get_connectlist()
+                        ->add_connector_off(sm, mi->get_input_type());
+        }
+
+    } while((item = goto_next()) != 0);
+
+    std::cout << "no more items.." << std::endl;
+    return 0;
  }
 
 

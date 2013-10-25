@@ -15,20 +15,17 @@ t
         time seconds 1
     timings
     time_is_relative off
-    recycle_mode off
 t
 
-clock
-c
-    in_freq_mod1 off
+constant_freq
+cf
     freq 220
-    freq_mod1_size 1.0
-c
+cf
 
 wave
 s
-    in_phase_step   c out_phase_step
     type            sine
+    in_phase_step   cf out_phase_step
 s
 
 fader
@@ -48,14 +45,13 @@ m
 
 wavfile_out
 w
+    filename        simple.wav
+    data_format     float32
     in_left         m out_output
     in_right        m out_output
     in_bar          f out_index
-    filename        simple.wav
-    data_format     float32
     start_bar       0
     end_bar         1
-    snapshot_mode   off
 w
 
 wcnt_exit

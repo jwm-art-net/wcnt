@@ -4,9 +4,9 @@
 lfo_clock::lfo_clock(const char* uname) :
  synthmod::base(synthmod::LFOCLOCK, uname, SM_HAS_OUT_OUTPUT),
  out_phase_trig(OFF), out_phase_step(0.00), out_premod_phase_step(0.00),
- note_length_freq(0), hrtz_freq(0.00), in_phase_trig(NULL), 
- in_freq_mod1(NULL), in_freq_mod2(NULL), freq_mod1size(0.00),
- freq_mod2size(0.00), mod1size(0), mod2size(0), degs(360.00),
+ note_length_freq(0), hrtz_freq(0.00), in_phase_trig(NULL),
+ in_freq_mod1(NULL), in_freq_mod2(NULL), freq_mod1size(1.00),
+ freq_mod2size(1.00), mod1size(0), mod2size(0), degs(360.00),
  degsize1(0.00), degsize2(0.00)
 {
     register_output(output::OUT_PHASE_TRIG);
@@ -16,12 +16,15 @@ lfo_clock::lfo_clock(const char* uname) :
 
 void lfo_clock::register_ui()
 {
-    register_input(input::IN_PHASE_TRIG);
     register_param(param::FREQ);
-    register_input(input::IN_FREQ_MOD1);
-    register_param(param::FREQ_MOD1SIZE);
-    register_input(input::IN_FREQ_MOD2);
-    register_param(param::FREQ_MOD2SIZE);
+    register_input(input::IN_PHASE_TRIG);
+    register_input(input::IN_FREQ_MOD1) ->set_flags(ui::UI_OPTIONAL |
+                                                    ui::UI_SET1);
+    register_param(param::FREQ_MOD1SIZE)->set_flags(ui::UI_SET1);
+
+    register_input(input::IN_FREQ_MOD2) ->set_flags(ui::UI_OPTIONAL |
+                                                    ui::UI_SET2);
+    register_param(param::FREQ_MOD2SIZE)->set_flags(ui::UI_SET2);
 }
 
 ui::moditem_list* lfo_clock::get_ui_items()

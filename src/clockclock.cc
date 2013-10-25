@@ -17,8 +17,8 @@ clockclock::clockclock(const char* uname) :
 void clockclock::register_ui()
 {
     register_param(param::FREQ);
-    register_input(input::IN_FREQ_MOD1)->set_flags(ui::UI_OPTIONAL);
-    register_param(param::FREQ_MOD1SIZE)->set_flags(ui::UI_OPTIONAL);
+    register_input(input::IN_FREQ_MOD1)->set_flags(ui::UI_OPTIONAL | ui::UI_SET1);
+    register_param(param::FREQ_MOD1SIZE)->set_flags(ui::UI_SET1);
 }
 
 ui::moditem_list* clockclock::get_ui_items()
