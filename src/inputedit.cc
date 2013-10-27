@@ -17,11 +17,9 @@ inputedit::inputedit() :
 
 void inputedit::register_ui()
 {
-    ui::dobjitem* i = 0;
-    if ((i = register_param(param::STR_UNNAMED)))
-        i->add_comment("module_name");
-    if ((i = register_param(param::STR_LIST)))
-        i->add_comment("input_name output_module output_name (...)");
+    register_param(param::STR_UNNAMED)->add_descr("module_name");
+    register_param(param::STR_LIST)
+        ->add_descr("input_name output_module output_name (...)");
 }
 
 ui::dobjitem_list* inputedit::get_ui_items()

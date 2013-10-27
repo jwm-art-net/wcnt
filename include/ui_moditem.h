@@ -60,6 +60,8 @@ namespace ui
     FLAGS    match_id;
     moditem* match_prev;
     moditem* choice;
+    bool     chosen;
+    bool     choice_optional;
     synthmod::base* sm;
     static char err_msg[STRBUFLEN];
  };

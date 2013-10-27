@@ -41,21 +41,17 @@ s1
     wavfile             crappytv
     in_play_trig        lfoc out_phase_trig
     in_phase_step       n1 out_phase_step
-
-tart_pos 0
-
-//    in_start_pos_mod    w1 out_output
-//    fstart_pos_min       0
-//    start_pos_max       40000
-
-    fanti_clip_samples   150
+    in_start_pos_mod    w1 out_output
+    start_pos_min       0
+    start_pos_max       40000
+    anti_clip_samples   150
     anti_clip_each_end  on
     zero_search_range   0
 s1
 
 wavfile_out
 file
-    filename    optional_output.wav
+    filename    granulardrumloop_output.wav
     data_format pcm16
     in_left     s1 out_left
     in_right    s1 out_right

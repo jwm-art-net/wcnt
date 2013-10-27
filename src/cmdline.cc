@@ -403,7 +403,7 @@ void cmdline::module_help()
         switch(item->get_item_type()) {
           case ui::UI_COMMENT: {
             ui::modcomment* mc = static_cast<ui::modcomment*>(item);
-            const char* c = mc->get_comment();
+            const char* c = mc->get_descr();
             msg += "\n";
             if (c) {
                 msg += "  // ";
@@ -432,7 +432,7 @@ void cmdline::module_help()
                 s2 = iocat::names::get(ioc);
             msg += s2;
             if (wcnt::jwm.is_verbose()) {
-                const char* c = item->get_comment();
+                const char* c = item->get_descr();
                 const char* descr = (!c ? param::names::descr(pt) : c);
                 msg.append(spc, mxl2 - strlen(s2));
                 msg += " // ";
@@ -450,7 +450,7 @@ void cmdline::module_help()
             msg += outstr;
             msg.append(spc, mxl2 - strlen(outstr));
             if (wcnt::jwm.is_verbose()) {
-                const char* c = item->get_comment();
+                const char* c = item->get_descr();
                 const char* descr = (!c ? input::names::descr(it) : c);
                 msg += " // ";
                 msg += descr;
@@ -584,7 +584,7 @@ void cmdline::dobj_help_items(dobj::TYPE dt, int indent_level)
             else
                 msg += iocat::names::get(ioc);
             if (wcnt::jwm.is_verbose()) {
-                const char* c = item->get_comment();
+                const char* c = item->get_descr();
                 const char* descr = (!c ? param::names::descr(pt) : c);
                 msg += " // ";
                 msg += descr;
@@ -672,7 +672,7 @@ void cmdline::dobj_help()
         switch(item->get_item_type()) {
           case ui::UI_COMMENT: {
             ui::dobjcomment* dc = static_cast<ui::dobjcomment*>(item);
-            const char* c = dc->get_comment();
+            const char* c = dc->get_descr();
             msg += "\n";
             if (c) {
                 msg += "  // ";
@@ -699,7 +699,7 @@ void cmdline::dobj_help()
             else
                 msg += iocat::names::get(ioc);
             if (wcnt::jwm.is_verbose()) {
-                const char* c = item->get_comment();
+                const char* c = item->get_descr();
                 const char* descr = (!c ? param::names::descr(pt) : c);
                 msg += " // ";
                 msg += descr;

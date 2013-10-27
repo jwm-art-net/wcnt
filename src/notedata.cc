@@ -20,9 +20,8 @@ note_data::note_data() :
 
 void note_data::register_ui()
 {
-    ui::dobjitem* i = 0;
-    if ((i = register_param(param::NAME)))
-        i->add_comment("Note name, for example, C#0 for middle C sharp.");
+    register_param(param::NAME)
+            ->add_descr("Note name, for example, C#0 for middle C sharp.");
     register_param(param::NOTE_POS);
     register_param(param::NOTE_LEN);
     register_param(param::NOTE_VEL);

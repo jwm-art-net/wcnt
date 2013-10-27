@@ -22,12 +22,10 @@ seq_echo::seq_echo(const char* uname) :
 
 void seq_echo::register_ui()
 {
-    ui::moditem* i = 0;
-    if ((i = register_param(param::COUNT)))
-        i->add_comment("Number of echos to process.");
+    register_param(param::COUNT)->add_descr("Number of echos to process.");
     register_param(param::DELAY_TIME);
-    if ((i = register_input(input::IN_RESET_TRIG)))
-        i->add_comment("Trigger input to kill echos.");
+    register_input(input::IN_RESET_TRIG)
+        ->add_descr("Trigger input to kill echos.");
     register_param(param::SEND_INPUT_OUT);
     register_comment("Inputs to echo:");
     register_input(input::IN_NOTE_ON_TRIG);

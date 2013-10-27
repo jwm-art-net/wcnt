@@ -16,11 +16,9 @@ paramedit::paramedit() :
 
 void paramedit::register_ui()
 {
-    ui::dobjitem* i = 0;
-    if ((i = register_param(param::STR_UNNAMED)))
-        i->add_comment("module_name");
-    if ((i = register_param(param::STR_LIST)))
-        i->add_comment("parameter_name parameter_value (...)");
+    register_param(param::STR_UNNAMED)->add_descr("module_name");
+    register_param(param::STR_LIST)
+            ->add_descr("parameter_name parameter_value (...)");
 }
 
 ui::dobjitem_list* paramedit::get_ui_items()

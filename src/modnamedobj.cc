@@ -8,9 +8,7 @@ modnamedobj::modnamedobj() :
 
 void modnamedobj::register_ui()
 {
-    ui::dobjitem* i = register_param(param::NAME);
-    if (i)
-        i->add_comment("Name of module.");
+    register_param(param::NAME)->add_descr("Name of module.");
 }
 
 ui::dobjitem_list* modnamedobj::get_ui_items()

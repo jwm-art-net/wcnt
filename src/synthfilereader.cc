@@ -560,7 +560,7 @@ bool synthfilereader::read_ui_moditems(synthmod::base* sm)
         switch(item->get_item_type()) {
           case ui::UI_ERROR:
             std::cout << "***** ERROR ERROR ERROR *****" << std::endl;
-            wc_err("%s", item->get_comment());
+            wc_err("%s", item->get_descr());
             return false;
           case ui::UI_COMMENT:
             break;

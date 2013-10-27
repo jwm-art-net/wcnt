@@ -8,9 +8,7 @@ dobjnamedobj::dobjnamedobj() :
 
 void dobjnamedobj::register_ui()
 {
-    ui::dobjitem* i = register_param(param::NAME);
-    if (i)
-        i->add_comment("Name of data object.");
+    register_param(param::NAME)->add_descr("Name of data object.");
 }
 
 ui::dobjitem_list* dobjnamedobj::get_ui_items()

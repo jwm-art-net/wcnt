@@ -9,9 +9,9 @@
 #include "linkedlist.h"
 
 // a mechanism for registering the UI components of a module or data object.
-// comments can be added to items to supply further information to end user.
-// whereas the comment_item is used as an item itself such that it might
-// be used for example as as a UI sub-heading.
+// descriptions can be added to items to supplant a predefined description
+// (ie where a type such as an output is so generic the description is
+// meaningless).
 
 
 namespace ui
@@ -57,7 +57,7 @@ namespace ui
  {
   public:
     base(TYPE it);
-    base(TYPE it, const char* comment_literal);
+    base(TYPE it, const char* descr_literal);
 
     virtual ~base() {};
     virtual bool validate(T, errors::TYPE) = 0;
@@ -67,8 +67,8 @@ namespace ui
 
     virtual const char* get_name() { return 0; }
 
-    void add_comment(const char* literal)   { item_comment = literal; }
-    virtual const char* get_comment()       { return item_comment; }
+    void add_descr(const char* literal)   { descr = literal; }
+    virtual const char* get_descr()       { return descr; }
 
     int is_match(const char* str, FLAGS skip_id, FLAGS match_id);
 
@@ -92,20 +92,20 @@ namespace ui
   private:
     int         flags;
     TYPE        itemtype;
-    const char* item_comment;
+    const char* descr;
     base() {};
     base(const base&) {};
  };
 
  template <class T>
  base<T>::base(TYPE it)
-  : flags(0), itemtype(it), item_comment(0)
+  : flags(0), itemtype(it), descr(0)
  {
  }
 
  template <class T>
- base<T>::base(TYPE it, const char* comment)
-  : flags(0), itemtype(it), item_comment(comment)
+ base<T>::base(TYPE it, const char* str)
+  : flags(0), itemtype(it), descr(str)
  {
  }
 
@@ -208,7 +208,7 @@ namespace ui
 
     bool validate(T, errors::TYPE)  { return false; }
     bool name_match(const char*)    { return false; }
-    const char* get_comment()       { return err_msg; }
+    const char* get_descr()         { return err_msg; }
 
   private:
     error_item() : base<T>(UI_ERROR) {};
@@ -230,7 +230,7 @@ namespace ui
 
     #ifdef DEBUG
     void dump() {
-        std::cout << "comment: " << base<T>::get_comment() << std::endl;
+        std::cout << "comment: " << base<T>::get_descr() << std::endl;
     }
     #endif
  };
