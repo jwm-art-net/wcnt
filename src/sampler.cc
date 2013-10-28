@@ -19,19 +19,19 @@ sampler::sampler(const char* uname) :
  min_start_pos(0), max_start_pos(0),
  loop_begin(0), loop_end(1), loop_is_offset(OFF), loop_mode(LOOP_OFF),
  loop_bi_offset(0),
- anti_clip_size(0), ac_each_end(OFF), search_range(0),
+ xfade_samples(0), xfade_each_end(OFF), search_range(0),
  phase_step_amount(1.0), root_phase_step(1.0),
  playdir(PLAY_FWD), acplaydir(PLAY_FWD), loop_yet(false),
- mono_buffer(0), ac_m_buf(0), st_buffer(0), ac_st_buf(0),
+ mono_buffer(0), xf_m_buf(0), st_buffer(0), xf_st_buf(0),
  buffer_start_pos(0), buff_pos(0),
  wavstart(1),  wavlength(0), wavstbi(0), wavlenbi(0),
- cur_pos(0), ac_cpstep(0), oldcpstep(0), cp_step(0), cp_ratio(0),
+ cur_pos(0), xf_cpstep(0), oldcpstep(0), cp_step(0), cp_ratio(0),
  sr_ratio(1), bp_midpoint(0), start_pos(0), startpos_span(0),
  loopstart(0), loopfinish(0), loop_fits_in_buffer(0),
  loop_loaded(0),
- do_ac(OFF), ac_cur_pos(0), ac_midpoint(0), 
- ac_buf_pos(0), ac_buf_start_pos(0), ac_step(0), ac_size(0),
- ac_out_left(0), ac_out_right(0),
+ do_ac(OFF), xf_cur_pos(0), xf_midpoint(0), 
+ xf_buf_pos(0), xf_buf_start_pos(0), xf_step(0), xf_size(0),
+ xf_out_left(0), xf_out_right(0),
  ch(WAV_CH_UNKNOWN)
 {
     register_output(output::OUT_LEFT);
@@ -71,9 +71,9 @@ void sampler::register_ui()
     register_param(param::LOOP_BI_OFFSET)->set_flags(ui::UI_SET2);
 
     register_comment("Optional xfades:");
-    register_param(param::ANTI_CLIP)
+    register_param(param::XFADE_SAMPLES)
                           ->set_flags(ui::UI_OPTIONAL | ui::UI_SET3);
-    register_param(param::AC_EACH_END)      ->set_flags(ui::UI_SET3);
+    register_param(param::XFADE_EACH_END)      ->set_flags(ui::UI_SET3);
     register_param(param::ZERO_SEARCH_RANGE)->set_flags(ui::UI_SET3);
 }
 
@@ -89,10 +89,10 @@ sampler::~sampler()
         delete [] mono_buffer;
     if (st_buffer)
         delete [] st_buffer;
-    if (ac_m_buf)
-        delete [] ac_m_buf;
-    if (ac_st_buf)
-        delete [] ac_st_buf;
+    if (xf_m_buf)
+        delete [] xf_m_buf;
+    if (xf_st_buf)
+        delete [] xf_st_buf;
 }
 
 const void* sampler::get_out(output::TYPE ot) const
@@ -183,11 +183,11 @@ bool sampler::set_param(param::TYPE pt, const void* data)
     case param::LOOP_BI_OFFSET:
         loop_bi_offset = *(wcint_t*)data;
         return true;
-    case param::ANTI_CLIP:
-        anti_clip_size = *(wcint_t*)data;
+    case param::XFADE_SAMPLES:
+        xfade_samples = *(wcint_t*)data;
         return true;
-    case param::AC_EACH_END:
-        ac_each_end = *(STATUS*)data;
+    case param::XFADE_EACH_END:
+        xfade_each_end = *(STATUS*)data;
         return true;
     case param::ZERO_SEARCH_RANGE:
         search_range = *(wcint_t*)data;
@@ -216,8 +216,8 @@ const void* sampler::get_param(param::TYPE pt) const
         case param::LOOP_MODE:         return &loop_mode;
         case param::LOOP_IS_OFFSET:    return &loop_is_offset;
         case param::LOOP_BI_OFFSET:    return &loop_bi_offset;
-        case param::ANTI_CLIP:         return &anti_clip_size;
-        case param::AC_EACH_END:       return &ac_each_end;
+        case param::XFADE_SAMPLES:     return &xfade_samples;
+        case param::XFADE_EACH_END:    return &xfade_each_end;
         case param::ZERO_SEARCH_RANGE: return &search_range;
         case param::PHASE_STEP_AMOUNT: return &phase_step_amount;
         default: return 0;
@@ -277,12 +277,12 @@ errors::TYPE sampler::validate()
         invalidate();
         return errors::ERROR;
     }
-    if (anti_clip_size < 0
-        || anti_clip_size > wcnt::max_anti_clip_samples)
+    if (xfade_samples < 0
+        || xfade_samples > wcnt::max_xfade_samples)
     {
         sm_err("%s out of range 0 ~ %d.", 
-                param::names::get(param::ANTI_CLIP),
-                wcnt::max_anti_clip_samples);
+                param::names::get(param::XFADE_SAMPLES),
+                wcnt::max_xfade_samples);
         invalidate();
         return errors::ERROR;
     }
@@ -313,13 +313,13 @@ void sampler::init()
             }
             for (int i = 0; i < wcnt::wav_buffer_size; i++)
                 mono_buffer[i] = 0;
-            ac_m_buf = new double[wcnt::max_anti_clip_size];
-            if (!ac_m_buf) {
+            xf_m_buf = new double[wcnt::max_xfade_samples];
+            if (!xf_m_buf) {
                 invalidate();
                 return;
             }
-            for (int i = 0; i < wcnt::max_anti_clip_size; i++)
-                ac_m_buf[i] = 0;
+            for (int i = 0; i < wcnt::max_xfade_samples; i++)
+                xf_m_buf[i] = 0;
         }
         else {
             st_buffer = new st_data[wcnt::wav_buffer_size];
@@ -332,14 +332,14 @@ void sampler::init()
                 st_buffer[i].left = 0;
                 st_buffer[i].right = 0;
             }
-            ac_st_buf = new st_data[wcnt::max_anti_clip_size];
-            if (!ac_st_buf) {
+            xf_st_buf = new st_data[wcnt::max_xfade_samples];
+            if (!xf_st_buf) {
                 invalidate();
                 return;
             }
-            for (int i = 0; i < wcnt::max_anti_clip_size; i++) {
-                ac_st_buf[i].left = 0;
-                ac_st_buf[i].right = 0;
+            for (int i = 0; i < wcnt::max_xfade_samples; i++) {
+                xf_st_buf[i].left = 0;
+                xf_st_buf[i].right = 0;
             }
         }
     } 
@@ -350,10 +350,10 @@ void sampler::init()
     root_phase_step = wavfile->get_root_phase_step();
  // do a whole load of checks on the users input.
     int halfsr = search_range / 2;
-    if (ac_each_end == ON) {
-        wavstart = zero_search(anti_clip_size + halfsr, search_range);
+    if (xfade_each_end == ON) {
+        wavstart = zero_search(xfade_samples + halfsr, search_range);
         wavlength
-         = zero_search(wavlength-anti_clip_size-halfsr,search_range);
+         = zero_search(wavlength-xfade_samples-halfsr,search_range);
     } else {
         wavstart = zero_search(halfsr, search_range);
         wavlength = zero_search(wavlength - halfsr, search_range);
@@ -362,16 +362,16 @@ void sampler::init()
     if (search_range > 0 && bisr < 2) bisr = 2;
     wavstbi = zero_search(wavstart + loop_bi_offset, bisr);
     wavlenbi = zero_search(wavlength - loop_bi_offset, bisr);
-    if (min_start_pos - anti_clip_size < 0)
-        min_start_pos += anti_clip_size;
+    if (min_start_pos - xfade_samples < 0)
+        min_start_pos += xfade_samples;
     if (max_start_pos > wavlength)  max_start_pos = wavlength;
     startpos_span = max_start_pos - min_start_pos;
     start_pos = 4294967295ul;
     if (loop_mode != LOOP_OFF) {
-        if (anti_clip_size > 0) {
+        if (xfade_samples > 0) {
             if (loop_is_offset == OFF) {
-                if (loop_begin < wavstart) loop_begin += anti_clip_size;
-                if (loop_end > wavlength) loop_end -= anti_clip_size;
+                if (loop_begin < wavstart) loop_begin += xfade_samples;
+                if (loop_end > wavlength) loop_end -= xfade_samples;
             }
         }
         if (loop_is_offset == OFF) {
@@ -384,10 +384,10 @@ void sampler::init()
             loop_fits_in_buffer = 1;
         else loop_fits_in_buffer = 0;
         loop_loaded = 0;
-        if (loopsize != 0 && loopsize < anti_clip_size)
-            anti_clip_size=(wcint_t)(loopsize / 2.1);
+        if (loopsize != 0 && loopsize < xfade_samples)
+            xfade_samples=(wcint_t)(loopsize / 2.1);
     }
-    if (anti_clip_size > 0)	ac_step = 1.00 / (double)anti_clip_size;
+    if (xfade_samples > 0)	xf_step = 1.00 / (double)xfade_samples;
     do_ac = OFF;
 }
 
@@ -490,20 +490,20 @@ void sampler::run()
         }
         bp_midpoint = (double)((cur_pos - buffer_start_pos) - buff_pos);
         if (do_ac == ON) {
-            //ac_cpstep = oldcpstep * (1 - ac_size) + cp_step * ac_size;
-            if (ac_size > 1) do_ac = OFF;
-            ac_midpoint = (double)((ac_cur_pos - ac_buf_start_pos)
-                                                        - ac_buf_pos);
+            //xf_cpstep = oldcpstep * (1 - xf_size) + cp_step * xf_size;
+            if (xf_size > 1) do_ac = OFF;
+            xf_midpoint = (double)((xf_cur_pos - xf_buf_start_pos)
+                                                        - xf_buf_pos);
             #ifdef CRAZY_SAMPLER
-            if ((ac_buf_pos > wcnt::max_anti_clip_size - 1
-              || ac_buf_pos < 0) && do_ac == ON)
+            if ((xf_buf_pos > wcnt::max_xfade_samples - 1
+              || xf_buf_pos < 0) && do_ac == ON)
             {
                 std::cout << "\n" << get_username() << "::run ";
-                std::cout << "anti_clipping out of bounds of AC buffer ";
-                std::cout << ac_buf_pos;
+                std::cout << "xfade out of bounds of xfade buffer ";
+                std::cout << xf_buf_pos;
                 std::cout << "\n(samp_t)-1 = " << (samp_t)-1;
-                std::cout << "\n(samp_t)ac_buf_pos = ";
-                std::cout << (samp_t)ac_buf_pos;
+                std::cout << "\n(samp_t)xf_buf_pos = ";
+                std::cout << (samp_t)xf_buf_pos;
                 std::cout << "\nmodule responsible " << get_username();
                 std::cout << "\nPlease report this to james@jwm-art.net";
                 std::cout << " specifying";
@@ -528,10 +528,10 @@ void sampler::run()
             out_left = calc_midpoint(mono_buffer[buff_pos],
                             mono_buffer[buff_pos + 1], bp_midpoint);
             if (do_ac == ON)  {
-                ac_out_left = calc_midpoint(ac_m_buf[ac_buf_pos],
-                                            ac_m_buf[ac_buf_pos + 1],
-                                            ac_midpoint);
-                out_left = out_left * ac_size + ac_out_left * (1 - ac_size);
+                xf_out_left = calc_midpoint(xf_m_buf[xf_buf_pos],
+                                            xf_m_buf[xf_buf_pos + 1],
+                                            xf_midpoint);
+                out_left = out_left * xf_size + xf_out_left * (1 - xf_size);
             }
             out_right = out_left;
         }
@@ -541,29 +541,29 @@ void sampler::run()
             out_right = calc_midpoint(st_buffer[buff_pos].right,
              st_buffer[buff_pos + 1].right, bp_midpoint);
             if (do_ac == ON) {
-                ac_out_left = calc_midpoint(ac_st_buf[ac_buf_pos].left,
-                                            ac_st_buf[ac_buf_pos + 1].left,
-                                            ac_midpoint);
-                ac_out_right= calc_midpoint(ac_st_buf[ac_buf_pos].right,
-                                            ac_st_buf[ac_buf_pos + 1].right,
-                                            ac_midpoint);
-                out_left = out_left * ac_size + ac_out_left * (1 - ac_size);
-                out_right= out_right * ac_size + ac_out_right * (1-ac_size);
+                xf_out_left = calc_midpoint(xf_st_buf[xf_buf_pos].left,
+                                            xf_st_buf[xf_buf_pos + 1].left,
+                                            xf_midpoint);
+                xf_out_right= calc_midpoint(xf_st_buf[xf_buf_pos].right,
+                                            xf_st_buf[xf_buf_pos + 1].right,
+                                            xf_midpoint);
+                out_left = out_left * xf_size + xf_out_left * (1 - xf_size);
+                out_right= out_right * xf_size + xf_out_right * (1-xf_size);
             }
         } // endif ch == MONO/STEREO
         if (do_ac == ON) {
             if (acplaydir == PLAY_FWD) {
-                ac_cur_pos += ac_cpstep;
-                double ac_buf_posf = ac_cur_pos - ac_buf_start_pos;
-                ac_buf_pos = (int)ac_buf_posf;
-                ac_size = ac_buf_posf / anti_clip_size;
+                xf_cur_pos += xf_cpstep;
+                double xf_buf_posf = xf_cur_pos - xf_buf_start_pos;
+                xf_buf_pos = (int)xf_buf_posf;
+                xf_size = xf_buf_posf / xfade_samples;
             }
             else {
-                ac_cur_pos -= ac_cpstep;
-                double ac_buf_posf = ac_cur_pos - ac_buf_start_pos;
-                ac_buf_pos = (int)ac_buf_posf;
-                ac_size = (double)(anti_clip_size - ac_buf_posf)
-                                            / anti_clip_size;
+                xf_cur_pos -= xf_cpstep;
+                double xf_buf_posf = xf_cur_pos - xf_buf_start_pos;
+                xf_buf_pos = (int)xf_buf_posf;
+                xf_size = (double)(xfade_samples - xf_buf_posf)
+                                            / xfade_samples;
             }
         }
         if (playdir == PLAY_FWD) {
@@ -581,9 +581,9 @@ void sampler::trigger_playback()
     #ifdef CRAZY_SAMPLER
     std::cout << "\n" << get_username() << "::trigger_playback()";
     #endif
-    if (play_state == ON && anti_clip_size > 0) {
-        if (playdir == PLAY_FWD) anti_clip_fwd();
-        else anti_clip_rev();
+    if (play_state == ON && xfade_samples > 0) {
+        if (playdir == PLAY_FWD) xfade_fwd();
+        else xfade_rev();
     }
     playdir = play_dir;
     double spm = *in_start_pos_mod; // make input positive only
@@ -709,8 +709,8 @@ void sampler::pos_wavlen()
         play_state = OFF;
         return;
     }
-    if (ac_each_end == ON && anti_clip_size > 0)
-        anti_clip_fwd();
+    if (xfade_each_end == ON && xfade_samples > 0)
+        xfade_fwd();
     loop_yet = 1;
     PLAY_DIR jumpdir;
     if (jump_mode == JUMP_PLAY_DIR)
@@ -772,8 +772,8 @@ void sampler::pos_loopend()
     std::cout << "\n" << get_username() << "::pos_loopend";
     #endif
     out_loop_trig = ON;
-    if (anti_clip_size > 0)
-        anti_clip_fwd();
+    if (xfade_samples > 0)
+        xfade_fwd();
     if (loop_mode == LOOP_FWD) {
         cur_pos = loopstart;
         #ifdef CRAZY_SAMPLER
@@ -833,8 +833,8 @@ void sampler::pos_wavstart()
         play_state = OFF;
         return;
     }
-    if (ac_each_end == ON && anti_clip_size > 0)
-        anti_clip_rev();
+    if (xfade_each_end == ON && xfade_samples > 0)
+        xfade_rev();
     loop_yet = 1;
     PLAY_DIR jumpdir;
     if (jump_mode == JUMP_PLAY_DIR)
@@ -895,8 +895,8 @@ void sampler::pos_loopbegin()
     std::cout << "\n" << get_username() << "::pos_loopbegin";
     #endif
     out_loop_trig = ON;
-    if (anti_clip_size > 0)
-        anti_clip_rev();
+    if (xfade_samples > 0)
+        xfade_rev();
     if (loop_mode == LOOP_REV) {
         cur_pos = loopfinish;
         #ifdef CRAZY_SAMPLER
@@ -945,269 +945,269 @@ void sampler::pos_loopbegin()
     fill_buffer(buffer_start_pos);
 }
 
-void sampler::anti_clip_fwd()
+void sampler::xfade_fwd()
 {
-    double* ac_m_tmp = 0;
-    st_data* ac_st_tmp = 0;
-    if (do_ac == ON) { // anti clip already active
+    double* xf_m_tmp = 0;
+    st_data* xf_st_tmp = 0;
+    if (do_ac == ON) { // xfade already active
         if (ch == WAV_CH_MONO) {
-            ac_m_tmp = new double[wcnt::max_anti_clip_size];
-            ac_copy_fwd_mono(ac_m_tmp);
+            xf_m_tmp = new double[wcnt::max_xfade_samples];
+            xf_copy_fwd_mono(xf_m_tmp);
         } else {
-            ac_st_tmp = new st_data[wcnt::max_anti_clip_size];
-            ac_copy_fwd_stereo(ac_st_tmp);
+            xf_st_tmp = new st_data[wcnt::max_xfade_samples];
+            xf_copy_fwd_stereo(xf_st_tmp);
         }
     } // could use buff_pos, but recalculating gives better result:
     int abp = (samp_t)(cur_pos - buffer_start_pos);
-    if (abp + anti_clip_size > wcnt::wav_buffer_size - 1) {
+    if (abp + xfade_samples > wcnt::wav_buffer_size - 1) {
         if (ch == WAV_CH_MONO)
             wavfile->read_wav_chunk(
-             ac_m_buf, (samp_t)cur_pos, anti_clip_size + 1);
+             xf_m_buf, (samp_t)cur_pos, xfade_samples + 1);
         else
             wavfile->read_wav_chunk(
-             ac_st_buf,(samp_t) cur_pos, anti_clip_size + 1);
+             xf_st_buf,(samp_t) cur_pos, xfade_samples + 1);
     }
     else {   // get from wav buffer
         if (ch == WAV_CH_MONO) {
-            for (int i = 0; i <= anti_clip_size; i++)
-                ac_m_buf[i] = mono_buffer[abp + i];
+            for (int i = 0; i <= xfade_samples; i++)
+                xf_m_buf[i] = mono_buffer[abp + i];
         }
         else {
-            for (int i = 0; i <= anti_clip_size; i++) {
-                ac_st_buf[i].left = st_buffer[abp + i].left;
-                ac_st_buf[i].right = st_buffer[abp + i].right;
+            for (int i = 0; i <= xfade_samples; i++) {
+                xf_st_buf[i].left = st_buffer[abp + i].left;
+                xf_st_buf[i].right = st_buffer[abp + i].right;
             }
         }
     }
     if (do_ac == ON) { // now mix with new
         if (ch == WAV_CH_MONO) {
-            ac_mix_fwd_mono(ac_m_tmp);
-            delete [] ac_m_tmp;
+            xf_mix_fwd_mono(xf_m_tmp);
+            delete [] xf_m_tmp;
         } else {
-            ac_mix_fwd_stereo(ac_st_tmp);
-            delete [] ac_st_tmp;
+            xf_mix_fwd_stereo(xf_st_tmp);
+            delete [] xf_st_tmp;
         }
     }
     acplaydir = PLAY_FWD;
-    ac_cur_pos = cur_pos;
-    ac_buf_pos = 0;
-    ac_buf_start_pos = (samp_t)cur_pos;
-    ac_out_left = ac_out_right = 0;
-    ac_size = 0;
+    xf_cur_pos = cur_pos;
+    xf_buf_pos = 0;
+    xf_buf_start_pos = (samp_t)cur_pos;
+    xf_out_left = xf_out_right = 0;
+    xf_size = 0;
     do_ac = ON;
-    ac_cpstep = oldcpstep;
+    xf_cpstep = oldcpstep;
 }
 
-void sampler::anti_clip_rev()
+void sampler::xfade_rev()
 {
-    double* ac_m_tmp = 0;
-    st_data* ac_st_tmp = 0;
-    if (do_ac == ON) { // anti clip already active
+    double* xf_m_tmp = 0;
+    st_data* xf_st_tmp = 0;
+    if (do_ac == ON) { // xfade  already active
         if (ch == WAV_CH_MONO) {
-            ac_m_tmp = new double[wcnt::max_anti_clip_size];
-            ac_copy_rev_mono(ac_m_tmp);
+            xf_m_tmp = new double[wcnt::max_xfade_samples];
+            xf_copy_rev_mono(xf_m_tmp);
         } else {
-            ac_st_tmp = new st_data[wcnt::max_anti_clip_size];
-            ac_copy_rev_stereo(ac_st_tmp);
+            xf_st_tmp = new st_data[wcnt::max_xfade_samples];
+            xf_copy_rev_stereo(xf_st_tmp);
         }
     }
-    if (cur_pos - (anti_clip_size - 1) < 0) ac_buf_start_pos = 0;
-    else ac_buf_start_pos=(samp_t)(cur_pos - (anti_clip_size - 1));
-    ac_cur_pos = cur_pos;
-    int acbp = (int)(cur_pos - buffer_start_pos) - (anti_clip_size - 1);
+    if (cur_pos - (xfade_samples - 1) < 0) xf_buf_start_pos = 0;
+    else xf_buf_start_pos=(samp_t)(cur_pos - (xfade_samples - 1));
+    xf_cur_pos = cur_pos;
+    int acbp = (int)(cur_pos - buffer_start_pos) - (xfade_samples - 1);
     if (acbp <= 0) {
         if (ch == WAV_CH_MONO)
-            wavfile->read_wav_chunk(ac_m_buf,
-                                    ac_buf_start_pos, anti_clip_size + 1);
+            wavfile->read_wav_chunk(xf_m_buf,
+                                    xf_buf_start_pos, xfade_samples + 1);
         else
-            wavfile->read_wav_chunk(ac_st_buf,
-                                    ac_buf_start_pos, anti_clip_size + 1);
+            wavfile->read_wav_chunk(xf_st_buf,
+                                    xf_buf_start_pos, xfade_samples + 1);
     }
     else {
         if (ch == WAV_CH_MONO)
-            for (int i = 0; i <= anti_clip_size; i++)
-                ac_m_buf[i] = mono_buffer[acbp + i];
+            for (int i = 0; i <= xfade_samples; i++)
+                xf_m_buf[i] = mono_buffer[acbp + i];
         else
-            for (int i = 0; i <= anti_clip_size; i++) {
-                ac_st_buf[i].left = st_buffer[acbp + i].left;
-                ac_st_buf[i].right = st_buffer[acbp + i].right;
+            for (int i = 0; i <= xfade_samples; i++) {
+                xf_st_buf[i].left = st_buffer[acbp + i].left;
+                xf_st_buf[i].right = st_buffer[acbp + i].right;
             }
     }
     if (do_ac == ON) { // now mix with new
         if (ch == WAV_CH_MONO) {
-            ac_mix_rev_mono(ac_m_tmp);
-            delete [] ac_m_tmp;
+            xf_mix_rev_mono(xf_m_tmp);
+            delete [] xf_m_tmp;
         } else {
-            ac_mix_rev_stereo(ac_st_tmp);
-            delete [] ac_st_tmp;
+            xf_mix_rev_stereo(xf_st_tmp);
+            delete [] xf_st_tmp;
         }
     }
     acplaydir = PLAY_REV;
-    ac_out_left = ac_out_right = 0;
-    ac_step = 1.00 / (double)anti_clip_size;
-    ac_size = 0;
-    ac_buf_pos = (int)(ac_cur_pos - ac_buf_start_pos);
+    xf_out_left = xf_out_right = 0;
+    xf_step = 1.00 / (double)xfade_samples;
+    xf_size = 0;
+    xf_buf_pos = (int)(xf_cur_pos - xf_buf_start_pos);
     do_ac = ON;
-    ac_cpstep = oldcpstep;
+    xf_cpstep = oldcpstep;
 }
 
-// ac_copy... methods are used when anticlip is activated while already
-// active, there are four of them.  ac_copy_fwd... is called by
-// anti_clip_fwd
-// while ac_copy_rev... is called by anti_clip_rev, the relevant mono or
+// xf_copy... methods are used when xfade is activated while already
+// active, there are four of them.  xf_copy_fwd... is called by
+// xfade_fwd
+// while xf_copy_rev... is called by xfade_rev, the relevant mono or
 // stereo versions are called dependant on the wavfile being read.
-void sampler::ac_copy_fwd_mono(double* ac_m_tmp)
+void sampler::xf_copy_fwd_mono(double* xf_m_tmp)
 {
-    double tmp_acsz = ac_size;// <- preserve for mix
+    double tmp_acsz = xf_size;// <- preserve for mix
     if (acplaydir == PLAY_FWD) {
-        for (int i = 0; i <= anti_clip_size; i++) {
-            if (ac_buf_pos + i <= anti_clip_size && tmp_acsz <= 1) {
-                ac_m_tmp[i] = ac_m_buf[ac_buf_pos + i] * (1 - tmp_acsz);
-                tmp_acsz += ac_step;
+        for (int i = 0; i <= xfade_samples; i++) {
+            if (xf_buf_pos + i <= xfade_samples && tmp_acsz <= 1) {
+                xf_m_tmp[i] = xf_m_buf[xf_buf_pos + i] * (1 - tmp_acsz);
+                tmp_acsz += xf_step;
             }
-            else ac_m_tmp[i] = 0;
+            else xf_m_tmp[i] = 0;
         }
     } else { // acplaydir == PLAY_REV
-        for (int i = 0; i <= anti_clip_size; i++) {
-            if (ac_buf_pos - i >= 0 && tmp_acsz <= 1.0) {
-                ac_m_tmp[i] = ac_m_buf[ac_buf_pos - i] * (1 - tmp_acsz);
-                tmp_acsz += ac_step;
+        for (int i = 0; i <= xfade_samples; i++) {
+            if (xf_buf_pos - i >= 0 && tmp_acsz <= 1.0) {
+                xf_m_tmp[i] = xf_m_buf[xf_buf_pos - i] * (1 - tmp_acsz);
+                tmp_acsz += xf_step;
             }
-            else ac_m_tmp[i] = 0;
+            else xf_m_tmp[i] = 0;
         }
     }
 }
 
-void sampler::ac_copy_fwd_stereo(st_data* ac_st_tmp)
+void sampler::xf_copy_fwd_stereo(st_data* xf_st_tmp)
 {
-    double tmp_acsz = ac_size;// <- preserve for mix
+    double tmp_acsz = xf_size;// <- preserve for mix
     if (acplaydir == PLAY_FWD) {
-        for (int i = 0; i <= anti_clip_size; i++) {
-            if (ac_buf_pos + i <= anti_clip_size && tmp_acsz <= 1) {
-                ac_st_tmp[i].left = ac_st_buf[ac_buf_pos + i].left *
+        for (int i = 0; i <= xfade_samples; i++) {
+            if (xf_buf_pos + i <= xfade_samples && tmp_acsz <= 1) {
+                xf_st_tmp[i].left = xf_st_buf[xf_buf_pos + i].left *
                                     (1 - tmp_acsz);
-                ac_st_tmp[i].right= ac_st_buf[ac_buf_pos + i].right *
+                xf_st_tmp[i].right= xf_st_buf[xf_buf_pos + i].right *
                                     (1 - tmp_acsz);
-                tmp_acsz += ac_step;
+                tmp_acsz += xf_step;
             } else {
-                ac_st_tmp[i].left = 0;
-                ac_st_tmp[i].right = 0;
+                xf_st_tmp[i].left = 0;
+                xf_st_tmp[i].right = 0;
             }
         }
     } else { // acplaydir == PLAY_REV
-        for (int i = 0; i <= anti_clip_size; i++) {
-            if (ac_buf_pos - i >= 0 && tmp_acsz <= 1) {
-                ac_st_tmp[i].left = ac_st_buf[ac_buf_pos - i].left *
+        for (int i = 0; i <= xfade_samples; i++) {
+            if (xf_buf_pos - i >= 0 && tmp_acsz <= 1) {
+                xf_st_tmp[i].left = xf_st_buf[xf_buf_pos - i].left *
                                     (1 - tmp_acsz);
-                ac_st_tmp[i].right =ac_st_buf[ac_buf_pos - i].right *
+                xf_st_tmp[i].right =xf_st_buf[xf_buf_pos - i].right *
                                     (1 - tmp_acsz);
-                tmp_acsz += ac_step;
+                tmp_acsz += xf_step;
             } else {
-                ac_st_tmp[i].left = 0;
-                ac_st_tmp[i].right = 0;
+                xf_st_tmp[i].left = 0;
+                xf_st_tmp[i].right = 0;
             }
         }
     }
 }
 
-void sampler::ac_mix_fwd_mono(double* ac_m_tmp)
+void sampler::xf_mix_fwd_mono(double* xf_m_tmp)
 {
     int i = 0;
-    while (ac_size <= 1 && i <= anti_clip_size) {
-        ac_m_buf[i] = ac_m_buf[i] * ac_size	+ ac_m_tmp[i];
-        ac_size += ac_step;
+    while (xf_size <= 1 && i <= xfade_samples) {
+        xf_m_buf[i] = xf_m_buf[i] * xf_size	+ xf_m_tmp[i];
+        xf_size += xf_step;
         i++;
     }
 }
 
-void sampler::ac_mix_fwd_stereo(st_data* ac_st_tmp)
+void sampler::xf_mix_fwd_stereo(st_data* xf_st_tmp)
 {
     int i = 0;
-    while (ac_size < 1) {
-        ac_st_buf[i].left = ac_st_buf[i].left * ac_size +
-                            ac_st_tmp[i].left;
-        ac_st_buf[i].right = ac_st_buf[i].right * ac_size +
-                             ac_st_tmp[i].right;
-        ac_size += ac_step;
+    while (xf_size < 1) {
+        xf_st_buf[i].left = xf_st_buf[i].left * xf_size +
+                            xf_st_tmp[i].left;
+        xf_st_buf[i].right = xf_st_buf[i].right * xf_size +
+                             xf_st_tmp[i].right;
+        xf_size += xf_step;
         i++;
     }
 }
 
-void sampler::ac_copy_rev_mono(double* ac_m_tmp)
+void sampler::xf_copy_rev_mono(double* xf_m_tmp)
 {
-    double tmp_acsz = ac_size;// <- preserve for mix
+    double tmp_acsz = xf_size;// <- preserve for mix
     if (acplaydir == PLAY_FWD) {
-        for (int i = 0; i <= anti_clip_size; i++) {
-            if (ac_buf_pos + i <= anti_clip_size && tmp_acsz <= 1) {
-                ac_m_tmp[anti_clip_size - i] =
-                    ac_m_buf[ac_buf_pos + i]*(1 - tmp_acsz);
-                tmp_acsz += ac_step;
+        for (int i = 0; i <= xfade_samples; i++) {
+            if (xf_buf_pos + i <= xfade_samples && tmp_acsz <= 1) {
+                xf_m_tmp[xfade_samples - i] =
+                    xf_m_buf[xf_buf_pos + i]*(1 - tmp_acsz);
+                tmp_acsz += xf_step;
             }
-            else ac_m_tmp[anti_clip_size - i] = 0;
+            else xf_m_tmp[xfade_samples - i] = 0;
         }
     } else { // acplaydir == PLAY_REV
-        for (int i = 0; i <= anti_clip_size; i++) {
-            if (ac_buf_pos - i >= 0 && tmp_acsz <= 1.0) {
-                ac_m_tmp[anti_clip_size - i] =
-                    ac_m_buf[ac_buf_pos-i] * (1 - tmp_acsz);
-                tmp_acsz += ac_step;
+        for (int i = 0; i <= xfade_samples; i++) {
+            if (xf_buf_pos - i >= 0 && tmp_acsz <= 1.0) {
+                xf_m_tmp[xfade_samples - i] =
+                    xf_m_buf[xf_buf_pos-i] * (1 - tmp_acsz);
+                tmp_acsz += xf_step;
             }
-            else ac_m_tmp[anti_clip_size - i] = 0;
+            else xf_m_tmp[xfade_samples - i] = 0;
         }
     }
 }
 
-void sampler::ac_copy_rev_stereo(st_data* ac_st_tmp)
+void sampler::xf_copy_rev_stereo(st_data* xf_st_tmp)
 {
-    double tmp_acsz = ac_size;// <- preserve for mix
+    double tmp_acsz = xf_size;// <- preserve for mix
     if (acplaydir == PLAY_FWD) {
-        for (int i = 0; i <= anti_clip_size; i++) {
-            if (ac_buf_pos + i <= anti_clip_size && tmp_acsz <= 1) {
-                ac_st_tmp[anti_clip_size - i].left
-                 = ac_st_buf[ac_buf_pos + i].left * (1 - tmp_acsz);
-                ac_st_tmp[anti_clip_size - i].right
-                 = ac_st_buf[ac_buf_pos + i].right* (1 - tmp_acsz);
-                tmp_acsz += ac_step;
+        for (int i = 0; i <= xfade_samples; i++) {
+            if (xf_buf_pos + i <= xfade_samples && tmp_acsz <= 1) {
+                xf_st_tmp[xfade_samples - i].left
+                 = xf_st_buf[xf_buf_pos + i].left * (1 - tmp_acsz);
+                xf_st_tmp[xfade_samples - i].right
+                 = xf_st_buf[xf_buf_pos + i].right* (1 - tmp_acsz);
+                tmp_acsz += xf_step;
             } else {
-                ac_st_tmp[anti_clip_size - i].left = 0;
-                ac_st_tmp[anti_clip_size - i].right = 0;
+                xf_st_tmp[xfade_samples - i].left = 0;
+                xf_st_tmp[xfade_samples - i].right = 0;
             }
         }
     } else { // acplaydir == PLAY_REV
-        for (int i = 0; i <= anti_clip_size; i++) {
-            if (ac_buf_pos - i >= 0 && tmp_acsz <= 1) {
-                ac_st_tmp[anti_clip_size - i].left
-                 = ac_st_buf[ac_buf_pos - i].left * (1 - tmp_acsz);
-                ac_st_tmp[anti_clip_size - i].right
-                 = ac_st_buf[ac_buf_pos + i].right* (1 - tmp_acsz);
-                tmp_acsz += ac_step;
+        for (int i = 0; i <= xfade_samples; i++) {
+            if (xf_buf_pos - i >= 0 && tmp_acsz <= 1) {
+                xf_st_tmp[xfade_samples - i].left
+                 = xf_st_buf[xf_buf_pos - i].left * (1 - tmp_acsz);
+                xf_st_tmp[xfade_samples - i].right
+                 = xf_st_buf[xf_buf_pos + i].right* (1 - tmp_acsz);
+                tmp_acsz += xf_step;
             } else {
-                ac_st_tmp[anti_clip_size - i].left = 0;
-                ac_st_tmp[anti_clip_size - i].right = 0;
+                xf_st_tmp[xfade_samples - i].left = 0;
+                xf_st_tmp[xfade_samples - i].right = 0;
             }
         }
     }
 }
 
-void sampler::ac_mix_rev_mono(double* ac_m_tmp)
+void sampler::xf_mix_rev_mono(double* xf_m_tmp)
 {
-    int i = anti_clip_size;
-    while (ac_size <= 1 && i >= 0) {
-        ac_m_buf[i] = ac_m_buf[i] * ac_size + ac_m_tmp[i];
-        ac_size += ac_step;
+    int i = xfade_samples;
+    while (xf_size <= 1 && i >= 0) {
+        xf_m_buf[i] = xf_m_buf[i] * xf_size + xf_m_tmp[i];
+        xf_size += xf_step;
         i--;
     }
 }
 
-void sampler::ac_mix_rev_stereo(st_data* ac_st_tmp)
+void sampler::xf_mix_rev_stereo(st_data* xf_st_tmp)
 {
-    int i = anti_clip_size;
-    while (ac_size <= 1 && i > 0) {
-        ac_st_buf[i].left = ac_st_buf[i].left * ac_size +
-                            ac_st_tmp[i].left;
-        ac_st_buf[i].right = ac_st_buf[i].right * ac_size +
-                             ac_st_tmp[i].right;
-        ac_size += ac_step;
+    int i = xfade_samples;
+    while (xf_size <= 1 && i > 0) {
+        xf_st_buf[i].left = xf_st_buf[i].left * xf_size +
+                            xf_st_tmp[i].left;
+        xf_st_buf[i].right = xf_st_buf[i].right * xf_size +
+                             xf_st_tmp[i].right;
+        xf_size += xf_step;
         i--;
     }
 }

@@ -23,7 +23,7 @@ constant_freq f1
     freq 0.14
 f1
 
-wave w1 type sine in_phase_step f1 out_phase_step w1
+wave w1 type saw in_phase_step f1 out_phase_step w1
 
 wavfilein
 crappytv
@@ -41,24 +41,29 @@ s1
     wavfile             crappytv
     in_play_trig        lfoc out_phase_trig
     in_phase_step       n1 out_phase_step
-
-tart_pos 0
-
-//    in_start_pos_mod    w1 out_output
-//    fstart_pos_min       0
-//    start_pos_max       40000
-
-    fanti_clip_samples   150
-    anti_clip_each_end  on
-    zero_search_range   0
 s1
+
+group g
+    modules
+        synthmod name n1
+        synthmod name s1
+    modules
+g
+
+param_editor
+pe
+    editlist
+        edit g.n1
+            name d#0
+    editlist
+pe
 
 wavfile_out
 file
     filename    optional_output.wav
     data_format pcm16
-    in_left     s1 out_left
-    in_right    s1 out_right
+    in_left     g.s1 out_left
+    in_right    g.s1 out_right
     in_bar      t-on out_count
     start_bar   0
     end_bar     1

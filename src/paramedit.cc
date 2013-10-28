@@ -189,7 +189,7 @@ bool paramedit::set_param(param::TYPE dt, const void* data)
     switch(dt)
     {
     case param::STR_UNNAMED:
-        if (!set_name((const char*)data)) {
+        if (!set_name((const char*)data)) { std::cout << "FUCK!"<<std::endl;
             dobjerr("There are no data objects or modules named %s "
                     "cannot edit parameters.", (const char*)data);
             invalidate();

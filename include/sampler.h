@@ -47,8 +47,8 @@ class sampler : public synthmod::base
     STATUS loop_is_offset;
     LOOP_MODE loop_mode;
     wcint_t loop_bi_offset;
-    wcint_t anti_clip_size;
-    STATUS ac_each_end;
+    wcint_t xfade_samples;
+    STATUS xfade_each_end;
     wcint_t search_range;
     double phase_step_amount;
     // working
@@ -57,9 +57,9 @@ class sampler : public synthmod::base
     PLAY_DIR acplaydir;
     bool loop_yet;
     double* mono_buffer;
-    double* ac_m_buf;
+    double* xf_m_buf;
     st_data* st_buffer;
-    st_data* ac_st_buf;
+    st_data* xf_st_buf;
     samp_t buffer_start_pos;
     int buff_pos;
     samp_t wavstart;
@@ -67,7 +67,7 @@ class sampler : public synthmod::base
     samp_t wavstbi;
     samp_t wavlenbi;
     double cur_pos;
-    double ac_cpstep;
+    double xf_cpstep;
     double oldcpstep;
     double cp_step;
     double cp_ratio;
@@ -80,14 +80,14 @@ class sampler : public synthmod::base
     bool loop_fits_in_buffer;
     bool loop_loaded;
     STATUS do_ac;
-    double ac_cur_pos;
-    double ac_midpoint;
-    int ac_buf_pos;
-    samp_t ac_buf_start_pos;
-    double ac_step;
-    double ac_size;
-    double ac_out_left;
-    double ac_out_right;
+    double xf_cur_pos;
+    double xf_midpoint;
+    int xf_buf_pos;
+    samp_t xf_buf_start_pos;
+    double xf_step;
+    double xf_size;
+    double xf_out_left;
+    double xf_out_right;
     wcint_t ch;
     samp_t sampletot;
     // private helper functions:
@@ -99,16 +99,16 @@ class sampler : public synthmod::base
     void pos_loopend();
     void pos_wavstart();
     void pos_loopbegin();
-    void anti_clip_fwd();
-    void anti_clip_rev();
-    void ac_copy_fwd_mono(double*);
-    void ac_copy_fwd_stereo(st_data*);
-    void ac_copy_rev_mono(double*);
-    void ac_copy_rev_stereo(st_data*);
-    void ac_mix_fwd_mono(double*);
-    void ac_mix_fwd_stereo(st_data*);
-    void ac_mix_rev_mono(double*);
-    void ac_mix_rev_stereo(st_data*);
+    void xfade_fwd();
+    void xfade_rev();
+    void xf_copy_fwd_mono(double*);
+    void xf_copy_fwd_stereo(st_data*);
+    void xf_copy_rev_mono(double*);
+    void xf_copy_rev_stereo(st_data*);
+    void xf_mix_fwd_mono(double*);
+    void xf_mix_fwd_stereo(st_data*);
+    void xf_mix_rev_mono(double*);
+    void xf_mix_rev_stereo(st_data*);
     // synthmod stuff
     void register_ui();
     ui::moditem_list* get_ui_items();

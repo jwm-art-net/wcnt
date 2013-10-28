@@ -25,11 +25,9 @@ adsr env        // the shape of this envelope is purposely made
                 // so the actual insertion order can be checked
     envelope    // by looking at its output when written to a file.
         section name attack
-            ut  50  ul  0.333
-            lt  50  ll  0.333
+            time 50 level 0.333
         section name attack
-            ut  950 ul  0.666
-            lt  950 ll  0.666
+            time 950 level 0.666
         section name attack
             ut  250 ul  1.00
             lt  250 ll  1.00

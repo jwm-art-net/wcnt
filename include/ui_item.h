@@ -1,6 +1,7 @@
 #ifndef UI_ITEM_H
 #define UI_ITEM_H
 
+#include "checkvalue.h"
 #include "dobjnames.h"
 #include "inputnames.h"
 #include "paramnames.h"
@@ -12,7 +13,7 @@
 // descriptions can be added to items to supplant a predefined description
 // (ie where a type such as an output is so generic the description is
 // meaningless).
-
+#include <iostream>
 
 namespace ui
 { // where T is type* and DT is enum { type1, type2... }
@@ -203,6 +204,7 @@ namespace ui
         static error_item<T> err;
         if (err_buf)
             err.err_msg = err_buf;
+        std::cout << "err.err_msg: " << (void*)err.err_msg << std::endl;
         return &err;
     }
 
@@ -213,7 +215,7 @@ namespace ui
   private:
     error_item() : base<T>(UI_ERROR) {};
     ~error_item() {}
-    const char* err_msg;
+    static const char* err_msg;
  };
 
  template <class T>
@@ -256,6 +258,8 @@ namespace ui
     bool name_match(const char* str) {
         std::cout << "checking \"" << str << "\" against "
                   << param::names::get(partype) << std::endl;
+        if (partype == param::STR_UNNAMED || partype == param::STR_LIST)
+            return true;
         return (strcmp(str, param::names::get(partype)) == 0);
     }
 

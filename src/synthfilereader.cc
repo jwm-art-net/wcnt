@@ -566,14 +566,18 @@ bool synthfilereader::read_ui_moditems(synthmod::base* sm)
             break;
           case ui::UI_PARAM: {
             ui::modparam* mp = static_cast<ui::modparam*>(item);
+            #ifdef DEBUG
             mp->dump();
+            #endif
             if (!read_ui_modparam(sm, mp->get_param_type()))
                 return false;
             break;
           }
           case ui::UI_INPUT: {
             ui::modinput* mi = static_cast<ui::modinput*>(item);
+            #ifdef DEBUG
             mi->dump();
+            #endif
             if (!read_ui_modinput(sm, mi->get_input_type()))
                 return false;
             break;
@@ -593,46 +597,7 @@ bool synthfilereader::read_ui_moditems(synthmod::base* sm)
     }
     return true;
 }
-/*
-    ui::moditem* item = items->goto_first();
 
-    if (wcnt::jwm.is_verbose())
-        cout << "--------" << endl;
-
-    ui::FLAGS flags = ui::UI_DEFAULT;
-
-    while(item) {
-        switch(item->get_item_type()) {
-          case ui::UI_COMMENT:
-            break;
-          case ui::UI_PARAM: {
-            ui::modparam* mp = static_cast<ui::modparam*>(item);
-            if (!read_ui_modparam(sm, mp, flags))
-                return false;
-            break;
-          }
-          case ui::UI_INPUT: {
-            ui::modinput* mi = static_cast<ui::modinput*>(item);
-            if (!read_ui_modinput(sm, mi, flags))
-                return false;
-            break;
-          }
-          case ui::UI_DOBJ: {
-            ui::moddobj* md = static_cast<ui::moddobj*>(item);
-            if (!read_ui_moddobj(sm, md->get_dobj_parent(),
-                                     md->get_dobj_child()))
-                return false;
-            break;
-          }
-          default:
-            wc_err("%s invalid ui element.", errors::stock::bad);
-            return false;
-        }
-        item = items->goto_next();
-    }
-    return true;
-}
-*/
 
 bool synthfilereader::read_ui_dobjitems(dobj::base* dob, const char* parent)
 {
@@ -641,20 +606,32 @@ bool synthfilereader::read_ui_dobjitems(dobj::base* dob, const char* parent)
     if (!items)
         return true;
 
-    ui::dobjitem* item = items->goto_first();
-
     if (wcnt::jwm.is_verbose())
         cout << "--------" << endl;
 
-    ui::FLAGS flags = ui::UI_DEFAULT;
+    ui::dobjitem* item = items->match_begin(dob);
 
     while(item) {
+        const char* str = read_command();
+        if (!(item = items->match_item(str))) {
+            command = new string(str);
+            break;
+        }
         switch(item->get_item_type()) {
+          case ui::UI_ERROR:
+            std::cout << "***** ERROR ERROR ERROR *****" << std::endl;
+            wc_err("%s", item->get_descr());
+            return false;
           case ui::UI_COMMENT:
             break;
           case ui::UI_PARAM: {
             ui::dobjparam* dp = static_cast<ui::dobjparam*>(item);
-            if (!read_ui_dobjparam(dob, dp, flags, parent))
+            param::TYPE pt = dp->get_param_type();
+            if (pt == param::STR_UNNAMED || pt == param::STR_LIST) {
+                command = new string(str);
+                std::cout << "putting string '" << str << "' back..." << std::endl;
+            }
+            if (!read_ui_dobjparam(dob, dp->get_param_type(),  parent))
                 return false;
             break;
           }
@@ -669,7 +646,7 @@ bool synthfilereader::read_ui_dobjitems(dobj::base* dob, const char* parent)
             wc_err("%s invalid ui element.", errors::stock::bad);
             return false;
         }
-        item = items->goto_next();
+        items->goto_next();
     }
     return true;
 }
@@ -746,13 +723,10 @@ synthfilereader::read_ui_modparam(synthmod::base* sm, param::TYPE partype)
 
 
 bool
-synthfilereader::read_ui_dobjparam(dobj::base* dob, ui::dobjparam* par,
-                                                    ui::FLAGS flags,
+synthfilereader::read_ui_dobjparam(dobj::base* dob, param::TYPE partype,
                                                     const char* parent)
 {
-    const char* parname;
-    param::TYPE partype = par->get_param_type();
-
+/*
     if (partype != param::STR_UNNAMED && partype != param::STR_LIST) {
         parname = read_command();
         param::TYPE pt = param::names::type(parname, partype);
@@ -766,7 +740,7 @@ synthfilereader::read_ui_dobjparam(dobj::base* dob, ui::dobjparam* par,
             return false;
         }
     }
-
+*/
     ostringstream conv;
     string* datastr = 0;
 
@@ -777,14 +751,20 @@ synthfilereader::read_ui_dobjparam(dobj::base* dob, ui::dobjparam* par,
             return false;
     }
     else {
-        datastr = new string;
-        *synthfile >> *datastr;
+        if (command) {
+            datastr = command;
+            command = 0;
+        }
+        else {
+            datastr = new string;
+            *synthfile >> *datastr;
+        }
     }
-
+std::cout << "datastr: " << *datastr << std::endl;
     if (include_dbj(dob->get_username())) {
         if (!setpar::set_param(dob, partype, datastr->c_str(), &conv))
         {
-            wc_err("%s", setpar::get_error_msg());
+            wc_err("OOOH %s", setpar::get_error_msg());
             delete datastr;
             return false;
         }
@@ -792,7 +772,7 @@ synthfilereader::read_ui_dobjparam(dobj::base* dob, ui::dobjparam* par,
     delete datastr;
     if (wcnt::jwm.is_verbose()) {
         cout << "parameter ";
-        cout << parname << "\t" << conv.str() << endl;
+        cout << param::names::get(partype) << "\t" << conv.str() << endl;
     }
 
    return true;
@@ -877,14 +857,14 @@ bool
 synthfilereader::read_ui_dobjdobj(dobj::base* dob, dobj::TYPE parent,
                                                    dobj::TYPE child)
 {
-    string dbjname = read_command();
     const char* parentname = dobj::names::get(parent);
+/*    string dbjname = read_command();
 
     if (dbjname != parentname) {
         wc_err("expected %s got %s instead", parentname, dbjname.c_str());
         return false;
     }
-
+*/
     const char* childname = dobj::names::get(child);
     const char* com = read_command();
     // now read the list of items (each item's type is sprogtype)

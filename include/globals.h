@@ -2,6 +2,7 @@
 #define GLOBALS_H
 
 #include "cmdline.h"
+#include "ui_moditem.h"
 #include "wcntexit.h"
 
 
@@ -23,12 +24,6 @@ namespace synthmod {
     class list;
 };
 
-namespace ui {
-    class moditem_list;
-    class dobjitem_list;
-};
-
-
 
 class synthfilereader;
 
@@ -45,8 +40,7 @@ namespace wcnt
  const wcint_t note_name_len              = 9;
  const wcint_t filter_array_size          = 8192;
  const wcint_t wav_buffer_size            = 4096; //16384;
- const wcint_t max_anti_clip_size         = wav_buffer_size / 2;
- const wcint_t max_anti_clip_samples      = max_anti_clip_size;
+ const wcint_t max_xfade_samples          = wav_buffer_size / 2 - 1;
  const wcint_t sr_div_bi                  = 8;
 
  const char* const ladspa_path_if_env_not_set =

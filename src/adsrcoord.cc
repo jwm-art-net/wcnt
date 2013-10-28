@@ -26,6 +26,7 @@ void adsr_coord::register_ui()
     register_param(param::LEVEL,
                     "Specify section level for both upper and lower shapes."
                                 )->set_flags(ui::UI_CHOICE1);
+
     register_param(param::UPTIME)->set_flags(ui::UI_CHOICE2);
     register_param(param::UPLEVEL)->set_flags(ui::UI_CHOICE2);
     register_param(param::LOTIME)->set_flags(ui::UI_CHOICE2);

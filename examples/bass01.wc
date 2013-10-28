@@ -76,9 +76,7 @@ re_b
 
 clock
 clock1
-    in_freq_mod1   off
     freq            0.025
-    freq_mod1_size  1.0
 clock1
 
 copier c5 from clock1 to clock2 c5
@@ -86,8 +84,8 @@ copier c8 from clock1 to clock3 c8
 
 wave
 sinetime
-    in_phase_step   clock1 out_phase_step
     type sine
+    in_phase_step   clock1 out_phase_step
 sinetime
 
 copier c9 from sinetime to sine3 c9
@@ -96,25 +94,29 @@ sequencer
 seq1
     track
         riff_node
-            riff riff1a  bar 0   transpose 0
-            repeat 3 repeat_stripe 4
+            riff riff1a
+            bar 0 repeat 3 repeat_stripe 4
+            transpose 0
         riff_node
-            riff riff1a  bar 2   transpose 5
-            repeat 3 repeat_stripe 4
+            riff riff1a
+            bar 2 repeat 3 repeat_stripe 4
+            transpose 5
         riff_node
-            riff riff1b  bar 1   transpose 4
-            repeat 3 repeat_stripe 4
+            riff riff1b
+            bar 1 repeat 3 repeat_stripe 4
+            transpose 4
         riff_node
-            riff riff1b  bar 3   transpose 7
+            riff riff1b  bar 3
             repeat 3 repeat_stripe 4
+            transpose 7
     track
 
+    start_bar               0
     in_bar              time1 out_bar
     in_bar_trig         time1 out_bar_trig
-    in_pos_step_size    time1 out_pos_step_size
     in_beats_per_bar    time1 out_beats_per_bar
     in_beat_value       time1 out_beat_value
-    start_bar               0
+    in_pos_step_size    time1 out_pos_step_size
     velocity_response_time  5
 seq1
 

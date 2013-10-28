@@ -107,8 +107,7 @@ private:
     bool read_ui_moddobj(synthmod::base*, dobj::TYPE, dobj::TYPE);
 
     bool read_ui_dobjitems(dobj::base*, const char* parent);
-    bool read_ui_dobjparam(dobj::base*, ui::dobjparam*, ui::FLAGS flags,
-                                        const char* parent);
+    bool read_ui_dobjparam(dobj::base*, param::TYPE, const char* parent);
     bool read_ui_dobjdobj(dobj::base*, dobj::TYPE, dobj::TYPE);
 /*
     // method to read sub-parts of standalone dobjs

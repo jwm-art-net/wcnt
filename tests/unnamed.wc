@@ -1,0 +1,23 @@
+wcnt-1.30/jwmsynth
+
+samplerate 44100
+
+wcnt_exit
+exit
+    sin_bar      off
+    exit_bar    999
+exit
+
+param_editor
+pe
+    editlist
+        edit exit
+            exit_bar 0
+    editlist
+pe
+
+
+wcnt-1.30/jwmsynth
+
+
+

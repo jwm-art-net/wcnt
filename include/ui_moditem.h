@@ -1,10 +1,7 @@
 #ifndef UI_MODITEM_H
 #define UI_MODITEM_H
 
-#include "checkvalue.h"
-#include "listwork.h"
-#include "synthmodnames.h"
-#include "ui_item.h"
+#include "ui_item_list.h"
 
 // a mechanism for registering the UI components of a synthmodule.
 // it brings together all the UI components into a single class
@@ -29,42 +26,7 @@ namespace ui
  typedef   input_item<synthmod::base*> modinput;
  typedef    dobj_item<synthmod::base*> moddobj;
  typedef comment_item<synthmod::base*> modcomment;
-
- /* moditem_list could be a template but the convolution cost didn't...
-    (as far as my awesome skills at this moment it time are concerned)
-    ... didn't outweigh the cost of code duplication between synthmod
-    and dobj.
-  */
-
-
-
- class moditem_list : public linked_list<moditem>
- {
-  public:
-    moditem_list();
-    ~moditem_list();
-
-    moditem* add_item(input::TYPE);
-    moditem* add_item(param::TYPE);
-    moditem* add_item(param::TYPE, const char* fixed_str);
-    moditem* add_item(dobj::TYPE parent, dobj::TYPE child);
-    moditem* add_item(const char* comment);
-
-    bool validate(synthmod::base*, param::TYPE, errors::TYPE);
-
-    moditem* match_begin(synthmod::base*);
-    moditem* match_item(const char*);
-
-  private:
-    FLAGS    skip_id;
-    FLAGS    match_id;
-    moditem* match_prev;
-    moditem* choice;
-    bool     chosen;
-    bool     choice_optional;
-    synthmod::base* sm;
-    static char err_msg[STRBUFLEN];
- };
+ typedef    item_list<synthmod::base*> moditem_list;
 };
 
 #endif
