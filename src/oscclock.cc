@@ -23,8 +23,8 @@ void osc_clock::register_ui()
     register_input(input::IN_NOTE_SLIDE_TRIG);
     register_input(input::IN_PLAY_STATE);
     register_input(input::IN_FREQ);
-    register_param(param::OCTAVE);
-    register_param(param::TUNING_SEMITONES);
+    register_param(param::OCTAVE)->set_flags(ui::UI_OPTIONAL);
+    register_param(param::TUNING_SEMITONES)->set_flags(ui::UI_OPTIONAL);
     register_input(input::IN_FREQ_MOD1) ->set_flags(ui::UI_OPTIONAL |
                                                     ui::UI_SET1);
     register_param(param::FREQ_MOD1SIZE)->set_flags(ui::UI_SET1);

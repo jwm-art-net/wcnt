@@ -17,8 +17,8 @@ glame_butterworth::glame_butterworth(const char* uname) :
 
 void glame_butterworth::register_ui()
 {
-    register_input(input::IN_SIGNAL);
     register_param(param::GLAME_FILTER_TYPE, "lowpass/highpass");
+    register_input(input::IN_SIGNAL);
     register_input(input::IN_CUTOFF_PHASE_STEP);
     register_param(param::RESONANCE);
     register_input(input::IN_RES_MOD);

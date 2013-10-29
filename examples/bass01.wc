@@ -137,17 +137,13 @@ adsr1
             lt  125.0    ll  0.0
         envelope
         in_note_on_trig     seq1    out_note_on_trig
-        in_note_off_trig    seq1    out_note_off_trig
-        in_velocity         seq1    out_velocity
-        up_thresh        1.0
-        lo_thresh        0.0
-        start_level      0.0
-        min_time         10.0
-        max_sustain_time 0.0 // 0 = sustain forever until note off
-        release_is_ratio off
-        sustain_state    on
         zero_retrigger   off
+        in_velocity         seq1    out_velocity
+        min_time         10.0
+        sustain_state    on
+        in_note_off_trig    seq1    out_note_off_trig
 adsr1
+
 
 copier c3 from adsr1 to adsr2 c3
 
@@ -157,22 +153,17 @@ osc1
         in_note_slide_trig  seq1    out_note_slide_trig
         in_play_state       adsr2   out_play_state
         in_frequency        seq1    out_frequency
-        in_freq_mod1        off
-        in_freq_mod2        off
         octave_offset       -2
-        tuning_semitones    0
         portamento_time     15.0
         response_time       5.0
-        freq_mod1_size      1.0
-        freq_mod2_size      1.0
 osc1
 
 copier c6 from osc1 to osc2 c6
 
 wave
 sine
-    in_phase_step   osc1 out_phase_step
     type sine
+    in_phase_step   osc1 out_phase_step
 sine
 
 copier c7 from sine to sine2 c7
@@ -187,10 +178,10 @@ contraster
 con1
     in_signal            sine   out_output
     in_power_mod         m1     out_output
-    in_rude_switch_trig  seq1   out_note_on_trig
     power_min  1.0
     power_max  3.0
     rude_mode  off
+    in_rude_switch_trig  seq1   out_note_on_trig
     wet/dry    0.125
 con1
 
@@ -291,25 +282,24 @@ peaker
 
 mono_amp
 amp1
-    in_amp_mod  seq1    out_velocity_ramp
     in_signal   dynsine out_output
+    gain        1.0
+    in_gain_mod  seq1    out_velocity_ramp
+    gain_mod_size   0.0
     in_amp_eg   con2    out_output
-    in_amp_mod  seq1    out_velocity_ramp
-    level         1.0
-    amp_mod_size  0.0
     clip_level    1.0
 amp1
 
 wavfile_out
 wav1
+    filename    bass01.wav
+    data_format float32
     in_left     amp1 out_output
     in_right    amp1 out_output
     in_bar      time1   out_bar
-    snapshot_mode off
-    data_format float32
-    filename    bass01.wav
     start_bar   0
     end_bar     16
+    snapshot_mode off
 wav1
 
 // setup how long to process:

@@ -11,12 +11,9 @@ synth_file_reader
 sfr
     filename     time.wch
     mod_action   exclude
+    modules
+    modules
     dobj_action  exclude
-
-// _nothing_to_exclude_ --->>
-
-    modules
-    modules
     data_objects
     data_objects
 sfr
@@ -36,17 +33,19 @@ sequencer
 seq
     track
         riff_node
-            riff riff1 bar 0 transpose 0 repeat 15 repeat_stripe 2
+            riff riff1 bar 0 repeat 15 repeat_stripe 2 transpose 0
         riff_node
-            riff riff1 bar 1 transpose 3 repeat 15 repeat_stripe 2
+            riff riff1 bar 1 repeat 15 repeat_stripe 2 transpose 3
     track
-    in_bar            time1 out_bar
-    in_bar_trig       time1 out_bar_trig
-    in_pos_step_size  time1 out_pos_step_size
-    in_beats_per_bar  time1 out_beats_per_bar
-    in_beat_value     time1 out_beat_value
 
     start_bar 0
+
+    in_bar            time1 out_bar
+    in_bar_trig       time1 out_bar_trig
+    in_beats_per_bar  time1 out_beats_per_bar
+    in_beat_value     time1 out_beat_value
+    in_pos_step_size  time1 out_pos_step_size
+
     velocity_response_time  1.0
 
 seq
@@ -80,16 +79,14 @@ env
                 lt 10 ll 0.0
     envelope
     in_note_on_trig   seq out_note_on_trig
-    in_note_off_trig  seq out_note_off_trig
     in_velocity       off
     up_thresh         0.85
     lo_thresh         0.15
-    start_level       0.0
     min_time          0.0
-    max_sustain_time  0.0
-    release_is_ratio  off
     sustain_state     on
-    zero_retrigger    off
+    max_sustain_time  0.0
+    in_note_off_trig  seq out_note_off_trig
+    release_is_ratio  off
 env
 
 adsr
@@ -106,16 +103,16 @@ penv
                 lt 77.5 ll -1.0
     envelope
     in_note_on_trig   seq out_note_on_trig
-    in_note_off_trig  off
+    zero_retrigger    on
+    start_level       1.0
     in_velocity       off
     up_thresh         0.85
     lo_thresh         0.15
-    start_level       1.0
     min_time          0.0
-    max_sustain_time  0.0
-    release_is_ratio  off
     sustain_state     off
-    zero_retrigger    on
+    max_sustain_time  0.0
+    in_note_off_trig  off
+    release_is_ratio  off
 penv
 
 adsr
@@ -132,29 +129,27 @@ penv2
                 lt 9.5 ll 0.0
     envelope
     in_note_on_trig   seq out_note_on_trig
-    in_note_off_trig  off
+    zero_retrigger    on
+    start_level       1.0
     in_velocity       off
     up_thresh         0.85
     lo_thresh         0.15
-    start_level       1.0
     min_time          0.0
-    max_sustain_time  0.0
-    release_is_ratio  off
     sustain_state     off
-    zero_retrigger    on
+    max_sustain_time  0.0
+    in_note_off_trig  off
+    release_is_ratio  off
 penv2
 
 clock
 clock
-    in_freq_mod1    off
     freq            1.0
-    freq_mod1_size  1.0
 clock
 
 wave
 sine
-    in_phase_step     clock out_phase_step
     type sine
+    in_phase_step     clock out_phase_step
 sine
 
 
@@ -166,14 +161,14 @@ pclock
     in_note_slide_trig  seq out_note_slide_trig
     in_play_state       env out_play_state
     in_frequency        seq out_frequency
-    in_freq_mod1        penv2 out_output
-    in_freq_mod2        one out_output
     octave_offset     -3
     tuning_semitones  0.0
+    in_freq_mod1        penv2 out_output
+    freq_mod1_size    2.0
+    in_freq_mod2        one out_output
+    freq_mod2_size    1.0
     portamento_time   15.0
     response_time     2.0
-    freq_mod1_size    2.0
-    freq_mod2_size    1.0
 pclock
 
 multiplier
@@ -186,17 +181,17 @@ square_wave
 psquare
     in_phase_trig  pclock out_phase_trig
     in_phase_step    pclock out_phase_step
-    in_pwm         pwm1 out_output
     rate          1.0
     pulse_width   0.5
+    in_pwm         pwm1 out_output
     pwm_size      0.75
     recycle_mode  off
 psquare
 
 wave
 psine
-    in_phase_step     pclock out_phase_step
     type sine
+    in_phase_step     pclock out_phase_step
 psine
 
 adder
@@ -211,14 +206,14 @@ hpf_clock
     in_note_slide_trig  seq out_note_slide_trig
     in_play_state       env out_play_state
     in_frequency        seq out_frequency
-    in_freq_mod1        off
-    in_freq_mod2        off
     octave_offset     -3
     tuning_semitones  0
+    in_freq_mod1        off
+    freq_mod1_size    1.0
+    in_freq_mod2        off
+    freq_mod2_size    1.0
     portamento_time   15.0
     response_time     2.0
-    freq_mod1_size    1.0
-    freq_mod2_size    1.0
 hpf_clock
 
 osc_clock
@@ -227,14 +222,14 @@ lpf_clock
     in_note_slide_trig  seq out_note_slide_trig
     in_play_state       env out_play_state
     in_frequency        seq out_frequency
-    in_freq_mod1        sine_plus_1 out_output
-    in_freq_mod2        penv out_output
     octave_offset     1
     tuning_semitones  0
+    in_freq_mod1        sine_plus_1 out_output
+    freq_mod1_size    4.0
+    in_freq_mod2        penv out_output
+    freq_mod2_size    3.0
     portamento_time   15.0
     response_time     2.0
-    freq_mod1_size    4.0
-    freq_mod2_size    3.0
 lpf_clock
 
 noise_generator ng1 ng1
@@ -242,20 +237,20 @@ noise_generator ng1 ng1
 mono_amp
 amp1
     in_signal   psquare out_output
+    gain         1.0
+    in_gain_mod  ng1     out_output
+    gain_mod_size  0.0275
     in_amp_eg   env     out_output
-    in_amp_mod  ng1     out_output
-    level         1.0
-    amp_mod_size  0.0275
     clip_level    1.0
 amp1
 
 glame_butterworth
 gbw_lp
+    filter_type        lowpass
     in_signal          amp1       out_output
     in_cutoff_phase_step  lpf_clock out_phase_step
-    in_res_mod         off
-    filter_type        lowpass
     resonance       0.975
+    in_res_mod         off
     res_mod_size    0.0
 gbw_lp
 
@@ -263,19 +258,19 @@ single_band_parametric
 sb-eq
     in_signal         gbw_lp out_output
     in_phase_step       hpf_clock out_phase_step
-    in_gain_mod       off
-    in_bandwidth_mod  penv2 out_output
     gain_db             20.0
+    in_gain_mod       off
     gain_mod_size       0.0
     bandwidth           3.0
+    in_bandwidth_mod  penv2 out_output
     bandwidth_mod_size  0.55
 sb-eq
 
 bode_freq_shifter
 freqshift
     in_signal     sb-eq out_output
-    in_shift_mod  penv2 out_output
     freq_shift     100
+    in_shift_mod  penv2 out_output
     shift_mod_size 250.0
 freqshift
 
@@ -293,10 +288,10 @@ sc
 mono_amp
 boost_and_clip
     in_signal   sc out_output
+    gain         2.0
+    in_gain_mod  off
+    gain_mod_size  0.0
     in_amp_eg   env     out_output
-    in_amp_mod  off
-    level         2.0
-    amp_mod_size  0.0
     clip_level    0.9
 boost_and_clip
 
@@ -304,24 +299,24 @@ boost_and_clip
 
 glame_filter
 lpf
-    in_signal     boost_and_clip out_output
-    in_freq_mod1  off
     filter_type     lowpass
+    in_signal     boost_and_clip out_output
     freq            4000
+    in_freq_mod1  off
     freq_mod1_size  1.0
     stages          4
 lpf
 
 wavfile_out
 wav
+    filename     bass22-shift.wav
+    data_format  float32
     in_left      lpf out_output
     in_right     lpf out_output
     in_bar       time1 out_bar
-    snapshot_mode off
-    data_format  float32
-    filename     bass22-shift.wav
     start_bar    0
     end_bar      4
+    snapshot_mode off
 wav
 
 

@@ -26,8 +26,10 @@ void adsr::register_ui()
     register_param(param::ZERO_RETRIGGER)   ->set_flags(ui::UI_OPTIONAL);
     register_param(param::START_LEVEL)      ->set_flags(ui::UI_OPTIONAL);
     register_input(input::IN_VELOCITY);
-    register_param(param::UP_THRESH)        ->set_flags(ui::UI_OPTIONAL);
-    register_param(param::LO_THRESH)        ->set_flags(ui::UI_OPTIONAL);
+    register_param(param::UP_THRESH)        ->set_flags(ui::UI_OPTIONAL
+                                                      | ui::UI_SET1);
+    register_param(param::LO_THRESH)        ->set_flags(ui::UI_OPTIONAL
+                                                      | ui::UI_SET1);
     register_param(param::MIN_TIME)         ->set_flags(ui::UI_OPTIONAL);
     register_param(param::SUSTAIN_STATUS);
     register_param(param::MAX_SUSTAIN_TIME) ->set_flags(ui::UI_OPTIONAL);

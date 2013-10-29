@@ -6,55 +6,167 @@ timer
 t-on
     timings
         time seconds 0.0
-        time seconds 30.0
+        time seconds 120.0
     timings
     time_is_relative off
 t-on
 
 lfo_clock
-lfoc
-    freq   24.0
+lfocl
+    freq   3.8
     in_phase_trig off
-    in_freq_mod1 w1 out_output
+    in_freq_mod1 w2 out_output
     freq_mod1_size 4.0
-lfoc
+lfocl
+
+lfo_clock
+lfocr
+    freq   4.3
+    in_phase_trig off
+    in_freq_mod1 w2 out_output
+    freq_mod1_size 4.0
+lfocr
 
 constant_freq f1
-    freq 0.14
+    freq .0121
 f1
 
+clock f2
+    freq 0.061
+    in_freq_mod1    w3 out_output
+    freq_mod1_size  4.0
+f2
+
+constant_freq f3
+    freq 0.071
+f3
+
 wave w1 type sine in_phase_step f1 out_phase_step w1
+wave w2 type sine in_phase_step f2 out_phase_step w2
+wave w3 type sine in_phase_step f3 out_phase_step w3
 
 wavfilein
 crappytv
-    filename    ../examples/samples/drumloop01-2b.wav
+    filename    /home/james/t/Audio/2010_06_27_Preston_Steam_Rally/STE-012.wav
     root_note   c0
 crappytv
 
 constant_note
 n1
-    name d0
+    name c0
 n1
 
 sampler
-s1
+s1l
     wavfile             crappytv
-    in_play_trig        lfoc out_phase_trig
+    in_play_trig        lfocl out_phase_trig
     in_phase_step       n1 out_phase_step
     in_start_pos_mod    w1 out_output
     start_pos_min       0
-    start_pos_max       40000
-    anti_clip_samples   150
-    anti_clip_each_end  on
+    start_pos_max       200000
+    xfade_samples   100
+    xfade_each_end  on
     zero_search_range   0
-s1
+s1l
+
+sampler
+s1r
+    wavfile             crappytv
+    in_play_trig        lfocr out_phase_trig
+    in_phase_step       n1 out_phase_step
+    in_start_pos_mod    w1 out_output
+    start_pos_min       0
+    start_pos_max       200000
+    xfade_samples   100
+    xfade_each_end  on
+    zero_search_range   0
+s1r
+
+adsr
+dynegl
+    envelope
+        section name attack
+            time 12      level 1.0
+        section name decay
+            time 25     level 0.75
+        section name release
+            time 195    level 0.0
+    envelope
+
+    in_note_on_trig     lfocl out_phase_trig
+    zero_retrigger      off
+    start_level         0.0
+    in_velocity         off
+    sustain_state       off
+    in_note_off_trig    off
+    release_is_ratio    on
+dynegl
+
+adsr
+dynegr
+    envelope
+        section name attack
+            time 12      level 1.0
+        section name decay
+            time 25     level 0.75
+        section name release
+            time 195    level 0.0
+    envelope
+
+    in_note_on_trig     lfocr out_phase_trig
+    zero_retrigger      off
+    start_level         0.0
+    in_velocity         off
+    sustain_state       off
+    in_note_off_trig    off
+    release_is_ratio    on
+dynegr
+
+contraster
+conl
+    in_signal       s1l out_left
+    in_power_mod    dynegl   out_output
+    power_min       0.5
+    power_max       4.0
+    rude_mode       off
+    in_rude_switch_trig off
+    wet/dry 0.75
+conl
+
+
+contraster
+conr
+    in_signal       s1r out_right
+    in_power_mod    dynegr   out_output
+    power_min       0.5
+    power_max       4.0
+    rude_mode       off
+    in_rude_switch_trig off
+    wet/dry 1.0
+conr
+
+wcnt_signal L1 in_signal conl out_output level 0.75 L1
+wcnt_signal R1 in_signal conr out_output level 0.75 R1
+
+caps_plate2x2
+revb
+    in_left    L1 out_output
+    in_right   R1 out_output
+    bandwidth  0.8
+    tail       0.73
+    damping    0.01
+    wet/dry    0.35
+revb
+
+range_limit L2 in_signal revb out_left sig_range_hi 0.99 sig_range_lo -0.99 L2
+range_limit R2 in_signal revb out_right sig_range_hi 0.99 sig_range_lo -0.99 R2
 
 wavfile_out
 file
     filename    granulardrumloop_output.wav
     data_format pcm16
-    in_left     s1 out_left
-    in_right    s1 out_right
+    in_left     L2 out_output
+    in_right    R2 out_output
     in_bar      t-on out_count
     start_bar   0
     end_bar     1
