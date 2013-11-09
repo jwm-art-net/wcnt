@@ -13,10 +13,15 @@
 // descriptions can be added to items to supplant a predefined description
 // (ie where a type such as an output is so generic the description is
 // meaningless).
+
+// items may also be arranged in groups if they are optional, or arranged
+// as multiple-choices.
+
+
 #include <iostream>
 
 namespace ui
-{ // where T is type* and DT is enum { type1, type2... }
+{
 
  enum TYPE {
     UI_ERROR,
@@ -28,26 +33,56 @@ namespace ui
 
  enum FLAGS {
     UI_DEFAULT =    0x0000,
+    // items marked optional allow the user to not specify an item nor
+    // be demanded to do so by the user interface.note that the ui plays
+    // no part in the initialization of non specified items - with one
+    // exception: an off-connector is added for non specified inputs.
     UI_OPTIONAL =   0x0001,
 
-    UI_CHOICE1 =    0x0100,
-    UI_CHOICE2 =    0x0200,
-    UI_CHOICE3 =    0x0400,
-    UI_CHOICE4 =    0x0800,
-    UI_CHOICE_MASK= 0x0f00,
+    // items marked as as choice means the user must choose one and only one
+    // of several choices. one choice might be one item, or one choice
+    // might be several items such that:
+    //      choice 1: (item1 AND item2 AND item3)
+    //  OR
+    //      choice 2: (item4 AND item5)
+    // additionally, if the first item in the first choice is also specified
+    // as UI_OPTIONAL, then the user may ommit specifying any choice at all.
+    // the first choice should always be UI_CHOICE1, and second UI_CHOICE2.
+    // if an item with UI_CHOICE1 is encountered immediately after a
+    // UI_CHOICE1 + n item, a new selection of choices is assumed.
 
-    UI_SET1 =       0x1000,
-    UI_SET2 =       0x2000,
-    UI_SET3 =       0x4000,
-    UI_SET4 =       0x8000,
-    UI_SET_MASK =   0xf000
+    UI_CHOICE1 =    0x0010,
+    UI_CHOICE2 =    0x0020,
+    UI_CHOICE3 =    0x0040,
+    UI_CHOICE4 =    0x0080,
+
+    // items can be grouped together by setting one of the UI_GROUPn flags.
+    // allowing the whole group of items in the user interface to either
+    // all be specified or all absent. additionally, specific items within
+    // a group can be be made optional by use of UI_OPTIONAL. Potentially,
+    // there can be any number of groups within a container as long as there
+    // is at least one non-group item between each group (excluding comment
+    // items).  Where distinct groups immediatelly follow each other, then
+    // only four distinct but adjaecent groups can be accommodated.
+
+    UI_GROUP1 =     0x0100,
+    UI_GROUP2 =     0x0200,
+    UI_GROUP3 =     0x0400,
+    UI_GROUP4 =     0x0800,
+
+    // items cannot be part of a group and choice simultaneously.
+
+    // implementation only:
+    UI_CHOICE_MASK= 0x00f0,
+    UI_GROUP_MASK = 0x0f00,
+    UI_MATCHED =    0x8000,
  };
 
  enum {
     ITEM_CHOICE_UNEXPECTED = -5,// first item chosen, and so was this.
     ITEM_CHOICE_EXPECTED = -4,  // first item chosen but this wasnt.
-    ITEM_SET_UNEXPECTED = -3,   // first item skipped but this wasnt.
-    ITEM_SET_EXPECTED = -2,     // first item specified but this wasnt.
+    ITEM_GROUP_UNEXPECTED = -3,   // first item skipped but this wasnt.
+    ITEM_GROUP_EXPECTED = -2,     // first item specified but this wasnt.
     ITEM_UNEXPECTED = -1,       // item did not match
     ITEM_MATCH = 0,             // item did match
     ITEM_SKIPPED                // item was optional and skipped
@@ -63,25 +98,29 @@ namespace ui
     virtual ~base() {};
     virtual bool validate(T, errors::TYPE) = 0;
 
-    TYPE    get_item_type() const   { return itemtype; }
-    bool operator==(TYPE it) const  { return (itemtype == it); }
+    TYPE    get_item_type() const       { return itemtype; }
+    bool operator==(TYPE it) const      { return (itemtype == it); }
 
-    virtual const char* get_name() { return 0; }
+    virtual const char* get_name()      { return 0; }
 
-    void add_descr(const char* literal)   { descr = literal; }
-    virtual const char* get_descr()       { return descr; }
+    base<T>* add_descr(const char* literal) { descr = literal; return this; }
+    virtual const char* get_descr()     { return descr; }
 
-    int is_match(const char* str, FLAGS skip_id, FLAGS match_id);
+    bool is_name_match(const char* str) { return name_match(str); }
 
-    void set_flags(int f);
-    bool is_optional()      { return (flags & UI_OPTIONAL); }
+    base<T>* set_flags(int f);
+    bool is_optional()      { return !!(flags & UI_OPTIONAL); }
     bool has_flag(FLAGS f)  { return !!(flags & f); }
+
+    void reset_matched()    { flags &= ~UI_MATCHED; }
+    void set_matched()      { flags |= UI_MATCHED; }
+    bool is_matched()       { return !!(flags & UI_MATCHED); }
 
     FLAGS get_choice_id() {
         return static_cast<FLAGS>(flags & UI_CHOICE_MASK);
     }
-    FLAGS get_set_id() {
-        return static_cast<FLAGS>(flags & UI_SET_MASK);
+    FLAGS get_group_id() {
+        return static_cast<FLAGS>(flags & UI_GROUP_MASK);
     }
 
     #ifdef DEBUG
@@ -111,23 +150,28 @@ namespace ui
  }
 
  template <class T>
- void base<T>::set_flags(int f)
+ base<T>* base<T>::set_flags(int f)
  {
     flags = f;
 
     #ifdef DEBUG
     if (f < 0) {
+        this->dump();
         std::cout << "invalid ui item flags: " << f << std::endl;
-        return;
+        return 0;
     }
-    int set = 0;
-    set += !!(f & UI_SET1);
-    set += !!(f & UI_SET2);
-    set += !!(f & UI_SET3);
-    set += !!(f & UI_SET4);
-    if (set > 1) {
+
+    int group = 0;
+    group += !!(f & UI_GROUP1);
+    group += !!(f & UI_GROUP2);
+    group += !!(f & UI_GROUP3);
+    group += !!(f & UI_GROUP4);
+
+    if (group > 1) {
+        this->dump();
         std::cout << "invalid ui item flags: " << f
                   << "item has more than one set-id bit set." << std::endl;
+        return 0;
     }
 
     int choice = 0;
@@ -135,64 +179,26 @@ namespace ui
     choice += !!(f & UI_CHOICE2);
     choice += !!(f & UI_CHOICE3);
     choice += !!(f & UI_CHOICE4);
+
     if (choice > 1) {
+        this->dump();
         std::cout << "invalid ui item flags: " << f
                   << "item has more than one choice-id bit set."
                   << std::endl;
+        return 0;
     }
 
-    if (set && choice) {
+    if (group && choice) {
+        this->dump();
         std::cout << "invalid ui item flags: " << f
                   << "item has both set-id and choice-id bits set."
                   << std::endl;
+        return 0;
     }
     #endif
+    return this;
  }
 
- template <class T>
- int base<T>::is_match(const char* str, FLAGS skip_id, FLAGS match_id)
- {
-    if (name_match(str)) {
-        std::cout << "::: item name '" << str << "' matched.. " << std::endl;
-        if (skip_id == UI_CHOICE_MASK) {
-            std::cout << "::: processing choice " << match_id << std::endl;
-            if (match_id == get_choice_id()) {
-                std::cout << "::: choice match." << std::endl;
-                return ITEM_MATCH;
-            }
-            else {
-                std::cout << "::: choice mismatch." << std::endl;
-                return ITEM_CHOICE_UNEXPECTED;
-            }
-        }
-        if (skip_id != UI_DEFAULT && skip_id == get_set_id())
-            return ITEM_SET_UNEXPECTED;
-        return ITEM_MATCH;
-    }
-    else {
-        std::cout << "::: item name '" << str << "' unmatched.. " << std::endl;
-        if (skip_id == UI_CHOICE_MASK) {
-            std::cout << "::: processing choice " << match_id << std::endl;
-            if (match_id == get_choice_id()) {
-                std::cout << "::: choice mismatch " << std::endl;
-                return ITEM_CHOICE_EXPECTED;
-            }
-            else {
-                std::cout << "::: choice skipped" << std::endl;
-                return ITEM_SKIPPED;
-            }
-        }
-        if (get_choice_id() != UI_DEFAULT)
-            return ITEM_SKIPPED;
-        if (is_optional())
-            return ITEM_SKIPPED;
-        if ((skip_id != UI_DEFAULT && skip_id == get_set_id()))
-            return ITEM_SKIPPED;
-        if (match_id != UI_DEFAULT && match_id == get_set_id())
-            return ITEM_SET_EXPECTED;
-        return ITEM_UNEXPECTED;
-    }
- }
 
  template <class T>
  class error_item : public base<T>
@@ -232,7 +238,8 @@ namespace ui
 
     #ifdef DEBUG
     void dump() {
-        std::cout << "comment: " << base<T>::get_descr() << std::endl;
+        std::cout << "comment: " << base<T>::get_descr() << "(0x"
+                  << (void*)this << ")" << std::endl;
     }
     #endif
  };
@@ -265,7 +272,8 @@ namespace ui
 
     #ifdef DEBUG
     void dump() {
-        std::cout << "param: " << param::names::get(partype) << std::endl;
+        std::cout << "param: " << param::names::get(partype) << "(0x"
+                  << (void*)this << ")" << std::endl;
     }
     #endif
 
@@ -280,9 +288,12 @@ namespace ui
     if (!data)
         return false;
     switch(param::names::category(partype)) {
-      case iocat::DOUBLE:   return check_value(*(const double*)data, et);
-      case iocat::WCINT_T:  return check_value(*(const wcint_t*)data, et);
-      case iocat::SAMP_T:   return check_value(*(const samp_t*)data, et);
+      case iocat::DOUBLE:
+        return check_value(*static_cast<const double*>(data), et);
+      case iocat::WCINT_T:
+        return check_value(*static_cast<const wcint_t*>(data), et);
+      case iocat::SAMP_T:
+        return check_value(*static_cast<const samp_t*>(data), et);
       default:
         return false;
     }
@@ -307,12 +318,15 @@ namespace ui
     bool validate(T, errors::TYPE) { return true; }
 
     bool name_match(const char* str) {
+        std::cout << "checking \"" << str << "\" against "
+                  << input::names::get(intype) << std::endl;
         return (strcmp(str, input::names::get(intype)) == 0);
     }
 
     #ifdef DEBUG
     void dump() {
-        std::cout << "input: " << input::names::get(intype) << std::endl;
+        std::cout << "input: " << input::names::get(intype) << "(0x"
+                  << (void*)this << ")" << std::endl;
     }
     #endif
 
@@ -337,12 +351,15 @@ namespace ui
     bool validate(T, errors::TYPE) { return true; }
 
     bool name_match(const char* str) {
+        std::cout << "checking \"" << str << "\" against "
+                  << dobj::names::get(parent) << std::endl;
         return (strcmp(str, dobj::names::get(parent)) == 0);
     }
 
     #ifdef DEBUG
     void dump() {
-        std::cout << "dobj: parent: " << dobj::names::get(parent);
+        std::cout << "dobj: parent: " << dobj::names::get(parent) << "(0x"
+                  << (void*)this << ")" ;
         std::cout << "child: " << dobj::names::get(child) << std::endl;
     }
     #endif

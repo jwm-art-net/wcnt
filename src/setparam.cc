@@ -51,6 +51,9 @@ bool set_param(T* obj, param::TYPE pt, const char* value,
 {
     iocat::TYPE ioc = param::names::category(pt);
     const char* par = param::names::get(pt);
+
+    std::cout << "\t\tset_param:\t'" << par << "' '" << value << "'" << std::endl;
+
     int op = get_operator(value);
     if (op)
         value += 2; // value == ptr to txt-representation of value ;-)
@@ -172,4 +175,3 @@ const char* get_error_msg()
 }
 
 } // namespace setpar
-

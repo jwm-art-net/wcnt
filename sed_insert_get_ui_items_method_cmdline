@@ -1,7 +1,0 @@
-# see: http://stackoverflow.com/a/19507693/191492
-
-# for synthmod:
-# sed '/::register_ui()$/,/^}/!b;/::register_ui()$/{h;s/^void\s\+\(\w\+\)::register_ui()$/\1/;x};/^}/ {g;s/.*/}\n\nui::moditem_list\* &::get_ui_items()\n{\n\ \ \ \ static ui::moditem_list items;\n\ \ \ \ return \&items;\n}/}' $(grep 'synthmod::base(' src/*.cc -l)
-
-# for dobj:
-# sed '/::register_ui()$/,/^}/!b;/::register_ui()$/{h;s/^void\s\+\(\w\+\)::register_ui()$/\1/;x};/^}/ {g;s/.*/}\n\nui::dobjitem_list\* &::get_ui_items()\n{\n\ \ \ \ static ui::dobjitem_list items;\n\ \ \ \ return \&items;\n}/}' $(grep 'dobj::base(' src/*.cc -l)

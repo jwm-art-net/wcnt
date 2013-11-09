@@ -1,0 +1,41 @@
+wcnt-1.30/jwmsynth
+
+samplerate 44100
+
+adsr env1
+    envelope
+        section name attack
+           // time 50 level 1.0
+            ut 50
+        section name decay
+            time 950 level 0.85
+        section name release
+            time 950 level 0.0
+    envelope
+
+    in_note_on_trig off
+
+//    zero_retrigger      off
+//    start_level         0.0
+
+    in_velocity         off
+
+//    up_thresh           1.0
+//    lo_thresh           0.0
+//    min_time            0.0
+
+    sustain_state       on
+
+//    max_sustain_time    1000.0
+//    in_note_off_trig    off
+//    release_is_ratio    on
+env1
+
+wcnt_exit
+exit
+    exit_bar    0
+    in_bar      off
+exit
+
+
+wcnt-1.30/jwmsynth

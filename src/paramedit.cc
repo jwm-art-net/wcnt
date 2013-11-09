@@ -16,7 +16,7 @@ paramedit::paramedit() :
 
 void paramedit::register_ui()
 {
-    register_param(param::STR_UNNAMED)->add_descr("module_name");
+    register_param(param::STR_UNNAMED)->add_descr("module/data_object_name");
     register_param(param::STR_LIST)
             ->add_descr("parameter_name parameter_value (...)");
 }

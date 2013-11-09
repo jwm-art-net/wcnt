@@ -64,6 +64,15 @@ errors::TYPE wcnt_exit::validate()
     connector* con = wcnt::get_connectlist()
                    ->get_connector_by_input(this, input::IN_BAR);
 
+    #ifdef DEBUG
+    if (!con) {
+        sm_err("%s no connector found for input '%s'.",
+                errors::stock::major, input::names::get(input::IN_BAR));
+        invalidate();
+        return errors::ERROR;
+    }
+    #endif
+
     if (strcmp(con->get_output_module_name(), "off") == 0 && exit_bar != 0)
     {
         sm_err("Input %s is turned off, and parameter %s is not zero. "
@@ -81,4 +90,3 @@ void wcnt_exit::init()
     wcnt::jwm.x_exit_bar = exit_bar;
     wcnt::jwm.x_in_bar = in_bar;
 }
-

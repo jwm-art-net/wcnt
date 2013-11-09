@@ -347,8 +347,7 @@ synthmod::base* synthfilereader::read_synthmodule(const char* com)
         cout << "================================" << endl;
         cout << "Creating synth module " << modname << endl;
     }
-    synthmod::base* sm
-        = synthmod::list::create_module(smt,modname.c_str());
+    synthmod::base* sm = synthmod::list::create_module(smt,modname.c_str());
 
     if (!read_ui_moditems(sm)) {
         wc_err("In module %s, %s.", sm->get_username(), wc_err_msg);
@@ -440,7 +439,7 @@ dobj::base* synthfilereader::read_dobj(const char* com)
     }
     dob->set_username(dobjname.c_str());
 
-    if (!read_ui_dobjitems(dob, 0)) {
+    if (!read_ui_dobjitems(dob, dob->get_username())) {
         wc_err("In data object %s, %s.", dob->get_username(), wc_err_msg);
         delete dob;
         return 0;
@@ -450,7 +449,7 @@ dobj::base* synthfilereader::read_dobj(const char* com)
         if (wcnt::jwm.is_verbose()) cout << "---- validating..." << endl;
         errors::TYPE et = dob->validate();
         if (et != errors::NO_ERROR) {
-            wc_err("In data object %s, parameter %s %s %s", 
+            wc_err("In data object %s, parameter %s %s %s",
                     dob->get_username(), dobj::base::get_error_msg(),
                     errors::stock::get_prefix_msg(et),
                     errors::stock::get(et));
@@ -549,14 +548,29 @@ bool synthfilereader::read_ui_moditems(synthmod::base* sm)
         cout << "--------" << endl;
 
     ui::moditem* item = items->match_begin(sm);
+    int pass = 0;
 
-    while(item) {
+    while (item) {
         const char* str = read_command();
         std::cout << "reading...  str: " << str << std::endl;
-        if (!(item = items->match_item(str))) {
+
+        if (strcmp(str, sm->get_username()) == 0) {
             command = new string(str);
             break;
         }
+
+        int maxpass = pass + 1;
+        while (!(item = items->match_item(str))) {
+            if (pass == maxpass) {
+                wc_err("unrecognised item '%s'.", str);
+                return false;
+            }
+            command = new string(str);
+            std::cout << "restarting items list pass " << pass << std::endl;
+            items->goto_first();
+            ++pass;
+        }
+
         switch(item->get_item_type()) {
           case ui::UI_ERROR:
             std::cout << "***** ERROR ERROR ERROR *****" << std::endl;
@@ -593,9 +607,20 @@ bool synthfilereader::read_ui_moditems(synthmod::base* sm)
             wc_err("%s invalid ui element.", errors::stock::bad);
             return false;
         }
-        items->goto_next();
+        if (!(item = items->goto_next())) {
+            if (pass < maxpass) {
+                ++pass;
+                item = items->goto_first();
+            }
+        }
     }
-    return true;
+
+    item = items->match_validate();
+    if (!item)
+        return true;
+
+    wc_err("%s", item->get_descr());
+    return false;
 }
 
 
@@ -606,18 +631,45 @@ bool synthfilereader::read_ui_dobjitems(dobj::base* dob, const char* parent)
     if (!items)
         return true;
 
+    std::cout << "read_ui_dobjitems(dob, parent '" << (parent ? parent : "NULL") << "')" << std::endl;
+
+
     if (wcnt::jwm.is_verbose())
         cout << "--------" << endl;
 
     ui::dobjitem* item = items->match_begin(dob);
+    int pass = 0;
 
-    while(item) {
+    const char* dobjname = dobj::names::get(dob->get_object_type());
+
+    while (item) {
         const char* str = read_command();
-        if (!(item = items->match_item(str))) {
+        std::cout << "reading... str: '" << str << "'" << std::endl;
+        std::cout << "comparing with parent: '" << (parent ? parent : "NULL") << "'" << std::endl;
+        if (parent && strcmp(str, parent) == 0) {
             command = new string(str);
             break;
         }
-        switch(item->get_item_type()) {
+
+        std::cout << "comparing with dob: '" << dobjname << "'" << std::endl;
+        if (strcmp(str, dobjname) == 0) {
+            command = new string(str);
+            break;
+        }
+        int maxpass = pass + 1;
+
+        while (!(item = items->match_item(str))) {
+            if (pass == maxpass) {
+                wc_err("unrecognised item '%s'.", str);
+                return false;
+            }
+            command = new string(str);
+            std::cout << "restarting items list pass " << pass << std::endl;
+            item = items->goto_first();
+            ++pass;
+        }
+
+        switch (item->get_item_type()) {
           case ui::UI_ERROR:
             std::cout << "***** ERROR ERROR ERROR *****" << std::endl;
             wc_err("%s", item->get_descr());
@@ -630,6 +682,8 @@ bool synthfilereader::read_ui_dobjitems(dobj::base* dob, const char* parent)
             if (pt == param::STR_UNNAMED || pt == param::STR_LIST) {
                 command = new string(str);
                 std::cout << "putting string '" << str << "' back..." << std::endl;
+                if (strcmp(str, parent) == 0)
+                    return true;
             }
             if (!read_ui_dobjparam(dob, dp->get_param_type(),  parent))
                 return false;
@@ -646,9 +700,20 @@ bool synthfilereader::read_ui_dobjitems(dobj::base* dob, const char* parent)
             wc_err("%s invalid ui element.", errors::stock::bad);
             return false;
         }
-        items->goto_next();
+        if (!(item = items->goto_next())) {
+            if (pass < maxpass) {
+                ++pass;
+                item = items->goto_first();
+            }
+        }
     }
-    return true;
+
+    item = items->match_validate();
+    if (!item)
+        return true;
+
+    wc_err("%s", item->get_descr());
+    return false;
 }
 
 bool
@@ -812,7 +877,7 @@ synthfilereader::read_ui_moddobj(synthmod::base* sm, dobj::TYPE parent,
             return false;
         }
 
-        if (!read_ui_dobjitems(dob, 0)) {
+        if (!read_ui_dobjitems(dob, parentname)) {
             wc_err("%s, %s %s", parentname, childname, wc_err_msg);
             delete dob;
             return false;
@@ -1044,7 +1109,7 @@ bool synthfilereader::eff_ing_header_bodge(samp_t *samplerate)
     if (!(hf_name[0] == '/' || path == NULL)) {
         string tmp = hf_name;
         hf_name = path + tmp;
-    } 
+    }
     headerfile.open(hf_name.c_str());// and open header file and be really
     // fussy about layout 'cos i'm not messing about with whitespace
     // and remark processing here.  but first check it's opened oK
@@ -1147,14 +1212,14 @@ void synthfilereader::register_ui()
     register_param(param::FILENAME);
 
     register_param(param::MOD_ACTION, "include/exclude")
-                            ->set_flags(ui::UI_OPTIONAL | ui::UI_SET1);
+                            ->set_flags(ui::UI_OPTIONAL | ui::UI_GROUP1);
     register_dobj(dobj::LST_MODULES, dobj::SIN_MODNAME)
-                            ->set_flags(ui::UI_OPTIONAL | ui::UI_SET1);
+                            ->set_flags(ui::UI_OPTIONAL | ui::UI_GROUP1);
 
     register_param(param::DOBJ_ACTION, "include/exclude")
-                            ->set_flags(ui::UI_OPTIONAL | ui::UI_SET2);
+                            ->set_flags(ui::UI_OPTIONAL | ui::UI_GROUP2);
     register_dobj(dobj::LST_DOBJS, dobj::SIN_DOBJNAME)
-                            ->set_flags(ui::UI_OPTIONAL | ui::UI_SET2);
+                            ->set_flags(ui::UI_OPTIONAL | ui::UI_GROUP2);
 }
 
 ui::dobjitem_list* synthfilereader::get_ui_items()

@@ -11,6 +11,24 @@ namespace ui
  template<>
  const char* error_item<synthmod::base*>::err_msg = 0;
 
+
+ template <>
+ base<synthmod::base*>* item_list<synthmod::base*>::add_item(input::TYPE it)
+ {
+    if (!goodlist(LIST_STD))
+        return 0;
+
+    base<synthmod::base*>* i = new input_item<synthmod::base*>(it);
+    if (i) {
+        if (!linked_list< base<synthmod::base*> >::add_at_tail(i)) {
+            delete i;
+            i = 0;
+        }
+    }
+    return i;
+ }
+
+
  template<>
  connector* item_list<synthmod::base*>::add_connector_off(synthmod::base* sm,
                                                           input::TYPE it)

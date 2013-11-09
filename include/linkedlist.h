@@ -79,19 +79,6 @@ class linked_list
         return (current = current->get_next())->get_data();
     }
 
-    T* goto_first() const {
-        return (current = head->get_next())->get_data();
-    }
-    T* goto_last() const {
-        return (current = tail->get_prev())->get_data();
-    }
-    T* goto_prev() const {
-        return (current = current->get_prev())->get_data();
-    }
-    T* goto_next() const {
-        return (current = current->get_next())->get_data();
-    }
-
     bool is_empty(){ return (head->get_next() ? false : true); }
 
     MULTIREF get_multiref() const       { return multiref;}

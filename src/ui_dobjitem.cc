@@ -8,6 +8,14 @@ namespace ui
  template<>
  const char* error_item<dobj::base*>::err_msg = 0;
 
+
+ template <>
+ base<dobj::base*>* item_list<dobj::base*>::add_item(input::TYPE)
+ {
+    return 0;
+ }
+
+
  template<>
  connector* item_list<dobj::base*>::add_connector_off(dobj::base*, input::TYPE)
  {

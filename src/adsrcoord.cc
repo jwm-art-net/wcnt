@@ -20,17 +20,18 @@ adsr_coord::adsr_coord
 void adsr_coord::register_ui()
 {
     register_param(param::ADSRSECT, "attack/decay/sustain/release");
-    register_param(param::TIME,
-                    "Specify section time for both upper and lower shapes."
-                                )->set_flags(ui::UI_CHOICE1);
-    register_param(param::LEVEL,
-                    "Specify section level for both upper and lower shapes."
-                                )->set_flags(ui::UI_CHOICE1);
-
+    register_comment("Dual shaped section");
     register_param(param::UPTIME)->set_flags(ui::UI_CHOICE2);
     register_param(param::UPLEVEL)->set_flags(ui::UI_CHOICE2);
     register_param(param::LOTIME)->set_flags(ui::UI_CHOICE2);
     register_param(param::LOLEVEL)->set_flags(ui::UI_CHOICE2);
+    register_comment(" - OR - ");
+    register_param(param::TIME, "Specify section time for both upper and lower shapes.")
+                                    ->add_descr("section time")
+                                    ->set_flags(ui::UI_CHOICE1);
+    register_param(param::LEVEL, "Specify section level for both upper and lower shapes.")
+                                    ->add_descr("section level")
+                                    ->set_flags(ui::UI_CHOICE1);
 }
 
 ui::dobjitem_list* adsr_coord::get_ui_items()
@@ -106,4 +107,3 @@ errors::TYPE adsr_coord::validate()
 
     return errors::NO_ERROR;
 }
-

@@ -26,10 +26,8 @@ void adsr::register_ui()
     register_param(param::ZERO_RETRIGGER)   ->set_flags(ui::UI_OPTIONAL);
     register_param(param::START_LEVEL)      ->set_flags(ui::UI_OPTIONAL);
     register_input(input::IN_VELOCITY);
-    register_param(param::UP_THRESH)        ->set_flags(ui::UI_OPTIONAL
-                                                      | ui::UI_SET1);
-    register_param(param::LO_THRESH)        ->set_flags(ui::UI_OPTIONAL
-                                                      | ui::UI_SET1);
+    register_param(param::UP_THRESH)        ->set_flags(ui::UI_GROUP1);
+    register_param(param::LO_THRESH)        ->set_flags(ui::UI_GROUP1);
     register_param(param::MIN_TIME)         ->set_flags(ui::UI_OPTIONAL);
     register_param(param::SUSTAIN_STATUS);
     register_param(param::MAX_SUSTAIN_TIME) ->set_flags(ui::UI_OPTIONAL);
@@ -295,9 +293,9 @@ void adsr::run()
                 out_off_trig = ON;
             }
             else if (coord->get_adsr_section() == adsr_coord::ADSR_SUSTAIN
-                     && sustain_status == ON) 
+                     && sustain_status == ON)
             {
-                if (max_sus_samps > 0) 
+                if (max_sus_samps > 0)
                     sectmaxsamples = max_sus_samps;
                 else
                     sectmaxsamples = SAMP_T_MAX;
@@ -369,4 +367,3 @@ synthmod::base* adsr::duplicate_module(const char* uname, DUP_IO dupio)
     }
     return dupadsr;
 }
-

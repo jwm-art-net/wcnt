@@ -4,8 +4,8 @@ samplerate 44100
 
 wcnt_exit
 exit
-    sin_bar      off
     exit_bar    999
+    in_bar      off
 exit
 
 param_editor

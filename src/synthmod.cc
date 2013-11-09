@@ -260,7 +260,7 @@ namespace synthmod
 
  bool base::validate_param(param::TYPE pt, errors::TYPE et)
  {
-    if (!get_ui_items()->validate(this, pt, et)) {
+    if (!get_ui_items()->data_validate(this, pt, et)) {
         sm_err("%s", param::names::get(pt));
         invalidate();
         return false;

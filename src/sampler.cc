@@ -29,7 +29,7 @@ sampler::sampler(const char* uname) :
  sr_ratio(1), bp_midpoint(0), start_pos(0), startpos_span(0),
  loopstart(0), loopfinish(0), loop_fits_in_buffer(0),
  loop_loaded(0),
- do_ac(OFF), xf_cur_pos(0), xf_midpoint(0), 
+ do_ac(OFF), xf_cur_pos(0), xf_midpoint(0),
  xf_buf_pos(0), xf_buf_start_pos(0), xf_step(0), xf_size(0),
  xf_out_left(0), xf_out_right(0),
  ch(WAV_CH_UNKNOWN)
@@ -44,37 +44,37 @@ sampler::sampler(const char* uname) :
 void sampler::register_ui()
 {
     register_param(param::WAVFILEIN);
-    register_param(param::PLAY_DIR, "fwd/rev")->set_flags(ui::UI_OPTIONAL);
+    register_param(param::PLAY_DIR, "fwd/rev")
+                                            ->set_flags(ui::UI_OPTIONAL);
     register_input(input::IN_PLAY_TRIG);
-    register_input(input::IN_STOP_TRIG)->set_flags(ui::UI_OPTIONAL);
+    register_input(input::IN_STOP_TRIG)     ->set_flags(ui::UI_OPTIONAL);
     register_input(input::IN_PHASE_STEP);
     register_param(param::PHASE_STEP_AMOUNT)->set_flags(ui::UI_OPTIONAL);
 
     register_param(param::PLAY_MODE, "stop/wrap/bounce/jump")
-                               ->set_flags(ui::UI_OPTIONAL | ui::UI_SET1);
-    register_param(param::JUMP_MODE, "play/loop")->set_flags(ui::UI_SET1);
+                                            ->set_flags(ui::UI_GROUP1);
+    register_param(param::JUMP_MODE, "play/loop")
+                                            ->set_flags(ui::UI_GROUP1);
 
     register_comment("Static start position:");
-    register_param(param::START_POS)       ->set_flags(ui::UI_CHOICE1
-                                                     | ui::UI_OPTIONAL);
+    register_param(param::START_POS)        ->set_flags(ui::UI_CHOICE1 | ui::UI_OPTIONAL);
     register_comment("Or modulated start position:");
-    register_input(input::IN_START_POS_MOD)->set_flags(ui::UI_CHOICE2);
-    register_param(param::START_POS_MIN)   ->set_flags(ui::UI_CHOICE2);
-    register_param(param::START_POS_MAX)   ->set_flags(ui::UI_CHOICE2);
+    register_input(input::IN_START_POS_MOD) ->set_flags(ui::UI_CHOICE2);
+    register_param(param::START_POS_MIN)    ->set_flags(ui::UI_CHOICE2);
+    register_param(param::START_POS_MAX)    ->set_flags(ui::UI_CHOICE2);
 
     register_comment("Optional loop:");
     register_param(param::LOOP_MODE, "off/fwd/rev/bi")
-                       ->set_flags(ui::UI_OPTIONAL | ui::UI_SET2);
-    register_param(param::LOOP_BEGIN)    ->set_flags(ui::UI_SET2);
-    register_param(param::LOOP_END)      ->set_flags(ui::UI_SET2);
-    register_param(param::LOOP_IS_OFFSET)->set_flags(ui::UI_SET2);
-    register_param(param::LOOP_BI_OFFSET)->set_flags(ui::UI_SET2);
+                                            ->set_flags(ui::UI_GROUP2);
+    register_param(param::LOOP_BEGIN)       ->set_flags(ui::UI_GROUP2);
+    register_param(param::LOOP_END)         ->set_flags(ui::UI_GROUP2);
+    register_param(param::LOOP_IS_OFFSET)   ->set_flags(ui::UI_GROUP2 | ui::UI_OPTIONAL);
+    register_param(param::LOOP_BI_OFFSET)   ->set_flags(ui::UI_GROUP2 | ui::UI_OPTIONAL);
 
     register_comment("Optional xfades:");
-    register_param(param::XFADE_SAMPLES)
-                          ->set_flags(ui::UI_OPTIONAL | ui::UI_SET3);
-    register_param(param::XFADE_EACH_END)      ->set_flags(ui::UI_SET3);
-    register_param(param::ZERO_SEARCH_RANGE)->set_flags(ui::UI_SET3);
+    register_param(param::XFADE_SAMPLES)    ->set_flags(ui::UI_GROUP3);
+    register_param(param::XFADE_EACH_END)   ->set_flags(ui::UI_GROUP3);
+    register_param(param::ZERO_SEARCH_RANGE)->set_flags(ui::UI_GROUP3 | ui::UI_OPTIONAL);
 }
 
 ui::moditem_list* sampler::get_ui_items()
@@ -280,7 +280,7 @@ errors::TYPE sampler::validate()
     if (xfade_samples < 0
         || xfade_samples > wcnt::max_xfade_samples)
     {
-        sm_err("%s out of range 0 ~ %d.", 
+        sm_err("%s out of range 0 ~ %d.",
                 param::names::get(param::XFADE_SAMPLES),
                 wcnt::max_xfade_samples);
         invalidate();
@@ -342,7 +342,7 @@ void sampler::init()
                 xf_st_buf[i].right = 0;
             }
         }
-    } 
+    }
     else {
         sm_err("sampler %s has not got an open wav. Expect sigsegv\n",
                                                         get_username());
@@ -387,7 +387,7 @@ void sampler::init()
         if (loopsize != 0 && loopsize < xfade_samples)
             xfade_samples=(wcint_t)(loopsize / 2.1);
     }
-    if (xfade_samples > 0)	xf_step = 1.00 / (double)xfade_samples;
+    if (xfade_samples > 0)  xf_step = 1.00 / (double)xfade_samples;
     do_ac = OFF;
 }
 
@@ -609,7 +609,7 @@ void sampler::trigger_playback()
         #endif
         if (cur_pos - (wcnt::wav_buffer_size - 2) < 0)
             buffer_start_pos = 0;
-        else buffer_start_pos 
+        else buffer_start_pos
           = (samp_t)(cur_pos - (wcnt::wav_buffer_size -2));
     }
     fill_buffer(buffer_start_pos);
@@ -674,11 +674,11 @@ samp_t sampler::zero_search(samp_t pos, wcint_t range)
         wavfile->read_wav_at(sst_buf, buf_st_pos);
         for (int i = 0; i < halfsr; i++) {
             int si = range - i;
-            double s1 
+            double s1
              = ((sst_buf[i].left>0)?sst_buf[i].left:-sst_buf[i].left);
             s1 +=
              ((sst_buf[i].right>0)?sst_buf[i].right:-sst_buf[i].right);
-            double s2 
+            double s2
              = ((sst_buf[si].left>0)?sst_buf[si].left:-sst_buf[si].left);
             s2 +=
              ((sst_buf[si].right>0)?sst_buf[si].right:-sst_buf[si].right);
@@ -722,7 +722,7 @@ void sampler::pos_wavlen()
             (play_mode == PLAY_JUMP && jumpdir == PLAY_FWD)
             || (loopfinish == wavlength && loop_mode == LOOP_FWD))
     {
-        if (play_mode == PLAY_WRAP)	{
+        if (play_mode == PLAY_WRAP) {
             cur_pos = wavstart;
             #ifdef CRAZY_SAMPLER
             std::cout << "\n" << get_username();
@@ -761,7 +761,7 @@ void sampler::pos_wavlen()
     }
     if (cur_pos - (wcnt::wav_buffer_size - 2) < 0)
         buffer_start_pos = 0;
-    else buffer_start_pos 
+    else buffer_start_pos
      = (samp_t)(cur_pos - (wcnt::wav_buffer_size -2));
     fill_buffer(buffer_start_pos);
 }
@@ -813,7 +813,7 @@ void sampler::pos_loopend()
         std::cout << "(cur_pos != wavstart)cur_pos = " << cur_pos;
         #endif
     }
-    if (loop_fits_in_buffer && loop_loaded)	return;
+    if (loop_fits_in_buffer && loop_loaded) return;
     else loop_loaded = 1;
     if (cur_pos - (wcnt::wav_buffer_size -2) < 0)
         buffer_start_pos = 0;
@@ -905,7 +905,7 @@ void sampler::pos_loopbegin()
         #endif
         if (loop_fits_in_buffer && loop_loaded) return;
         else loop_loaded = 1;
-        if (cur_pos - (wcnt::wav_buffer_size - 2) < 0) 
+        if (cur_pos - (wcnt::wav_buffer_size - 2) < 0)
             buffer_start_pos = 0;
         else buffer_start_pos = (samp_t)
             (cur_pos - (wcnt::wav_buffer_size -2));
@@ -1114,7 +1114,7 @@ void sampler::xf_mix_fwd_mono(double* xf_m_tmp)
 {
     int i = 0;
     while (xf_size <= 1 && i <= xfade_samples) {
-        xf_m_buf[i] = xf_m_buf[i] * xf_size	+ xf_m_tmp[i];
+        xf_m_buf[i] = xf_m_buf[i] * xf_size + xf_m_tmp[i];
         xf_size += xf_step;
         i++;
     }
@@ -1211,4 +1211,3 @@ void sampler::xf_mix_rev_stereo(st_data* xf_st_tmp)
         i--;
     }
 }
-

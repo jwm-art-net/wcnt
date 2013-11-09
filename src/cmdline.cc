@@ -564,6 +564,17 @@ void cmdline::dobj_help_items(dobj::TYPE dt, int indent_level)
     item = items->goto_first();
     while(item) {
         switch(item->get_item_type()) {
+          case ui::UI_COMMENT: {
+            ui::dobjcomment* dc = static_cast<ui::dobjcomment*>(item);
+            const char* c = dc->get_descr();
+            msg += "\n";
+            msg.append(spc, indent_level * 4);
+            if (c) {
+                msg += "// ";
+                msg += c;
+            }
+            break;
+          }
           case ui::UI_PARAM: {
             ui::dobjparam* dp = static_cast<ui::dobjparam*>(item);
             param::TYPE pt = dp->get_param_type();
@@ -721,9 +732,9 @@ void cmdline::dobj_help()
 
 
 void cmdline::input_help()
-{ 
-// decide by the number of options passed on command line whether to 
-// load a wcnt file or to create all possible modules in order to 
+{
+// decide by the number of options passed on command line whether to
+// load a wcnt file or to create all possible modules in order to
 // access outputs.
     input::TYPE intype = input::names::type(opts[data[IH_IX].par1]);
     if (intype == input::ERR_TYPE) {
@@ -972,4 +983,3 @@ void cmdline::about()
 }
 
 //#include "../data/commandline_help.h"
-

@@ -5,7 +5,7 @@
 
 class adder : public synthmod::base
 {
-public:
+ public:
     adder(const char*);
     ~adder();
     void run() { out_output = *in_signal1 + *in_signal2; }
@@ -13,7 +13,7 @@ public:
     const void* set_in(input::TYPE, const void*);
     const void* get_in(input::TYPE) const;
 
-private:
+ private:
     const double* in_signal1;
     const double* in_signal2;
     double out_output;

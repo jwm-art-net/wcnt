@@ -168,7 +168,7 @@ namespace dobj
 
  bool base::validate_param(param::TYPE pt, errors::TYPE et)
  {
-   if (!get_ui_items()->validate(this, pt, et))
+   if (!get_ui_items()->data_validate(this, pt, et))
     {
         dobjerr("%s", param::names::get(pt));
         invalidate();

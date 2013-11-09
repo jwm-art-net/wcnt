@@ -26,11 +26,11 @@ void osc_clock::register_ui()
     register_param(param::OCTAVE)->set_flags(ui::UI_OPTIONAL);
     register_param(param::TUNING_SEMITONES)->set_flags(ui::UI_OPTIONAL);
     register_input(input::IN_FREQ_MOD1) ->set_flags(ui::UI_OPTIONAL |
-                                                    ui::UI_SET1);
-    register_param(param::FREQ_MOD1SIZE)->set_flags(ui::UI_SET1);
+                                                    ui::UI_GROUP1);
+    register_param(param::FREQ_MOD1SIZE)->set_flags(ui::UI_GROUP1);
     register_input(input::IN_FREQ_MOD2) ->set_flags(ui::UI_OPTIONAL |
-                                                    ui::UI_SET2);
-    register_param(param::FREQ_MOD2SIZE)->set_flags(ui::UI_SET2);
+                                                    ui::UI_GROUP2);
+    register_param(param::FREQ_MOD2SIZE)->set_flags(ui::UI_GROUP2);
     register_param(param::PORTAMENTO);
     register_param(param::RESPONSE_TIME);
 }
