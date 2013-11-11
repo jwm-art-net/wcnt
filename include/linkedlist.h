@@ -66,7 +66,10 @@ class linked_list
     typedef linked_list<T>  linkedlist;
     typedef T datatype;
 
-    T* goto_first(){
+    T* get_current() {
+        return current->get_data();
+    }
+    T* goto_first() {
         return (current = head->get_next())->get_data();
     }
     T* goto_last() {
@@ -219,7 +222,7 @@ template <typename T>
 ll_item<T>* linked_list<T>::insert_after(llitem* after, T* data)
 {
     if (!after || !data || !head->get_next())
-        return 0;  
+        return 0;
     if (multiref == MULTIREF_OFF) {
         if (find_data(sneak_first(), data))
             return 0;

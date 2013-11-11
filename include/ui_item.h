@@ -124,7 +124,27 @@ namespace ui
     }
 
     #ifdef DEBUG
-    virtual void dump() {};
+    virtual void dump() {
+        std::cout << "M" << (is_matched() ? "y" : "n");
+        std::cout << "  O" << (is_optional() ? "y" : "n");
+        switch(get_choice_id()){
+          case UI_CHOICE1: std::cout << "  C1"; break;
+          case UI_CHOICE2: std::cout << "  C2"; break;
+          case UI_CHOICE3: std::cout << "  C3"; break;
+          case UI_CHOICE4: std::cout << "  C4"; break;
+          default:         std::cout << "  C*"; break;
+            break;
+        }
+        switch(get_group_id()){
+          case UI_GROUP1: std::cout << "  G1"; break;
+          case UI_GROUP2: std::cout << "  G2"; break;
+          case UI_GROUP3: std::cout << "  G3"; break;
+          case UI_GROUP4: std::cout << "  G4"; break;
+          default:        std::cout << "  G*"; break;
+            break;
+        }
+        std::cout << "\t";
+    };
     #endif
   protected:
     virtual bool name_match(const char*) = 0;
@@ -272,6 +292,7 @@ namespace ui
 
     #ifdef DEBUG
     void dump() {
+        base<T>::dump();
         std::cout << "param: " << param::names::get(partype) << "(0x"
                   << (void*)this << ")" << std::endl;
     }
@@ -325,6 +346,7 @@ namespace ui
 
     #ifdef DEBUG
     void dump() {
+        base<T>::dump();
         std::cout << "input: " << input::names::get(intype) << "(0x"
                   << (void*)this << ")" << std::endl;
     }
@@ -358,6 +380,7 @@ namespace ui
 
     #ifdef DEBUG
     void dump() {
+        base<T>::dump();
         std::cout << "dobj: parent: " << dobj::names::get(parent) << "(0x"
                   << (void*)this << ")" ;
         std::cout << "child: " << dobj::names::get(child) << std::endl;

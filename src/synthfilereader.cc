@@ -615,12 +615,17 @@ bool synthfilereader::read_ui_moditems(synthmod::base* sm)
         }
     }
 
+    items->set_unspecified_optional_inputs_off();
+
+    return true;
+    /*
     item = items->match_validate();
     if (!item)
         return true;
 
     wc_err("%s", item->get_descr());
     return false;
+    */
 }
 
 
@@ -708,12 +713,15 @@ bool synthfilereader::read_ui_dobjitems(dobj::base* dob, const char* parent)
         }
     }
 
+    return true;
+/*
     item = items->match_validate();
     if (!item)
         return true;
 
     wc_err("%s", item->get_descr());
     return false;
+*/
 }
 
 bool

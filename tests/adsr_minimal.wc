@@ -5,8 +5,8 @@ samplerate 44100
 adsr env1
     envelope
         section name attack
-           // time 50 level 1.0
-            ut 50
+            ul 1.0
+            time 50 level 1.0
         section name decay
             time 950 level 0.85
         section name release
@@ -27,7 +27,7 @@ adsr env1
     sustain_state       on
 
 //    max_sustain_time    1000.0
-//    in_note_off_trig    off
+    in_note_off_trig    off
 //    release_is_ratio    on
 env1
 
