@@ -3,17 +3,20 @@ wcnt-1.30/jwmsynth
 samplerate 44100
 
 adsr env1
+
+    in_note_on_trig off
+
+
     envelope
-        section name attack
-            ul 1.0
-            time 50 level 1.0
+        section //name attack
+            time 50
+            //level 1.0
         section name decay
             time 950 level 0.85
         section name release
             time 950 level 0.0
     envelope
 
-    in_note_on_trig off
 
 //    zero_retrigger      off
 //    start_level         0.0

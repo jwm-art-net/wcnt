@@ -550,6 +550,8 @@ bool synthfilereader::read_ui_moditems(synthmod::base* sm)
     ui::moditem* item = items->match_begin(sm);
     int pass = 0;
 
+    std::cout << "_-_-_-_-_-_-_--- read_ui_moditems ---_-_-_-_-_-_-_" << std::endl;
+
     while (item) {
         const char* str = read_command();
         std::cout << "reading...  str: " << str << std::endl;
@@ -615,7 +617,7 @@ bool synthfilereader::read_ui_moditems(synthmod::base* sm)
         }
     }
 
-    items->set_unspecified_optional_inputs_off();
+    items->validate_matches();
 
     return true;
     /*
@@ -712,6 +714,8 @@ bool synthfilereader::read_ui_dobjitems(dobj::base* dob, const char* parent)
             }
         }
     }
+
+    items->validate_matches();
 
     return true;
 /*
