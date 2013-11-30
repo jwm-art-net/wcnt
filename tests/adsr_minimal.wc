@@ -8,9 +8,12 @@ adsr env1
 
 
     envelope
-        section //name attack
+        section
             time 50
-            //level 1.0
+            sppoop sqaplub
+            //ut 3.5
+            level 1.0
+            name attack
         section name decay
             time 950 level 0.85
         section name release
@@ -31,7 +34,7 @@ adsr env1
 
 //    max_sustain_time    1000.0
     in_note_off_trig    off
-//    release_is_ratio    on
+    release_is_ratio    on
 env1
 
 wcnt_exit

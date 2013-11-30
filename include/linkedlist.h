@@ -82,6 +82,15 @@ class linked_list
         return (current = current->get_next())->get_data();
     }
 
+    T* goto_item(llitem* item) {
+        for(llitem* tmp = sneak_first();
+            tmp != 0;
+            tmp = tmp->get_next())
+            if (tmp == item)
+                return (current = item)->get_data();
+        return 0;
+    }
+
     bool is_empty(){ return (head->get_next() ? false : true); }
 
     MULTIREF get_multiref() const       { return multiref;}

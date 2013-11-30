@@ -547,31 +547,21 @@ bool synthfilereader::read_ui_moditems(synthmod::base* sm)
     if (wcnt::jwm.is_verbose())
         cout << "--------" << endl;
 
-    ui::moditem* item = items->match_begin(sm);
-    int pass = 0;
+    items->match_begin(sm);
 
+    std::cout << "=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=" << std::endl;
     std::cout << "_-_-_-_-_-_-_--- read_ui_moditems ---_-_-_-_-_-_-_" << std::endl;
+    std::cout << "=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=" << std::endl;
 
-    while (item) {
+    while (true) {
         const char* str = read_command();
-        std::cout << "reading...  str: " << str << std::endl;
 
         if (strcmp(str, sm->get_username()) == 0) {
             command = new string(str);
             break;
         }
 
-        int maxpass = pass + 1;
-        while (!(item = items->match_item(str))) {
-            if (pass == maxpass) {
-                wc_err("unrecognised item '%s'.", str);
-                return false;
-            }
-            command = new string(str);
-            std::cout << "restarting items list pass " << pass << std::endl;
-            items->goto_first();
-            ++pass;
-        }
+        ui::moditem* item = items->match_item(str);
 
         switch(item->get_item_type()) {
           case ui::UI_ERROR:
@@ -579,6 +569,9 @@ bool synthfilereader::read_ui_moditems(synthmod::base* sm)
             wc_err("%s", item->get_descr());
             return false;
           case ui::UI_COMMENT:
+            #ifdef DEBUG
+            std::cout << "match_item didn't skip comment - wierd" << std::endl;
+            #endif
             break;
           case ui::UI_PARAM: {
             ui::modparam* mp = static_cast<ui::modparam*>(item);
@@ -609,25 +602,11 @@ bool synthfilereader::read_ui_moditems(synthmod::base* sm)
             wc_err("%s invalid ui element.", errors::stock::bad);
             return false;
         }
-        if (!(item = items->goto_next())) {
-            if (pass < maxpass) {
-                ++pass;
-                item = items->goto_first();
-            }
-        }
     }
 
     items->validate_matches();
 
     return true;
-    /*
-    item = items->match_validate();
-    if (!item)
-        return true;
-
-    wc_err("%s", item->get_descr());
-    return false;
-    */
 }
 
 
@@ -638,18 +617,19 @@ bool synthfilereader::read_ui_dobjitems(dobj::base* dob, const char* parent)
     if (!items)
         return true;
 
+    std::cout << "===========================================" << std::endl;
     std::cout << "read_ui_dobjitems(dob, parent '" << (parent ? parent : "NULL") << "')" << std::endl;
+    std::cout << "===========================================" << std::endl;
 
 
     if (wcnt::jwm.is_verbose())
         cout << "--------" << endl;
 
-    ui::dobjitem* item = items->match_begin(dob);
-    int pass = 0;
+    items->match_begin(dob);
 
     const char* dobjname = dobj::names::get(dob->get_object_type());
 
-    while (item) {
+    while (true) {
         const char* str = read_command();
         std::cout << "reading... str: '" << str << "'" << std::endl;
         std::cout << "comparing with parent: '" << (parent ? parent : "NULL") << "'" << std::endl;
@@ -663,18 +643,17 @@ bool synthfilereader::read_ui_dobjitems(dobj::base* dob, const char* parent)
             command = new string(str);
             break;
         }
-        int maxpass = pass + 1;
 
-        while (!(item = items->match_item(str))) {
-            if (pass == maxpass) {
-                wc_err("unrecognised item '%s'.", str);
-                return false;
-            }
-            command = new string(str);
-            std::cout << "restarting items list pass " << pass << std::endl;
-            item = items->goto_first();
-            ++pass;
+        ui::dobjitem* item = items->match_item(str);
+
+        #ifdef DEBUG
+        if (!item) {
+            wc_err("%s match_item returned null item.", errors::stock::major);
+            return false;
         }
+        #endif
+
+        std::cout << "about to switch.." << std::endl;
 
         switch (item->get_item_type()) {
           case ui::UI_ERROR:
@@ -707,25 +686,11 @@ bool synthfilereader::read_ui_dobjitems(dobj::base* dob, const char* parent)
             wc_err("%s invalid ui element.", errors::stock::bad);
             return false;
         }
-        if (!(item = items->goto_next())) {
-            if (pass < maxpass) {
-                ++pass;
-                item = items->goto_first();
-            }
-        }
     }
 
     items->validate_matches();
 
     return true;
-/*
-    item = items->match_validate();
-    if (!item)
-        return true;
-
-    wc_err("%s", item->get_descr());
-    return false;
-*/
 }
 
 bool
