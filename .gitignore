@@ -12,6 +12,10 @@
 *.la
 *.a
 
+# Geany
+*.gch
+
+
 wcnt
 examples/*.wav
 tests/*.wav
