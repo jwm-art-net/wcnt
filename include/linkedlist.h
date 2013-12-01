@@ -91,6 +91,17 @@ class linked_list
         return 0;
     }
 
+    T* goto_data(T* data) {
+        if (!current)
+            current = head;
+        while (current) {
+            if (current->get_data() == data)
+                return data;
+            current = current->get_next();
+        }
+        return 0;
+    }
+
     bool is_empty(){ return (head->get_next() ? false : true); }
 
     MULTIREF get_multiref() const       { return multiref;}

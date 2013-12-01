@@ -1,0 +1,53 @@
+wcnt-1.30/jwmsynth
+
+samplerate 44100
+
+
+wavfilein
+wavin
+    filename ../examples/samples/fox.wav
+    root_note c0
+wavin
+
+
+sampler
+s1
+    wavfile                wavin
+    play_dir               fwd
+    in_play_trig           off
+    in_stop_trig           off
+    in_phase_step          off
+
+  // Static start position:
+    start_pos              0
+  // Or modulated start position:
+    //in_start_pos_mod       off
+//    start_pos_min          0
+  //  start_pos_max          999
+
+  // Optional loop:
+    loop_mode              off
+    loop_start_pos         1000
+    loop_end_pos           5000
+    loop_is_offset         on
+  // Optional xfades:
+    xfade_samples          100
+    xfade_each_end         on
+    zero_search_range      0
+s1
+
+
+
+
+
+
+
+
+wcnt_exit
+exit
+    exit_bar    0
+    in_bar      off
+exit
+
+
+wcnt-1.30/jwmsynth
