@@ -553,6 +553,8 @@ bool synthfilereader::read_ui_moditems(synthmod::base* sm)
     std::cout << "_-_-_-_-_-_-_--- read_ui_moditems ---_-_-_-_-_-_-_" << std::endl;
     std::cout << "=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=" << std::endl;
 
+    ui::moditem* item = 0;
+
     while (true) {
         const char* str = read_command();
 
@@ -561,7 +563,7 @@ bool synthfilereader::read_ui_moditems(synthmod::base* sm)
             break;
         }
 
-        ui::moditem* item = items->match_item(str);
+        item = items->match_item(str);
 
         switch(item->get_item_type()) {
           case ui::UI_ERROR:
@@ -604,7 +606,10 @@ bool synthfilereader::read_ui_moditems(synthmod::base* sm)
         }
     }
 
-    items->validate_matches();
+    if ((item = items->validate_matches())) {
+        wc_err("%s", item->get_descr());
+        return false;
+    }
 
     return true;
 }
@@ -628,6 +633,7 @@ bool synthfilereader::read_ui_dobjitems(dobj::base* dob, const char* parent)
     items->match_begin(dob);
 
     const char* dobjname = dobj::names::get(dob->get_object_type());
+    ui::dobjitem* item = 0;
 
     while (true) {
         const char* str = read_command();
@@ -644,7 +650,7 @@ bool synthfilereader::read_ui_dobjitems(dobj::base* dob, const char* parent)
             break;
         }
 
-        ui::dobjitem* item = items->match_item(str);
+        item = items->match_item(str);
 
         #ifdef DEBUG
         if (!item) {
@@ -688,7 +694,10 @@ bool synthfilereader::read_ui_dobjitems(dobj::base* dob, const char* parent)
         }
     }
 
-    items->validate_matches();
+    if ((item = items->validate_matches())) {
+        wc_err("%s", item->get_descr());
+        return false;
+    }
 
     return true;
 }

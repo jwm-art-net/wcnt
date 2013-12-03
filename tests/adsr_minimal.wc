@@ -12,10 +12,9 @@ adsr env1
             ut 3.5
             ul 1.0
             name attack
-            lt 5.5
+          //  lt 5.5
             ll 0.9
         //    sppoop sqaplub
-            level 1.0
         section name decay
             time 950 level 0.85
         section name release

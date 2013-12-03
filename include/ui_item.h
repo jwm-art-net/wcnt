@@ -33,28 +33,38 @@ namespace ui
 
  enum FLAGS {
     UI_DEFAULT =    0x0000,
-    // items marked optional allow the user to not specify an item nor
-    // be demanded to do so by the user interface.note that the ui plays
-    // no part in the initialization of non specified items - with one
-    // exception: an off-connector is added for non specified inputs.
+    // items marked UI_OPTIONAL allow the user to not specify an individual
+    // item as optional which allows the end user to omit specification of
+    // it. NOTE: the ui plays no part in the initialization of non specified
+    // items - with the exception of unspecified inputs automatically having
+    // an off-connector created for them.
     UI_OPTIONAL =   0x0001,
 
-    // items marked as as choice means the user must choose one and only one
-    // of several choices. one choice might be one item, or one choice
-    // might be several items such that:
-    //      choice 1: (item1 AND item2 AND item3)
-    //  OR
-    //      choice 2: (item4 AND item5)
-    // additionally, if the first item in the first choice is also specified
-    // as UI_OPTIONAL, then the user may ommit specifying any choice at all.
-    // the first choice should always be UI_CHOICE1, and second UI_CHOICE2.
-    // if an item with UI_CHOICE1 is encountered immediately after a
-    // UI_CHOICE1 + n item, a new selection of choices is assumed.
+    // items marked UI_DUMMY are invisible to the end user but exist to
+    // trigger some form of setup work. Specifically, they are needed by
+    // module inputs which would otherwise exist in one UI_OPTION but not
+    // another (see below). Because unspecified inputs must be turned off,
+    // the UI_DUMMY input is used as a simple means to do so.
+    // (note: see the sampler module for usage example).
+    UI_DUMMY =      0x0002,
 
-    UI_CHOICE1 =    0x0010,
-    UI_CHOICE2 =    0x0020,
-    UI_CHOICE3 =    0x0040,
-    UI_CHOICE4 =    0x0080,
+    // items marked with UI_OPTION allow items to be grouped together as
+    // multiple choice options. only one option can be selected, but each
+    // option can contain several items. Only four options can be catered
+    // for but this is unlikely to be too few.
+    // additionally, if the first item in the first option is also specified
+    // as UI_OPTIONAL, then the user may ommit specifying any option at all.
+    // options must be specified in order, failure to do so will result in
+    // undefined behaviour.
+    // the first option should always be UI_OPTION1, and second UI_OPTION2.
+    // if an item with UI_OPTION1 is encountered immediately after a
+    // UI_OPTION1 + n item, a new multiple-choice selection of options is
+    // assumed.
+
+    UI_OPTION1 =    0x0010,
+    UI_OPTION2 =    0x0020,
+    UI_OPTION3 =    0x0040,
+    UI_OPTION4 =    0x0080,
 
     // items can be grouped together by setting one of the UI_GROUPn flags.
     // allowing the whole group of items in the user interface to either
@@ -70,10 +80,10 @@ namespace ui
     UI_GROUP3 =     0x0400,
     UI_GROUP4 =     0x0800,
 
-    // items cannot be part of a group and choice simultaneously.
+    // items cannot be part of a group and option simultaneously.
 
     // implementation only:
-    UI_CHOICE_MASK= 0x00f0,
+    UI_OPTION_MASK= 0x00f0,
     UI_GROUP_MASK = 0x0f00,
     UI_MATCHED =    0x8000,
  };
@@ -116,8 +126,8 @@ namespace ui
     void set_matched()      { flags |= UI_MATCHED; }
     bool is_matched()       { return !!(flags & UI_MATCHED); }
 
-    FLAGS get_choice_id() {
-        return static_cast<FLAGS>(flags & UI_CHOICE_MASK);
+    FLAGS get_option_id() {
+        return static_cast<FLAGS>(flags & UI_OPTION_MASK);
     }
     FLAGS get_group_id() {
         return static_cast<FLAGS>(flags & UI_GROUP_MASK);
@@ -127,11 +137,11 @@ namespace ui
     virtual void dump() {
         std::cout << "M" << (is_matched() ? "y" : "n");
         std::cout << "  O" << (is_optional() ? "y" : "n");
-        switch(get_choice_id()){
-          case UI_CHOICE1: std::cout << "  C1"; break;
-          case UI_CHOICE2: std::cout << "  C2"; break;
-          case UI_CHOICE3: std::cout << "  C3"; break;
-          case UI_CHOICE4: std::cout << "  C4"; break;
+        switch(get_option_id()){
+          case UI_OPTION1: std::cout << "  C1"; break;
+          case UI_OPTION2: std::cout << "  C2"; break;
+          case UI_OPTION3: std::cout << "  C3"; break;
+          case UI_OPTION4: std::cout << "  C4"; break;
           default:         std::cout << "  C*"; break;
             break;
         }
@@ -194,24 +204,24 @@ namespace ui
         return 0;
     }
 
-    int choice = 0;
-    choice += !!(f & UI_CHOICE1);
-    choice += !!(f & UI_CHOICE2);
-    choice += !!(f & UI_CHOICE3);
-    choice += !!(f & UI_CHOICE4);
+    int option = 0;
+    option += !!(f & UI_OPTION1);
+    option += !!(f & UI_OPTION2);
+    option += !!(f & UI_OPTION3);
+    option += !!(f & UI_OPTION4);
 
-    if (choice > 1) {
+    if (option > 1) {
         this->dump();
         std::cout << "invalid ui item flags: " << f
-                  << "item has more than one choice-id bit set."
+                  << "item has more than one option-id bit set."
                   << std::endl;
         return 0;
     }
 
-    if (group && choice) {
+    if (group && option) {
         this->dump();
         std::cout << "invalid ui item flags: " << f
-                  << "item has both set-id and choice-id bits set."
+                  << "item has both set-id and option-id bits set."
                   << std::endl;
         return 0;
     }
