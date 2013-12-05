@@ -6,6 +6,7 @@
 #include "outputnames.h"
 #include "stockerrs.h"
 #include "types.h"
+#include "ui_moditem.h"
 
 
 namespace synthmod { class base; }
@@ -53,13 +54,13 @@ namespace modpart
     // register_ui should only be called within synthmod::register_ui.
     virtual void register_ui() = 0;
 
-    void register_sm_param(param::TYPE);
-    void register_sm_param(param::TYPE, const char* fixed_string);
+    ui::moditem* register_sm_param(param::TYPE);
+    ui::moditem* register_sm_param(param::TYPE, const char* fixed_string);
 
     /*  inputs & outputs OTOH, are unique to each instance, so will need
         registration per instance (ie in derived constructor).
     */
-    void register_sm_input(input::TYPE);
+    ui::moditem* register_sm_input(input::TYPE);
 
     bool validate_sm_param(param::TYPE, errors::TYPE);
 

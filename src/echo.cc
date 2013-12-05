@@ -15,6 +15,7 @@ echo::echo(const char* uname) :
 
 void echo::register_ui()
 {
+    gain::register_ui();
     register_param(param::DELAY_TIME);
     register_input(input::IN_FEEDBACK);
     register_param(param::FEED_LEVEL);
@@ -143,4 +144,3 @@ void echo::run()
     if (--fpos < 0)
         fpos = filterarraymax - 1;
 }
-

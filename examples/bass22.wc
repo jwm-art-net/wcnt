@@ -213,10 +213,8 @@ noise_generator ng1 ng1
 mono_amp
 amp1
     in_signal   psquare out_output
+    gain        1.0
     in_amp_eg   env     out_output
-    in_amp_mod  ng1     out_output
-    level         1.0
-    amp_mod_size  0.0275
     clip_level    1.0
 amp1
 
@@ -256,10 +254,8 @@ sc
 mono_amp
 boost_and_clip
     in_signal   sc out_output
+    gain 4.0
     in_amp_eg   env     out_output
-    in_amp_mod  off
-    level         4.0
-    amp_mod_size  0.0
     clip_level    0.9
 boost_and_clip
 

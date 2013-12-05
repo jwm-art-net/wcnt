@@ -45,19 +45,19 @@ namespace modpart
     return sm->type_registered();
  }
 
- void base::register_sm_param(param::TYPE pt)
+ ui::moditem* base::register_sm_param(param::TYPE pt)
  {
-    sm->register_param(pt);
+    return sm->register_param(pt);
  }
 
- void base::register_sm_param(param::TYPE pt, const char* fixed_string)
+ ui::moditem* base::register_sm_param(param::TYPE pt, const char* fixed_string)
  {
-    sm->register_param(pt, fixed_string);
+    return sm->register_param(pt, fixed_string);
  }
 
- void base::register_sm_input(input::TYPE it)
+ ui::moditem* base::register_sm_input(input::TYPE it)
  {
-    sm->register_input(it);
+    return sm->register_input(it);
  }
 
  bool base::validate_sm_param(param::TYPE pt, errors::TYPE et)
@@ -65,5 +65,3 @@ namespace modpart
     return sm->validate_param(pt, et);
  }
 }; // namespace modpart
-
-

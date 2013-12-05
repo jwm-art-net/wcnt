@@ -120,6 +120,7 @@ namespace ui
 
     base<T>* set_flags(int f);
     bool is_optional()      { return !!(flags & UI_OPTIONAL); }
+    bool is_dummy()         { return !!(flags & UI_DUMMY); }
     bool has_flag(FLAGS f)  { return !!(flags & f); }
 
     void reset_matched()    { flags &= ~UI_MATCHED; }

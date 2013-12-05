@@ -90,8 +90,8 @@ sampler1
         loop_end_pos            35500
         loop_is_offset          on
         bi-directional_offset   0
-        anti_clip_samples       50
-        anti_clip_each_end      on
+        xfade_samples       50
+        xfade_each_end      on
         zero_search_range       15
         phase_step_amount          1.0
 sampler1
@@ -113,8 +113,8 @@ sampler2
         loop_end_pos            35500
         loop_is_offset          on
         bi-directional_offset   0
-        anti_clip_samples       50
-        anti_clip_each_end      on
+        xfade_samples       50
+        xfade_each_end      on
         zero_search_range       15
         phase_step_amount          1.0
 sampler2

@@ -13,8 +13,8 @@ void gain::register_ui()
 {
     register_sm_input(input::IN_SIGNAL);
     register_sm_param(param::GAIN);
-    register_sm_input(input::IN_GAIN_MOD);
-    register_sm_param(param::GAIN_MODSIZE);
+    register_sm_input(input::IN_GAIN_MOD)->set_flags(ui::UI_GROUP1);
+    register_sm_param(param::GAIN_MODSIZE)->set_flags(ui::UI_GROUP1);
 }
 
 gain::~gain()
@@ -82,4 +82,3 @@ errors::TYPE gain::validate()
 
     return errors::NO_ERROR;
 }
-

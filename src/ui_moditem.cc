@@ -25,6 +25,11 @@ namespace ui
             i = 0;
         }
     }
+
+    #ifdef DEBUG
+    i->dump();
+    #endif
+
     return i;
  }
 

@@ -166,8 +166,8 @@ sampler1
         loop_end_pos            5000
         loop_is_offset          on
         bi-directional_offset   0
-        anti_clip_samples       5
-        anti_clip_each_end      off
+        xfade_samples       5
+        xfade_each_end      off
         zero_search_range       0
         phase_step_amount          1.0
 sampler1
@@ -328,7 +328,7 @@ pe1
         edit bt2.sampler1
             loop_mode bi
             phase_step_amount 1.0
-            anti_clip_samples 125
+            xfade_samples 125
 
     editlist
 pe1

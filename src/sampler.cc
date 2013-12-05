@@ -58,7 +58,7 @@ void sampler::register_ui()
 
     register_comment("Static start position:");
     register_param(param::START_POS)        ->set_flags(ui::UI_OPTION1 | ui::UI_OPTIONAL);
-    register_input(input::IN_START_POS_MOD) ->set_flags(ui::UI_OPTION2 | ui::UI_DUMMY);
+    register_input(input::IN_START_POS_MOD) ->set_flags(ui::UI_OPTION1 | ui::UI_DUMMY);
     register_comment("Or modulated start position:");
     register_input(input::IN_START_POS_MOD) ->set_flags(ui::UI_OPTION2);
     register_param(param::START_POS_MIN)    ->set_flags(ui::UI_OPTION2);
