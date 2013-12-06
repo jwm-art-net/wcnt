@@ -16,3 +16,17 @@ fxsparamlist::add_param(const char* str_list, param::TYPE pt)
     }
     return fsp;
 }
+
+#ifdef DEBUG
+#include <iostream>
+void fxsparamlist::dump()
+{
+    fixstrparam* f = goto_first();
+    std::cout << "fxsparamlist::dump()" << std::endl;
+    while (f) {
+        std::cout << "FXS: '" << param::names::get(f->get_param_type());
+        std::cout << "'\t'" << f->get_string_list() << "'" << std::endl;
+        f = goto_next();
+    }
+}
+#endif

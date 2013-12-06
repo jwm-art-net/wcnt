@@ -16,6 +16,11 @@ class fxsparamlist : public linked_list<fixstrparam>
     {
         return find_in_data(sneak_first(), pt)->get_data();
     }
+
+    #ifdef DEBUG
+    void dump();
+    #endif
+
 };
 
 #endif

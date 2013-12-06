@@ -8,14 +8,15 @@ adsr env1
 
 
     envelope
+        section name attack
+            time 5 level 0.85
         section
             ut 3.5
-            ul 1.0
+            lt 2.5
             name attack
-            //time 3
-            lt 5.5
-            ll 0.9
-         //   sppoop sqaplub
+            ul 1.0
+            ll 0.8
+           // level! 1.0
         section name decay
             time 950 level 0.85
         section name release

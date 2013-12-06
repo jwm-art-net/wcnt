@@ -111,7 +111,7 @@ void modifier::run()
 {
     double bias = fabs(*in_bias);
     if (func == ADD) {
-        out_output = *in_signal1 * (1 - bias) + 
+        out_output = *in_signal1 * (1 - bias) +
             *in_signal2 * fabs(-*in_signal1) * bias *
                 (type == M1 ? 1 : *in_signal1);
     }
@@ -126,5 +126,3 @@ void modifier::run()
                 (type == M1 ? 1 : *in_signal1);
     }
 }
-
-

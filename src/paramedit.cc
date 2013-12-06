@@ -107,6 +107,34 @@ bool paramedit::do_param_edits()
 bool paramedit::mod_param_edit(synthmod::base* mod, const char* parname,
                                                     const char* valstr)
 {
+
+    ui::moditem_list* items = mod->get_ui_items();
+    items->match_edit(mod);
+    ui::moditem* item = items->match_item(parname);
+
+    if (!item) {
+        dobjerr("Module %s does not have any parameter named %s.",
+                                        mod->get_username(), parname);
+        invalidate();
+        return false;
+    }
+
+    if (item->get_item_type() != ui::UI_PARAM) {
+        dobjerr("Module %s contains item '%s' but it is not a parameter.",
+                mod->get_username(), parname);
+        invalidate();
+        return false;
+    }
+
+    ui::modparam* mp = static_cast<ui::modparam*>(item);
+
+    if (!setpar::set_param(mod, mp->get_param_type(), valstr, 0)) {
+        dobjerr("%s", setpar::get_error_msg());
+        invalidate();
+        return false;
+    }
+
+    /*
     param::TYPE partype = param::names::type(parname);
 
     if (partype == param::ERR_TYPE) {
@@ -140,6 +168,7 @@ bool paramedit::mod_param_edit(synthmod::base* mod, const char* parname,
         invalidate();
         return false;
     }
+    */
 
     return true;
 }
@@ -213,4 +242,3 @@ const void* paramedit::get_param(param::TYPE dt) const
         default: return 0;
     }
 }
-

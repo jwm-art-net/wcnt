@@ -67,10 +67,20 @@ bool set_param(T* obj, param::TYPE pt, const char* value,
     void* datatmp = data;
     if (ioc == iocat::FIX_STR) {
         fixstrparam* fsp;
-        fsp =wcnt::get_fxsparamlist()->get_fix_str_param(pt);
+        fsp = wcnt::get_fxsparamlist()->get_fix_str_param(pt);
         if (!fsp) {
+            wcnt::get_fxsparamlist()->dump();
+
+        if (!wcnt::get_fxsparamlist()->get_fix_str_param(param::FUNC))
+            std::cout << "still failed manually to get param::FUNC" << std::endl;
+        if (!wcnt::get_fxsparamlist()->get_fix_str_param(param::DATA_FMT))
+            std::cout << "still failed manually to get param::DATA_FMT" << std::endl;
+        if (!wcnt::get_fxsparamlist()->get_fix_str_param(param::WAVE_TYPE))
+            std::cout << "still failed manually to get param::WAVE_TYPE" << std::endl;
+
+
             iocatconv::destroy_iocat_data(ioc, data);
-            setpar_err("No registered fixed string for %s parameter.", par);
+            setpar_err("No registered fixed string for '%s' parameter.", par);
             return false;
         }
         int n = fsp->get_substring_index((const char*)data);

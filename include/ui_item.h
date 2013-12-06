@@ -48,6 +48,11 @@ namespace ui
     // (note: see the sampler module for usage example).
     UI_DUMMY =      0x0002,
 
+    // items marked UI_FORCED_OPT have been flagged by user to force the
+    // setting of a parameter contained by an option which has not been
+    // selected.
+    UI_FORCED_OPT = 0x0004,
+
     // items marked with UI_OPTION allow items to be grouped together as
     // multiple choice options. only one option can be selected, but each
     // option can contain several items. Only four options can be catered
@@ -126,6 +131,9 @@ namespace ui
     void reset_matched()    { flags &= ~UI_MATCHED; }
     void set_matched()      { flags |= UI_MATCHED; }
     bool is_matched()       { return !!(flags & UI_MATCHED); }
+
+    void set_forced()       { flags |= UI_FORCED_OPT; }
+    bool was_forced()       { return !!(flags & UI_FORCED_OPT); }
 
     FLAGS get_option_id() {
         return static_cast<FLAGS>(flags & UI_OPTION_MASK);

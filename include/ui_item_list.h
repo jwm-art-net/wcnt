@@ -55,9 +55,12 @@ namespace ui
 
 /*  bool     quick_scan(const char*);*/
 
-    // call match_begin at the start of each new module/data object to
-    // be read.
+    // call match_begin at the start of each new module/data object
+    // definition being read from a file. match_edit at the start
+    // of editing via param_editor etc.
     void     match_begin(T);
+    void     match_edit(T);
+
     base<T>* match_item(const char*);
 
     // confirm all non-optional items have been matched etc,
@@ -75,6 +78,7 @@ namespace ui
     base<T>* item;
     base<T>* prev;
     base<T>* last;
+    bool     editing;
 /*
     llitem*  group0;
     FLAGS    group0id;
@@ -188,10 +192,10 @@ namespace ui
 
  template <class T>
  item_list<T>::item_list() :
- linkedlist(MULTIREF_OFF),
- subject(0),
- skip_id(UI_DEFAULT), match_id(UI_DEFAULT),
- item(0), prev(0), last(0),
+  linkedlist(MULTIREF_OFF),
+  subject(0),
+  skip_id(UI_DEFAULT), match_id(UI_DEFAULT),
+  item(0), prev(0), last(0), editing(false),
   listtype(0)
  {
     std::cout << "item_list<T>::item_list<T>()" << std::endl;
@@ -243,6 +247,7 @@ namespace ui
                 delete this->unlink_item(li);
                 delete i;
                 i = 0;
+                std::cout << "big fail for fixstr: '" << fixstr << "'" << std::endl;
             }
         }
         else {
@@ -309,6 +314,7 @@ namespace ui
     std::cout << "\n--------------------------------------------------\n"
               << "match_begin()" << std::endl;
 
+    editing = false;
     subject = t;
 
     if (!(item = this->goto_first()))
@@ -336,6 +342,16 @@ namespace ui
     item = this->goto_first();
  }
 
+
+ template <class T>
+ void item_list<T>::match_edit(T t)
+ {
+    editing = true;
+    subject = t;
+    choice.reset();
+    prev = last = 0;
+    item = this->goto_first();
+ }
 
  template <class T>
  base<T>* item_list<T>::match_item(const char* str)
@@ -400,10 +416,11 @@ restart:
             FLAGS id = item->get_option_id();
 
             if (id & UI_OPTION_MASK) {
-                if (item == failchoice) {
+                if (item == failchoice)
+                    break;/*{
                     ui_err("Invalid item '%s' not found.", str);
                     return error_item<T>::err();
-                }
+                }*/
                 choice.head = choice.opt0 = this->sneak_current();
                 choice.opt0id = id;
                 choice.chosen0 = 0;
@@ -413,8 +430,14 @@ restart:
                 base<T>* ic = match_item_choice(str);
                 if (ic)
                     return ic;
+                if (!failchoice) {
+                    failchoice = choice.head->get_data();
+                    std::cout << "\n\t*+*+*+*+*+*+*+ \tfailchoice: "; failchoice->dump();
+                }
                 std::cout << "resetting choice before restart..." << std::endl;
                 skip_choice();
+                if (item == failchoice)
+                    break;
                 goto restart;
             }
 /*
@@ -428,7 +451,7 @@ restart:
             }
 */
             if (item->is_name_match(str)) {
-                if (item->is_matched()) {
+                if (!editing && item->is_matched()) {
                     ui_err("Duplicate item: %s.", item->get_name());
                     return error_item<T>::err();
                 }
@@ -500,6 +523,26 @@ restart:
  template <class T>
  base<T>* item_list<T>::match_item_choice(const char* str)
  {
+    char buf[80];
+    size_t l = strlen(str);
+
+    if (l > 80) {
+        strncpy(buf, str, 80);
+        buf[79] = '\0';
+        l = 79;
+    }
+    else
+        strcpy(buf, str);
+
+    bool forced = false;
+
+    if (buf[l - 1] == '!') {
+        buf[l - 1] = '\0';
+        forced = true;
+    }
+
+    str = buf;
+
     std::cout << "match_item_choice(str:\"" << str << "\", item:'" << item->get_name() << "')" << std::endl;
     std::cout << "-------------------- choice.head llitem: " << (void*) choice.head << std::endl;
 
@@ -508,6 +551,7 @@ restart:
     else if (choice.last == item) {
         if (!(item = this->goto_next()))
             this->goto_choice_head();
+        //choice.last = item;
     }
     std::cout << "\t!^!^!^!^!^!^!^ \tchoice.last: ";
     if (choice.last) choice.last->dump(); else std::cout << "NULL" << std::endl;
@@ -543,27 +587,32 @@ restart:
                 }
 
                 if (!item->is_dummy()) {
-                    if (!choice.chosen0 && item->is_matched()) {
-                        std::cout << "detected previously matched choice item" << std::endl;
-                        choice.chosen0 = choice.opt0;
-                        choice.chosen0id = choice.opt0id;
-                    }
-
-                    if (item->is_name_match(str)) {
-                        if (item->is_matched()) {
-                            ui_err("Item '%s' already specified.", item->get_name());
-                            return error_item<T>::err();
-                        }
-                        if (!choice.chosen0) {
+                    if (!choice.chosen0) {
+                        if (item->is_matched() && !item->was_forced()) {
+                            std::cout << "detected previously matched choice item" << std::endl;
                             choice.chosen0 = choice.opt0;
                             choice.chosen0id = choice.opt0id;
                         }
-                        else if (id != choice.chosen0id) {
-                            std::cout << "validity failed" << std::cout;
-                            match_item_chosen_invalid_error();
+                    }
+
+                    if (item->is_name_match(str)) {
+                        if (!editing && item->is_matched()) {
+                            ui_err("Item '%s' already specified.", item->get_name());
                             return error_item<T>::err();
                         }
-
+                        if (forced)
+                            item->set_forced();
+                        else {
+                            if (!choice.chosen0) {
+                                choice.chosen0 = choice.opt0;
+                                choice.chosen0id = choice.opt0id;
+                            }
+                            else if (id != choice.chosen0id) {
+                                std::cout << "validity failed" << std::cout;
+                                match_item_chosen_invalid_error();
+                                return error_item<T>::err();
+                            }
+                        }
                         item->set_matched();
                         choice.last = item;
                         last = choice.head->get_data();

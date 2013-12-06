@@ -12,10 +12,12 @@ header header.wch
 synth_file_reader
 wc1
     filename       drums02.wc
+
     mod_action     exclude
+    modules
+    modules
+
     dobj_action    exclude
-    modules
-    modules
     data_objects
     data_objects
 wc1
