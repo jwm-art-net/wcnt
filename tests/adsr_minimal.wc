@@ -11,12 +11,13 @@ adsr env1
         section name attack
             time 5 level 0.85
         section
+            name attack
             ut 3.5
             lt 2.5
-            name attack
             ul 1.0
             ll 0.8
-           // level! 1.0
+            level 1.0
+            //spspsp fdsf
         section name decay
             time 950 level 0.85
         section name release
