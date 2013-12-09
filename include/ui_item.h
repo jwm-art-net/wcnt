@@ -17,8 +17,9 @@
 // items may also be arranged in groups if they are optional, or arranged
 // as multiple-choices.
 
-
+#ifdef DEBUG
 #include <iostream>
+#endif
 
 namespace ui
 {
@@ -249,7 +250,9 @@ namespace ui
         static error_item<T> err;
         if (err_buf)
             err.err_msg = err_buf;
+        #ifdef DEBUG
         std::cout << "err.err_msg: " << (void*)err.err_msg << std::endl;
+        #endif
         return &err;
     }
 
@@ -302,8 +305,10 @@ namespace ui
     bool validate(T, errors::TYPE);
 
     bool name_match(const char* str) {
+        #ifdef DEBUG
         std::cout << "checking \"" << str << "\" against "
                   << param::names::get(partype) << std::endl;
+        #endif
         if (partype == param::STR_UNNAMED || partype == param::STR_LIST)
             return true;
         return (strcmp(str, param::names::get(partype)) == 0);
@@ -358,8 +363,10 @@ namespace ui
     bool validate(T, errors::TYPE) { return true; }
 
     bool name_match(const char* str) {
+        #ifdef DEBUG
         std::cout << "checking \"" << str << "\" against "
                   << input::names::get(intype) << std::endl;
+        #endif
         return (strcmp(str, input::names::get(intype)) == 0);
     }
 
@@ -392,8 +399,10 @@ namespace ui
     bool validate(T, errors::TYPE) { return true; }
 
     bool name_match(const char* str) {
+        #ifdef DEBUG
         std::cout << "checking \"" << str << "\" against "
                   << dobj::names::get(parent) << std::endl;
+        #endif
         return (strcmp(str, dobj::names::get(parent)) == 0);
     }
 

@@ -210,6 +210,7 @@ const void* sampler::get_param(param::TYPE pt) const
         case param::PLAY_DIR:          return &play_dir;
         case param::PLAY_MODE:         return &play_mode;
         case param::JUMP_MODE:         return &jump_mode;
+        case param::START_POS:         return &min_start_pos;
         case param::START_POS_MIN:     return &min_start_pos;
         case param::START_POS_MAX:     return &max_start_pos;
         case param::LOOP_BEGIN:        return &loop_begin;

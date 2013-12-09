@@ -70,7 +70,7 @@ namespace wcnt
     while(sm) {
         errors::TYPE et = sm->validate();
         if (et != errors::NO_ERROR) {
-            jwm_err("Module %s is a little odd, %s %s %s",
+            jwm_err("Module %s is a little odd: %s %s %s",
                             sm->get_username(),
                             synthmod::base::get_error_msg(),
                             errors::stock::get_prefix_msg(et),
@@ -78,7 +78,7 @@ namespace wcnt
             return false;
         }
         if (!sm->flag(synthmod::base::SM_VALID)){
-            jwm_err("Module %s had problems initialising...",
+            jwm_err("Module %s had problems initialising: %s",
                     sm->get_username(), synthmod::base::get_error_msg());
             return false;
         }
@@ -172,7 +172,7 @@ namespace wcnt
             }
             sample++;
             counter++;
-            if (counter == samplespersmall)	{
+            if (counter == samplespersmall) {
                 divcounter++;
                 if (divcounter == divisions) {
                     std::cout << bigcount;

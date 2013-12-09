@@ -142,4 +142,3 @@ errors::TYPE copier::validate()
     }
     return errors::ERROR;
 }
-

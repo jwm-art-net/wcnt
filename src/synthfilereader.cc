@@ -549,9 +549,11 @@ bool synthfilereader::read_ui_moditems(synthmod::base* sm)
 
     items->match_begin(sm);
 
+    #ifdef DEBUG
     std::cout << "=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=" << std::endl;
     std::cout << "_-_-_-_-_-_-_--- read_ui_moditems ---_-_-_-_-_-_-_" << std::endl;
     std::cout << "=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=" << std::endl;
+    #endif
 
     ui::moditem* item = 0;
 
@@ -567,7 +569,9 @@ bool synthfilereader::read_ui_moditems(synthmod::base* sm)
 
         switch(item->get_item_type()) {
           case ui::UI_ERROR:
+            #ifdef DEBUG
             std::cout << "***** ERROR ERROR ERROR *****" << std::endl;
+            #endif
             wc_err("%s", item->get_descr());
             return false;
           case ui::UI_COMMENT:
@@ -622,9 +626,11 @@ bool synthfilereader::read_ui_dobjitems(dobj::base* dob, const char* parent)
     if (!items)
         return true;
 
+    #ifdef DEBUG
     std::cout << "===========================================" << std::endl;
     std::cout << "read_ui_dobjitems(dob, parent '" << (parent ? parent : "NULL") << "')" << std::endl;
     std::cout << "===========================================" << std::endl;
+    #endif
 
 
     if (wcnt::jwm.is_verbose())
@@ -637,14 +643,18 @@ bool synthfilereader::read_ui_dobjitems(dobj::base* dob, const char* parent)
 
     while (true) {
         const char* str = read_command();
+        #ifdef DEBUG
         std::cout << "reading... str: '" << str << "'" << std::endl;
         std::cout << "comparing with parent: '" << (parent ? parent : "NULL") << "'" << std::endl;
+        #endif
         if (parent && strcmp(str, parent) == 0) {
             command = new string(str);
             break;
         }
 
+        #ifdef DEBUG
         std::cout << "comparing with dob: '" << dobjname << "'" << std::endl;
+        #endif
         if (strcmp(str, dobjname) == 0) {
             command = new string(str);
             break;
@@ -657,13 +667,15 @@ bool synthfilereader::read_ui_dobjitems(dobj::base* dob, const char* parent)
             wc_err("%s match_item returned null item.", errors::stock::major);
             return false;
         }
+        std::cout << "about to switch.." << std::endl;
         #endif
 
-        std::cout << "about to switch.." << std::endl;
 
         switch (item->get_item_type()) {
           case ui::UI_ERROR:
+            #ifdef DEBUG
             std::cout << "***** ERROR ERROR ERROR *****" << std::endl;
+            #endif
             wc_err("%s", item->get_descr());
             return false;
           case ui::UI_COMMENT:
@@ -673,7 +685,9 @@ bool synthfilereader::read_ui_dobjitems(dobj::base* dob, const char* parent)
             param::TYPE pt = dp->get_param_type();
             if (pt == param::STR_UNNAMED || pt == param::STR_LIST) {
                 command = new string(str);
+                #ifdef DEBUG
                 std::cout << "putting string '" << str << "' back..." << std::endl;
+                #endif
                 if (strcmp(str, parent) == 0)
                     return true;
             }
@@ -777,21 +791,6 @@ bool
 synthfilereader::read_ui_dobjparam(dobj::base* dob, param::TYPE partype,
                                                     const char* parent)
 {
-/*
-    if (partype != param::STR_UNNAMED && partype != param::STR_LIST) {
-        parname = read_command();
-        param::TYPE pt = param::names::type(parname, partype);
-        if (pt != partype) {
-            if (par->is_optional()) {
-                command = new string(parname);
-                return true;
-            }
-            wc_err("Unexpected parameter '%s', expected '%s'.",
-                            parname, param::names::get(partype));
-            return false;
-        }
-    }
-*/
     ostringstream conv;
     string* datastr = 0;
 
@@ -811,7 +810,9 @@ synthfilereader::read_ui_dobjparam(dobj::base* dob, param::TYPE partype,
             *synthfile >> *datastr;
         }
     }
-std::cout << "datastr: " << *datastr << std::endl;
+    #ifdef DEBUG
+    std::cout << "datastr: " << *datastr << std::endl;
+    #endif
     if (include_dbj(dob->get_username())) {
         if (!setpar::set_param(dob, partype, datastr->c_str(), &conv))
         {
@@ -834,13 +835,6 @@ synthfilereader::read_ui_moddobj(synthmod::base* sm, dobj::TYPE parent,
                                                      dobj::TYPE child)
 {
     const char* parentname = dobj::names::get(parent);
-/*    string dbjname = read_command();
-
-    if (dbjname != parentname) {
-        wc_err("expected %s got %s instead", parentname, dbjname.c_str());
-        return false;
-    }
-*/
     const char* childname = dobj::names::get(child);
     const char* com = read_command();
     // now read the list of items (each item's type is sprogtype)
@@ -909,13 +903,6 @@ synthfilereader::read_ui_dobjdobj(dobj::base* dob, dobj::TYPE parent,
                                                    dobj::TYPE child)
 {
     const char* parentname = dobj::names::get(parent);
-/*    string dbjname = read_command();
-
-    if (dbjname != parentname) {
-        wc_err("expected %s got %s instead", parentname, dbjname.c_str());
-        return false;
-    }
-*/
     const char* childname = dobj::names::get(child);
     const char* com = read_command();
     // now read the list of items (each item's type is sprogtype)
