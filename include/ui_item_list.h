@@ -15,7 +15,7 @@
 class connector;
 
 namespace wcnt {
-    fxsparamlist*   get_fxsparamlist();
+    fxsparamlist* get_fxsparamlist();
 };
 
 namespace ui

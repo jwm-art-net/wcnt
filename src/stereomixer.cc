@@ -85,6 +85,11 @@ dobj::base* stereomixer::add_dobj(dobj::base* dbj)
 {
     if (dbj->get_object_type() == dobj::DOBJ_SYNTHMOD) {
         synthmod::base* sm = ((dobjmod*)dbj)->get_synthmod();
+        if (!sm) {
+            sm_err("%s Attempt made to invalid module to mixer",
+                errors::stock::major);
+            return 0;
+        }
         if (sm->get_module_type() != synthmod::STEREOCHANNEL
             && !sm->get_out(output::OUT_LEFT))
         {
@@ -139,4 +144,3 @@ void stereomixer::run()
     out_left  *= master_level;
     out_right *= master_level;
 }
-

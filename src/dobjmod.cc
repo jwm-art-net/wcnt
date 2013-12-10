@@ -37,4 +37,3 @@ const void* dobjmod::get_param(param::TYPE pt) const
         default: return 0;
     }
 }
-

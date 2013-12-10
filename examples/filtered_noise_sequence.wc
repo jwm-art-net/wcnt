@@ -292,9 +292,9 @@ mono_amp
 amp1
     in_signal   psquare out_output
     in_amp_eg   env     out_output
-    in_amp_mod  ng1     out_output
-    level         1.0
-    amp_mod_size  0.475
+    gain            1.0
+    in_gain_mod     ng1     out_output
+    gain_mod_size  0.475
     clip_level    1.0
 amp1
 

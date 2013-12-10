@@ -155,16 +155,23 @@ namespace synthmod
     while(item) {
         if (item->get_item_type() == ui::UI_PARAM) {
             ui::modparam* mp = static_cast<ui::modparam*>(item);
-            const void* data = get_param(mp->get_param_type());
-            //if (!data || !to_mod->set_param(mp->get_param_type(), data))
-            if (!to_mod->set_param(mp->get_param_type(), data))
-            {
-                sm_err("Failed to duplicate parameter %s from mod %s "
-                           "to module %s.",
-                            param::names::get(mp->get_param_type()),
-                            username, to_mod->get_username());
-                to_mod->invalidate();
-                return;
+            if (mp->should_duplicate()) {
+                const void* data = get_param(mp->get_param_type());
+                if (!data) {
+                    sm_err("Failed to obtain data to duplicate parameter '%s'"
+                           " from module %s to module %s.",
+                                param::names::get(mp->get_param_type()),
+                                username, to_mod->get_username());
+                    return;
+                }
+                if (!to_mod->set_param(mp->get_param_type(), data)) {
+                    sm_err("Failed to duplicate parameter %s from mod %s "
+                               "to module %s.",
+                                param::names::get(mp->get_param_type()),
+                                username, to_mod->get_username());
+                    to_mod->invalidate();
+                    return;
+                }
             }
         }
         item = items->goto_next();

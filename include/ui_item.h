@@ -33,13 +33,50 @@ namespace ui
  };
 
  enum FLAGS {
-    UI_DEFAULT =    0x0000,
+    UI_DEFAULT =        0x0000,
     // items marked UI_OPTIONAL allow the user to not specify an individual
     // item as optional which allows the end user to omit specification of
     // it. NOTE: the ui plays no part in the initialization of non specified
     // items - with the exception of unspecified inputs automatically having
     // an off-connector created for them.
-    UI_OPTIONAL =   0x0001,
+    UI_OPTIONAL =       0x0001,
+
+    // items marked with UI_OPTIONn allow items to be grouped together as
+    // multiple choice options. only one option can be selected, but each
+    // option can contain several items. Only four options can be catered
+    // for but this is unlikely to be too few.
+
+    // the first option should always be UI_OPTION1, and second UI_OPTION2.
+    // if an item with UI_OPTION1 is encountered immediately after a
+    // UI_OPTION1 + n item, a new multiple-choice selection of options is
+    // assumed.
+
+    UI_OPTION1 =        0x0010,
+    UI_OPTION2 =        0x0020,
+    UI_OPTION3 =        0x0040,
+    UI_OPTION4 =        0x0080,
+
+    UI_OPT_OPTIONAL =   0x0100,
+
+    // NOTE: Options were designed more as substitutes for one another than
+    //      as choices between entirely different entitites. In particular,
+    //      where an output value is the result of modulation between two
+    //      fixed values, options allow the user to simply enter one value
+    //      instead of two when modulation is not desired.
+    //      However, this causes confusion when it comes to duplicating a
+    //      module or data object. Which items should be duplicated and which
+    //      should not?
+
+    //      The simplest method is to force responsibility onto the module or
+    //      data object to specify which items should be duplicated. This then
+    //      means it is also down to the module or data object to be sensible
+    //      and to ensure that the duplication does actually duplicate what
+    //      is necessary.
+
+    //      Items marked with UI_OPT_DUP are items in an option which should
+    //      be duplicated when duplication is called for. Only items marked
+    //      with UI_OPTION need use this.
+    UI_OPT_DUPLICATE =  0x0200,
 
     // items marked UI_DUMMY are invisible to the end user but exist to
     // trigger some form of setup work. Specifically, they are needed by
@@ -47,30 +84,8 @@ namespace ui
     // another (see below). Because unspecified inputs must be turned off,
     // the UI_DUMMY input is used as a simple means to do so.
     // (note: see the sampler module for usage example).
-    UI_DUMMY =      0x0002,
+    UI_OPT_DUMMY =      0x0400,
 
-    // items marked UI_FORCED_OPT have been flagged by user to force the
-    // setting of a parameter contained by an option which has not been
-    // selected.
-    UI_FORCED_OPT = 0x0004,
-
-    // items marked with UI_OPTION allow items to be grouped together as
-    // multiple choice options. only one option can be selected, but each
-    // option can contain several items. Only four options can be catered
-    // for but this is unlikely to be too few.
-    // additionally, if the first item in the first option is also specified
-    // as UI_OPTIONAL, then the user may ommit specifying any option at all.
-    // options must be specified in order, failure to do so will result in
-    // undefined behaviour.
-    // the first option should always be UI_OPTION1, and second UI_OPTION2.
-    // if an item with UI_OPTION1 is encountered immediately after a
-    // UI_OPTION1 + n item, a new multiple-choice selection of options is
-    // assumed.
-
-    UI_OPTION1 =    0x0010,
-    UI_OPTION2 =    0x0020,
-    UI_OPTION3 =    0x0040,
-    UI_OPTION4 =    0x0080,
 
     // items can be grouped together by setting one of the UI_GROUPn flags.
     // allowing the whole group of items in the user interface to either
@@ -81,17 +96,20 @@ namespace ui
     // items).  Where distinct groups immediatelly follow each other, then
     // only four distinct but adjaecent groups can be accommodated.
 
-    UI_GROUP1 =     0x0100,
-    UI_GROUP2 =     0x0200,
-    UI_GROUP3 =     0x0400,
-    UI_GROUP4 =     0x0800,
+    UI_GROUP1 =         0x1000,
+    UI_GROUP2 =         0x2000,
+    UI_GROUP3 =         0x4000,
+    UI_GROUP4 =         0x8000,
 
     // items cannot be part of a group and option simultaneously.
 
     // implementation only:
-    UI_OPTION_MASK= 0x00f0,
-    UI_GROUP_MASK = 0x0f00,
-    UI_MATCHED =    0x8000,
+    UI_OPTION_MASK=     0x00f0,
+    UI_GROUP_MASK =     0xf000,
+    UI_MATCHED =    0x10000000, // matched
+    UI_FORCED_OPT = 0x20000000, // user forced item from unselected option
+
+
  };
 
  enum {
@@ -126,7 +144,7 @@ namespace ui
 
     base<T>* set_flags(int f);
     bool is_optional()      { return !!(flags & UI_OPTIONAL); }
-    bool is_dummy()         { return !!(flags & UI_DUMMY); }
+    bool is_dummy()         { return !!(flags & UI_OPT_DUMMY); }
     bool has_flag(FLAGS f)  { return !!(flags & f); }
 
     void reset_matched()    { flags &= ~UI_MATCHED; }
@@ -135,6 +153,11 @@ namespace ui
 
     void set_forced()       { flags |= UI_FORCED_OPT; }
     bool was_forced()       { return !!(flags & UI_FORCED_OPT); }
+
+    bool should_duplicate() {
+        return (flags & UI_GROUP_MASK ? !!(flags & UI_OPT_DUPLICATE)
+                                      : true);
+    }
 
     FLAGS get_option_id() {
         return static_cast<FLAGS>(flags & UI_OPTION_MASK);
@@ -210,7 +233,7 @@ namespace ui
     if (group > 1) {
         this->dump();
         std::cout << "invalid ui item flags: " << f
-                  << "item has more than one set-id bit set." << std::endl;
+                  << "item has more than one group-id bit set." << std::endl;
         return 0;
     }
 
@@ -231,10 +254,24 @@ namespace ui
     if (group && option) {
         this->dump();
         std::cout << "invalid ui item flags: " << f
-                  << "item has both set-id and option-id bits set."
+                  << "item has both group-id and option-id bits set."
                   << std::endl;
         return 0;
     }
+
+    if (!option) {
+        if (f & UI_OPT_OPTIONAL
+         || f & UI_OPT_DUPLICATE
+         || f & UI_OPT_DUMMY)
+        {
+            this->dump();
+            std::cout << "invalid ui item flags: " << f
+                      << "item has UI_OPT_xxx flags set without UI_OPTIONx set."
+                      << std::endl;
+            return 0;
+        }
+    }
+
     #endif
     return this;
  }
