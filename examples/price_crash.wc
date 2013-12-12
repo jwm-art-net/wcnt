@@ -306,12 +306,12 @@ sq1
 //************** AMP ****************\\
 mono_amp
 amp1
-    in_signal   sq1     out_output
-    in_amp_eg   env_alt out_output
-    in_amp_mod  env     out_output
-    level         0.211
-    amp_mod_size  1.0
-    clip_level    1.0
+    in_signal       sq1     out_output
+    gain            0.211
+    in_gain_mod     env     out_output
+    gain_mod_size   1.0
+    in_amp_eg       env_alt out_output
+    clip_level      1.0
 amp1
 //************** AMP ****************\\
 //************** AMP ****************\\

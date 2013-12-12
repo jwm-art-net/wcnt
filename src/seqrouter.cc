@@ -7,10 +7,9 @@
 #include <sstream>
 
 seq_router::seq_router(const char* uname) :
-
  synthmod::base(synthmod::SEQ_ROUTER, uname, SM_UNGROUPABLE),
  in_index(0), in_note_on_trig(0), in_note_slide_trig(0),
- in_note_off_trig(0), in_freq(0), in_velocity(0),
+ in_note_off_trig(0), in_freq(0), in_velocity(0), in_all_off_trig(0),
  count(0), wrap(OFF),
  index(-1), last_on_ix(-1), last_slide_ix(-1), last_off_ix(-1),
  grp(0), on_trigs(0), slide_trigs(0), off_trigs(0), vels(0), freqs(0)
@@ -262,4 +261,3 @@ void seq_router::run()
         }
     }
 }
-

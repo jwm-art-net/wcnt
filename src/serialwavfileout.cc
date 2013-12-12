@@ -11,8 +11,8 @@ serialwavfileout::serialwavfileout(const char* uname) :
  in_l(0), in_r(0), in_bar(0),
  in_write_trig(0), in_stop_trig(0), write_status(OFF),
  data_format(FMT_FLT32), start_bar(0),
- end_bar(0), wav_basename(0), filepath(0), wavfilename(0), fileout(0),
- wavcount(0), in_write_region(OFF), status(WAV_STATUS_INIT),
+ end_bar(0), wav_basename(0), count(0), filepath(0), wavfilename(0),
+ fileout(0), wavcount(0), in_write_region(OFF), status(WAV_STATUS_INIT),
  st_buffer(NULL), sample_total(0), state(0), buff_pos(0)
 {
     register_output(output::OUT_WRITE_STATE);
@@ -311,5 +311,3 @@ void serialwavfileout::write_wav_chunk(st_data* buf, samp_t smp, int bsize)
         sf_writef_double(fileout, (double*)buf, bsize);
     }
 }
-
-

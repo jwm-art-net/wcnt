@@ -106,9 +106,9 @@ mono_amp
 amp1
     in_signal   lpf  out_output
     in_amp_eg   adsr out_output
-    in_amp_mod  off
-    level           0.25
-    amp_mod_size    0.0
+    gain           0.25
+    in_gain_mod  off
+    gain_mod_size    0.0
     clip_level      0.975
 amp1
 

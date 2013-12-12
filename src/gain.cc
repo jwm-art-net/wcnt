@@ -1,11 +1,12 @@
 #include "../include/gain.h"
 
 
-#include <iostream>
-
 gain::gain(synthmod::base* _sm) :
  modpart::base(_sm),
- in_mod(0), level(0.0), mod_amount(0.0), center(0.0), half_range(0.0)
+ out(0.0f),
+ in_signal(0), in_mod(0),
+ level(0.0), mod_amount(0.0),
+ center(0.0), half_range(0.0)
 {
 }
 

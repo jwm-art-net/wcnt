@@ -1,0 +1,50 @@
+wcnt-1.30/jwmsynth
+
+samplerate 44100
+
+// this file is for testing the mixer and synth_file_reader
+// it is not a test in its own right; the testing is performed
+// in mixer2.wc.
+// processing this file directly by wcnt suceeds,
+// but when loaded via a synth_file_reader from
+// mixer2.wc wcnt failes with:
+// -------8<-------------------------8<-------------------------8<------------------
+// validate_matches()
+//                      src/stereomixer.cc:   90 add_dobj                           
+//                  src/synthfilereader.cc:  886 read_ui_moddobj                    
+//                  src/synthfilereader.cc:  355 read_synthmodule                   
+//                  src/synthfilereader.cc:  232 read_and_create_dobj               
+//                            src/synth.cc:   45 generate_synth                     
+//In module mix1, *** MAJOR ERROR *** Could not add data object synthmod *** MAJOR ERROR *** Attempt made to add NULL module to mixer in data object mix..
+
+
+timer t1
+    timings
+        time seconds 0.0
+        time seconds 1.0
+    timings
+    time_is_relative on
+    recycle_mode off
+t1
+
+
+mix_chan ch1 in_left off in_right off ch1
+mix_chan ch2 in_left off in_right off ch2
+mix_chan ch3 in_left off in_right off ch3
+
+mixer
+mix1
+    mix
+        synthmod name ch1
+        synthmod name ch2
+        synthmod name ch3
+    mix
+    master_level  0.75
+mix1
+
+wcnt_exit wcnt_exit_module
+    in_bar      t1 out_count
+    exit_bar    1
+wcnt_exit_module
+
+wcnt-1.30/jwmsynth

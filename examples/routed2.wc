@@ -12,12 +12,6 @@ header header.wch
 synth_file_reader
 timefile
     filename time.wch
-    mod_action  exclude
-    dobj_action exclude
-    modules
-    modules
-    data_objects
-    data_objects
 timefile
 
 riff
@@ -192,9 +186,9 @@ mono_amp
 amp
     in_signal   wv out_output
     in_amp_eg   env out_output
-    in_amp_mod  off
-    level           1.0
-    amp_mod_size    0.0
+    gain           1.0
+    in_gain_mod  off
+    gain_mod_size    0.0
     clip_level      1.0
 amp
 

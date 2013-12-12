@@ -35,11 +35,11 @@ using namespace std; // just this once as it's used so much in here...
 
 synthfilereader::synthfilereader() :
  dobj::base(dobj::DEF_WCFILE),
- wc_filename(0), mod_action(WC_INCLUDE), dobj_action(WC_INCLUDE),
+ wc_filename(0), mod_action(WC_EXCLUDE), dobj_action(WC_EXCLUDE),
  modnamelist(0), dobjnamelist(0),
  wc_file_type(WC_INCLUDE_FILE),
  filestatus(NOT_FOUND), synthfile(0), buff(0), command(0),
- synthheader(0), inc_current(false)
+ synthheader(0), inc_current(false), mod_lineage(false)
 {
     synthfile = new ifstream;
     buff = new string;
@@ -55,7 +55,7 @@ synthfilereader::synthfilereader(WC_FILE_TYPE ft) :
  modnamelist(0), dobjnamelist(0),
  wc_file_type(ft),
  filestatus(NOT_FOUND), synthfile(0), buff(0), command(0),
- synthheader(0)
+ synthheader(0), inc_current(false), mod_lineage(false)
 {
     synthfile = new ifstream;
     buff = new string;
@@ -149,10 +149,12 @@ bool synthfilereader::read_and_create()
             print_msg();
         else if (dobj::names::category(com) == dobj::CAT_DEF)
         {
+            mod_lineage = false;
             if (!read_and_create_dobj(com))
                 return false;
         }
         else {
+            mod_lineage = true;
             if (!read_and_create_synthmod(com))
                 return false;
         }
@@ -253,6 +255,11 @@ bool synthfilereader::read_and_create_dobj(const char* com)
                 break;
             }
         }
+
+        if (dbj->get_object_type() == dobj::DEF_WCFILE)
+            cout << "    (back in " << wc_filename << ")" << endl;
+        if (wcnt::jwm.is_verbose())
+            cout << "end " << dbj->get_username() << endl;
     }
     else {
         if (wcnt::jwm.is_verbose()) {
@@ -261,10 +268,7 @@ bool synthfilereader::read_and_create_dobj(const char* com)
         }
         delete dbj;
     }
-    if (dbj->get_object_type() == dobj::DEF_WCFILE)
-        cout << "    (back in " << wc_filename << ")" << endl;
-    if (wcnt::jwm.is_verbose())
-        cout << "end " << dbj->get_username() << endl;
+
     return true;
 }
 
@@ -275,7 +279,7 @@ bool synthfilereader::include_mod(const char* name)
     modnamedobj* modname = modnamelist->goto_first();
     while(modname) {
         if (strcmp(modname->get_modname(), name) == 0)
-            return (mod_action == WC_INCLUDE) ? true : false;
+            return (mod_action == WC_INCLUDE);
         modname = modnamelist->goto_next();
     }
     return (mod_action == WC_INCLUDE) ? false : true;
@@ -285,10 +289,12 @@ bool synthfilereader::include_dbj(const char* name)
 {
     if (wc_file_type == WC_MAIN_FILE)
         return true;
+    if (mod_lineage && inc_current)
+        return true;
     dobjnamedobj* dobjname = dobjnamelist->goto_first();
     while(dobjname) {
         if (strcmp(dobjname->get_dobjname(), name) == 0)
-            return (dobj_action == WC_INCLUDE) ? true : false;
+            return (dobj_action == WC_INCLUDE);
         dobjname = dobjnamelist->goto_next();
     }
     return (dobj_action == WC_INCLUDE) ? false : true;
@@ -547,7 +553,7 @@ bool synthfilereader::read_ui_moditems(synthmod::base* sm)
     if (wcnt::jwm.is_verbose())
         cout << "--------" << endl;
 
-    items->match_begin(sm);
+    items->match_begin(sm, sm->get_username());
 
     #ifdef DEBUG
     std::cout << "=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=" << std::endl;
@@ -556,15 +562,21 @@ bool synthfilereader::read_ui_moditems(synthmod::base* sm)
     #endif
 
     ui::moditem* item = 0;
+    bool reading = true;
 
-    while (true) {
+    while (reading) {
         const char* str = read_command();
 
-        if (strcmp(str, sm->get_username()) == 0) {
-            command = new string(str);
-            break;
-        }
+        #ifdef DEBUG
+        std::cout << "()()() read command gave \"" << str << "\" ()()()" << std::endl;
+        #endif
 
+  /*      if (strcmp(str, sm->get_username()) == 0) {
+            maybe_end = true;
+            //command = new string(str);
+            //break;
+        }
+*/
         item = items->match_item(str);
 
         switch(item->get_item_type()) {
@@ -574,6 +586,13 @@ bool synthfilereader::read_ui_moditems(synthmod::base* sm)
             #endif
             wc_err("%s", item->get_descr());
             return false;
+          case ui::UI_USERNAME:
+            #ifdef DEBUG
+            std::cout << "ui::UI_USERNAME!" << std::endl;
+            #endif
+            command = new string(str);
+            reading = false;
+            break;
           case ui::UI_COMMENT:
             #ifdef DEBUG
             std::cout << "match_item didn't skip comment - wierd" << std::endl;
@@ -636,21 +655,22 @@ bool synthfilereader::read_ui_dobjitems(dobj::base* dob, const char* parent)
     if (wcnt::jwm.is_verbose())
         cout << "--------" << endl;
 
-    items->match_begin(dob);
+    items->match_begin(dob, parent);
 
     const char* dobjname = dobj::names::get(dob->get_object_type());
     ui::dobjitem* item = 0;
+    bool reading = true;
 
-    while (true) {
+    while (reading) {
         const char* str = read_command();
         #ifdef DEBUG
-        std::cout << "reading... str: '" << str << "'" << std::endl;
-        std::cout << "comparing with parent: '" << (parent ? parent : "NULL") << "'" << std::endl;
+        std::cout << "eeep reading... str: '" << str << "'" << std::endl;
+        std::cout << "eeep comparing with parent: '" << (parent ? parent : "NULL") << "'" << std::endl;
         #endif
-        if (parent && strcmp(str, parent) == 0) {
+        /*if (parent && strcmp(str, parent) == 0) {
             command = new string(str);
             break;
-        }
+        }*/
 
         #ifdef DEBUG
         std::cout << "comparing with dob: '" << dobjname << "'" << std::endl;
@@ -678,6 +698,13 @@ bool synthfilereader::read_ui_dobjitems(dobj::base* dob, const char* parent)
             #endif
             wc_err("%s", item->get_descr());
             return false;
+          case ui::UI_USERNAME:
+            #ifdef DEBUG
+            std::cout << "ui::UI_USERNAME!" << std::endl;
+            #endif
+            command = new string(str);
+            reading = false;
+            break;
           case ui::UI_COMMENT:
             break;
           case ui::UI_PARAM: {
@@ -1185,14 +1212,14 @@ void synthfilereader::register_ui()
     register_param(param::FILENAME);
 
     register_param(param::MOD_ACTION, "include/exclude")
-                            ->set_flags(ui::UI_OPTIONAL | ui::UI_GROUP1);
+                            ->set_flags(ui::UI_GROUP1);
     register_dobj(dobj::LST_MODULES, dobj::SIN_MODNAME)
-                            ->set_flags(ui::UI_OPTIONAL | ui::UI_GROUP1);
+                            ->set_flags(ui::UI_GROUP1);
 
     register_param(param::DOBJ_ACTION, "include/exclude")
-                            ->set_flags(ui::UI_OPTIONAL | ui::UI_GROUP2);
+                            ->set_flags(ui::UI_GROUP2);
     register_dobj(dobj::LST_DOBJS, dobj::SIN_DOBJNAME)
-                            ->set_flags(ui::UI_OPTIONAL | ui::UI_GROUP2);
+                            ->set_flags(ui::UI_GROUP2);
 }
 
 ui::dobjitem_list* synthfilereader::get_ui_items()

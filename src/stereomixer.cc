@@ -86,7 +86,7 @@ dobj::base* stereomixer::add_dobj(dobj::base* dbj)
     if (dbj->get_object_type() == dobj::DOBJ_SYNTHMOD) {
         synthmod::base* sm = ((dobjmod*)dbj)->get_synthmod();
         if (!sm) {
-            sm_err("%s Attempt made to invalid module to mixer",
+            sm_err("%s Attempt made to add NULL module to mixer",
                 errors::stock::major);
             return 0;
         }

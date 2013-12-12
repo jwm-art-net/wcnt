@@ -8,7 +8,7 @@ dobjmod::dobjmod() :
 void dobjmod::register_ui()
 {
     register_param(param::MODNAME)
-            ->add_descr("A module to be contained by group.");
+            ->add_descr("Name of module.");
 }
 
 ui::dobjitem_list* dobjmod::get_ui_items()
@@ -33,7 +33,8 @@ const void* dobjmod::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case param::MODNAME: // aparently, no reason to use this.
+        case param::MODNAME:
+            return synth_mod; // aparently, there _was_ no reason to use this??
         default: return 0;
     }
 }

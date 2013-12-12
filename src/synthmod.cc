@@ -156,6 +156,7 @@ namespace synthmod
         if (item->get_item_type() == ui::UI_PARAM) {
             ui::modparam* mp = static_cast<ui::modparam*>(item);
             if (mp->should_duplicate()) {
+                std::cout << "duplicating item '" << item->get_name() << "'" << std::endl;
                 const void* data = get_param(mp->get_param_type());
                 if (!data) {
                     sm_err("Failed to obtain data to duplicate parameter '%s'"
@@ -173,6 +174,9 @@ namespace synthmod
                     return;
                 }
             }
+            else
+                std::cout << "NOT duplicating item '" << item->get_name() << "'" << std::endl;
+
         }
         item = items->goto_next();
     }

@@ -26,6 +26,7 @@ namespace ui
 
  enum TYPE {
     UI_ERROR,
+    UI_USERNAME,
     UI_COMMENT,
     UI_INPUT,
     UI_PARAM,
@@ -155,7 +156,7 @@ namespace ui
     bool was_forced()       { return !!(flags & UI_FORCED_OPT); }
 
     bool should_duplicate() {
-        return (flags & UI_GROUP_MASK ? !!(flags & UI_OPT_DUPLICATE)
+        return (flags & UI_OPTION_MASK ? !!(flags & UI_OPT_DUPLICATE)
                                       : true);
     }
 
@@ -275,6 +276,21 @@ namespace ui
     #endif
     return this;
  }
+
+ template <class T>
+ class username_item : public base<T>
+ {
+  public:
+    static username_item<T>* username()
+    {
+        static username_item<T> uname;
+        return &uname;
+    }
+    bool validate(T, errors::TYPE)  { return true; }
+  private:
+    username_item() : base<T>(UI_USERNAME) {};
+    bool name_match(const char*) { return false; }
+ };
 
 
  template <class T>

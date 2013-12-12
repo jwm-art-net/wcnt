@@ -140,9 +140,9 @@ mono_amp
 amp1
     in_signal   sw1     out_output
     in_amp_eg   adsr1   out_output
-    in_amp_mod  off
-    level        1.0
-    amp_mod_size 0.0
+    gain        1.0
+    in_gain_mod  off
+    gain_mod_size 0.0
     clip_level   1.0
 amp1
 

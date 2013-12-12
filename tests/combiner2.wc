@@ -1,0 +1,12 @@
+wcnt-1.30/jwmsynth
+
+samplerate 44100
+
+synth_file_reader
+sfr
+    filename combiner.wc
+sfr
+
+
+wcnt-1.30/jwmsynth
+

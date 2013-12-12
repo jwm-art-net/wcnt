@@ -845,7 +845,7 @@ void sampler::pos_wavstart()
     else jumpdir = PLAY_REV;
     if (play_mode == PLAY_WRAP ||
             (play_mode == PLAY_JUMP && jumpdir == PLAY_REV) ||
-            (loopstart = 0 && loop_mode == LOOP_REV))
+            (loopstart == 0 && loop_mode == LOOP_REV))
     {
         if (play_mode == PLAY_WRAP) {
             cur_pos = wavlength;

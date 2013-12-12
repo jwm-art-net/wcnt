@@ -46,6 +46,7 @@ namespace wcnt
  }
 
  globals::globals() :
+  modlist(0),
   wc_path(0),    wc_file(0),
   x_exit_bar(0), x_in_bar(0),
   verbose(false), dont_run(false), no_title(false), no_progress(false),
@@ -91,4 +92,3 @@ namespace wcnt
  globals jwm;
 
 }; // namespace wcnt
-

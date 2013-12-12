@@ -56,7 +56,16 @@ namespace ui
     // call match_begin at the start of each new module/data object
     // definition being read from a file. match_edit at the start
     // of editing via param_editor etc.
-    void     match_begin(T);
+    void     match_begin(T t) {
+        def_username = 0;
+        match_begin_proper(t);
+    }
+
+    void     match_begin(T t, const char* username) {
+        def_username = username;
+        match_begin_proper(t);
+    }
+
     void     match_edit(T);
 
     base<T>* match_item(const char*);
@@ -110,6 +119,8 @@ namespace ui
 
     } choice;
 
+    void    match_begin_proper(T);
+
     base<T>* match_item_choice(const char*);
     bool     match_item_choice_is_valid();
     base<T>* match_item_chosen(const char*);
@@ -135,6 +146,7 @@ namespace ui
     }
 
     int listtype;
+    const char* def_username;
     static char err_msg[STRBUFLEN];
  };
 
@@ -145,7 +157,7 @@ namespace ui
   subject(0),
   skip_id(UI_DEFAULT), match_id(UI_DEFAULT),
   item(0), prev(0), last(0), editing(false),
-  listtype(0)
+  listtype(0), def_username(0)
  {
     #ifdef DEBUG
     std::cout << "item_list<T>::item_list<T>()" << std::endl;
@@ -243,7 +255,7 @@ namespace ui
  }
 
  template <class T>
- void item_list<T>::match_begin(T t)
+ void item_list<T>::match_begin_proper(T t)
  {
     #ifdef DEBUG
     int n = 0;
@@ -383,6 +395,8 @@ restart:
 
             if (item->is_name_match(str)) {
                 if (!editing && item->is_matched()) {
+                    if (def_username && strcmp(def_username, str) == 0)
+                        return username_item<T>::username();
                     ui_err("Duplicate item: %s.", item->get_name());
                     return error_item<T>::err();
                 }
@@ -406,6 +420,9 @@ restart:
             item = this->goto_first();
 
     } while (item != last);
+
+    if (def_username && strcmp(def_username, str) == 0)
+        return username_item<T>::username();
 
     ui_err("No item found matching '%s'.", str);
     return error_item<T>::err();
@@ -479,6 +496,8 @@ restart:
                 if (!item->is_dummy()) {
                     if (!choice.chosen0) {
                         if (item->is_matched() && !item->was_forced()) {
+                            if (def_username && strcmp(def_username, str) == 0)
+                                return username_item<T>::username();
                             #ifdef DEBUG
                             std::cout << "detected previously matched choice item" << std::endl;
                             #endif
@@ -489,6 +508,8 @@ restart:
 
                     if (item->is_name_match(str)) {
                         if (!editing && item->is_matched()) {
+                            if (def_username && strcmp(def_username, str) == 0)
+                                return username_item<T>::username();
                             ui_err("Item '%s' already specified.", item->get_name());
                             return error_item<T>::err();
                         }

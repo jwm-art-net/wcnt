@@ -82,8 +82,8 @@ private:
 
     char wc_err_msg[STRBUFLEN];
 
-
-    bool inc_current;  // include current? - bodgish
+    bool inc_current;   // include current? - bodgish
+    bool mod_lineage;
 
 //--- private member methods ---//
 

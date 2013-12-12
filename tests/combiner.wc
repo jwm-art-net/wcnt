@@ -1,71 +1,26 @@
-wcnt-1.26/jwmsynth
+wcnt-1.30/jwmsynth
 
 samplerate 44100
 
-timer
-t
-    timings
-        time seconds 1.0
-    timings
-t
-
-clock
-c
-    in_freq_mod1 off
-    freq 10
-    freq_mod1_size 1
-c
-
-constant c1 value 1.0 c1
-constant c2 value 2.0 c2
-constant c3 value 3.0 c3
-constant c4 value 4.0 c4
-constant c5 value 5.0 c5
-
-wcnt_signal v1 in_signal c1 out_output level 1 v1
-wcnt_signal v2 in_signal c2 out_output level 1 v2
-wcnt_signal v3 in_signal c3 out_output level 1 v3
-wcnt_signal v4 in_signal c4 out_output level 1 v4
-wcnt_signal v5 in_signal c5 out_output level 1 v5
+wcnt_signal s1 in_signal off level 1 s1
+wcnt_signal s2 in_signal off level 1 s2
 
 combiner
 combine
     signals
-        synthmod name v1
-        synthmod name v2
-        synthmod name v3
-        synthmod name v4
-        synthmod name v5
+        synthmod name s1
+        synthmod name s2
     signals
     mean_total off
 combine
 
-inspector
-i
-    _in_double_float_       combine out_output
-    _in_double_float_trig_  c out_phase_trig
-    _in_short_int_          off
-    _in_short_int_trig_     off
-    _in_unsigned_long_      off
-    _in_unsigned_long_trig_ off
-    _in_state_              off
-    _in_state_trig_         off
-    _in_string_             off
-    _in_string_trig_        off
-    _double_float_msg_  ws:out_output=
-    _short_int_msg_     .
-    _long_int_msg_      .
-    _state_msg_         .
-    _string_msg_        .
-i
-
 wcnt_exit
 exit
-    in_bar      t out_count
+    in_bar      off
     exit_bar    0
 exit
 
-wcnt-1.26/jwmsynth
+wcnt-1.30/jwmsynth
 
 
 

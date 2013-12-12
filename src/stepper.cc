@@ -166,7 +166,7 @@ step_data* stepper::insert_step(double pos, double uplvl, double lolvl)
 step_data* stepper::insert_step(step_data* newstep)
 {
     llitem* old_step_item = find_in_data(sneak_first(),
-                            _pos_(newstep->get_position()));
+                                    _pos_(newstep->get_position()));
     if (old_step_item) {
         delete old_step_item->get_data();
         old_step_item->set_data(newstep);
@@ -174,8 +174,7 @@ step_data* stepper::insert_step(step_data* newstep)
     }
     else
         return ordered_insert(this, newstep,
-            &step_data::get_position
-                )->get_data();
+                                    &step_data::get_position)->get_data();
 }
 
 dobj::base* stepper::add_dobj(dobj::base* dbj)
@@ -263,5 +262,3 @@ void stepper::run()
     }
     else out_output = output;
 }
-
-

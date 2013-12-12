@@ -250,10 +250,12 @@ bool cmdline::set_jwm_globals()
     const char* fnptr;
     char* path = 0;
 
-    if (!(fnptr = ptr = filename = opts[data[WC_IX].par1])) {
+    if (!(filename = opts[data[WC_IX].par1])) {
         msg = "\nFilename not set.";
         return false;
     }
+
+    fnptr = ptr = filename;
 
     while (*ptr != '\0') {
         if (*ptr == '/') fnptr = ptr + 1;
@@ -651,12 +653,13 @@ void cmdline::dobj_help()
     }
 
     ui::dobjitem_list* items = dob->get_ui_items();
-    ui::dobjitem* item = items->goto_first();
 
     if (!items) {
         msg += "\nlusername";
         return;
     }
+
+    ui::dobjitem* item = items->goto_first();
 
     int mxl = 0;
     const char* spc = spaces::get(40);

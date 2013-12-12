@@ -1,0 +1,19 @@
+wcnt-1.30/jwmsynth
+
+samplerate 44100
+
+synth_file_reader
+sfr
+    filename    mixer.wc
+    mod_action  exclude
+    modules
+    modules
+
+    dobj_action include
+    data_objects
+    data_objects
+sfr
+
+
+wcnt-1.30/jwmsynth
+
