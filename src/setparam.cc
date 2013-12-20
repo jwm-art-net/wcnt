@@ -161,17 +161,14 @@ void* compute(T* obj, param::TYPE pt, void* data, int op)
 
 bool is_operator(const char* txt)
 {
-    if (strcmp(txt,"+") == 0) return true;
-    if (strcmp(txt,"-") == 0) return true;
-    if (strcmp(txt,"*") == 0) return true;
-    if (strcmp(txt,"/") == 0) return true;
-    return false;
+    return (*txt == '+' || *txt == '-' || *txt == '*' || *txt == '/');
 }
 
 int get_operator(const char* txt)
 {
-    if (*(txt+1)!=' ')
+    if (*(txt + 1) != ' ')
         return 0;
+
     switch(*txt){
         case '+':
         case '-':

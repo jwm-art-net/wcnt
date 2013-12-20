@@ -1,4 +1,4 @@
-wcnt-1.26/jwmsynth
+wcnt-1.30/jwmsynth
 
 //------------------------------------------------------------------------
 // examples/sinewave.wc
@@ -9,8 +9,6 @@ wcnt-1.26/jwmsynth
 //------------------------------------------------------------------------
 
 samplerate 44100
-bpm 120
-signature 4/4
 
 timer
 t
@@ -18,59 +16,31 @@ t
         time seconds 0
         time seconds 72
     timings
+    time_is_relative off
 t
 
 orbit
 orbit
     in_restart_trig off
     in_trig         orbclock1 out_phase_trig
-    orbit_type      quadrup //hopalong
-    a               1.00001025
-    b               -0.0100632
-    c               1.5850434
-    test_iterations 10000
+    orbit_type      quadrup
+    a               1.0025
+    b               -3.070632
+    c               2.75850434
+    test_iterations 100000
 orbit
 
-glame_filter
-orbfiltx
-    in_signal     orbit out_x
-    in_freq_mod1  off
-    filter_type     lowpass
-    freq            2500
-    freq_mod1_size  1
-    stages          1
-orbfiltx
-
-glame_filter
-orbfilty
-    in_signal     orbit out_y
-    in_freq_mod1  off
-    filter_type     lowpass
-    freq            2500
-    freq_mod1_size  1
-    stages          1
-orbfilty
-
 clock
 orbclock1
-    in_freq_mod1 orbfiltx out_output
-    freq 330
-    freq_mod1_size 3.0
-orbclock1
-
-clock
-clock1
-    in_freq_mod1 orbfiltx out_output
     freq 440
-    freq_mod1_size 3.0
-clock1
+orbclock1
 
 clock
-clock2
-    in_freq_mod1 orbfilty out_output
-    freq 110
-    freq_mod1_size 3.0
-clock2
+clock1
+    freq 220
+    in_freq_mod1 orbit out_x
+    freq_mod1_size 4.0
+clock1
 
 wave
 sine1
@@ -78,58 +48,9 @@ sine1
     type            sine
 sine1
 
-wave
-sine2
-    in_phase_step   clock2 out_phase_step
-    type            sine
-sine2
-
-constant mbias value 0.75 mbias
-
-modifier
-mod
-    in_signal1 sine1 out_output
-    in_signal2 sine2 out_output
-    in_bias mbias out_output
-    function mul
-    type m2
-mod
-
-group
-g1
-    modules
-        synthmod name clock1
-        synthmod name clock2
-        synthmod name sine1
-        synthmod name sine2
-        synthmod name mod
-    modules
-g1
-
-copier c1 from g1 to g2 c1
-
-param_editor
-pe1
-    editlist
-        edit g2.clock1
-            freq 330
-        edit g2.clock2
-            freq 55
-    editlist
-pe1
-
-balance
-mix1
-    in_signal1 g1.mod out_output
-    in_signal2 g2.mod out_output
-    function add
-    bias 0.25
-mix1
-
 fader
 faded
     in_bar      t out_count
-    in_bar_trig t out_trig
     start_bar      0
     end_bar        1
     fade_in_time   1000
@@ -138,7 +59,7 @@ faded
 
 multiplier
 m
-    in_signal1 mix1 out_output
+    in_signal1 sine1 out_output
     in_signal2 faded out_output
 m
 
@@ -146,8 +67,7 @@ wavfile_out
 wav
     in_left     m out_output
     in_right    m out_output
-    in_bar      faded out_bar
-    in_bar_trig faded out_trig
+    in_bar      faded out_count
     snapshot_mode off
     data_format pcm16
     filename    orbit.wav
@@ -157,8 +77,8 @@ wav
 
 wcnt_exit
 x
-    in_bar      faded out_bar
+    in_bar      faded out_count
     exit_bar    1
 x
 
-wcnt-1.26/jwmsynth
+wcnt-1.30/jwmsynth

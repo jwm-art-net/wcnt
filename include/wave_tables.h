@@ -19,7 +19,7 @@ class wave_tables
         WT_LAST
     };
 
-    static void instantiate() { wave_tables making_waves; }
+    static void instantiate() { static wave_tables making_waves; }
 
     static void calc_phase_step_scalar(unsigned long samplerate);
     static const double* get_table(WT);
