@@ -19,7 +19,7 @@ glame_filter::glame_filter(const char* uname) :
 
 void glame_filter::register_ui()
 {
-    register_param(param::GLAME_FILTER_TYPE, "lowpass/highpass");
+    register_param(param::GLAME_FILTER_TYPE, "lowpass|highpass");
     register_input(input::IN_SIGNAL);
     register_param(param::FREQ);
     register_input(input::IN_FREQ_MOD1);

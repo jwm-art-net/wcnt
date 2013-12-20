@@ -8,6 +8,7 @@
 #include "ui_item.h"
 
 #include <string>
+#include <sstream>
 
 // currently ui_item.h contains all the information about how this works.
 
@@ -53,6 +54,20 @@ namespace ui
     // specialist method, used by synthmod::base, dobj::base impl is empty.
     connector* add_connector_off(T, input::TYPE);
 
+    //  while the linkedlist provides methods for stepping through the list,
+    //  these do the same but additionally maintain information about item
+    //  groups and choices.
+    base<T>* first_item();
+    base<T>* next_item();
+
+    bool item_is_choice_head()          { return (choice.head != 0); }
+    bool item_is_choice_option_head()   { return (choice.opt0 != 0); }
+    bool item_choice_ended()            { return track.choice_ended; }
+    bool item_is_group_head()           { return (track.group_head != 0); }
+    bool item_group_ended()             { return track.group_ended; }
+
+    std::string get_item_header();
+
     // call match_begin at the start of each new module/data object
     // definition being read from a file. match_edit at the start
     // of editing via param_editor etc.
@@ -77,6 +92,7 @@ namespace ui
     // validates data for parameters, (T is the container)
     bool data_validate(T, param::TYPE, errors::TYPE);
 
+
   private:
     T       subject;
 
@@ -86,6 +102,20 @@ namespace ui
     base<T>* prev;
     base<T>* last;
     bool     editing;
+
+    struct track_item
+    {
+        bool    choice_ended;
+
+        llitem* group_head;
+        FLAGS   group_id;
+        bool    group_ended;
+
+        void reset() {
+            group_head = 0;
+            group_id = UI_DEFAULT;
+        }
+    } track;
 
     struct multiplechoice
     {
@@ -253,6 +283,136 @@ namespace ui
     #endif
     return i;
  }
+
+
+ template <class T>
+ base<T>* item_list<T>::first_item()
+ {
+    this->track.reset();
+    choice.reset();
+    item = this->goto_first();
+
+    if (!item)
+        return 0;
+
+    FLAGS id = item->get_option_id();
+
+    if (id & UI_OPTION_MASK) {
+        choice.head = choice.opt0 = this->sneak_current();
+        choice.opt0id = id;
+    }
+    else {
+        id = item->get_group_id();
+        if (id & UI_GROUP_MASK) {
+            track.group_head = this->sneak_current();
+            track.group_id = id;
+        }
+    }
+    return item;
+ }
+
+
+ template <class T>
+ base<T>* item_list<T>::next_item()
+ {
+    item = this->goto_next();
+    //  the tracking used here is different to that used in match_item.
+    //  the members pointing to the head of a group or choice are only
+    //  set when pointing to the head of a group or choice. While this
+    //  aids detection of head items, it means tracking state is moved
+    //  to the corresponding members which store item IDs.
+
+    if (!item)
+        return 0;
+
+    track.choice_ended = false;
+    track.group_ended = false;
+    choice.head = choice.opt0 = 0;
+    track.group_head = 0;
+
+    FLAGS id = item->get_option_id();
+
+    if (choice.opt0id & UI_OPTION_MASK) {
+        if (id & UI_OPTION_MASK) {
+            if (id == UI_OPTION1 && choice.opt0id > UI_OPTION1) {
+                choice.reset();
+                track.choice_ended = true;
+                choice.head = choice.opt0 = this->sneak_current();
+                choice.opt0id = id;
+            }
+            else if (id > choice.opt0id) {
+                choice.opt0 = this->sneak_current();
+                choice.opt0id = id;
+            }
+        }
+        else {
+            choice.reset();
+            track.choice_ended = true;
+        }
+    }
+    // allow fall from above..
+    if (!(choice.opt0id & UI_OPTION_MASK)) {
+        if (id & UI_OPTION_MASK) {
+            choice.head = choice.opt0 = this->sneak_current();
+            choice.opt0id = id;
+        }
+
+        id = item->get_group_id();
+
+        if (track.group_id & UI_GROUP_MASK) {
+            if (id & UI_GROUP_MASK) {
+                if (id != track.group_id) {
+                    track.group_head = this->sneak_current();
+                    track.group_id = id;
+                }
+            }
+            else {
+                track.reset();
+                track.group_ended = true;
+            }
+        }
+        else if (id & UI_GROUP_MASK) {
+            track.group_head = this->sneak_current();
+            track.group_id = id;
+        }
+    }
+
+    return item;
+ }
+
+
+ template <class T>
+ std::string item_list<T>::get_item_header()
+ {
+    std::string tmp = "";
+
+    if (this->item_is_choice_option_head()) {
+        if (this->item_is_choice_head()) {
+            if (item->is_opt_optional())
+                tmp = "//----- multi-choice (optional) -----";
+            else
+                tmp = "//----- multi-choice ---------";
+        }
+        else {
+            std::ostringstream s;
+            s << "//----- option " << item->get_option_no()
+                                     << " ---------";
+            tmp = s.str();
+        }
+    }
+    else if (this->item_is_group_head()) {
+        tmp = "//----- group (optional) --------";
+    }
+    else if (this->item_choice_ended()) {
+        tmp = "//----- multi-choice end ---------";
+    }
+    else if (this->item_group_ended()) {
+        tmp = "//----- group end ---------";
+    }
+
+    return tmp;
+ }
+
 
  template <class T>
  void item_list<T>::match_begin_proper(T t)

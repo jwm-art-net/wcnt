@@ -21,6 +21,8 @@
 #include <iostream>
 #endif
 
+#include "sstream"
+
 namespace ui
 {
 
@@ -145,6 +147,7 @@ namespace ui
 
     base<T>* set_flags(int f);
     bool is_optional()      { return !!(flags & UI_OPTIONAL); }
+    bool is_opt_optional()  { return !!(flags & UI_OPT_OPTIONAL); }
     bool is_dummy()         { return !!(flags & UI_OPT_DUMMY); }
     bool has_flag(FLAGS f)  { return !!(flags & f); }
 
@@ -167,29 +170,62 @@ namespace ui
         return static_cast<FLAGS>(flags & UI_GROUP_MASK);
     }
 
+    int get_option_no() {
+        switch (get_option_id()) {
+          case UI_OPTION1: return 1;
+          case UI_OPTION2: return 2;
+          case UI_OPTION3: return 3;
+          case UI_OPTION4: return 4;
+          default:         return 0;
+        }
+    }
+
+    int get_group_no() {
+        switch (get_group_id()) {
+          case UI_GROUP1: return 1;
+          case UI_GROUP2: return 2;
+          case UI_GROUP3: return 3;
+          case UI_GROUP4: return 4;
+          default:        return 0;
+        }
+    }
+
+    bool get_item_flags(char* buf, size_t sz) {
+        int i = 0;
+        for (; i < sz - 1; ++i)
+            buf[i] = ' ';
+        buf[i] = '\0';
+        std::ostringstream s;
+        int n = get_option_no();
+        if (n)
+            s << "C" << n;
+        else if ((n = get_group_no()))
+            s << "G" << n;
+        if (is_optional())
+            s << "o";
+        else
+            s << "*";
+        strncpy(buf, s.str().c_str(), sz);
+        return true;
+    }
+
     #ifdef DEBUG
     virtual void dump() {
         std::cout << "M" << (is_matched() ? "y" : "n");
         std::cout << "  O" << (is_optional() ? "y" : "n");
-        switch(get_option_id()){
-          case UI_OPTION1: std::cout << "  C1"; break;
-          case UI_OPTION2: std::cout << "  C2"; break;
-          case UI_OPTION3: std::cout << "  C3"; break;
-          case UI_OPTION4: std::cout << "  C4"; break;
-          default:         std::cout << "  C*"; break;
-            break;
-        }
-        switch(get_group_id()){
-          case UI_GROUP1: std::cout << "  G1"; break;
-          case UI_GROUP2: std::cout << "  G2"; break;
-          case UI_GROUP3: std::cout << "  G3"; break;
-          case UI_GROUP4: std::cout << "  G4"; break;
-          default:        std::cout << "  G*"; break;
-            break;
-        }
+        int n = get_option_no();
+        if (n)
+            std::cout << "  C" << n;
+        else
+            std::cout << "  C*";
+        if ((n = get_group_id()))
+            std::cout << "  G" << n;
+        else
+            std::cout << "  G*";
         std::cout << "\t";
     };
     #endif
+
   protected:
     virtual bool name_match(const char*) = 0;
 

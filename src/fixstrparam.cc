@@ -2,6 +2,8 @@
 
 #include <cstring>
 
+static const char FXSTRSEP = '|';
+
 fixstrparam::
 fixstrparam(const char* str_list, param::TYPE par_type)
  : string_list(str_list), param_type(par_type)
@@ -22,7 +24,7 @@ int fixstrparam::get_substring_count() const
     int substrcount = 1;
     const char* p = string_list;
     while(*p != '\0') {
-        if (*p == '/' && *(p + 1) != '\0')
+        if (*p == FXSTRSEP && *(p + 1) != '\0')
             substrcount++;
         p++;
     }
@@ -38,9 +40,9 @@ int fixstrparam::get_substring_index(const char* substr) const
     char* bptr;
     const char* ptr = string_list;
     while(*ptr) {
-        if (*ptr != '/') {
+        if (*ptr != FXSTRSEP) {
             bptr = buf;
-            while (*ptr != '/' && *ptr) {
+            while (*ptr != FXSTRSEP && *ptr) {
                 *bptr = *ptr;
                 bptr++;
                 ptr++;
@@ -68,7 +70,7 @@ const char* fixstrparam::get_substring(int index) const
         ps = p;
     int i = 0;
     while(*p != '\0'){
-        if(*p == '/') {
+        if(*p == FXSTRSEP) {
             i++;
             if (i == index)
                 ps = p + 1;

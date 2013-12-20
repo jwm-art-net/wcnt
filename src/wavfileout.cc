@@ -32,7 +32,7 @@ wavfileout::wavfileout(const char* uname) :
 void wavfileout::register_ui()
 {
     register_param(param::FILENAME);
-    register_param(param::DATA_FMT,"pcm16/pcm24/pcm32/float32/float64");
+    register_param(param::DATA_FMT,"pcm16|pcm24|pcm32|float32|float64");
     register_input(input::IN_LEFT);
     register_input(input::IN_RIGHT);
     register_input(input::IN_BAR);
@@ -286,4 +286,3 @@ void wavfileout::write_wav_chunk(st_data* buf, samp_t smp, int bsize)
         sf_writef_double(fileout, (double*)buf, bsize);
     }
 }
-

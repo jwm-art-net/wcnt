@@ -1211,12 +1211,12 @@ void synthfilereader::register_ui()
 {
     register_param(param::FILENAME);
 
-    register_param(param::MOD_ACTION, "include/exclude")
+    register_param(param::MOD_ACTION, "include|exclude")
                             ->set_flags(ui::UI_GROUP1);
     register_dobj(dobj::LST_MODULES, dobj::SIN_MODNAME)
                             ->set_flags(ui::UI_GROUP1);
 
-    register_param(param::DOBJ_ACTION, "include/exclude")
+    register_param(param::DOBJ_ACTION, "include|exclude")
                             ->set_flags(ui::UI_GROUP2);
     register_dobj(dobj::LST_DOBJS, dobj::SIN_DOBJNAME)
                             ->set_flags(ui::UI_GROUP2);

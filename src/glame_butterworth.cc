@@ -17,7 +17,7 @@ glame_butterworth::glame_butterworth(const char* uname) :
 
 void glame_butterworth::register_ui()
 {
-    register_param(param::GLAME_FILTER_TYPE, "lowpass/highpass");
+    register_param(param::GLAME_FILTER_TYPE, "lowpass|highpass");
     register_input(input::IN_SIGNAL);
     register_input(input::IN_CUTOFF_PHASE_STEP);
     register_param(param::RESONANCE);
@@ -107,7 +107,7 @@ const void* glame_butterworth::get_param(param::TYPE pt) const
 errors::TYPE glame_butterworth::validate()
 {
     if (resonance < 0.1 || resonance > 1.41) {
-        sm_err("%s must be within range 0.1 ~ 1.41.",   
+        sm_err("%s must be within range 0.1 ~ 1.41.",
                 param::names::get(param::RESONANCE));
         invalidate();
         return errors::ERROR;

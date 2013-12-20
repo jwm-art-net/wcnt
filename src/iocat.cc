@@ -4,16 +4,16 @@ namespace iocat
 {
  const struct names::gn_data names::data[LAST_TYPE] =
  {
-    { ERR_TYPE,     "Error Cat",                    0, "Error Category!" },
-    { DOUBLE,       "float_value",                  0, "Floating point value, ie 1.375." },
-    { WCINT_T,      "integer_value",                0, "Whole number, ie 12431." },
-    { SAMP_T,       "integer_value",                0, "Whole number, ie 124222211241." },
-    { TRIG,         "on/off",                       0, "on or off." },
-    { STATE,        "on/off",                       0, "on or off." },
-    { STRING,       "text_string",                  0, "A sequence of characters not containing spaces." },
-    { FIX_STR,      "fixed_string",                 0, "Multiple choice." },
-    { METER,        "integer_value/integer_value",  0, "Time signature, ie 5/8." },
-    { DOBJ,         "data_object_name",             0, "The name of a data object." },
-    { SYNTHMOD,     "module_name",                  0, "The name of a module." }
+    { ERR_TYPE,     "Error Cat",            0, "Error Category!" },
+    { DOUBLE,       "DECIMAL",              0, "Floating point value, ie 1.375." },
+    { WCINT_T,      "INTEGER",              0, "Whole number, ie 12431." },
+    { SAMP_T,       "INTEGER",              0, "Whole number, ie 124222211241." },
+    { TRIG,         "on|off",               0, "on or off." },
+    { STATE,        "on|off",               0, "on or off." },
+    { STRING,       "TEXT",                 0, "A sequence of characters not containing spaces." },
+    { FIX_STR,      "TEXT",                 0, "Multiple choice." },
+    { METER,        "INTEGER/INTEGER",      0, "Time signature, ie 5/8." },
+    { DOBJ,         "DATA-OBJECT",          0, "The name of a data object." },
+    { SYNTHMOD,     "MODULE",               0, "The name of a module." }
  };
 }; // namespace iocat

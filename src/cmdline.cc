@@ -124,7 +124,7 @@ bool cmdline::scan()
 #ifdef DEBUG
     std::cout << "\ncmdline::scan()";
     std::cout << "\ncommandline arguements count: " << opts_count;
-    for(int i = 0; i < opts_count; i++){
+    for(int i = 0; i < opts_count; i++) {
         std::cout << "\n" << i << " = '" << opts[i] << "'";
     }
 #endif
@@ -133,7 +133,7 @@ bool cmdline::scan()
         return false;
     }
     bool extraneous = false;
-    for (int arg = 1; arg < opts_count; arg++){
+    for (int arg = 1; arg < opts_count; arg++) {
 #ifdef DEBUG
         std::cout << "\nprocessing arg: " << opts[arg];
 #endif
@@ -286,6 +286,7 @@ void cmdline::invalid_args()
     }
 }
 
+
 void cmdline::module_help()
 {
     int n = data[MH_IX].par1;
@@ -341,7 +342,7 @@ void cmdline::module_help()
             return;
         }
     }
-    synthmod::base* sm = synthmod::list::create_module(smt, "username");
+    synthmod::base* sm = synthmod::list::create_module(smt, "USERNAME");
     msg = "\n";
     msg += synthmod::names::get(smt);
     if (sm == 0) {
@@ -365,8 +366,7 @@ void cmdline::module_help()
     ui::moditem_list* items = sm->get_ui_items();
     ui::moditem* item = (items != 0 ? items->goto_first() : 0);
 
-    const char* spc = spaces::get(40);
-    const char* outstr = "module_name output_name";
+    const char* outstr = "MODULE OUTPUT";
 
     int mxl1 = 0;
     int mxl2 = 0;
@@ -377,9 +377,21 @@ void cmdline::module_help()
         switch(item->get_item_type()) {
           case ui::UI_PARAM: {
             ui::modparam* mp = static_cast<ui::modparam*>(item);
-            l1 = strlen(param::names::get(mp->get_param_type()));
-            l2 = strlen(iocat::names::get(param::names::category(
-                                                mp->get_param_type())));
+            param::TYPE pt = mp->get_param_type();
+            iocat::TYPE ioc = param::names::category(pt);
+
+            l1 = strlen(param::names::get(pt));
+
+            if (ioc == iocat::FIX_STR) {
+                fixstrparam* fsp;
+                fsp = wcnt::get_fxsparamlist()->get_fix_str_param(pt);
+                if (fsp)
+                    l2 = strlen(fsp->get_string_list());
+                else
+                    l2 = strlen("fixstringparam problem");
+            }
+            else
+                l2 = strlen(iocat::names::get(ioc));
             break;
           }
           case ui::UI_INPUT: {
@@ -398,76 +410,93 @@ void cmdline::module_help()
         item = items->goto_next();
     }
     mxl1 += 2;
-
-    item = (items != 0 ? items->goto_first() : 0);
+    item = (items != 0 ? items->first_item() : 0);
 
     while(item) {
-        switch(item->get_item_type()) {
-          case ui::UI_COMMENT: {
-            ui::modcomment* mc = static_cast<ui::modcomment*>(item);
-            const char* c = mc->get_descr();
-            msg += "\n";
-            if (c) {
-                msg += "  // ";
-                msg += c;
+        if (!item->is_dummy()) {
+            const char* lead = "\n    ";
+            char flags[8];
+            std::string str = items->get_item_header();
+            if (str != "") {
+                msg += "\n    ";
+                msg += str;
             }
-            break;
-          }
-          case ui::UI_PARAM: {
-            ui::modparam* mp = static_cast<ui::modparam*>(item);
-            param::TYPE pt = mp->get_param_type();
-            const char* s1 = param::names::get(pt);
-            msg += "\n    ";
-            msg += s1;
-            msg.append(spc, mxl1 - strlen(s1));
-            iocat::TYPE ioc = param::names::category(pt);
-            const char* s2 = 0;
-            if (ioc == iocat::FIX_STR) {
-                fixstrparam* fsp;
-                fsp = wcnt::get_fxsparamlist()->get_fix_str_param(pt);
-                if (fsp)
-                    s2 = fsp->get_string_list();
+            item->get_item_flags(flags, 8);
+
+            switch(item->get_item_type()) {
+              case ui::UI_COMMENT: {
+                ui::modcomment* mc = static_cast<ui::modcomment*>(item);
+                const char* c = mc->get_descr();
+                msg += "\n";
+                if (c) {
+                    msg += "  // ";
+                    msg += c;
+                }
+                break;
+              }
+              case ui::UI_PARAM: {
+                ui::modparam* mp = static_cast<ui::modparam*>(item);
+                param::TYPE pt = mp->get_param_type();
+                const char* s1 = param::names::get(pt);
+                msg += lead;
+                msg += s1;
+                std::cout << "mxl1: " << mxl1 << " strlen(s1):" << strlen(s1) << std::endl;
+                msg.append(spaces::get(mxl1), mxl1 - strlen(s1));
+                iocat::TYPE ioc = param::names::category(pt);
+                const char* s2 = 0;
+                if (ioc == iocat::FIX_STR) {
+                    fixstrparam* fsp;
+                    fsp = wcnt::get_fxsparamlist()->get_fix_str_param(pt);
+                    if (fsp)
+                        s2 = fsp->get_string_list();
+                    else
+                        s2 = "fixstringparam problem";
+                }
                 else
-                    s2 = "fixstringparam problem";
-            }
-            else
-                s2 = iocat::names::get(ioc);
-            msg += s2;
-            if (wcnt::jwm.is_verbose()) {
-                const char* c = item->get_descr();
-                const char* descr = (!c ? param::names::descr(pt) : c);
-                msg.append(spc, mxl2 - strlen(s2));
+                    s2 = iocat::names::get(ioc);
+                msg += s2;
+                msg.append(spaces::get(mxl2), mxl2 - strlen(s2));
                 msg += " // ";
-                msg += descr;
-            }
-            break;
-          }
-          case ui::UI_INPUT: {
-            ui::modinput* mi = static_cast<ui::modinput*>(item);
-            input::TYPE it = mi->get_input_type();
-            const char* s1 = input::names::get(it);
-            msg += "\n    ";
-            msg += s1;
-            msg.append(spc, mxl1 - strlen(s1));
-            msg += outstr;
-            msg.append(spc, mxl2 - strlen(outstr));
-            if (wcnt::jwm.is_verbose()) {
-                const char* c = item->get_descr();
-                const char* descr = (!c ? input::names::descr(it) : c);
+                msg += flags;
+                if (wcnt::jwm.is_verbose()) {
+                    const char* c = item->get_descr();
+                    const char* descr = (!c ? param::names::descr(pt) : c);
+                    msg += descr;
+                }
+                break;
+              }
+              case ui::UI_INPUT: {
+                ui::modinput* mi = static_cast<ui::modinput*>(item);
+                input::TYPE it = mi->get_input_type();
+                const char* s1 = input::names::get(it);
+
+                std::cout << "mxl1: " << mxl1 << " strlen(s1):" << strlen(s1) << std::endl;
+
+
+                msg += lead;
+                msg += s1;
+                msg.append(spaces::get(mxl1), mxl1 - strlen(s1));
+                msg += outstr;
+                msg.append(spaces::get(mxl2), mxl2 - strlen(outstr));
                 msg += " // ";
-                msg += descr;
+                msg += flags;
+                if (wcnt::jwm.is_verbose()) {
+                    const char* c = item->get_descr();
+                    const char* descr = (!c ? input::names::descr(it) : c);
+                    msg += descr;
+                }
+                break;
+              }
+              case ui::UI_DOBJ: {
+                ui::moddobj* md = static_cast<ui::moddobj*>(item);
+                dobj_help(md->get_dobj_parent(), md->get_dobj_child(), 1);
+                break;
+              }
+              default:
+                break;
             }
-            break;
-          }
-          case ui::UI_DOBJ: {
-            ui::moddobj* md = static_cast<ui::moddobj*>(item);
-            dobj_help(md->get_dobj_parent(), md->get_dobj_child(), 1);
-            break;
-          }
-          default:
-            break;
         }
-        item = items->goto_next();
+        item = items->next_item();
     }
 
     modoutputlist::linkedlist* outlist =
@@ -494,7 +523,7 @@ void cmdline::module_help()
             output = outlist->goto_next();
             if (wcnt::jwm.is_verbose()) {
                 const char* descr = output::names::descr(ot);
-                msg.append(spc, mxl1 - strlen(s1));
+                msg.append(spaces::get(mxl1), mxl1 - strlen(s1));
                 msg += "// ";
                 msg += descr;
             }
@@ -511,20 +540,19 @@ void cmdline::module_help()
 void
 cmdline::dobj_help(dobj::TYPE parent, dobj::TYPE child, int indent_level)
 {
-    const char* spc = spaces::get(40);
     const char* enclosure = dobj::names::get(parent);
 
     if (indent_level > 4)
         indent_level = 4;
 
     msg += "\n";
-    msg.append(spc, indent_level * 4);
+    msg.append(spaces::get(20), indent_level * 4);
     msg += enclosure;
 
     dobj_help_items(child, indent_level + 1);
 
     msg += "\n";
-    msg.append(spc, indent_level * 4);
+    msg.append(spaces::get(20), indent_level * 4);
     msg += enclosure;
 }
 
@@ -533,16 +561,16 @@ void cmdline::dobj_help_items(dobj::TYPE dt, int indent_level)
     dobj::base* dob = dobj::list::create_dobj(dt);
     ui::dobjitem_list* items = dob->get_ui_items();
 
-    if (!items)
+    if (!items) {
+        delete dob;
         return;
-
-    const char* spc = spaces::get(40);
+    }
 
     if (indent_level > 4)
         indent_level = 4;
 
     msg += "\n";
-    msg.append(spc, indent_level * 4);
+    msg.append(spaces::get(20), indent_level * 4);
     msg += dobj::names::get(dt);
 
     ++indent_level;
@@ -563,57 +591,70 @@ void cmdline::dobj_help_items(dobj::TYPE dt, int indent_level)
     }
     mxl += 2;
 
-    item = items->goto_first();
+    item = items->first_item();
     while(item) {
-        switch(item->get_item_type()) {
-          case ui::UI_COMMENT: {
-            ui::dobjcomment* dc = static_cast<ui::dobjcomment*>(item);
-            const char* c = dc->get_descr();
-            msg += "\n";
-            msg.append(spc, indent_level * 4);
-            if (c) {
-                msg += "// ";
-                msg += c;
+        if (!item->is_dummy()) {
+            char flags[8];
+            std::string str = items->get_item_header();
+            if (str != "") {
+                msg += "\n";
+                msg.append(spaces::get(20), indent_level * 4);
+                msg += str;
             }
-            break;
-          }
-          case ui::UI_PARAM: {
-            ui::dobjparam* dp = static_cast<ui::dobjparam*>(item);
-            param::TYPE pt = dp->get_param_type();
-            const char* s = param::names::get(pt);
-            msg += "\n";
-            msg.append(spc, indent_level * 4);
-            msg += s;
-            msg.append(spc, mxl - strlen(s));
-            iocat::TYPE ioc = param::names::category(pt);
-            if (ioc == iocat::FIX_STR) {
-                fixstrparam* fsp;
-                fsp = wcnt::get_fxsparamlist()->get_fix_str_param(pt);
-                if (fsp)
-                    msg += fsp->get_string_list();
+            item->get_item_flags(flags, 8);
+
+            switch(item->get_item_type()) {
+              case ui::UI_COMMENT: {
+                ui::dobjcomment* dc = static_cast<ui::dobjcomment*>(item);
+                const char* c = dc->get_descr();
+                msg += "\n";
+                msg.append(spaces::get(20), indent_level * 4);
+                if (c) {
+                    msg += "// ";
+                    msg += c;
+                }
+                break;
+              }
+              case ui::UI_PARAM: {
+                ui::dobjparam* dp = static_cast<ui::dobjparam*>(item);
+                param::TYPE pt = dp->get_param_type();
+                const char* s = param::names::get(pt);
+                msg += "\n";
+                msg.append(spaces::get(20), indent_level * 4);
+                msg += s;
+                msg.append(spaces::get(mxl), mxl - strlen(s));
+                iocat::TYPE ioc = param::names::category(pt);
+                if (ioc == iocat::FIX_STR) {
+                    fixstrparam* fsp;
+                    fsp = wcnt::get_fxsparamlist()->get_fix_str_param(pt);
+                    if (fsp)
+                        msg += fsp->get_string_list();
+                    else
+                        msg += "fixstringparam problem";
+                }
                 else
-                    msg += "fixstringparam problem";
+                    msg += iocat::names::get(ioc);
+                if (wcnt::jwm.is_verbose()) {
+                    const char* c = item->get_descr();
+                    const char* descr = (!c ? param::names::descr(pt) : c);
+                    msg += " // ";
+                    msg += descr;
+                }
+                break;
+              }
+              case ui::UI_DOBJ: {
+                ui::dobjdobj* dd = static_cast<ui::dobjdobj*>(item);
+                dobj_help(dd->get_dobj_parent(), dd->get_dobj_child(),
+                                                            indent_level + 1);
+              }
+              default:
+                break;
             }
-            else
-                msg += iocat::names::get(ioc);
-            if (wcnt::jwm.is_verbose()) {
-                const char* c = item->get_descr();
-                const char* descr = (!c ? param::names::descr(pt) : c);
-                msg += " // ";
-                msg += descr;
-            }
-            break;
-          }
-          case ui::UI_DOBJ: {
-            ui::dobjdobj* dd = static_cast<ui::dobjdobj*>(item);
-            dobj_help(dd->get_dobj_parent(), dd->get_dobj_child(),
-                                                        indent_level + 1);
-          }
-          default:
-            break;
         }
-        item = items->goto_next();
+        item = items->next_item();
     }
+
+    delete dob;
 }
 
 void cmdline::dobj_help()
@@ -641,7 +682,7 @@ void cmdline::dobj_help()
 
     msg += "\n";
     msg += dobj::names::get(dt);
-    msg += "\nusername";
+    msg += "\nUSERNAME";
 
     const char* descr = dobj::names::descr(dt);
     if (descr) {
@@ -655,14 +696,13 @@ void cmdline::dobj_help()
     ui::dobjitem_list* items = dob->get_ui_items();
 
     if (!items) {
-        msg += "\nlusername";
+        msg += "\nUSERNAME";
         return;
     }
 
     ui::dobjitem* item = items->goto_first();
 
     int mxl = 0;
-    const char* spc = spaces::get(40);
 
     while(item) {
         int l = 0;
@@ -681,56 +721,65 @@ void cmdline::dobj_help()
     }
     mxl += 2;
 
-    item = items->goto_first();
+    item = items->first_item();
     while(item) {
-        switch(item->get_item_type()) {
-          case ui::UI_COMMENT: {
-            ui::dobjcomment* dc = static_cast<ui::dobjcomment*>(item);
-            const char* c = dc->get_descr();
-            msg += "\n";
-            if (c) {
-                msg += "  // ";
-                msg += c;
+        if (!item->is_dummy()) {
+            char flags[8];
+            std::string str = items->get_item_header();
+            if (str != "") {
+                msg += "\n    ";
+                msg += str;
             }
-            break;
-          }
-          case ui::UI_PARAM: {
-            ui::dobjparam* dp = static_cast<ui::dobjparam*>(item);
-            param::TYPE pt = dp->get_param_type();
-            const char* s = param::names::get(pt);
-            msg += "\n    ";
-            msg += s;
-            msg.append(spc, mxl - strlen(s));
-            iocat::TYPE ioc = param::names::category(pt);
-            if (ioc == iocat::FIX_STR) {
-                fixstrparam* fsp;
-                fsp = wcnt::get_fxsparamlist()->get_fix_str_param(pt);
-                if (fsp)
-                    msg += fsp->get_string_list();
+            item->get_item_flags(flags, 8);
+            switch(item->get_item_type()) {
+              case ui::UI_COMMENT: {
+                ui::dobjcomment* dc = static_cast<ui::dobjcomment*>(item);
+                const char* c = dc->get_descr();
+                msg += "\n";
+                if (c) {
+                    msg += "  // ";
+                    msg += c;
+                }
+                break;
+              }
+              case ui::UI_PARAM: {
+                ui::dobjparam* dp = static_cast<ui::dobjparam*>(item);
+                param::TYPE pt = dp->get_param_type();
+                const char* s = param::names::get(pt);
+                msg += "\n    ";
+                msg += s;
+                msg.append(spaces::get(mxl), mxl - strlen(s));
+                iocat::TYPE ioc = param::names::category(pt);
+                if (ioc == iocat::FIX_STR) {
+                    fixstrparam* fsp;
+                    fsp = wcnt::get_fxsparamlist()->get_fix_str_param(pt);
+                    if (fsp)
+                        msg += fsp->get_string_list();
+                    else
+                        msg += "fixstringparam problem";
+                }
                 else
-                    msg += "fixstringparam problem";
+                    msg += iocat::names::get(ioc);
+                if (wcnt::jwm.is_verbose()) {
+                    const char* c = item->get_descr();
+                    const char* descr = (!c ? param::names::descr(pt) : c);
+                    msg += " // ";
+                    msg += descr;
+                }
+                break;
+              }
+              case ui::UI_DOBJ: {
+                ui::dobjdobj* dd = static_cast<ui::dobjdobj*>(item);
+                dobj_help(dd->get_dobj_parent(), dd->get_dobj_child(), 1);
+                break;
+              }
+              default:
+                break;
             }
-            else
-                msg += iocat::names::get(ioc);
-            if (wcnt::jwm.is_verbose()) {
-                const char* c = item->get_descr();
-                const char* descr = (!c ? param::names::descr(pt) : c);
-                msg += " // ";
-                msg += descr;
-            }
-            break;
-          }
-          case ui::UI_DOBJ: {
-            ui::dobjdobj* dd = static_cast<ui::dobjdobj*>(item);
-            dobj_help(dd->get_dobj_parent(), dd->get_dobj_child(), 1);
-            break;
-          }
-          default:
-            break;
         }
-        item = items->goto_next();
+        item = items->next_item();
     }
-    msg += "\nusername";
+    msg += "\nUSERNAME";
 }
 
 

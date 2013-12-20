@@ -17,7 +17,7 @@ clockclock::clockclock(const char* uname) :
 void clockclock::register_ui()
 {
     register_param(param::FREQ);
-    register_input(input::IN_FREQ_MOD1)->set_flags(ui::UI_OPTIONAL | ui::UI_GROUP1);
+    register_input(input::IN_FREQ_MOD1)->set_flags(ui::UI_GROUP1);
     register_param(param::FREQ_MOD1SIZE)->set_flags(ui::UI_GROUP1);
 }
 
@@ -124,4 +124,3 @@ void clockclock::run()
     }
     else if (out_phase_trig == ON) out_phase_trig = OFF;
 }
-

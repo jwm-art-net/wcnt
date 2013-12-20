@@ -169,6 +169,7 @@ size_t cfmt(char* buf, size_t bufsz, const char* fmt, ...)
 spaces::~spaces()
 {
     if (data) {
+        std::cout << "~spaces freeing data length: " << len << std::endl;
         delete [] data;
         data = 0;
         len = 0;
@@ -178,20 +179,35 @@ spaces::~spaces()
 const char* spaces::get(int n)
 {
     static spaces blanks;
+    std::cout << "spaces::get(" << n << ") len:" << len << std::endl;
     if (n < 1)
         return 0;
     if (data) {
-        if (n <= len)
+        std::cout << "spaces::get data: " << (void*)data << std::endl;
+        if (n <= len) {
+            std::cout << "spaces::get returning truncated data[len - n == " << len - n << "]" << std::endl;
+            std::cout << "spaces::get data: " << (void*)&data[len - n] << std::endl;
             return &data[len - n];
+        }
+        std::cout << "spaces::get freeing data length: " << len << std::endl;
         delete [] data;
+        data = 0;
     }
+    std::cout << "spaces::get data: " << (void*)data << std::endl;
+    std::cout << "spaces::get allocating data length: " << n + 1 << std::endl;
     data = new char[n + 1];
-    for (int i = 0; i < n; ++i)
-        data[i] = ' ';
-    data[n] = '\0';
+    if (data) {
+        std::cout << "spaces::get data: " << (void*)data << std::endl;
+        std::cout << "spaces::get zeroing new data " << std::endl;
+        for (int i = 0; i < n; ++i)
+            data[i] = ' ';
+        data[n] = '\0';
+        len = n;
+    }
+    else
+        std::cout << "spaces::get *FAIL* *FAIL* *FAIL* *FAIL* " << std::endl;
     return data;
 }
 
 char* spaces::data = 0;
 int spaces::len = 0;
-

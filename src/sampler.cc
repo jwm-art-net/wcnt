@@ -44,38 +44,41 @@ sampler::sampler(const char* uname) :
 void sampler::register_ui()
 {
     register_param(param::WAVFILEIN);
-    register_param(param::PLAY_DIR, "fwd/rev")
+    register_param(param::PLAY_DIR, "fwd|rev")
                                             ->set_flags(ui::UI_OPTIONAL);
     register_input(input::IN_PLAY_TRIG);
     register_input(input::IN_STOP_TRIG)     ->set_flags(ui::UI_OPTIONAL);
     register_input(input::IN_PHASE_STEP);
     register_param(param::PHASE_STEP_AMOUNT)->set_flags(ui::UI_OPTIONAL);
 
-    register_param(param::PLAY_MODE, "stop/wrap/bounce/jump")
+    register_param(param::PLAY_MODE, "stop|wrap|bounce|jump")
                                             ->set_flags(ui::UI_GROUP1);
-    register_param(param::JUMP_MODE, "play/loop")
+    register_param(param::JUMP_MODE, "play|loop")
                                             ->set_flags(ui::UI_GROUP1);
 
-    register_comment("Static start position:");
+    //register_comment("[[ Static start position:");
     register_param(param::START_POS)        ->set_flags(ui::UI_OPTION1 | ui::UI_OPT_OPTIONAL);
     register_input(input::IN_START_POS_MOD) ->set_flags(ui::UI_OPTION1 | ui::UI_OPT_DUMMY);
-    register_comment("Or modulated start position:");
+    //register_comment("|| or modulated start position:");
     register_input(input::IN_START_POS_MOD) ->set_flags(ui::UI_OPTION2 | ui::UI_OPT_DUPLICATE);
     register_param(param::START_POS_MIN)    ->set_flags(ui::UI_OPTION2 | ui::UI_OPT_DUPLICATE);
     register_param(param::START_POS_MAX)    ->set_flags(ui::UI_OPTION2 | ui::UI_OPT_DUPLICATE);
+    //register_comment("]]");
 
-    register_comment("Optional loop:");
-    register_param(param::LOOP_MODE, "off/fwd/rev/bi")
+    //register_comment("[[ Optional loop:");
+    register_param(param::LOOP_MODE, "off|fwd|rev|bi")
                                             ->set_flags(ui::UI_GROUP2);
     register_param(param::LOOP_BEGIN)       ->set_flags(ui::UI_GROUP2);
     register_param(param::LOOP_END)         ->set_flags(ui::UI_GROUP2);
     register_param(param::LOOP_IS_OFFSET)   ->set_flags(ui::UI_GROUP2 | ui::UI_OPTIONAL);
     register_param(param::LOOP_BI_OFFSET)   ->set_flags(ui::UI_GROUP2 | ui::UI_OPTIONAL);
+    //register_comment("]]");
 
-    register_comment("Optional xfades:");
+    //register_comment("[[ Optional xfades:");
     register_param(param::XFADE_SAMPLES)    ->set_flags(ui::UI_GROUP3);
     register_param(param::XFADE_EACH_END)   ->set_flags(ui::UI_GROUP3);
     register_param(param::ZERO_SEARCH_RANGE)->set_flags(ui::UI_GROUP3 | ui::UI_OPTIONAL);
+    //register_comment("]]");
 }
 
 ui::moditem_list* sampler::get_ui_items()

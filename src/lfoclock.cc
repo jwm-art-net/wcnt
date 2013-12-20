@@ -18,12 +18,10 @@ void lfo_clock::register_ui()
 {
     register_param(param::FREQ);
     register_input(input::IN_PHASE_TRIG);
-    register_input(input::IN_FREQ_MOD1) ->set_flags(ui::UI_OPTIONAL |
-                                                    ui::UI_GROUP1);
+    register_input(input::IN_FREQ_MOD1) ->set_flags(ui::UI_GROUP1);
     register_param(param::FREQ_MOD1SIZE)->set_flags(ui::UI_GROUP1);
 
-    register_input(input::IN_FREQ_MOD2) ->set_flags(ui::UI_OPTIONAL |
-                                                    ui::UI_GROUP2);
+    register_input(input::IN_FREQ_MOD2) ->set_flags(ui::UI_GROUP2);
     register_param(param::FREQ_MOD2SIZE)->set_flags(ui::UI_GROUP2);
 }
 
@@ -160,4 +158,3 @@ void lfo_clock::run()
         out_phase_trig = ON;
     }
 }
-

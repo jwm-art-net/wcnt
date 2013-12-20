@@ -16,9 +16,9 @@ paramedit::paramedit() :
 
 void paramedit::register_ui()
 {
-    register_param(param::STR_UNNAMED)->add_descr("module/data_object_name");
+    register_param(param::STR_UNNAMED)->add_descr("MODULE-OR-DATA-OBJECT");
     register_param(param::STR_LIST)
-            ->add_descr("parameter_name parameter_value (...)");
+            ->add_descr("PARAMETER-NAME VALUE (...)");
 }
 
 ui::dobjitem_list* paramedit::get_ui_items()

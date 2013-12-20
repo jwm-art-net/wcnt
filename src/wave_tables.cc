@@ -71,7 +71,7 @@ void wave_tables::create_table(WT type)
                 }
                 for (i = 0; i < ssz; i ++){
                     table[type][s * ssz + i] = (type == TRI)
-                        ? lvl 
+                        ? lvl
                         : (1.0 + lvl) / 2.0;
                     lvl += rt * dir;
                 }
@@ -96,8 +96,8 @@ void wave_tables::create_table(WT type)
     }
 }
 
-const char* const wave_tables::fxstring =
-                                "one/sine/tri/saw/sine_01/tri_01/saw_01";
+const char* const
+wave_tables::fxstring = "one|sine|tri|saw|sine_01|tri_01|saw_01";
 
 const int wave_tables::table_bits = TABLE_BITS;
 const int wave_tables::table_shift = TABLE_SHIFT;

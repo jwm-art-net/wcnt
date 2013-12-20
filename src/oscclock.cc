@@ -8,7 +8,7 @@ osc_clock::osc_clock(const char* uname) :
  in_play_state(NULL), in_freq_mod1(NULL), in_freq_mod2(NULL),
  octave_offset(0), semitones(0), freq_mod1size(1.00), freq_mod2size(1.00),
  mod1size(0.00), mod2size(0.00), degs(360.00), degsize1(0.00),
- degsize2(0.00), portamento(0.0), response_time(0.0), slide_size(0.00),
+ degsize2(0.00), portamento(0.0), response_time(5.0), slide_size(0.00),
  target_phase_step(0.00),
  slidesamples(0)
 {
@@ -21,18 +21,19 @@ void osc_clock::register_ui()
 {
     register_input(input::IN_NOTE_ON_TRIG);
     register_input(input::IN_NOTE_SLIDE_TRIG);
-    register_input(input::IN_PLAY_STATE);
+    register_input(input::IN_PLAY_STATE)->set_flags(ui::UI_OPTIONAL)
+                                        ->add_descr("Hint to the osc_clock to"
+                                        " tell if it's driving an audible "
+                                        "sound or not.");
     register_input(input::IN_FREQ);
     register_param(param::OCTAVE)->set_flags(ui::UI_OPTIONAL);
     register_param(param::TUNING_SEMITONES)->set_flags(ui::UI_OPTIONAL);
-    register_input(input::IN_FREQ_MOD1) ->set_flags(ui::UI_OPTIONAL |
-                                                    ui::UI_GROUP1);
+    register_input(input::IN_FREQ_MOD1) ->set_flags(ui::UI_GROUP1);
     register_param(param::FREQ_MOD1SIZE)->set_flags(ui::UI_GROUP1);
-    register_input(input::IN_FREQ_MOD2) ->set_flags(ui::UI_OPTIONAL |
-                                                    ui::UI_GROUP2);
+    register_input(input::IN_FREQ_MOD2) ->set_flags(ui::UI_GROUP2);
     register_param(param::FREQ_MOD2SIZE)->set_flags(ui::UI_GROUP2);
-    register_param(param::PORTAMENTO);
-    register_param(param::RESPONSE_TIME);
+    register_param(param::PORTAMENTO)->set_flags(ui::UI_OPTIONAL);
+    register_param(param::RESPONSE_TIME)->set_flags(ui::UI_OPTIONAL);
 }
 
 ui::moditem_list* osc_clock::get_ui_items()
@@ -232,4 +233,3 @@ void osc_clock::run()
     else if (out_phase_trig == ON)
         out_phase_trig = OFF;
 }
-

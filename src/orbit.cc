@@ -18,7 +18,7 @@ orbit::orbit(const char* uname) :
 
 void orbit::register_ui()
 {
-    register_param(param::ORBIT_TYPE, "hopalong/threeply/quadrup");
+    register_param(param::ORBIT_TYPE, "hopalong|threeply|quadrup");
     register_input(input::IN_TRIG);
     register_input(input::IN_RESTART_TRIG);
     register_param(param::A);
@@ -188,5 +188,3 @@ const void* orbit::get_out(output::TYPE ot) const
         default: return 0;
     }
 }
-
-
