@@ -59,7 +59,7 @@ void sequencer::register_ui()
     register_input(input::IN_BEATS_PER_BAR);
     register_input(input::IN_BEAT_VALUE);
     register_input(input::IN_POS_STEP_SIZE);
-    register_param(param::VELOCITY_RESPONSE);
+    register_param(param::VELOCITY_RESPONSE)->set_flags(ui::UI_OPTIONAL);
 }
 
 ui::moditem_list* sequencer::get_ui_items()
@@ -331,7 +331,7 @@ void sequencer::output_note(note_data* note)
         vel_stpsize = (double)(out_velocity - out_velocity_ramp)
             / velrsp_max_samps;
         velrsp_samp = velrsp_max_samps;
-    } 
+    }
     else
         out_velocity_ramp = out_velocity;
 }
@@ -387,7 +387,7 @@ void sequencer::run()
             }
             if (note_play_state == OFF)
                 note_play_state = out_note_on_trig = ON;
-            else 
+            else
                 out_note_slide_trig = ON;
             play_note = next_note;
             next_note = 0;

@@ -111,9 +111,15 @@ namespace ui
         FLAGS   group_id;
         bool    group_ended;
 
+        #ifdef DEBUG
+        bool    choice_specified_dup;
+        #endif
         void reset() {
             group_head = 0;
             group_id = UI_DEFAULT;
+            #ifdef DEBUG
+            choice_specified_dup = false;
+            #endif
         }
     } track;
 
@@ -300,6 +306,8 @@ namespace ui
     if (id & UI_OPTION_MASK) {
         choice.head = choice.opt0 = this->sneak_current();
         choice.opt0id = id;
+        if (item->should_duplicate())
+            track.choice_specified_dup = true;
     }
     else {
         id = item->get_group_id();
@@ -335,7 +343,14 @@ namespace ui
     if (choice.opt0id & UI_OPTION_MASK) {
         if (id & UI_OPTION_MASK) {
             if (id == UI_OPTION1 && choice.opt0id > UI_OPTION1) {
+                #ifdef DEBUG
+                if (!track.choice_specified_dup)
+                    std::cout << "***** WARNING *****\n"
+                              << "\tno items in multiple choice marked to duplicate."
+                              << std::endl;
+                #endif
                 choice.reset();
+                track.reset();
                 track.choice_ended = true;
                 choice.head = choice.opt0 = this->sneak_current();
                 choice.opt0id = id;
@@ -344,9 +359,25 @@ namespace ui
                 choice.opt0 = this->sneak_current();
                 choice.opt0id = id;
             }
+            if (item->is_ui_opt_duplicate())
+                track.choice_specified_dup = true;
+            #ifdef DEBUG
+            if (!this->sneak_next()
+             && !track.choice_specified_dup)
+                std::cout << "***** WARNING *****\n"
+                          << "\tno items in multiple choice marked to duplicate."
+                          << std::endl;
+            #endif
         }
         else {
+            #ifdef DEBUG
+            if (!track.choice_specified_dup)
+                std::cout << "***** WARNING *****\n"
+                          << "\tno items in multiple choice marked to duplicate."
+                          << std::endl;
+            #endif
             choice.reset();
+            track.reset();
             track.choice_ended = true;
         }
     }
@@ -355,6 +386,8 @@ namespace ui
         if (id & UI_OPTION_MASK) {
             choice.head = choice.opt0 = this->sneak_current();
             choice.opt0id = id;
+            if (item->is_ui_opt_duplicate())
+                track.choice_specified_dup = true;
         }
 
         id = item->get_group_id();
@@ -367,6 +400,7 @@ namespace ui
                 }
             }
             else {
+                choice.reset();
                 track.reset();
                 track.group_ended = true;
             }
@@ -389,25 +423,24 @@ namespace ui
     if (this->item_is_choice_option_head()) {
         if (this->item_is_choice_head()) {
             if (item->is_opt_optional())
-                tmp = "//----- multi-choice (optional) -----";
+                tmp = "//--{ multi-choice (optional):";
             else
-                tmp = "//----- multi-choice ---------";
+                tmp = "//--{ multi-choice:";
         }
         else {
             std::ostringstream s;
-            s << "//----- option " << item->get_option_no()
-                                     << " ---------";
+            s << "//--{ or option " << item->get_option_no() << ":";
             tmp = s.str();
         }
     }
     else if (this->item_is_group_head()) {
-        tmp = "//----- group (optional) --------";
+        tmp = "//--{ group (optional):";
     }
     else if (this->item_choice_ended()) {
-        tmp = "//----- multi-choice end ---------";
+        tmp = "//--{ multi-choice end";
     }
     else if (this->item_group_ended()) {
-        tmp = "//----- group end ---------";
+        tmp = "//--{ group end";
     }
 
     return tmp;

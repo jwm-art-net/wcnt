@@ -461,6 +461,7 @@ void cmdline::module_help()
                 if (wcnt::jwm.is_verbose()) {
                     const char* c = item->get_descr();
                     const char* descr = (!c ? param::names::descr(pt) : c);
+                    msg += " ";
                     msg += descr;
                 }
                 break;
@@ -483,6 +484,7 @@ void cmdline::module_help()
                 if (wcnt::jwm.is_verbose()) {
                     const char* c = item->get_descr();
                     const char* descr = (!c ? input::names::descr(it) : c);
+                    msg += " ";
                     msg += descr;
                 }
                 break;
@@ -578,20 +580,36 @@ void cmdline::dobj_help_items(dobj::TYPE dt, int indent_level)
     ui::dobjitem* item = items->goto_first();
 
     // get length of longest parameter name.
-    int mxl = 0;
+    int mxl1 = 0;
+    int mxl2 = 0;
     while(item) {
-        int l = 0;
+        int l1 = 0;
+        int l2 = 0;
         if (item->get_item_type() == ui::UI_PARAM) {
             ui::dobjparam* dp = static_cast<ui::dobjparam*>(item);
-            l = strlen(param::names::get(dp->get_param_type()));
+            param::TYPE pt = dp->get_param_type();
+            iocat::TYPE ioc = param::names::category(pt);
+            l1 = strlen(param::names::get(pt));
+            if (ioc == iocat::FIX_STR) {
+                fixstrparam* fsp;
+                fsp = wcnt::get_fxsparamlist()->get_fix_str_param(pt);
+                if (fsp)
+                    l2 = strlen(fsp->get_string_list());
+                else
+                    l2 = strlen("fixstringparam problem");
+            }
+            else
+                l2 = strlen(iocat::names::get(ioc));
         }
-        if (mxl < l)
-            mxl = l;
+        if (mxl1 < l1)
+            mxl1 = l1;
+        if (mxl2 < l2)
+            mxl2 = l2;
         item = items->goto_next();
     }
-    mxl += 2;
+    mxl1 += 2;
+    item = (items != 0 ? items->first_item() : 0);
 
-    item = items->first_item();
     while(item) {
         if (!item->is_dummy()) {
             char flags[8];
@@ -618,26 +636,31 @@ void cmdline::dobj_help_items(dobj::TYPE dt, int indent_level)
               case ui::UI_PARAM: {
                 ui::dobjparam* dp = static_cast<ui::dobjparam*>(item);
                 param::TYPE pt = dp->get_param_type();
-                const char* s = param::names::get(pt);
+                const char* s1 = param::names::get(pt);
                 msg += "\n";
                 msg.append(spaces::get(20), indent_level * 4);
-                msg += s;
-                msg.append(spaces::get(mxl), mxl - strlen(s));
+                msg += s1;
+                msg.append(spaces::get(mxl1), mxl1 - strlen(s1));
                 iocat::TYPE ioc = param::names::category(pt);
+                const char* s2 = 0;
                 if (ioc == iocat::FIX_STR) {
                     fixstrparam* fsp;
                     fsp = wcnt::get_fxsparamlist()->get_fix_str_param(pt);
                     if (fsp)
-                        msg += fsp->get_string_list();
+                        s2 = fsp->get_string_list();
                     else
-                        msg += "fixstringparam problem";
+                        s2 = "fixstringparam problem";
                 }
                 else
-                    msg += iocat::names::get(ioc);
+                    s2 = iocat::names::get(ioc);
+                msg += s2;
+                msg.append(spaces::get(mxl2), mxl2 - strlen(s2));
+                msg += " // ";
+                msg += flags;
                 if (wcnt::jwm.is_verbose()) {
                     const char* c = item->get_descr();
                     const char* descr = (!c ? param::names::descr(pt) : c);
-                    msg += " // ";
+                    msg += " ";
                     msg += descr;
                 }
                 break;
@@ -760,10 +783,12 @@ void cmdline::dobj_help()
                 }
                 else
                     msg += iocat::names::get(ioc);
+                msg += " // ";
+                msg += flags;
                 if (wcnt::jwm.is_verbose()) {
                     const char* c = item->get_descr();
                     const char* descr = (!c ? param::names::descr(pt) : c);
-                    msg += " // ";
+                    msg += " ";
                     msg += descr;
                 }
                 break;

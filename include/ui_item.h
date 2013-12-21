@@ -146,19 +146,20 @@ namespace ui
     bool is_name_match(const char* str) { return name_match(str); }
 
     base<T>* set_flags(int f);
-    bool is_optional()      { return !!(flags & UI_OPTIONAL); }
-    bool is_opt_optional()  { return !!(flags & UI_OPT_OPTIONAL); }
-    bool is_dummy()         { return !!(flags & UI_OPT_DUMMY); }
-    bool has_flag(FLAGS f)  { return !!(flags & f); }
+    bool is_optional()          { return !!(flags & UI_OPTIONAL); }
+    bool is_opt_optional()      { return !!(flags & UI_OPT_OPTIONAL); }
+    bool is_dummy()             { return !!(flags & UI_OPT_DUMMY); }
+    bool is_ui_opt_duplicate()  { return !!(flags & UI_OPT_DUPLICATE); }
+    bool has_flag(FLAGS f)      { return !!(flags & f); }
 
-    void reset_matched()    { flags &= ~UI_MATCHED; }
-    void set_matched()      { flags |= UI_MATCHED; }
-    bool is_matched()       { return !!(flags & UI_MATCHED); }
+    void reset_matched()        { flags &= ~UI_MATCHED; }
+    void set_matched()          { flags |= UI_MATCHED; }
+    bool is_matched()           { return !!(flags & UI_MATCHED); }
 
-    void set_forced()       { flags |= UI_FORCED_OPT; }
-    bool was_forced()       { return !!(flags & UI_FORCED_OPT); }
+    void set_forced()           { flags |= UI_FORCED_OPT; }
+    bool was_forced()           { return !!(flags & UI_FORCED_OPT); }
 
-    bool should_duplicate() {
+    bool should_duplicate()     {
         return (flags & UI_OPTION_MASK ? !!(flags & UI_OPT_DUPLICATE)
                                       : true);
     }
@@ -197,6 +198,7 @@ namespace ui
         buf[i] = '\0';
         std::ostringstream s;
         int n = get_option_no();
+        s << "(";
         if (n)
             s << "C" << n;
         else if ((n = get_group_no()))
@@ -205,6 +207,7 @@ namespace ui
             s << "o";
         else
             s << "*";
+        s << ")";
         strncpy(buf, s.str().c_str(), sz);
         return true;
     }

@@ -2,7 +2,7 @@
 
 balance::balance(const char* uname) :
  synthmod::base(synthmod::BALANCE, uname, SM_HAS_OUT_OUTPUT),
- in_signal1(0), in_signal2(0),out_output(0), func(ADD), bias(0)
+ in_signal1(0), in_signal2(0),out_output(0), func(ADD), bias(0.5)
 {
     register_output(output::OUT_OUTPUT);
 }
@@ -12,7 +12,7 @@ void balance::register_ui()
     register_input(input::IN_SIGNAL1);
     register_param(param::FUNC, "add|sub|mul");
     register_input(input::IN_SIGNAL2);
-    register_param(param::BIAS);
+    register_param(param::BIAS)->set_flags(ui::UI_OPTIONAL);
 }
 
 ui::moditem_list* balance::get_ui_items()

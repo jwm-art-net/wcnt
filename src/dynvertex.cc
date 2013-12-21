@@ -16,8 +16,9 @@ dynvertex::dynvertex(double sil, double usol, double lsol) :
 void dynvertex::register_ui()
 {
     register_param(param::SIGIN_LEVEL);
-    register_param(param::SIGOUT_UPLEVEL);
-    register_param(param::SIGOUT_LOLEVEL);
+    register_param(param::SIGOUT_LEVEL)->set_flags(ui::UI_OPTION1);
+    register_param(param::SIGOUT_UPLEVEL)->set_flags(ui::UI_OPTION2);
+    register_param(param::SIGOUT_LOLEVEL)->set_flags(ui::UI_OPTION2);
 }
 
 ui::dobjitem_list* dynvertex::get_ui_items()
@@ -38,6 +39,9 @@ bool dynvertex::set_param(param::TYPE pt, const void* data)
     {
         case param::SIGIN_LEVEL:
             si_level = *(double*)data;
+            return true;
+        case param::SIGOUT_LEVEL:
+            uso_level = lso_level = *(double*)data;
             return true;
         case param::SIGOUT_UPLEVEL:
             uso_level = *(double*)data;

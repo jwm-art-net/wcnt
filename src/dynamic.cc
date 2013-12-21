@@ -3,7 +3,7 @@
 dynamic::dynamic(const char* uname) :
  synthmod::base(synthmod::DYNAMIC, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), in_mod(0), out_output(0), play_state(OFF),
- up_thresh(0), lo_thresh(0), posnegmirror(OFF), use_ratios(OFF),
+ up_thresh(1.0), lo_thresh(0), posnegmirror(OFF), use_ratios(OFF),
  dynvertices(0), dvc(0), dvn(0),
  thresh_range(0)
 {
@@ -15,11 +15,11 @@ void dynamic::register_ui()
 {
     register_dobj(dobj::LST_DYNAMICS, dobj::SIN_DVERTEX);
     register_input(input::IN_SIGNAL);
-    register_input(input::IN_MODULATION);
-    register_param(param::UP_THRESH);
-    register_param(param::LO_THRESH);
-    register_param(param::POSNEG_MIRROR);
-    register_param(param::USE_RATIOS);
+    register_input(input::IN_MODULATION)->set_flags(ui::UI_GROUP1);
+    register_param(param::UP_THRESH)->set_flags(ui::UI_GROUP1);
+    register_param(param::LO_THRESH)->set_flags(ui::UI_GROUP1);
+    register_param(param::POSNEG_MIRROR)->set_flags(ui::UI_OPTIONAL);
+    register_param(param::USE_RATIOS)->set_flags(ui::UI_OPTIONAL);
 }
 
 ui::moditem_list* dynamic::get_ui_items()
