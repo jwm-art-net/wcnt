@@ -25,7 +25,7 @@ void adsr::register_ui()
     register_input(input::IN_NOTE_ON_TRIG);
     register_param(param::ZERO_RETRIGGER)   ->set_flags(ui::UI_OPTIONAL);
     register_param(param::START_LEVEL)      ->set_flags(ui::UI_OPTIONAL);
-    register_input(input::IN_VELOCITY);
+    register_input(input::IN_VELOCITY)      ->set_flags(ui::UI_OPTIONAL);
     register_param(param::UP_THRESH)        ->set_flags(ui::UI_GROUP1);
     register_param(param::LO_THRESH)        ->set_flags(ui::UI_GROUP1);
     register_param(param::MIN_TIME)         ->set_flags(ui::UI_OPTIONAL);

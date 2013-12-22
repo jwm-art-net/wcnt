@@ -122,6 +122,7 @@ namespace param
     LOTIME,
     UPLEVEL,
     LOLEVEL,
+    DEG,
     UPDEG,
     LODEG,
     METER,

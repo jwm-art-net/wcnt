@@ -19,8 +19,9 @@ orbit::orbit(const char* uname) :
 void orbit::register_ui()
 {
     register_param(param::ORBIT_TYPE, "hopalong|threeply|quadrup");
-    register_input(input::IN_TRIG);
-    register_input(input::IN_RESTART_TRIG);
+    register_input(input::IN_TRIG)->add_descr("Input to trigger an iteration of the equation.");
+    register_input(input::IN_RESTART_TRIG)->set_flags(ui::UI_OPTIONAL)
+                                  ->add_descr("Input to trigger reset of the equation.");
     register_param(param::A);
     register_param(param::B);
     register_param(param::C);

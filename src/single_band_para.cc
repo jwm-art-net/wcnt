@@ -21,11 +21,11 @@ void single_band_para::register_ui()
     register_input(input::IN_SIGNAL);
     register_input(input::IN_PHASE_STEP);
     register_param(param::GAIN_DB);
-    register_input(input::IN_GAIN_MOD);
-    register_param(param::GAIN_MODSIZE);
+    register_input(input::IN_GAIN_MOD)->set_flags(ui::UI_GROUP1);
+    register_param(param::GAIN_MODSIZE)->set_flags(ui::UI_GROUP1);
     register_param(param::BANDWIDTH);
-    register_input(input::IN_BANDWIDTH_MOD);
-    register_param(param::BANDWIDTH_MODSIZE);
+    register_input(input::IN_BANDWIDTH_MOD)->set_flags(ui::UI_GROUP2);
+    register_param(param::BANDWIDTH_MODSIZE)->set_flags(ui::UI_GROUP2);
 }
 
 ui::moditem_list* single_band_para::get_ui_items()

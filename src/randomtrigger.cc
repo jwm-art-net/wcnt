@@ -5,7 +5,7 @@
 randomtrigger::randomtrigger(const char* uname) :
  synthmod::base(synthmod::RANDTRIGGER, uname, SM_HAS_OUT_TRIG),
  in_trig(0), out_trig(OFF), out_not_trig(OFF), probability(0.5),
- not_probability(0.5)
+ not_probability(1.0)
 {
     register_output(output::OUT_TRIG);
     register_output(output::OUT_NOT_TRIG);
@@ -16,7 +16,7 @@ void randomtrigger::register_ui()
 {
     register_input(input::IN_TRIG);
     register_param(param::PROBABILITY);
-    register_param(param::NOTPROBABILITY);
+    register_param(param::NOTPROBABILITY)->set_flags(ui::UI_OPTIONAL);
 }
 
 ui::moditem_list* randomtrigger::get_ui_items()

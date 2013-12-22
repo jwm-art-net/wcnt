@@ -1,0 +1,51 @@
+wcnt-1.30/jwmsynth
+
+samplerate 44100
+
+; optional_item_param_edit.wc
+;   creates a module with one or more optional items,
+;   and then attempts to use the param_editor to edit
+;   one of those items.
+
+clock
+c
+    in_freq_mod1    off
+    freq   10
+    freq_mod1_size 1.0
+c
+
+panner
+p
+    in_signal     off
+    pan           0.5
+    in_pan_mod    off
+    pan_mod_size  0.5
+p
+
+param_editor
+pe1
+    editlist
+        edit c freq_mod1_size 0.5
+        edit p pan_mod_size 0.36
+    editlist
+pe1
+
+param_editor
+pe2
+    editlist
+        edit p
+            pan 0.124
+            pan_mod_size 0.36
+    editlist
+pe2
+
+wcnt_exit
+x
+    in_bar      off
+    exit_bar    0
+x
+
+wcnt-1.30/jwmsynth
+
+
+

@@ -17,8 +17,8 @@ void dynvertex::register_ui()
 {
     register_param(param::SIGIN_LEVEL);
     register_param(param::SIGOUT_LEVEL)->set_flags(ui::UI_OPTION1);
-    register_param(param::SIGOUT_UPLEVEL)->set_flags(ui::UI_OPTION2);
-    register_param(param::SIGOUT_LOLEVEL)->set_flags(ui::UI_OPTION2);
+    register_param(param::SIGOUT_UPLEVEL)->set_flags(ui::UI_OPTION2 | ui::UI_OPT_DUPLICATE);
+    register_param(param::SIGOUT_LOLEVEL)->set_flags(ui::UI_OPTION2 | ui::UI_OPT_DUPLICATE);
 }
 
 ui::dobjitem_list* dynvertex::get_ui_items()

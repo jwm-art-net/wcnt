@@ -5,7 +5,7 @@ wave_phase::wave_phase(const char* uname) :
  synthmod::base(synthmod::WAVE_PHASE, uname, SM_HAS_OUT_OUTPUT),
  in_phase_trig(0), in_phase_step(0), in_shape_phase_step(0),
  output(0), pre_shape_output(0), play_state(OFF),
- type(wave_tables::SINE), shape_type(wave_tables::SINE),
+ type(wave_tables::SINE), shape_type(wave_tables::ONE),
  recycle(OFF), reset_phase(OFF),
  invert_alt(OFF), sync_shape(ON), cycles(1.0),
  phase(0), shape_phase(0), degs(0), max_degs(0), invph(1),
@@ -20,12 +20,12 @@ void wave_phase::register_ui()
     register_param(param::WAVE_TYPE, wave_tables::fxstring);
     register_input(input::IN_PHASE_TRIG);
     register_input(input::IN_PHASE_STEP);
-    register_param(param::INVERT_ALT);
     register_param(param::TRIG_RESET_PHASE);
-    register_param(param::CYCLES);
-    register_param(param::WAVE_SHAPE_TYPE, wave_tables::fxstring);
-    register_input(input::IN_SHAPE_PHASE_STEP);
-    register_param(param::SYNC_SHAPE);
+    register_param(param::CYCLES)->set_flags(ui::UI_OPTIONAL);
+    register_param(param::INVERT_ALT)->set_flags(ui::UI_OPTIONAL);
+    register_param(param::WAVE_SHAPE_TYPE, wave_tables::fxstring)->set_flags(ui::UI_GROUP1);
+    register_input(input::IN_SHAPE_PHASE_STEP)->set_flags(ui::UI_GROUP1);
+    register_param(param::SYNC_SHAPE)->set_flags(ui::UI_GROUP1);
     register_param(param::RECYCLE_MODE);
 }
 

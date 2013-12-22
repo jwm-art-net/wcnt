@@ -18,8 +18,8 @@ void stereo_amp::register_ui()
     register_input(input::IN_EG);
     register_param(param::LEFT_LEVEL);
     register_param(param::RIGHT_LEVEL);
-    register_input(input::IN_AMP_MOD);
-    register_param(param::AMP_MODSIZE);
+    register_input(input::IN_AMP_MOD)->set_flags(ui::UI_GROUP1);
+    register_param(param::AMP_MODSIZE)->set_flags(ui::UI_GROUP1);
     register_param(param::CLIP_LEVEL);
 }
 

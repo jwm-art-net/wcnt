@@ -22,8 +22,8 @@ void glame_filter::register_ui()
     register_param(param::GLAME_FILTER_TYPE, "lowpass|highpass");
     register_input(input::IN_SIGNAL);
     register_param(param::FREQ);
-    register_input(input::IN_FREQ_MOD1);
-    register_param(param::FREQ_MOD1SIZE);
+    register_input(input::IN_FREQ_MOD1)->set_flags(ui::UI_GROUP1);
+    register_param(param::FREQ_MOD1SIZE)->set_flags(ui::UI_GROUP1);
     register_param(param::STAGES);
 }
 

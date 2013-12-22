@@ -27,10 +27,10 @@ void sync_clock::register_ui()
     register_input(input::IN_BEAT_VALUE);
     register_input(input::IN_POS_STEP_SIZE);
     register_input(input::IN_PHASE_TRIG);
-    register_input(input::IN_FREQ_MOD1);
-    register_param(param::FREQ_MOD1SIZE);
-    register_input(input::IN_FREQ_MOD2);
-    register_param(param::FREQ_MOD2SIZE);
+    register_input(input::IN_FREQ_MOD1)->set_flags(ui::UI_GROUP1);
+    register_param(param::FREQ_MOD1SIZE)->set_flags(ui::UI_GROUP1);
+    register_input(input::IN_FREQ_MOD2)->set_flags(ui::UI_GROUP2);
+    register_param(param::FREQ_MOD2SIZE)->set_flags(ui::UI_GROUP2);
 }
 
 ui::moditem_list* sync_clock::get_ui_items()

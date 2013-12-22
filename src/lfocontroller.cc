@@ -4,7 +4,7 @@
 lfo_controller::lfo_controller(const char* uname) :
  synthmod::base(synthmod::LFOCONTROL, uname, SM_HAS_OUT_OUTPUT),
  in_trig(0), in_wave(0), in_amp_mod(0), out_preampmod(0), output(0),
- delay_time(0), ramp_time(0), start_level(0), end_level(0),
+ delay_time(0), ramp_time(0), start_level(0), end_level(1.0),
  response_time(0), amp_modsize(0),
  total_resp_samples(0), resp_samples(0),
  resp_step(0.0f), resp_level(0.0f), resp_level_grab(0.0f),
@@ -25,8 +25,8 @@ void lfo_controller::register_ui()
     register_param(param::RAMP_TIME);
     register_param(param::END_LEVEL);
     register_input(input::IN_WAVE);
-    register_input(input::IN_AMP_MOD);
-    register_param(param::AMP_MODSIZE);
+    register_input(input::IN_AMP_MOD)->set_flags(ui::UI_GROUP1);
+    register_param(param::AMP_MODSIZE)->set_flags(ui::UI_GROUP1);
     register_param(param::RESPONSE_TIME);
 }
 
@@ -150,7 +150,7 @@ void lfo_controller::init()
 
 void lfo_controller::run()
 {
-    if (*in_trig == ON)	{
+    if (*in_trig == ON) {
         if (total_resp_samples > 0) {
             resp_samples = total_resp_samples;
             resp_level_grab = out_preampmod;

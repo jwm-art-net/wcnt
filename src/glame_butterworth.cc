@@ -21,8 +21,8 @@ void glame_butterworth::register_ui()
     register_input(input::IN_SIGNAL);
     register_input(input::IN_CUTOFF_PHASE_STEP);
     register_param(param::RESONANCE);
-    register_input(input::IN_RES_MOD);
-    register_param(param::RES_MODSIZE);
+    register_input(input::IN_RES_MOD)->set_flags(ui::UI_GROUP1);
+    register_param(param::RES_MODSIZE)->set_flags(ui::UI_GROUP1);
 }
 
 ui::moditem_list* glame_butterworth::get_ui_items()

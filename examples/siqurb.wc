@@ -24,8 +24,8 @@ timer
 t1
     timings
         time seconds 0
-        time seconds 3.0
-        time seconds 3.0
+        time seconds 30.0
+        time seconds 30.0
     timings
     time_is_relative on
     recycle_mode off
@@ -52,9 +52,9 @@ orbit1
     in_restart_trig  off
     in_trig          orb_clock  out_phase_trig
     orbit_type       threeply
-    a  5.5025
+    a  0.5025
     b -1.40632
-    c  -1.075850434
+    c  -2.075850434
     test_iterations  100000
 orbit1
 
@@ -133,69 +133,69 @@ param_editor
 pe1
     editlist
         edit g01.orbit1
-            a + 0.0001
-            b + 0.0001
-            c + 0.0001
+            a + 0.00001
+            b + 0.00001
+            c + 0.00001
         edit g02.orbit1
-            a + 0.0002
-            b + 0.0002
-            c + 0.0002
+            a + 0.00002
+            b + 0.00002
+            c + 0.00002
         edit g03.orbit1
-            a + 0.0003
-            b + 0.0003
-            c + 0.0003
+            a + 0.00003
+            b + 0.00003
+            c + 0.00003
         edit g04.orbit1
-            a + 0.0004
-            b + 0.0004
-            c + 0.0004
+            a + 0.00004
+            b + 0.00004
+            c + 0.00004
         edit g05.orbit1
-            a + 0.0005
-            b + 0.0005
-            c + 0.0005
+            a + 0.00005
+            b + 0.00005
+            c + 0.00005
         edit g06.orbit1
-            a + 0.0006
-            b + 0.0006
-            c + 0.0006
+            a + 0.00006
+            b + 0.00006
+            c + 0.00006
         edit g07.orbit1
-            a + 0.0007
-            b + 0.0007
-            c + 0.0007
+            a + 0.00007
+            b + 0.00007
+            c + 0.00007
         edit g08.orbit1
-            a + 0.0008
-            b + 0.0008
-            c + 0.0008
+            a + 0.00008
+            b + 0.00008
+            c + 0.00008
         edit g09.orbit1
-            a + 0.0009
-            b + 0.0009
-            c + 0.0009
+            a + 0.00009
+            b + 0.00009
+            c + 0.00009
         edit g10.orbit1
-            a + 0.0010
-            b + 0.0010
-            c + 0.0010
+            a + 0.00010
+            b + 0.00010
+            c + 0.00010
         edit g11.orbit1
-            a + 0.0011
-            b + 0.0011
-            c + 0.0011
+            a + 0.00011
+            b + 0.00011
+            c + 0.00011
         edit g12.orbit1
-            a + 0.0012
-            b + 0.0012
-            c + 0.0012
+            a + 0.00012
+            b + 0.00012
+            c + 0.00012
         edit g13.orbit1
-            a + 0.0013
-            b + 0.0013
-            c + 0.0013
+            a + 0.00013
+            b + 0.00013
+            c + 0.00013
         edit g14.orbit1
-            a + 0.0014
-            b + 0.0014
-            c + 0.0014
+            a + 0.00014
+            b + 0.00014
+            c + 0.00014
         edit g15.orbit1
-            a + 0.0015
-            b + 0.0015
-            c + 0.0015
+            a + 0.00015
+            b + 0.00015
+            c + 0.00015
         edit g16.orbit1
-            a + 0.0016
-            b + 0.0016
-            c + 0.0016
+            a + 0.00016
+            b + 0.00016
+            c + 0.00016
     editlist
 pe1
 
@@ -210,17 +210,17 @@ cmb-l
         synthmod name g03.sine-l
         synthmod name g04.sine-l
         synthmod name g05.sine-l
-        synthmod name g06.sine-l
-        synthmod name g07.sine-l
-        synthmod name g08.sine-l
-        synthmod name g09.sine-l
-        synthmod name g10.sine-l
-        synthmod name g11.sine-l
-        synthmod name g12.sine-l
-        synthmod name g13.sine-l
-        synthmod name g14.sine-l
-        synthmod name g15.sine-l
-        synthmod name g16.sine-l
+//        synthmod name g06.sine-l
+ //       synthmod name g07.sine-l
+  //      synthmod name g08.sine-l
+   //     synthmod name g09.sine-l
+    //    synthmod name g10.sine-l
+     //   synthmod name g11.sine-l
+      //  synthmod name g12.sine-l
+       // synthmod name g13.sine-l
+        //synthmod name g14.sine-l
+  //      synthmod name g15.sine-l
+    //    synthmod name g16.sine-l
     signals
     mean_total on
 cmb-l
@@ -233,17 +233,17 @@ cmb-r
         synthmod name g03.sine-r
         synthmod name g04.sine-r
         synthmod name g05.sine-r
-        synthmod name g06.sine-r
-        synthmod name g07.sine-r
-        synthmod name g08.sine-r
-        synthmod name g09.sine-r
-        synthmod name g10.sine-r
-        synthmod name g11.sine-r
-        synthmod name g12.sine-r
-        synthmod name g13.sine-r
-        synthmod name g14.sine-r
-        synthmod name g15.sine-r
-        synthmod name g16.sine-r
+//        synthmod name g06.sine-r
+ //       synthmod name g07.sine-r
+  //      synthmod name g08.sine-r
+   //     synthmod name g09.sine-r
+    //    synthmod name g10.sine-r
+     //   synthmod name g11.sine-r
+      //  synthmod name g12.sine-r
+       // synthmod name g13.sine-r
+        //synthmod name g14.sine-r
+//        synthmod name g15.sine-r
+  //      synthmod name g16.sine-r
     signals
     mean_total on
 cmb-r
@@ -253,9 +253,9 @@ revb
     in_left   cmb-l out_output
     in_right  cmb-r out_output
     bandwidth  0.9
-    tail       0.7
-    damping    0.2
-    wet/dry    0.5
+    tail       0.27
+    damping    0.02
+    wet/dry    0.25
 revb
 
 fader

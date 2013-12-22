@@ -161,12 +161,17 @@ void* compute(T* obj, param::TYPE pt, void* data, int op)
 
 bool is_operator(const char* txt)
 {
+    // need to differentiate between a negative number and a subtraction,
+    // so insist that the differentation is created by a space between
+    // operator and number.
+    if (*txt == '\0' || (*(txt + 1) != '\0' && *(txt + 1) != ' '))
+        return false;
     return (*txt == '+' || *txt == '-' || *txt == '*' || *txt == '/');
 }
 
 int get_operator(const char* txt)
 {
-    if (*(txt + 1) != ' ')
+    if (*txt == '\0' || (*(txt + 1) != '\0' && *(txt + 1) != ' '))
         return 0;
 
     switch(*txt){

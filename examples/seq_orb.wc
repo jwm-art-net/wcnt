@@ -1,0 +1,232 @@
+wcnt-1.30/jwmsynth
+//------------------------------------------------------------------------
+//
+//  prettymuch unsequenced ---- but it could be sequenced if you add more
+//  notes to the riff.
+//
+//------------------------------------------------------------------------
+
+header header.wch
+
+//------------------------------------------------------------------------
+
+constant_note
+orb_freq
+    name c0
+orb_freq
+
+
+synth_file_reader
+timefile
+    filename time.wch
+    mod_action  exclude
+    modules
+    modules
+    dobj_action exclude
+    data_objects
+    data_objects
+timefile
+
+riff
+riff1
+    quarter_value   64
+    notelist
+        note name c0   pos 0    len 60  vel 1.0
+        note name c1   pos 32   len 16  vel 1.0
+        note name f0   pos 64   len 60  vel 1.0
+        note name c1   pos 96   len 12  vel 1.0
+        note name e0   pos 112  len 8   vel 1.0
+        note name c0   pos 128  len 60  vel 1.0
+        note name c1   pos 160  len 52  vel 1.0
+        note name e0   pos 172  len 16  vel 1.0
+        note name c-1  pos 192  len 16  vel 1.0
+        note name e1   pos 208  len 12  vel 1.0
+        note name g1   pos 224  len 16  vel 1.0
+    notelist
+riff1
+
+
+sequencer
+seq
+    track
+        riff_node
+            riff riff1
+            bar 0 repeat 12 repeat_stripe 2
+        riff_node
+            riff riff1
+            bar 1 repeat 12 repeat_stripe 2
+            transpose 3
+    track
+
+    start_bar               0
+    in_bar              time1 out_bar
+    in_bar_trig         time1 out_bar_trig
+    in_beats_per_bar    time1 out_beats_per_bar
+    in_beat_value       time1 out_beat_value
+    in_pos_step_size    time1 out_pos_step_size
+    velocity_response_time  5
+seq
+
+adsr
+eg
+        envelope
+        section name attack
+            ut  15.0    ul  1.0
+            lt  10.0    ll  0.25
+        section name decay
+            ut  35.0    ul  0.8
+            lt  15.0    ll  0.1
+        section name release
+            ut  25.0    ul  0.3
+            lt  15.0    ll  0.025
+        section name release
+            ut  175.0    ul  0.0
+            lt  125.0    ll  0.0
+        envelope
+        in_note_on_trig     seq    out_note_on_trig
+        zero_retrigger   off
+        in_velocity         seq    out_velocity
+        min_time         10.0
+        sustain_state    on
+        in_note_off_trig    seq    out_note_off_trig
+eg
+
+
+
+osc_clock
+orb_clock
+        in_note_on_trig     seq out_start_trig
+        in_note_slide_trig  off
+        in_play_state       off
+        in_frequency        orb_freq out_frequency
+        in_freq_mod1        orb out_x
+        in_freq_mod2        orb out_y
+        octave_offset       0
+        tuning_semitones    0
+        portamento_time     1.0
+        response_time       5.0
+        freq_mod1_size      1
+        freq_mod2_size      1
+orb_clock
+
+rnd_trigger
+rtrg
+    in_trig seq out_note_on_trig
+    probability 0.15
+    not_probability 0.25
+rtrg
+
+
+orbit
+orb
+    in_restart_trig  rtrg out_trig
+    in_trig          orb_clock  out_phase_trig
+    orbit_type       quadrup //hopalong
+    a  -3.05025
+    b 0.116540632
+    c  -0.0075850434
+    test_iterations  100000
+orb
+
+osc_clock
+osc
+        in_note_on_trig     seq out_note_on_trig
+        in_note_slide_trig  seq out_note_slide_trig
+        in_play_state       off
+        in_frequency        seq out_frequency
+        in_freq_mod1        orb out_x
+        in_freq_mod2        orb out_y
+        octave_offset       0
+        tuning_semitones    0
+        portamento_time     15.0
+        response_time       5.0
+        freq_mod1_size      4.0
+        freq_mod2_size      2.0
+osc
+
+wave
+sine
+    in_phase_step  osc out_phase_step
+    type sine
+sine
+
+multiplier
+m
+    in_signal1  sine out_output
+    in_signal2  eg out_output
+m
+
+group g1
+modules
+    synthmod name orb_clock
+    synthmod name rtrg
+    synthmod name orb
+    synthmod name osc
+    synthmod name sine
+    synthmod name eg
+    synthmod name m
+modules
+g1
+
+copier c1 from g1 to g2 c1
+
+param_editor
+pe1
+    editlist
+        edit g2.osc
+            tuning_semitones 0.32
+        edit g2.orb
+            a + 0.00002
+            b + 0.00002
+            c + 0.00002
+    editlist
+pe1
+
+
+caps_plate2x2
+revb
+    in_left   g1.m out_output
+    in_right  g2.m out_output
+    bandwidth  0.9
+    tail       0.7
+    damping    0.02
+    wet/dry    0.25
+revb
+
+
+stereo_amp
+amp1
+    in_left    revb out_left
+    in_right   revb out_right
+    in_amp_eg  one out_output
+    in_amp_mod off
+    left_level   1.0
+    right_level  1.0
+    amp_mod_size 0.0
+    clip_level   1.0
+amp1
+
+wavfile_out
+wav1
+    in_left     amp1    out_left
+    in_right    amp1    out_right
+    in_bar      time1   out_bar
+    snapshot_mode off
+    data_format float32
+    filename    seq_orb.wav
+    start_bar   0
+    end_bar     32
+wav1
+
+// setup how long to process:
+
+wcnt_exit
+wcnt_exit_module
+    in_bar      time1   out_bar
+    exit_bar    32
+wcnt_exit_module
+
+//------------------------------------------------------------------------
+// End Of File _jwm 2005.
+//------------------------------------------------------------------------
+wcnt-1.30/jwmsynth

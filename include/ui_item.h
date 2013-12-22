@@ -99,16 +99,17 @@ namespace ui
     // items).  Where distinct groups immediatelly follow each other, then
     // only four distinct but adjaecent groups can be accommodated.
 
-    UI_GROUP1 =         0x1000,
-    UI_GROUP2 =         0x2000,
-    UI_GROUP3 =         0x4000,
-    UI_GROUP4 =         0x8000,
+    UI_GROUP1 =         0x01000,
+    UI_GROUP2 =         0x02000,
+    UI_GROUP3 =         0x04000,
+    UI_GROUP4 =         0x08000,
+    UI_GROUP5 =         0x10000,
 
     // items cannot be part of a group and option simultaneously.
 
     // implementation only:
     UI_OPTION_MASK=     0x00f0,
-    UI_GROUP_MASK =     0xf000,
+    UI_GROUP_MASK =    0xff000,
     UI_MATCHED =    0x10000000, // matched
     UI_FORCED_OPT = 0x20000000, // user forced item from unselected option
 
@@ -187,6 +188,7 @@ namespace ui
           case UI_GROUP2: return 2;
           case UI_GROUP3: return 3;
           case UI_GROUP4: return 4;
+          case UI_GROUP5: return 5;
           default:        return 0;
         }
     }

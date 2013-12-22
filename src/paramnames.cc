@@ -118,6 +118,7 @@ namespace param
     { LOTIME,           "lt",                   iocat::DOUBLE,  "Lower shape section time (ms)." },
     { UPLEVEL,          "ul",                   iocat::DOUBLE,  "Upper shape section level." },
     { LOLEVEL,          "ll",                   iocat::DOUBLE,  "Lower shape section level."},
+    { DEG,              "deg",                  iocat::DOUBLE,  "shape section degree (0 ~ 360)." },
     { UPDEG,            "ud",                   iocat::DOUBLE,  "Upper shape section degree (0 ~ 360)." },
     { LODEG,            "ld",                   iocat::DOUBLE,  "Lower shape section degree (0 ~ 360)." },
     { METER,            "tsig",                 iocat::METER,   "Time signature/Meter, ie 4/4 or 3/8 etc." },

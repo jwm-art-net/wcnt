@@ -35,7 +35,7 @@ pe1b
         edit clock3 freq_mod1_size 1.75
         edit pan2
             pan         -0.5
-            pan_mod_size 0.99
+            pan_mod_size  0.99
         edit wav1 filename drums-tz-01b.wav
     editlist
 pe1b

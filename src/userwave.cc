@@ -25,8 +25,8 @@ void user_wave::register_ui()
     register_param(param::ZERO_RETRIGGER);
     register_input(input::IN_PHASE_STEP);
     register_dobj(dobj::LST_WAVEFORM, dobj::SIN_VERTEX);
-    register_input(input::IN_V_MOD);
-    register_input(input::IN_H_MOD);
+    register_input(input::IN_V_MOD)->set_flags(ui::UI_OPTIONAL);
+    register_input(input::IN_H_MOD)->set_flags(ui::UI_OPTIONAL);
     register_param(param::RECYCLE_MODE);
     register_param(param::DROP_CHECK_RANGE);
 }
@@ -132,9 +132,8 @@ synthmod::base* user_wave::duplicate_module(const char* uname, DUP_IO dupio)
     duplicate_params_to(dup);
     vertex = goto_first();
     while (vertex) {
-        wave_vertex* tmp;
-        tmp = new wave_vertex(vertex->get_updeg(), vertex->get_uppos(),
-                              vertex->get_lodeg(), vertex->get_lopos());
+        wave_vertex* tmp = new wave_vertex(vertex);
+
         if (!dup->add_vertex(tmp))
         {
             std::cout << "\ncould not duplicate vertices for copied"
@@ -174,9 +173,7 @@ wave_vertex* user_wave::add_vertex(wave_vertex* wv)
         tmp->set_data(wv);
         return tmp->get_data();
     }
-    vertex = ordered_insert(this, wv,
-        &wave_vertex::get_lodeg
-            )->get_data();
+    vertex = ordered_insert(this, wv, &wave_vertex::get_lodeg)->get_data();
     if (!vertex) {
         std::cout << "\nfailed to add vertex to envelope....!?!?!?";
         return 0;
@@ -204,7 +201,7 @@ void user_wave::init()
     vertex = vertices[vx_ix = 0];
     if (zero_retrigger_mode == OFF) {
         vertex->modulate(0.5, 0.5); // just guessing!
-        output = vertex->out_pos;
+        output = vertex->out_lvl;
     }
 }
 #include<iostream>
@@ -218,11 +215,11 @@ void user_wave::run()
             vertex = vertices[++vx_ix];
         }
         vertex = vertices[vx_ix = 0];
-        if (zero_retrigger_mode == ON) 
-            output = vertex->out_pos;
+        if (zero_retrigger_mode == ON)
+            output = vertex->out_lvl;
         sect_startlvl = output;
         vertex = vertices[++vx_ix]; // first off
-        sect_spanlvl = vertex->out_pos - sect_startlvl;
+        sect_spanlvl = vertex->out_lvl - sect_startlvl;
         sectdegs = vertex->out_deg;
         degs = 0;
         pdegs = 0;
@@ -235,14 +232,14 @@ void user_wave::run()
             wave_vertex* tmp = vertex;
             vertex = vertices[++vx_ix];
             if (vertex) {
-                sect_startlvl = tmp->out_pos;
+                sect_startlvl = tmp->out_lvl;
                 pdegs = tmp->out_deg;
                 while(true) {
                     sectdegs = vertex->out_deg;
                     if (sectdegs > (pdegs + drop_check_range)
                         || sectdegs > degs)
                     {
-                        sect_spanlvl = vertex->out_pos - sect_startlvl;
+                        sect_spanlvl = vertex->out_lvl - sect_startlvl;
                         break;
                     }
                     vertex = vertices[++vx_ix];
@@ -264,11 +261,11 @@ void user_wave::run()
                         vertex = vertices[++vx_ix];
                     }
                     vertex = vertices[vx_ix = 0];
-                    if (zero_retrigger_mode == ON) 
-                        output = vertex->out_pos;
+                    if (zero_retrigger_mode == ON)
+                        output = vertex->out_lvl;
                     sect_startlvl = output;
                     vertex = vertices[++vx_ix];
-                    sect_spanlvl = vertex->out_pos - sect_startlvl;
+                    sect_spanlvl = vertex->out_lvl - sect_startlvl;
                     sectdegs = vertex->out_deg;
                     degs = 0;
                     pdegs = 0;

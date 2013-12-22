@@ -20,11 +20,11 @@ void square_wave::register_ui()
 {
     register_input(input::IN_PHASE_TRIG);
     register_input(input::IN_PHASE_STEP);
-    register_param(param::RATE);
+    register_param(param::RATE)->set_flags(ui::UI_OPTIONAL);
     register_param(param::PULSE_WIDTH);
-    register_input(input::IN_PWM);
-    register_param(param::PWM_SIZE);
-    register_param(param::RECYCLE_MODE);
+    register_input(input::IN_PWM)->set_flags(ui::UI_GROUP1);
+    register_param(param::PWM_SIZE)->set_flags(ui::UI_GROUP1);
+    register_param(param::RECYCLE_MODE)->add_descr("Once a waveform cycle ends, whether to begin a new cycle or not. Usually used when the phase step is out of sync with the phase trig.");
 }
 
 ui::moditem_list* square_wave::get_ui_items()

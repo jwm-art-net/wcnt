@@ -70,6 +70,7 @@ namespace synthmod
         break;
      case synthmod::CONTRASTER:     sm = new contraster(uname);     break;
      case synthmod::DELAY:          sm = new delay(uname);          break;
+     case synthmod::SIMPLEDELAY:    sm = new simple_delay(uname);   break;
      case synthmod::ECHO:           sm = new echo(uname);           break;
      case synthmod::MONOAMP:        sm = new mono_amp(uname);       break;
      case synthmod::MULTIPLIER:     sm = new multiplier(uname);     break;
@@ -94,7 +95,6 @@ namespace synthmod
      case synthmod::ADDER:          sm = new adder(uname);          break;
      case synthmod::SUBTRACTER:     sm = new subtracter(uname);     break;
      case synthmod::TRIGDELAY:      sm = new trigdelay(uname);      break;
-     case synthmod::SIMPLEDELAY:    sm = new simple_delay(uname);   break;
      case synthmod::DIFFFILTER:     sm = new diff_filter(uname);    break;
      case synthmod::IMPULSE:        sm = new impulse(uname);        break;
      case synthmod::ORBIT:          sm = new orbit(uname);          break;

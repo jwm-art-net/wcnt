@@ -18,8 +18,8 @@ void riff_node::register_ui()
 {
     register_param(param::RIFFNAME);
     register_param(param::BAR);
-    register_param(param::REPEAT)->set_flags(ui::UI_OPTIONAL);
-    register_param(param::REPEAT_STRIPE)->set_flags(ui::UI_OPTIONAL);
+    register_param(param::REPEAT)->set_flags(ui::UI_GROUP1);
+    register_param(param::REPEAT_STRIPE)->set_flags(ui::UI_GROUP1);
     register_param(param::TRANSPOSE)->set_flags(ui::UI_OPTIONAL);
 }
 

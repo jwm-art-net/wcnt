@@ -437,10 +437,10 @@ namespace ui
         tmp = "//--{ group (optional):";
     }
     else if (this->item_choice_ended()) {
-        tmp = "//--{ multi-choice end";
+        tmp = "// multi-choice end }--";
     }
     else if (this->item_group_ended()) {
-        tmp = "//--{ group end";
+        tmp = "// group end }--";
     }
 
     return tmp;

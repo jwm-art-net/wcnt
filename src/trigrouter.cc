@@ -21,7 +21,7 @@ void trigrouter::register_ui()
     register_param(param::COUNT);
     register_param(param::WRAP);
     register_input(input::IN_TRIG);
-    register_input(input::IN_ALL_OFF_TRIG);
+    register_input(input::IN_ALL_OFF_TRIG)->set_flags(ui::UI_OPTIONAL);
 }
 
 ui::moditem_list* trigrouter::get_ui_items()

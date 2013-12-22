@@ -15,8 +15,9 @@ step_data::step_data(double pos, double ul, double ll) :
 void step_data::register_ui()
 {
     register_param(param::POS);
-    register_param(param::UPLEVEL);
-    register_param(param::LOLEVEL);
+    register_param(param::LEVEL)->set_flags(ui::UI_OPTION1);
+    register_param(param::UPLEVEL)->set_flags(ui::UI_OPTION2 | ui::UI_OPT_DUPLICATE);
+    register_param(param::LOLEVEL)->set_flags(ui::UI_OPTION2 | ui::UI_OPT_DUPLICATE);
 }
 
 ui::dobjitem_list* step_data::get_ui_items()
@@ -35,6 +36,9 @@ bool step_data::set_param(param::TYPE dt, const void* data)
     {
         case param::POS:
             position = *(double*)data;
+            return true;
+        case param::LEVEL:
+            up_level = lo_level = *(double*)data;
             return true;
         case param::UPLEVEL:
             up_level = *(double*)data;

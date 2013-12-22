@@ -20,8 +20,8 @@ void triangle_wave2::register_ui()
     register_input(input::IN_PHASE_TRIG);
     register_input(input::IN_PHASE_STEP);
     register_param(param::NORM_FREQ);
-    register_input(input::IN_NORM_MOD);
-    register_param(param::NORM_MODSIZE);
+    register_input(input::IN_NORM_MOD)->set_flags(ui::UI_GROUP1);
+    register_param(param::NORM_MODSIZE)->set_flags(ui::UI_GROUP1);
     register_param(param::RECYCLE_MODE);
     register_param(param::ZERO_RETRIGGER);
 }

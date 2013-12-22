@@ -2,7 +2,7 @@
 
 wcnt_signal::wcnt_signal(const char* uname) :
  synthmod::base(synthmod::WCNTSIGNAL, uname, SM_HAS_OUT_OUTPUT),
- in_signal(0), out_output(0.0), level(0.0)
+ in_signal(0), out_output(0.0), level(1.0)
 {
     register_output(output::OUT_OUTPUT);
     register_output(output::OUT_THROUGH);
@@ -11,7 +11,7 @@ wcnt_signal::wcnt_signal(const char* uname) :
 void wcnt_signal::register_ui()
 {
     register_input(input::IN_SIGNAL);
-    register_param(param::LEVEL);
+    register_param(param::LEVEL)->set_flags(ui::UI_OPTIONAL);
 }
 
 ui::moditem_list* wcnt_signal::get_ui_items()

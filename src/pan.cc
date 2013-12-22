@@ -14,8 +14,8 @@ void pan::register_ui()
 {
     register_input(input::IN_SIGNAL);
     register_param(param::PAN);
-    register_input(input::IN_PAN_MOD);
-    register_param(param::PAN_MODSIZE);
+    register_input(input::IN_PAN_MOD)->set_flags(ui::UI_GROUP1);
+    register_param(param::PAN_MODSIZE)->set_flags(ui::UI_GROUP1);
 }
 
 ui::moditem_list* pan::get_ui_items()

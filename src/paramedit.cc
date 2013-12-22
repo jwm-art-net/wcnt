@@ -78,15 +78,22 @@ bool paramedit::do_param_edits()
     std::string parname;
     std::string valstr;
     strm << parstr;
+
+    std::cout << "\\/\\/--{ partstr:'" << parstr << "'" << std::endl;
     strm >> parname;
+    std::cout << "\\/\\/--{ parname:'" << parname << "'" << std::endl;
     do {
         strm >> valstr;
-        bool isop = setpar::is_operator(valstr.c_str());
-        if (isop) {
+
+        std::cout << "\\/\\/--{ valstr:'" << valstr << "'" << std::endl;
+
+        if (setpar::is_operator(valstr.c_str())) {
             std::string n;
             strm >> n;
             valstr += " " + n;
+            std::cout << "\\/\\/--{ is operator valstr:'" << valstr << "'" << std::endl;
         }
+
         if (sm) {
             if (!mod_param_edit(sm, parname.c_str(), valstr.c_str())) {
                 return false;

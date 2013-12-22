@@ -15,25 +15,25 @@ inspect::inspect(const char* uname) :
 
 void inspect::register_ui()
 {
-    register_input(input::IN_INSP_DF);
-    register_param(param::INSPECT_DF_MSG);
-    register_input(input::IN_INSP_DF_TRIG);
+    register_input(input::IN_INSP_DF)->set_flags(ui::UI_GROUP1);
+    register_param(param::INSPECT_DF_MSG)->set_flags(ui::UI_GROUP1);
+    register_input(input::IN_INSP_DF_TRIG)->set_flags(ui::UI_GROUP1);
 
-    register_input(input::IN_INSP_SI);
-    register_param(param::INSPECT_SI_MSG);
-    register_input(input::IN_INSP_SI_TRIG);
+    register_input(input::IN_INSP_SI)->set_flags(ui::UI_GROUP2);
+    register_param(param::INSPECT_SI_MSG)->set_flags(ui::UI_GROUP2);
+    register_input(input::IN_INSP_SI_TRIG)->set_flags(ui::UI_GROUP2);
 
-    register_input(input::IN_INSP_UL);
-    register_param(param::INSPECT_UL_MSG);
-    register_input(input::IN_INSP_UL_TRIG);
+    register_input(input::IN_INSP_UL)->set_flags(ui::UI_GROUP3);
+    register_param(param::INSPECT_UL_MSG)->set_flags(ui::UI_GROUP3);
+    register_input(input::IN_INSP_UL_TRIG)->set_flags(ui::UI_GROUP3);
 
-    register_input(input::IN_INSP_ST);
-    register_param(param::INSPECT_ST_MSG);
-    register_input(input::IN_INSP_ST_TRIG);
+    register_input(input::IN_INSP_ST)->set_flags(ui::UI_GROUP4);
+    register_param(param::INSPECT_ST_MSG)->set_flags(ui::UI_GROUP4);
+    register_input(input::IN_INSP_ST_TRIG)->set_flags(ui::UI_GROUP4);
 
-    register_input(input::IN_INSP_STR);
-    register_param(param::INSPECT_STR_MSG);
-    register_input(input::IN_INSP_STR_TRIG);
+    register_input(input::IN_INSP_STR)->set_flags(ui::UI_GROUP5);
+    register_param(param::INSPECT_STR_MSG)->set_flags(ui::UI_GROUP5);
+    register_input(input::IN_INSP_STR_TRIG)->set_flags(ui::UI_GROUP5);
 }
 
 ui::moditem_list* inspect::get_ui_items()
@@ -114,7 +114,7 @@ void inspect::run()
         std::cout << "\n" << ul_msg << " " << *in_ul << " ";
     }
     if (*in_st_trig == ON) {
-        std::cout << "\n" << st_msg << " " 
+        std::cout << "\n" << st_msg << " "
             << (*in_st == ON ? "on" : "off") << " ";
     }
     if (*in_str_trig == ON) {

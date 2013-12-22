@@ -1,0 +1,35 @@
+wcnt-1.30/jwmsynth
+
+samplerate 44100
+
+; optional_item_param_edit.wc
+;   creates a module with one or more optional items,
+;   and then attempts to use the param_editor to edit
+;   one of those items.
+
+synth_file_reader
+sf
+    filename    optional_item_param_edit1.wc
+sf
+
+param_editor
+pe1
+    editlist
+        edit c freq_mod1_size 0.5
+        edit p pan_mod_size 0.36
+    editlist
+pe1
+
+param_editor
+pe2
+    editlist
+        edit p
+            pan 0.124
+            pan_mod_size 0.36
+    editlist
+pe2
+
+wcnt-1.30/jwmsynth
+
+
+
