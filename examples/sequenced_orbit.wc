@@ -13,12 +13,6 @@ header header.wch
 synth_file_reader
 timefile
     filename time.wch
-    mod_action  exclude
-    dobj_action exclude
-    modules
-    modules
-    data_objects
-    data_objects
 timefile
 
 riff
@@ -48,25 +42,19 @@ seq1
 adsr
 adsr1
         envelope
-        section name attack
-            ut  1000.0    ul  1.0
-            lt  1000.0    ll  1.0
-        section name decay
-            ut  2005.0    ul  0.99
-            lt  2005.0    ll  0.99
-        section name release
-            ut  1005.0    ul  0.3
-            lt  1005.0    ll  0.3
-        section name release
-            ut  2005.0    ul  0.0
-            lt  2005.0    ll  0.0
+            section name attack
+                time 1000.0 level 1.0
+            section name decay
+                time 2005.0 level 0.99
+            section name release
+                time 1005.0 level 0.3
+            section name release
+                time 2005.0 level 0.0
         envelope
+
         in_note_on_trig     seq1    out_note_on_trig
         in_note_off_trig    seq1    out_note_off_trig
         in_velocity         seq1    out_velocity
-        up_thresh        1.0
-        lo_thresh        0.0
-        start_level      0.0
         min_time         5.0
         max_sustain_time 0.0 // 0 = sustain forever until note off
         release_is_ratio off
@@ -367,7 +355,5 @@ wcnt_exit_module
     exit_bar    16
 wcnt_exit_module
 
-//------------------------------------------------------------------------
-// End Of File _jwm 2005.
-//------------------------------------------------------------------------
+
 wcnt-1.30/jwmsynth

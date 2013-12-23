@@ -1,87 +1,66 @@
 wcnt-1.30/jwmsynth
-//------------------------------------------------------------------------
-//
-//  prettymuch unsequenced ---- but it could be sequenced if you add more
-//  notes to the riff.
-//
-//------------------------------------------------------------------------
 
 header header.wch
 
-//------------------------------------------------------------------------
+constant_note note1 name c0 note1
 
-constant_note
-note1
-    name c0
-note1
+constant one value 1.0 one
 
-constant
-one
-    value 1.0
-one
 
 timer
 t1
     timings
         time seconds 0
-        time seconds 30.0
-        time seconds 30.0
+        time seconds 120.0
+        time seconds 120.0
     timings
     time_is_relative on
     recycle_mode off
 t1
 
+
 osc_clock
 orb_clock
-        in_note_on_trig     t1      out_trig
-        in_note_slide_trig  off
-        in_play_state       off
-        in_frequency        note1    out_frequency
-        in_freq_mod1        orbit1 out_x
-        in_freq_mod2        orbit1 out_y
-        octave_offset       8
-        tuning_semitones    0
-        portamento_time     1.0
-        response_time       5.0
-        freq_mod1_size      1
-        freq_mod2_size      1
+    in_note_on_trig     t1      out_trig
+    in_note_slide_trig  off
+    in_frequency        note1    out_frequency
+    octave_offset       2
 orb_clock
+
 
 orbit
 orbit1
     in_restart_trig  off
     in_trig          orb_clock  out_phase_trig
     orbit_type       threeply
-    a  0.5025
-    b -1.40632
-    c  -2.075850434
-    test_iterations  100000
+    a  4.219225
+    b -3.40632
+    c  -0.075850434
+    test_iterations  1000000
 orbit1
+
 
 osc_clock
 osc-l
-        in_note_on_trig     t1  out_trig
-        in_note_slide_trig  off
-        in_play_state       off
-        in_frequency        note1   out_frequency
-        in_freq_mod1        orbit1 out_x
-        in_freq_mod2        orbit1 out_y
-        octave_offset       -1
-        tuning_semitones    0
-        portamento_time     15.0
-        response_time       5.0
-        freq_mod1_size      4.0
-        freq_mod2_size      1.125
+    in_note_on_trig     t1  out_trig
+    in_note_slide_trig  off
+    in_frequency        note1   out_frequency
+    in_freq_mod1        orbit1 out_x
+    in_freq_mod2        orbit1 out_y
+    freq_mod1_size      1.25
+    freq_mod2_size      1.125
 osc-l
 
+
 copier c1 from osc-l to osc-r c1
+
 
 param_editor
 pe_lr1
     editlist
         edit osc-r
             freq_mod1_size 1.125
-            freq_mod2_size 4.0
+            freq_mod2_size 1.25
     editlist
 pe_lr1
 
@@ -92,7 +71,9 @@ sine-l
     type sine
 sine-l
 
+
 copier c2 from sine-l to sine-r c2
+
 
 input_editor
 ie_lr1
@@ -101,6 +82,7 @@ ie_lr1
             in_phase_step   osc-r out_phase_step
     editlist
 ie_lr1
+
 
 group g01
 modules
@@ -113,6 +95,7 @@ modules
 modules
 g01
 
+
 copier gc01 from g01 to g02 gc01
 copier gc02 from g01 to g03 gc02
 copier gc03 from g01 to g04 gc03
@@ -120,86 +103,71 @@ copier gc04 from g01 to g05 gc04
 copier gc05 from g01 to g06 gc05
 copier gc06 from g01 to g07 gc06
 copier gc07 from g01 to g08 gc07
-copier gc08 from g01 to g09 gc08
-copier gc09 from g02 to g10 gc09
-copier gc10 from g03 to g11 gc10
-copier gc11 from g04 to g12 gc11
-copier gc12 from g05 to g13 gc12
-copier gc13 from g06 to g14 gc13
-copier gc14 from g07 to g15 gc14
-copier gc15 from g08 to g16 gc15
+
 
 param_editor
 pe1
     editlist
+        edit g01.osc-l octave_offset -1
+        edit g02.osc-l octave_offset -1
+        edit g07.osc-l octave_offset 1
+        edit g08.osc-l octave_offset 1
+
+        edit g01.osc-r octave_offset -1
+        edit g02.osc-r octave_offset -1
+        edit g07.osc-r octave_offset 1
+        edit g08.osc-r octave_offset 1
+
+        edit g02.osc-l tuning_semitones 0.2
+        edit g03.osc-l tuning_semitones 0.4
+        edit g04.osc-l tuning_semitones 0.6
+        edit g05.osc-l tuning_semitones 0.8
+        edit g06.osc-l tuning_semitones 1.0
+        edit g07.osc-l tuning_semitones 1.2
+        edit g08.osc-l tuning_semitones 1.4
+
+        edit g02.osc-r tuning_semitones 0.2
+        edit g03.osc-r tuning_semitones 0.4
+        edit g04.osc-r tuning_semitones 0.6
+        edit g05.osc-r tuning_semitones 0.8
+        edit g06.osc-r tuning_semitones 1.0
+        edit g07.osc-r tuning_semitones 1.2
+        edit g08.osc-r tuning_semitones 1.4
+
         edit g01.orbit1
-            a + 0.00001
-            b + 0.00001
-            c + 0.00001
+            a + 0.0000001
+            b + 0.0000001
+            c + 0.0000001
         edit g02.orbit1
-            a + 0.00002
-            b + 0.00002
-            c + 0.00002
+            a + 0.0000002
+            b + 0.0000002
+            c + 0.0000002
         edit g03.orbit1
-            a + 0.00003
-            b + 0.00003
-            c + 0.00003
+            a + 0.0000003
+            b + 0.0000003
+            c + 0.0000003
         edit g04.orbit1
-            a + 0.00004
-            b + 0.00004
-            c + 0.00004
+            a + 0.0000004
+            b + 0.0000004
+            c + 0.0000004
         edit g05.orbit1
-            a + 0.00005
-            b + 0.00005
-            c + 0.00005
+            a + 0.0000005
+            b + 0.0000005
+            c + 0.0000005
         edit g06.orbit1
-            a + 0.00006
-            b + 0.00006
-            c + 0.00006
+            a + 0.0000006
+            b + 0.0000006
+            c + 0.0000006
         edit g07.orbit1
-            a + 0.00007
-            b + 0.00007
-            c + 0.00007
+            a + 0.0000007
+            b + 0.0000007
+            c + 0.0000007
         edit g08.orbit1
-            a + 0.00008
-            b + 0.00008
-            c + 0.00008
-        edit g09.orbit1
-            a + 0.00009
-            b + 0.00009
-            c + 0.00009
-        edit g10.orbit1
-            a + 0.00010
-            b + 0.00010
-            c + 0.00010
-        edit g11.orbit1
-            a + 0.00011
-            b + 0.00011
-            c + 0.00011
-        edit g12.orbit1
-            a + 0.00012
-            b + 0.00012
-            c + 0.00012
-        edit g13.orbit1
-            a + 0.00013
-            b + 0.00013
-            c + 0.00013
-        edit g14.orbit1
-            a + 0.00014
-            b + 0.00014
-            c + 0.00014
-        edit g15.orbit1
-            a + 0.00015
-            b + 0.00015
-            c + 0.00015
-        edit g16.orbit1
-            a + 0.00016
-            b + 0.00016
-            c + 0.00016
+            a + 0.0000008
+            b + 0.0000008
+            c + 0.0000008
     editlist
 pe1
-
-
 
 
 combiner
@@ -210,20 +178,13 @@ cmb-l
         synthmod name g03.sine-l
         synthmod name g04.sine-l
         synthmod name g05.sine-l
-//        synthmod name g06.sine-l
- //       synthmod name g07.sine-l
-  //      synthmod name g08.sine-l
-   //     synthmod name g09.sine-l
-    //    synthmod name g10.sine-l
-     //   synthmod name g11.sine-l
-      //  synthmod name g12.sine-l
-       // synthmod name g13.sine-l
-        //synthmod name g14.sine-l
-  //      synthmod name g15.sine-l
-    //    synthmod name g16.sine-l
+        synthmod name g06.sine-l
+        synthmod name g07.sine-l
+        synthmod name g08.sine-l
     signals
     mean_total on
 cmb-l
+
 
 combiner
 cmb-r
@@ -233,20 +194,13 @@ cmb-r
         synthmod name g03.sine-r
         synthmod name g04.sine-r
         synthmod name g05.sine-r
-//        synthmod name g06.sine-r
- //       synthmod name g07.sine-r
-  //      synthmod name g08.sine-r
-   //     synthmod name g09.sine-r
-    //    synthmod name g10.sine-r
-     //   synthmod name g11.sine-r
-      //  synthmod name g12.sine-r
-       // synthmod name g13.sine-r
-        //synthmod name g14.sine-r
-//        synthmod name g15.sine-r
-  //      synthmod name g16.sine-r
+        synthmod name g06.sine-r
+        synthmod name g07.sine-r
+        synthmod name g08.sine-r
     signals
     mean_total on
 cmb-r
+
 
 caps_plate2x2
 revb
@@ -258,26 +212,27 @@ revb
     wet/dry    0.25
 revb
 
+
 fader
 f1
     in_bar      t1 out_count
     start_bar      0
     end_bar        2
     fade_in_time   5000.0
-    fade_out_time  5000.0
+    fade_out_time 15000.0
 f1
+
 
 stereo_amp
 amp1
     in_left    revb out_left
     in_right   revb out_right
     in_amp_eg  f1  out_output
-    in_amp_mod off
     left_level   1.0
     right_level  1.0
-    amp_mod_size 0.0
     clip_level   1.0
 amp1
+
 
 wavfile_out
 wav1
@@ -291,7 +246,6 @@ wav1
     end_bar     1
 wav1
 
-// setup how long to process:
 
 wcnt_exit
 wcnt_exit_module
@@ -299,7 +253,5 @@ wcnt_exit_module
     exit_bar    1
 wcnt_exit_module
 
-//------------------------------------------------------------------------
-// End Of File _jwm 2005.
-//------------------------------------------------------------------------
+
 wcnt-1.30/jwmsynth

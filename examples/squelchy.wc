@@ -94,25 +94,18 @@ user_wave
 bwv
      waveform
         vertex
-            ud  0.0     ul  0.0
-            ld  0.0     ll  0.0
+            deg  0.0    level 0.0
         vertex
-            ud  90.0     ul  0.0
-            ld  90.0     ll  0.0
+            deg 90.0    level 0.0
         vertex
-            ud  180.0   ul  1.0
-            ld  180.0   ll  1.0
+            deg 180.0   level 1.0
         vertex
-            ud  270.0   ul  0.0
-            ld  270.0   ll  0.0
+            deg 270.0   level 0.0
         vertex
-            ud  360.0   ul  0.0
-            ld  360.0   ll  0.0
+            deg 360.0   level 0.0
     waveform
     in_phase_trig  clock1b out_phase_trig
     in_phase_step    clock1b out_phase_step
-    in_level_mod   off
-    in_time_mod    off
     recycle_mode    on
     zero_retrigger  off
     drop_check_range 0
@@ -139,19 +132,14 @@ user_wave
 uw1
      waveform
         vertex
-            ud  0.0     ul  0.0125
-            ld  0.0     ll  0.0125
+            deg 0.0     level 0.0125
         vertex
-            ud  180.0   ul  1.0
-            ld  180.0   ll  1.0
+            deg 180.0   level 1.0
         vertex
-            ud  360.0   ul  0.0125
-            ld  360.0   ll  0.0125
+            deg 360.0   level 0.0125
     waveform
     in_phase_trig  clockx out_phase_trig
     in_phase_step    clockx out_phase_step
-    in_level_mod   off
-    in_time_mod    off
     recycle_mode    on
     zero_retrigger  off
     drop_check_range 0
@@ -167,12 +155,9 @@ wave_phase
 sw2
     in_phase_trig        clock1 out_phase_trig
     in_phase_step        xmx1 out_output
-    in_shape_phase_step  off
     type                 sine
-    shape_type           one
     on_trig_reset_phase  off
     recycle_mode         on
-    sync_shape           off
     invert_alt           off
     phase_cycles         1
 sw2
@@ -414,10 +399,8 @@ amp1
     in_left cp1 out_left
     in_right cp1 out_right
     in_amp_eg   one out_output
-    in_amp_mod  off
     left_level    0.5
     right_level   0.5
-    amp_mod_size  0.0
     clip_level    0.96
 amp1
 

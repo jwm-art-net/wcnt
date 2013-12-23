@@ -16,13 +16,7 @@ header header.wch
 
 synth_file_reader
 sfr
-            filename     time.wch
-            mod_action   exclude
-            dobj_action  exclude
-    modules
-    modules
-    data_objects
-    data_objects
+    filename     time.wch
 sfr
 
 // ---------------- note sequencing ----------------------
@@ -68,38 +62,24 @@ adsr
 env
     envelope
             section name attack
-                ut 1.0 ul 0.25
-                lt 1.0 ll 0.25
+                time  1.0 level 0.25
             section name attack
-                ut 2.5 ul 0.5
-                lt 2.5 ll 0.5
+                time  2.5 level 0.50
             section name attack
-                ut 5.0 ul 0.75
-                lt 5.0 ll 0.75
+                time  5.0 level 0.75
             section name decay
-                ut 7.5 ul 1.0
-                lt 7.5 ll 1.0
+                time  7.5 level 1.00
             section name release
-                ut 7.5 ul 0.75
-                lt 7.5 ll 0.75
+                time  7.5 level 0.75
             section name release
-                ut 45.0 ul 0.5
-                lt 45.0 ll 0.5
+                time 45.0 level 0.50
             section name release
-                ut 15 ul 0.25
-                lt 15 ll 0.25
+                time 15.0 level 0.25
             section name release
-                ut 10 ul 0.0
-                lt 10 ll 0.0
+                time 10.0 level 0.00
     envelope
     in_note_on_trig   seq out_note_on_trig
     in_note_off_trig  seq out_note_off_trig
-    in_velocity       off
-    up_thresh         0.85
-    lo_thresh         0.15
-    start_level       0.0
-    min_time          0.0
-    max_sustain_time  0.0
     release_is_ratio  off
     sustain_state     on
     zero_retrigger    off
@@ -111,23 +91,15 @@ adsr
 penv
     envelope
             section name attack
-                ut 1.0 ul 0.25
-                lt 1.0 ll 0.25
+                time  1.0 level  0.25
             section name decay
-                ut 17.5 ul 1.0
-                lt 17.5 ll 1.0
+                time 17.5 level  1.00
             section name release
-                ut 77.5 ul -1.0
-                lt 77.5 ll -1.0
+                time 77.5 level -1.00
     envelope
     in_note_on_trig   seq out_note_on_trig
     in_note_off_trig  off
-    in_velocity       off
-    up_thresh         0.85
-    lo_thresh         0.15
     start_level       1.0
-    min_time          0.0
-    max_sustain_time  0.0
     release_is_ratio  off
     sustain_state     off
     zero_retrigger    on
@@ -139,23 +111,15 @@ adsr
 penv2
     envelope
             section name attack
-                ut 1.0 ul 0.25
-                lt 1.0 ll 0.25
+                time 1.0 level 0.25
             section name decay
-                ut 4.5 ul 1.0
-                lt 4.5 ll 1.0
+                time 4.5 level 1.00
             section name release
-                ut 1.5 ul 0.0
-                lt 1.5 ll 0.0
+                time 1.5 level 0.00
     envelope
     in_note_on_trig   seq out_note_on_trig
     in_note_off_trig  off
-    in_velocity       off
-    up_thresh         0.85
-    lo_thresh         0.15
     start_level       1.0
-    min_time          0.0
-    max_sustain_time  0.0
     release_is_ratio  off
     sustain_state     off
     zero_retrigger    on
@@ -183,9 +147,7 @@ pclock
 
 clock
 clock
-    in_freq_mod1    off
     freq            1.0
-    freq_mod1_size  1.0
 clock
 
 wave
@@ -260,10 +222,8 @@ glame_butterworth
 gbw_lp
     in_signal          amp1       out_output
     in_cutoff_phase_step  lpf_clock out_phase_step
-    in_res_mod         off
     filter_type        lowpass
     resonance       0.975
-    res_mod_size    0.0
 gbw_lp
 
 // compress the peaks of the sound so that when amplified (again)
@@ -296,10 +256,8 @@ boost_and_clip
     in_left     reverb out_left
     in_right    reverb out_right
     in_amp_eg   one out_output
-    in_amp_mod  off
     left_level    4.0
     right_level   4.0
-    amp_mod_size  0.0
     clip_level    0.9
 boost_and_clip
 

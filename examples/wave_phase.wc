@@ -36,16 +36,9 @@ osc_clock
 clocka
     in_note_on_trig     t1 out_trig
     in_note_slide_trig  off
-    in_play_state       off
     in_frequency        note out_frequency
-    in_freq_mod1        off
-    in_freq_mod2        off
-    octave_offset       0
-    tuning_semitones    0
     portamento_time     125
     response_time       5
-    freq_mod1_size      1
-    freq_mod2_size      1
 clocka
 
 wave
@@ -58,16 +51,12 @@ osc_clock
 clockb
     in_note_on_trig     t1 out_trig
     in_note_slide_trig  off
-    in_play_state       off
     in_frequency        note out_frequency
     in_freq_mod1        awfm out_output
-    in_freq_mod2        off
     octave_offset       1
-    tuning_semitones    0
     portamento_time     125
     response_time       5
     freq_mod1_size      4
-    freq_mod2_size      1
 clockb
 
 wcnt_signal
@@ -80,16 +69,11 @@ osc_clock
 clockc
     in_note_on_trig     t1 out_trig
     in_note_slide_trig  off
-    in_play_state       off
     in_frequency        cfrq out_output
     in_freq_mod1        lfowave out_output
-    in_freq_mod2        off
-    octave_offset       0
-    tuning_semitones    0
     portamento_time     125
     response_time       5
     freq_mod1_size      2
-    freq_mod2_size      1
 clockc
 
 wave_phase
@@ -116,26 +100,18 @@ osc_clock
 clockd
     in_note_on_trig     t1 out_trig
     in_note_slide_trig  off
-    in_play_state       off
     in_frequency        dfrq out_output
     in_freq_mod1        lfowave2 out_output
-    in_freq_mod2        off
-    octave_offset       0
-    tuning_semitones    0
     portamento_time     125
     response_time       5
     freq_mod1_size      0.5
-    freq_mod2_size      1
 clockd
 
 square_wave
 sq1
     in_phase_trig  clockd out_phase_trig
     in_phase_step  clockd out_phase_step
-    in_pwm         off
-    rate          1
     pulse_width   0.125
-    pwm_size      0.0
     recycle_mode  off
 sq1
 
@@ -175,10 +151,8 @@ glame_butterworth
 hpf1
     in_signal               m1 out_output
     in_cutoff_phase_step    clockf out_phase_step
-    in_res_mod              off
     filter_type   highpass
     resonance     0.45
-    res_mod_size  0.0
 hpf1
 
 glame_filter

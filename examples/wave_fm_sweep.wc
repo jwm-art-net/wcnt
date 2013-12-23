@@ -54,9 +54,7 @@ wcnt_signal saws in_signal a1 out_output level 0.5 saws
 
 clock
 clock3
-    in_freq_mod1    off
     freq            0.25
-    freq_mod1_size  1
 clock3
 
 wave
@@ -87,8 +85,6 @@ amp1
     in_signal   m1 out_output
     in_amp_eg   one out_output
     gain           1
-    in_gain_mod  off
-    gain_mod_size    0
     clip_level      1
 amp1
 

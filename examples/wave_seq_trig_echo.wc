@@ -35,9 +35,7 @@ saw
 
 clock
 clock2
-    in_freq_mod1    off
     freq            1.333333
-    freq_mod1_size  1.0
 clock2
 
 wave
@@ -48,9 +46,7 @@ sine
 
 clock
 clockt
-    in_freq_mod1    off
     freq            0.583435
-    freq_mod1_size  1.0
 clockt
 
 trig_counter
@@ -94,11 +90,6 @@ adsr
     in_note_on_trig   trigecho out_trig
     in_note_off_trig  off
     in_velocity       trigecho out_velocity
-    up_thresh         1.0
-    lo_thresh         0.0
-    start_level       0.0
-    min_time          0.0
-    max_sustain_time  0.0
     release_is_ratio  on
     sustain_state     off
     zero_retrigger    off
@@ -115,10 +106,8 @@ glame_butterworth
 lpf
     in_signal               saw out_output
     in_cutoff_phase_step    clock3 out_phase_step
-    in_res_mod              off
     filter_type     lowpass
     resonance       0.52
-    res_mod_size    0.0
 lpf
 
 mono_amp
@@ -126,8 +115,6 @@ amp1
     in_signal   lpf  out_output
     in_amp_eg   adsr out_output
     gain           0.75
-    in_gain_mod  off
-    gain_mod_size    0.0
     clip_level      0.975
 amp1
 

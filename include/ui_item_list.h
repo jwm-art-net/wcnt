@@ -306,8 +306,10 @@ namespace ui
     if (id & UI_OPTION_MASK) {
         choice.head = choice.opt0 = this->sneak_current();
         choice.opt0id = id;
+        #ifdef DEBUG
         if (item->should_duplicate())
             track.choice_specified_dup = true;
+        #endif
     }
     else {
         id = item->get_group_id();
@@ -318,7 +320,6 @@ namespace ui
     }
     return item;
  }
-
 
  template <class T>
  base<T>* item_list<T>::next_item()

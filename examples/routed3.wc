@@ -57,12 +57,12 @@ riff1
 sequencer
 seq
     track
-        riff_node   riff riff1
-            bar 0       transpose 0
-            repeat 8    repeat_stripe 2
-        riff_node   riff riff1
-            bar 23       transpose 0
-            repeat 6    repeat_stripe 1
+        riff_node
+            riff riff1
+            bar 0 repeat 8 repeat_stripe 2
+        riff_node
+            riff riff1
+            bar 23 repeat 6 repeat_stripe 1
     track
 
     in_bar              time1 out_bar
@@ -100,6 +100,7 @@ seqo
     send_input_out  on
 seqo
 
+
 seq_router
 seqr
     in_index            seqo out_index
@@ -112,6 +113,7 @@ seqr
     count  10
     wrap   on
 seqr
+
 
 adsr
 env
@@ -129,11 +131,6 @@ env
     in_note_on_trig     off
     in_note_off_trig    off
     in_velocity         off
-    up_thresh        1.0
-    lo_thresh        0.0
-    start_level      0.0
-    min_time         0.0
-    max_sustain_time 0.0
     release_is_ratio on
     sustain_state    on
     zero_retrigger   off
@@ -148,8 +145,6 @@ osc1
     in_frequency        off
     in_freq_mod1        wvy out_output
     in_freq_mod2        off
-    octave_offset       0
-    tuning_semitones    0
     portamento_time     125
     response_time       1
     freq_mod1_size      1

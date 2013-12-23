@@ -6,11 +6,12 @@ wcnt-1.30/jwmsynth
 //------------------------------------------------------------------------
 
 header header.wch
-//header header.wch
 
 //------------------------------------------------------------------------
 
+
 constant one value 1.0 one
+
 
 time_map
 time1
@@ -21,6 +22,7 @@ time1
         tempo bpm 110 bar 0
     bpm_map
 time1
+
 
 riff
 riffl
@@ -40,6 +42,7 @@ riffl
     notelist
 riffl
 
+
 sequencer
 seq1
     track
@@ -56,22 +59,16 @@ seq1
     velocity_response_time 5
 seq1
 
+
 adsr
 adsr1
         envelope
-        section name attack
-            ut  10.0    ul  1.0
-            lt  10.0    ll  1.0
-        section name decay
-            ut  205.0    ul  0.59
-            lt  205.0    ll  0.59
-        section name release
-            ut  305.0    ul  0.3
-            lt  305.0    ll  0.3
-        section name release
-            ut  505.0    ul  0.0
-            lt  505.0    ll  0.0
+            section name attack     time 10.0 level 1.0
+            section name decay      time 205.0 level 0.59
+            section name release    time 305.0 level 0.3
+            section name release    time 505.0 level 0.0
         envelope
+
         in_note_on_trig     seq1    out_note_on_trig
         in_note_off_trig    seq1    out_note_off_trig
         in_velocity         seq1    out_velocity
@@ -85,6 +82,7 @@ adsr1
         zero_retrigger   off
 adsr1
 
+
 osc_clock
 orb_clock
         in_note_on_trig     seq1    out_note_on_trig
@@ -94,12 +92,12 @@ orb_clock
         in_freq_mod1        orbit1 out_x
         in_freq_mod2        orbit1 out_y
         octave_offset       2
-        tuning_semitones    0
         portamento_time     5.0
         response_time       5.0
         freq_mod1_size      2
         freq_mod2_size      2
 orb_clock
+
 
 orbit
 orbit1
@@ -112,6 +110,7 @@ orbit1
     test_iterations  25000
 orbit1
 
+
 osc_clock
 osc-l
         in_note_on_trig     seq1    out_note_on_trig
@@ -120,13 +119,12 @@ osc-l
         in_frequency        seq1    out_frequency
         in_freq_mod1        orbit1 out_x
         in_freq_mod2        orbit1 out_y
-        octave_offset       0
-        tuning_semitones    0
         portamento_time     15.0
         response_time       5.0
         freq_mod1_size      2.0
         freq_mod2_size      2.0
 osc-l
+
 
 wave
 sine-l
@@ -134,8 +132,10 @@ sine-l
     type sine
 sine-l
 
+
 copier c1 from osc-l to osc-r c1
 copier c2 from sine-l to sine-r c2
+
 
 input_editor
 ie_lr1
@@ -144,6 +144,7 @@ ie_lr1
             in_phase_step     osc-r out_phase_step
     editlist
 ie_lr1
+
 
 param_editor
 pe_lr1
@@ -154,17 +155,21 @@ pe_lr1
     editlist
 pe_lr1
 
+
 multiplier shaped-l
     in_signal1 sine-l  out_output
     in_signal2 adsr1   out_output
 shaped-l
+
 
 multiplier shaped-r
     in_signal1 sine-r  out_output
     in_signal2 adsr1   out_output
 shaped-r
 
+
 constant h value 0.5 h
+
 
 modifier
 mml
@@ -175,6 +180,7 @@ mml
     type      m1
 mml
 
+
 modifier
 mmr
     in_signal1 shaped-r out_output
@@ -184,8 +190,10 @@ mmr
     type      m1
 mmr
 
+
 wcnt_signal ws-l in_signal mml out_output level 0.125 ws-l
 wcnt_signal ws-r in_signal mmr out_output level 0.125 ws-r
+
 
 group g1
 modules
@@ -205,6 +213,7 @@ modules
 modules
 g1
 
+
 copier gc1 from g1 to g2 gc1
 copier gc2 from g1 to g3 gc2
 copier gc3 from g1 to g4 gc3
@@ -212,6 +221,7 @@ copier gc4 from g1 to g5 gc4
 copier gc5 from g1 to g6 gc5
 copier gc6 from g1 to g7 gc6
 copier gc7 from g1 to g8 gc7
+
 
 input_editor
 ie_lr2
@@ -278,6 +288,7 @@ pe1
     editlist
 pe1
 
+
 combiner
 cmb-l
     signals
@@ -292,6 +303,7 @@ cmb-l
     signals
     mean_total off
 cmb-l
+
 
 combiner
 cmb-r
@@ -308,6 +320,7 @@ cmb-r
     mean_total off
 cmb-r
 
+
 caps_plate2x2
 cp1
     in_left     cmb-l out_output
@@ -318,16 +331,16 @@ cp1
     wet/dry    0.5
 cp1
 
+
 stereo_amp amp1
     in_left     cp1 out_left
     in_right    cp1 out_right
     in_amp_eg   one     out_output
-    in_amp_mod  off
     left_level      0.95
     right_level     0.95
-    amp_mod_size    0.0
     clip_level      1.0
 amp1
+
 
 wavfile_out
 wav1
@@ -341,7 +354,6 @@ wav1
     end_bar     64
 wav1
 
-// setup how long to process:
 
 wcnt_exit
 wcnt_exit_module
@@ -349,7 +361,5 @@ wcnt_exit_module
     exit_bar    64
 wcnt_exit_module
 
-//------------------------------------------------------------------------
-// End Of File _jwm 2005.
-//------------------------------------------------------------------------
+
 wcnt-1.30/jwmsynth

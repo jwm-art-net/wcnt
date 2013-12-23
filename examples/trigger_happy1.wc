@@ -16,9 +16,7 @@ t1
 
 clock
 clock1
-    in_freq_mod1   off
     freq           100
-    freq_mod1_size 1.0
 clock1
 
 wave
@@ -33,10 +31,8 @@ square_wave
 squ_wave1
     in_phase_trig   clock1 out_phase_trig
     in_phase_step   clock1 out_phase_step
-    in_pwm          off
     rate          0.3
     pulse_width   0.5
-    pwm_size      0.0
     recycle_mode  off
 squ_wave1
 
@@ -58,9 +54,7 @@ wcnt_signal ws3 in_signal triwave1 out_output level 1.0 ws3
 
 clock
 clock2
-    in_freq_mod1   off
     freq           0.2121212
-    freq_mod1_size 1.0
 clock2
 
 wave
@@ -71,9 +65,7 @@ sinewave2
 
 clock
 clock3
-    in_freq_mod1   off
     freq           0.1111
-    freq_mod1_size 1.0
 clock3
 
 wave
@@ -128,9 +120,6 @@ adsr1
         in_velocity         sinewave3 out_output
         up_thresh        0.75
         lo_thresh        -0.75
-        start_level      0.0
-        min_time         0.0
-        max_sustain_time 0.0
         release_is_ratio off
         sustain_state    on
         zero_retrigger   off
@@ -141,8 +130,6 @@ amp1
     in_signal   sw1     out_output
     in_amp_eg   adsr1   out_output
     gain        1.0
-    in_gain_mod  off
-    gain_mod_size 0.0
     clip_level   1.0
 amp1
 

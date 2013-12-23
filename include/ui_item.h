@@ -59,6 +59,9 @@ namespace ui
     UI_OPTION3 =        0x0040,
     UI_OPTION4 =        0x0080,
 
+    // items marked UI_OPT_OPTIONAL indicate the multi-choice is entirely
+    // optional as to whether it is specified or not. Only the first item
+    // in the first option is tested for UI_OPT_OPTIONAL.
     UI_OPT_OPTIONAL =   0x0100,
 
     // NOTE: Options were designed more as substitutes for one another than
@@ -76,9 +79,10 @@ namespace ui
     //      and to ensure that the duplication does actually duplicate what
     //      is necessary.
 
-    //      Items marked with UI_OPT_DUP are items in an option which should
-    //      be duplicated when duplication is called for. Only items marked
-    //      with UI_OPTION need use this.
+    //      Items marked with UI_OPT_DUPLICATE are items in an option which
+    //      should be duplicated when duplication is called for. Only items
+    //      marked with UI_OPTION need use this. At least one item in the
+    //      multi-choice MUST be marked UI_OPT_DUPLICATE.
     UI_OPT_DUPLICATE =  0x0200,
 
     // items marked UI_DUMMY are invisible to the end user but exist to
@@ -89,7 +93,6 @@ namespace ui
     // (note: see the sampler module for usage example).
     UI_OPT_DUMMY =      0x0400,
 
-
     // items can be grouped together by setting one of the UI_GROUPn flags.
     // allowing the whole group of items in the user interface to either
     // all be specified or all absent. additionally, specific items within
@@ -97,7 +100,7 @@ namespace ui
     // there can be any number of groups within a container as long as there
     // is at least one non-group item between each group (excluding comment
     // items).  Where distinct groups immediatelly follow each other, then
-    // only four distinct but adjaecent groups can be accommodated.
+    // only five distinct but adjaecent groups can be accommodated.
 
     UI_GROUP1 =         0x01000,
     UI_GROUP2 =         0x02000,
@@ -105,7 +108,7 @@ namespace ui
     UI_GROUP4 =         0x08000,
     UI_GROUP5 =         0x10000,
 
-    // items cannot be part of a group and option simultaneously.
+    // NOTE: items CANNOT be part of a group and option simultaneously.
 
     // implementation only:
     UI_OPTION_MASK=     0x00f0,

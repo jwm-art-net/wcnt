@@ -47,9 +47,7 @@ sine
 
 clock
 clockt
-    in_freq_mod1    off
     freq            5.0
-    freq_mod1_size  1.0
 clockt
 
 sample_hold
@@ -96,10 +94,8 @@ glame_butterworth
 lpf
     in_signal               saw out_output
     in_cutoff_phase_step    clock3 out_phase_step
-    in_res_mod              off
     filter_type     lowpass
     resonance       0.2
-    res_mod_size    0.0
 lpf
 
 mono_amp
@@ -107,8 +103,6 @@ amp1
     in_signal   lpf  out_output
     in_amp_eg   adsr out_output
     gain           0.25
-    in_gain_mod  off
-    gain_mod_size    0.0
     clip_level      0.975
 amp1
 
