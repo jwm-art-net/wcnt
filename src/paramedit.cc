@@ -14,6 +14,7 @@ paramedit::paramedit() :
 {
 }
 
+
 void paramedit::register_ui()
 {
     register_param(param::STR_UNNAMED)->add_descr("MODULE-OR-DATA-OBJECT");
@@ -21,11 +22,13 @@ void paramedit::register_ui()
             ->add_descr("PARAMETER-NAME VALUE (...)");
 }
 
+
 ui::dobjitem_list* paramedit::get_ui_items()
 {
     static ui::dobjitem_list items;
     return &items;
 }
+
 
 paramedit::~paramedit()
 {
@@ -34,6 +37,7 @@ paramedit::~paramedit()
     if (parstr)
         delete [] parstr;
 }
+
 
 bool paramedit::set_name(const char* n)
 {
@@ -47,6 +51,7 @@ bool paramedit::set_name(const char* n)
     strcpy(name, n);
     return true;
 }
+
 
 void paramedit::set_parstr(const char* n)
 {
@@ -79,19 +84,13 @@ bool paramedit::do_param_edits()
     std::string valstr;
     strm << parstr;
 
-    std::cout << "\\/\\/--{ partstr:'" << parstr << "'" << std::endl;
     strm >> parname;
-    std::cout << "\\/\\/--{ parname:'" << parname << "'" << std::endl;
     do {
         strm >> valstr;
-
-        std::cout << "\\/\\/--{ valstr:'" << valstr << "'" << std::endl;
-
         if (setpar::is_operator(valstr.c_str())) {
             std::string n;
             strm >> n;
             valstr += " " + n;
-            std::cout << "\\/\\/--{ is operator valstr:'" << valstr << "'" << std::endl;
         }
 
         if (sm) {
@@ -110,6 +109,7 @@ bool paramedit::do_param_edits()
     }while (!strm.eof());
     return true;
 }
+
 
 bool paramedit::mod_param_edit(synthmod::base* mod, const char* parname,
                                                     const char* valstr)
@@ -140,45 +140,9 @@ bool paramedit::mod_param_edit(synthmod::base* mod, const char* parname,
         invalidate();
         return false;
     }
-
-    /*
-    param::TYPE partype = param::names::type(parname);
-
-    if (partype == param::ERR_TYPE) {
-        dobjerr("No such parameter as '%s'.", parname);
-        invalidate();
-        return false;
-    }
-
-    ui::moditem_list* items = mod->get_ui_items();
-    ui::moditem* item = (items != 0 ? items->goto_first() : 0);
-    ui::modparam* mp = 0;
-
-    while(item) {
-        if (item->get_item_type() == ui::UI_PARAM) {
-            mp = static_cast<ui::modparam*>(item);
-            if (*mp == partype)
-                break;
-        }
-        item = items->goto_next();
-    }
-
-    if (!mp) {
-        dobjerr("Module %s does not have any parameter named %s.",
-                                        mod->get_username(), parname);
-        invalidate();
-        return false;
-    }
-
-    if (!setpar::set_param(mod, partype, valstr, 0)) {
-        dobjerr("%s", setpar::get_error_msg());
-        invalidate();
-        return false;
-    }
-    */
-
     return true;
 }
+
 
 bool paramedit::dobj_param_edit(dobj::base* dob, const char* parname,
                                                  const char* valstr)
@@ -220,12 +184,13 @@ bool paramedit::dobj_param_edit(dobj::base* dob, const char* parname,
     return true;
 }
 
+
 bool paramedit::set_param(param::TYPE dt, const void* data)
 {
     switch(dt)
     {
     case param::STR_UNNAMED:
-        if (!set_name((const char*)data)) { std::cout << "FUCK!"<<std::endl;
+        if (!set_name((const char*)data)) {
             dobjerr("There are no data objects or modules named %s "
                     "cannot edit parameters.", (const char*)data);
             invalidate();
@@ -239,6 +204,7 @@ bool paramedit::set_param(param::TYPE dt, const void* data)
         return false;
     }
 }
+
 
 const void* paramedit::get_param(param::TYPE dt) const
 {

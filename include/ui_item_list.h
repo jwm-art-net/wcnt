@@ -360,9 +360,9 @@ namespace ui
                 choice.opt0 = this->sneak_current();
                 choice.opt0id = id;
             }
+            #ifdef DEBUG
             if (item->is_ui_opt_duplicate())
                 track.choice_specified_dup = true;
-            #ifdef DEBUG
             if (!this->sneak_next()
              && !track.choice_specified_dup)
                 std::cout << "***** WARNING *****\n"
@@ -387,8 +387,10 @@ namespace ui
         if (id & UI_OPTION_MASK) {
             choice.head = choice.opt0 = this->sneak_current();
             choice.opt0id = id;
+            #ifdef DEBUG
             if (item->is_ui_opt_duplicate())
                 track.choice_specified_dup = true;
+            #endif
         }
 
         id = item->get_group_id();

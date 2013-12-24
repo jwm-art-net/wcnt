@@ -54,37 +54,25 @@ adsr
 env
     envelope
             section name attack
-                ut 1.0 ul 0.25
-                lt 1.0 ll 0.25
+                time 1.0 level 0.25
             section name attack
-                ut 2.5 ul 0.5
-                lt 2.5 ll 0.5
+                time 2.5 level 0.5
             section name attack
-                ut 5.0 ul 0.75
-                lt 5.0 ll 0.75
+                time 5.0 level 0.75
             section name decay
-                ut 7.5 ul 1.0
-                lt 7.5 ll 1.0
+                time 7.5 level 1.0
             section name release
-                ut 7.5 ul 0.75
-                lt 7.5 ll 0.75
+                time 7.5 level 0.75
             section name release
-                ut 45.0 ul 0.5
-                lt 45.0 ll 0.5
+                time 45.0 level 0.5
             section name release
-                ut 15 ul 0.25
-                lt 15 ll 0.25
+                time 15 level 0.25
             section name release
-                ut 10 ul 0.0
-                lt 10 ll 0.0
+                time 10 level 0.0
     envelope
     in_note_on_trig   seq out_note_on_trig
     in_velocity       off
-    up_thresh         0.85
-    lo_thresh         0.15
-    min_time          0.0
     sustain_state     on
-    max_sustain_time  0.0
     in_note_off_trig  seq out_note_off_trig
     release_is_ratio  off
 env
@@ -93,24 +81,17 @@ adsr
 penv
     envelope
             section name attack
-                ut 1.0 ul 0.25
-                lt 1.0 ll 0.25
+                time 1.0 level 0.25
             section name decay
-                ut 17.5 ul 1.0
-                lt 17.5 ll 1.0
+                time 17.5 level 1.0
             section name release
-                ut 77.5 ul -1.0
-                lt 77.5 ll -1.0
+                time 77.5 level .0
     envelope
     in_note_on_trig   seq out_note_on_trig
     zero_retrigger    on
     start_level       1.0
     in_velocity       off
-    up_thresh         0.85
-    lo_thresh         0.15
-    min_time          0.0
     sustain_state     off
-    max_sustain_time  0.0
     in_note_off_trig  off
     release_is_ratio  off
 penv
@@ -119,24 +100,17 @@ adsr
 penv2
     envelope
             section name attack
-                ut 3.0 ul 0.25
-                lt 3.0 ll 0.25
+                time 3.0 level 0.25
             section name decay
-                ut 5.5 ul 1.0
-                lt 5.5 ll 1.0
+                time 5.5 level 1.0
             section name release
-                ut 9.5 ul 0.0
-                lt 9.5 ll 0.0
+                time 9.5 level 0.0
     envelope
     in_note_on_trig   seq out_note_on_trig
     zero_retrigger    on
     start_level       1.0
     in_velocity       off
-    up_thresh         0.85
-    lo_thresh         0.15
-    min_time          0.0
     sustain_state     off
-    max_sustain_time  0.0
     in_note_off_trig  off
     release_is_ratio  off
 penv2
@@ -208,10 +182,6 @@ hpf_clock
     in_frequency        seq out_frequency
     octave_offset     -3
     tuning_semitones  0
-    in_freq_mod1        off
-    freq_mod1_size    1.0
-    in_freq_mod2        off
-    freq_mod2_size    1.0
     portamento_time   15.0
     response_time     2.0
 hpf_clock
@@ -259,8 +229,6 @@ sb-eq
     in_signal         gbw_lp out_output
     in_phase_step       hpf_clock out_phase_step
     gain_db             20.0
-    in_gain_mod       off
-    gain_mod_size       0.0
     bandwidth           3.0
     in_bandwidth_mod  penv2 out_output
     bandwidth_mod_size  0.55
@@ -289,8 +257,6 @@ mono_amp
 boost_and_clip
     in_signal   sc out_output
     gain         2.0
-    in_gain_mod  off
-    gain_mod_size  0.0
     in_amp_eg   env     out_output
     clip_level    0.9
 boost_and_clip
@@ -302,8 +268,6 @@ lpf
     filter_type     lowpass
     in_signal     boost_and_clip out_output
     freq            4000
-    in_freq_mod1  off
-    freq_mod1_size  1.0
     stages          4
 lpf
 

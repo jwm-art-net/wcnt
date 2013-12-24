@@ -12,12 +12,6 @@ header header.wch
 synth_file_reader
 bass01_wc
     filename bass01.wc
-    mod_action  exclude
-    modules
-    modules
-    dobj_action exclude
-    data_objects
-    data_objects
 bass01_wc
 
 group

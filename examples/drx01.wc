@@ -11,12 +11,6 @@ header header.wch
 synth_file_reader
 timefile
     filename time.wch
-    mod_action  exclude
-    dobj_action exclude
-    modules
-    modules
-    data_objects
-    data_objects
 timefile
 
 //------------------------------------------------------------------------
@@ -178,23 +172,16 @@ adsr
 adsr1
         envelope
         section name attack
-            ut  5000.0       ul  1.0
-            lt  5000.0    ll  1.0
+            time 5000.0 level  1.0
         section name decay
-            ut  200.0    ul  0.9
-            lt  200.0    ll  0.9
+            time 200.0  level 0.9
         section name release
-            ut  2500.0    ul  0.0
-            lt  2500.0    ll  0.0
+            time 2500.0 level 0.0
         envelope
         in_note_on_trig     seq2    out_note_on_trig
         in_note_off_trig    seq2    out_note_off_trig
         in_velocity         seq2    out_velocity
-        up_thresh       0.9
-        lo_thresh       0.5
-        start_level     0.0
         min_time         125.0
-        max_sustain_time 0.0
         release_is_ratio off
         sustain_state   on
         zero_retrigger  off
@@ -390,9 +377,6 @@ adsr3
         in_note_on_trig     drumtrig    out_trig
         in_note_off_trig    off
         in_velocity         off
-        up_thresh       1.0
-        lo_thresh       0.0
-        start_level     0.0
         min_time         125.0
         max_sustain_time 0.0
         release_is_ratio off
@@ -442,20 +426,16 @@ adsr4
 glame_filter
 glpf1-left
     in_signal     sampler1  out_left
-    in_freq_mod1  off
     filter_type     lowpass
     freq            4000
-    freq_mod1_size  1.0
     stages          2
 glpf1-left
 
 glame_filter
 glpf1-right
     in_signal     sampler1  out_right
-    in_freq_mod1  off
     filter_type     lowpass
     freq            4000
-    freq_mod1_size  1.0
     stages          2
 glpf1-right
 
@@ -511,28 +491,30 @@ glpf2-right
 echo
 lecho
     in_signal       dl      out_output
+    gain            0.95
     in_gain_mod     adsr4   out_output
-    in_feedback     recho   out_wet_output
-    in_feedback_mod glpf2-left out_output //sampler2 out_left
+    gain_mod_size   1.0
+
     delay_time          325
-    gain                0.95
-    gain_mod_size        1.0
     feedback            0.9995
-    feedback_mod_size    1.0
+    in_feedback         recho   out_wet_output
+    in_feedback_mod     glpf2-left out_output //sampler2 out_left
+    feedback_mod_size   1.0
     wet/dry             1.0
 lecho
 
 echo
 recho
     in_signal       dr      out_output
+    gain            0.95
     in_gain_mod     adsr4   out_output
-    in_feedback     lecho   out_wet_output
-    in_feedback_mod glpf2-right out_output //sampler2 out_right
+    gain_mod_size   1.0
+
     delay_time          317.5
-    gain                0.95
-    gain_mod_size        1.0
     feedback            0.9995
-    feedback_mod_size    1.0
+    in_feedback         lecho   out_wet_output
+    in_feedback_mod     glpf2-right out_output //sampler2 out_right
+    feedback_mod_size   1.0
     wet/dry             1.0
 recho
 

@@ -10,12 +10,6 @@ header header.wch
 synth_file_reader
 sfr
     filename     time.wch
-    mod_action   exclude
-    modules
-    modules
-    dobj_action  exclude
-    data_objects
-    data_objects
 sfr
 
 riff
@@ -138,13 +132,10 @@ pclock
     in_play_state       env out_play_state
     in_frequency        seq out_frequency
     in_freq_mod1        penv2 out_output
-    in_freq_mod2        one out_output
     octave_offset     -3
-    tuning_semitones  0.0
     portamento_time   15.0
     response_time     2.0
     freq_mod1_size    2.0
-    freq_mod2_size    1.0
 pclock
 
 multiplier
@@ -182,14 +173,9 @@ hpf_clock
     in_note_slide_trig  seq out_note_slide_trig
     in_play_state       env out_play_state
     in_frequency        seq out_frequency
-    in_freq_mod1        off
-    in_freq_mod2        off
     octave_offset     -3
-    tuning_semitones  0
     portamento_time   15.0
     response_time     2.0
-    freq_mod1_size    1.0
-    freq_mod2_size    1.0
 hpf_clock
 
 osc_clock
@@ -222,20 +208,16 @@ glame_butterworth
 gbw_lp
     in_signal          amp1       out_output
     in_cutoff_phase_step  lpf_clock out_phase_step
-    in_res_mod         off
     filter_type        lowpass
     resonance       0.975
-    res_mod_size    0.0
 gbw_lp
 
 single_band_parametric
 sb-eq
     in_signal         gbw_lp out_output
     in_phase_step       hpf_clock out_phase_step
-    in_gain_mod       off
     in_bandwidth_mod  penv2 out_output
     gain_db             20.0
-    gain_mod_size       0.0
     bandwidth           3.0
     bandwidth_mod_size  0.55
 sb-eq
@@ -264,10 +246,8 @@ boost_and_clip
 glame_filter
 lpf
     in_signal     boost_and_clip out_output
-    in_freq_mod1  off
     filter_type     lowpass
     freq            2000
-    freq_mod1_size  1.0
     stages          1
 lpf
 
