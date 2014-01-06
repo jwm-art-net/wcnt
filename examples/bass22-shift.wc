@@ -10,12 +10,6 @@ header header.wch
 synth_file_reader
 sfr
     filename     time.wch
-    mod_action   exclude
-    modules
-    modules
-    dobj_action  exclude
-    data_objects
-    data_objects
 sfr
 
 riff
@@ -85,7 +79,7 @@ penv
             section name decay
                 time 17.5 level 1.0
             section name release
-                time 77.5 level .0
+                time 77.5 level -1.0
     envelope
     in_note_on_trig   seq out_note_on_trig
     zero_retrigger    on
