@@ -11,14 +11,13 @@ namespace ui
  template<>
  const char* error_item<synthmod::base*>::err_msg = 0;
 
-
  template <>
- base<synthmod::base*>* item_list<synthmod::base*>::add_item(input::TYPE it)
+ input_item<synthmod::base*>* item_list<synthmod::base*>::add_input_item(input::TYPE it)
  {
     if (!goodlist(LIST_STD))
         return 0;
 
-    base<synthmod::base*>* i = new input_item<synthmod::base*>(it);
+    input_item<synthmod::base*>* i = new input_item<synthmod::base*>(it);
     if (i) {
         if (!linked_list< base<synthmod::base*> >::add_at_tail(i)) {
             delete i;
@@ -33,7 +32,6 @@ namespace ui
     return i;
  }
 
-
  template<>
  connector* item_list<synthmod::base*>::add_connector_off(synthmod::base* sm,
                                                           input::TYPE it)
@@ -41,4 +39,12 @@ namespace ui
     return wcnt::get_connectlist()->add_connector_off(sm, it);
  }
 
-}; //namespace ui
+ template<>
+ connector* item_list<synthmod::base*>::add_connector_self(synthmod::base* sm,
+                                                          input::TYPE it,
+                                                          output::TYPE ot)
+ {
+    return wcnt::get_connectlist()->add_connector_self(sm, it, ot);
+ }
+
+};

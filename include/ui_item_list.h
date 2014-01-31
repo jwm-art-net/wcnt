@@ -45,14 +45,22 @@ namespace ui
     typedef ll_item< base<T> > llitem;
     typedef linked_list< base<T> > linkedlist;
 
+    input_item<T>*      add_input_item(input::TYPE);
+    param_item<T>*      add_param_item(param::TYPE);
+    param_item<T>*      add_param_item(param::TYPE, const char* fixed_str);
+    dobj_item<T>*       add_dobj_item(dobj::TYPE parent, dobj::TYPE child);
+    comment_item<T>*    add_comment_item(const char* comment);
+
+/*
     base<T>* add_item(input::TYPE);  // <-- specialized
     base<T>* add_item(param::TYPE);
     base<T>* add_item(param::TYPE, const char* fixed_str);
     base<T>* add_item(dobj::TYPE parent, dobj::TYPE child);
     base<T>* add_item(const char* comment);
-
-    // specialist method, used by synthmod::base, dobj::base impl is empty.
+*/
+    // specialist methods, used by synthmod::base, dobj::base impl is empty.
     connector* add_connector_off(T, input::TYPE);
+    connector* add_connector_self(T, input::TYPE, output::TYPE);
 
     //  while the linkedlist provides methods for stepping through the list,
     //  these do the same but additionally maintain information about item
@@ -203,7 +211,7 @@ namespace ui
  }
 
  template <class T>
- base<T>* item_list<T>::add_item(param::TYPE pt)
+ param_item<T>* item_list<T>::add_param_item(param::TYPE pt)
  {
     if (pt == param::STR_UNNAMED || pt == param::STR_LIST) {
         if (!goodlist(LIST_EDIT)) {
@@ -213,7 +221,7 @@ namespace ui
     else if (!goodlist(LIST_STD))
         return 0;
 
-    base<T>* i = new param_item<T>(pt);
+    param_item<T>* i = new param_item<T>(pt);
     if (i) {
         if (!this->add_at_tail(i)) {
             delete i;
@@ -227,7 +235,7 @@ namespace ui
  }
 
  template <class T>
- base<T>* item_list<T>::add_item(param::TYPE pt, const char* fixstr)
+ param_item<T>* item_list<T>::add_param_item(param::TYPE pt, const char* fixstr)
  {
     if (!goodlist(LIST_STD))
         return 0;
@@ -235,7 +243,7 @@ namespace ui
     if (!fixstr)
         return 0;
 
-    base<T>* i = new param_item<T>(pt);
+    param_item<T>* i = new param_item<T>(pt);
     if (i) {
         llitem * li = this->add_at_tail(i);
         if (li) {
@@ -257,11 +265,11 @@ namespace ui
  }
 
  template <class T>
- base<T>* item_list<T>::add_item(dobj::TYPE parent, dobj::TYPE child)
+ dobj_item<T>* item_list<T>::add_dobj_item(dobj::TYPE parent, dobj::TYPE child)
  {
     if (!goodlist(LIST_STD))
         return 0;
-    base<T>* i = new dobj_item<T>(parent, child);
+    dobj_item<T>* i = new dobj_item<T>(parent, child);
     if (i) {
         if (!this->add_at_tail(i)) {
             delete i;
@@ -275,9 +283,9 @@ namespace ui
  }
 
  template <class T>
- base<T>* item_list<T>::add_item(const char* comment)
+ comment_item<T>* item_list<T>::add_comment_item(const char* comment)
  {
-    base<T>* i = new comment_item<T>(comment);
+    comment_item<T>* i = new comment_item<T>(comment);
     if (i) {
         if (!this->add_at_tail(i)) {
             delete i;
@@ -829,7 +837,11 @@ restart:
                     if (item->is_optional()) {
                         if (*item == UI_INPUT) {
                             input_item<T>* in = static_cast<input_item<T>*>(item);
-                            add_connector_off(subject, in->get_input_type());
+                            output::TYPE ot = in->get_self_connect();
+                            if (ot == output::ERR_TYPE)
+                                add_connector_off(subject, in->get_input_type());
+                            else
+                                add_connector_self(subject, in->get_input_type(), ot);
                         }
                     }
                     else {
@@ -894,7 +906,11 @@ restart:
                 if (*item == UI_INPUT) {
                     // add_connector_off is specialized.
                     input_item<T>* in = static_cast<input_item<T>*>(item);
-                    add_connector_off(subject, in->get_input_type());
+                    output::TYPE ot = in->get_self_connect();
+                    if (ot == output::ERR_TYPE)
+                        add_connector_off(subject, in->get_input_type());
+                    else
+                        add_connector_self(subject, in->get_input_type(), ot);
                 }
                 item = this->goto_next();
             }
@@ -937,7 +953,11 @@ restart:
                 }
                 else if (*item == UI_INPUT) {
                     input_item<T>* in = static_cast<input_item<T>*>(item);
-                    add_connector_off(subject, in->get_input_type());
+                    output::TYPE ot = in->get_self_connect();
+                    if (ot == output::ERR_TYPE)
+                        add_connector_off(subject, in->get_input_type());
+                    else
+                        add_connector_self(subject, in->get_input_type(), ot);
                 }
             }
         }
@@ -996,9 +1016,13 @@ template <class T>
                     #ifdef DEBUG
                     std::cout << "adding off connector..." << std::endl;
                     #endif
-                    // optimize for non-error situation
+                    // optimized for non-error situation
                     input_item<T>* in = static_cast<input_item<T>*>(item);
-                    add_connector_off(subject, in->get_input_type());
+                    output::TYPE ot = in->get_self_connect();
+                    if (ot == output::ERR_TYPE)
+                        add_connector_off(subject, in->get_input_type());
+                    else
+                        add_connector_self(subject, in->get_input_type(), ot);
                 }
             }
         }

@@ -447,13 +447,16 @@ namespace ui
  {
   public:
     input_item(input::TYPE it)
-     : base<T>(UI_INPUT), intype(it) {};
+     : base<T>(UI_INPUT), intype(it), self_connect(output::ERR_TYPE) {};
 
     ~input_item() {};
 
-    const char* get_name() { return input::names::get(intype); }
+    const char*     get_name() { return input::names::get(intype); }
 
-    input::TYPE get_input_type() const      { return intype; }
+    input_item*     set_self_connect(output::TYPE out) { self_connect = out; return this; }
+
+    input::TYPE     get_input_type() const      { return intype; }
+    output::TYPE    get_self_connect() const { return self_connect; }
     bool operator()(input::TYPE & it) const { return (intype == it); }
     bool operator==(input::TYPE rhs) const  { return (intype == rhs); }
 
@@ -477,6 +480,7 @@ namespace ui
 
   private:
     input::TYPE intype;
+    output::TYPE self_connect;
 };
 
  template <class T>

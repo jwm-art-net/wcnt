@@ -58,10 +58,10 @@ namespace dobj
     static char err_msg[STRBUFLEN];
     void invalidate(){ valid = false;}
     virtual void register_ui() = 0;
-    ui::dobjitem* register_param(param::TYPE);
-    ui::dobjitem* register_param(param::TYPE, const char* fixed_string);
-    ui::dobjitem* register_dobj(TYPE parent, TYPE sprog);
-    ui::dobjitem* register_comment(const char* literal);
+    ui::dobjparam*   register_param(param::TYPE);
+    ui::dobjparam*   register_param(param::TYPE, const char* fixed_string);
+    ui::dobjdobj*    register_dobj(TYPE parent, TYPE sprog);
+    ui::dobjcomment* register_comment(const char* literal);
     bool    validate_param(param::TYPE, errors::TYPE);
 
   private:

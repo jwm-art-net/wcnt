@@ -18,7 +18,8 @@ void echo::register_ui()
     gain::register_ui();
     register_param(param::DELAY_TIME);
     register_param(param::FEED_LEVEL);
-    register_input(input::IN_FEEDBACK);
+    register_input(input::IN_FEEDBACK)->set_self_connect(output::OUT_WET_OUTPUT)
+                                      ->set_flags(ui::UI_OPTIONAL);
     register_input(input::IN_FB_MOD)->set_flags(ui::UI_GROUP2);
     register_param(param::FEED_MODSIZE)->set_flags(ui::UI_GROUP2);
     register_param(param::WETDRY);

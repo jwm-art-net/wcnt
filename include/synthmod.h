@@ -142,11 +142,11 @@ namespace synthmod
         the UI. These should be called only once when a call to
         do_registration() returns true.
      */
-    ui::moditem* register_param(param::TYPE);
-    ui::moditem* register_param(param::TYPE, const char* fixed_string);
-    ui::moditem* register_input(input::TYPE);
-    ui::moditem* register_dobj(dobj::TYPE parent, dobj::TYPE sprog);
-    ui::moditem* register_comment(const char* literal);
+    ui::modparam* register_param(param::TYPE);
+    ui::modparam* register_param(param::TYPE, const char* fixed_string);
+    ui::modinput* register_input(input::TYPE);
+    ui::moddobj* register_dobj(dobj::TYPE parent, dobj::TYPE sprog);
+    ui::modcomment* register_comment(const char* literal);
 
     /*  Method for output registration, outputs must be registered per
         instance.S

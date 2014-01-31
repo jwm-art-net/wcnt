@@ -186,12 +186,12 @@ namespace synthmod
     }
  }
 
- ui::moditem* base::register_param(param::TYPE pt)
+ ui::modparam* base::register_param(param::TYPE pt)
  {
     if (!(flags & SM_VALID))
         return 0;
 
-    ui::moditem* i = get_ui_items()->add_item(pt);
+    ui::modparam* i = get_ui_items()->add_param_item(pt);
 
     if (!i) {
         sm_err("Failed to register param %s with module type %s.",
@@ -202,12 +202,12 @@ namespace synthmod
     return i;
  }
 
- ui::moditem* base::register_param(param::TYPE pt, const char* fixstr)
+ ui::modparam* base::register_param(param::TYPE pt, const char* fixstr)
  {
     if (!(flags & SM_VALID))
         return 0;
 
-    ui::moditem* i = get_ui_items()->add_item(pt, fixstr);
+    ui::modparam* i = get_ui_items()->add_param_item(pt, fixstr);
     if (!i) {
         sm_err("Failed to register fixed string param %s (%s) "
                "with module type %s,",  param::names::get(pt),
@@ -218,12 +218,12 @@ namespace synthmod
     return i;
  }
 
- ui::moditem* base::register_input(input::TYPE it)
+ ui::modinput* base::register_input(input::TYPE it)
  {
     if (!(flags & SM_VALID))
         return 0;
 
-    ui::moditem* i = get_ui_items()->add_item(it);
+    ui::modinput* i = get_ui_items()->add_input_item(it);
 
     if (!i) {
         sm_err("Failed to register input %s with module %s.",
@@ -233,12 +233,12 @@ namespace synthmod
     return i;
  }
 
- ui::moditem* base::register_dobj(dobj::TYPE parent, dobj::TYPE sprog)
+ ui::moddobj* base::register_dobj(dobj::TYPE parent, dobj::TYPE sprog)
  {
     if (!(flags & SM_VALID))
         return 0;
 
-    ui::moditem* i = get_ui_items()->add_item(parent, sprog);
+    ui::moddobj* i = get_ui_items()->add_dobj_item(parent, sprog);
     if (!i) {
         sm_err("Failed to register data object %s (child %s) with "
                "module type %s.", dobj::names::get(parent),
@@ -249,12 +249,12 @@ namespace synthmod
     return i;
  }
 
- ui::moditem* base::register_comment(const char* literal)
+ ui::modcomment* base::register_comment(const char* literal)
  {
     if (!(flags & SM_VALID))
         return 0;
 
-    ui::moditem* i = get_ui_items()->add_item(literal);
+    ui::modcomment* i = get_ui_items()->add_comment_item(literal);
     if (!i) {
         sm_err("Failed to register comment \"%s\" with "
                "module type %s.", literal, synthmod::names::get(modtype));

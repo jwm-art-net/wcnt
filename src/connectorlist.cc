@@ -39,15 +39,14 @@ connector* connectorlist::add_connector(connector* c)
 
 connector* connectorlist::add_connector_off(synthmod::base* sm, input::TYPE it)
 {
-    connector* c = new connector(sm, it, "off",
-                output::names::get_off_type(input::names::category(it)));
-    if (c) {
-        if (!add_at_head(c)) {
-            delete c;
-            c = 0;
-        }
-    }
-    return c;
+    return add_connector(sm, it, "off", output::names::get_off_type(
+                                                input::names::category(it)));
+}
+
+connector* connectorlist::add_connector_self(synthmod::base* sm, input::TYPE it,
+                                                                 output::TYPE ot)
+{
+    return add_connector(sm, it, sm->get_username(), ot);
 }
 
 connector* connectorlist::add_connector(synthmod::base* sm, input::TYPE it,

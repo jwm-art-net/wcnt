@@ -106,12 +106,12 @@ namespace dobj
 
  char base::err_msg[STRBUFLEN] = "";
 
- ui::dobjitem* base::register_param(param::TYPE pt)
+ ui::dobjparam* base::register_param(param::TYPE pt)
  {
     if (!valid)
         return 0;
 
-    ui::dobjitem* i = get_ui_items()->add_item(pt);
+    ui::dobjparam* i = get_ui_items()->add_param_item(pt);
     if (!i) {
         dobjerr("Failed to register param %s with data object type %s.",
                             param::names::get(pt), names::get(object_type));
@@ -120,12 +120,12 @@ namespace dobj
     return i;
  }
 
- ui::dobjitem* base::register_param(param::TYPE pt, const char* fixstr)
+ ui::dobjparam* base::register_param(param::TYPE pt, const char* fixstr)
  {
     if (!valid)
         return 0;
 
-    ui::dobjitem* i = get_ui_items()->add_item(pt, fixstr);
+    ui::dobjparam* i = get_ui_items()->add_param_item(pt, fixstr);
     if (!i) {
         dobjerr("Failed to register fixed string param %s (%s) "
                             "with data object type %s.",
@@ -136,11 +136,11 @@ namespace dobj
     return i;
  }
 
- ui::dobjitem* base::register_dobj(TYPE parent, TYPE sprog)
+ ui::dobjdobj* base::register_dobj(TYPE parent, TYPE sprog)
  {
     if (!valid)
         return 0;
-    ui::dobjitem* i = get_ui_items()->add_item(parent, sprog);
+    ui::dobjdobj* i = get_ui_items()->add_dobj_item(parent, sprog);
     if (!i)
     {
         dobjerr("Failed to register parent data object %s with child data "
@@ -151,12 +151,12 @@ namespace dobj
     return i;
  }
 
- ui::dobjitem* base::register_comment(const char* literal)
+ ui::dobjcomment* base::register_comment(const char* literal)
  {
     if (!valid)
         return 0;
 
-    ui::dobjitem* i = get_ui_items()->add_item(literal);
+    ui::dobjcomment* i = get_ui_items()->add_comment_item(literal);
     if (!i) {
         dobjerr("Failed to register comment \"%s\" "
                                      "with data object type %s.", literal,

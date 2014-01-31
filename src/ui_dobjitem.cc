@@ -10,7 +10,7 @@ namespace ui
 
 
  template <>
- base<dobj::base*>* item_list<dobj::base*>::add_item(input::TYPE)
+ input_item<dobj::base*>* item_list<dobj::base*>::add_input_item(input::TYPE)
  {
     return 0;
  }
@@ -18,6 +18,13 @@ namespace ui
 
  template<>
  connector* item_list<dobj::base*>::add_connector_off(dobj::base*, input::TYPE)
+ {
+    return 0;
+ }
+
+ template<>
+ connector* item_list<dobj::base*>::add_connector_self(dobj::base*, input::TYPE,
+                                                                    output::TYPE)
  {
     return 0;
  }

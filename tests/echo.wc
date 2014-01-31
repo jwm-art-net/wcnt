@@ -1,0 +1,118 @@
+wcnt-1.30/jwmsynth
+
+// quick test of the new self-connect input functionality.
+// when an input can self-connect, rather than being set to 'off'
+// when it is not specified, it connects to an output within the
+// module (the very same module the input is a member of).
+// the output is specified by the module itself.
+
+// this functionality was specifically created for the echo module to
+// allow it's in_feedback input to be optional and be automatically
+// connected to its out_wet_output.
+
+
+samplerate 44100
+
+timer
+t
+    timings
+        time seconds 0.0
+        time seconds 15.0
+    timings
+    time_is_relative off
+t
+
+adsr
+aeg
+    envelope
+        section name attack     time 5.0    level 1.0
+        section name decay      time 250.0   level 0.8
+        section name release    time 1550.0  level 0.0
+    envelope
+    in_note_on_trig     t out_trig
+    in_note_off_trig    off
+    sustain_state       off
+aeg
+
+adsr
+teg
+    envelope
+        section name attack     time 0.0    level 1.0
+        section name decay      time 600.0  level -1.0
+        section name release    time 600.0    level 0.0
+    envelope
+    in_note_on_trig     t out_trig
+    in_note_off_trig    off
+    sustain_state       off
+teg
+
+clock
+clk
+    freq 440
+    in_freq_mod1    teg out_output
+    freq_mod1_size  4.0
+clk
+
+wave wv
+    type            tri
+    in_phase_step   clk out_phase_step
+wv
+
+multiplier m in_signal1 wv out_output in_signal2 aeg out_output m
+
+
+// note: this first echo module does not specify how to
+// connect the in_feedback input. this input auto-self-connects
+// to the modules own out_wet_output.
+
+echo
+ec
+    in_signal   m out_output
+    gain        0.5
+    delay_time  225.0
+    feedback    0.34
+    wet/dry     0.75
+ec
+
+// OTOH these two echo modules connect their in_feedback inputs
+// to each others out_wet_output...
+
+echo
+ecl
+    in_signal   ec out_output
+    in_feedback ecr out_wet_output
+    gain        0.5
+    delay_time  1255.0
+    feedback    0.74
+    wet/dry     0.75
+ecl
+
+echo
+ecr
+    in_signal   ec out_output
+    in_feedback ecl out_wet_output
+    gain        0.5
+    delay_time  475.0
+    feedback    0.74
+    wet/dry     0.75
+ecr
+
+wavfile_out
+wav
+    filename       echo_output.wav
+    data_format    pcm16
+    in_left      ecl     out_output
+    in_right     ecr     out_output
+    in_bar       t      out_count
+    start_bar      0
+    end_bar        1
+wav
+
+wcnt_exit
+exit
+    in_bar      t out_count
+    exit_bar    1
+exit
+
+wcnt-1.30/jwmsynth
+
