@@ -22,7 +22,8 @@ fast_lookahead_limiter::fast_lookahead_limiter(const char* uname) :
 void fast_lookahead_limiter::register_ui()
 {
     register_input(input::IN_LEFT);
-    register_input(input::IN_RIGHT);
+    register_input(input::IN_RIGHT)->set_connect_as(input::IN_LEFT)
+                                   ->set_flags(ui::UI_OPTIONAL);
     register_param(param::GAIN_DB);
     register_param(param::LIMIT_DB);
     register_param(param::RELEASE_SECS);

@@ -180,7 +180,6 @@ pk1
 wavfile_out
 wav
     in_left     out out_output
-    in_right    out out_output
     in_bar t1   out_count
     snapshot_mode off
     data_format float32

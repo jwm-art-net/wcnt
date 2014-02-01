@@ -47,4 +47,12 @@ namespace ui
     return wcnt::get_connectlist()->add_connector_self(sm, it, ot);
  }
 
+ template<>
+ connector* item_list<synthmod::base*>::add_connector_as(synthmod::base* sm,
+                                                          input::TYPE it,
+                                                          input::TYPE asit)
+ {
+    return wcnt::get_connectlist()->add_connector_as(sm, it, asit);
+ }
+
 };

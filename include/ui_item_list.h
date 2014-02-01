@@ -51,16 +51,10 @@ namespace ui
     dobj_item<T>*       add_dobj_item(dobj::TYPE parent, dobj::TYPE child);
     comment_item<T>*    add_comment_item(const char* comment);
 
-/*
-    base<T>* add_item(input::TYPE);  // <-- specialized
-    base<T>* add_item(param::TYPE);
-    base<T>* add_item(param::TYPE, const char* fixed_str);
-    base<T>* add_item(dobj::TYPE parent, dobj::TYPE child);
-    base<T>* add_item(const char* comment);
-*/
     // specialist methods, used by synthmod::base, dobj::base impl is empty.
     connector* add_connector_off(T, input::TYPE);
     connector* add_connector_self(T, input::TYPE, output::TYPE);
+    connector* add_connector_as(T, input::TYPE, input::TYPE itas);
 
     //  while the linkedlist provides methods for stepping through the list,
     //  these do the same but additionally maintain information about item
@@ -119,13 +113,13 @@ namespace ui
         FLAGS   group_id;
         bool    group_ended;
 
-        #ifdef DEBUG
+        #if DEBUG
         bool    choice_specified_dup;
         #endif
         void reset() {
             group_head = 0;
             group_id = UI_DEFAULT;
-            #ifdef DEBUG
+            #if DEBUG
             choice_specified_dup = false;
             #endif
         }
@@ -146,18 +140,21 @@ namespace ui
             opt0id = chosen0id = UI_DEFAULT;
         }
 
-        #ifdef DEBUG
+        #if DEBUG
         void dump() {
-            std::cout << "option:\thead " << (void*) head;
-            if (head)   std::cout << " ('" << head->get_data()->get_name() << "')";
-            std::cout << "\topt0 " << (void*) opt0;
-            if (opt0)   std::cout << " ('" << opt0->get_data()->get_name() << "')";
-            std::cout << "\tchosen0 " << (void*) chosen0;
-            if (chosen0)std::cout << " ('" << chosen0->get_data()->get_name() << "')";
-            std::cout << std::endl;
-            std::cout << "\tlast " << (void*) last;
-            if (last)   std::cout << " ('" << last->get_name() << "')";
-            std::cout << std::endl;
+            debug("option:\thead %p ", head);
+            if (head)
+                debug(" ('%s')", head->get_data()->get_name());
+            debug("\topt0 %p", opt0);
+            if (opt0)
+                debug(" ('%s')", opt0->get_data()->get_name());
+            debug("\tchosen0 %p", chosen0);
+            if (chosen0)
+                debug(" ('%s')", chosen0->get_data()->get_name());
+            debug("\tlast %p", last);
+            if (last)
+                debug(" ('%s')", last->get_name());
+            debug("\n");
         }
         #endif
 
@@ -203,10 +200,10 @@ namespace ui
   item(0), prev(0), last(0), editing(false),
   listtype(0), def_username(0)
  {
-    #ifdef DEBUG
-    std::cout << "item_list<T>::item_list<T>()" << std::endl;
-    std::cout << " + err_msg: " << (void*)err_msg << std::endl;
-    #endif
+    debug("\n______________________________________________________"
+          "\n^&*^&*^&*^&*^&*^&*^&*^&*^&*^&*^&*^&*^&*^&*^&*^&*^&*^&*\n");
+    debug("item_list<T>::item_list<T>()\n");
+    debug(" + err_msg: %p\n", err_msg);
     error_item<T>::err(err_msg);
  }
 
@@ -353,10 +350,10 @@ namespace ui
         if (id & UI_OPTION_MASK) {
             if (id == UI_OPTION1 && choice.opt0id > UI_OPTION1) {
                 #ifdef DEBUG
-                if (!track.choice_specified_dup)
-                    std::cout << "***** WARNING *****\n"
-                              << "\tno items in multiple choice marked to duplicate."
-                              << std::endl;
+                if (!track.choice_specified_dup) {
+                    debug("***** WARNING *****\n\tno items in multiple choice"
+                          " marked to duplicate.\n");
+                }
                 #endif
                 choice.reset();
                 track.reset();
@@ -372,18 +369,18 @@ namespace ui
             if (item->is_ui_opt_duplicate())
                 track.choice_specified_dup = true;
             if (!this->sneak_next()
-             && !track.choice_specified_dup)
-                std::cout << "***** WARNING *****\n"
-                          << "\tno items in multiple choice marked to duplicate."
-                          << std::endl;
+             && !track.choice_specified_dup) {
+                debug("***** WARNING *****\n\tno items in multiple choice "
+                      "marked to duplicate.\n");
+            }
             #endif
         }
         else {
             #ifdef DEBUG
-            if (!track.choice_specified_dup)
-                std::cout << "***** WARNING *****\n"
-                          << "\tno items in multiple choice marked to duplicate."
-                          << std::endl;
+            if (!track.choice_specified_dup) {
+                debug("***** WARNING *****\n\tno items in multiple choice "
+                      "marked to duplicate.\n");
+            }
             #endif
             choice.reset();
             track.reset();
@@ -463,8 +460,7 @@ namespace ui
  {
     #ifdef DEBUG
     int n = 0;
-    std::cout << "\n--------------------------------------------------\n"
-              << "match_begin()" << std::endl;
+    debug("\n----------------------------------------------- match_begin()\n");
     #endif
 
     editing = false;
@@ -477,7 +473,7 @@ namespace ui
         item->reset_matched();
         #ifdef DEBUG
         llitem* li = this->sneak_current();
-        std::cout << "ll_item: " << (void*)li << "\titem: " << ++n << " - ";
+        debug("ll_item: %p\titem: %d\n", li, ++n);
         item->dump();
         #endif
     } while ((item = this->goto_next()) != 0);
@@ -505,9 +501,7 @@ namespace ui
     if (!listtype || !str || this->is_empty())
         return 0;
 
-    #ifdef DEBUG
-    std::cout << "\n\nmatch_item(" << str << ")" << std::endl;
-    #endif
+    debug("match_item(%s)\n", str);
 
     base<T>* failchoice = 0;
 
@@ -515,13 +509,14 @@ restart:
     if (!item)
         item = this->goto_first();
     #ifdef DEBUG
-    std::cout << "passed restart" << std::endl;
-    std::cout << "item dump: "; item->dump();
-    std::cout << "last dump: ";
+    debug("passed restart\n");
+    debug("item dump:\n");
+    item->dump();
+    debug("last dump:\n");
     if (last)
         last->dump();
     else
-        std::cout << "NULL" << std::endl;
+        debug("NULL\n");
     #endif
 
     if (last == item) {
@@ -535,17 +530,15 @@ restart:
     }
 
     if (choice.opt0) {
-        #ifdef DEBUG
-        std::cout << "\t(CHOICE.CUR0)" << std::endl;
-        #endif
+        debug("\t(CHOICE.CUR0)\n");
         base<T>* i = match_item_choice(str);
         if (i)
             return i;
         failchoice = choice.head->get_data();
         #ifdef DEBUG
-        std::cout << "\t*+*+*+*+*+*+*+ \tlast: "; last->dump();
-        std::cout << "\t*+*+*+*+*+*+*+ \tchoice.last: "; choice.last->dump();
-        std::cout << "\t*+*+*+*+*+*+*+ \tfailchoice: "; failchoice->dump();
+        debug("\t*+*+*+*+*+*+*+ \tlast:\n"); last->dump();
+        debug("\t*+*+*+*+*+*+*+ \tchoice.last:\n"); choice.last->dump();
+        debug("\t*+*+*+*+*+*+*+ \tfailchoice:\n"); failchoice->dump();
         #endif
         skip_choice();
     }
@@ -554,7 +547,7 @@ restart:
         if (item->get_item_type() != UI_COMMENT) {
 
             #ifdef DEBUG
-            std::cout << "match_item loop on: ";
+            debug("match_item loop on:\n");
             item->dump();
             #endif
 
@@ -562,9 +555,7 @@ restart:
 
             if (id & UI_OPTION_MASK) {
                 if (item == failchoice) {
-                    #ifdef DEBUG
-                    std::cout << "\n\tFAILCHOICE BREAK 1\n" << std::endl;
-                    #endif
+                    debug("\tFAILCHOICE BREAK 1\n");
                     break;
                 }
                 choice.head = choice.opt0 = this->sneak_current();
@@ -572,26 +563,21 @@ restart:
                 choice.chosen0 = 0;
                 choice.chosen0id = UI_DEFAULT;
                 choice.last = 0;
-                #ifdef DEBUG
-                std::cout << "/////////// choice.head llitem: " << (void*) choice.head << std::endl;
-                #endif
+                debug("/////////// choice.head llitem: %p\n", choice.head);
                 base<T>* ic = match_item_choice(str);
                 if (ic)
                     return ic;
                 if (!failchoice) {
                     failchoice = choice.head->get_data();
                     #ifdef DEBUG
-                    std::cout << "\n\t*+*+*+*+*+*+*+ \tfailchoice: "; failchoice->dump();
+                    debug("\t*+*+*+*+*+*+*+ \tfailchoice: ");
+                    failchoice->dump();
                     #endif
                 }
-                #ifdef DEBUG
-                std::cout << "resetting choice before restart..." << std::endl;
-                #endif
+                debug("resetting choice before restart...\n");
                 skip_choice();
                 if (item == failchoice) {
-                    #ifdef DEBUG
-                    std::cout << "\n\tFAILCHOICE BREAK 2\n" << std::endl;
-                    #endif
+                    debug("\tFAILCHOICE BREAK 2\n");
                     break;
                 }
                 goto restart;
@@ -604,9 +590,7 @@ restart:
                     ui_err("Duplicate item: %s.", item->get_name());
                     return error_item<T>::err();
                 }
-                #ifdef DEBUG
-                std::cout << "item matched, not choice/group" << std::endl;
-                #endif
+                debug("item matched, not choice/group\n");
                 item->set_matched();
                 last = item;
                 return item;
@@ -614,8 +598,7 @@ restart:
         }
         #ifdef DEBUG
         else {
-            std::cout << "skipping comment '"
-                      << item->get_descr() << "'" << std::endl;
+            debug("skipping comment '%s'\n", item->get_descr());
         }
         #endif
 
@@ -659,8 +642,8 @@ restart:
     str = buf;
 
     #ifdef DEBUG
-    std::cout << "match_item_choice(str:\"" << str << "\", item:'" << item->get_name() << "')" << std::endl;
-    std::cout << "-------------------- choice.head llitem: " << (void*) choice.head << std::endl;
+    debug("match_item_choice(str:'%s', item: '%s')\n", str, item->get_name());
+    debug("-------------------- choice.head llitem: %p\n", choice.head);
     #endif
 
     if (!choice.last)
@@ -671,14 +654,14 @@ restart:
         //choice.last = item;
     }
     #ifdef DEBUG
-    std::cout << "\t!^!^!^!^!^!^!^ \tchoice.last: ";
-    if (choice.last) choice.last->dump(); else std::cout << "NULL" << std::endl;
+    debug("\t!^!^!^!^!^!^!^ \tchoice.last:\n");
+    if (choice.last) choice.last->dump(); else debug("NULL\n");
     #endif
 
     do {
         if (item->get_item_type() != UI_COMMENT) {
             #ifdef DEBUG
-            std::cout << "   match_item_choice ";
+            debug("   match_item_choice\n");
             item->dump();
             #endif
 
@@ -686,9 +669,7 @@ restart:
 
             if (id & UI_OPTION_MASK) {
                 if (choice.opt0id > UI_OPTION1 && id == UI_OPTION1) {
-                    #ifdef DEBUG
-                    std::cout << "\n\t*1*CHOICETAIL == ITEM (" << (void*) item << ")" << std::endl;
-                    #endif
+                    debug("\t*1*CHOICETAIL == ITEM (%p)\n", item);
                     this->goto_choice_head();
                     continue;
                 }
@@ -702,9 +683,7 @@ restart:
                         if (item->is_matched() && !item->was_forced()) {
                             if (def_username && strcmp(def_username, str) == 0)
                                 return username_item<T>::username();
-                            #ifdef DEBUG
-                            std::cout << "detected previously matched choice item" << std::endl;
-                            #endif
+                            debug("detected previously matched choice item\n");
                             choice.chosen0 = choice.opt0;
                             choice.chosen0id = choice.opt0id;
                         }
@@ -725,9 +704,7 @@ restart:
                                 choice.chosen0id = choice.opt0id;
                             }
                             else if (id != choice.chosen0id) {
-                                #ifdef DEBUG
-                                std::cout << "validity failed" << std::cout;
-                                #endif
+                                debug("validity failed\n");
                                 match_item_chosen_invalid_error();
                                 return error_item<T>::err();
                             }
@@ -740,26 +717,21 @@ restart:
                 }
             }
             else {
-                #ifdef DEBUG
-                std::cout << "\n\t*2*CHOICETAIL == ITEM (" << (void*) item << ")" << std::endl;
-                #endif
+                debug("\t*2*CHOICETAIL == ITEM (%p)\n", item);
                 this->goto_choice_head();
                 continue;
             }
         }
         #ifdef DEBUG
         else {
-            std::cout << "skipping comment '"
-                      << item->get_descr() << "'" << std::endl;
+            debug("skipping comment '%s'\n", item->get_descr());
         }
         #endif
 
         item = this->goto_next();
 
         if (choice.last && !item) {
-            #ifdef DEBUG
-            std::cout << "out of items. goto choice.head" << std::endl;
-            #endif
+            debug("out of items. goto choice.head\n");
             this->goto_choice_head();
         }
     } while(item != choice.last);
@@ -768,9 +740,7 @@ restart:
     //      * there was no item matching str *in the choice*
     // but several reasons why that might be so,
     // so delay judgement for now...
-    #ifdef DEBUG
-    std::cout << "returning from choice with nothing!" << std::endl;
-    #endif
+   debug("returning from choice with nothing!\n");
 
     return 0;
  }
@@ -790,9 +760,7 @@ restart:
             if (it->get_option_id() != choice.chosen0id)
                 break;
             if (it->is_matched()) {
-                #ifdef DEBUG
-                std::cout << "adding error item:'" << it->get_name() << "'" << std::endl;
-                #endif
+                debug("adding error item:'%s'\n", it->get_name());
                 errstr += (items == 0 ? "'" : ", '");
                 errstr += it->get_name();
                 errstr += "'";
@@ -814,14 +782,17 @@ restart:
         return 0;
 
     item = this->goto_first();
-    #ifdef DEBUG
-    std::cout << "validate_matches()" << std::endl;
-    #endif
+    debug("validate_matches()\n");
 
     while (item) {
         if (item->get_item_type() == UI_COMMENT)
             item = this->goto_next();
         else {
+            #ifdef DEBUG
+            debug("validate_matches:\n");
+            item->dump();
+            #endif
+
             FLAGS id = item->get_option_id();
             if (id & UI_OPTION_MASK) {
                 choice.reset();
@@ -838,10 +809,15 @@ restart:
                         if (*item == UI_INPUT) {
                             input_item<T>* in = static_cast<input_item<T>*>(item);
                             output::TYPE ot = in->get_self_connect();
-                            if (ot == output::ERR_TYPE)
-                                add_connector_off(subject, in->get_input_type());
-                            else
+                            if (ot != output::ERR_TYPE)
                                 add_connector_self(subject, in->get_input_type(), ot);
+                            else {
+                                input::TYPE it = in->get_connect_as();
+                                if (it != input::ERR_TYPE)
+                                    add_connector_as(subject, in->get_input_type(), it);
+                                else
+                                    add_connector_off(subject, in->get_input_type());
+                            }
                         }
                     }
                     else {
@@ -864,6 +840,9 @@ restart:
     // items matched from *both* choice 1 *and* choice 2) as that is
     // handled by the initial match_item process.
 
+    debug("validate_matches_choice()\n");
+
+
     bool choice_optional = item->is_optional();
     choice.head = choice.opt0 = this->sneak_current();
     choice.opt0id = item->get_option_id();
@@ -874,6 +853,11 @@ restart:
 
     while (item) {
         if (item->get_item_type() != UI_COMMENT) {
+            #ifdef DEBUG
+            debug("validate_matches_choice:\n");
+            item->dump();
+            #endif
+
             FLAGS id = item->get_option_id();
             if ((choice.opt0id > UI_OPTION1 && id == UI_OPTION1)
              || id == UI_DEFAULT)
@@ -899,6 +883,10 @@ restart:
         item = this->goto_item(choice.head);
         while (item) {
             if (item->get_item_type() != UI_COMMENT) {
+                #ifdef DEBUG
+                debug("validate_matches_choice(2):\n");
+                item->dump();
+                #endif
                 FLAGS id = item->get_option_id();
                 if ((choice.opt0id > UI_OPTION1 && id == UI_OPTION1)
                  || id == UI_DEFAULT)
@@ -907,10 +895,15 @@ restart:
                     // add_connector_off is specialized.
                     input_item<T>* in = static_cast<input_item<T>*>(item);
                     output::TYPE ot = in->get_self_connect();
-                    if (ot == output::ERR_TYPE)
-                        add_connector_off(subject, in->get_input_type());
-                    else
+                    if (ot != output::ERR_TYPE)
                         add_connector_self(subject, in->get_input_type(), ot);
+                    else {
+                        input::TYPE it = in->get_connect_as();
+                        if (it != input::ERR_TYPE)
+                            add_connector_as(subject, in->get_input_type(), it);
+                        else
+                            add_connector_off(subject, in->get_input_type());
+                    }
                 }
                 item = this->goto_next();
             }
@@ -928,16 +921,18 @@ restart:
 
     while (item) {
         #ifdef DEBUG
-        std::cout << "validate ";
+        debug("validate\n");
         item->dump();
         #endif
         if (item->get_item_type() != UI_COMMENT) {
+            #ifdef DEBUG
+            debug("validate_matches_choice(3):\n");
+            item->dump();
+            #endif
             FLAGS id = item->get_option_id();
             if (id != choice.chosen0id)
                 break;
-            #ifdef DEBUG
-            std::cout << "processing..." << std::endl;
-            #endif
+            debug("processing...\n");
             if (item->is_matched()) {
                 goodstr += (goods == 0 ? "'" : ", '");
                 goodstr += item->get_name();
@@ -954,10 +949,15 @@ restart:
                 else if (*item == UI_INPUT) {
                     input_item<T>* in = static_cast<input_item<T>*>(item);
                     output::TYPE ot = in->get_self_connect();
-                    if (ot == output::ERR_TYPE)
-                        add_connector_off(subject, in->get_input_type());
-                    else
+                    if (ot != output::ERR_TYPE)
                         add_connector_self(subject, in->get_input_type(), ot);
+                    else {
+                        input::TYPE it = in->get_connect_as();
+                        if (it != input::ERR_TYPE)
+                            add_connector_as(subject, in->get_input_type(), it);
+                        else
+                            add_connector_off(subject, in->get_input_type());
+                    }
                 }
             }
         }
@@ -984,45 +984,39 @@ template <class T>
     llitem* group0 = this->sneak_current();
     FLAGS group0id = item->get_group_id();
 
-    #ifdef DEBUG
-    std::cout << "validate group\n";
-    #endif
+    debug("validate_matches_group()");
 
     while (item) {
-        #ifdef DEBUG
-        std::cout << "validate... ";
-        item->dump();
-        #endif
         if (item->get_item_type() != UI_COMMENT) {
             #ifdef DEBUG
-            std::cout << "processing...";
+            debug("validate_matches_group:\t");
+            item->dump();
             #endif
             if (item->get_group_id() != group0id)
                 break;
             if (item->is_matched()) {
                 selected = true;
-                #ifdef DEBUG
-                std::cout << "selected" << std::endl;
-                #endif
+                debug("selected\n");
             }
             else {
                 if (!item->is_optional()) {
                     unmatched = true;
-                    #ifdef DEBUG
-                    std::cout << "unmatched" << std::endl;
-                    #endif
+                    debug("unmatched\n");
                 }
                 if (*item == UI_INPUT) {
-                    #ifdef DEBUG
-                    std::cout << "adding off connector..." << std::endl;
-                    #endif
+                    debug("adding off connector...\n");
                     // optimized for non-error situation
                     input_item<T>* in = static_cast<input_item<T>*>(item);
                     output::TYPE ot = in->get_self_connect();
-                    if (ot == output::ERR_TYPE)
-                        add_connector_off(subject, in->get_input_type());
-                    else
+                    if (ot != output::ERR_TYPE)
                         add_connector_self(subject, in->get_input_type(), ot);
+                    else {
+                        input::TYPE it = in->get_connect_as();
+                        if (it != input::ERR_TYPE)
+                            add_connector_as(subject, in->get_input_type(), it);
+                        else
+                            add_connector_off(subject, in->get_input_type());
+                    }
                 }
             }
         }
@@ -1042,6 +1036,10 @@ template <class T>
 
     while (item) {
         if (item->get_item_type() != UI_COMMENT) {
+            #ifdef DEBUG
+            debug("validate_matches_group(2):\t");
+            item->dump();
+            #endif
             if (item->get_group_id() != group0id)
                 break;
             if (item->is_matched()) {
@@ -1089,9 +1087,7 @@ template <class T>
  {
     FLAGS cid = item->get_option_id();
     bool wrap = false;
-    #ifdef DEBUG
-    std::cout << "\t\t\tSKIPPING CHOICE (";
-    #endif
+    debug("\t\t\tSKIPPING CHOICE (\n");
     do {
         if (item->get_item_type() != UI_COMMENT) {
             if (wrap && this->sneak_current() == choice.head)
@@ -1101,9 +1097,7 @@ template <class T>
               || id == UI_DEFAULT)
                 break;
             cid = id;
-            #ifdef DEBUG
-            std::cout << "'" << item->get_name() << "' ";
-            #endif
+            debug("'%s'\n", item->get_name());
         }
         if (!(item = this->goto_next())) {
             item = this->goto_first();
@@ -1112,9 +1106,8 @@ template <class T>
         }
     } while (true);
 
-    #ifdef DEBUG
-    std::cout << ")" << std::endl;
-    #endif
+    debug("\t\t\t) SKIPPED CHOICE\n");
+
     choice.reset();
  }
 

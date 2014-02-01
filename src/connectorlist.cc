@@ -49,6 +49,21 @@ connector* connectorlist::add_connector_self(synthmod::base* sm, input::TYPE it,
     return add_connector(sm, it, sm->get_username(), ot);
 }
 
+
+connector* connectorlist::add_connector_as(synthmod::base* sm, input::TYPE it,
+                                                               input::TYPE itas)
+{
+    llitem* li = find_in_data(sneak_first(), input_module(sm));
+    while (li) {
+        connector* c = li->get_data();
+        if (c->get_input_type() == itas)
+            return add_connector(sm, it, c->get_output_module_name(), c->get_output_type());
+        li = find_in_data(li->get_next(), input_module(sm));
+    }
+
+    return 0;
+}
+
 connector* connectorlist::add_connector(synthmod::base* sm, input::TYPE it,
                                     const char* out_mod, output::TYPE ot)
 {

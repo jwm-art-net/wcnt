@@ -28,7 +28,8 @@ void serialwavfileout::register_ui()
     register_param(param::DATA_FMT,
                     "pcm16/pcm24/pcm32/float32/float64");
     register_input(input::IN_LEFT);
-    register_input(input::IN_RIGHT);
+    register_input(input::IN_RIGHT)->set_connect_as(input::IN_LEFT)
+                                   ->set_flags(ui::UI_OPTIONAL);
     register_input(input::IN_BAR);
     register_param(param::START_BAR);
     register_param(param::END_BAR);

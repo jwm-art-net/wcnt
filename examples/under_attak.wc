@@ -256,8 +256,7 @@ boost_and_clip
     in_left     reverb out_left
     in_right    reverb out_right
     in_amp_eg   one out_output
-    left_level    4.0
-    right_level   4.0
+    level    4.0
     clip_level    0.9
 boost_and_clip
 

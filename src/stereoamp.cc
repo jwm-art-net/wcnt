@@ -14,10 +14,12 @@ stereo_amp::stereo_amp(const char* uname) :
 void stereo_amp::register_ui()
 {
     register_input(input::IN_LEFT);
-    register_input(input::IN_RIGHT);
+    register_input(input::IN_RIGHT)->set_connect_as(input::IN_LEFT)
+                                   ->set_flags(ui::UI_OPTIONAL);
     register_input(input::IN_EG);
-    register_param(param::LEFT_LEVEL);
-    register_param(param::RIGHT_LEVEL);
+    register_param(param::LEVEL)->set_flags(ui::UI_OPTION1);
+    register_param(param::LEFT_LEVEL)->set_flags(ui::UI_OPTION2 | ui::UI_OPT_DUPLICATE);
+    register_param(param::RIGHT_LEVEL)->set_flags(ui::UI_OPTION2 | ui::UI_OPT_DUPLICATE);
     register_input(input::IN_AMP_MOD)->set_flags(ui::UI_GROUP1);
     register_param(param::AMP_MODSIZE)->set_flags(ui::UI_GROUP1);
     register_param(param::CLIP_LEVEL);
@@ -71,6 +73,9 @@ bool stereo_amp::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
+        case param::LEVEL:
+            left_level = right_level = *(double*)data;
+            return true;
         case param::LEFT_LEVEL:
             left_level = *(double*)data;
             return true;

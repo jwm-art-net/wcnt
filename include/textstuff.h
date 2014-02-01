@@ -1,6 +1,10 @@
 #ifndef TEXTSTUFF_H
 #define TEXTSTUFF_H
 
+#if DEBUG
+#include <cstdio>
+#endif
+
 #include <string>
 
 /*

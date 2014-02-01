@@ -29,4 +29,12 @@ namespace ui
     return 0;
  }
 
+
+ template<>
+ connector* item_list<dobj::base*>::add_connector_as(dobj::base*, input::TYPE,
+                                                                  input::TYPE)
+ {
+    return 0;
+ }
+
 }; //namespace ui

@@ -12,7 +12,8 @@ stereo_channel::stereo_channel(const char* uname) :
 void stereo_channel::register_ui()
 {
     register_input(input::IN_LEFT);
-    register_input(input::IN_RIGHT);
+    register_input(input::IN_RIGHT)->set_connect_as(input::IN_LEFT)
+                                   ->set_flags(ui::UI_OPTIONAL);
 }
 
 ui::moditem_list* stereo_channel::get_ui_items()

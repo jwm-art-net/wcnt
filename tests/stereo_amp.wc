@@ -1,0 +1,37 @@
+wcnt-1.30/jwmsynth
+
+samplerate 44100
+
+; this test of the stereo_amp module is for debugging ui code.
+; after adding a multiple choice (level | (left_level & right_level))
+; the code complains when in_amp_mod is not specified, despite
+; the fact in_amp_mod is specified as optional!
+
+
+
+constant one value 1.0 one
+
+
+contraster con
+    in_signal one out_output
+    power 2.0
+    wet/dry 0.0
+con
+
+
+stereo_amp
+amp
+    in_left     one out_output
+    in_amp_eg   one out_output
+    level       4.0
+    clip_level  0.999
+amp
+
+wcnt_exit
+exit
+    in_bar      off
+    exit_bar    0
+exit
+
+wcnt-1.30/jwmsynth
+

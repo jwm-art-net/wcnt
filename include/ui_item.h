@@ -18,7 +18,7 @@
 // as multiple-choices.
 
 #ifdef DEBUG
-#include <iostream>
+#include "textstuff.h"
 #endif
 
 #include "sstream"
@@ -219,18 +219,9 @@ namespace ui
 
     #ifdef DEBUG
     virtual void dump() {
-        std::cout << "M" << (is_matched() ? "y" : "n");
-        std::cout << "  O" << (is_optional() ? "y" : "n");
-        int n = get_option_no();
-        if (n)
-            std::cout << "  C" << n;
-        else
-            std::cout << "  C*";
-        if ((n = get_group_id()))
-            std::cout << "  G" << n;
-        else
-            std::cout << "  G*";
-        std::cout << "\t";
+        debug("M%s  O%s  C%d  G%d\n",   (is_matched()  ? "y" : "n"),
+                                        (is_optional() ? "y" : "n"),
+                                        get_option_no(), get_group_id());
     };
     #endif
 
@@ -265,7 +256,7 @@ namespace ui
     #ifdef DEBUG
     if (f < 0) {
         this->dump();
-        std::cout << "invalid ui item flags: " << f << std::endl;
+        debug("invalid ui item flags: %d\n", f);
         return 0;
     }
 
@@ -277,8 +268,8 @@ namespace ui
 
     if (group > 1) {
         this->dump();
-        std::cout << "invalid ui item flags: " << f
-                  << "item has more than one group-id bit set." << std::endl;
+        debug("invalid ui item flags: %d "
+              "item has more than one group-id bit set.\n", f);
         return 0;
     }
 
@@ -290,17 +281,15 @@ namespace ui
 
     if (option > 1) {
         this->dump();
-        std::cout << "invalid ui item flags: " << f
-                  << "item has more than one option-id bit set."
-                  << std::endl;
+        debug("invalid ui item flags: %d "
+              "item has more than one option-id bit set.\n", f);
         return 0;
     }
 
     if (group && option) {
         this->dump();
-        std::cout << "invalid ui item flags: " << f
-                  << "item has both group-id and option-id bits set."
-                  << std::endl;
+        debug("invalid ui item flags: %d "
+              "item has both option-id and group-id bits set.\n", f);
         return 0;
     }
 
@@ -310,9 +299,8 @@ namespace ui
          || f & UI_OPT_DUMMY)
         {
             this->dump();
-            std::cout << "invalid ui item flags: " << f
-                      << "item has UI_OPT_xxx flags set without UI_OPTIONx set."
-                      << std::endl;
+            debug("invalid ui item flags: %d "
+                  "item has UI_OPT_xxx flags set without UI_OPTIONx set.\n", f);
             return 0;
         }
     }
@@ -347,9 +335,7 @@ namespace ui
         static error_item<T> err;
         if (err_buf)
             err.err_msg = err_buf;
-        #ifdef DEBUG
-        std::cout << "err.err_msg: " << (void*)err.err_msg << std::endl;
-        #endif
+        debug("err.err_msg: %p\n", err.err_msg);
         return &err;
     }
 
@@ -377,8 +363,7 @@ namespace ui
 
     #ifdef DEBUG
     void dump() {
-        std::cout << "comment: " << base<T>::get_descr() << "(0x"
-                  << (void*)this << ")" << std::endl;
+        debug("comment: %s (0x%p)\n", base<T>::get_descr(), this);
     }
     #endif
  };
@@ -402,10 +387,7 @@ namespace ui
     bool validate(T, errors::TYPE);
 
     bool name_match(const char* str) {
-        #ifdef DEBUG
-        std::cout << "checking \"" << str << "\" against "
-                  << param::names::get(partype) << std::endl;
-        #endif
+        debug("checking '%s' against '%s'\n", str, param::names::get(partype));
         if (partype == param::STR_UNNAMED || partype == param::STR_LIST)
             return true;
         return (strcmp(str, param::names::get(partype)) == 0);
@@ -414,8 +396,7 @@ namespace ui
     #ifdef DEBUG
     void dump() {
         base<T>::dump();
-        std::cout << "param: " << param::names::get(partype) << "(0x"
-                  << (void*)this << ")" << std::endl;
+        debug("param: '%s' (0x%p)\n", param::names::get(partype), this);
     }
     #endif
 
@@ -447,40 +428,39 @@ namespace ui
  {
   public:
     input_item(input::TYPE it)
-     : base<T>(UI_INPUT), intype(it), self_connect(output::ERR_TYPE) {};
+     : base<T>(UI_INPUT), intype(it), self_connect(output::ERR_TYPE), connect_as(input::ERR_TYPE) {};
 
     ~input_item() {};
 
     const char*     get_name() { return input::names::get(intype); }
 
     input_item*     set_self_connect(output::TYPE out) { self_connect = out; return this; }
+    input_item*     set_connect_as(input::TYPE it) { connect_as = it; return this; }
 
     input::TYPE     get_input_type() const      { return intype; }
     output::TYPE    get_self_connect() const { return self_connect; }
+    input::TYPE     get_connect_as() const { return connect_as; }
     bool operator()(input::TYPE & it) const { return (intype == it); }
     bool operator==(input::TYPE rhs) const  { return (intype == rhs); }
 
     bool validate(T, errors::TYPE) { return true; }
 
     bool name_match(const char* str) {
-        #ifdef DEBUG
-        std::cout << "checking \"" << str << "\" against "
-                  << input::names::get(intype) << std::endl;
-        #endif
+        debug("checking '%s' against '%s'\n", str, input::names::get(intype));
         return (strcmp(str, input::names::get(intype)) == 0);
     }
 
     #ifdef DEBUG
     void dump() {
         base<T>::dump();
-        std::cout << "input: " << input::names::get(intype) << "(0x"
-                  << (void*)this << ")" << std::endl;
+        debug("input: '%s' (0x%p)\n", input::names::get(intype), this);
     }
     #endif
 
   private:
     input::TYPE intype;
     output::TYPE self_connect;
+    input::TYPE connect_as;
 };
 
  template <class T>
@@ -500,19 +480,16 @@ namespace ui
     bool validate(T, errors::TYPE) { return true; }
 
     bool name_match(const char* str) {
-        #ifdef DEBUG
-        std::cout << "checking \"" << str << "\" against "
-                  << dobj::names::get(parent) << std::endl;
-        #endif
+        debug ("checking '%s' against '%s'\n", str, dobj::names::get(parent));
         return (strcmp(str, dobj::names::get(parent)) == 0);
     }
 
     #ifdef DEBUG
     void dump() {
         base<T>::dump();
-        std::cout << "dobj: parent: " << dobj::names::get(parent) << "(0x"
-                  << (void*)this << ")" ;
-        std::cout << "child: " << dobj::names::get(child) << std::endl;
+        debug("dobj: parent: '%s' (0x%p) child: '%s'\n", dobj::names::get(parent),
+                                                         this,
+                                                         dobj::names::get(child));
     }
     #endif
 
