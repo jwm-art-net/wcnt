@@ -219,9 +219,9 @@ namespace ui
 
     #ifdef DEBUG
     virtual void dump() {
-        debug("M%s  O%s  C%d  G%d\n",   (is_matched()  ? "y" : "n"),
-                                        (is_optional() ? "y" : "n"),
-                                        get_option_no(), get_group_id());
+        char buf[40];
+        get_item_flags(buf, 40);
+        debug("%s\n", buf);
     };
     #endif
 
@@ -395,8 +395,9 @@ namespace ui
 
     #ifdef DEBUG
     void dump() {
-        base<T>::dump();
-        debug("param: '%s' (0x%p)\n", param::names::get(partype), this);
+        char buf[40];
+        this->get_item_flags(buf, 40);
+        debug("%s param: '%s' (0x%p)\n", buf, param::names::get(partype), this);
     }
     #endif
 
@@ -452,8 +453,9 @@ namespace ui
 
     #ifdef DEBUG
     void dump() {
-        base<T>::dump();
-        debug("input: '%s' (0x%p)\n", input::names::get(intype), this);
+        char buf[40];
+        this->get_item_flags(buf, 40);
+        debug("%s input: '%s' (0x%p)\n", buf, input::names::get(intype), this);
     }
     #endif
 
@@ -486,10 +488,12 @@ namespace ui
 
     #ifdef DEBUG
     void dump() {
-        base<T>::dump();
-        debug("dobj: parent: '%s' (0x%p) child: '%s'\n", dobj::names::get(parent),
-                                                         this,
-                                                         dobj::names::get(child));
+        char buf[40];
+        this->get_item_flags(buf, 40);
+        debug("%s dobj: parent: '%s' (0x%p) child: '%s'\n", buf,
+                                                dobj::names::get(parent),
+                                                this,
+                                                dobj::names::get(child));
     }
     #endif
 

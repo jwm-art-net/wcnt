@@ -782,26 +782,28 @@ restart:
         return 0;
 
     item = this->goto_first();
-    debug("validate_matches()\n");
+    debug("\n(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)\nvalidate_matches()\n");
 
     while (item) {
-        if (item->get_item_type() == UI_COMMENT)
-            item = this->goto_next();
-        else {
             #ifdef DEBUG
             debug("validate_matches:\n");
             item->dump();
             #endif
+        if (item->get_item_type() == UI_COMMENT)
+            item = this->goto_next();
+        else {
 
             FLAGS id = item->get_option_id();
             if (id & UI_OPTION_MASK) {
                 choice.reset();
                 if (!validate_matches_choice())
                     return error_item<T>::err();
+                item = this->sneak_current()->get_data();
             }
             else if ((id = item->get_group_id()) & UI_GROUP_MASK) {
                 if (!validate_matches_group())
                     return error_item<T>::err();
+                item = this->sneak_current()->get_data();
             }
             else {
                 if (!item->is_matched()) {
@@ -825,7 +827,7 @@ restart:
                         return error_item<T>::err();
                     }
                 }
-            item = this->goto_next();
+                item = this->goto_next();
             }
         }
     }
@@ -840,7 +842,14 @@ restart:
     // items matched from *both* choice 1 *and* choice 2) as that is
     // handled by the initial match_item process.
 
-    debug("validate_matches_choice()\n");
+
+    // FIXME:   when one of the options in a choice contains an input,
+    //          detect when developer has not added a dummy option to
+    //          any choices which allow the input to not be specified.
+    //          (nb, otherwise its a bit of a bugger to debug!)
+    // *****    and, not forgetting UI_OPT_DUPLICATE
+
+    debug("\n(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)\nvalidate_matches_choice()\n");
 
 
     bool choice_optional = item->is_optional();
@@ -876,6 +885,7 @@ restart:
     }
 
     if (choice_optional && !choice.chosen0) {
+        debug("choice_optional && !choice.chosen0\n");
         // selection of the choice was optional and this fact
         // has been taken advantage of.  all that needs to be
         // done is to add off-connectors for any inputs in the
@@ -912,6 +922,7 @@ restart:
     }
 
     // second pass
+    debug("second pass... \n");
     std::string errstr = "";
     std::string goodstr = "";
     int errors = 0;
@@ -930,8 +941,10 @@ restart:
             item->dump();
             #endif
             FLAGS id = item->get_option_id();
-            if (id != choice.chosen0id)
+            if (id != choice.chosen0id) {
+                debug("breakout, no longer in chosen\n");
                 break;
+            }
             debug("processing...\n");
             if (item->is_matched()) {
                 goodstr += (goods == 0 ? "'" : ", '");
@@ -940,7 +953,7 @@ restart:
                 ++goods;
             }
             else {
-                if (!item->is_optional()) {
+                if (!item->is_optional() && !item->is_dummy()) {
                     errstr += (errors == 0 ? "'" : ", '");
                     errstr += item->get_name();
                     errstr += "'";
@@ -984,7 +997,7 @@ template <class T>
     llitem* group0 = this->sneak_current();
     FLAGS group0id = item->get_group_id();
 
-    debug("validate_matches_group()");
+    debug("\n(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)\nvalidate_matches_group()\n");
 
     while (item) {
         if (item->get_item_type() != UI_COMMENT) {

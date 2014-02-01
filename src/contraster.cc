@@ -12,12 +12,17 @@ contraster::contraster(const char* uname) :
 void contraster::register_ui()
 {
     register_input(input::IN_SIGNAL);
-    register_param(param::POWER)->set_flags(ui::UI_OPTION1);
-    register_input(input::IN_POWER_MOD)->set_flags(ui::UI_OPTION2);
-    register_param(param::POWER_MIN)->set_flags(ui::UI_OPTION2);
-    register_param(param::POWER_MAX)->set_flags(ui::UI_OPTION2);
-    register_param(param::RUDE_MODE)->set_flags(ui::UI_GROUP1);
-    register_input(input::IN_RUDE_SWITCH_TRIG)->set_flags(ui::UI_GROUP1 | ui::UI_OPTIONAL);
+
+    register_param(param::POWER)->          set_flags(ui::UI_OPTION1);
+    register_input(input::IN_POWER_MOD)->   set_flags(ui::UI_OPTION1 | ui::UI_OPT_DUMMY);
+
+    register_input(input::IN_POWER_MOD)->   set_flags(ui::UI_OPTION2 | ui::UI_OPT_DUPLICATE);
+    register_param(param::POWER_MIN)->      set_flags(ui::UI_OPTION2 | ui::UI_OPT_DUPLICATE);
+    register_param(param::POWER_MAX)->      set_flags(ui::UI_OPTION2 | ui::UI_OPT_DUPLICATE);
+
+    register_param(param::RUDE_MODE)->      set_flags(ui::UI_GROUP1);
+    register_input(input::IN_RUDE_SWITCH_TRIG)->
+                                            set_flags(ui::UI_GROUP1 | ui::UI_OPTIONAL);
     register_param(param::WETDRY);
 }
 
