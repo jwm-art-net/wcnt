@@ -76,19 +76,17 @@ bass02_ie
 mix_chan
 ch1
     in_left   g1.amp1   out_output
-    in_right  g1.amp1   out_output
+    // in_right connects as in_left when unspecified
 ch1
 
 mix_chan
 ch2
     in_left   g2.amp1   out_output
-    in_right  g2.amp1   out_output
 ch2
 
 mix_chan
 ch3
     in_left   g3.amp1   out_output
-    in_right  g3.amp1   out_output
 ch3
 
 mixer

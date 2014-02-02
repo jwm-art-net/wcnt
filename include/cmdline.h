@@ -101,6 +101,7 @@ class cmdline
 
     void invalid_args();
 
+    void module_help_list_all();
     void module_help();
     void input_help();
     void input_help_with_wcfile();

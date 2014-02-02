@@ -175,7 +175,6 @@ hpf_clock
     in_play_state       env out_play_state
     in_frequency        seq out_frequency
     octave_offset     -3
-    tuning_semitones  0
     portamento_time   15.0
     response_time     2.0
 hpf_clock
@@ -187,7 +186,6 @@ lpf_clock
     in_play_state       env out_play_state
     in_frequency        seq out_frequency
     octave_offset     1
-    tuning_semitones  0
     in_freq_mod1        sine_plus_1 out_output
     freq_mod1_size    4.0
     in_freq_mod2        penv out_output
@@ -214,8 +212,6 @@ gbw_lp
     in_signal          amp1       out_output
     in_cutoff_phase_step  lpf_clock out_phase_step
     resonance       0.975
-    in_res_mod         off
-    res_mod_size    0.0
 gbw_lp
 
 single_band_parametric
@@ -270,7 +266,6 @@ wav
     filename     bass22-shift.wav
     data_format  float32
     in_left      lpf out_output
-    in_right     lpf out_output
     in_bar       time1 out_bar
     start_bar    0
     end_bar      4

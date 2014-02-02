@@ -287,12 +287,52 @@ void cmdline::invalid_args()
 }
 
 
+void cmdline::module_help_list_all()
+{
+    if (data[MH_IX].par1 != 0) {
+        msg = "\nUnknown synth module: ";
+        if (data[MH_IX].par1 < opts_count)
+            msg += opts[data[MH_IX].par1];
+        msg += "\n";
+    }
+    msg += "\nAvailable module types are:\n";
+
+    if (wcnt::jwm.is_verbose()) {
+        for (int i = synthmod::ERR_TYPE + 2; i < synthmod::LAST_TYPE; ++i) {
+            synthmod::TYPE smt = (synthmod::TYPE)i;
+            std::string mhv = synthmod::names::get(smt);
+            const char* descr = synthmod::names::descr(smt);
+            mhv += " - ";
+            std::string* d = justify(descr, 60, ' ', "\n    ",
+                                                        mhv.c_str());
+            msg += *d;
+            msg += "\n\n";
+            delete d;
+        }
+    }
+    else {
+        int modcount = synthmod::LAST_TYPE - 2;
+        const char** modnames = new const char*[modcount];
+        for (int i = synthmod::ERR_TYPE + 2;
+                 i < synthmod::LAST_TYPE; i++) {
+            modnames[i - 2] = synthmod::names::get((synthmod::TYPE)i);
+        }
+        std::string* str = collumnize(modnames, modcount, 26, 3, true);
+        msg += *str;
+        delete str;
+        delete [] modnames;
+    }
+}
+
+
 void cmdline::module_help()
 {
     int n = data[MH_IX].par1;
+
     synthmod::TYPE smt =
         synthmod::names::type((n != 0 && n < opts_count)
             ? opts[n] : "" );
+
     if (smt == synthmod::NONEZERO) {
         if (wcnt::jwm.is_verbose())
             msg="\n;The 'none' module is a secretive module used whenever "
@@ -302,46 +342,14 @@ void cmdline::module_help()
         return;
     }
     if (smt == synthmod::ERR_TYPE) {
-        if (data[MH_IX].par1 != 0) {
-            msg = "\nUnknown synth module: ";
-            if (data[MH_IX].par1 < opts_count)
-                msg += opts[data[MH_IX].par1];
-            msg += "\n";
+        if (data[MH_IX].par1 != 0 && strcmp(opts[data[MH_IX].par1], "-v") == 0) {
+            data[MH_IX].par1 = 0;
+            wcnt::jwm.set_verbose(true);
         }
-        msg += "\nAvailable module types are:\n";
-
-        if (wcnt::jwm.is_verbose()) {
-            for (int i = synthmod::ERR_TYPE + 2;
-                     i < synthmod::LAST_TYPE; ++i)
-            {
-                smt = (synthmod::TYPE)i;
-                std::string mhv = synthmod::names::get(smt);
-                const char* descr = synthmod::names::descr(smt);
-                mhv += " - ";
-                std::string* d = justify(descr, 60, ' ', "\n    ",
-                                                            mhv.c_str());
-                msg += *d;
-                msg += "\n\n";
-                delete d;
-            }
-            return;
-        }
-        else
-        {
-            int modcount = synthmod::LAST_TYPE - 2;
-            const char** modnames = new const char*[modcount];
-            for (int i = synthmod::ERR_TYPE + 2;
-                     i < synthmod::LAST_TYPE; i++) {
-                modnames[i - 2] = synthmod::names::get(
-                                    (synthmod::TYPE)i);
-            }
-            std::string* str = collumnize(modnames, modcount, 26, 3, true);
-            msg += *str;
-            delete str;
-            delete [] modnames;
-            return;
-        }
+        module_help_list_all();
+        return;
     }
+
     synthmod::base* sm = synthmod::list::create_module(smt, "USERNAME");
     msg = "\n";
     msg += synthmod::names::get(smt);
@@ -415,15 +423,28 @@ void cmdline::module_help()
     while(item) {
         if (!item->is_dummy()) {
             const char* lead = "\n    ";
-            char flags[8];
-            std::string str = items->get_item_header();
-            if (str != "") {
-                msg += "\n    ";
-                msg += str;
-            }
-            item->get_item_flags(flags, 8);
+            char flags[8] = "";
 
-            switch(item->get_item_type()) {
+            ui::TYPE itemtype = item->get_item_type();
+
+            if (wcnt::jwm.is_verbose()) {
+                std::string str = items->get_item_header();
+                if (str != "") {
+                    msg += "\n    ";
+                    msg += str;
+                }
+                item->get_item_flags(flags, 8);
+            }
+            else if ((item->get_option_id() & ui::UI_OPTION_MASK)
+                  && !item->is_ui_opt_duplicate()) {
+                // when not verbose, we only want to show the normal items
+                // like what happened before any of this multiple choice
+                // malarky. skip the items not to be shown by forcing the
+                // default in the switch below...
+                itemtype = ui::UI_ERROR;
+            }
+
+            switch(itemtype) {
               case ui::UI_COMMENT: {
                 ui::modcomment* mc = static_cast<ui::modcomment*>(item);
                 const char* c = mc->get_descr();
@@ -440,7 +461,6 @@ void cmdline::module_help()
                 const char* s1 = param::names::get(pt);
                 msg += lead;
                 msg += s1;
-                std::cout << "mxl1: " << mxl1 << " strlen(s1):" << strlen(s1) << std::endl;
                 msg.append(spaces::get(mxl1), mxl1 - strlen(s1));
                 iocat::TYPE ioc = param::names::category(pt);
                 const char* s2 = 0;
@@ -455,10 +475,10 @@ void cmdline::module_help()
                 else
                     s2 = iocat::names::get(ioc);
                 msg += s2;
-                msg.append(spaces::get(mxl2), mxl2 - strlen(s2));
-                msg += " // ";
-                msg += flags;
                 if (wcnt::jwm.is_verbose()) {
+                    msg.append(spaces::get(mxl2), mxl2 - strlen(s2));
+                    msg += " // ";
+                    msg += flags;
                     const char* c = item->get_descr();
                     const char* descr = (!c ? param::names::descr(pt) : c);
                     msg += " ";
@@ -471,17 +491,14 @@ void cmdline::module_help()
                 input::TYPE it = mi->get_input_type();
                 const char* s1 = input::names::get(it);
 
-                std::cout << "mxl1: " << mxl1 << " strlen(s1):" << strlen(s1) << std::endl;
-
-
                 msg += lead;
                 msg += s1;
                 msg.append(spaces::get(mxl1), mxl1 - strlen(s1));
                 msg += outstr;
-                msg.append(spaces::get(mxl2), mxl2 - strlen(outstr));
-                msg += " // ";
-                msg += flags;
                 if (wcnt::jwm.is_verbose()) {
+                    msg.append(spaces::get(mxl2), mxl2 - strlen(outstr));
+                    msg += " // ";
+                    msg += flags;
                     const char* c = item->get_descr();
                     const char* descr = (!c ? input::names::descr(it) : c);
                     msg += " ";
@@ -613,15 +630,26 @@ void cmdline::dobj_help_items(dobj::TYPE dt, int indent_level)
     while(item) {
         if (!item->is_dummy()) {
             char flags[8];
-            std::string str = items->get_item_header();
-            if (str != "") {
-                msg += "\n";
-                msg.append(spaces::get(20), indent_level * 4);
-                msg += str;
+            ui::TYPE itemtype = item->get_item_type();
+
+            if (wcnt::jwm.is_verbose()) {
+                std::string str = items->get_item_header();
+                if (str != "") {
+                    msg += "\n";
+                    msg.append(spaces::get(20), indent_level * 4);
+                    msg += str;
+                }
             }
+            else if ((item->get_option_id() & ui::UI_OPTION_MASK)
+                  && !item->is_ui_opt_duplicate()) {
+                // not an error, just the simplest way of skipping items
+                // we only want to show in verbose mode...
+                itemtype = ui::UI_ERROR;
+            }
+
             item->get_item_flags(flags, 8);
 
-            switch(item->get_item_type()) {
+            switch(itemtype) {
               case ui::UI_COMMENT: {
                 ui::dobjcomment* dc = static_cast<ui::dobjcomment*>(item);
                 const char* c = dc->get_descr();
@@ -654,10 +682,10 @@ void cmdline::dobj_help_items(dobj::TYPE dt, int indent_level)
                 else
                     s2 = iocat::names::get(ioc);
                 msg += s2;
-                msg.append(spaces::get(mxl2), mxl2 - strlen(s2));
-                msg += " // ";
-                msg += flags;
                 if (wcnt::jwm.is_verbose()) {
+                    msg.append(spaces::get(mxl2), mxl2 - strlen(s2));
+                    msg += " // ";
+                    msg += flags;
                     const char* c = item->get_descr();
                     const char* descr = (!c ? param::names::descr(pt) : c);
                     msg += " ";

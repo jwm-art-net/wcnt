@@ -136,9 +136,7 @@ amp1
 wavfile_out
 wav1
     in_left     amp1 out_output
-    in_right    amp1 out_output
     in_bar      t1 out_count
-    snapshot_mode off
     data_format pcm16 //float32
     filename    trigger_happy1.wav
     start_bar   0

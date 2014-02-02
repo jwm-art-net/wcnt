@@ -289,11 +289,9 @@ wav1
     filename    bass01.wav
     data_format float32
     in_left     amp1 out_output
-    in_right    amp1 out_output
     in_bar      time1   out_bar
     start_bar   0
     end_bar     16
-    snapshot_mode off
 wav1
 
 // setup how long to process:

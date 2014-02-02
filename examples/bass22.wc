@@ -254,9 +254,7 @@ lpf
 wavfile_out
 wav
     in_left      lpf out_output
-    in_right     lpf out_output
     in_bar       time1 out_bar
-    snapshot_mode off
     data_format  float32
     filename     bass22.wav
     start_bar    0
