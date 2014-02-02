@@ -68,6 +68,7 @@ namespace wcnt
     synthmod::base* sm;
     sm = wcnt::jwm.get_modlist()->goto_first();
     while(sm) {
+        debug("validating module: '%s'\n", sm->get_username());
         errors::TYPE et = sm->validate();
         if (et != errors::NO_ERROR) {
             jwm_err("Module %s is a little odd: %s %s %s",
@@ -101,6 +102,7 @@ namespace wcnt
     synthmod::list* sml = wcnt::jwm.get_modlist();
     sm = sml->goto_first();
     while(sm) {
+        debug("initializing module: '%s'\n", sm->get_username());
         sm->init();
         #ifdef DEBUG
         if (!sm->check_inputs()) {

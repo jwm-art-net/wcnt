@@ -141,8 +141,12 @@ void caps_plate2x2::init()
 {
     ladspa_loader* ll = wcnt::jwm.get_ladspaloader();
     ladspa_plug* lp = ll->get_plugin("caps", "Plate2x2");
+
+    if (lp == 0)    // damn name change..
+        lp = ll->get_plugin("caps", "PlateX2");
+
     if (lp == 0) {
-        sm_err("%s", ladspa_loader::get_error_msg());
+        sm_err("failed to load plugin. reason: %s", ladspa_loader::get_error_msg());
         invalidate();
         return;
     }

@@ -7,14 +7,6 @@
 
 //-------------------------------------------------------------
 
-union ladspa_func_grab
-{
-    void* dlsym_ret;
-    LADSPA_Descriptor_Function descrfunc;
-};
-
-//-------------------------------------------------------------
-
 // forward def:
 class ladspa_lib;
 

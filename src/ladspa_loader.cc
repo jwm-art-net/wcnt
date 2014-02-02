@@ -1,5 +1,6 @@
 #ifdef WITH_LADSPA
 
+#include "../include/textstuff.h"
 #include "../include/ladspa_loader.h"
 
 // rehashed code from the ladspa sdk load.c
@@ -85,17 +86,23 @@ ladspa_plug* ladspa_lib::get_plugin(const char* name)
         plug = goto_next();
     }
     const LADSPA_Descriptor* ldescr;
-    ladspa_func_grab lfg;
+    //ladspa_func_grab lfg;
     LADSPA_Descriptor_Function descrfunc;
     unsigned long plug_ix;
     dlerror();
-    lfg.dlsym_ret = dlsym(lib_handle, "ladspa_descriptor");
-    descrfunc = lfg.descrfunc;
-    if(!descrfunc)
+    descrfunc = (LADSPA_Descriptor_Function) dlsym(lib_handle, "ladspa_descriptor");
+    char* dlerr = dlerror();
+    if(dlerr) {
+        debug("failed to get descriptor function. reason: %s\n", dlerr);
         return 0;
+    }
+
     for(plug_ix = 0;; plug_ix++) {
-        if((ldescr = (descrfunc)(plug_ix)) == 0)
+        if((ldescr = (descrfunc)(plug_ix)) == 0) {
+            debug("failed to get descriptor.\n");
             return 0;
+        }
+        debug("checking descriptor '%s' for match with '%s'\n", ldescr->Label, name);
         if(strcmp(ldescr->Label, name) == 0)
             break;
     }
@@ -135,12 +142,15 @@ ladspa_loader::get_plugin(const char* fname, const char* label)
     // requested plugin lib not yet loaded...
     LADSPA_Handle lhandle;
     if (!(lhandle = dlopen_plugin(fname, RTLD_NOW))){
+        debug("dlopen_plugin '%s' '%s' failed\n", fname, label);
         ladspa_err("Could not open LADSPA plugin %s %s. Please ensure "
                     "the LADSPA_PATH environment variable is set.",
                                                         fname, label);
         return 0;
     }
-    lib = new ladspa_lib(fname, lhandle);
+    if (!(lib = new ladspa_lib(fname, lhandle))) {
+        debug("failed to get new ladspa_lib for plugin '%s' '%s'\n", fname, label);
+    }
     if (add_at_tail(lib) == 0){
         if (lib)
             delete lib;
