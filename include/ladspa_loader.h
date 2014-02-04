@@ -23,6 +23,19 @@ class ladspa_plug
 
     LADSPA_Handle instantiate();
 
+    // PortCount is defined in ladspa.h as unsigned long.
+    // here however, we refuse to accomodate plugins with more than INT_MAX
+    // ports.
+
+    int get_port_index(const char* port);
+
+    // connect_port returns the index number of the found port, -1 otherwise.
+    int connect_port(LADSPA_Handle, const char* port, LADSPA_Data*);
+
+    // validate_port returns an error string on invalid port data:
+    // the string should be free'd.
+    char* validate_port(const char* port, LADSPA_Data* data);
+
  private:
     const char* label;
     const LADSPA_Descriptor* descriptor;

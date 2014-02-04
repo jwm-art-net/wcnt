@@ -122,8 +122,8 @@ namespace ui
  enum {
     ITEM_CHOICE_UNEXPECTED = -5,// first item chosen, and so was this.
     ITEM_CHOICE_EXPECTED = -4,  // first item chosen but this wasnt.
-    ITEM_GROUP_UNEXPECTED = -3,   // first item skipped but this wasnt.
-    ITEM_GROUP_EXPECTED = -2,     // first item specified but this wasnt.
+    ITEM_GROUP_UNEXPECTED = -3, // first item skipped but this wasnt.
+    ITEM_GROUP_EXPECTED = -2,   // first item specified but this wasnt.
     ITEM_UNEXPECTED = -1,       // item did not match
     ITEM_MATCH = 0,             // item did match
     ITEM_SKIPPED                // item was optional and skipped

@@ -114,8 +114,6 @@ namespace synthmod
      case synthmod::BODE_FREQ_SHIFTER:
         sm = new bode_freq_shifter(uname);      break;
      case synthmod::CAPS_PLATE:
-        sm = new caps_plate(uname);             break;
-     case synthmod::CAPS_PLATE2X2:
         sm = new caps_plate2x2(uname);          break;
      #endif // WITH_LADSPA
      case synthmod::WAVE:           sm = new wave(uname);            break;

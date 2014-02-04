@@ -11,7 +11,7 @@ class noise_generator : public synthmod::base
 public:
     noise_generator(const char*);
     ~noise_generator();
-    void run() { output = (float) rand() / (RAND_MAX / 2) - 1; }
+    void run() { output = (double) rand() / (RAND_MAX / 2.0) - 1.0; }
     const void* get_out(output::TYPE) const;
 
 private:

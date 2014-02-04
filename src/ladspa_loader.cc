@@ -8,6 +8,7 @@
 #include <dlfcn.h>
 #include <cstdio>
 #include <cstdlib>
+#include <limits.h>
 
 #include "../include/globals.h"
 
@@ -63,6 +64,81 @@ LADSPA_Handle ladspa_plug::instantiate()
     return lh;
 }
 
+
+int ladspa_plug::get_port_index(const char* port)
+{
+    unsigned long portix;
+
+    if (descriptor->PortCount > INT_MAX)
+        return -1; // error: plugin author is mental.
+
+    for (portix = 0; portix < descriptor->PortCount; ++portix) {
+        if (strcmp(port, descriptor->PortNames[portix]) == 0)
+            return portix;
+    }
+
+    return -1;
+}
+
+
+int ladspa_plug::connect_port(LADSPA_Handle handle, const char* port, LADSPA_Data* data)
+{
+    int portix = get_port_index(port);
+
+    if (portix == -1)
+        return -1;
+
+    descriptor->connect_port(handle, portix, data);
+    return portix;
+}
+
+
+char* ladspa_plug::validate_port(const char* port, LADSPA_Data* data)
+{
+    int portix = get_port_index(port);
+    const int SZ = 255;
+    char buf[SZ] = "";
+
+    if (portix == -1) {
+        snprintf(buf, SZ, "Invalid port name '%s'.", port);
+        return strdup(buf);
+    }
+
+    debug("Validating port: '%s' value: %f\n", port, *data);
+
+    if (LADSPA_IS_PORT_INPUT(descriptor->PortDescriptors[portix])) {
+        if (LADSPA_IS_PORT_CONTROL(descriptor->PortDescriptors[portix])) {
+            LADSPA_PortRangeHintDescriptor hint =
+                        descriptor->PortRangeHints[portix].HintDescriptor;
+            if (LADSPA_IS_HINT_BOUNDED_BELOW(hint)) {
+                LADSPA_Data bound =
+                        descriptor->PortRangeHints[portix].LowerBound;
+                if (LADSPA_IS_HINT_SAMPLE_RATE(hint) && bound != 0)
+                    bound *= wcnt::jwm.samplerate();
+                if (bound != 0 && *data < bound) {
+                    snprintf(buf, SZ, "should be above %f", bound);
+                    return strdup(buf);
+                }
+            }
+
+            if (LADSPA_IS_HINT_BOUNDED_ABOVE(hint)) {
+                LADSPA_Data bound =
+                        descriptor->PortRangeHints[portix].UpperBound;
+                if (LADSPA_IS_HINT_SAMPLE_RATE(hint) && bound != 0)
+                    bound *= wcnt::jwm.samplerate();
+                if (bound != 0 && *data > bound) {
+                    snprintf(buf, SZ, "should be below %f", bound);
+                    return strdup(buf);
+                }
+            }
+
+            return 0;
+        }
+    }
+
+    return strdup("Invalid attempt to validate!");
+}
+
 //-------------------------------------------------------------
 
 ladspa_lib::ladspa_lib(const char* fname, LADSPA_Handle handle) :
@@ -99,7 +175,7 @@ ladspa_plug* ladspa_lib::get_plugin(const char* name)
 
     for(plug_ix = 0;; plug_ix++) {
         if((ldescr = (descrfunc)(plug_ix)) == 0) {
-            debug("failed to get descriptor.\n");
+            debug("Plugin count for %s: %lu\n", filename, plug_ix);
             return 0;
         }
         debug("checking descriptor '%s' for match with '%s'\n", ldescr->Label, name);

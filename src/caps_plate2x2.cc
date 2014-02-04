@@ -3,7 +3,7 @@
 #include "../include/globals.h"
 
 caps_plate2x2::caps_plate2x2(const char* uname) :
- synthmod::base(synthmod::CAPS_PLATE2X2, uname, SM_HAS_STEREO_OUTPUT),
+ synthmod::base(synthmod::CAPS_PLATE, uname, SM_HAS_STEREO_OUTPUT),
  in_left(0), in_right(0), out_left(0), out_right(0),
  bandwidth(0.502), tail(0.3745), damping(0.250375), blend(0.25),
  l_descriptor(0), l_inst_handle(0),
@@ -14,14 +14,24 @@ caps_plate2x2::caps_plate2x2(const char* uname) :
     register_output(output::OUT_RIGHT);
 }
 
+
+int caps_plate2x2::version = 0;
+
+
 void caps_plate2x2::register_ui()
 {
     register_input(input::IN_LEFT);
-    register_input(input::IN_RIGHT);
+    register_input(input::IN_RIGHT)->set_connect_as(input::IN_LEFT)
+                                   ->set_flags(ui::UI_OPTIONAL);
     register_param(param::BANDWIDTH);
     register_param(param::TAIL);
     register_param(param::DAMPING);
     register_param(param::WETDRY);
+
+    if (wcnt::jwm.get_ladspaloader()->get_plugin("caps", "Plate2x2"))
+        version = -1;
+    else if (wcnt::jwm.get_ladspaloader()->get_plugin("caps", "PlateX2"))
+        version = 1;
 }
 
 ui::moditem_list* caps_plate2x2::get_ui_items()
@@ -114,69 +124,91 @@ const void* caps_plate2x2::get_param(param::TYPE pt) const
 
 errors::TYPE caps_plate2x2::validate()
 {
-    if (bandwidth < 0.005 || bandwidth > 0.999) {
-        sm_err("%s must be within range 0.005 ~ 0.999,",
-                param::names::get(param::BANDWIDTH));
+    if (!version) {
+        sm_err("Failed to load %s.", "LADSPA plugin");
         invalidate();
         return errors::ERROR;
     }
-    if (tail < 0.0 || tail > 0.749) {
-        sm_err("%s must be within range 0.0 ~ 0.749.",
-                param::names::get(param::TAIL));
+
+    ladspa_plug* lp = wcnt::jwm.get_ladspaloader()
+        ->get_plugin("caps", (version == -1 ? "Plate2x2" : "PlateX2"));
+
+    if ((l_descriptor = lp->get_descriptor()) == 0) {
+        sm_err("%s", ladspa_loader::get_error_msg());
         invalidate();
         return errors::ERROR;
     }
-    if (damping < 0.0005 || damping > 1.0) {
-        sm_err("%s must be within range 0.0005 ~ 1.0.",
-                param::names::get(param::DAMPING));
+    if ((l_inst_handle = lp->instantiate()) == 0) {
+        sm_err("%s", ladspa_loader::get_error_msg());
         invalidate();
         return errors::ERROR;
     }
-    if (!validate_param(param::WETDRY, errors::RANGE_0_1))
-        return errors::RANGE_0_1;
+
+    l_bandwidth = bandwidth;
+    l_tail = tail;
+    l_damping = damping;
+    l_blend = blend;
+
+    char* err;
+
+    if ((err = lp->validate_port("bandwidth", &l_bandwidth))) {
+        sm_err("%s %s.", param::names::get(param::BANDWIDTH), err);
+        delete [] err;
+        invalidate();
+        return errors::ERROR;
+    }
+
+    if ((err = lp->validate_port("tail", &l_tail))) {
+        sm_err("%s %s.", param::names::get(param::TAIL), err);
+        delete [] err;
+        invalidate();
+        return errors::ERROR;
+    }
+
+    if ((err = lp->validate_port("damping", &l_damping))) {
+        sm_err("%s %s.", param::names::get(param::DAMPING), err);
+        delete [] err;
+        invalidate();
+        return errors::ERROR;
+    }
+    if ((err = lp->validate_port("blend", &l_blend))) {
+        sm_err("%s %s.", param::names::get(param::WETDRY), err);
+        delete [] err;
+        invalidate();
+        return errors::ERROR;
+    }
+
     return errors::NO_ERROR;
 }
 
 void caps_plate2x2::init()
 {
-    ladspa_loader* ll = wcnt::jwm.get_ladspaloader();
-    ladspa_plug* lp = ll->get_plugin("caps", "Plate2x2");
+    ladspa_plug* lp =
+        wcnt::jwm.get_ladspaloader()
+                ->get_plugin("caps", (version == -1 ? "Plate2x2" : "PlateX2"));
 
-    if (lp == 0)    // damn name change..
-        lp = ll->get_plugin("caps", "PlateX2");
-
-    if (lp == 0) {
-        sm_err("failed to load plugin. reason: %s", ladspa_loader::get_error_msg());
-        invalidate();
-        return;
-    }
-    if ((l_descriptor = lp->get_descriptor()) == 0) {
-        sm_err("%s", ladspa_loader::get_error_msg());
-        invalidate();
-        return;
-    }
-    if ((l_inst_handle = lp->instantiate()) == 0) {
-        sm_err("%s", ladspa_loader::get_error_msg());
-        invalidate();
-        return;
-    }
     l_in_left = new LADSPA_Data[1];
     l_in_right = new LADSPA_Data[1];
     l_out_left = new LADSPA_Data[1];
     l_out_right = new LADSPA_Data[1];
-    l_descriptor->connect_port(l_inst_handle, 0, l_in_left);
-    l_descriptor->connect_port(l_inst_handle, 1, l_in_right);
-    l_descriptor->connect_port(l_inst_handle, 2, &l_bandwidth);
-    l_descriptor->connect_port(l_inst_handle, 3, &l_tail);
-    l_descriptor->connect_port(l_inst_handle, 4, &l_damping);
-    l_descriptor->connect_port(l_inst_handle, 5, &l_blend);
-    l_descriptor->connect_port(l_inst_handle, 6, l_out_left);
-    l_descriptor->connect_port(l_inst_handle, 7, l_out_right);
+
+    if (lp->connect_port(l_inst_handle,
+                        (version == -1 ? "in:l" : "in.l"), l_in_left) < 0
+     || lp->connect_port(l_inst_handle,
+                        (version == -1 ? "in:r" : "in.r"), l_in_right) < 0
+     || lp->connect_port(l_inst_handle, "bandwidth", &l_bandwidth) < 0
+     || lp->connect_port(l_inst_handle, "tail",      &l_tail) < 0
+     || lp->connect_port(l_inst_handle, "damping",   &l_damping) < 0
+     || lp->connect_port(l_inst_handle, "blend",     &l_blend) < 0
+     || lp->connect_port(l_inst_handle,
+                        (version == -1 ? "out:l" : "out.l"), l_out_left) < 0
+     || lp->connect_port(l_inst_handle,
+                        (version == -1 ? "out:r" : "out.r"), l_out_right) < 0)
+    {
+        debug("failed to connect a port!");
+    }
+
     l_descriptor->activate(l_inst_handle);
-    l_bandwidth = bandwidth;
-    l_tail = tail;
-    l_damping = damping;
-    l_blend = blend;
 }
 
 void caps_plate2x2::run()

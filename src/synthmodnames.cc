@@ -72,8 +72,7 @@ namespace synthmod
     { SINGLE_BAND_PARA,         "single_band_parametric",   0, "Provides the Single Band Parametric LADSPA plugin (if available)."    },
     { GLAME_FILTER,             "glame_filter",             0, "Provides the Glame High and Low pass filter LADSPA plugins (if available)." },
     { BODE_FREQ_SHIFTER,        "bode_freq_shifter",        0, "Provides the Bode Frequency Shifter LADSPA plugin (if available)." },
-    { CAPS_PLATE,               "caps_plate",               0, "Provides the C* Plate LADSPA plugin (if available)." },
-    { CAPS_PLATE2X2,            "caps_plate2x2",            0, "Provides the C* Plate LADSPA plugin (if available)." },
+    { CAPS_PLATE,               "caps_plate",               0, "Provides the C* PlateX2 LADSPA plugin (if available)." },
     #endif
     { WAVE,             "wave",             0, "Outputs one of a number of basic waveforms."             },
     { WAVE_PHASE,       "wave_phase",       0, "Outputs one waveform multiplied by another. The two waveforms may be synchronised by phase despite operating at different frequencies." },

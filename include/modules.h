@@ -76,7 +76,6 @@
 #include "single_band_para.h"
 #include "glame_filter.h"
 #include "bode_freq_shifter.h"
-#include "caps_plate.h"
 #include "caps_plate2x2.h"
 #endif
 

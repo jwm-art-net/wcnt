@@ -75,7 +75,6 @@ namespace synthmod
     GLAME_FILTER,
     BODE_FREQ_SHIFTER,
     CAPS_PLATE,
-    CAPS_PLATE2X2,
     WAVE,
     WAVE_PHASE,
     CONSTANT_FREQ,
