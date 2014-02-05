@@ -2,6 +2,11 @@
 #ifdef WITH_LADSPA
 #include "../include/globals.h"
 
+
+static const char* plugin_name = 0;
+static char plugin_port_sep = 0;
+
+
 caps_plate2x2::caps_plate2x2(const char* uname) :
  synthmod::base(synthmod::CAPS_PLATE, uname, SM_HAS_STEREO_OUTPUT),
  in_left(0), in_right(0), out_left(0), out_right(0),
@@ -15,9 +20,6 @@ caps_plate2x2::caps_plate2x2(const char* uname) :
 }
 
 
-int caps_plate2x2::version = 0;
-
-
 void caps_plate2x2::register_ui()
 {
     register_input(input::IN_LEFT);
@@ -28,10 +30,18 @@ void caps_plate2x2::register_ui()
     register_param(param::DAMPING);
     register_param(param::WETDRY);
 
-    if (wcnt::jwm.get_ladspaloader()->get_plugin("caps", "Plate2x2"))
-        version = -1;
-    else if (wcnt::jwm.get_ladspaloader()->get_plugin("caps", "PlateX2"))
-        version = 1;
+    ladspa_plug* lp = 0;
+
+    if ((lp = wcnt::jwm.get_ladspaloader()->get_plugin("caps", "Plate2x2")))
+        plugin_name = "Plate2x2";
+    else if ((lp = wcnt::jwm.get_ladspaloader()->get_plugin("caps", "PlateX2")))
+        plugin_name = "PlateX2";
+
+    if (lp->get_port_index("in:l") != -1)
+        plugin_port_sep = ':';
+    else if (lp->get_port_index("in.l") != -1)
+        plugin_port_sep = '.';
+
 }
 
 ui::moditem_list* caps_plate2x2::get_ui_items()
@@ -124,14 +134,19 @@ const void* caps_plate2x2::get_param(param::TYPE pt) const
 
 errors::TYPE caps_plate2x2::validate()
 {
-    if (!version) {
+    if (!plugin_name) {
         sm_err("Failed to load %s.", "LADSPA plugin");
         invalidate();
         return errors::ERROR;
     }
 
-    ladspa_plug* lp = wcnt::jwm.get_ladspaloader()
-        ->get_plugin("caps", (version == -1 ? "Plate2x2" : "PlateX2"));
+    ladspa_plug* lp = wcnt::jwm.get_ladspaloader()->get_plugin("caps", plugin_name);
+
+    if (!lp) {
+        sm_err("Failed to load %s.", "LADSPA plugin");
+        invalidate();
+        return errors::ERROR;
+    }
 
     if ((l_descriptor = lp->get_descriptor()) == 0) {
         sm_err("%s", ladspa_loader::get_error_msg());
@@ -183,29 +198,43 @@ errors::TYPE caps_plate2x2::validate()
 
 void caps_plate2x2::init()
 {
-    ladspa_plug* lp =
-        wcnt::jwm.get_ladspaloader()
-                ->get_plugin("caps", (version == -1 ? "Plate2x2" : "PlateX2"));
+    ladspa_plug* lp = wcnt::jwm.get_ladspaloader()->get_plugin("caps", plugin_name);
 
     l_in_left = new LADSPA_Data[1];
     l_in_right = new LADSPA_Data[1];
     l_out_left = new LADSPA_Data[1];
     l_out_right = new LADSPA_Data[1];
 
-    if (lp->connect_port(l_inst_handle,
-                        (version == -1 ? "in:l" : "in.l"), l_in_left) < 0
-     || lp->connect_port(l_inst_handle,
-                        (version == -1 ? "in:r" : "in.r"), l_in_right) < 0
+    bool didnotconnect = false;
+
+    switch(plugin_port_sep) {
+      case '.':
+        if (lp->connect_port(l_inst_handle, "in.l", l_in_left) < 0
+         || lp->connect_port(l_inst_handle, "in.r", l_in_right) < 0
+         || lp->connect_port(l_inst_handle, "out.l", l_out_left) < 0
+         || lp->connect_port(l_inst_handle, "out.r", l_out_right) < 0)
+            didnotconnect = true;
+        break;
+      case ':':
+        if (lp->connect_port(l_inst_handle, "in:l", l_in_left) < 0
+         || lp->connect_port(l_inst_handle, "in:r", l_in_right) < 0
+         || lp->connect_port(l_inst_handle, "out:l", l_out_left) < 0
+         || lp->connect_port(l_inst_handle, "out:r", l_out_right) < 0)
+            didnotconnect = true;
+        break;
+      default:
+        didnotconnect = true;
+    }
+
+    if (didnotconnect
      || lp->connect_port(l_inst_handle, "bandwidth", &l_bandwidth) < 0
      || lp->connect_port(l_inst_handle, "tail",      &l_tail) < 0
      || lp->connect_port(l_inst_handle, "damping",   &l_damping) < 0
-     || lp->connect_port(l_inst_handle, "blend",     &l_blend) < 0
-     || lp->connect_port(l_inst_handle,
-                        (version == -1 ? "out:l" : "out.l"), l_out_left) < 0
-     || lp->connect_port(l_inst_handle,
-                        (version == -1 ? "out:r" : "out.r"), l_out_right) < 0)
+     || lp->connect_port(l_inst_handle, "blend",     &l_blend) < 0)
     {
-        debug("failed to connect a port!");
+        debug("failed to connect port(s).");
+        invalidate();
+        return;
     }
 
     l_descriptor->activate(l_inst_handle);

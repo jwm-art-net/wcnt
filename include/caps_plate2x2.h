@@ -71,7 +71,6 @@ class caps_plate2x2 : public synthmod::base
     LADSPA_Data* l_out_right;
     void register_ui();
     ui::moditem_list* get_ui_items();
-    static int version;
 };
 
 #endif // WITH_LADSPA

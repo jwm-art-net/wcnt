@@ -25,7 +25,7 @@ class ladspa_plug
 
     // PortCount is defined in ladspa.h as unsigned long.
     // here however, we refuse to accomodate plugins with more than INT_MAX
-    // ports.
+    // ports...
 
     int get_port_index(const char* port);
 
@@ -35,6 +35,9 @@ class ladspa_plug
     // validate_port returns an error string on invalid port data:
     // the string should be free'd.
     char* validate_port(const char* port, LADSPA_Data* data);
+
+    bool get_port_lower_bound(int port_index, LADSPA_Data* result);
+    bool get_port_upper_bound(int port_index, LADSPA_Data* result);
 
  private:
     const char* label;

@@ -85,8 +85,12 @@ int ladspa_plug::connect_port(LADSPA_Handle handle, const char* port, LADSPA_Dat
 {
     int portix = get_port_index(port);
 
-    if (portix == -1)
+    debug("Connecting port '%s'...\n", port);
+
+    if (portix == -1) {
+        debug("Invalid port '%s'\n", port);
         return -1;
+    }
 
     descriptor->connect_port(handle, portix, data);
     return portix;
@@ -113,7 +117,7 @@ char* ladspa_plug::validate_port(const char* port, LADSPA_Data* data)
             if (LADSPA_IS_HINT_BOUNDED_BELOW(hint)) {
                 LADSPA_Data bound =
                         descriptor->PortRangeHints[portix].LowerBound;
-                if (LADSPA_IS_HINT_SAMPLE_RATE(hint) && bound != 0)
+                if (LADSPA_IS_HINT_SAMPLE_RATE(hint))
                     bound *= wcnt::jwm.samplerate();
                 if (bound != 0 && *data < bound) {
                     snprintf(buf, SZ, "should be above %f", bound);
@@ -137,6 +141,40 @@ char* ladspa_plug::validate_port(const char* port, LADSPA_Data* data)
     }
 
     return strdup("Invalid attempt to validate!");
+}
+
+
+bool ladspa_plug::get_port_lower_bound(int portix, LADSPA_Data* result)
+{
+    LADSPA_PortRangeHintDescriptor hint =
+                descriptor->PortRangeHints[portix].HintDescriptor;
+
+    if (LADSPA_IS_HINT_BOUNDED_BELOW(hint)) {
+        *result = descriptor->PortRangeHints[portix].LowerBound;
+        if (LADSPA_IS_HINT_SAMPLE_RATE(hint))
+            *result *= wcnt::jwm.samplerate();
+        return true;
+    }
+
+    *result = 0;
+    return false;
+}
+
+
+bool ladspa_plug::get_port_upper_bound(int portix, LADSPA_Data* result)
+{
+    LADSPA_PortRangeHintDescriptor hint =
+                descriptor->PortRangeHints[portix].HintDescriptor;
+
+    if (LADSPA_IS_HINT_BOUNDED_ABOVE(hint)) {
+        *result = descriptor->PortRangeHints[portix].UpperBound;
+        if (LADSPA_IS_HINT_SAMPLE_RATE(hint))
+            *result *= wcnt::jwm.samplerate();
+        return true;
+    }
+
+    *result = 0;
+    return false;
 }
 
 //-------------------------------------------------------------
