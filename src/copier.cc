@@ -63,7 +63,7 @@ bool copier::set_to_name(const char* name)
     return true;
 }
 
-bool copier::set_param(param::TYPE pt, const void* data)
+bool copier::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -103,7 +103,7 @@ bool copier::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* copier::get_param(param::TYPE pt) const
+const void* copier::get_param(int pt) const
 {
     switch(pt)
     {

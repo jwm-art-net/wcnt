@@ -136,9 +136,9 @@ void wavfilein::read_wav_chunk(void * buf, samp_t smp, int bsize)
     }
 }
 
-bool wavfilein::set_param(param::TYPE dt, const void* data)
+bool wavfilein::set_param(int pt, const void* data)
 {
-    switch(dt)
+    switch(pt)
     {
         case param::FILENAME:
             set_wav_filename((const char*)data);
@@ -151,9 +151,9 @@ bool wavfilein::set_param(param::TYPE dt, const void* data)
     }
 }
 
-const void* wavfilein::get_param(param::TYPE dt) const
+const void* wavfilein::get_param(int pt) const
 {
-    switch(dt)
+    switch(pt)
     {
         case param::FILENAME:  return fname;
         case param::ROOT_NOTE: return rootnote;

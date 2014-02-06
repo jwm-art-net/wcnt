@@ -10,11 +10,11 @@ class fxsparamlist : public linked_list<fixstrparam>
  public:
     fxsparamlist(){};
 
-    fixstrparam* add_param(const char* string_list, param::TYPE);
+    fixstrparam* add_param(const char* string_list, int param_type);
 
-    fixstrparam* get_fix_str_param(param::TYPE pt)
+    fixstrparam* get_fix_str_param(int param_type)
     {
-        return find_in_data(sneak_first(), pt)->get_data();
+        return find_in_data(sneak_first(), param_type)->get_data();
     }
 
     #ifdef DEBUG

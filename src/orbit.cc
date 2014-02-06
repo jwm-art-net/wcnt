@@ -38,7 +38,7 @@ orbit::~orbit()
 {
 }
 
-const void* orbit::set_in(input::TYPE it, const void* o)
+const void* orbit::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -51,7 +51,7 @@ const void* orbit::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* orbit::get_in(input::TYPE it) const
+const void* orbit::get_in(int it) const
 {
     switch(it)
     {
@@ -61,7 +61,7 @@ const void* orbit::get_in(input::TYPE it) const
     }
 }
 
-bool orbit::set_param(param::TYPE pt, const void* data)
+bool orbit::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -85,7 +85,7 @@ bool orbit::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* orbit::get_param(param::TYPE pt) const
+const void* orbit::get_param(int pt) const
 {
     switch(pt)
     {
@@ -180,7 +180,7 @@ void orbit::run()
     }
 }
 
-const void* orbit::get_out(output::TYPE ot) const
+const void* orbit::get_out(int ot) const
 {
     switch(ot)
     {

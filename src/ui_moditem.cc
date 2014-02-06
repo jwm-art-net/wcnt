@@ -12,7 +12,7 @@ namespace ui
  const char* error_item<synthmod::base*>::err_msg = 0;
 
  template <>
- input_item<synthmod::base*>* item_list<synthmod::base*>::add_input_item(input::TYPE it)
+ input_item<synthmod::base*>* item_list<synthmod::base*>::add_input_item(int it)
  {
     if (!goodlist(LIST_STD))
         return 0;
@@ -34,7 +34,7 @@ namespace ui
 
  template<>
  connector* item_list<synthmod::base*>::add_connector_off(synthmod::base* sm,
-                                                          input::TYPE it)
+                                                          int it)
  {
     debug("\\________ adding connector 'off' to input '%s' '%s'\n", sm->get_username(),
                                                         input::names::get(it));
@@ -43,8 +43,7 @@ namespace ui
 
  template<>
  connector* item_list<synthmod::base*>::add_connector_self(synthmod::base* sm,
-                                                        input::TYPE it,
-                                                        output::TYPE ot)
+                                                        int it, int ot)
  {
     debug("\\________ adding connector 'self' to input '%s' '%s' '%s'\n", sm->get_username(),
                                                         input::names::get(it),
@@ -54,8 +53,7 @@ namespace ui
 
  template<>
  connector* item_list<synthmod::base*>::add_connector_as(synthmod::base* sm,
-                                                        input::TYPE it,
-                                                        input::TYPE asit)
+                                                        int it, int asit)
  {
     debug("\\________ adding connector 'as' to input '%s' '%s' '%s'\n", sm->get_username(),
                                                         input::names::get(it),

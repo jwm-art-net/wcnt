@@ -38,7 +38,7 @@ sc1::~sc1()
     if (l_output) delete [] l_output;
 }
 
-const void* sc1::get_out(output::TYPE ot) const
+const void* sc1::get_out(int ot) const
 {
     switch(ot) {
         case output::OUT_OUTPUT: return &output;
@@ -46,7 +46,7 @@ const void* sc1::get_out(output::TYPE ot) const
     }
 }
 
-const void* sc1::set_in(input::TYPE it, const void* o)
+const void* sc1::set_in(int it, const void* o)
 {
     switch(it){
         case input::IN_SIGNAL: return input = (double*)o;
@@ -54,7 +54,7 @@ const void* sc1::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* sc1::get_in(input::TYPE it) const
+const void* sc1::get_in(int it) const
 {
     switch(it) {
         case input::IN_SIGNAL: return input;
@@ -62,7 +62,7 @@ const void* sc1::get_in(input::TYPE it) const
     }
 }
 
-bool sc1::set_param(param::TYPE pt, const void* data)
+bool sc1::set_param(int pt, const void* data)
 {
     switch(pt) {
         case param::ATTACK_TIME:
@@ -88,7 +88,7 @@ bool sc1::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* sc1::get_param(param::TYPE pt) const
+const void* sc1::get_param(int pt) const
 {
     switch(pt)
     {

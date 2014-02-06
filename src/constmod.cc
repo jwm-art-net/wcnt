@@ -22,7 +22,7 @@ constmod::~constmod()
 {
 }
 
-const void* constmod::get_out(output::TYPE ot) const
+const void* constmod::get_out(int ot) const
 {
     switch(ot) 
     {
@@ -31,7 +31,7 @@ const void* constmod::get_out(output::TYPE ot) const
     }
 }
 
-bool constmod::set_param(param::TYPE pt, const void* data)
+bool constmod::set_param(int pt, const void* data)
 {
     switch(pt) {
         case param::VALUE:
@@ -42,7 +42,7 @@ bool constmod::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* constmod::get_param(param::TYPE pt) const
+const void* constmod::get_param(int pt) const
 {
     switch(pt)
     {

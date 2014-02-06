@@ -36,7 +36,7 @@ triangle_wave2::~triangle_wave2()
 {
 }
 
-const void* triangle_wave2::get_out(output::TYPE ot) const
+const void* triangle_wave2::get_out(int ot) const
 {
     switch(ot)
     {
@@ -46,7 +46,7 @@ const void* triangle_wave2::get_out(output::TYPE ot) const
     }
 }
 
-const void* triangle_wave2::set_in(input::TYPE it, const void* o)
+const void* triangle_wave2::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -57,7 +57,7 @@ const void* triangle_wave2::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* triangle_wave2::get_in(input::TYPE it) const
+const void* triangle_wave2::get_in(int it) const
 {
     switch(it)
     {
@@ -68,7 +68,7 @@ const void* triangle_wave2::get_in(input::TYPE it) const
     }
 }
 
-bool triangle_wave2::set_param(param::TYPE pt, const void* data)
+bool triangle_wave2::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -89,7 +89,7 @@ bool triangle_wave2::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* triangle_wave2::get_param(param::TYPE pt) const
+const void* triangle_wave2::get_param(int pt) const
 {
     switch(pt)
     {

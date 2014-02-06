@@ -42,7 +42,7 @@ void wave_vertex::modulate(double vmod, double hmod)
     out_lvl = lo_lvl + (up_lvl - lo_lvl) * (( vmod < 0) ? -vmod : vmod);
 }
 
-bool wave_vertex::set_param(param::TYPE pt, const void* data)
+bool wave_vertex::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -69,7 +69,7 @@ bool wave_vertex::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* wave_vertex::get_param(param::TYPE pt) const
+const void* wave_vertex::get_param(int pt) const
 {
     switch(pt)
     {

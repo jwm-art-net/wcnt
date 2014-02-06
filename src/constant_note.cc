@@ -29,7 +29,7 @@ constant_note::~constant_note()
         delete [] note;
 }
 
-const void* constant_note::get_out(output::TYPE ot) const
+const void* constant_note::get_out(int ot) const
 {
     switch(ot) 
     {
@@ -40,7 +40,7 @@ const void* constant_note::get_out(output::TYPE ot) const
     }
 }
 
-bool constant_note::set_param(param::TYPE pt, const void* data)
+bool constant_note::set_param(int pt, const void* data)
 {
     switch(pt) {
         case param::NAME:
@@ -51,7 +51,7 @@ bool constant_note::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* constant_note::get_param(param::TYPE pt) const
+const void* constant_note::get_param(int pt) const
 {
     switch(pt)
     {

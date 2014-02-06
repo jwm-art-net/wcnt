@@ -22,7 +22,7 @@ gain::~gain()
 {
 }
 
-const void* gain::set_in(input::TYPE it, const void* o)
+const void* gain::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -32,7 +32,7 @@ const void* gain::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* gain::get_in(input::TYPE it) const
+const void* gain::get_in(int it) const
 {
     switch(it)
     {
@@ -42,7 +42,7 @@ const void* gain::get_in(input::TYPE it) const
     }
 }
 
-bool gain::set_param(param::TYPE pt, const void* data)
+bool gain::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -57,7 +57,7 @@ bool gain::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* gain::get_param(param::TYPE pt) const
+const void* gain::get_param(int pt) const
 {
     switch(pt)
     {

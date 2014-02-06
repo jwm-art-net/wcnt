@@ -39,11 +39,11 @@ public:
     void run(){};
     void init();
     errors::TYPE validate();
-    const void* get_out(output::TYPE) const { return 0; }
-    const void* set_in(input::TYPE, const void*);
-    const void* get_in(input::TYPE) const;
-    bool set_param(param::TYPE, const void*);
-    const void* get_param(param::TYPE) const;
+    const void* get_out(int) const { return 0; }
+    const void* set_in(int input_type, const void*);
+    const void* get_in(int input_type) const;
+    bool set_param(int param_type, const void*);
+    const void* get_param(int param_type) const;
     base* duplicate_module(const char* uname, DUP_IO);
 private:
     // inputs

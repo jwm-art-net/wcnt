@@ -24,7 +24,7 @@ sample_climb::~sample_climb()
 {
 }
 
-const void* sample_climb::get_out(output::TYPE ot) const
+const void* sample_climb::get_out(int ot) const
 {
     switch(ot)
     {
@@ -33,7 +33,7 @@ const void* sample_climb::get_out(output::TYPE ot) const
     }
 }
 
-const void* sample_climb::set_in(input::TYPE it, const void* o)
+const void* sample_climb::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -43,7 +43,7 @@ const void* sample_climb::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* sample_climb::get_in(input::TYPE it) const
+const void* sample_climb::get_in(int it) const
 {
     switch(it)
     {
@@ -53,7 +53,7 @@ const void* sample_climb::get_in(input::TYPE it) const
     }
 }
 
-bool sample_climb::set_param(param::TYPE pt, const void* data)
+bool sample_climb::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -65,7 +65,7 @@ bool sample_climb::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* sample_climb::get_param(param::TYPE pt) const
+const void* sample_climb::get_param(int pt) const
 {
     switch(pt)
     {

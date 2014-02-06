@@ -25,7 +25,7 @@ constant_freq::~constant_freq()
 {
 }
 
-const void* constant_freq::get_out(output::TYPE ot) const
+const void* constant_freq::get_out(int ot) const
 {
     switch(ot) 
     {
@@ -35,7 +35,7 @@ const void* constant_freq::get_out(output::TYPE ot) const
     }
 }
 
-bool constant_freq::set_param(param::TYPE pt, const void* data)
+bool constant_freq::set_param(int pt, const void* data)
 {
     switch(pt) {
         case param::FREQ:
@@ -46,7 +46,7 @@ bool constant_freq::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* constant_freq::get_param(param::TYPE pt) const
+const void* constant_freq::get_param(int pt) const
 {
     switch(pt)
     {

@@ -64,7 +64,7 @@ caps_plate2x2::~caps_plate2x2()
         delete [] l_out_right;
 }
 
-const void* caps_plate2x2::get_out(output::TYPE ot) const
+const void* caps_plate2x2::get_out(int ot) const
 {
     switch(ot)
     {
@@ -75,7 +75,7 @@ const void* caps_plate2x2::get_out(output::TYPE ot) const
 }
 
 const void*
-caps_plate2x2::set_in(input::TYPE it, const void* o)
+caps_plate2x2::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -88,7 +88,7 @@ caps_plate2x2::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* caps_plate2x2::get_in(input::TYPE it) const
+const void* caps_plate2x2::get_in(int it) const
 {
     switch(it)
     {
@@ -99,7 +99,7 @@ const void* caps_plate2x2::get_in(input::TYPE it) const
 }
 
 bool
-caps_plate2x2::set_param(param::TYPE pt, const void* data)
+caps_plate2x2::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -120,7 +120,7 @@ caps_plate2x2::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* caps_plate2x2::get_param(param::TYPE pt) const
+const void* caps_plate2x2::get_param(int pt) const
 {
     switch(pt)
     {

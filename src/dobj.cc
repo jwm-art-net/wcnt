@@ -74,14 +74,14 @@ namespace dobj
     return username;
  }
 
- bool base::set_param(param::TYPE, const void*)
+ bool base::set_param(int, const void*)
  {
     dobjerr("%s %s set parameter of data object.", errors::stock::major,
                                                    errors::stock::bad);
     return 0;
  }
 
- const void* base::get_param(param::TYPE) const
+ const void* base::get_param(int) const
  {
     dobjerr("%s %s get parameter of data object.", errors::stock::major,
                                                    errors::stock::bad);
@@ -106,7 +106,7 @@ namespace dobj
 
  char base::err_msg[STRBUFLEN] = "";
 
- ui::dobjparam* base::register_param(param::TYPE pt)
+ ui::dobjparam* base::register_param(int pt)
  {
     if (!valid)
         return 0;
@@ -120,7 +120,7 @@ namespace dobj
     return i;
  }
 
- ui::dobjparam* base::register_param(param::TYPE pt, const char* fixstr)
+ ui::dobjparam* base::register_param(int pt, const char* fixstr)
  {
     if (!valid)
         return 0;
@@ -166,7 +166,7 @@ namespace dobj
     return i;
  }
 
- bool base::validate_param(param::TYPE pt, errors::TYPE et)
+ bool base::validate_param(int pt, errors::TYPE et)
  {
    if (!get_ui_items()->data_validate(this, pt, et))
     {

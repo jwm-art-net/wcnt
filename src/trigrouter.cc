@@ -38,7 +38,7 @@ trigrouter::~trigrouter()
         delete [] trigs;
 }
 
-const void* trigrouter::set_in(input::TYPE it, const void* o)
+const void* trigrouter::set_in(int it, const void* o)
 {
     switch(it) {
     case input::IN_TRIG:        return in_trig = (STATUS const*)o;
@@ -49,7 +49,7 @@ const void* trigrouter::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* trigrouter::get_in(input::TYPE it) const
+const void* trigrouter::get_in(int it) const
 {
     switch(it) {
     case input::IN_TRIG:        return in_trig;
@@ -69,7 +69,7 @@ errors::TYPE trigrouter::validate()
     return errors::NO_ERROR;
 }
 
-bool trigrouter::set_param(param::TYPE pt, const void* data)
+bool trigrouter::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -86,7 +86,7 @@ bool trigrouter::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* trigrouter::get_param(param::TYPE pt) const
+const void* trigrouter::get_param(int pt) const
 {
     switch(pt)
     {

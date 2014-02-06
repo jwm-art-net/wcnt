@@ -24,7 +24,7 @@ ui::dobjitem_list* timing::get_ui_items()
     return &items;
 }
 
-bool timing::set_param(param::TYPE pt, const void* data)
+bool timing::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -36,7 +36,7 @@ bool timing::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* timing::get_param(param::TYPE pt) const
+const void* timing::get_param(int pt) const
 {
     switch(pt)
     {

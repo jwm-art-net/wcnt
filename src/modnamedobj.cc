@@ -32,9 +32,9 @@ void modnamedobj::set_modname(const char* name)
     return;
 }
 
-bool modnamedobj::set_param(param::TYPE dt, const void* data)
+bool modnamedobj::set_param(int pt, const void* data)
 {
-    switch(dt)
+    switch(pt)
     {
         case param::NAME:
             set_modname((const char*)data);
@@ -44,9 +44,9 @@ bool modnamedobj::set_param(param::TYPE dt, const void* data)
     }
 }
 
-const void* modnamedobj::get_param(param::TYPE dt) const
+const void* modnamedobj::get_param(int pt) const
 {
-    switch(dt)
+    switch(pt)
     {
         case param::NAME: return modname;
         default: return 0;

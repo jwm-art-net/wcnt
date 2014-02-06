@@ -119,7 +119,7 @@ void timer::run()
 }
 
 
-const void* timer::get_out(output::TYPE ot) const
+const void* timer::get_out(int ot) const
 {
     switch (ot) {
     case output::OUT_TRIG: return &out_trig;
@@ -130,7 +130,7 @@ const void* timer::get_out(output::TYPE ot) const
     }
 }
 
-bool timer::set_param(param::TYPE pt, const void* data)
+bool timer::set_param(int pt, const void* data)
 {
     switch(pt) {
     case param::TIME_IS_RELATIVE: time_is_relative = *(STATUS*)data; break;
@@ -141,7 +141,7 @@ bool timer::set_param(param::TYPE pt, const void* data)
     return true;
 }
 
-const void* timer::get_param(param::TYPE pt) const
+const void* timer::get_param(int pt) const
 {
     switch(pt) {
     case param::TIME_IS_RELATIVE: return &time_is_relative;

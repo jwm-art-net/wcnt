@@ -17,7 +17,7 @@ ui::dobjitem_list* dobjmod::get_ui_items()
     return &items;
 }
 
-bool dobjmod::set_param(param::TYPE pt, const void* data)
+bool dobjmod::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -29,7 +29,7 @@ bool dobjmod::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* dobjmod::get_param(param::TYPE pt) const
+const void* dobjmod::get_param(int pt) const
 {
     switch(pt)
     {

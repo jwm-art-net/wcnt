@@ -48,7 +48,7 @@ void trigecho::init()
     last = count + (send_input_out == ON ? 1 : 0);
 }
 
-const void* trigecho::get_out(output::TYPE ot) const
+const void* trigecho::get_out(int ot) const
 {
     switch(ot)
     {
@@ -59,7 +59,7 @@ const void* trigecho::get_out(output::TYPE ot) const
     }
 }
 
-const void* trigecho::set_in(input::TYPE it, const void* o)
+const void* trigecho::set_in(int it, const void* o)
 {
     switch(it) {
     case input::IN_TRIG:        return in_trig = (STATUS*)o;
@@ -69,7 +69,7 @@ const void* trigecho::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* trigecho::get_in(input::TYPE it) const
+const void* trigecho::get_in(int it) const
 {
     switch(it) {
     case input::IN_TRIG:        return in_trig;
@@ -79,7 +79,7 @@ const void* trigecho::get_in(input::TYPE it) const
     }
 }
 
-bool trigecho::set_param(param::TYPE pt, const void* data)
+bool trigecho::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -97,7 +97,7 @@ bool trigecho::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* trigecho::get_param(param::TYPE pt) const
+const void* trigecho::get_param(int pt) const
 {
     switch(pt)
     {

@@ -246,7 +246,7 @@ double timemap::notelen_to_ms(wcint_t nl) const
 }
 #endif
 
-const void* timemap::get_out(output::TYPE ot) const
+const void* timemap::get_out(int ot) const
 {
     switch (ot) {
     case output::OUT_BPM:

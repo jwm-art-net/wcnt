@@ -39,7 +39,7 @@ void simple_delay::init()
     fpos = filterarraymax - 1;
 }
 
-const void* simple_delay::get_out(output::TYPE ot) const
+const void* simple_delay::get_out(int ot) const
 {
     switch(ot)
     {
@@ -48,7 +48,7 @@ const void* simple_delay::get_out(output::TYPE ot) const
     }
 }
 
-const void* simple_delay::set_in(input::TYPE it, const void* o)
+const void* simple_delay::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -57,7 +57,7 @@ const void* simple_delay::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* simple_delay::get_in(input::TYPE it) const
+const void* simple_delay::get_in(int it) const
 {
     switch(it)
     {
@@ -66,7 +66,7 @@ const void* simple_delay::get_in(input::TYPE it) const
     }
 }
 
-bool simple_delay::set_param(param::TYPE pt, const void* data)
+bool simple_delay::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -78,7 +78,7 @@ bool simple_delay::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* simple_delay::get_param(param::TYPE pt) const
+const void* simple_delay::get_param(int pt) const
 {
     switch(pt)
     {

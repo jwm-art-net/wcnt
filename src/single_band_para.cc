@@ -41,7 +41,7 @@ single_band_para::~single_band_para()
     if (l_output) delete [] l_output;
 }
 
-const void* single_band_para::get_out(output::TYPE ot) const
+const void* single_band_para::get_out(int ot) const
 {
     switch(ot)
     {
@@ -51,7 +51,7 @@ const void* single_band_para::get_out(output::TYPE ot) const
 }
 
 const void*
-single_band_para::set_in(input::TYPE it, const void* o)
+single_band_para::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -68,7 +68,7 @@ single_band_para::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* single_band_para::get_in(input::TYPE it) const
+const void* single_band_para::get_in(int it) const
 {
     switch(it)
     {
@@ -81,7 +81,7 @@ const void* single_band_para::get_in(input::TYPE it) const
 }
 
 bool
-single_band_para::set_param(param::TYPE pt, const void* data)
+single_band_para::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -102,7 +102,7 @@ single_band_para::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* single_band_para::get_param(param::TYPE pt) const
+const void* single_band_para::get_param(int pt) const
 {
     switch(pt)
     {

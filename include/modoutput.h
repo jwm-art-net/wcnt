@@ -8,17 +8,17 @@
 class modoutput
 {
  public:
-    modoutput(synthmod::base*, output::TYPE);
+    modoutput(synthmod::base*, int out_type);
     ~modoutput();
 
     synthmod::base* get_module() const { return module; }
 
     synthmod::TYPE  get_moduletype() const;
-    output::TYPE    get_outputtype() const;
+    int             get_outputtype() const;
     iocat::TYPE     get_outputcategory() const;
 
     bool operator()(synthmod::base* sm) const { return module == sm; }
-    bool operator()(output::TYPE & ot) const { return output_type == ot; }
+    bool operator()(int & ot) const { return output_type == ot; }
 
     #ifdef DATA_STATS
     STATS_FUNCS
@@ -26,7 +26,7 @@ class modoutput
 
  private:
     synthmod::base* module;
-    output::TYPE    output_type;
+    int             output_type;
 
     #ifdef DATA_STATS
     STATS_VARS

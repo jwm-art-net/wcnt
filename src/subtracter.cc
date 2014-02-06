@@ -23,14 +23,14 @@ subtracter::~subtracter()
 {
 }
 
-const void* subtracter::get_out(output::TYPE ot) const
+const void* subtracter::get_out(int ot) const
 {
     if (ot == output::OUT_OUTPUT)
         return &out_output;
     return 0;
 }
 
-const void* subtracter::set_in(input::TYPE it, const void* o)
+const void* subtracter::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -40,7 +40,7 @@ const void* subtracter::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* subtracter::get_in(input::TYPE it) const
+const void* subtracter::get_in(int it) const
 {
     switch(it)
     {

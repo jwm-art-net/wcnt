@@ -33,7 +33,7 @@ spreader::~spreader()
         delete [] sigs;
 }
 
-const void* spreader::get_out(output::TYPE ot) const
+const void* spreader::get_out(int ot) const
 {
     switch(ot)
     {
@@ -42,7 +42,7 @@ const void* spreader::get_out(output::TYPE ot) const
     }
 }
 
-const void* spreader::set_in(input::TYPE it, const void* o)
+const void* spreader::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -51,7 +51,7 @@ const void* spreader::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* spreader::get_in(input::TYPE it) const
+const void* spreader::get_in(int it) const
 {
     switch(it)
     {
@@ -60,7 +60,7 @@ const void* spreader::get_in(input::TYPE it) const
     }
 }
 
-bool spreader::set_param(param::TYPE pt, const void* data)
+bool spreader::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -75,7 +75,7 @@ bool spreader::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* spreader::get_param(param::TYPE pt) const
+const void* spreader::get_param(int pt) const
 {
     switch(pt)
     {

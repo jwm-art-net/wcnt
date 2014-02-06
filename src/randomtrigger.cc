@@ -29,7 +29,7 @@ randomtrigger::~randomtrigger()
 {
 }
 
-const void* randomtrigger::get_out(output::TYPE ot) const
+const void* randomtrigger::get_out(int ot) const
 {
     switch(ot)
     {
@@ -39,7 +39,7 @@ const void* randomtrigger::get_out(output::TYPE ot) const
     }
 }
 
-const void* randomtrigger::set_in(input::TYPE it, const void* o)
+const void* randomtrigger::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -48,7 +48,7 @@ const void* randomtrigger::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* randomtrigger::get_in(input::TYPE it) const
+const void* randomtrigger::get_in(int it) const
 {
     switch(it)
     {
@@ -57,7 +57,7 @@ const void* randomtrigger::get_in(input::TYPE it) const
     }
 }
 
-bool randomtrigger::set_param(param::TYPE pt, const void* data)
+bool randomtrigger::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -72,7 +72,7 @@ bool randomtrigger::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* randomtrigger::get_param(param::TYPE pt) const
+const void* randomtrigger::get_param(int pt) const
 {
     switch(pt)
     {

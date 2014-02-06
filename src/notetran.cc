@@ -60,7 +60,7 @@ notetran::~notetran()
     delete [] ns_hi_notename;
 }
 
-const void* notetran::get_out(output::TYPE ot) const
+const void* notetran::get_out(int ot) const
 {
     switch(ot)
     {
@@ -74,7 +74,7 @@ const void* notetran::get_out(output::TYPE ot) const
     }
 }
 
-const void* notetran::set_in(input::TYPE it, const void* o)
+const void* notetran::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -91,7 +91,7 @@ const void* notetran::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* notetran::get_in(input::TYPE it) const
+const void* notetran::get_in(int it) const
 {
     switch(it)
     {
@@ -103,7 +103,7 @@ const void* notetran::get_in(input::TYPE it) const
     }
 }
 
-bool notetran::set_param(param::TYPE pt, const void* data)
+bool notetran::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -148,7 +148,7 @@ bool notetran::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* notetran::get_param(param::TYPE pt) const
+const void* notetran::get_param(int pt) const
 {
     switch(pt)
     {

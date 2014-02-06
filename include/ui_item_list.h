@@ -45,16 +45,16 @@ namespace ui
     typedef ll_item< base<T> > llitem;
     typedef linked_list< base<T> > linkedlist;
 
-    input_item<T>*      add_input_item(input::TYPE);
-    param_item<T>*      add_param_item(param::TYPE);
-    param_item<T>*      add_param_item(param::TYPE, const char* fixed_str);
+    input_item<T>*      add_input_item(int input_type);
+    param_item<T>*      add_param_item(int param_type);
+    param_item<T>*      add_param_item(int param_type, const char* fixed_str);
     dobj_item<T>*       add_dobj_item(dobj::TYPE parent, dobj::TYPE child);
     comment_item<T>*    add_comment_item(const char* comment);
 
     // specialist methods, used by synthmod::base, dobj::base impl is empty.
-    connector* add_connector_off(T, input::TYPE);
-    connector* add_connector_self(T, input::TYPE, output::TYPE);
-    connector* add_connector_as(T, input::TYPE, input::TYPE itas);
+    connector* add_connector_off(T, int input_type);
+    connector* add_connector_self(T, int input_type, int output_type);
+    connector* add_connector_as(T, int input_type, int as_input_type);
 
     //  while the linkedlist provides methods for stepping through the list,
     //  these do the same but additionally maintain information about item
@@ -92,7 +92,7 @@ namespace ui
     base<T>* validate_matches();
 
     // validates data for parameters, (T is the container)
-    bool data_validate(T, param::TYPE, errors::TYPE);
+    bool data_validate(T, int param_type, errors::TYPE);
 
 
   private:
@@ -208,7 +208,7 @@ namespace ui
  }
 
  template <class T>
- param_item<T>* item_list<T>::add_param_item(param::TYPE pt)
+ param_item<T>* item_list<T>::add_param_item(int pt)
  {
     if (pt == param::STR_UNNAMED || pt == param::STR_LIST) {
         if (!goodlist(LIST_EDIT)) {
@@ -232,7 +232,7 @@ namespace ui
  }
 
  template <class T>
- param_item<T>* item_list<T>::add_param_item(param::TYPE pt, const char* fixstr)
+ param_item<T>* item_list<T>::add_param_item(int pt, const char* fixstr)
  {
     if (!goodlist(LIST_STD))
         return 0;
@@ -810,11 +810,11 @@ restart:
                     if (item->is_optional()) {
                         if (*item == UI_INPUT) {
                             input_item<T>* in = static_cast<input_item<T>*>(item);
-                            output::TYPE ot = in->get_self_connect();
+                            int ot = in->get_self_connect();
                             if (ot != output::ERR_TYPE)
                                 add_connector_self(subject, in->get_input_type(), ot);
                             else {
-                                input::TYPE it = in->get_connect_as();
+                                int it = in->get_connect_as();
                                 if (it != input::ERR_TYPE)
                                     add_connector_as(subject, in->get_input_type(), it);
                                 else
@@ -904,11 +904,11 @@ restart:
                 if (*item == UI_INPUT) {
                     // add_connector_off is specialized.
                     input_item<T>* in = static_cast<input_item<T>*>(item);
-                    output::TYPE ot = in->get_self_connect();
+                    int ot = in->get_self_connect();
                     if (ot != output::ERR_TYPE)
                         add_connector_self(subject, in->get_input_type(), ot);
                     else {
-                        input::TYPE it = in->get_connect_as();
+                        int it = in->get_connect_as();
                         if (it != input::ERR_TYPE)
                             add_connector_as(subject, in->get_input_type(), it);
                         else
@@ -961,11 +961,11 @@ restart:
                 }
                 else if (*item == UI_INPUT) {
                     input_item<T>* in = static_cast<input_item<T>*>(item);
-                    output::TYPE ot = in->get_self_connect();
+                    int ot = in->get_self_connect();
                     if (ot != output::ERR_TYPE)
                         add_connector_self(subject, in->get_input_type(), ot);
                     else {
-                        input::TYPE it = in->get_connect_as();
+                        int it = in->get_connect_as();
                         if (it != input::ERR_TYPE)
                             add_connector_as(subject, in->get_input_type(), it);
                         else
@@ -1020,11 +1020,11 @@ template <class T>
                     debug("adding off connector...\n");
                     // optimized for non-error situation
                     input_item<T>* in = static_cast<input_item<T>*>(item);
-                    output::TYPE ot = in->get_self_connect();
+                    int ot = in->get_self_connect();
                     if (ot != output::ERR_TYPE)
                         add_connector_self(subject, in->get_input_type(), ot);
                     else {
-                        input::TYPE it = in->get_connect_as();
+                        int it = in->get_connect_as();
                         if (it != input::ERR_TYPE)
                             add_connector_as(subject, in->get_input_type(), it);
                         else
@@ -1079,14 +1079,14 @@ template <class T>
 
 
  template <class T>
- bool item_list<T>::data_validate(T t, param::TYPE pt, errors::TYPE et)
+ bool item_list<T>::data_validate(T t, int pt, errors::TYPE et)
  {
     base<T>* i = this->goto_first();
 
     while(i) {
         if (*i == ui::UI_PARAM) {
             param_item<T>* p = static_cast<param_item<T>*>(i);
-            if (*p == pt)
+            if (p->get_param_type() == pt)
                 return i->validate(t, et);
         }
         i = this->goto_next();

@@ -28,7 +28,7 @@ pan::~pan()
 {
 }
 
-const void* pan::get_out(output::TYPE ot) const
+const void* pan::get_out(int ot) const
 {
     switch(ot)
     {
@@ -38,7 +38,7 @@ const void* pan::get_out(output::TYPE ot) const
     }
 }
 
-const void* pan::set_in(input::TYPE it, const void* o)
+const void* pan::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -48,7 +48,7 @@ const void* pan::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* pan::get_in(input::TYPE it) const
+const void* pan::get_in(int it) const
 {
     switch(it)
     {
@@ -58,7 +58,7 @@ const void* pan::get_in(input::TYPE it) const
     }
 }
 
-bool pan::set_param(param::TYPE pt, const void* data)
+bool pan::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -73,7 +73,7 @@ bool pan::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* pan::get_param(param::TYPE pt) const
+const void* pan::get_param(int pt) const
 {
     switch(pt)
     {

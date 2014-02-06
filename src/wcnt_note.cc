@@ -31,7 +31,7 @@ wcnt_note::~wcnt_note()
 {
 }
 
-const void* wcnt_note::get_out(output::TYPE ot) const
+const void* wcnt_note::get_out(int ot) const
 {
     switch(ot)
     {
@@ -44,7 +44,7 @@ const void* wcnt_note::get_out(output::TYPE ot) const
     }
 }
 
-const void* wcnt_note::set_in(input::TYPE it, const void* o)
+const void* wcnt_note::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -63,7 +63,7 @@ const void* wcnt_note::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* wcnt_note::get_in(input::TYPE it) const
+const void* wcnt_note::get_in(int it) const
 {
     switch(it)
     {

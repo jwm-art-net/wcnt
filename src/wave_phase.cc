@@ -39,7 +39,7 @@ wave_phase::~wave_phase()
 {
 }
 
-const void* wave_phase::get_out(output::TYPE ot) const
+const void* wave_phase::get_out(int ot) const
 {
     switch(ot)
     {
@@ -51,7 +51,7 @@ const void* wave_phase::get_out(output::TYPE ot) const
     }
 }
 
-const void* wave_phase::set_in(input::TYPE it, const void* o)
+const void* wave_phase::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -65,7 +65,7 @@ const void* wave_phase::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* wave_phase::get_in(input::TYPE it) const
+const void* wave_phase::get_in(int it) const
 {
     switch(it)
     {
@@ -76,7 +76,7 @@ const void* wave_phase::get_in(input::TYPE it) const
     }
 }
 
-bool wave_phase::set_param(param::TYPE pt, const void* data)
+bool wave_phase::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -106,7 +106,7 @@ bool wave_phase::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* wave_phase::get_param(param::TYPE pt) const
+const void* wave_phase::get_param(int pt) const
 {
     switch(pt)
     {

@@ -18,8 +18,8 @@
 
 
 connector::connector(
- synthmod::base* input_module, input::TYPE input_type,
- const char* output_module_name, output::TYPE output_type) :
+ synthmod::base* input_module, int input_type,
+ const char* output_module_name, int output_type) :
   in_mod(input_module), in_type(input_type), out_mod_uname(0),
   out_type(output_type)
 {

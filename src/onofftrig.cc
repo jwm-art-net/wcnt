@@ -37,7 +37,7 @@ onofftrig::~onofftrig()
 {
 }
 
-const void* onofftrig::get_out(output::TYPE ot) const
+const void* onofftrig::get_out(int ot) const
 {
     switch(ot)
     {
@@ -53,7 +53,7 @@ const void* onofftrig::get_out(output::TYPE ot) const
     }
 }
 
-const void* onofftrig::set_in(input::TYPE it, const void* o)
+const void* onofftrig::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -62,7 +62,7 @@ const void* onofftrig::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* onofftrig::get_in(input::TYPE it) const
+const void* onofftrig::get_in(int it) const
 {
     switch(it)
     {
@@ -71,7 +71,7 @@ const void* onofftrig::get_in(input::TYPE it) const
     }
 }
 
-bool onofftrig::set_param(param::TYPE pt, const void* data)
+bool onofftrig::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -95,7 +95,7 @@ bool onofftrig::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* onofftrig::get_param(param::TYPE pt) const
+const void* onofftrig::get_param(int pt) const
 {
     switch(pt)
     {

@@ -9,9 +9,9 @@ public:
     diff_filter(const char*);
     ~diff_filter();
     void run();
-    const void* get_out(output::TYPE) const;
-    const void* set_in(input::TYPE, const void*);
-    const void* get_in(input::TYPE) const;
+    const void* get_out(int output_type) const;
+    const void* set_in(int input_type, const void*);
+    const void* get_in(int input_type) const;
 private:
     const double* in_signal;
     double out_output;

@@ -26,11 +26,11 @@ namespace modpart
     virtual void init() {};
 
     /* input/output/param access */
-    virtual const void* set_in(input::TYPE, const void*);
-    virtual const void* get_in(input::TYPE) const;
-    virtual bool        set_param(param::TYPE, const void*);
-    virtual const void* get_param(param::TYPE) const;
-    virtual const void* get_out(output::TYPE) const;
+    virtual const void* set_in(int input_type, const void*);
+    virtual const void* get_in(int input_type) const;
+    virtual bool        set_param(int param_type, const void*);
+    virtual const void* get_param(int param_type) const;
+    virtual const void* get_out(int output_type) const;
 
     /* duplicate module can't be const due to my linked_list impl. */
     virtual base* duplicate_modpart();
@@ -54,15 +54,15 @@ namespace modpart
     // register_ui should only be called within synthmod::register_ui.
     virtual void register_ui() = 0;
 
-    ui::moditem* register_sm_param(param::TYPE);
-    ui::moditem* register_sm_param(param::TYPE, const char* fixed_string);
+    ui::moditem* register_sm_param(int param_type);
+    ui::moditem* register_sm_param(int param_type, const char* fixed_string);
 
     /*  inputs & outputs OTOH, are unique to each instance, so will need
         registration per instance (ie in derived constructor).
     */
-    ui::moditem* register_sm_input(input::TYPE);
+    ui::moditem* register_sm_input(int input_type);
 
-    bool validate_sm_param(param::TYPE, errors::TYPE);
+    bool validate_sm_param(int param_type, errors::TYPE);
 
     static char err_msg[STRBUFLEN];
 

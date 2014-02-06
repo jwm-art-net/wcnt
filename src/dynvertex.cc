@@ -33,7 +33,7 @@ errors::TYPE dynvertex::validate()
     return errors::NO_ERROR;
 }
 
-bool dynvertex::set_param(param::TYPE pt, const void* data)
+bool dynvertex::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -54,7 +54,7 @@ bool dynvertex::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* dynvertex::get_param(param::TYPE pt) const
+const void* dynvertex::get_param(int pt) const
 {
     switch(pt)
     {

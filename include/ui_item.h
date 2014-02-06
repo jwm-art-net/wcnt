@@ -373,17 +373,18 @@ namespace ui
  class param_item : public base<T>
  {
   public:
-    param_item(param::TYPE pt)
-     : base<T>(UI_PARAM), partype(pt) {};
+    param_item(int param_type)
+     : base<T>(UI_PARAM), partype(param_type) {};
 
     ~param_item() {};
 
     const char* get_name() { return param::names::get(partype); }
 
-    param::TYPE get_param_type() const      { return partype; }
-    bool operator()(param::TYPE & pt) const { return (partype == pt); }
-    bool operator==(param::TYPE rhs) const  { return (partype == rhs); }
-
+    int  get_param_type() const      { return partype; }
+/*
+    bool operator()(int & param_type) const { return (partype == param_type); }
+    bool operator==(int rhs) const  { return (partype == rhs); }
+*/
     bool validate(T, errors::TYPE);
 
     bool name_match(const char* str) {
@@ -402,7 +403,7 @@ namespace ui
     #endif
 
   private:
-    param::TYPE partype;
+    int partype;
  };
 
  template<class T>
@@ -428,21 +429,24 @@ namespace ui
  class input_item : public base<T>
  {
   public:
-    input_item(input::TYPE it)
-     : base<T>(UI_INPUT), intype(it), self_connect(output::ERR_TYPE), connect_as(input::ERR_TYPE) {};
+    input_item(int input_type)
+     : base<T>(UI_INPUT), intype(input_type), self_connect(output::ERR_TYPE), connect_as(input::ERR_TYPE) {};
 
     ~input_item() {};
 
     const char*     get_name() { return input::names::get(intype); }
 
-    input_item*     set_self_connect(output::TYPE out) { self_connect = out; return this; }
-    input_item*     set_connect_as(input::TYPE it) { connect_as = it; return this; }
+    input_item*     set_self_connect(int output_type) { self_connect = output_type; return this; }
+    input_item*     set_connect_as(int input_type) { connect_as = input_type; return this; }
 
-    input::TYPE     get_input_type() const      { return intype; }
-    output::TYPE    get_self_connect() const { return self_connect; }
-    input::TYPE     get_connect_as() const { return connect_as; }
-    bool operator()(input::TYPE & it) const { return (intype == it); }
-    bool operator==(input::TYPE rhs) const  { return (intype == rhs); }
+    int             get_input_type() const      { return intype; }
+    int             get_self_connect() const { return self_connect; }
+    int             get_connect_as() const { return connect_as; }
+
+/*
+    bool operator()(int & it) const { return (intype == it); }
+    bool operator==(int rhs) const  { return (intype == rhs); }
+*/
 
     bool validate(T, errors::TYPE) { return true; }
 
@@ -460,9 +464,9 @@ namespace ui
     #endif
 
   private:
-    input::TYPE intype;
-    output::TYPE self_connect;
-    input::TYPE connect_as;
+    int intype;
+    int self_connect;
+    int connect_as;
 };
 
  template <class T>

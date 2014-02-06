@@ -39,7 +39,7 @@ void peak_detector::set_message(const char* msg)
     strcpy(message, msg);
 }
 
-const void* peak_detector::set_in(input::TYPE it, const void* o)
+const void* peak_detector::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -48,7 +48,7 @@ const void* peak_detector::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* peak_detector::get_in(input::TYPE it) const
+const void* peak_detector::get_in(int it) const
 {
     switch(it)
     {
@@ -99,7 +99,7 @@ void peak_detector::init()
     if (max_peaks < 0) max_peaks = 0;
 }
 
-bool peak_detector::set_param(param::TYPE pt, const void* data)
+bool peak_detector::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -123,7 +123,7 @@ bool peak_detector::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* peak_detector::get_param(param::TYPE pt) const
+const void* peak_detector::get_param(int pt) const
 {
     switch(pt)
     {

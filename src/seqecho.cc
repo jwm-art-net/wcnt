@@ -81,7 +81,7 @@ void seq_echo::init()
     last = count + (send_input_out == ON ? 1 : 0);
 }
 
-const void* seq_echo::get_out(output::TYPE ot) const
+const void* seq_echo::get_out(int ot) const
 {
     switch(ot)
     {
@@ -95,7 +95,7 @@ const void* seq_echo::get_out(output::TYPE ot) const
     }
 }
 
-const void* seq_echo::set_in(input::TYPE it, const void* o)
+const void* seq_echo::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -116,7 +116,7 @@ const void* seq_echo::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* seq_echo::get_in(input::TYPE it) const
+const void* seq_echo::get_in(int it) const
 {
     switch(it)
     {
@@ -130,7 +130,7 @@ const void* seq_echo::get_in(input::TYPE it) const
     }
 }
 
-bool seq_echo::set_param(param::TYPE pt, const void* data)
+bool seq_echo::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -148,7 +148,7 @@ bool seq_echo::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* seq_echo::get_param(param::TYPE pt) const
+const void* seq_echo::get_param(int pt) const
 {
     switch(pt)
     {

@@ -26,16 +26,16 @@ public:
     connectorlist(DESTRUCTION);
     ~connectorlist();
 
-    connector* get_connector_by_input(const synthmod::base*, input::TYPE);
+    connector* get_connector_by_input(const synthmod::base*, int input_type);
 
     connector* add_connector(connector* rd);
-    connector* add_connector_off(synthmod::base* sm, input::TYPE);
-    connector* add_connector_self(synthmod::base* sm, input::TYPE,
-                                                      output::TYPE);
-    connector* add_connector_as(synthmod::base* sm, input::TYPE,
-                                                    input::TYPE as);
-    connector* add_connector(synthmod::base* sm,  input::TYPE,
-                             const char* out_mod, output::TYPE);
+    connector* add_connector_off(synthmod::base* sm, int input_type);
+    connector* add_connector_self(synthmod::base* sm, int input_type,
+                                                      int output_type);
+    connector* add_connector_as(synthmod::base* sm, int input_type,
+                                                    int as_input_type);
+    connector* add_connector(synthmod::base* sm,  int input_type,
+                             const char* out_mod, int output_type);
     bool delete_connector(connector*);
 
     /*
@@ -71,8 +71,8 @@ public:
     // after make_connections, so, remake_connections is called during
     // wcnt_signal::init to sort out the problem. other modules may
     // also utilise this method if possible.
-    bool remake_connections(
-        synthmod::base*, output::TYPE, output::TYPE new_ot);
+    bool remake_connections(synthmod::base*, int output_type,
+                                             int output_type_new);
     #endif
 };
 

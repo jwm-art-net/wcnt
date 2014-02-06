@@ -13,8 +13,8 @@ public:
 
     void modulate(double vmod, double hmod);
     virtual errors::TYPE validate();
-    bool set_param(param::TYPE, const void*);
-    const void* get_param(param::TYPE pt) const;
+    bool set_param(int param_type, const void*);
+    const void* get_param(int param_type) const;
     // accessor required for sorted insert
     double get_lodeg() const { return lo_deg; }
     // oh so naughty:

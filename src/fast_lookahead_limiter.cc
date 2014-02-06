@@ -45,7 +45,7 @@ fast_lookahead_limiter::~fast_lookahead_limiter()
 }
 
 const void*
-fast_lookahead_limiter::get_out(output::TYPE ot) const
+fast_lookahead_limiter::get_out(int ot) const
 {
     switch(ot)
     {
@@ -56,7 +56,7 @@ fast_lookahead_limiter::get_out(output::TYPE ot) const
 }
 
 const void*
-fast_lookahead_limiter::set_in(input::TYPE it, const void* o)
+fast_lookahead_limiter::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -66,7 +66,7 @@ fast_lookahead_limiter::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* fast_lookahead_limiter::get_in(input::TYPE it) const
+const void* fast_lookahead_limiter::get_in(int it) const
 {
     switch(it)
     {
@@ -77,7 +77,7 @@ const void* fast_lookahead_limiter::get_in(input::TYPE it) const
 }
 
 bool
-fast_lookahead_limiter::set_param(param::TYPE pt,
+fast_lookahead_limiter::set_param(int pt,
                                   const void* data)
 {
     switch(pt)
@@ -97,7 +97,7 @@ fast_lookahead_limiter::set_param(param::TYPE pt,
 }
 
 const void*
-fast_lookahead_limiter::get_param(param::TYPE pt) const
+fast_lookahead_limiter::get_param(int pt) const
 {
     switch(pt)
     {

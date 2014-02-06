@@ -71,7 +71,7 @@ bool inputedit::create_connectors()
     std::string input_name;
     strm >> input_name;
     do{
-        input::TYPE in_type;
+        int in_type;
         in_type = input::names::type(input_name.c_str());
         if (in_type == input::ERR_TYPE) {
             dobjerr("Unrecognised input type %s, in connection for %s.",
@@ -81,7 +81,7 @@ bool inputedit::create_connectors()
         }
         std::string out_modname;
         std::string output_name;
-        output::TYPE out_type;
+        int out_type;
         strm >> out_modname;
         if (strcmp(out_modname.c_str(), "off") == 0) {
             out_type = output::names::get_off_type(
@@ -116,7 +116,7 @@ bool inputedit::create_connectors()
         while(item && !success) {
             if (item->get_item_type() == ui::UI_INPUT) {
                 ui::modinput* mi = static_cast<ui::modinput*>(item);
-                if (*mi == in_type) {
+                if (mi->get_input_type() == in_type) {
                     connectorlist* conlist = wcnt::get_connectlist();
                     connector* con =
                         conlist->get_connector_by_input(in_sm, in_type);
@@ -145,9 +145,9 @@ bool inputedit::create_connectors()
     return true;
 }
 
-bool inputedit::set_param(param::TYPE dt, const void* data)
+bool inputedit::set_param(int pt, const void* data)
 {
-    switch(dt)
+    switch(pt)
     {
         case param::STR_UNNAMED:
             if (!set_modname((const char*)data)) {
@@ -165,9 +165,9 @@ bool inputedit::set_param(param::TYPE dt, const void* data)
     }
 }
 
-const void* inputedit::get_param(param::TYPE dt) const
+const void* inputedit::get_param(int pt) const
 {
-    switch(dt)
+    switch(pt)
     {
         case param::STR_UNNAMED:   return get_modname();
         case param::STR_LIST:      return get_iostr();

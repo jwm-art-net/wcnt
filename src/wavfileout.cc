@@ -58,7 +58,7 @@ wavfileout::~wavfileout()
     delete [] st_buffer;
 }
 
-const void* wavfileout::get_out(output::TYPE ot) const
+const void* wavfileout::get_out(int ot) const
 {
     switch(ot)
     {
@@ -73,7 +73,7 @@ const void* wavfileout::get_out(output::TYPE ot) const
     }
 }
 
-const void* wavfileout::set_in(input::TYPE it, const void* o)
+const void* wavfileout::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -84,7 +84,7 @@ const void* wavfileout::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* wavfileout::get_in(input::TYPE it) const
+const void* wavfileout::get_in(int it) const
 {
     switch(it)
     {
@@ -95,7 +95,7 @@ const void* wavfileout::get_in(input::TYPE it) const
     }
 }
 
-bool wavfileout::set_param(param::TYPE pt, const void* data)
+bool wavfileout::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -119,7 +119,7 @@ bool wavfileout::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* wavfileout::get_param(param::TYPE pt) const
+const void* wavfileout::get_param(int pt) const
 {
     switch(pt)
     {

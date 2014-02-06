@@ -52,7 +52,7 @@ bode_freq_shifter::~bode_freq_shifter()
     if (l_out_latency) delete [] l_out_latency;
 }
 
-const void* bode_freq_shifter::get_out(output::TYPE ot) const
+const void* bode_freq_shifter::get_out(int ot) const
 {
     switch(ot) {
         case output::OUT_UP: return &out_up;
@@ -62,7 +62,7 @@ const void* bode_freq_shifter::get_out(output::TYPE ot) const
 }
 
 const void*
-bode_freq_shifter::set_in(input::TYPE it, const void* o)
+bode_freq_shifter::set_in(int it, const void* o)
 {
     switch(it) {
     case input::IN_SIGNAL:
@@ -74,7 +74,7 @@ bode_freq_shifter::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* bode_freq_shifter::get_in(input::TYPE it) const
+const void* bode_freq_shifter::get_in(int it) const
 {
     switch(it) {
     case input::IN_SIGNAL:    return in_signal;
@@ -83,7 +83,7 @@ const void* bode_freq_shifter::get_in(input::TYPE it) const
     }
 }
 
-bool bode_freq_shifter::set_param(param::TYPE pt, const void* data)
+bool bode_freq_shifter::set_param(int pt, const void* data)
 {
     switch(pt) {
     case param::FREQ_SHIFT:
@@ -97,7 +97,7 @@ bool bode_freq_shifter::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* bode_freq_shifter::get_param(param::TYPE pt) const
+const void* bode_freq_shifter::get_param(int pt) const
 {
     switch(pt) {
     case param::FREQ_SHIFT:    return &freq_shift;

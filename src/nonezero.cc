@@ -26,7 +26,7 @@ nonezero::~nonezero()
         delete [] out_none_string;
 }
 
-const void* nonezero::get_out(output::TYPE ot) const
+const void* nonezero::get_out(int ot) const
 {
     switch(ot)
     {

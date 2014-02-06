@@ -385,7 +385,7 @@ void cmdline::module_help()
         switch(item->get_item_type()) {
           case ui::UI_PARAM: {
             ui::modparam* mp = static_cast<ui::modparam*>(item);
-            param::TYPE pt = mp->get_param_type();
+            int pt = mp->get_param_type();
             iocat::TYPE ioc = param::names::category(pt);
 
             l1 = strlen(param::names::get(pt));
@@ -457,7 +457,7 @@ void cmdline::module_help()
               }
               case ui::UI_PARAM: {
                 ui::modparam* mp = static_cast<ui::modparam*>(item);
-                param::TYPE pt = mp->get_param_type();
+                int pt = mp->get_param_type();
                 const char* s1 = param::names::get(pt);
                 msg += lead;
                 msg += s1;
@@ -488,7 +488,7 @@ void cmdline::module_help()
               }
               case ui::UI_INPUT: {
                 ui::modinput* mi = static_cast<ui::modinput*>(item);
-                input::TYPE it = mi->get_input_type();
+                int it = mi->get_input_type();
                 const char* s1 = input::names::get(it);
 
                 msg += lead;
@@ -536,7 +536,7 @@ void cmdline::module_help()
         output = outlist->goto_first();
         while(output) {
             msg += "\n// ";
-            output::TYPE ot = output->get_outputtype();
+            int ot = output->get_outputtype();
             const char* s1 = output::names::get(ot);
             msg += s1;
             output = outlist->goto_next();
@@ -604,7 +604,7 @@ void cmdline::dobj_help_items(dobj::TYPE dt, int indent_level)
         int l2 = 0;
         if (item->get_item_type() == ui::UI_PARAM) {
             ui::dobjparam* dp = static_cast<ui::dobjparam*>(item);
-            param::TYPE pt = dp->get_param_type();
+            int pt = dp->get_param_type();
             iocat::TYPE ioc = param::names::category(pt);
             l1 = strlen(param::names::get(pt));
             if (ioc == iocat::FIX_STR) {
@@ -663,7 +663,7 @@ void cmdline::dobj_help_items(dobj::TYPE dt, int indent_level)
               }
               case ui::UI_PARAM: {
                 ui::dobjparam* dp = static_cast<ui::dobjparam*>(item);
-                param::TYPE pt = dp->get_param_type();
+                int pt = dp->get_param_type();
                 const char* s1 = param::names::get(pt);
                 msg += "\n";
                 msg.append(spaces::get(20), indent_level * 4);
@@ -795,7 +795,7 @@ void cmdline::dobj_help()
               }
               case ui::UI_PARAM: {
                 ui::dobjparam* dp = static_cast<ui::dobjparam*>(item);
-                param::TYPE pt = dp->get_param_type();
+                int pt = dp->get_param_type();
                 const char* s = param::names::get(pt);
                 msg += "\n    ";
                 msg += s;
@@ -841,7 +841,7 @@ void cmdline::input_help()
 // decide by the number of options passed on command line whether to
 // load a wcnt file or to create all possible modules in order to
 // access outputs.
-    input::TYPE intype = input::names::type(opts[data[IH_IX].par1]);
+    int intype = input::names::type(opts[data[IH_IX].par1]);
     if (intype == input::ERR_TYPE) {
         msg = "";
         if (data[IH_IX].par1) {
@@ -853,7 +853,7 @@ void cmdline::input_help()
         const char** innames = new const char*[incount];
         size_t mxl = 0;
         for (int i = input::ERR_TYPE + 1; i < input::LAST_TYPE; i++) {
-            innames[i - 1] = input::names::get((input::TYPE)i);
+            innames[i - 1] = input::names::get(i);
             size_t l = strlen(innames[i - 1]);
             if (mxl < l)
                 mxl = l;
@@ -865,7 +865,7 @@ void cmdline::input_help()
                 msg += innames[i - 1];
                 msg.append(spc, mxl - strlen(innames[i - 1]));
                 msg += "// ";
-                msg += input::names::descr((input::TYPE)i);
+                msg += input::names::descr(i);
             }
         }
         else {

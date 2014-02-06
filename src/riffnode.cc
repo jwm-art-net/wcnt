@@ -41,7 +41,7 @@ riff_node* riff_node::duplicate_for_bar(wcint_t barpos)
     return newrn;
 }
 
-bool riff_node::set_param(param::TYPE pt, const void* data)
+bool riff_node::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -65,7 +65,7 @@ bool riff_node::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* riff_node::get_param(param::TYPE pt) const
+const void* riff_node::get_param(int pt) const
 {
     switch(pt)
     {

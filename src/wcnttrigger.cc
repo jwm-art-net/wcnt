@@ -23,7 +23,7 @@ wcnt_trigger::~wcnt_trigger()
 {
 }
 
-const void* wcnt_trigger::get_out(output::TYPE ot) const
+const void* wcnt_trigger::get_out(int ot) const
 {
     switch(ot)
     {
@@ -32,7 +32,7 @@ const void* wcnt_trigger::get_out(output::TYPE ot) const
     }
 }
 
-const void* wcnt_trigger::set_in(input::TYPE it, const void* o)
+const void* wcnt_trigger::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -41,7 +41,7 @@ const void* wcnt_trigger::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* wcnt_trigger::get_in(input::TYPE it) const
+const void* wcnt_trigger::get_in(int it) const
 {
     switch(it)
     {

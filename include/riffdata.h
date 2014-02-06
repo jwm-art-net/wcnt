@@ -99,8 +99,8 @@ class riffdata : public dobj::base, public linked_list<note_data>
     // virtuals from dobj
     */
     errors::TYPE validate();
-    bool set_param(param::TYPE, const void*);
-    const void* get_param(param::TYPE) const;
+    bool set_param(int param_type, const void*);
+    const void* get_param(int param_type) const;
     const dobj::base* add_dobj(dobj::base*);
     dobj::base* duplicate_dobj(const char*);
 

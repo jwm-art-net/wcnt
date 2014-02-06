@@ -26,7 +26,7 @@ dc_filter::~dc_filter()
     delete [] filter;
 }
 
-const void* dc_filter::get_out(output::TYPE ot) const
+const void* dc_filter::get_out(int ot) const
 {
     switch(ot)
     {
@@ -35,7 +35,7 @@ const void* dc_filter::get_out(output::TYPE ot) const
     }
 }
 
-const void* dc_filter::set_in(input::TYPE it, const void* o)
+const void* dc_filter::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -44,7 +44,7 @@ const void* dc_filter::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* dc_filter::get_in(input::TYPE it) const
+const void* dc_filter::get_in(int it) const
 {
     switch(it)
     {
@@ -53,7 +53,7 @@ const void* dc_filter::get_in(input::TYPE it) const
     }
 }
 
-bool dc_filter::set_param(param::TYPE pt, const void* data)
+bool dc_filter::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -65,7 +65,7 @@ bool dc_filter::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* dc_filter::get_param(param::TYPE pt) const
+const void* dc_filter::get_param(int pt) const
 {
     switch(pt)
     {

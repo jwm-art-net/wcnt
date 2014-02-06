@@ -18,11 +18,11 @@ class spreader: public synthmod::base, public linked_list<synthmod::base>
     void run();
     void init();
     errors::TYPE validate();
-    const void* get_out(output::TYPE) const;
-    const void* set_in(input::TYPE, const void*);
-    const void* get_in(input::TYPE) const;
-    bool set_param(param::TYPE, const void*);
-    const void* get_param(param::TYPE) const;
+    const void* get_out(int output_type) const;
+    const void* set_in(int input_type, const void*);
+    const void* get_in(int input_type) const;
+    bool set_param(int param_type, const void*);
+    const void* get_param(int param_type) const;
     synthmod::base* duplicate_module(const char*, synthmod::base::DUP_IO);
     // wcnt_signal is not a dobj, but a synthmod, so a dobj wrapper class
     // - dobjmod, is passed which contains a pointer to the wcnt_signal

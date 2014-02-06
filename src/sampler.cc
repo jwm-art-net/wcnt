@@ -99,7 +99,7 @@ sampler::~sampler()
         delete [] xf_st_buf;
 }
 
-const void* sampler::get_out(output::TYPE ot) const
+const void* sampler::get_out(int ot) const
 {
     switch(ot)
     {
@@ -111,7 +111,7 @@ const void* sampler::get_out(output::TYPE ot) const
     }
 }
 
-const void* sampler::set_in(input::TYPE it, const void* o)
+const void* sampler::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -128,7 +128,7 @@ const void* sampler::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* sampler::get_in(input::TYPE it) const
+const void* sampler::get_in(int it) const
 {
     switch(it)
     {
@@ -140,7 +140,7 @@ const void* sampler::get_in(input::TYPE it) const
     }
 }
 
-bool sampler::set_param(param::TYPE pt, const void* data)
+bool sampler::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -205,7 +205,7 @@ bool sampler::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* sampler::get_param(param::TYPE pt) const
+const void* sampler::get_param(int pt) const
 {
     switch(pt)
     {

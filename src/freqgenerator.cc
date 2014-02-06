@@ -32,7 +32,7 @@ freq_generator::~freq_generator()
 {
 }
 
-const void* freq_generator::get_out(output::TYPE ot) const
+const void* freq_generator::get_out(int ot) const
 {
     switch(ot)
     {
@@ -42,7 +42,7 @@ const void* freq_generator::get_out(output::TYPE ot) const
     }
 }
 
-const void* freq_generator::set_in(input::TYPE it, const void* o)
+const void* freq_generator::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -51,7 +51,7 @@ const void* freq_generator::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* freq_generator::get_in(input::TYPE it) const
+const void* freq_generator::get_in(int it) const
 {
     switch(it)
     {
@@ -60,7 +60,7 @@ const void* freq_generator::get_in(input::TYPE it) const
     }
 }
 
-bool freq_generator::set_param(param::TYPE pt, const void* data)
+bool freq_generator::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -84,7 +84,7 @@ bool freq_generator::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* freq_generator::get_param(param::TYPE pt) const
+const void* freq_generator::get_param(int pt) const
 {
     switch(pt)
     {

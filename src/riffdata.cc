@@ -306,9 +306,9 @@ double riffdata::calc_riff_length(char beats_per_bar, char beat_value)
 }
 #endif
 
-bool riffdata::set_param(param::TYPE dt, const void* data)
+bool riffdata::set_param(int pt, const void* data)
 {
-    switch(dt)
+    switch(pt)
     {
         case param::QUARTER_VAL:
             set_tpqn(*(wcint_t*)data);
@@ -318,9 +318,9 @@ bool riffdata::set_param(param::TYPE dt, const void* data)
     }
 }
 
-const void* riffdata::get_param(param::TYPE dt) const
+const void* riffdata::get_param(int pt) const
 {
-    switch(dt)
+    switch(pt)
     {
         case param::QUARTER_VAL: return &tpqn;
         default: return 0;

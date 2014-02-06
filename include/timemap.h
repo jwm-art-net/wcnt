@@ -35,7 +35,7 @@ public:
     void run();
     void init(); // init will grab global bpm to start with
     errors::TYPE validate();
-    const void* get_out(output::TYPE) const;
+    const void* get_out(int output_type) const;
     synthmod::base* duplicate_module(const char* uname, DUP_IO);
     dobj::base* add_dobj(dobj::base*);
 

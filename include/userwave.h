@@ -18,11 +18,11 @@ class user_wave : public synthmod::base, public linked_list<wave_vertex>
     void init();
     void run();
     errors::TYPE validate();
-    const void* get_out(output::TYPE) const;
-    const void* set_in(input::TYPE, const void*);
-    const void* get_in(input::TYPE) const;
-    bool set_param(param::TYPE, const void*);
-    const void* get_param(param::TYPE) const;
+    const void* get_out(int output_type) const;
+    const void* set_in(int input_type, const void*);
+    const void* get_in(int input_type) const;
+    bool set_param(int param_type, const void*);
+    const void* get_param(int param_type) const;
     dobj::base* add_dobj(dobj::base*);
     synthmod::base* duplicate_module(const char* uname, DUP_IO);
  private:

@@ -41,8 +41,8 @@ class dynvertex : public dobj::base
     double get_out_level(double height) const {
         return lso_level * (1 - height) + uso_level * height; }
     errors::TYPE validate();
-    bool set_param(param::TYPE, const void*);
-    const void* get_param(param::TYPE pt) const;
+    bool set_param(int param_type, const void*);
+    const void* get_param(int param_type) const;
 
  private:
     double si_level;

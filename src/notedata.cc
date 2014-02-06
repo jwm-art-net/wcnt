@@ -193,9 +193,9 @@ double note_data::get_note_frequency() const
 }
 #endif
 
-bool note_data::set_param(param::TYPE dt, const void* data)
+bool note_data::set_param(int pt, const void* data)
 {
-    switch(dt)
+    switch(pt)
     {
     case param::NAME:
         set_name((const char*)data);
@@ -214,9 +214,9 @@ bool note_data::set_param(param::TYPE dt, const void* data)
     }
 }
 
-const void* note_data::get_param(param::TYPE dt) const
+const void* note_data::get_param(int pt) const
 {
-    switch(dt)
+    switch(pt)
     {
         case param::NAME:      return notename;
         case param::NOTE_POS:  return &position;

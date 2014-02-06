@@ -24,12 +24,12 @@ adder::~adder()
 {
 }
 
-const void* adder::get_out(output::TYPE ot) const
+const void* adder::get_out(int ot) const
 {
     return (ot == output::OUT_OUTPUT) ? &out_output : 0;
 }
 
-const void* adder::set_in(input::TYPE it, const void* o)
+const void* adder::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -39,7 +39,7 @@ const void* adder::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* adder::get_in(input::TYPE it) const
+const void* adder::get_in(int it) const
 {
     switch(it)
     {

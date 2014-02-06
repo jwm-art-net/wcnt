@@ -54,7 +54,7 @@ void dc_offset_remover::init()
     l_descriptor->activate(l_inst_handle);
 }
 
-const void* dc_offset_remover::get_out(output::TYPE ot) const
+const void* dc_offset_remover::get_out(int ot) const
 {
     switch(ot)
     {
@@ -64,7 +64,7 @@ const void* dc_offset_remover::get_out(output::TYPE ot) const
 }
 
 const void*
-dc_offset_remover::set_in(input::TYPE it, const void* o)
+dc_offset_remover::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -73,7 +73,7 @@ dc_offset_remover::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* dc_offset_remover::get_in(input::TYPE it) const
+const void* dc_offset_remover::get_in(int it) const
 {
     switch(it)
     {

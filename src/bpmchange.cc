@@ -25,7 +25,7 @@ ui::dobjitem_list* bpmchange::get_ui_items()
     return &items;
 }
 
-bool bpmchange::set_param(param::TYPE pt, const void* data)
+bool bpmchange::set_param(int pt, const void* data)
 {
     switch(pt) {
     case param::BPM:    set_bpm(*(double*)data);    return true;
@@ -35,7 +35,7 @@ bool bpmchange::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* bpmchange::get_param(param::TYPE pt) const
+const void* bpmchange::get_param(int pt) const
 {
     switch(pt) {
     case param::BPM:   return &tobpm;

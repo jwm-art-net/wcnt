@@ -62,7 +62,7 @@ serialwavfileout::~serialwavfileout()
         delete [] wavfilename;
 }
 
-const void* serialwavfileout::get_out(output::TYPE ot) const
+const void* serialwavfileout::get_out(int ot) const
 {
     switch(ot)
     {
@@ -72,7 +72,7 @@ const void* serialwavfileout::get_out(output::TYPE ot) const
 }
 
 const void*
-serialwavfileout::set_in(input::TYPE it, const void* o)
+serialwavfileout::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -91,7 +91,7 @@ serialwavfileout::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* serialwavfileout::get_in(input::TYPE it) const
+const void* serialwavfileout::get_in(int it) const
 {
     switch(it)
     {
@@ -111,7 +111,7 @@ const void* serialwavfileout::get_in(input::TYPE it) const
 }
 
 bool
-serialwavfileout::set_param(param::TYPE pt, const void* data)
+serialwavfileout::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -135,7 +135,7 @@ serialwavfileout::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* serialwavfileout::get_param(param::TYPE pt) const
+const void* serialwavfileout::get_param(int pt) const
 {
     switch(pt)
     {

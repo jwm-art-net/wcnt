@@ -21,9 +21,9 @@ class trigswitcher: public synthmod::base,
     void run();
     void init();
     errors::TYPE validate();
-    const void* get_out(output::TYPE) const;
-    const void* set_in(input::TYPE, const void*);
-    const void* get_in(input::TYPE) const;
+    const void* get_out(int output_type) const;
+    const void* set_in(int input_type, const void*);
+    const void* get_in(int input_type) const;
     synthmod::base* duplicate_module(const char*, synthmod::base::DUP_IO);
     dobj::base* add_dobj(dobj::base*);
 

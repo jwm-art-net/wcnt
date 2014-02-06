@@ -29,24 +29,24 @@ static char err_msg[STRBUFLEN] = "";
 
 template
 bool set_param<synthmod::base>
-    (synthmod::base* sm, param::TYPE pt, const char* value,
+    (synthmod::base* sm, int param_type, const char* value,
                                          std::ostringstream* result);
 
 template
 bool set_param<dobj::base>
-    (dobj::base*, param::TYPE pt, const char* value,
+    (dobj::base*, int param_type, const char* value,
                                   std::ostringstream* result);
 
 template
 void* compute<synthmod::base>
-    (synthmod::base*, param::TYPE pt, void* data, int op);
+    (synthmod::base*, int param_type, void* data, int op);
 
 template
-void* compute<dobj::base>(dobj::base*, param::TYPE pt, void* data, int op);
+void* compute<dobj::base>(dobj::base*, int param_type, void* data, int op);
 
 
 template <typename T>
-bool set_param(T* obj, param::TYPE pt, const char* value,
+bool set_param(T* obj, int pt, const char* value,
                                        std::ostringstream* result)
 {
     iocat::TYPE ioc = param::names::category(pt);
@@ -130,7 +130,7 @@ bool set_param(T* obj, param::TYPE pt, const char* value,
 }
 
 template <typename T>
-void* compute(T* obj, param::TYPE pt, void* data, int op)
+void* compute(T* obj, int pt, void* data, int op)
 {
     if (!obj || pt == param::ERR_TYPE || !data || op == 0)
         return 0;

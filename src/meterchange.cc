@@ -29,7 +29,7 @@ ui::dobjitem_list* meterchange::get_ui_items()
     return &items;
 }
 
-bool meterchange::set_param(param::TYPE pt, const void* data)
+bool meterchange::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -45,7 +45,7 @@ bool meterchange::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* meterchange::get_param(param::TYPE pt) const
+const void* meterchange::get_param(int pt) const
 {
     switch(pt)
     {

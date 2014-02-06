@@ -28,7 +28,7 @@ mono_amp::~mono_amp()
 {
 }
 
-const void* mono_amp::get_out(output::TYPE ot) const
+const void* mono_amp::get_out(int ot) const
 {
     switch(ot)
     {
@@ -37,7 +37,7 @@ const void* mono_amp::get_out(output::TYPE ot) const
     }
 }
 
-const void* mono_amp::set_in(input::TYPE it, const void* o)
+const void* mono_amp::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -47,7 +47,7 @@ const void* mono_amp::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* mono_amp::get_in(input::TYPE it) const
+const void* mono_amp::get_in(int it) const
 {
     switch(it)
     {
@@ -57,7 +57,7 @@ const void* mono_amp::get_in(input::TYPE it) const
     }
 }
 
-bool mono_amp::set_param(param::TYPE pt, const void* data)
+bool mono_amp::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -69,7 +69,7 @@ bool mono_amp::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* mono_amp::get_param(param::TYPE pt) const
+const void* mono_amp::get_param(int pt) const
 {
     switch(pt)
     {

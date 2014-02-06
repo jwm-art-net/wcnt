@@ -66,7 +66,7 @@ void inspect::set_message(const char* msg_from, char** msg_to)
     strcpy(*msg_to, msg_from);
 }
 
-const void* inspect::set_in(input::TYPE it, const void* o)
+const void* inspect::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -84,7 +84,7 @@ const void* inspect::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* inspect::get_in(input::TYPE it) const
+const void* inspect::get_in(int it) const
 {
     switch(it)
     {
@@ -122,7 +122,7 @@ void inspect::run()
     }
 }
 
-bool inspect::set_param(param::TYPE pt, const void* data)
+bool inspect::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -146,7 +146,7 @@ bool inspect::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* inspect::get_param(param::TYPE pt) const
+const void* inspect::get_param(int pt) const
 {
     switch(pt)
     {

@@ -41,7 +41,7 @@ group_control::~group_control()
         destroy_array_moved_from_list(empty_run_list);
 }
 
-const void* group_control::get_out(output::TYPE ot) const
+const void* group_control::get_out(int ot) const
 {
     switch (ot)
     {
@@ -50,7 +50,7 @@ const void* group_control::get_out(output::TYPE ot) const
     }
 }
 
-const void* group_control::set_in(input::TYPE it, const void* o)
+const void* group_control::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -63,7 +63,7 @@ const void* group_control::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* group_control::get_in(input::TYPE it) const
+const void* group_control::get_in(int it) const
 {
     switch(it)
     {
@@ -73,7 +73,7 @@ const void* group_control::get_in(input::TYPE it) const
     }
 }
 
-bool group_control::set_param(param::TYPE pt, const void* data)
+bool group_control::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -84,7 +84,7 @@ bool group_control::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* group_control::get_param(param::TYPE pt) const
+const void* group_control::get_param(int pt) const
 {
     switch(pt)
     {

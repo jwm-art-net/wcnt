@@ -24,7 +24,7 @@ stategatetrig::~stategatetrig()
 {
 }
 
-const void* stategatetrig::get_out(output::TYPE ot) const
+const void* stategatetrig::get_out(int ot) const
 {
     switch(ot)
     {
@@ -34,7 +34,7 @@ const void* stategatetrig::get_out(output::TYPE ot) const
     }
 }
 
-const void* stategatetrig::set_in(input::TYPE it, const void* o)
+const void* stategatetrig::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -44,7 +44,7 @@ const void* stategatetrig::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* stategatetrig::get_in(input::TYPE it) const
+const void* stategatetrig::get_in(int it) const
 {
     switch(it)
     {

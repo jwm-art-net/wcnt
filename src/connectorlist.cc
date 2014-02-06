@@ -15,8 +15,7 @@ connectorlist::~connectorlist()
 }
 
 connector*
-connectorlist::get_connector_by_input(const synthmod::base* sm,
-                                                input::TYPE it)
+connectorlist::get_connector_by_input(const synthmod::base* sm, int it)
 {
     if (!sm)
         return 0;
@@ -37,21 +36,21 @@ connector* connectorlist::add_connector(connector* c)
     return add_at_head(c)->get_data();
 }
 
-connector* connectorlist::add_connector_off(synthmod::base* sm, input::TYPE it)
+connector* connectorlist::add_connector_off(synthmod::base* sm, int it)
 {
     return add_connector(sm, it, "off", output::names::get_off_type(
                                                 input::names::category(it)));
 }
 
-connector* connectorlist::add_connector_self(synthmod::base* sm, input::TYPE it,
-                                                                 output::TYPE ot)
+connector* connectorlist::add_connector_self(synthmod::base* sm, int it,
+                                                                 int ot)
 {
     return add_connector(sm, it, sm->get_username(), ot);
 }
 
 
-connector* connectorlist::add_connector_as(synthmod::base* sm, input::TYPE it,
-                                                               input::TYPE itas)
+connector* connectorlist::add_connector_as(synthmod::base* sm, int it,
+                                                               int itas)
 {
     llitem* li = find_in_data(sneak_first(), input_module(sm));
     while (li) {
@@ -64,8 +63,8 @@ connector* connectorlist::add_connector_as(synthmod::base* sm, input::TYPE it,
     return 0;
 }
 
-connector* connectorlist::add_connector(synthmod::base* sm, input::TYPE it,
-                                    const char* out_mod, output::TYPE ot)
+connector* connectorlist::add_connector(synthmod::base* sm, int it,
+                                       const char* out_mod, int ot)
 {
     connector* c = new connector(sm, it, out_mod, ot);
     if (c) {

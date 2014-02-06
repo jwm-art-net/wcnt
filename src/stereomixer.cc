@@ -32,7 +32,7 @@ stereomixer::~stereomixer()
         delete [] chans_right;
 }
 
-const void* stereomixer::get_out(output::TYPE ot) const
+const void* stereomixer::get_out(int ot) const
 {
     switch(ot)
     {
@@ -42,7 +42,7 @@ const void* stereomixer::get_out(output::TYPE ot) const
     }
 }
 
-bool stereomixer::set_param(param::TYPE pt, const void* data)
+bool stereomixer::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -54,7 +54,7 @@ bool stereomixer::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* stereomixer::get_param(param::TYPE pt) const
+const void* stereomixer::get_param(int pt) const
 {
     switch(pt)
     {

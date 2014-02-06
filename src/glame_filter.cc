@@ -40,7 +40,7 @@ glame_filter::~glame_filter()
     if (l_output) delete [] l_output;
 }
 
-const void* glame_filter::get_out(output::TYPE ot) const
+const void* glame_filter::get_out(int ot) const
 {
     switch(ot)
     {
@@ -50,7 +50,7 @@ const void* glame_filter::get_out(output::TYPE ot) const
 }
 
 const void*
-glame_filter::set_in(input::TYPE it, const void* o)
+glame_filter::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -63,7 +63,7 @@ glame_filter::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* glame_filter::get_in(input::TYPE it) const
+const void* glame_filter::get_in(int it) const
 {
     switch(it)
     {
@@ -74,7 +74,7 @@ const void* glame_filter::get_in(input::TYPE it) const
 }
 
 bool
-glame_filter::set_param(param::TYPE pt, const void* data)
+glame_filter::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -95,7 +95,7 @@ glame_filter::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* glame_filter::get_param(param::TYPE pt) const
+const void* glame_filter::get_param(int pt) const
 {
     switch(pt)
     {

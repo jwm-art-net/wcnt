@@ -35,7 +35,7 @@ lfo_clock::~lfo_clock()
 {
 }
 
-const void* lfo_clock::get_out(output::TYPE ot) const
+const void* lfo_clock::get_out(int ot) const
 {
     switch(ot)
     {
@@ -50,7 +50,7 @@ const void* lfo_clock::get_out(output::TYPE ot) const
     }
 }
 
-const void* lfo_clock::set_in(input::TYPE it, const void* o)
+const void* lfo_clock::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -65,7 +65,7 @@ const void* lfo_clock::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* lfo_clock::get_in(input::TYPE it) const
+const void* lfo_clock::get_in(int it) const
 {
     switch(it)
     {
@@ -76,7 +76,7 @@ const void* lfo_clock::get_in(input::TYPE it) const
     }
 }
 
-bool lfo_clock::set_param(param::TYPE pt, const void* data)
+bool lfo_clock::set_param(int pt, const void* data)
 {
     switch(pt) {
     case param::FREQ_MOD1SIZE:
@@ -93,7 +93,7 @@ bool lfo_clock::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* lfo_clock::get_param(param::TYPE pt) const
+const void* lfo_clock::get_param(int pt) const
 {
     switch(pt)
     {

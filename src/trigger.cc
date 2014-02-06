@@ -29,7 +29,7 @@ trigger::~trigger()
 {
 }
 
-const void* trigger::get_out(output::TYPE ot) const
+const void* trigger::get_out(int ot) const
 {
     switch(ot)
     {
@@ -40,7 +40,7 @@ const void* trigger::get_out(output::TYPE ot) const
     }
 }
 
-const void* trigger::set_in(input::TYPE it, const void* o)
+const void* trigger::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -49,7 +49,7 @@ const void* trigger::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* trigger::get_in(input::TYPE it) const
+const void* trigger::get_in(int it) const
 {
     switch(it)
     {
@@ -58,7 +58,7 @@ const void* trigger::get_in(input::TYPE it) const
     }
 }
 
-bool trigger::set_param(param::TYPE pt, const void* data)
+bool trigger::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -73,7 +73,7 @@ bool trigger::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* trigger::get_param(param::TYPE pt) const
+const void* trigger::get_param(int pt) const
 {
     switch(pt)
     {

@@ -12,7 +12,7 @@ public:
     noise_generator(const char*);
     ~noise_generator();
     void run() { output = (double) rand() / (RAND_MAX / 2.0) - 1.0; }
-    const void* get_out(output::TYPE) const;
+    const void* get_out(int output_type) const;
 
 private:
     double output;

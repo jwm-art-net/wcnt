@@ -1,7 +1,7 @@
 #include "../include/fxsparamlist.h"
 
 fixstrparam*
-fxsparamlist::add_param(const char* str_list, param::TYPE pt)
+fxsparamlist::add_param(const char* str_list, int pt)
 {
     if (!str_list)
         return 0;

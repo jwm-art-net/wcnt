@@ -78,7 +78,7 @@ sequencer::~sequencer()
         delete [] out_notename;
 }
 
-const void* sequencer::get_out(output::TYPE ot) const
+const void* sequencer::get_out(int ot) const
 {
     switch(ot)
     {
@@ -115,7 +115,7 @@ const void* sequencer::get_out(output::TYPE ot) const
     }
 }
 
-const void* sequencer::set_in(input::TYPE it, const void* o)
+const void* sequencer::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -134,7 +134,7 @@ const void* sequencer::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* sequencer::get_in(input::TYPE it) const
+const void* sequencer::get_in(int it) const
 {
     switch(it)
     {
@@ -153,7 +153,7 @@ const void* sequencer::get_in(input::TYPE it) const
     }
 }
 
-bool sequencer::set_param(param::TYPE pt, const void* data)
+bool sequencer::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -168,7 +168,7 @@ bool sequencer::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* sequencer::get_param(param::TYPE pt) const
+const void* sequencer::get_param(int pt) const
 {
     switch(pt)
     {

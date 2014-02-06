@@ -26,7 +26,7 @@ wave::~wave()
 {
 }
 
-const void* wave::get_out(output::TYPE ot) const
+const void* wave::get_out(int ot) const
 {
     switch(ot)
     {
@@ -35,7 +35,7 @@ const void* wave::get_out(output::TYPE ot) const
     }
 }
 
-const void* wave::set_in(input::TYPE it, const void* o)
+const void* wave::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -44,7 +44,7 @@ const void* wave::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* wave::get_in(input::TYPE it) const
+const void* wave::get_in(int it) const
 {
     switch(it)
     {
@@ -53,7 +53,7 @@ const void* wave::get_in(input::TYPE it) const
     }
 }
 
-bool wave::set_param(param::TYPE pt, const void* data)
+bool wave::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -65,7 +65,7 @@ bool wave::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* wave::get_param(param::TYPE pt) const
+const void* wave::get_param(int pt) const
 {
     switch(pt)
     {

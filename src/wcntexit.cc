@@ -26,17 +26,17 @@ wcnt_exit::~wcnt_exit()
 {
 }
 
-const void* wcnt_exit::set_in(input::TYPE it, const void* o)
+const void* wcnt_exit::set_in(int it, const void* o)
 {
     return (it == input::IN_BAR ? (in_bar = (wcint_t*)o) : 0);
 }
 
-const void* wcnt_exit::get_in(input::TYPE it) const
+const void* wcnt_exit::get_in(int it) const
 {
     return (it == input::IN_BAR ? in_bar : 0);
 }
 
-bool wcnt_exit::set_param(param::TYPE pt, const void* data)
+bool wcnt_exit::set_param(int pt, const void* data)
 {
     if (pt == param::EXIT_BAR) {
         exit_bar = *(wcint_t*)data;
@@ -45,7 +45,7 @@ bool wcnt_exit::set_param(param::TYPE pt, const void* data)
     return false;
 }
 
-const void* wcnt_exit::get_param(param::TYPE pt) const
+const void* wcnt_exit::get_param(int pt) const
 {
     return (pt == param::EXIT_BAR ? &exit_bar : 0);
 }

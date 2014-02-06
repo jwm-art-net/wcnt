@@ -2,7 +2,7 @@
 #include "../include/globals.h"
 #include "../include/synthmod.h"
 
-modoutput::modoutput(synthmod::base* sm, output::TYPE ot) :
+modoutput::modoutput(synthmod::base* sm, int ot) :
  module(sm), output_type(ot)
 {
     #ifdef DATA_STATS
@@ -23,7 +23,7 @@ synthmod::TYPE modoutput::get_moduletype() const
                        : synthmod::ERR_TYPE;
 }
 
-output::TYPE modoutput::get_outputtype() const
+int modoutput::get_outputtype() const
 {
     return (this != 0) ? output_type
                        : output::ERR_TYPE;

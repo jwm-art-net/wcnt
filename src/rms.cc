@@ -31,7 +31,7 @@ rms::~rms()
         delete [] rmsarr;
 }
 
-const void* rms::get_out(output::TYPE ot) const
+const void* rms::get_out(int ot) const
 {
     switch(ot)
     {
@@ -40,7 +40,7 @@ const void* rms::get_out(output::TYPE ot) const
     }
 }
 
-const void* rms::set_in(input::TYPE it, const void* o)
+const void* rms::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -49,7 +49,7 @@ const void* rms::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* rms::get_in(input::TYPE it) const
+const void* rms::get_in(int it) const
 {
     switch(it)
     {
@@ -58,7 +58,7 @@ const void* rms::get_in(input::TYPE it) const
     }
 }
 
-bool rms::set_param(param::TYPE pt, const void* data)
+bool rms::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -70,7 +70,7 @@ bool rms::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* rms::get_param(param::TYPE pt) const
+const void* rms::get_param(int pt) const
 {
     switch(pt)
     {

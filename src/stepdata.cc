@@ -30,9 +30,9 @@ step_data::~step_data()
 {
 }
 
-bool step_data::set_param(param::TYPE dt, const void* data)
+bool step_data::set_param(int pt, const void* data)
 {
-    switch(dt)
+    switch(pt)
     {
         case param::POS:
             position = *(double*)data;
@@ -51,9 +51,9 @@ bool step_data::set_param(param::TYPE dt, const void* data)
     }
 }
 
-const void* step_data::get_param(param::TYPE dt) const
+const void* step_data::get_param(int pt) const
 {
-    switch(dt)
+    switch(pt)
     {
         case param::POS:       return &position;
         case param::UPLEVEL:   return &up_level;

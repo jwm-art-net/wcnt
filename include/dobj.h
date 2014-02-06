@@ -32,8 +32,8 @@ namespace dobj
     bool                    is_valid() const   { return valid; }
     virtual errors::TYPE    validate() = 0;
 
-    virtual bool        set_param(param::TYPE, const void*);
-    virtual const void* get_param(param::TYPE) const;
+    virtual bool        set_param(int param_type, const void*);
+    virtual const void* get_param(int param_type) const;
     virtual const base* add_dobj(base*); // don't be fooled...
     virtual base*       duplicate_dobj(const char*);
 
@@ -58,11 +58,11 @@ namespace dobj
     static char err_msg[STRBUFLEN];
     void invalidate(){ valid = false;}
     virtual void register_ui() = 0;
-    ui::dobjparam*   register_param(param::TYPE);
-    ui::dobjparam*   register_param(param::TYPE, const char* fixed_string);
+    ui::dobjparam*   register_param(int param_type);
+    ui::dobjparam*   register_param(int param_type, const char* fixed_string);
     ui::dobjdobj*    register_dobj(TYPE parent, TYPE sprog);
     ui::dobjcomment* register_comment(const char* literal);
-    bool    validate_param(param::TYPE, errors::TYPE);
+    bool    validate_param(int param_type, errors::TYPE);
 
   private:
     TYPE object_type;

@@ -30,7 +30,7 @@ trigswitcher::~trigswitcher()
         delete [] trigs;
 }
 
-const void* trigswitcher::get_out(output::TYPE ot) const
+const void* trigswitcher::get_out(int ot) const
 {
     switch(ot)
     {
@@ -39,7 +39,7 @@ const void* trigswitcher::get_out(output::TYPE ot) const
     }
 }
 
-const void* trigswitcher::set_in(input::TYPE it, const void* o)
+const void* trigswitcher::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -48,7 +48,7 @@ const void* trigswitcher::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* trigswitcher::get_in(input::TYPE it) const
+const void* trigswitcher::get_in(int it) const
 {
     switch(it)
     {

@@ -32,9 +32,9 @@ void dobjnamedobj::set_dobjname(const char* name)
     return;
 }
 
-bool dobjnamedobj::set_param(param::TYPE dt, const void* data)
+bool dobjnamedobj::set_param(int pt, const void* data)
 {
-    switch(dt)
+    switch(pt)
     {
         case param::NAME:
             set_dobjname((const char*)data);
@@ -44,9 +44,9 @@ bool dobjnamedobj::set_param(param::TYPE dt, const void* data)
     }
 }
 
-const void* dobjnamedobj::get_param(param::TYPE dt) const
+const void* dobjnamedobj::get_param(int pt) const
 {
-    switch(dt)
+    switch(pt)
     {
         case param::NAME: return dobjname;
         default: return 0;

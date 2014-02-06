@@ -27,8 +27,8 @@ class meterchange : public dobj::base
     char get_beatvalue() const      { return time_sig.beatvalue; }
     // virtuals from dobj
     errors::TYPE validate();
-    bool set_param(param::TYPE, const void*);
-    const void* get_param(param::TYPE pt) const;
+    bool set_param(int param_type, const void*);
+    const void* get_param(int param_type) const;
 
  private:
     wcint_t bar;

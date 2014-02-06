@@ -45,7 +45,7 @@ namespace synthmod
     delete [] oldname;
  }
 
- const void* base::get_out(output::TYPE) const
+ const void* base::get_out(int) const
  {
     #ifdef IO_PARANOIA
     sm_err("%s %s get output where none exist.", errors::stock::major,
@@ -54,7 +54,7 @@ namespace synthmod
     return 0;
  }
 
- const void* base::set_in(input::TYPE, const void*)
+ const void* base::set_in(int, const void*)
  {
     #ifdef IO_PARANOIA
     sm_err("%s %s set input where none exist.", errors::stock::major,
@@ -63,7 +63,7 @@ namespace synthmod
     return 0;
  }
 
- const void* base::get_in(input::TYPE) const
+ const void* base::get_in(int) const
  {
     #ifdef IO_PARANOIA
     sm_err("%s %s get input where none exist.", errors::stock::major,
@@ -72,7 +72,7 @@ namespace synthmod
     return 0;
 }
 
- bool base::set_param(param::TYPE, const void*)
+ bool base::set_param(int, const void*)
  {
     #ifdef IO_PARANOIA
     sm_err("%s %s set parameter where none exist.", errors::stock::major,
@@ -81,7 +81,7 @@ namespace synthmod
     return false;
  }
 
- const void* base::get_param(param::TYPE) const
+ const void* base::get_param(int) const
  {
     #ifdef IO_PARANOIA
     sm_err("%s %s get parameter where none exist.", errors::stock::major,
@@ -186,7 +186,7 @@ namespace synthmod
     }
  }
 
- ui::modparam* base::register_param(param::TYPE pt)
+ ui::modparam* base::register_param(int pt)
  {
     if (!(flags & SM_VALID))
         return 0;
@@ -202,7 +202,7 @@ namespace synthmod
     return i;
  }
 
- ui::modparam* base::register_param(param::TYPE pt, const char* fixstr)
+ ui::modparam* base::register_param(int pt, const char* fixstr)
  {
     if (!(flags & SM_VALID))
         return 0;
@@ -218,7 +218,7 @@ namespace synthmod
     return i;
  }
 
- ui::modinput* base::register_input(input::TYPE it)
+ ui::modinput* base::register_input(int it)
  {
     if (!(flags & SM_VALID))
         return 0;
@@ -263,7 +263,7 @@ namespace synthmod
     return i;
  }
 
- void base::register_output(output::TYPE t)
+ void base::register_output(int t)
  {
     if (!(flags & SM_VALID))
         return;
@@ -274,7 +274,7 @@ namespace synthmod
     }
  }
 
- bool base::validate_param(param::TYPE pt, errors::TYPE et)
+ bool base::validate_param(int pt, errors::TYPE et)
  {
     if (!get_ui_items()->data_validate(this, pt, et)) {
         sm_err("%s", param::names::get(pt));

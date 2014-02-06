@@ -57,8 +57,8 @@ public:
     const char* get_wc_error_msg() const { return wc_err_msg; }
 
     virtual errors::TYPE validate();
-    bool set_param(param::TYPE, const void*);
-    const void* get_param(param::TYPE pt) const;
+    bool set_param(int param_type, const void*);
+    const void* get_param(int param_type) const;
     const dobj::base* add_dobj(dobj::base*);
 
 private:
@@ -102,12 +102,12 @@ private:
 
     // methods to read various parts of a module
     bool read_ui_moditems(synthmod::base*);
-    bool read_ui_modinput(synthmod::base*, input::TYPE);
-    bool read_ui_modparam(synthmod::base*, param::TYPE);
+    bool read_ui_modinput(synthmod::base*, int input_type);
+    bool read_ui_modparam(synthmod::base*, int param_type);
     bool read_ui_moddobj(synthmod::base*, dobj::TYPE, dobj::TYPE);
 
     bool read_ui_dobjitems(dobj::base*, const char* parent);
-    bool read_ui_dobjparam(dobj::base*, param::TYPE, const char* parent);
+    bool read_ui_dobjparam(dobj::base*, int param_type, const char* parent);
     bool read_ui_dobjdobj(dobj::base*, dobj::TYPE, dobj::TYPE);
 /*
     // method to read sub-parts of standalone dobjs

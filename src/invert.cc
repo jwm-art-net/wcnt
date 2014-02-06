@@ -22,7 +22,7 @@ invert::~invert()
 {
 }
 
-const void* invert::get_out(output::TYPE ot) const
+const void* invert::get_out(int ot) const
 {
     switch(ot)
     {
@@ -31,7 +31,7 @@ const void* invert::get_out(output::TYPE ot) const
     }
 }
 
-const void* invert::set_in(input::TYPE it, const void* o)
+const void* invert::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -40,7 +40,7 @@ const void* invert::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* invert::get_in(input::TYPE it) const
+const void* invert::get_in(int it) const
 {
     switch(it)
     {

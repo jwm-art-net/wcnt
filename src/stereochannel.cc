@@ -26,7 +26,7 @@ stereo_channel::~stereo_channel()
 {
 }
 
-const void* stereo_channel::get_out(output::TYPE ot) const
+const void* stereo_channel::get_out(int ot) const
 {
     switch(ot)
     {
@@ -36,7 +36,7 @@ const void* stereo_channel::get_out(output::TYPE ot) const
     }
 }
 
-const void* stereo_channel::set_in(input::TYPE it, const void* o)
+const void* stereo_channel::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -46,7 +46,7 @@ const void* stereo_channel::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* stereo_channel::get_in(input::TYPE it) const
+const void* stereo_channel::get_in(int it) const
 {
     switch(it)
     {

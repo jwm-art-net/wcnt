@@ -24,7 +24,7 @@ multiplier::~multiplier()
 {
 }
 
-const void* multiplier::get_out(output::TYPE ot) const
+const void* multiplier::get_out(int ot) const
 {
     switch(ot)
     {
@@ -33,7 +33,7 @@ const void* multiplier::get_out(output::TYPE ot) const
     }
 }
 
-const void* multiplier::set_in(input::TYPE it, const void* o)
+const void* multiplier::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -43,7 +43,7 @@ const void* multiplier::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* multiplier::get_in(input::TYPE it) const
+const void* multiplier::get_in(int it) const
 {
     switch(it)
     {

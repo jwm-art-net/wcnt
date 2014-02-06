@@ -26,7 +26,7 @@ adsr_scaler::~adsr_scaler()
 {
 }
 
-bool adsr_scaler::set_param(param::TYPE pt, const void* data)
+bool adsr_scaler::set_param(int pt, const void* data)
 {
     switch(pt) {
     case param::ADSR_NAME:
@@ -51,7 +51,7 @@ bool adsr_scaler::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* adsr_scaler::get_param(param::TYPE pt) const
+const void* adsr_scaler::get_param(int pt) const
 {
     switch(pt) {
     case param::ADSR_NAME:     return padsr;

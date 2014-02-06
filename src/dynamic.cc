@@ -34,7 +34,7 @@ dynamic::~dynamic()
         destroy_array_moved_from_list(dynvertices);
 }
 
-const void* dynamic::get_out(output::TYPE ot) const
+const void* dynamic::get_out(int ot) const
 {
     switch(ot)
     {
@@ -44,7 +44,7 @@ const void* dynamic::get_out(output::TYPE ot) const
     }
 }
 
-const void* dynamic::set_in(input::TYPE it, const void* o)
+const void* dynamic::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -54,7 +54,7 @@ const void* dynamic::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* dynamic::get_in(input::TYPE it) const
+const void* dynamic::get_in(int it) const
 {
     switch(it)
     {
@@ -64,7 +64,7 @@ const void* dynamic::get_in(input::TYPE it) const
     }
 }
 
-bool dynamic::set_param(param::TYPE pt, const void* data)
+bool dynamic::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -85,7 +85,7 @@ bool dynamic::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* dynamic::get_param(param::TYPE pt) const
+const void* dynamic::get_param(int pt) const
 {
     switch(pt)
     {

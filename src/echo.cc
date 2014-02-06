@@ -36,7 +36,7 @@ echo::~echo()
     delete [] filter;
 }
 
-const void* echo::get_out(output::TYPE ot) const
+const void* echo::get_out(int ot) const
 {
     switch(ot)
     {
@@ -46,7 +46,7 @@ const void* echo::get_out(output::TYPE ot) const
     }
 }
 
-const void* echo::set_in(input::TYPE it, const void* o)
+const void* echo::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -57,7 +57,7 @@ const void* echo::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* echo::get_in(input::TYPE it) const
+const void* echo::get_in(int it) const
 {
     switch(it)
     {
@@ -68,7 +68,7 @@ const void* echo::get_in(input::TYPE it) const
     }
 }
 
-bool echo::set_param(param::TYPE pt, const void* data)
+bool echo::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -89,7 +89,7 @@ bool echo::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* echo::get_param(param::TYPE pt) const
+const void* echo::get_param(int pt) const
 {
     switch(pt)
     {

@@ -37,11 +37,11 @@ class group_control: public synthmod::base
     void init();
     void run();
     errors::TYPE validate();
-    const void* set_in(input::TYPE, const void*);
-    const void* get_in(input::TYPE) const;
-    const void* get_out(output::TYPE) const;
-    bool set_param(param::TYPE, const void*);
-    const void* get_param(param::TYPE) const;
+    const void* set_in(int input_type, const void*);
+    const void* get_in(int input_type) const;
+    const void* get_out(int output_type) const;
+    bool set_param(int param_type, const void*);
+    const void* get_param(int param_type) const;
 
  private:
     /* inputs */

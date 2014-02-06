@@ -37,7 +37,7 @@ square_wave::~square_wave()
 {
 }
 
-const void* square_wave::get_out(output::TYPE ot) const
+const void* square_wave::get_out(int ot) const
 {
     switch(ot)
     {
@@ -48,7 +48,7 @@ const void* square_wave::get_out(output::TYPE ot) const
     }
 }
 
-const void* square_wave::set_in(input::TYPE it, const void* o)
+const void* square_wave::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -59,7 +59,7 @@ const void* square_wave::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* square_wave::get_in(input::TYPE it) const
+const void* square_wave::get_in(int it) const
 {
     switch(it)
     {
@@ -70,7 +70,7 @@ const void* square_wave::get_in(input::TYPE it) const
     }
 }
 
-bool square_wave::set_param(param::TYPE pt, const void* data)
+bool square_wave::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -91,7 +91,7 @@ bool square_wave::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* square_wave::get_param(param::TYPE pt) const
+const void* square_wave::get_param(int pt) const
 {
     switch(pt)
     {

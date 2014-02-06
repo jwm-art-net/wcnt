@@ -29,17 +29,17 @@ void diff_filter::run()
     oldinsig = insig;
 }
 
-const void* diff_filter::get_out(output::TYPE ot) const
+const void* diff_filter::get_out(int ot) const
 {
     return (ot == output::OUT_OUTPUT ? &out_output : 0);
 }
 
-const void* diff_filter::set_in(input::TYPE it, const void* o)
+const void* diff_filter::set_in(int it, const void* o)
 {
     return (it == input::IN_SIGNAL ? (in_signal = (double*)o) : 0);
 }
 
-const void* diff_filter::get_in(input::TYPE it) const
+const void* diff_filter::get_in(int it) const
 {
     return (it == input::IN_SIGNAL ? in_signal : 0);
 }

@@ -29,7 +29,7 @@ combiner::~combiner()
         delete [] sigs;
 }
 
-const void* combiner::get_out(output::TYPE ot) const
+const void* combiner::get_out(int ot) const
 {
     switch(ot)
     {
@@ -38,7 +38,7 @@ const void* combiner::get_out(output::TYPE ot) const
     }
 }
 
-bool combiner::set_param(param::TYPE pt, const void* data)
+bool combiner::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -50,7 +50,7 @@ bool combiner::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* combiner::get_param(param::TYPE pt) const
+const void* combiner::get_param(int pt) const
 {
     switch(pt)
     {

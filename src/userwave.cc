@@ -43,7 +43,7 @@ user_wave::~user_wave()
         destroy_array_moved_from_list(vertices);
 }
 
-const void* user_wave::get_out(output::TYPE ot) const
+const void* user_wave::get_out(int ot) const
 {
     switch(ot)
     {
@@ -53,7 +53,7 @@ const void* user_wave::get_out(output::TYPE ot) const
     }
 }
 
-const void* user_wave::set_in(input::TYPE it, const void* o)
+const void* user_wave::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -65,7 +65,7 @@ const void* user_wave::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* user_wave::get_in(input::TYPE it) const
+const void* user_wave::get_in(int it) const
 {
     switch(it)
     {
@@ -77,7 +77,7 @@ const void* user_wave::get_in(input::TYPE it) const
     }
 }
 
-bool user_wave::set_param(param::TYPE pt, const void* data)
+bool user_wave::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -95,7 +95,7 @@ bool user_wave::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* user_wave::get_param(param::TYPE pt) const
+const void* user_wave::get_param(int pt) const
 {
     switch(pt)
     {

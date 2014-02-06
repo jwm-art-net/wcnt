@@ -709,7 +709,7 @@ bool synthfilereader::read_ui_dobjitems(dobj::base* dob, const char* parent)
             break;
           case ui::UI_PARAM: {
             ui::dobjparam* dp = static_cast<ui::dobjparam*>(item);
-            param::TYPE pt = dp->get_param_type();
+            int pt = dp->get_param_type();
             if (pt == param::STR_UNNAMED || pt == param::STR_LIST) {
                 command = new string(str);
                 #ifdef DEBUG
@@ -744,7 +744,7 @@ bool synthfilereader::read_ui_dobjitems(dobj::base* dob, const char* parent)
 }
 
 bool
-synthfilereader::read_ui_modinput(synthmod::base* sm, input::TYPE inptype)
+synthfilereader::read_ui_modinput(synthmod::base* sm, int inptype)
 {
     const char* inpname = input::names::get(inptype);
 
@@ -762,7 +762,7 @@ synthfilereader::read_ui_modinput(synthmod::base* sm, input::TYPE inptype)
 
     string outname;
     *synthfile >> outname;
-    output::TYPE outtype = output::names::type(outname.c_str());
+    int outtype = output::names::type(outname.c_str());
 
     if (outtype == output::ERR_TYPE) {
         wc_err("Input %s set with unknown output type %s.", inpname,
@@ -791,7 +791,7 @@ synthfilereader::read_ui_modinput(synthmod::base* sm, input::TYPE inptype)
 
 
 bool
-synthfilereader::read_ui_modparam(synthmod::base* sm, param::TYPE partype)
+synthfilereader::read_ui_modparam(synthmod::base* sm, int partype)
 {
     ostringstream conv;
     string datastr;
@@ -815,7 +815,7 @@ synthfilereader::read_ui_modparam(synthmod::base* sm, param::TYPE partype)
 
 
 bool
-synthfilereader::read_ui_dobjparam(dobj::base* dob, param::TYPE partype,
+synthfilereader::read_ui_dobjparam(dobj::base* dob, int partype,
                                                     const char* parent)
 {
     ostringstream conv;
@@ -1155,7 +1155,7 @@ errors::TYPE synthfilereader::validate()
     return errors::NO_ERROR;
 }
 
-bool synthfilereader::set_param(param::TYPE pt, const void* data)
+bool synthfilereader::set_param(int pt, const void* data)
 {
     switch(pt)
     { // PAR_ADSRSECT is iocat::CAT_FIX_STR.
@@ -1173,7 +1173,7 @@ bool synthfilereader::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* synthfilereader::get_param(param::TYPE pt) const
+const void* synthfilereader::get_param(int pt) const
 {
     switch(pt)
     {

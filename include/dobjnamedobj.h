@@ -14,8 +14,8 @@ public:
     virtual errors::TYPE validate(){
         return errors::NO_ERROR;
     }
-    bool set_param(param::TYPE, const void*);
-    const void* get_param(param::TYPE) const;
+    bool set_param(int param_type, const void*);
+    const void* get_param(int param_type) const;
 
 private:
     char* dobjname;

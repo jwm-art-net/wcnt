@@ -5,7 +5,7 @@
 static const char FXSTRSEP = '|';
 
 fixstrparam::
-fixstrparam(const char* str_list, param::TYPE par_type)
+fixstrparam(const char* str_list, int par_type)
  : string_list(str_list), param_type(par_type)
 {
 }

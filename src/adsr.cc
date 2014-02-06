@@ -47,7 +47,7 @@ adsr::~adsr()
         destroy_array_moved_from_list(run_coords);
 }
 
-const void * adsr::get_out(output::TYPE ot) const
+const void * adsr::get_out(int ot) const
 {
     switch (ot) {
         case output::OUT_OUTPUT:       return &output;
@@ -57,7 +57,7 @@ const void * adsr::get_out(output::TYPE ot) const
     }
 }
 
-const void * adsr::set_in(input::TYPE it, void const *o)
+const void * adsr::set_in(int it, void const *o)
 {
     switch (it)
     {
@@ -72,7 +72,7 @@ const void * adsr::set_in(input::TYPE it, void const *o)
     }
 }
 
-const void * adsr::get_in(input::TYPE it) const
+const void * adsr::get_in(int it) const
 {
     switch (it)
     {
@@ -83,7 +83,7 @@ const void * adsr::get_in(input::TYPE it) const
     }
 }
 
-bool adsr::set_param(param::TYPE pt, const void* data)
+bool adsr::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -116,7 +116,7 @@ bool adsr::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* adsr::get_param(param::TYPE pt) const
+const void* adsr::get_param(int pt) const
 {
     switch(pt)
     {

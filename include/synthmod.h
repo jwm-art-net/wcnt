@@ -65,11 +65,11 @@ namespace synthmod
     virtual void init(){};
 
     /* UI access to inputs/outputs/params.. */
-    virtual const void* set_in(input::TYPE, const void*);
-    virtual const void* get_in(input::TYPE) const;
-    virtual const void* get_out(output::TYPE) const;
-    virtual bool        set_param(param::TYPE, const void*);
-    virtual const void* get_param(param::TYPE) const;
+    virtual const void* set_in(int input_type, const void*);
+    virtual const void* get_in(int input_type) const;
+    virtual const void* get_out(int output_type) const;
+    virtual bool        set_param(int param_type, const void*);
+    virtual const void* get_param(int param_type) const;
 
     virtual dobj::base* add_dobj(dobj::base*);
 
@@ -142,21 +142,21 @@ namespace synthmod
         the UI. These should be called only once when a call to
         do_registration() returns true.
      */
-    ui::modparam* register_param(param::TYPE);
-    ui::modparam* register_param(param::TYPE, const char* fixed_string);
-    ui::modinput* register_input(input::TYPE);
+    ui::modparam* register_param(int param_type);
+    ui::modparam* register_param(int param_type, const char* fixed_string);
+    ui::modinput* register_input(int input_type);
     ui::moddobj* register_dobj(dobj::TYPE parent, dobj::TYPE sprog);
     ui::modcomment* register_comment(const char* literal);
 
     /*  Method for output registration, outputs must be registered per
         instance.S
      */
-    void register_output(output::TYPE);
+    void register_output(int output_type);
 
     /*  Method to be called by a module to validate a single parameter.
         To be called only by the validate method.
      */
-    bool validate_param(param::TYPE, errors::TYPE);
+    bool validate_param(int param_type, errors::TYPE);
 
     void duplicate_inputs_to(base*) const;
     void duplicate_params_to(base*) const;

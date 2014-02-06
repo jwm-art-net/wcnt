@@ -26,12 +26,12 @@ balance::~balance()
 {
 }
 
-const void* balance::get_out(output::TYPE ot) const
+const void* balance::get_out(int ot) const
 {
     return (ot == output::OUT_OUTPUT ? &out_output : 0);
 }
 
-const void* balance::set_in(input::TYPE it, const void* o)
+const void* balance::set_in(int it, const void* o)
 {
     switch(it) {
     case input::IN_SIGNAL1: return in_signal1 = (double*)o;
@@ -40,7 +40,7 @@ const void* balance::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* balance::get_in(input::TYPE it) const
+const void* balance::get_in(int it) const
 {
     switch(it) {
     case input::IN_SIGNAL1: return in_signal1;
@@ -49,7 +49,7 @@ const void* balance::get_in(input::TYPE it) const
     }
 }
 
-bool balance::set_param(param::TYPE pt, const void* data)
+bool balance::set_param(int pt, const void* data)
 {
     switch(pt) {
     case param::FUNC:
@@ -63,7 +63,7 @@ bool balance::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* balance::get_param(param::TYPE pt) const
+const void* balance::get_param(int pt) const
 {
     switch(pt) {
     case param::FUNC: return &func;

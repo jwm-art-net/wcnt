@@ -147,7 +147,7 @@ bool paramedit::mod_param_edit(synthmod::base* mod, const char* parname,
 bool paramedit::dobj_param_edit(dobj::base* dob, const char* parname,
                                                  const char* valstr)
 {
-    param::TYPE partype = param::names::type(parname);
+    int partype = param::names::type(parname);
 
     if (partype == param::ERR_TYPE) {
         dobjerr("No such parameter as '%s'.", parname);
@@ -162,7 +162,7 @@ bool paramedit::dobj_param_edit(dobj::base* dob, const char* parname,
     while(item) {
         if (item->get_item_type() == ui::UI_PARAM) {
             dp = static_cast<ui::dobjparam*>(item);
-            if (*dp == partype)
+            if (dp->get_param_type() == partype)
                 break;
         }
         item = items->goto_next();
@@ -185,9 +185,9 @@ bool paramedit::dobj_param_edit(dobj::base* dob, const char* parname,
 }
 
 
-bool paramedit::set_param(param::TYPE dt, const void* data)
+bool paramedit::set_param(int pt, const void* data)
 {
-    switch(dt)
+    switch(pt)
     {
     case param::STR_UNNAMED:
         if (!set_name((const char*)data)) {
@@ -206,9 +206,9 @@ bool paramedit::set_param(param::TYPE dt, const void* data)
 }
 
 
-const void* paramedit::get_param(param::TYPE dt) const
+const void* paramedit::get_param(int pt) const
 {
-    switch(dt)
+    switch(pt)
     {
         case param::STR_UNNAMED:   return get_name();
         case param::STR_LIST:      return get_parstr();

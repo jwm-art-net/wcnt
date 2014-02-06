@@ -37,7 +37,7 @@ public:
     const STATUS* get_output_none_state() const { return &out_none_STATUS; }
     // virtual funcs
     void run(){};
-    const void* get_out(output::TYPE) const;
+    const void* get_out(int output_type) const;
 
 private:
     const double out_none_double;

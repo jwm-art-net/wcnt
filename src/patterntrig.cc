@@ -76,7 +76,7 @@ errors::TYPE patterntrig::validate()
             : errors::ERROR;
 }
 
-const void* patterntrig::get_out(output::TYPE ot) const
+const void* patterntrig::get_out(int ot) const
 {
     switch(ot)
     {
@@ -88,7 +88,7 @@ const void* patterntrig::get_out(output::TYPE ot) const
     }
 }
 
-const void* patterntrig::set_in(input::TYPE it, const void* o)
+const void* patterntrig::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -97,7 +97,7 @@ const void* patterntrig::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* patterntrig::get_in(input::TYPE it) const
+const void* patterntrig::get_in(int it) const
 {
     switch(it)
     {
@@ -106,7 +106,7 @@ const void* patterntrig::get_in(input::TYPE it) const
     }
 }
 
-bool patterntrig::set_param(param::TYPE pt, const void* data)
+bool patterntrig::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -118,7 +118,7 @@ bool patterntrig::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* patterntrig::get_param(param::TYPE pt) const
+const void* patterntrig::get_param(int pt) const
 {
     switch(pt)
     {

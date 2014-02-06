@@ -14,7 +14,7 @@ noise_generator::~noise_generator()
 {
 }
 
-const void* noise_generator::get_out(output::TYPE ot) const
+const void* noise_generator::get_out(int ot) const
 {
     switch(ot)
     {

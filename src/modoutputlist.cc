@@ -9,7 +9,7 @@ modoutputlist::modoutputlist(DESTRUCTION d) :
 }
 
 modoutput*
-modoutputlist::register_output(synthmod::base* sm, output::TYPE ot)
+modoutputlist::register_output(synthmod::base* sm, int ot)
 {
     modoutput* mo = new modoutput(sm, ot);
     if (!add_at_tail(mo)){
@@ -40,7 +40,7 @@ modoutputlist* modoutputlist::list_of_category(iocat::TYPE oc)
         outcatlist = new modoutputlist;
     while(output != 0)
     {
-        output::TYPE ot = output->get_outputtype();
+        int ot = output->get_outputtype();
         if (output::names::category(ot) == oc)
             outcatlist->register_output(output->get_module(), ot);
         output = goto_next();
@@ -65,8 +65,8 @@ bool modoutputlist::is_registered(synthmod::base* sm)
 modoutputlist* modoutputlist::list_of_category_orderpref(
                                     iocat::TYPE out_cat,
                                     synthmod::TYPE* sm_prefs,
-                                    output::TYPE* out_prefs,
-                                    output::TYPE* not_out_prefs);
+                                    int* out_prefs,
+                                    int* not_out_prefs);
 {
     if (is_empty())
         return 0;
@@ -79,12 +79,12 @@ modoutputlist* modoutputlist::list_of_category_orderpref(
         sorted_outs = new modoutputlist;
     wcint_t op_count = 0;
     wcint_t nop_count = 0;
-    output::TYPE* op = out_prefs;
+    int* op = out_prefs;
     while (*op > output::ERR_TYPE && *op < output::OUT_LAST) {
         op_count++;
         op++;
     }
-    output::TYPE* nop = not_out_prefs;
+    int* nop = not_out_prefs;
     while (*nop > output::ERR_TYPE && *nop < output::OUT_LAST){
         nop_count++;
         nop++;

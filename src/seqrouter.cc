@@ -51,7 +51,7 @@ seq_router::~seq_router()
         delete [] freqs;
 }
 
-const void* seq_router::set_in(input::TYPE it, const void* o)
+const void* seq_router::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -74,7 +74,7 @@ const void* seq_router::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* seq_router::get_in(input::TYPE it) const
+const void* seq_router::get_in(int it) const
 {
     switch(it)
     {
@@ -99,7 +99,7 @@ errors::TYPE seq_router::validate()
     return errors::NO_ERROR;
 }
 
-bool seq_router::set_param(param::TYPE pt, const void* data)
+bool seq_router::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -116,7 +116,7 @@ bool seq_router::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* seq_router::get_param(param::TYPE pt) const
+const void* seq_router::get_param(int pt) const
 {
     switch(pt)
     {

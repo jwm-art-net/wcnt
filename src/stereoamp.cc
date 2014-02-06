@@ -35,7 +35,7 @@ stereo_amp::~stereo_amp()
 {
 }
 
-const void* stereo_amp::get_out(output::TYPE ot) const
+const void* stereo_amp::get_out(int ot) const
 {
     switch(ot)
     {
@@ -45,7 +45,7 @@ const void* stereo_amp::get_out(output::TYPE ot) const
     }
 }
 
-const void* stereo_amp::set_in(input::TYPE it, const void* o)
+const void* stereo_amp::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -57,7 +57,7 @@ const void* stereo_amp::set_in(input::TYPE it, const void* o)
     }
 }
 
-const void* stereo_amp::get_in(input::TYPE it) const
+const void* stereo_amp::get_in(int it) const
 {
     switch(it)
     {
@@ -69,7 +69,7 @@ const void* stereo_amp::get_in(input::TYPE it) const
     }
 }
 
-bool stereo_amp::set_param(param::TYPE pt, const void* data)
+bool stereo_amp::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -93,7 +93,7 @@ bool stereo_amp::set_param(param::TYPE pt, const void* data)
     }
 }
 
-const void* stereo_amp::get_param(param::TYPE pt) const
+const void* stereo_amp::get_param(int pt) const
 {
     switch(pt)
     {

@@ -38,11 +38,11 @@
 namespace setpar
 {
  template <typename T>
- bool set_param(T* obj, param::TYPE pt, const char* value,
+ bool set_param(T* obj, int param_type, const char* value,
                                         std::ostringstream* result);
 
  template <typename T>
- void* compute(T* obj, param::TYPE pt, void* data, int op);
+ void* compute(T* obj, int param_type, void* data, int op);
 
  //--------------------------------------------------------------
  // is_operator

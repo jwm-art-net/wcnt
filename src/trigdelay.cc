@@ -39,22 +39,22 @@ void trigdelay::init()
     pastpos = pastmax - 1;
 }
 
-const void* trigdelay::get_out(output::TYPE ot) const
+const void* trigdelay::get_out(int ot) const
 {
     return (ot == output::OUT_TRIG ? &out_trig : 0);
 }
 
-const void* trigdelay::set_in(input::TYPE it, const void* o)
+const void* trigdelay::set_in(int it, const void* o)
 {
     return (it == input::IN_TRIG ? (in_trig = (STATUS*)o) : 0);
 }
 
-const void* trigdelay::get_in(input::TYPE it) const
+const void* trigdelay::get_in(int it) const
 {
     return (it == input::IN_TRIG ? in_trig : 0);
 }
 
-bool trigdelay::set_param(param::TYPE pt, const void* data)
+bool trigdelay::set_param(int pt, const void* data)
 {
     if (pt == param::DELAY_TIME) {
         delay_time = *(double*)data;
@@ -63,7 +63,7 @@ bool trigdelay::set_param(param::TYPE pt, const void* data)
     return false;
 }
 
-const void* trigdelay::get_param(param::TYPE pt) const
+const void* trigdelay::get_param(int pt) const
 {
     return (pt == param::DELAY_TIME ? &delay_time : 0);
 }
