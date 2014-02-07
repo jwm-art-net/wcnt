@@ -4,7 +4,7 @@
 
 namespace dobj
 {
- dobj::base* list::create_dobj(dobj::TYPE dt)
+ dobj::base* list::create_dobj(int dt)
  {
     dobj::base* dobjy = 0;
     switch(dt) {

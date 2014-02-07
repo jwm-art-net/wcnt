@@ -96,11 +96,11 @@ namespace synthmod
     static const STATUS* get_abort_status()
                                         { return &abort_status;}
 
-    bool operator()(TYPE & smt) const   { return modtype == smt; }
+    bool operator()(int & smt) const    { return modtype == smt; }
 
-    bool operator()(name & n) const     { return n(username); }
+    bool operator()(fnobj::name & n) const     { return n(username); }
 
-    bool operator()(groupname & n) const{
+    bool operator()(fnobj::groupname & n) const{
         if (flags & SM_UNGROUPABLE)
             return false;
         const char* grpname = get_groupname(username);

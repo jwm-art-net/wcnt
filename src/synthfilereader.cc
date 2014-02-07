@@ -302,7 +302,7 @@ bool synthfilereader::include_dbj(const char* name)
 
 synthmod::base* synthfilereader::read_synthmodule(const char* com)
 {
-    synthmod::TYPE smt = synthmod::names::type(com);
+    int smt = synthmod::names::type(com);
     if (smt == synthmod::ERR_TYPE || smt == synthmod::NONEZERO)
     {
         wc_err("Unrecognised wcnt/jwmsynth module %s.", com);
@@ -353,7 +353,7 @@ synthmod::base* synthfilereader::read_synthmodule(const char* com)
         cout << "================================" << endl;
         cout << "Creating synth module " << modname << endl;
     }
-    synthmod::base* sm = synthmod::list::create_module(smt,modname.c_str());
+    synthmod::base* sm = synthmod::list::create_module(smt, modname.c_str());
 
     if (!read_ui_moditems(sm)) {
         wc_err("In module %s, %s.", sm->get_username(), wc_err_msg);
@@ -389,7 +389,7 @@ synthmod::base* synthfilereader::read_synthmodule(const char* com)
 //--
 dobj::base* synthfilereader::read_dobj(const char* com)
 {
-    dobj::TYPE dobjtype = dobj::names::type(com);
+    int dobjtype = dobj::names::type(com);
 
     if (dobj::names::category(dobjtype) != dobj::CAT_DEF)
     {

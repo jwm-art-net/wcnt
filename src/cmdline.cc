@@ -329,9 +329,7 @@ void cmdline::module_help()
 {
     int n = data[MH_IX].par1;
 
-    synthmod::TYPE smt =
-        synthmod::names::type((n != 0 && n < opts_count)
-            ? opts[n] : "" );
+    int smt = synthmod::names::type((n != 0 && n < opts_count) ? opts[n] : "" );
 
     if (smt == synthmod::NONEZERO) {
         if (wcnt::jwm.is_verbose())
@@ -712,7 +710,7 @@ void cmdline::dobj_help()
 {
     int n = data[DH_IX].par1;
     std::string dname = (n != 0 && n < opts_count) ? opts[n] : "";
-    dobj::TYPE dt = dobj::names::type(dname.c_str());
+    int dt = dobj::names::type(dname.c_str());
 
     dobj::base* dob = wcnt::get_dobjlist()->create_dobj(dt);
     if (!dob) {

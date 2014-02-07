@@ -2,7 +2,7 @@
 #define CONNECTOR_H
 
 #include "inputnames.h"
-#include "namefuncobj.h"
+#include "function_objects.h"
 #include "outputnames.h"
 #include "types.h"
 
@@ -56,7 +56,7 @@ class connector
     static const char* get_connect_err_msg() { return err_msg;}
 
     bool operator()(input_module & inmod) { return (inmod(in_mod)); }
-    bool operator()(name & outname) { return (outname(out_mod_uname)); }
+    bool operator()(fnobj::name & outname) { return (outname(out_mod_uname)); }
 
     #ifdef DATA_STATS
     STATS_FUNCS

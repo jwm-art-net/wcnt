@@ -33,7 +33,7 @@ namespace synthmod
         delete emptyrunlist;
  }
 
- synthmod::base* list::create_module(synthmod::TYPE smt, const char* uname)
+ synthmod::base* list::create_module(int smt, const char* uname)
  {
     synthmod::base* sm = 0;
 
@@ -155,7 +155,7 @@ namespace synthmod
  list::linkedlist* list::duplicate_group(const char* from, const char* to)
  {
     linkedlist* grplist = new linkedlist(MULTIREF_OFF, PRESERVE_DATA);
-    llitem* i = find_in_data(sneak_first(), groupname(from));
+    llitem* i = find_in_data(sneak_first(), fnobj::groupname(from));
     while(i) {
         synthmod::base* frommod = i->get_data();
         const char* const
@@ -169,15 +169,14 @@ namespace synthmod
             return 0;
         }
         grplist->add_at_tail(tomod);
-        i = find_in_data(i->get_next(), groupname(from));
+        i = find_in_data(i->get_next(), fnobj::groupname(from));
     }
     return grplist;
  }
 
  void list::remove_empty_run_modules()
  {
-    emptyrunlist = move_to_new_list_of_by(this,
-                                            synthmod::base::SM_EMPTY_RUN);
+    emptyrunlist = move_to_new_list_of_by(this, synthmod::base::SM_EMPTY_RUN);
     if (wcnt::jwm.is_verbose()) {
         synthmod::base* sm = emptyrunlist->goto_first();
         while(sm) {

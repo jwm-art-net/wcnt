@@ -5,7 +5,7 @@
 #include "types.h"
 #include "paramnames.h"
 #include "dobjnames.h"
-#include "namefuncobj.h"
+#include "function_objects.h"
 #include "textstuff.h"
 #include "ui_dobjitem.h"
 
@@ -39,11 +39,11 @@ namespace dobj
 
     static const char* get_error_msg() { return err_msg; }
 
-    bool operator()(TYPE & dt) const {
+    bool operator()(int & dt) const {
         return object_type == dt;
     }
 
-    bool operator()(name & n) const {
+    bool operator()(fnobj::name & n) const {
         return n(username);
     }
 

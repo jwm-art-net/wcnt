@@ -1,7 +1,7 @@
 #ifndef GROUPNAMES_H
 #define GROUPNAMES_H
 
-#include "namefuncobj.h"
+#include "function_objects.h"
 
 /*
 // get_groupname

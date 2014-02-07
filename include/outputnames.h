@@ -78,7 +78,7 @@ namespace output
     LAST_TYPE
  };
 
- class names : public getnames<int, iocat::TYPE>
+ class names : public getnames<TYPE, iocat::TYPE>
  {
   public:
     static void instantiate() { static names outputnames; }

@@ -129,7 +129,7 @@ dobj::base* group::duplicate_dobj(const char* new_group_name)
 
 
     synthmod::list::linkedlist* grplist =
-        new_list_of_by(wcnt::jwm.get_modlist(), groupname(get_username()));
+        new_list_of_by(wcnt::jwm.get_modlist(), fnobj::groupname(get_username()));
 
     synthmod::base* mod = grplist->goto_first();
     synthmod::base* to_mod = duplist->goto_first();

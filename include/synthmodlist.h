@@ -4,7 +4,7 @@
 #include "synthmodnames.h"
 #include "linkedlist.h"
 #include "listwork.h"
-#include "namefuncobj.h"
+#include "function_objects.h"
 #include "boolfuncobj.h"
 
 class nonezero;
@@ -18,7 +18,7 @@ namespace synthmod
     list(DESTRUCTION);
     ~list();
 
-    static synthmod::base* create_module(synthmod::TYPE, const char*);
+    static synthmod::base* create_module(int synthmod_type, const char*);
 
     synthmod::base* add_module(synthmod::base* sm) {
         return add_at_tail(sm)->get_data();
@@ -27,11 +27,11 @@ namespace synthmod
     bool delete_module(synthmod::base*);
 
     synthmod::base* get_synthmod_by_name(const char* const n) {
-        return find_in_data(sneak_first(), name(n))->get_data();
+        return find_in_data(sneak_first(), fnobj::name(n))->get_data();
     }
 
-    synthmod::base* get_first_of_type(synthmod::TYPE smt) {
-        result = find_in_data(sneak_first(), search = smt);
+    synthmod::base* get_first_of_type(int synthmod_type) {
+        result = find_in_data(sneak_first(), search = synthmod_type);
         return result->get_data();
     }
 
@@ -65,7 +65,7 @@ namespace synthmod
     //  synthmodlist.
     */
     linkedlist* remove_modules_of_group(const char* const n) {
-        return move_to_new_list_of_by(this, groupname(n));
+        return move_to_new_list_of_by(this, fnobj::groupname(n));
     }
 
     /* validate_modules & init_modules
@@ -76,7 +76,7 @@ namespace synthmod
 
   private:
     linkedlist*         emptyrunlist;
-    synthmod::TYPE      search;
+    int                 search;
     llitem*             result;
     static nonezero*    off;
  };
