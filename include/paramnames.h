@@ -200,6 +200,7 @@ namespace param
     STR_UNNAMED,
     STR_LIST,
     TIME_IS_RELATIVE,
+    CUSTOM_UI_GEN,
     LAST_TYPE
  };
 

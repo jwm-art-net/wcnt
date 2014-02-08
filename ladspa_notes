@@ -1,0 +1,33 @@
+custom ui items generated on the fly
+
+    * items generated depend upon items specified by
+      module
+
+    * in the ladspa module, the 'plugin_name' parameter
+      will determine the custom ui items generated
+
+    * note that the 'plugin_name' parameter is not the
+      triggering mechanism for the generation of custom
+      ui_items.
+
+---
+
+what might the trigger mechanism be?
+
+    * a special parameter? param::CUSTOM_UI_GEN. set with
+      a pointer to the ui_item_list into which the custom
+      items are placed?
+
+    * a ui_item class... but how does module get item 
+      list? how does sfr get it back?
+
+    * a parameter where ui_item is flagged with          
+      UI_CUSTOM_GEN but how does this differ from
+      special parameter.
+
+    * a ui_item class... with, in sfr, a dedicated
+      method... to call set_param with
+      param::CUSTOM_UI_GEN with a pointer to a
+      ui_item_list?
+
+    

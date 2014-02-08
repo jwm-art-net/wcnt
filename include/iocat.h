@@ -36,6 +36,7 @@ namespace iocat
     // cat dobj and cat synthmod have arisen because of new code to
     // read data types ie riffs, adsrs, envelopes, tracks etc rather
     // than it being specialistically hard coded as before.
+    SPECIAL,    // special type!
     //----------------------------------------------------------------
     // keep last:
     LAST_TYPE

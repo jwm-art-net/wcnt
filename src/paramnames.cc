@@ -197,6 +197,7 @@ namespace param
     { DROP_CHECK_RANGE, "drop_check_range",     iocat::WCINT_T, "How may degrees apart a pair of vertices may be to considered a collision and for one to be dropped from waveform. " },
     { STR_UNNAMED,      "<unnamed_item>",       iocat::STRING,  "A name of something." },
     { STR_LIST,         "<unnamed_list>",       iocat::STRING,  "A number of names of things." },
-    { TIME_IS_RELATIVE, "time_is_relative",     iocat::STATE,   "Whether the specified times should be treated as relative to each other, or as absolute times." }
+    { TIME_IS_RELATIVE, "time_is_relative",     iocat::STATE,   "Whether the specified times should be treated as relative to each other, or as absolute times." },
+    { CUSTOM_UI_GEN,    "custom_ui_gen",        iocat::SPECIAL, "A hidden special parameter to trigger generation of custom on-the-fly ui items." }
  };
 }; // namespace param
