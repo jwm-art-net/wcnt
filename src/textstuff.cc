@@ -166,7 +166,7 @@ size_t cfmt(char* buf, size_t bufsz, const char* fmt, ...)
 }
 
 
-char* sanitize_str(const char* src, const char* badchars, int replace)
+char* sanitize_name(const char* src, const char* badchars, int replace)
 {
     debug("sanitizing string '%s' badchars '%s' replace '%c'\n", src, badchars, replace);
     char* str = new char[(strlen(src) + 1) * sizeof(char)];
@@ -174,32 +174,41 @@ char* sanitize_str(const char* src, const char* badchars, int replace)
     char* d = str;
     bool skip = false;
 
+    // replaces occurences of any character in 'badchars'
+    // with character 'replace'.
+
     for (s = src; *s != '\0'; ++s) {
-        bool badchar = false;
-        for (const char* bc = badchars; *bc != '\0'; ++bc) {
-            if (*bc == *s) {
-                *d = replace;
-                badchar = true;
-                break;
+        bool repchar = false;
+        if (*s == replace)
+            repchar = true;
+        else {
+            for (const char* bc = badchars; *bc != '\0'; ++bc) {
+                if (*bc == *s) {
+                    repchar = true;
+                    break;
+                }
             }
         }
-        if (badchar) {
-            if (!skip)
+        if (repchar) {
+            *d = replace;
+            if (!skip) {
                 ++d;
-            skip = true;
+                skip = true;
+            }
         }
         else {
-            *d = *s;
+            *d = tolower(*s);
             skip = false;
             ++d;
         }
     }
 
-    *d = '\0';
-    --d;
+    debug("almost finished: '%s'\n", str);
 
-    if (*d == replace)
+    for (*d = '\0', --d; *d == replace; --d) {
         *d = '\0';
+        --d;
+    }
 
     return str;
 }

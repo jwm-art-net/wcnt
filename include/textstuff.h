@@ -50,9 +50,17 @@ std::string*
 justify(const char* src, int width, int splitchar, const char* seperator,
                                                    const char* lead_in);
 
-char* sanitize_str(const char* src, const char* badchars, int replace);
+// sanitize_name, replace characters in src which match with those
+// in badchars with character specified by replace. instances of the
+// replace character adjaecent to each other are trimmed down to a single
+// instance.
+char* sanitize_name(const char* src, const char* badchars, int replace);
 
+
+// new_strdup - returns a duplicate c-string on which delete and not free()
+// must be used to deallocate the memory.
 char* new_strdup(const char*);
+
 
 class spaces
 {

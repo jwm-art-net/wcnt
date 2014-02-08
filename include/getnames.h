@@ -9,7 +9,7 @@
 #include "listwork.h"
 #include "textstuff.h"
 
-
+// T must be an enum, C is likely also representational as integer
 template <typename T, typename C>
 class getnames
 {
@@ -64,6 +64,7 @@ class getnames
                 {}
         ~extdata() { if (name) delete [] name; if (descr) delete [] descr; }
         bool operator()(fnobj::name & n) const { return n(name); }
+        bool operator()(fnobj::intval & n) const { return n(type); }
         int                 type;
         const char* const   name;
         C                   cat;
@@ -186,7 +187,7 @@ int getnames<T, C>::register_type(const char* name, C cat, const char* descr)
     if (!name)
         return 0;
 
-    char* name_str = sanitize_str(name, " -.:()\"'", '_');
+    char* name_str = sanitize_name(name, " -.:()\"'", '_');
 
     debug("registering type '%s' ('%s') ('%s')\n", name, name_str, descr);
 
@@ -256,22 +257,58 @@ int getnames<T, C>::ext_type(const char* name)
 
 
 template <typename T, typename C>
-const char* getnames<T, C>::ext_get(int )
+const char* getnames<T, C>::ext_get(int t)
 {
+    if (!ext)
+        return 0;
+    extdata* xd = find_in_data(ext->sneak_first(), fnobj::intval(t))->get_data();
+
+    if (xd) {
+        debug("name '%s'\n", xd->name);
+        debug("found id/type: %d\n", xd->type);
+        debug("cat: %2p\n", (void*)xd->cat);
+        debug("descr: '%s'\n", xd->descr);
+        return xd->name;
+    }
+
     return 0;
 }
 
 
 template <typename T, typename C>
-C getnames<T, C>::ext_category(int )
+C getnames<T, C>::ext_category(int t)
 {
+    if (!ext)
+        return (C)0;
+    extdata* xd = find_in_data(ext->sneak_first(), fnobj::intval(t))->get_data();
+
+    if (xd) {
+        debug("name '%s'\n", xd->name);
+        debug("found id/type: %d\n", xd->type);
+        debug("cat: %2p\n", (void*)xd->cat);
+        debug("descr: '%s'\n", xd->descr);
+        return xd->cat;
+    }
+
     return (C)0;
 }
 
 
 template <typename T, typename C>
-const char* getnames<T, C>::ext_descr(int )
+const char* getnames<T, C>::ext_descr(int t)
 {
+    if (!ext)
+        return 0;
+    extdata* xd = find_in_data(ext->sneak_first(), fnobj::intval(t))->get_data();
+
+    if (xd) {
+        debug("name '%s'\n", xd->name);
+        debug("found id/type: %d\n", xd->type);
+        debug("cat: %2p\n", (void*)xd->cat);
+        debug("descr: '%s'\n", xd->descr);
+        return xd->descr;
+    }
+
     return 0;
 }
 

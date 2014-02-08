@@ -65,10 +65,15 @@ int main(const int argc, const char** const argv)
         return -1;
     }
 
+    int t;
+
     param::names::register_type("poopah(ms)", iocat::SAMP_T, "a pooey type thing");
     param::names::register_type("poopah bah bah", iocat::SAMP_T, "a pooey type thing");
     param::names::register_type("delay time", iocat::SAMP_T, "amount of time to delay");
-    param::names::register_type("poopah(ms)", iocat::SAMP_T, "a pooey type thing");
+    t = param::names::register_type("PooPah (ms)", iocat::SAMP_T, "a pooey type thing");
+    const char* name = param::names::get(t);
+    debug("name:'%s' found for id %d\n", name, t);
+    param::names::register_type("Delay__Time__", iocat::SAMP_T, "amount of time to delay");
 
     wcnt::synth* thesynth = new wcnt::synth();
     if (   !thesynth->is_valid()       || !thesynth->generate_synth()

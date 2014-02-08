@@ -14,6 +14,15 @@ namespace fnobj
  // see also: groupnames.h
  */
 
+ class intval
+ {
+  public:
+    intval(int n) : _intval(n) {};
+    bool operator () (int n) const { return (n == _intval); }
+  private:
+    int _intval;
+ };
+
  class name
  {
   public:
