@@ -4,11 +4,10 @@
 #include <cstddef>
 #include <cstring>
 
-
+#include "function_objects.h"
 #include "linkedlist.h"
 #include "listwork.h"
-#include "function_objects.h"
-
+#include "textstuff.h"
 
 
 template <typename T, typename C>
@@ -63,7 +62,7 @@ class getnames
         extdata(int _type, const char* _name, C _cat, const char* _descr)
                 : type(_type), name(_name), cat(_cat), descr(_descr)
                 {}
-        ~extdata(){};
+        ~extdata() { if (name) delete [] name; if (descr) delete [] descr; }
         bool operator()(fnobj::name & n) const { return n(name); }
         int                 type;
         const char* const   name;
@@ -102,7 +101,7 @@ int getnames<T, C>::type(const char* name)
     for (int i = 1; i < gn_count; ++i)
         if (strcmp(name, gn_data[i].name) == 0)
             return i;
-    return 0;
+    return getnames<T, C>::ext_type(name);
 }
 
 /*
@@ -184,32 +183,73 @@ int getnames<T, C>::register_type(const char* name, C cat, const char* descr)
 {
     static int next_type_id = EXTENDED + 1;
 
-    int ret = type(name);
+    if (!name)
+        return 0;
 
-    if (ret)
+    char* name_str = sanitize_str(name, " -.:()\"'", '_');
+
+    debug("registering type '%s' ('%s') ('%s')\n", name, name_str, descr);
+
+    int ret = type(name_str);
+
+    if (ret) {
+        delete [] name_str;
+        debug("already exists... as type %d\n", ret);
         return ret;
+    }
 
     if (!ext) {
-        ext = new linked_list<extdata>;
+        debug("creating linked list for storing custom type registrations...\n");
+        if (!(ext = new linked_list<extdata>)) {
+            debug("failed to create linked list.\n");
+            return 0;
+        }
+    }
+    #if DEBUG
+    else {
+        debug("ext already existed...\n");
+    }
+    #endif
+
+    char* descr_str = (descr != 0 ? new_strdup(descr) : 0);
+    extdata* xd = new extdata(next_type_id++, name_str, cat, descr_str);
+
+    if (!xd) {
+        delete [] descr;
+        delete [] name_str;
+        return 0;
     }
 
-    struct gn_data* data = new extdata(next_type_id++, name, cat, descr);
-
-    if (!data)
-        return 0;
-
-    if (!ext->add_at_tail(data)) {
-        delete data;
+    if (!ext->add_at_tail(xd)) {
+        debug("failed to add new registered type '%s'\n", name_str);
+        delete [] descr;
+        delete [] name_str;
+        delete xd;
         return 0;
     }
 
-    return data->type;
+    debug("added new registered type '%s' %d\n", name_str, xd->type);
+
+    return xd->type;
 }
 
 template <typename T, typename C>
 int getnames<T, C>::ext_type(const char* name)
 {
-    extdata* xd = find_in_data(ext, fnobj::name(name));
+    if (!ext)
+        return 0;
+
+    debug("searching for name '%s'\n", name);
+
+    extdata* xd = find_in_data(ext->sneak_first(), fnobj::name(name))->get_data();
+
+    if (xd) {
+        debug("found name '%s'\n", name);
+        debug("id/type: %d\n", xd->type);
+        debug("cat: %2p\n", (void*)xd->cat);
+        debug("descr: '%s'\n", xd->descr);
+        return xd->type;
+    }
 
     return 0;
 }

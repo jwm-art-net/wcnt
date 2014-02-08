@@ -39,7 +39,7 @@ char** c_str_arr_from_names(int first, int last, const char* (T::*func)(R))
 
     char** strarr = new char*[count + 1];
     for (int i = first; i < last; ++i)
-        strarr[i] = strdup(func((R)i));
+        strarr[i] = new_strdup(func((R)i));
     strarr[count] = 0;
     return strarr;
 }
@@ -49,6 +49,10 @@ size_t cfmt(char* buf, size_t buffer_size, const char* fmt, ...);
 std::string*
 justify(const char* src, int width, int splitchar, const char* seperator,
                                                    const char* lead_in);
+
+char* sanitize_str(const char* src, const char* badchars, int replace);
+
+char* new_strdup(const char*);
 
 class spaces
 {

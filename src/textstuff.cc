@@ -166,6 +166,56 @@ size_t cfmt(char* buf, size_t bufsz, const char* fmt, ...)
 }
 
 
+char* sanitize_str(const char* src, const char* badchars, int replace)
+{
+    debug("sanitizing string '%s' badchars '%s' replace '%c'\n", src, badchars, replace);
+    char* str = new char[(strlen(src) + 1) * sizeof(char)];
+    const char* s;
+    char* d = str;
+    bool skip = false;
+
+    for (s = src; *s != '\0'; ++s) {
+        bool badchar = false;
+        for (const char* bc = badchars; *bc != '\0'; ++bc) {
+            if (*bc == *s) {
+                *d = replace;
+                badchar = true;
+                break;
+            }
+        }
+        if (badchar) {
+            if (!skip)
+                ++d;
+            skip = true;
+        }
+        else {
+            *d = *s;
+            skip = false;
+            ++d;
+        }
+    }
+
+    *d = '\0';
+    --d;
+
+    if (*d == replace)
+        *d = '\0';
+
+    return str;
+}
+
+
+char* new_strdup(const char* src)
+{
+    if (!src)
+        return 0;
+    size_t l = strlen(src);
+    char* dest = new char[(l + 1) * sizeof(char)];
+    snprintf(dest, l + 1, "%s", src);
+    return dest;
+}
+
+
 spaces::~spaces()
 {
     if (data) {

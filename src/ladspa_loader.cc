@@ -105,7 +105,7 @@ char* ladspa_plug::validate_port(const char* port, LADSPA_Data* data)
 
     if (portix == -1) {
         snprintf(buf, SZ, "Invalid port name '%s'.", port);
-        return strdup(buf);
+        return new_strdup(buf);
     }
 
     debug("Validating port: '%s' value: %f\n", port, *data);
@@ -121,7 +121,7 @@ char* ladspa_plug::validate_port(const char* port, LADSPA_Data* data)
                     bound *= wcnt::jwm.samplerate();
                 if (bound != 0 && *data < bound) {
                     snprintf(buf, SZ, "should be above %f", bound);
-                    return strdup(buf);
+                    return new_strdup(buf);
                 }
             }
 
@@ -132,7 +132,7 @@ char* ladspa_plug::validate_port(const char* port, LADSPA_Data* data)
                     bound *= wcnt::jwm.samplerate();
                 if (bound != 0 && *data > bound) {
                     snprintf(buf, SZ, "should be below %f", bound);
-                    return strdup(buf);
+                    return new_strdup(buf);
                 }
             }
 
@@ -140,7 +140,7 @@ char* ladspa_plug::validate_port(const char* port, LADSPA_Data* data)
         }
     }
 
-    return strdup("Invalid attempt to validate!");
+    return new_strdup("Invalid attempt to validate!");
 }
 
 

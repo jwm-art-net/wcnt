@@ -25,6 +25,7 @@
 #include "../include/ladspa_loader.h"
 #include "../include/synthmodlist.h"
 #include "../include/sanity_checks.h"
+#include "../include/textstuff.h"
 
 
 void title();
@@ -63,6 +64,12 @@ int main(const int argc, const char** const argv)
         #endif
         return -1;
     }
+
+    param::names::register_type("poopah(ms)", iocat::SAMP_T, "a pooey type thing");
+    param::names::register_type("poopah bah bah", iocat::SAMP_T, "a pooey type thing");
+    param::names::register_type("delay time", iocat::SAMP_T, "amount of time to delay");
+    param::names::register_type("poopah(ms)", iocat::SAMP_T, "a pooey type thing");
+
     wcnt::synth* thesynth = new wcnt::synth();
     if (   !thesynth->is_valid()       || !thesynth->generate_synth()
         || !thesynth->validate_synth() || !thesynth->connect_synth()
