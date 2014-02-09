@@ -35,9 +35,9 @@ class getnames
     static int*         get_types_in_category(C cat);
     #endif
 
-    static int          register_type(const char* name, C cat, const char* descr);
-
  protected:
+    static int register_type(const char* name, C cat, const char* descr, const char* prefix);
+
     struct gn_data
     {
         int                 type;
@@ -180,14 +180,14 @@ void getnames<T, C>::check_index()
 
 
 template <typename T, typename C>
-int getnames<T, C>::register_type(const char* name, C cat, const char* descr)
+int getnames<T, C>::register_type(const char* name, C cat, const char* descr, const char* prefix)
 {
     static int next_type_id = EXTENDED + 1;
 
     if (!name)
         return 0;
 
-    char* name_str = sanitize_name(name, " -.:()\"'", '_');
+    char* name_str = sanitize_name(name, " -.:()\"'", '_', prefix);
 
     debug("registering type '%s' ('%s') ('%s')\n", name, name_str, descr);
 
@@ -196,6 +196,11 @@ int getnames<T, C>::register_type(const char* name, C cat, const char* descr)
     if (ret) {
         delete [] name_str;
         debug("already exists... as type %d\n", ret);
+        if (cat != category(ret)) {
+            debug("WARNING: category differs!\n");
+            debug("WARNING: category differs! (for added emphasis)\n");
+            debug("WARNING: category differs! (and even more emphasis!)\n");
+        }
         return ret;
     }
 

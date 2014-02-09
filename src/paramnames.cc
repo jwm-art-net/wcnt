@@ -198,6 +198,6 @@ namespace param
     { STR_UNNAMED,      "<unnamed_item>",       iocat::STRING,  "A name of something." },
     { STR_LIST,         "<unnamed_list>",       iocat::STRING,  "A number of names of things." },
     { TIME_IS_RELATIVE, "time_is_relative",     iocat::STATE,   "Whether the specified times should be treated as relative to each other, or as absolute times." },
-    { CUSTOM_UI_GEN,    "custom_ui_gen",        iocat::SPECIAL, "A hidden special parameter to trigger generation of custom on-the-fly ui items." }
+    { CUSTOM_UI,        "custom_ui",            iocat::SPECIAL, "A hidden special parameter to trigger generation of custom on-the-fly ui items." }
  };
 }; // namespace param

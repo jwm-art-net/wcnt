@@ -84,6 +84,10 @@ namespace output
     static void instantiate() { static names outputnames; }
     static TYPE get_off_type(iocat::TYPE);
 
+    static int register_type(const char* name, iocat::TYPE cat, const char* descr) {
+        return getnames::register_type(name, cat, descr, "out_");
+    }
+
   private:
     names() : getnames(LAST_TYPE, data) {}
     ~names() {}

@@ -200,7 +200,7 @@ namespace param
     STR_UNNAMED,
     STR_LIST,
     TIME_IS_RELATIVE,
-    CUSTOM_UI_GEN,
+    CUSTOM_UI,
     LAST_TYPE
  };
 
@@ -208,6 +208,10 @@ namespace param
  {
   public:
     static void instantiate() { static names paramnames; }
+
+    static int register_type(const char* name, iocat::TYPE cat, const char* descr) {
+        return getnames::register_type(name, cat, descr, 0);
+    }
 
   private:
     names() : getnames(LAST_TYPE, data) {}

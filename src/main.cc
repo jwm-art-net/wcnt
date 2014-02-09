@@ -67,13 +67,16 @@ int main(const int argc, const char** const argv)
 
     int t;
 
+    input::names::register_type("in:l", iocat::DOUBLE, "input for left stereo signal");
+    input::names::register_type("Frequency", iocat::DOUBLE, "Frequency input hrtz");
+    output::names::register_type("Output", iocat::DOUBLE, "Output");
     param::names::register_type("poopah(ms)", iocat::SAMP_T, "a pooey type thing");
     param::names::register_type("poopah bah bah", iocat::SAMP_T, "a pooey type thing");
     param::names::register_type("delay time", iocat::SAMP_T, "amount of time to delay");
     t = param::names::register_type("PooPah (ms)", iocat::SAMP_T, "a pooey type thing");
     const char* name = param::names::get(t);
     debug("name:'%s' found for id %d\n", name, t);
-    param::names::register_type("Delay__Time__", iocat::SAMP_T, "amount of time to delay");
+    param::names::register_type("Delay__Time__", iocat::DOUBLE, "amount of time to delay");
 
     wcnt::synth* thesynth = new wcnt::synth();
     if (   !thesynth->is_valid()       || !thesynth->generate_synth()

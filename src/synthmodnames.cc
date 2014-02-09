@@ -88,7 +88,8 @@ namespace synthmod
     { SAMPLECLIMB,      "sample_climb",     0, "Similar to sample_hold, but instead of holding the value and decaying, this module optionally climbs to the sampled value before holding it." },
     { WCNT_NOTE,        "wcnt_note",        0, "A module used by the seq_router for routing purposes." },
     { SEQ_ROUTER,       "seq_router",       0, "Routes sequencer data to wcnt_note modules which are created by the module itself. The modules are added to a group of the same name." },
-    { SEQ_ECHO,         "seq_echo",         0, "Applies an echo style effect to sequencer note data, for use by the seq_router module." }
+    { SEQ_ECHO,         "seq_echo",         0, "Applies an echo style effect to sequencer note data, for use by the seq_router module." },
+    { LADSPA,           "ladspa",           0, "Performs processing using the specified LADSPA plugin." }
  };
 }; // namespace synthmod
 

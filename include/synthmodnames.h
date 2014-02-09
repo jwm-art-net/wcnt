@@ -90,6 +90,7 @@ namespace synthmod
     WCNT_NOTE,
     SEQ_ROUTER,
     SEQ_ECHO,
+    LADSPA,
     LAST_TYPE
  };
 

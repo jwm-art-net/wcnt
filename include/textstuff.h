@@ -54,7 +54,7 @@ justify(const char* src, int width, int splitchar, const char* seperator,
 // in badchars with character specified by replace. instances of the
 // replace character adjaecent to each other are trimmed down to a single
 // instance.
-char* sanitize_name(const char* src, const char* badchars, int replace);
+char* sanitize_name(const char* src, const char* badchars, int replace, const char* prefix);
 
 
 // new_strdup - returns a duplicate c-string on which delete and not free()

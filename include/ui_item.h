@@ -27,12 +27,22 @@ namespace ui
 {
 
  enum TYPE {
-    UI_ERROR,
-    UI_USERNAME,
+    UI_ERROR,       // singleton, error
+    // --------
     UI_COMMENT,
     UI_INPUT,
     UI_PARAM,
-    UI_DOBJ
+    UI_DOBJ,
+    // ---------
+    UI_CUSTOM,      // indicates custom ui generation should commence
+                    // immediately - sometimes a module will need more
+                    // information before it can register any further
+                    // ui items, and the items it registers may very well
+                    // differ from one instance to the next, this is one
+                    // small part in enabling that.
+    // ---------
+    UI_USERNAME,    // singleton, returned on end of definition
+
  };
 
  enum FLAGS {
@@ -309,21 +319,6 @@ namespace ui
     return this;
  }
 
- template <class T>
- class username_item : public base<T>
- {
-  public:
-    static username_item<T>* username()
-    {
-        static username_item<T> uname;
-        return &uname;
-    }
-    bool validate(T, errors::TYPE)  { return true; }
-  private:
-    username_item() : base<T>(UI_USERNAME) {};
-    bool name_match(const char*) { return false; }
- };
-
 
  template <class T>
  class error_item : public base<T>
@@ -505,6 +500,55 @@ namespace ui
     dobj::TYPE parent;
     dobj::TYPE child;
  };
+
+
+// custom_item: used by a object to indicate it has a custom ui which
+//              should be generated on-the-fly. when encountered by
+//              ui::item_list::match_item it is returned to synthfilereader
+//              which then does a set_param with a pointer to a new
+//              ui::item_list which the object will then populate before
+//              returning to sfr to then begin processing the newly
+//              generated item list...(that's the plan stan).
+
+ template <class T>
+ class custom_item : public base<T>
+ {
+  public:
+    custom_item() : base<T>(UI_CUSTOM) {};
+    ~custom_item() {};
+
+    // validate() may change (or stay the same and be ignored)
+    bool validate(T, errors::TYPE)  { return true; }
+    bool name_match(const char*) { return false; }
+
+    #ifdef DEBUG
+    void dump() {
+        char buf[40];
+        this->get_item_flags(buf, 40);
+        debug("%s CUSTOM_ITEM (0x%p)\n", buf, this);
+    }
+    #endif
+ };
+
+
+// username_item: used by ui::item_list to indicate to synthfilereader
+// the string read was the username of the object read.
+
+ template <class T>
+ class username_item : public base<T>
+ {
+  public:
+    static username_item<T>* username()
+    {
+        static username_item<T> uname;
+        return &uname;
+    }
+    bool validate(T, errors::TYPE)  { return true; }
+  private:
+    username_item() : base<T>(UI_USERNAME) {};
+    bool name_match(const char*) { return false; }
+ };
+
 };
 
 #endif

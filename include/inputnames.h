@@ -82,6 +82,10 @@ namespace input
   public:
     static void instantiate() { static names inputnames; }
 
+    static int register_type(const char* name, iocat::TYPE cat, const char* descr) {
+        return getnames::register_type(name, cat, descr, "in_");
+    }
+
   private:
     names() : getnames(LAST_TYPE, data) {}
     ~names() {}

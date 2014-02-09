@@ -166,21 +166,33 @@ size_t cfmt(char* buf, size_t bufsz, const char* fmt, ...)
 }
 
 
-char* sanitize_name(const char* src, const char* badchars, int replace)
+char* sanitize_name(const char* src, const char* badchars, int replace, const char* prefix)
 {
     debug("sanitizing string '%s' badchars '%s' replace '%c'\n", src, badchars, replace);
-    char* str = new char[(strlen(src) + 1) * sizeof(char)];
+
+    size_t plen = (prefix != 0 ? strlen(prefix) : 0);
+    size_t dlen = strlen(src) + 1 + plen + 1;
+
+    char* str = new char[dlen * sizeof(char)];
     const char* s;
     char* d = str;
     bool skip = false;
+
+    if (prefix) {
+        for (s = prefix; *s != '\0'; ++s)
+            *d++ = *s;
+    }
 
     // replaces occurences of any character in 'badchars'
     // with character 'replace'.
 
     for (s = src; *s != '\0'; ++s) {
         bool repchar = false;
-        if (*s == replace)
+        if (*s == replace) {
             repchar = true;
+            if (s == src)
+                skip = true;
+        }
         else {
             for (const char* bc = badchars; *bc != '\0'; ++bc) {
                 if (*bc == *s) {
@@ -203,11 +215,19 @@ char* sanitize_name(const char* src, const char* badchars, int replace)
         }
     }
 
-    debug("almost finished: '%s'\n", str);
-
     for (*d = '\0', --d; *d == replace; --d) {
         *d = '\0';
         --d;
+    }
+
+    if (prefix) {
+        d = str;
+        s = str + plen;
+        if (strncmp(d, s, plen) == 0) {
+            for (; *s != '\0'; ++s)
+                *d++ = *s;
+            *d = '\0';
+        }
     }
 
     return str;
