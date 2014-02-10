@@ -65,8 +65,8 @@ int main(const int argc, const char** const argv)
         return -1;
     }
 
+/*
     int t;
-
     input::names::register_type("in:l", iocat::DOUBLE, "input for left stereo signal");
     input::names::register_type("Frequency", iocat::DOUBLE, "Frequency input hrtz");
     output::names::register_type("Output", iocat::DOUBLE, "Output");
@@ -77,7 +77,7 @@ int main(const int argc, const char** const argv)
     const char* name = param::names::get(t);
     debug("name:'%s' found for id %d\n", name, t);
     param::names::register_type("Delay__Time__", iocat::DOUBLE, "amount of time to delay");
-
+*/
     wcnt::synth* thesynth = new wcnt::synth();
     if (   !thesynth->is_valid()       || !thesynth->generate_synth()
         || !thesynth->validate_synth() || !thesynth->connect_synth()

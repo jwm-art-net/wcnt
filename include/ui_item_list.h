@@ -50,6 +50,7 @@ namespace ui
     param_item<T>*      add_param_item(int param_type, const char* fixed_str);
     dobj_item<T>*       add_dobj_item(dobj::TYPE parent, dobj::TYPE child);
     comment_item<T>*    add_comment_item(const char* comment);
+    custom_item<T>*     add_custom_item();
 
     // specialist methods, used by synthmod::base, dobj::base impl is empty.
     connector* add_connector_off(T, int input_type);
@@ -295,6 +296,22 @@ namespace ui
     return i;
  }
 
+ template <class T>
+ custom_item<T>* item_list<T>::add_custom_item()
+ {
+    custom_item<T>* i = new custom_item<T>;
+    if (i) {
+        if (!this->add_at_tail(i)) {
+            delete i;
+            i = 0;
+        }
+    }
+    #ifdef DEBUG
+    i->dump();
+    #endif
+    return i;
+ }
+
 
  template <class T>
  base<T>* item_list<T>::first_item()
@@ -516,7 +533,7 @@ restart:
     if (last)
         last->dump();
     else
-        debug("NULL\n");
+        debug("last: NULL\n");
     #endif
 
     if (last == item) {
@@ -544,7 +561,13 @@ restart:
     }
 
     do {
-        if (item->get_item_type() != UI_COMMENT) {
+        if (item->get_item_type() == UI_CUSTOM) {
+            debug("encountered custom ui item...\n");
+            last = item;
+            item->set_matched();
+            return item;
+        }
+        else if (item->get_item_type() != UI_COMMENT) {
 
             #ifdef DEBUG
             debug("match_item loop on:\n");

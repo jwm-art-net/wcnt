@@ -39,13 +39,14 @@ class cmdline
         MOD_HELP        = 0x0010,
         IN_HELP         = 0x0020,
         DOBJ_HELP       = 0x0040,
-        SAMPLE_INFO     = 0x0080,
-        NOTE_INFO       = 0x0100,
-        FREQ_INFO       = 0x0200,
-        HEADER          = 0x0400,
-        HELP            = 0x0800,
-        LONGHELP        = 0x1000,
-        ABOUT           = 0x2000
+        LADSPA_HELP     = 0x0080,
+        SAMPLE_INFO     = 0x0100,
+        NOTE_INFO       = 0x0200,
+        FREQ_INFO       = 0x0400,
+        HEADER          = 0x0800,
+        HELP            = 0x1000,
+        LONGHELP        = 0x2000,
+        ABOUT           = 0x4000
     };
 
     cmdline(const int argc, const char **const argv);
@@ -64,6 +65,10 @@ class cmdline
     int const           opts_count;
     const char** const  opts;
     int                 opts_flags;
+
+    int ladspa_lib;
+    int ladspa_label;
+
     bool good_opts;
     std::string msg;
     enum
@@ -76,6 +81,7 @@ class cmdline
         MH_IX,
         IH_IX,
         DH_IX,
+        LAD_IX,
         SI_IX,
         NI_IX,
         FI_IX,
@@ -106,6 +112,7 @@ class cmdline
     void input_help();
     void input_help_with_wcfile();
     void dobj_help();
+    void ladspa_help();
     void sample_info();
     void note_info();
     void freq_info();

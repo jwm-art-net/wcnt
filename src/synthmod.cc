@@ -47,7 +47,7 @@ namespace synthmod
 
  const void* base::get_out(int) const
  {
-    #ifdef IO_PARANOIA
+    #ifdef DEBUG
     sm_err("%s %s get output where none exist.", errors::stock::major,
                                             errors::stock::bad, username);
     #endif
@@ -56,7 +56,7 @@ namespace synthmod
 
  const void* base::set_in(int, const void*)
  {
-    #ifdef IO_PARANOIA
+    #ifdef DEBUG
     sm_err("%s %s set input where none exist.", errors::stock::major,
                                             errors::stock::bad, username);
     #endif
@@ -65,7 +65,7 @@ namespace synthmod
 
  const void* base::get_in(int) const
  {
-    #ifdef IO_PARANOIA
+    #ifdef DEBUG
     sm_err("%s %s get input where none exist.", errors::stock::major,
                                             errors::stock::bad, username);
     #endif
@@ -74,7 +74,7 @@ namespace synthmod
 
  bool base::set_param(int, const void*)
  {
-    #ifdef IO_PARANOIA
+    #ifdef DEBUG
     sm_err("%s %s set parameter where none exist.", errors::stock::major,
                                             errors::stock::bad, username);
     #endif
@@ -83,7 +83,7 @@ namespace synthmod
 
  const void* base::get_param(int) const
  {
-    #ifdef IO_PARANOIA
+    #ifdef DEBUG
     sm_err("%s %s get parameter where none exist.", errors::stock::major,
                                             errors::stock::bad, username);
     #endif
@@ -92,9 +92,9 @@ namespace synthmod
 
  dobj::base* base::add_dobj(dobj::base*)
  {
-    #ifdef IO_PARANOIA
+    #ifdef DEBUG
     sm_err("%s %s module unable to contain data objects.",
-                    errors::stock::major, errors::stock::bad_add, username);
+                            errors::stock::major, username);
     #endif
     return 0;
  }
@@ -126,6 +126,33 @@ namespace synthmod
     }
  }
 
+
+ bool base::create_custom_ui_items()
+ {
+    #if DEBUG
+    sm_err("%s invalid request for module %s to create custom ui items.",
+                                        errors::stock::major, username);
+    #endif
+    return false;
+ }
+
+ void base::activate_custom_ui_items()
+ {
+    #if DEBUG
+    sm_err("%s invalid request for module %s to activate custom ui items.",
+                                        errors::stock::major, username);
+    #endif
+ }
+
+ void base::deactivate_custom_ui_items()
+ {
+    #if DEBUG
+    sm_err("%s invalid request for module %s to deactivate custom ui items.",
+                                        errors::stock::major, username);
+    #endif
+ }
+
+
 //------------------------------------------------------------------------
 // protected member methods
 //------------------------------------------------------------------------
@@ -156,9 +183,7 @@ namespace synthmod
         if (item->get_item_type() == ui::UI_PARAM) {
             ui::modparam* mp = static_cast<ui::modparam*>(item);
             if (mp->should_duplicate()) {
-                #ifdef DEBUG
-                std::cout << "duplicating item '" << item->get_name() << "'" << std::endl;
-                #endif
+                debug("duplicating item '%s'\n", item->get_name());
                 const void* data = get_param(mp->get_param_type());
                 if (!data) {
                     sm_err("Failed to obtain data to duplicate parameter '%s'"
@@ -176,11 +201,9 @@ namespace synthmod
                     return;
                 }
             }
-            #ifdef DEBUG
-            else
-                std::cout << "NOT duplicating item '" << item->get_name() << "'" << std::endl;
-            #endif
-
+            else {
+                debug("NOT duplicating item '%s'\n", (item->get_name() ? item->get_name() : "NULL"));
+            }
         }
         item = items->goto_next();
     }
@@ -263,6 +286,21 @@ namespace synthmod
     return i;
  }
 
+ ui::modcustom* base::register_custom_ui()
+ {
+    if (!(flags & SM_VALID))
+        return 0;
+
+    ui::modcustom* i = get_ui_items()->add_custom_item();
+    if (!i) {
+        sm_err("Failed to register custom ui for module type %s.",
+                                            synthmod::names::get(modtype));
+        invalidate();
+    }
+    return i;
+ }
+
+
  void base::register_output(int t)
  {
     if (!(flags & SM_VALID))
@@ -273,6 +311,8 @@ namespace synthmod
         invalidate();
     }
  }
+
+
 
  bool base::validate_param(int pt, errors::TYPE et)
  {

@@ -14,6 +14,7 @@ namespace ui
  typedef   input_item<dobj::base*> dobjinput;
  typedef    dobj_item<dobj::base*> dobjdobj;
  typedef comment_item<dobj::base*> dobjcomment;
+ typedef  custom_item<dobj::base*> dobjcustom;
  typedef    item_list<dobj::base*> dobjitem_list;
 };
 

@@ -187,7 +187,7 @@ namespace param
     { INSPECT_UL_MSG,   "_sample_msg_",         iocat::STRING,  "Message to display when a sample position value triggered."  },
     { INSPECT_ST_MSG,   "_state_msg_",          iocat::STRING,  "Message to display when a state value triggered."  },
     { INSPECT_STR_MSG,  "_string_msg_",         iocat::STRING,  "Message to display when a string value triggered."  },
-    { PRE_COUNT,        "pre_count",            iocat::WCINT_T,   "How many triggers to ignore before counting." },
+    { PRE_COUNT,        "pre_count",            iocat::WCINT_T, "How many triggers to ignore before counting." },
     { WRAP,             "wrap",                 iocat::STATE,   "Whether to start counting over again after reaching desired count of triggers, even if not reset by reset trigger."   },
     { GROUP_NAME,       "group_name",           iocat::STRING,  "Name of group to control."  },
     { FADE_IN_TIME,     "fade_in_time",         iocat::DOUBLE,  "Length of time (ms) that fade in should take."  },
@@ -198,6 +198,8 @@ namespace param
     { STR_UNNAMED,      "<unnamed_item>",       iocat::STRING,  "A name of something." },
     { STR_LIST,         "<unnamed_list>",       iocat::STRING,  "A number of names of things." },
     { TIME_IS_RELATIVE, "time_is_relative",     iocat::STATE,   "Whether the specified times should be treated as relative to each other, or as absolute times." },
+    { LADSPA_LIB,       "ladspa_lib",           iocat::STRING,  "Filename of the LADSPA library containing the desired LADSPA plugin (path may be omitted)." },
+    { LADSPA_LABEL,     "ladspa_label",         iocat::STRING,  "Label of the LADSPA plugin to use." },
     { CUSTOM_UI,        "custom_ui",            iocat::SPECIAL, "A hidden special parameter to trigger generation of custom on-the-fly ui items." }
  };
 }; // namespace param

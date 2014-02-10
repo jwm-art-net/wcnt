@@ -23,7 +23,8 @@
 
 
 cmdline::cmdline(int const argc, const char** const argv) :
- opts_count(argc), opts(argv), opts_flags(0), good_opts(false)
+ opts_count(argc), opts(argv), opts_flags(0), ladspa_lib(0), ladspa_label(0),
+ good_opts(false)
 {
 }
 
@@ -78,6 +79,12 @@ cmdline::cmd_opts_data cmdline::data[OPTS_COUNT] =
     "\tDisplay list of data object types or display a data object's\n"
     "\tdefinition.",
     &cmdline::dobj_help
+},
+{ LADSPA_HELP,
+    "--ladspa-help",        "-lh",  "[library] [label]",            0,0,5,
+    "\tDisplays the ladspa module definition which is generated in \n"
+    "\taccordance with the LADSPA plugin desired for use.\n",
+    &cmdline::ladspa_help
 },
 { SAMPLE_INFO,
     "--sample-info",        "-si",  "<sample.wav>",                 0,0,4,
@@ -328,8 +335,12 @@ void cmdline::module_help_list_all()
 void cmdline::module_help()
 {
     int n = data[MH_IX].par1;
+    int smt;
 
-    int smt = synthmod::names::type((n != 0 && n < opts_count) ? opts[n] : "" );
+    if (ladspa_lib && ladspa_label)
+        smt = synthmod::LADSPA;
+    else
+        smt = synthmod::names::type((n != 0 && n < opts_count) ? opts[n] : "" );
 
     if (smt == synthmod::NONEZERO) {
         if (wcnt::jwm.is_verbose())
@@ -376,6 +387,12 @@ void cmdline::module_help()
 
     int mxl1 = 0;
     int mxl2 = 0;
+    bool custom = false;
+
+    if (ladspa_lib && ladspa_label) {
+        sm->set_param(param::LADSPA_LIB, opts[ladspa_lib]);
+        sm->set_param(param::LADSPA_LABEL, opts[ladspa_label]);
+    }
 
     while(item) {
         int l1 = 0;
@@ -406,6 +423,14 @@ void cmdline::module_help()
             l2 = strlen(outstr);
             break;
           }
+          case ui::UI_CUSTOM: {
+            sm->create_custom_ui_items();
+            sm->activate_custom_ui_items();
+            items = sm->get_ui_items();
+            item = items->first_item();
+            custom = true;
+            continue;
+          }
           default:
             l1 = l2 = 0;
         }
@@ -416,6 +441,12 @@ void cmdline::module_help()
         item = items->goto_next();
     }
     mxl1 += 2;
+
+    if (custom) {
+        sm->deactivate_custom_ui_items();
+        items = sm->get_ui_items();
+    }
+
     item = (items != 0 ? items->first_item() : 0);
 
     while(item) {
@@ -462,7 +493,12 @@ void cmdline::module_help()
                 msg.append(spaces::get(mxl1), mxl1 - strlen(s1));
                 iocat::TYPE ioc = param::names::category(pt);
                 const char* s2 = 0;
-                if (ioc == iocat::FIX_STR) {
+
+                if (ladspa_lib && pt == param::LADSPA_LIB)
+                    s2 = opts[ladspa_lib];
+                else if (ladspa_label && pt == param::LADSPA_LABEL)
+                    s2 = opts[ladspa_label];
+                else if (ioc == iocat::FIX_STR) {
                     fixstrparam* fsp;
                     fsp = wcnt::get_fxsparamlist()->get_fix_str_param(pt);
                     if (fsp)
@@ -508,6 +544,12 @@ void cmdline::module_help()
                 ui::moddobj* md = static_cast<ui::moddobj*>(item);
                 dobj_help(md->get_dobj_parent(), md->get_dobj_child(), 1);
                 break;
+              }
+              case ui::UI_CUSTOM: {
+                sm->activate_custom_ui_items();
+                items = sm->get_ui_items();
+                item = items->first_item();
+                continue;
               }
               default:
                 break;
@@ -832,6 +874,30 @@ void cmdline::dobj_help()
     }
     msg += "\nUSERNAME";
 }
+
+
+void cmdline::ladspa_help()
+{
+    ladspa_lib = data[LAD_IX].par1;
+    ladspa_label = data[LAD_IX].par2;
+
+    if (ladspa_lib == 0 || ladspa_label == 0) {
+        msg = "Please specify the LADSPA library name and the LADSPA plugin\n"
+              "label to show the ladspa module definition help for.\n\n";
+        msg+= "Note: depending on where the LADSPA library you wish to use\n"
+              "      is located, and whether the LADSPA_PATH environment\n"
+              "      variable is set or not, you may not need to specify\n"
+              "      the full path to the plugin. When LADSPA_PATH is not\n"
+              "      set, and the full plugin path is not specified, wcnt\n"
+              "      will use:\n\n    ";
+        msg += wcnt::ladspa_path_if_env_not_set;
+        msg += "\n";
+        return;
+    }
+
+    module_help();
+}
+
 
 
 void cmdline::input_help()

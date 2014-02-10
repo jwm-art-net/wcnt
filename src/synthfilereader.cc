@@ -452,7 +452,8 @@ dobj::base* synthfilereader::read_dobj(const char* com)
     }
 
     if (include_dbj(dob->get_username())) {
-        if (wcnt::jwm.is_verbose()) cout << "---- validating..." << endl;
+        if (wcnt::jwm.is_verbose())
+            cout << "---- validating..." << endl;
         errors::TYPE et = dob->validate();
         if (et != errors::NO_ERROR) {
             wc_err("In data object %s, parameter %s %s %s",
@@ -462,7 +463,8 @@ dobj::base* synthfilereader::read_dobj(const char* com)
             delete dob;
             return 0;
         }
-        if (wcnt::jwm.is_verbose()) cout << "Ok." << endl;
+        if (wcnt::jwm.is_verbose())
+            cout << "Ok." << endl;
     }
     com = read_command();
     if (strcmp(com, dobjname.c_str()) != 0) {
@@ -479,10 +481,8 @@ string*  synthfilereader::read_string_list_param (const char* enda,
                                                   const char* endb)
 {
     #ifdef STR_DEBUG
-    cout << "read_string_list_param:";
-    if (enda) cout << " enda = " << enda;
-    if (endb) cout << " endb = " << endb;
-    cout << endl;
+    debug("read_string_list_param: enda '%s' endb '%s'\n", (enda ? enda : ""),
+                                                           (endb ? endb : ""));
     #endif
     if (enda == 0 && endb == 0) {
         wc_err("%s read_string_list_param(char*, char*) called with"
@@ -555,48 +555,31 @@ bool synthfilereader::read_ui_moditems(synthmod::base* sm)
 
     items->match_begin(sm, sm->get_username());
 
-    #ifdef DEBUG
-    std::cout << "=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=" << std::endl;
-    std::cout << "_-_-_-_-_-_-_--- read_ui_moditems ---_-_-_-_-_-_-_" << std::endl;
-    std::cout << "=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=" << std::endl;
-    #endif
+    debug("\n=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=\n"
+          "_-_-_-_-_-_-_--- read_ui_moditems ---_-_-_-_-_-_-_\n"
+          "=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=\n");
 
     ui::moditem* item = 0;
     bool reading = true;
 
     while (reading) {
         const char* str = read_command();
+        debug("()()() read command gave '%s' ()()()\n", str);
 
-        #ifdef DEBUG
-        std::cout << "()()() read command gave \"" << str << "\" ()()()" << std::endl;
-        #endif
-
-  /*      if (strcmp(str, sm->get_username()) == 0) {
-            maybe_end = true;
-            //command = new string(str);
-            //break;
-        }
-*/
         item = items->match_item(str);
 
         switch(item->get_item_type()) {
           case ui::UI_ERROR:
-            #ifdef DEBUG
-            std::cout << "***** ERROR ERROR ERROR *****" << std::endl;
-            #endif
+            debug("***** ERROR ERROR ERROR *****\n");
             wc_err("%s", item->get_descr());
             return false;
           case ui::UI_USERNAME:
-            #ifdef DEBUG
-            std::cout << "ui::UI_USERNAME!" << std::endl;
-            #endif
+            debug("ui::UI_USERNAME!\n");
             command = new string(str);
             reading = false;
             break;
           case ui::UI_COMMENT:
-            #ifdef DEBUG
-            std::cout << "match_item didn't skip comment - wierd" << std::endl;
-            #endif
+            debug("match_item didn't skip comment - wierd\n");
             break;
           case ui::UI_PARAM: {
             ui::modparam* mp = static_cast<ui::modparam*>(item);
@@ -623,6 +606,18 @@ bool synthfilereader::read_ui_moditems(synthmod::base* sm)
                 return false;
             break;
           }
+          case ui::UI_CUSTOM: {
+            debug("encountered custom ui item...\n");
+            sm->create_custom_ui_items();
+            sm->activate_custom_ui_items();
+            command = new string(str);
+            if (!read_ui_moditems(sm)) {
+                debug("error reading custom ui items...\n");
+                return false;
+            }
+            sm->deactivate_custom_ui_items();
+            break;
+          }
           default:
             wc_err("%s invalid ui element.", errors::stock::bad);
             return false;
@@ -645,12 +640,9 @@ bool synthfilereader::read_ui_dobjitems(dobj::base* dob, const char* parent)
     if (!items)
         return true;
 
-    #ifdef DEBUG
-    std::cout << "===========================================" << std::endl;
-    std::cout << "read_ui_dobjitems(dob, parent '" << (parent ? parent : "NULL") << "')" << std::endl;
-    std::cout << "===========================================" << std::endl;
-    #endif
-
+    debug("\n===========================================\n"
+          "read_ui_dobjitems(dob, parent '%s')\n"
+          "===========================================\n", (parent ? parent : "NULL"));
 
     if (wcnt::jwm.is_verbose())
         cout << "--------" << endl;
@@ -663,18 +655,8 @@ bool synthfilereader::read_ui_dobjitems(dobj::base* dob, const char* parent)
 
     while (reading) {
         const char* str = read_command();
-        #ifdef DEBUG
-        std::cout << "eeep reading... str: '" << str << "'" << std::endl;
-        std::cout << "eeep comparing with parent: '" << (parent ? parent : "NULL") << "'" << std::endl;
-        #endif
-        /*if (parent && strcmp(str, parent) == 0) {
-            command = new string(str);
-            break;
-        }*/
-
-        #ifdef DEBUG
-        std::cout << "comparing with dob: '" << dobjname << "'" << std::endl;
-        #endif
+        debug("eeep reading... str: '%s'\n", (str ? str : "NULL"));
+        debug("comparing with dob: '%s'\n", (dobjname ? dobjname : "NULL"));
         if (strcmp(str, dobjname) == 0) {
             command = new string(str);
             break;
@@ -687,21 +669,17 @@ bool synthfilereader::read_ui_dobjitems(dobj::base* dob, const char* parent)
             wc_err("%s match_item returned null item.", errors::stock::major);
             return false;
         }
-        std::cout << "about to switch.." << std::endl;
+        debug("about to switch..\n");
         #endif
 
 
         switch (item->get_item_type()) {
           case ui::UI_ERROR:
-            #ifdef DEBUG
-            std::cout << "***** ERROR ERROR ERROR *****" << std::endl;
-            #endif
+            debug("***** ERROR ERROR ERROR *****\n");
             wc_err("%s", item->get_descr());
             return false;
           case ui::UI_USERNAME:
-            #ifdef DEBUG
-            std::cout << "ui::UI_USERNAME!" << std::endl;
-            #endif
+            debug("ui::UI_USERNAME!\n");
             command = new string(str);
             reading = false;
             break;
@@ -712,9 +690,7 @@ bool synthfilereader::read_ui_dobjitems(dobj::base* dob, const char* parent)
             int pt = dp->get_param_type();
             if (pt == param::STR_UNNAMED || pt == param::STR_LIST) {
                 command = new string(str);
-                #ifdef DEBUG
-                std::cout << "putting string '" << str << "' back..." << std::endl;
-                #endif
+                debug("putting string '%s' back\n", str);
                 if (strcmp(str, parent) == 0)
                     return true;
             }
@@ -837,9 +813,9 @@ synthfilereader::read_ui_dobjparam(dobj::base* dob, int partype,
             *synthfile >> *datastr;
         }
     }
-    #ifdef DEBUG
-    std::cout << "datastr: " << *datastr << std::endl;
-    #endif
+
+    debug("datastr: '%s'\n", (datastr ? datastr->c_str() : "NULL"));
+
     if (include_dbj(dob->get_username())) {
         if (!setpar::set_param(dob, partype, datastr->c_str(), &conv))
         {

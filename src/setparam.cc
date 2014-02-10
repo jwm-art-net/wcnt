@@ -52,9 +52,7 @@ bool set_param(T* obj, int pt, const char* value,
     iocat::TYPE ioc = param::names::category(pt);
     const char* par = param::names::get(pt);
 
-    #ifdef DEBUG
-    std::cout << "\t\tset_param:\t'" << par << "' '" << value << "'" << std::endl;
-    #endif
+    debug("set_param: par:'%s' value: '%s'\n", par, value);
 
     int op = get_operator(value);
     if (op)
@@ -73,12 +71,15 @@ bool set_param(T* obj, int pt, const char* value,
         if (!fsp) {
         #ifdef DEBUG
             wcnt::get_fxsparamlist()->dump();
-            if (!wcnt::get_fxsparamlist()->get_fix_str_param(param::FUNC))
-                std::cout << "still failed manually to get param::FUNC" << std::endl;
-            if (!wcnt::get_fxsparamlist()->get_fix_str_param(param::DATA_FMT))
-                std::cout << "still failed manually to get param::DATA_FMT" << std::endl;
-            if (!wcnt::get_fxsparamlist()->get_fix_str_param(param::WAVE_TYPE))
-                std::cout << "still failed manually to get param::WAVE_TYPE" << std::endl;
+            if (!wcnt::get_fxsparamlist()->get_fix_str_param(param::FUNC)) {
+                debug("still failed manually to get param::FUNC\n");
+            }
+            if (!wcnt::get_fxsparamlist()->get_fix_str_param(param::DATA_FMT)) {
+                debug("still failed manually to get param::DATA_FMT\n");
+            }
+            if (!wcnt::get_fxsparamlist()->get_fix_str_param(param::WAVE_TYPE)) {
+                debug("still failed manually to get param::WAVE_TYPE\n");
+            }
         #endif
 
             iocatconv::destroy_iocat_data(ioc, data);
@@ -104,12 +105,10 @@ bool set_param(T* obj, int pt, const char* value,
         }
     }
     if (!obj->set_param(pt, data)) {
-        #ifdef DEBUG
-        printf("obj:%p\n", obj);
-        printf("obj username: %s\n", obj->get_username());
-        printf("par:%s\n", par);
-        printf("value:%s\n", value);
-        #endif
+        debug("obj:%p\n", obj);
+        debug("obj username: %s\n", obj->get_username());
+        debug("par:%s\n", par);
+        debug("value:%s\n", value);
         if (ioc == iocat::FIX_STR) {
             delete (int*)data;
             data = datatmp;

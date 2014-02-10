@@ -73,7 +73,7 @@ int ladspa_plug::get_port_index(const char* port)
         return -1; // error: plugin author is mental.
 
     for (portix = 0; portix < descriptor->PortCount; ++portix) {
-        if (strcmp(port, descriptor->PortNames[portix]) == 0)
+        if (strcasecmp(port, descriptor->PortNames[portix]) == 0)
             return portix;
     }
 
@@ -195,7 +195,7 @@ ladspa_plug* ladspa_lib::get_plugin(const char* name)
         return 0;
     ladspa_plug* plug = goto_first();
     while(plug){
-        if (strcmp(name, plug->get_label()) == 0)
+        if (strcasecmp(name, plug->get_label()) == 0)
             return plug;
         plug = goto_next();
     }
@@ -217,7 +217,7 @@ ladspa_plug* ladspa_lib::get_plugin(const char* name)
             return 0;
         }
         debug("checking descriptor '%s' for match with '%s'\n", ldescr->Label, name);
-        if(strcmp(ldescr->Label, name) == 0)
+        if(strcasecmp(ldescr->Label, name) == 0)
             break;
     }
     plug = new ladspa_plug(ldescr);
@@ -238,6 +238,7 @@ ladspa_loader::~ladspa_loader()
 {
 }
 
+
 ladspa_plug*
 ladspa_loader::get_plugin(const char* fname, const char* label)
 {
@@ -249,13 +250,13 @@ ladspa_loader::get_plugin(const char* fname, const char* label)
     // see if plugin lib is already loaded...
     ladspa_lib* lib = goto_first();
     while(lib){
-        if (strcmp(lib->get_filename(), fname) == 0)
+        if (strcasecmp(lib->get_filename(), fname) == 0)
             return lib->get_plugin(label);
         lib = goto_next();
     }
     // requested plugin lib not yet loaded...
     LADSPA_Handle lhandle;
-    if (!(lhandle = dlopen_plugin(fname, RTLD_NOW))){
+    if (!(lhandle = dlopen_plugin(fname, RTLD_LAZY))){
         debug("dlopen_plugin '%s' '%s' failed\n", fname, label);
         ladspa_err("Could not open LADSPA plugin %s %s. Please ensure "
                     "the LADSPA_PATH environment variable is set.",
@@ -315,7 +316,7 @@ void* ladspa_loader::dlopen_plugin(const char* fname, int flag)
     }
     end_in_so = 0;
     if (fnlen > 3)
-        end_in_so = (strcmp(fname + fnlen - 3, ".so") == 0);
+        end_in_so = (strcasecmp(fname + fnlen - 3, ".so") == 0);
     if (!end_in_so) {
         buf = new char[fnlen + 4];
         strcpy(buf, fname);

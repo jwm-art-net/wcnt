@@ -116,21 +116,22 @@ namespace synthmod
      case synthmod::CAPS_PLATE:
         sm = new caps_plate2x2(uname);          break;
      #endif // WITH_LADSPA
-     case synthmod::WAVE:           sm = new wave(uname);            break;
-     case synthmod::WAVE_PHASE:     sm = new wave_phase(uname);      break;
-     case synthmod::CONSTANT_FREQ:  sm = new constant_freq(uname);   break;
-     case synthmod::CONSTANT_NOTE:  sm = new constant_note(uname);   break;
-     case synthmod::BALANCE:        sm = new balance(uname);         break;
-     case synthmod::TRIGECHO:       sm = new trigecho(uname);        break;
-     case synthmod::INSPECT:        sm = new inspect(uname);         break;
-     case synthmod::TRIGCOUNTER:    sm = new trigcounter(uname);     break;
-     case synthmod::TRIGROUTER:     sm = new trigrouter(uname);      break;
-     case synthmod::GROUPCONTROL:   sm = new group_control(uname);   break;
-     case synthmod::FADER:          sm = new fader(uname);           break;
-     case synthmod::SAMPLECLIMB:    sm = new sample_climb(uname);    break;
-     case synthmod::SEQ_ROUTER:     sm = new seq_router(uname);      break;
-     case synthmod::WCNT_NOTE:      sm = new wcnt_note(uname);       break;
-     case synthmod::SEQ_ECHO:       sm = new seq_echo(uname);        break;
+     case synthmod::WAVE:           sm = new wave(uname);           break;
+     case synthmod::WAVE_PHASE:     sm = new wave_phase(uname);     break;
+     case synthmod::CONSTANT_FREQ:  sm = new constant_freq(uname);  break;
+     case synthmod::CONSTANT_NOTE:  sm = new constant_note(uname);  break;
+     case synthmod::BALANCE:        sm = new balance(uname);        break;
+     case synthmod::TRIGECHO:       sm = new trigecho(uname);       break;
+     case synthmod::INSPECT:        sm = new inspect(uname);        break;
+     case synthmod::TRIGCOUNTER:    sm = new trigcounter(uname);    break;
+     case synthmod::TRIGROUTER:     sm = new trigrouter(uname);     break;
+     case synthmod::GROUPCONTROL:   sm = new group_control(uname);  break;
+     case synthmod::FADER:          sm = new fader(uname);          break;
+     case synthmod::SAMPLECLIMB:    sm = new sample_climb(uname);   break;
+     case synthmod::SEQ_ROUTER:     sm = new seq_router(uname);     break;
+     case synthmod::WCNT_NOTE:      sm = new wcnt_note(uname);      break;
+     case synthmod::SEQ_ECHO:       sm = new seq_echo(uname);       break;
+     case synthmod::LADSPA:         sm = new ladspa_module(uname);  break;
      default:
         sm = 0;
     }

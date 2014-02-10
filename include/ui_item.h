@@ -32,6 +32,7 @@ namespace ui
     UI_COMMENT,
     UI_INPUT,
     UI_PARAM,
+    UI_OUTPUT,      // UI_OUTPUT not-implemented here
     UI_DOBJ,
     // ---------
     UI_CUSTOM,      // indicates custom ui generation should commence
@@ -112,13 +113,16 @@ namespace ui
     // items).  Where distinct groups immediatelly follow each other, then
     // only five distinct but adjaecent groups can be accommodated.
 
-    UI_GROUP1 =         0x01000,
-    UI_GROUP2 =         0x02000,
-    UI_GROUP3 =         0x04000,
-    UI_GROUP4 =         0x08000,
-    UI_GROUP5 =         0x10000,
+    UI_GROUP1 =        0x01000,
+    UI_GROUP2 =        0x02000,
+    UI_GROUP3 =        0x04000,
+    UI_GROUP4 =        0x08000,
+    UI_GROUP5 =        0x10000,
 
     // NOTE: items CANNOT be part of a group and option simultaneously.
+
+    // items marked UI_NO_EDIT can be set one time only.
+    UI_NO_EDIT =      0x100000,
 
     // implementation only:
     UI_OPTION_MASK=     0x00f0,
@@ -164,6 +168,7 @@ namespace ui
     bool is_opt_optional()      { return !!(flags & UI_OPT_OPTIONAL); }
     bool is_dummy()             { return !!(flags & UI_OPT_DUMMY); }
     bool is_ui_opt_duplicate()  { return !!(flags & UI_OPT_DUPLICATE); }
+    bool is_no_edit()           { return !!(flags & UI_NO_EDIT); }
     bool has_flag(FLAGS f)      { return !!(flags & f); }
 
     void reset_matched()        { flags &= ~UI_MATCHED; }
@@ -391,7 +396,7 @@ namespace ui
 
     #ifdef DEBUG
     void dump() {
-        char buf[40];
+        char buf[40] = "";
         this->get_item_flags(buf, 40);
         debug("%s param: '%s' (0x%p)\n", buf, param::names::get(partype), this);
     }
@@ -452,7 +457,7 @@ namespace ui
 
     #ifdef DEBUG
     void dump() {
-        char buf[40];
+        char buf[40] = "";
         this->get_item_flags(buf, 40);
         debug("%s input: '%s' (0x%p)\n", buf, input::names::get(intype), this);
     }
@@ -487,7 +492,7 @@ namespace ui
 
     #ifdef DEBUG
     void dump() {
-        char buf[40];
+        char buf[40] = "";
         this->get_item_flags(buf, 40);
         debug("%s dobj: parent: '%s' (0x%p) child: '%s'\n", buf,
                                                 dobj::names::get(parent),
@@ -514,7 +519,7 @@ namespace ui
  class custom_item : public base<T>
  {
   public:
-    custom_item() : base<T>(UI_CUSTOM) {};
+    custom_item() : base<T>(UI_CUSTOM) { this->set_flags(UI_NO_EDIT); };
     ~custom_item() {};
 
     // validate() may change (or stay the same and be ignored)
@@ -523,7 +528,7 @@ namespace ui
 
     #ifdef DEBUG
     void dump() {
-        char buf[40];
+        char buf[40] = "";
         this->get_item_flags(buf, 40);
         debug("%s CUSTOM_ITEM (0x%p)\n", buf, this);
     }

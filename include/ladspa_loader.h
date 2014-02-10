@@ -69,6 +69,7 @@ class ladspa_loader : public linked_list<ladspa_lib>
     ladspa_loader();
     ~ladspa_loader();
 
+    ladspa_plug* get_plugin_by_label(const char* label);
     ladspa_plug* get_plugin(const char* filename, const char* label);
 
     static const char* get_error_msg();

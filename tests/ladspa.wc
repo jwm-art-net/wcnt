@@ -1,0 +1,22 @@
+wcnt-1.30/jwmsynth
+
+samplerate 44100
+
+ladspa
+flanger
+    ladspa_lib     retro_flange_1208
+    ladspa_label   retroflange
+    average_stall_ms        150
+    flange_frequency_hz     0.3333
+    in_input    off
+flanger
+
+wcnt_exit
+x
+    in_bar      off
+    exit_bar    0
+x
+
+wcnt-1.30/jwmsynth
+
+

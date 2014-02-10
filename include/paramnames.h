@@ -200,6 +200,8 @@ namespace param
     STR_UNNAMED,
     STR_LIST,
     TIME_IS_RELATIVE,
+    LADSPA_LIB,
+    LADSPA_LABEL,
     CUSTOM_UI,
     LAST_TYPE
  };

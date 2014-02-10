@@ -26,6 +26,7 @@ namespace ui
  typedef   input_item<synthmod::base*> modinput;
  typedef    dobj_item<synthmod::base*> moddobj;
  typedef comment_item<synthmod::base*> modcomment;
+ typedef  custom_item<synthmod::base*> modcustom;
  typedef    item_list<synthmod::base*> moditem_list;
 };
 

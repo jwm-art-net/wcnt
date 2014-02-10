@@ -189,7 +189,7 @@ int getnames<T, C>::register_type(const char* name, C cat, const char* descr, co
 
     char* name_str = sanitize_name(name, " -.:()\"'", '_', prefix);
 
-    debug("registering type '%s' ('%s') ('%s')\n", name, name_str, descr);
+    debug("registering type '%s' ('%s') ('%s')\n", name, name_str, (descr ? descr : ""));
 
     int ret = type(name_str);
 
@@ -253,7 +253,7 @@ int getnames<T, C>::ext_type(const char* name)
         debug("found name '%s'\n", name);
         debug("id/type: %d\n", xd->type);
         debug("cat: %2p\n", (void*)xd->cat);
-        debug("descr: '%s'\n", xd->descr);
+        debug("descr: '%s'\n", (xd->descr ? xd->descr : "NULL"));
         return xd->type;
     }
 
@@ -272,7 +272,7 @@ const char* getnames<T, C>::ext_get(int t)
         debug("name '%s'\n", xd->name);
         debug("found id/type: %d\n", xd->type);
         debug("cat: %2p\n", (void*)xd->cat);
-        debug("descr: '%s'\n", xd->descr);
+        debug("descr: '%s'\n", (xd->descr ? xd->descr : "NULL"));
         return xd->name;
     }
 
@@ -291,7 +291,7 @@ C getnames<T, C>::ext_category(int t)
         debug("name '%s'\n", xd->name);
         debug("found id/type: %d\n", xd->type);
         debug("cat: %2p\n", (void*)xd->cat);
-        debug("descr: '%s'\n", xd->descr);
+        debug("descr: '%s'\n", (xd->descr ? xd->descr : "NULL"));
         return xd->cat;
     }
 
@@ -310,7 +310,7 @@ const char* getnames<T, C>::ext_descr(int t)
         debug("name '%s'\n", xd->name);
         debug("found id/type: %d\n", xd->type);
         debug("cat: %2p\n", (void*)xd->cat);
-        debug("descr: '%s'\n", xd->descr);
+        debug("descr: '%s'\n", (xd->descr ? xd->descr : "NULL"));
         return xd->descr;
     }
 

@@ -124,6 +124,16 @@ namespace synthmod
     void ui_register();
 
     virtual ui::moditem_list* get_ui_items() = 0;
+    //  set_custom_ui_items
+    //  a new ui::moditem_list is passed to the method into which the
+    //  custom ui items the module requires should be populated
+    virtual bool create_custom_ui_items();
+
+    // the implementation of set_custom_ui_items should ensure the call to
+    // get_ui_items returns the custom ui items created by
+    // create_custom_ui_items. the next call should not.
+    virtual void activate_custom_ui_items();
+    virtual void deactivate_custom_ui_items();
 
   protected:
     static void force_abort()   { abort_status = ON; }
@@ -142,11 +152,12 @@ namespace synthmod
         the UI. These should be called only once when a call to
         do_registration() returns true.
      */
-    ui::modparam* register_param(int param_type);
-    ui::modparam* register_param(int param_type, const char* fixed_string);
-    ui::modinput* register_input(int input_type);
-    ui::moddobj* register_dobj(dobj::TYPE parent, dobj::TYPE sprog);
+    ui::modparam*   register_param(int param_type);
+    ui::modparam*   register_param(int param_type, const char* fixed_string);
+    ui::modinput*   register_input(int input_type);
+    ui::moddobj*    register_dobj(dobj::TYPE parent, dobj::TYPE sprog);
     ui::modcomment* register_comment(const char* literal);
+    ui::modcustom*  register_custom_ui();
 
     /*  Method for output registration, outputs must be registered per
         instance.S
@@ -183,7 +194,7 @@ namespace synthmod
 
  #ifdef DEBUG
  #define sm_err(fmt, ... )                              \
- {                                                       \
+ {                                                      \
     printf("%40s:%5d %-35s\n",                          \
                     __FILE__, __LINE__, __FUNCTION__);  \
     cfmt(synthmod::base::err_msg, STRBUFLEN, fmt, __VA_ARGS__);   \
