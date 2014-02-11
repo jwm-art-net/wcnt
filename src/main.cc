@@ -3,7 +3,7 @@
 //                     O---\      [:::>  <:::]      /---O                |
 //                     \ ----------   wcnt   ---------- /                |
 //                          Wav Composer Not Toilet!                     |
-//                     / ----------   1.26   ---------- \                |
+//                     / ----------   1.30   ---------- \                |
 //                     O---/      [::>    <::]      \---O                |
 //                                     ||                                |
 //                          ========================                     |
@@ -11,6 +11,10 @@
 //                          ------------------------                     |
 //                          |  Made In Stourmouth  |                     |
 //                          ------------------------                     |
+//                          | 2014 James W. Morris.|                     |
+//                          ------------------------                     |
+//                          | Made In Cliftonville |                     |
+//                          ========================                     |
 //                                                                       /
 // contact: James_W.Morris ( james@jwm-art.net )                         /
 //                                                                       /
@@ -33,7 +37,7 @@ void exitramblings();
 
 void test();
 
-int main(const int argc, const char** const argv)
+int main(const int argc, char** argv)
 {
     #ifdef SANITY_CHECKS
     sanity_checks();
@@ -46,16 +50,22 @@ int main(const int argc, const char** const argv)
     // with modlist which needed to be delete BEFORE ladspa_loader.
     #ifdef WITH_LADSPA
     ladspa_loader* ladspaloader = new ladspa_loader;
+/*
+    char* p = ladspaloader->find_lib_path("caps");
+
+    if (p) {
+        debug("found path:'%s'\n", p);
+        delete [] p;
+    }
+*/
     wcnt::jwm.register_ladspaloader(ladspaloader);
     #endif
     synthmod::list* modlist = new synthmod::list(DELETE_DATA);
     wcnt::jwm.register_modlist(modlist);
     // the above is needed before cmd->scan because scan might be
     // prompted (by commandline) to create help (ie for modules etc).
-    cmd->scan();
-    if (!wcnt::jwm.is_no_title())
-        title();
-    if (cmd->show_help() || cmd->bad_opts()) {
+
+    if (!cmd->scan()) {
         std::cout << cmd->get_message() << std::endl;
         delete cmd;
         delete modlist;
@@ -65,6 +75,8 @@ int main(const int argc, const char** const argv)
         return -1;
     }
 
+    if (!wcnt::jwm.is_no_title())
+        title();
 /*
     int t;
     input::names::register_type("in:l", iocat::DOUBLE, "input for left stereo signal");

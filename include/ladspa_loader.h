@@ -49,16 +49,19 @@ class ladspa_plug
 class ladspa_lib : public linked_list<ladspa_plug>
 {
  public:
-    ladspa_lib(const char*, LADSPA_Handle);
+    ladspa_lib(const char* path, LADSPA_Handle, LADSPA_Descriptor_Function);
     ~ladspa_lib();
-    const char* get_filename() const { return filename; }
-    LADSPA_Handle get_handle() const { return lib_handle; }
+
+    const char*                get_path()       const { return path;  }
+    LADSPA_Handle              get_handle()     const { return handle;}
+    LADSPA_Descriptor_Function get_descr_func() const { return descrfunc; }
 
     ladspa_plug* get_plugin(const char* name);
 
  private:
-    const char*  filename;
-    LADSPA_Handle lib_handle;
+    const char*                path;
+    LADSPA_Handle              handle;
+    LADSPA_Descriptor_Function descrfunc;
 };
 
 //-------------------------------------------------------------
@@ -69,13 +72,15 @@ class ladspa_loader : public linked_list<ladspa_lib>
     ladspa_loader();
     ~ladspa_loader();
 
-    ladspa_plug* get_plugin_by_label(const char* label);
-    ladspa_plug* get_plugin(const char* filename, const char* label);
+    // returns absolute path of lib specified by filename. filename
+    // may be an absolute path. returned value should be delete [] ed.
+    // does not guarantee the path found points to a ladspa plugin lib.
+    char*        find_lib_path(const char* lib_name);
+    ladspa_lib*  load_lib(const char* path);
+    ladspa_plug* get_plugin(const char* path, const char* label);
 
     static const char* get_error_msg();
 
- private:
-    void* dlopen_plugin(const char* filename, int flag);
 };
 
 // partially based upon load.c by Richard W.E. Furse, as provided within

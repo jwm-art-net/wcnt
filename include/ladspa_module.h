@@ -24,8 +24,9 @@ class ladspa_module : public synthmod::base
     void deactivate_custom_ui_items() { custom = false; }
 
  private:
-    char* filename;
+    char* libname;
     char* label;
+    char* path;
     ui::moditem_list*        plugin_items;
     const LADSPA_Descriptor* l_descriptor;
     LADSPA_Handle            l_handle;

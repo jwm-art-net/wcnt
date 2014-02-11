@@ -7,7 +7,7 @@
 
 ladspa_module::ladspa_module(const char* uname) :
  synthmod::base(synthmod::LADSPA, uname, SM_DEFAULT),
- filename(0), label(0), plugin_items(0), l_descriptor(0), l_handle(0), lp(0),
+ libname(0), label(0), path(0), plugin_items(0), l_descriptor(0), l_handle(0), lp(0),
  port_count(0), port_mappings(0),
  custom(false)
  #if DEBUG
@@ -52,10 +52,12 @@ ladspa_module::~ladspa_module()
         }
         delete [] port_mappings;
     }
-    if (filename)
-        delete [] filename;
+    if (libname)
+        delete [] libname;
     if (label)
         delete [] label;
+    if (path)
+        delete [] path;
 }
 
 
@@ -90,7 +92,7 @@ bool ladspa_module::set_param(int pt, const void* data)
 {
     if (!custom) {
         if (pt == param::LADSPA_LIB)
-            return ((filename = new_strdup((const char*)data)) != 0);
+            return ((libname = new_strdup((const char*)data)) != 0);
 
         if (pt == param::LADSPA_LABEL)
             return ((label = new_strdup((const char*)data)) != 0);
@@ -123,14 +125,9 @@ const void* ladspa_module::get_param(int pt) const
     for (portix = 0; portix < port_count; ++portix) {
         port_map* pm = &port_mappings[portix];
         debug("checking port index %d id %d for id %d\n", portix, pm->id, pt);
-        if (pm->id == pt) {
-            if (pm->type != ui::UI_PARAM) {
-                sm_err("%s in LADSPA module '%s' ('%s' '%s') confusion has "
-                       "arisen between ports and parameters...",
-                       errors::stock::major, get_username(), filename, label);
-                return 0;
-            }
-            return &pm->param;
+        if (pm->type == ui::UI_PARAM) {
+            if (pm->id == pt)
+                return &pm->param;
         }
     }
     return 0;
@@ -148,8 +145,15 @@ bool ladspa_module::create_custom_ui_items()
     }
     custom_created = true;
     #endif
+
+    if (!(path = wcnt::jwm.get_ladspaloader()->find_lib_path(libname))) {
+        sm_err("Failed to find LADSPA library '%s'\n", libname);
+        return false;
+    }
+
+    lp = wcnt::jwm.get_ladspaloader()->get_plugin(path, label);
+
     plugin_items = new ui::moditem_list;
-    lp = wcnt::jwm.get_ladspaloader()->get_plugin(filename, label);
 
     if (!lp) {
         sm_err("%s", ladspa_loader::get_error_msg());
@@ -165,7 +169,7 @@ bool ladspa_module::create_custom_ui_items()
 
     if (l_descriptor->PortCount > INT_MAX) {
         sm_err("LADSPA plugin '%s' '%s'has too many ports, giving up.",
-                                                        filename, label);
+                                                        path, label);
         invalidate();
         return false;
     }
@@ -174,7 +178,8 @@ bool ladspa_module::create_custom_ui_items()
     port_count = l_descriptor->PortCount;
 
     if (!(port_mappings = new port_map[port_count])) {
-        sm_err("Port mapping allocation for LADSPA plugin '%s' '%s' failed.", filename, label);
+        sm_err("Port mapping allocation for LADSPA plugin '%s' '%s' failed.",
+                                                        path, label);
         invalidate();
         return false;
     }
@@ -182,7 +187,8 @@ bool ladspa_module::create_custom_ui_items()
     activate_custom_ui_items();
 
     for (portix = 0; portix < port_count; ++portix) {
-        debug("processing port index %d name '%s'\n", portix, l_descriptor->PortNames[portix]);
+        debug("processing port index %d name '%s'\n", portix,
+                                                      l_descriptor->PortNames[portix]);
         port_map* pm = &port_mappings[portix];
         pm->id = 0;
         pm->type = 0;

@@ -22,231 +22,171 @@
 #include <iostream>
 
 
-cmdline::cmdline(int const argc, const char** const argv) :
- opts_count(argc), opts(argv), opts_flags(0), ladspa_lib(0), ladspa_label(0),
- good_opts(false)
+// ID               long                short
+cmdline::switches cmdline::swdata[SW_COUNT] = {
+ {  VERBOSE,        "verbose",        "v"    },
+ {  NO_RUN,         "no-run",         "nr"   },
+ {  NO_TITLE,       "no-title",       "nt"   },
+ {  NO_PROGRESS,    "no-progress",    "np"   },
+ {  MINIMAL,        "minimal",        "m"    }
+};
+
+
+//  ID              long            short   min/max-args    valid flags
+cmdline::commands cmdline::cmddata[CMD_COUNT] = {
+ {  RUN,            0,              0,      1,1,  VERBOSE | NO_RUN | NO_TITLE | NO_PROGRESS },
+ {  HELP,           "help",         "h",    0,0,  VERBOSE | NO_TITLE },
+ {  MOD_HELP,       "mod-help",     "mh",   0,1,  VERBOSE | NO_TITLE | MINIMAL },
+ {  DOBJ_HELP,      "dobj-help",    "dh",   0,1,  VERBOSE | NO_TITLE | MINIMAL },
+ {  INPUT_HELP,     "input-help",   "ih",   1,2,  NO_TITLE },
+ {  LADSPA_HELP,    "ladspa-help",  "lh",   0,2,  VERBOSE | NO_TITLE | MINIMAL },
+ {  SAMPLE_INFO,    "sample-info",  "si",   1,1,  NO_TITLE },
+ {  NOTE_INFO,      "note-info",    "ni",   1,2,  NO_TITLE },
+ {  FREQ_INFO,      "freq-info",    "fi",   1,1,  NO_TITLE },
+ {  HEADER,         "header",       0,      0,0,  NO_TITLE },
+ {  ABOUT,          "about",        0,      0,0,  0 }
+};
+
+// ID               description\display
+cmdline::textuals cmdline::texts[CMD_COUNT] = {
+ {  RUN,            "Generate and execute synth specified in file "
+                    "(by convention has .wc extension).",
+                    "[FILE]"                        },
+
+ {  HELP,           "Display command line help.",
+                    0                               },
+
+ {  MOD_HELP,       "List all modules, or show definition of specific module.",
+                    "[MODULE NAME]"                 },
+
+ {  DOBJ_HELP,      "Show data-object help.",
+                    "[DOBJ NAME]"                   },
+
+ {  INPUT_HELP,     "Show valid outputs for specific input. The outputs "
+                    "displayed can be optionally limited to those created "
+                    "by [FILE].",
+                    "[INPUT NAME] [FILE]"           },
+
+ {  LADSPA_HELP,    "List all LADSPA libraries and plugins, or list plugins "
+                    "within specifc library, or show module definition for "
+                    "specifc LADSPA plugin.",
+                    "[LIBRARY NAME] [PLUGIN LABEL]" },
+
+ {  SAMPLE_INFO,    "Display sample information about [AUDIO FILE]. Works with "
+                    "any format supported by libsndfile.",
+                    "[AUDIO FILE]." },
+
+ {  NOTE_INFO,      "Display frequency information for [NOTE NAME]. Optionally "
+                    "provide [SAMPLE RATE] to display the phase-step value.",
+                    "[NOTE NAME] [SAMPLE RATE]"     },
+
+ {  FREQ_INFO,      "Display the phase-step value for given [FREQUENCY] at "
+                    "specified [SAMPLE RATE].",
+                    "[FREQUENCY] [SAMPLE RATE]"     },
+
+ {  HEADER,         "Display the header that should be in place at the top "
+                    "and bottom of every .wc file.",
+                    0 },
+
+ {  ABOUT,          "Display contact information about Wav Composer Not Toilet",
+                    0 }
+};
+
+
+cmdline::cmdline(int argc, char** argv) :
+ opt_count(0), opts(0), switch_flags(0), ladspa_lib(0), ladspa_label(0)
 {
+    int opt = 0;;
+    opts = new char*[argc];
+    for (int arg = 0; arg < argc; ++arg) {
+        opts[arg] = 0;
+        if (*argv[arg] == '-') {
+            bool match = false;
+            debug("checking argv[%d] ('%s') against switches\n", arg, argv[arg]);
+            for (int sw = 0; sw < SW_COUNT; ++sw) {
+                if (*(argv[arg] + 1) == '-') {
+                    if (strcmp(argv[arg] + 2, swdata[sw]._long) == 0) {
+                        switch_flags |= swdata[sw].value;
+                        match = true;
+                    }
+                }
+                else if (strcmp(argv[arg] + 1, swdata[sw]._short) == 0) {
+                    switch_flags |= swdata[sw].value;
+                    match = true;
+                }
+            }
+            if (!match) // assume is not switch, process later...
+                opts[opt++] = argv[arg];
+        }
+    }
+    opt_count = opt;
 }
+
 
 cmdline::~cmdline()
 {
+    if (opts)
+        delete [] opts;
 }
 
-cmdline::cmd_opts_data cmdline::data[OPTS_COUNT] =
-{
-{ WC_FILE,
-    0,                      0,      "<filename.wc>",                0,0,2,
-    "\tGenerate and run jwmsynth specified in filename.wc.",
-    0
-},
-{ VERBOSE,
-    "--verbose",            "-v",   "<filename.wc>",                0,0,6,
-    "\tDisplay lots of information as modules and data objects are\n"
-    "\tcreated.",
-    0
-},
-{ DONT_RUN,
-    "--dont-run",           0,      "<filename.wc>",                0,0,5,
-    "\tCreate synth from filename.wc but do not run it. For testing...",
-    0
-},
-{ NO_TITLE,
-    "--no-title",           "-nt",  "<filename.wc>",                0,0,6,
-    "\tDon't display titles or flush complete message.",
-    0
-},
-{ NO_PROGRESS,
-    "--no-progress",        "-np",  "<filename.wc>",                0,0,6,
-    "\tDon't display progress ticker.",
-    0
-},
-{ MOD_HELP,
-    "--module-help",        "-mh",  "[module_type]",                0,0,4,
-    "\tDisplay a list of all wcnt synth modules, or display a specific\n"
-    "\tmodule definition.",
-    &cmdline::module_help
-},
-{ IN_HELP,
-    "--input-help",         "-ih",  "[input_type] [filename.wc]",   0,0,5,
-    "\tDisplay a list of all input types, or display a list of outputs\n"
-    "\tcompatible with specified input. The list of compatible outputs\n"
-    "\tcan be restricted to only list the outputs of modules in\n"
-    "\tfilename.wc.",
-    &cmdline::input_help
-},
-{ DOBJ_HELP,
-    "--data-object-help",   "-dh",  "[data_object_type]",           0,0,4,
-    "\tDisplay list of data object types or display a data object's\n"
-    "\tdefinition.",
-    &cmdline::dobj_help
-},
-{ LADSPA_HELP,
-    "--ladspa-help",        "-lh",  "[library] [label]",            0,0,5,
-    "\tDisplays the ladspa module definition which is generated in \n"
-    "\taccordance with the LADSPA plugin desired for use.\n",
-    &cmdline::ladspa_help
-},
-{ SAMPLE_INFO,
-    "--sample-info",        "-si",  "<sample.wav>",                 0,0,4,
-    "\tDisplay information about a WAV file audio sample. Such\n"
-    "\tinformation is useful for setting sampler parameters.",
-    &cmdline::sample_info
-},
-{ NOTE_INFO,
-    "--note-info",          "-ni",  "<note_name>",                  0,0,4,
-    "\tTranslate a note name (ie c#-1, e2) to a frequency.",
-    &cmdline::note_info
-},
-{ FREQ_INFO,
-    "--freq-info",          "-fi",  "<frequency> <samplerate>",     0,0,5,
-    "\tTranslate a frequency to degrees-per-sample for given sample\n"
-    "\trate. Useful for constant frequency waveform generation etc.",
-    &cmdline::freq_info
-},
-{ HEADER,
-    "--header",             0,      0,                              0,0,2,
-    "\tShow the wcnt header line which must be at the start and end of\n"
-    "\twcnt .wc files.",
-    &cmdline::header
-},
-{ HELP,
-    "--help",               "-h",   0,                              0,0,2,
-    "\tLists all of wcnt's command line options.",
-    &cmdline::help
-},
-{ LONGHELP,
-    "--longhelp",           "-lh",  0,                              0,0,2,
-    "\tDisplay help and descriptions for all command line options.",
-    &cmdline::help
-},
-{ ABOUT,
-    "--about",              0,      0,                              0,0,2,
-    "\tBrief information about wcnt and it's author.",
-    &cmdline::about
-}
-};
 
 bool cmdline::scan()
 {
-#ifdef DEBUG
-    std::cout << "\ncmdline::scan()";
-    std::cout << "\ncommandline arguements count: " << opts_count;
-    for(int i = 0; i < opts_count; i++) {
-        std::cout << "\n" << i << " = '" << opts[i] << "'";
-    }
-#endif
-    if (opts_count == 1) {
-        help();
-        return false;
-    }
-    bool extraneous = false;
-    for (int arg = 1; arg < opts_count; arg++) {
-#ifdef DEBUG
-        std::cout << "\nprocessing arg: " << opts[arg];
-#endif
-        int o;
-        for (o = 1; o < OPTS_COUNT; o++){
-#ifdef DEBUG
-            std::cout << "\n    comparing with: " << data[o].olong;
-#endif
-            if (((data[o].olong) ?
-                    strcmp(opts[arg], data[o].olong) == 0  : false)
-                    ||
-                ((data[o].oshort) ?
-                    strcmp(opts[arg], data[o].oshort) == 0 : false))
-            {
-#ifdef DEBUG
-                std::cout << "\n    adding: " << data[o].type;
-#endif
-                opts_flags += data[o].type;
-#ifdef DEBUG
-                std::cout << " to flags ( now: " << opts_flags << " )";
-#endif
-                switch(data[o].type){
-                    case VERBOSE:
-                    case DONT_RUN:
-                    case NO_TITLE:
-                    case NO_PROGRESS:
-                    case HEADER:
-                    case HELP:
-                    case LONGHELP:
-                        data[o].par1 = 1;
-#ifdef DEBUG
-                        std::cout << "\n    arg ";
-                        std::cout << data[o].olong;
-                        std::cout << " set to 1 : " << data[o].par1;
-#endif
-                        o = 100;
-                        break;
-                    default:
-                        if (data[o].type == 0)std::cout << "!$*%&(@!";
-                        data[o].par1 = (arg + 1 < opts_count)? ++arg : 0;
-                        data[o].par2 = (arg + 1 < opts_count)? arg+1 : 0;
-#ifdef DEBUG
-                        std::cout << "\n    arg may require two params: ";
-                        std::cout << data[o].par1 << " and "
-                            << data[o].par2;
-#endif
-                        o = 100;
+    int cmd;
+
+    if (*opts[1] == '-') {
+        int match_cmd = -1;
+        for (cmd = 1; cmd < CMD_COUNT; ++cmd) {
+            if (*(opts[1] + 1) == '-') {
+                if (strcmp(opts[1] + 2, cmddata[cmd]._long) == 0) {
+                    match_cmd = cmd;
+                    break;
                 }
             }
-        }
-            if(o == OPTS_COUNT)
-            {
-#ifdef DEBUG
-                std::cout << "\n    comparison failed.";
-#endif
-                if(data[WC_IX].par1 == 0) {
-#ifdef DEBUG
-                    std::cout << "\n    using '" << opts[arg] << "'";
-                    std::cout << " as .wc file." << std::endl;
-#endif
-                    data[WC_IX].par1 = arg;
-                }
-                else
-                    extraneous = true;
+            else if (strcmp(opts[1] + 1, cmddata[cmd]._short) == 0) {
+                match_cmd = cmd;
+                break;
             }
-    }
-    if (extraneous){
-        invalid_args();
+        }
+        if (match_cmd == -1) {
+            debug("unrecognized argument.\n");
+            invalid_args();
+            return false;
+        }
+        if (opt_count - 1 < cmddata[match_cmd].min_args
+         || opt_count - 1 > cmddata[match_cmd].max_args) {
+            debug("wrong argument count.\n");
+            invalid_args();
+            return false;
+        }
+        switch(match_cmd) {
+          case MOD_HELP:    mod_help();     break;
+          case DOBJ_HELP:   dobj_help();    break;
+          case INPUT_HELP:  input_help();   break;
+          case LADSPA_HELP: ladspa_help();  break;
+          case SAMPLE_INFO: sample_info();  break;
+          case NOTE_INFO:   note_info();    break;
+          case FREQ_INFO:   freq_info();    break;
+          case HEADER:      header();       break;
+          case ABOUT:       about();        break;
+          default:
+            help();
+        }
         return false;
     }
-    for (int o = 1; o < OPTS_COUNT; o++) {
-        if ((data[o].type & opts_flags)) {
-            if (opts_count > data[o].max_args) {
-                invalid_args();
-                return false;
-            }
-        }
-    }
 
-    if (!set_jwm_globals())
-        return false;
+    // wcnt file
 
-    return (good_opts = true);
-}
-
-
-bool cmdline::show_help()
-{
-    for (int o = 1; o < OPTS_COUNT; o++) {
-        if ((data[o].type & opts_flags)) {
-            if (data[o].helpfunc){
-                (this->*data[o].helpfunc)();
-                return true;
-            }
-        }
-    }
-    return false;
+    return true;
 }
 
 
 bool cmdline::set_jwm_globals()
 {
-    wcnt::jwm.verbose  = (data[V_IX].par1) ? true : false;
-    wcnt::jwm.dont_run = (data[DONT_RUN_IX].par1) ? true : false;
-    wcnt::jwm.no_title = (data[NO_TITLE_IX].par1) ? true : false;
-    wcnt::jwm.no_progress = (data[NO_PROGRESS_IX].par1) ? true : false;
+    wcnt::jwm.verbose  =    (switch_flags & VERBOSE);
+    wcnt::jwm.dont_run =    (switch_flags & NO_RUN);
+    wcnt::jwm.no_title =    (switch_flags & NO_TITLE);
+    wcnt::jwm.no_progress = (switch_flags & NO_PROGRESS);
 
     if (wcnt::jwm.wc_path || wcnt::jwm.wc_file){
         msg = "\nGlobals (path) being set again... I won't do it.";

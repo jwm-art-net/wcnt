@@ -9,6 +9,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <limits.h>
+#include <sys/stat.h>
 
 #include "../include/globals.h"
 
@@ -179,50 +180,51 @@ bool ladspa_plug::get_port_upper_bound(int portix, LADSPA_Data* result)
 
 //-------------------------------------------------------------
 
-ladspa_lib::ladspa_lib(const char* fname, LADSPA_Handle handle) :
- filename(fname), lib_handle(handle)
+ladspa_lib::ladspa_lib( const char* _path,
+                        LADSPA_Handle _handle,
+                        LADSPA_Descriptor_Function _descrfunc) :
+ path(_path), handle(_handle), descrfunc(_descrfunc)
 {
 }
 
+
 ladspa_lib::~ladspa_lib()
 {
-    dlclose(lib_handle);
+    dlclose(handle);
 }
+
 
 ladspa_plug* ladspa_lib::get_plugin(const char* name)
 {
     if(name == 0)
         return 0;
+
     ladspa_plug* plug = goto_first();
+
     while(plug){
         if (strcasecmp(name, plug->get_label()) == 0)
             return plug;
         plug = goto_next();
     }
-    const LADSPA_Descriptor* ldescr;
-    //ladspa_func_grab lfg;
-    LADSPA_Descriptor_Function descrfunc;
-    unsigned long plug_ix;
-    dlerror();
-    descrfunc = (LADSPA_Descriptor_Function) dlsym(lib_handle, "ladspa_descriptor");
-    char* dlerr = dlerror();
-    if(dlerr) {
-        debug("failed to get descriptor function. reason: %s\n", dlerr);
-        return 0;
-    }
 
-    for(plug_ix = 0;; plug_ix++) {
-        if((ldescr = (descrfunc)(plug_ix)) == 0) {
-            debug("Plugin count for %s: %lu\n", filename, plug_ix);
+    const LADSPA_Descriptor* descr = 0;
+
+    for (int plug_ix = 0;; plug_ix++) {
+        if (!(descr = (descrfunc)(plug_ix))) {
+            debug("Plugin count for %s: %d\n", path, plug_ix);
             return 0;
         }
-        debug("checking descriptor '%s' for match with '%s'\n", ldescr->Label, name);
-        if(strcasecmp(ldescr->Label, name) == 0)
+        debug("checking descriptor '%s' for match with '%s'\n", descr->Label,
+                                                                       name);
+        if(strcasecmp(descr->Label, name) == 0)
             break;
     }
-    plug = new ladspa_plug(ldescr);
-    if(add_at_tail(plug) == 0){
-        if(plug) delete plug;
+
+    plug = new ladspa_plug(descr);
+
+    if (add_at_tail(plug) == 0){
+        if (plug)
+            delete plug;
         return 0;
     }
     return plug;
@@ -238,44 +240,147 @@ ladspa_loader::~ladspa_loader()
 {
 }
 
+char* ladspa_loader::find_lib_path(const char* name)
+{
+    if (!name) {
+        debug("NULL filename.\n");
+        return 0;
+    }
+
+    size_t len = strlen(name);
+    bool is_so = false;
+    if (len > 3)
+        is_so = (strcasecmp(name + len - 3, ".so") == 0);
+
+    if (name[0] == '/') {
+        if (is_so)
+            return new_strdup(name);
+        char* buf = new char[len + 3 + 1];
+        strcpy(buf, name);
+        strcpy(buf + len, ".so");
+        return buf;
+    }
+
+    const char* start = 0;
+    const char* end = 0;
+
+    if (!(start = getenv("LADSPA_PATH")))
+        start = wcnt::ladspa_path_if_env_not_set;
+
+    while (*start != '\0') {
+        end = start;
+        for (end = start; *end != ':' && *end != '\0'; ++end);
+        char* buf = new char[len + 1 + (end - start) + (is_so ? 0 : 3)];
+        if (end > start)
+            strncpy(buf, start, end - start);
+
+        int need_slash = 0;
+        if (end > start) {
+            if (*(end - 1) != '/') {
+                need_slash = 1;
+                buf[end - start] = '/';
+            }
+        }
+        char* p = buf + need_slash + (end - start);
+        strcpy(p, name);
+        if (!is_so)
+            strcpy(p + len, ".so");
+
+        struct  stat statbuf;
+        int     status;
+        if (!(status = stat(buf, &statbuf))) {
+            debug("found:'%s'\n", buf);
+            return buf;
+        }
+        delete [] buf;
+        start = end;
+        if (*start == ':')
+            start++;
+    }
+
+    return 0;
+}
+
+
+ladspa_lib* ladspa_loader::load_lib(const char* path)
+{
+    if (!path) {
+        debug("***** Unspecified path *****\n");
+        return 0;
+    }
+
+    if (path[0] != '/') {
+        debug("***** Relative path *****\n");
+        return 0;
+    }
+
+    ladspa_lib* lib = goto_first();
+    while (lib) {
+        if (strcasecmp(lib->get_path(), path) == 0)
+            return lib;
+    }
+
+    void* handle = dlopen(path, RTLD_LAZY);
+
+    if (!handle) {
+        debug("Failed to open library '%s'\n", path);
+        return 0;
+    }
+
+    dlerror();
+    LADSPA_Descriptor_Function descrfunc =
+                    (LADSPA_Descriptor_Function)
+                                    dlsym(handle, "ladspa_descriptor");
+    char* dlerr = dlerror();
+    if (dlerr) {
+        debug("LADSPA Descriptor function not found.\n");
+        dlclose(handle);
+        free(dlerr);
+        return 0;
+    }
+
+    if (!(lib = new ladspa_lib(path, handle, descrfunc))) {
+        debug("Failed to allocate ladspa_lib data\n");
+        dlclose(handle);
+        return 0;
+    }
+
+    if (!add_at_tail(lib)) {
+        dlclose(handle);
+        delete lib;
+        debug("Failed to add ladspa_lib data\n");
+        return 0;
+    }
+
+    return lib;
+}
 
 ladspa_plug*
-ladspa_loader::get_plugin(const char* fname, const char* label)
+ladspa_loader::get_plugin(const char* path, const char* label)
 {
-    if(!fname || !label){
+    if (!path || !label){
         ladspa_err("Loading of LADSPA plugin %s halted.",
-                    (fname ? fname : (label ? label : "")));
+                    (path ? path : (label ? label : "")));
         return 0;
     }
     // see if plugin lib is already loaded...
     ladspa_lib* lib = goto_first();
     while(lib){
-        if (strcasecmp(lib->get_filename(), fname) == 0)
+        if (strcasecmp(lib->get_path(), path) == 0)
             return lib->get_plugin(label);
         lib = goto_next();
     }
-    // requested plugin lib not yet loaded...
-    LADSPA_Handle lhandle;
-    if (!(lhandle = dlopen_plugin(fname, RTLD_LAZY))){
-        debug("dlopen_plugin '%s' '%s' failed\n", fname, label);
-        ladspa_err("Could not open LADSPA plugin %s %s. Please ensure "
-                    "the LADSPA_PATH environment variable is set.",
-                                                        fname, label);
+
+    if (!(lib = load_lib(path))) {
+        ladspa_err("Failed to load LADSPA library '%s'\n", path);
         return 0;
     }
-    if (!(lib = new ladspa_lib(fname, lhandle))) {
-        debug("failed to get new ladspa_lib for plugin '%s' '%s'\n", fname, label);
-    }
-    if (add_at_tail(lib) == 0){
-        if (lib)
-            delete lib;
-        ladspa_err("Library for LADSPA plugin %s %s loaded ok, but "
-                   "something else has gone wrong!", fname, label);
-        return 0;
-    }
+
     return lib->get_plugin(label);
 }
 
+
+/*
 void* ladspa_loader::dlopen_plugin(const char* fname, int flag)
 {
     char* buf;
@@ -329,6 +434,7 @@ void* ladspa_loader::dlopen_plugin(const char* fname, int flag)
     return dlopen(fname, flag);
 }
 
+*/
 
 const char* ladspa_loader::get_error_msg()
 {
