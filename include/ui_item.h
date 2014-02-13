@@ -124,6 +124,10 @@ namespace ui
     // items marked UI_NO_EDIT can be set one time only.
     UI_NO_EDIT =      0x100000,
 
+    // UI_DELDESCR: the c-string passed to constructor should be
+    // deleted in destructor:
+    UI_DELDESCR =       0x200000,
+
     // implementation only:
     UI_OPTION_MASK=     0x00f0,
     UI_GROUP_MASK =    0xff000,
@@ -150,7 +154,7 @@ namespace ui
     base(TYPE it);
     base(TYPE it, const char* descr_literal);
 
-    virtual ~base() {};
+    virtual ~base() { if (flags & UI_DELDESCR) delete [] descr; };
     virtual bool validate(T, errors::TYPE) = 0;
 
     TYPE    get_item_type() const       { return itemtype; }
@@ -348,6 +352,10 @@ namespace ui
     ~error_item() {}
     static const char* err_msg;
  };
+
+
+// note: the comment_item assumes the string passed to the constructor is
+//       a literal. it won't get delete [] ed by comment_item. if
 
  template <class T>
  class comment_item : public base<T>

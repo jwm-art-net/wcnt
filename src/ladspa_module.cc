@@ -7,8 +7,8 @@
 
 ladspa_module::ladspa_module(const char* uname) :
  synthmod::base(synthmod::LADSPA, uname, SM_DEFAULT),
- libname(0), label(0), path(0), plugin_items(0), l_descriptor(0), l_handle(0), lp(0),
- port_count(0), port_mappings(0),
+ libname(0), label(0), path(0), plugin_items(0), l_descriptor(0), l_handle(0),
+ lp(0), port_count(0), port_mappings(0),
  custom(false)
  #if DEBUG
  , custom_created(false)
@@ -22,6 +22,7 @@ void ladspa_module::register_ui()
     register_param(param::LADSPA_LIB)->set_flags(ui::UI_NO_EDIT);
     register_param(param::LADSPA_LABEL)->set_flags(ui::UI_NO_EDIT);
     register_custom_ui()->set_flags(ui::UI_NO_EDIT);
+    register_comment("See --ladspa-help for definitions using specific LADSPA plugins.");
 }
 
 
@@ -52,6 +53,9 @@ ladspa_module::~ladspa_module()
         }
         delete [] port_mappings;
     }
+    if (plugin_items)
+        delete plugin_items;
+
     if (libname)
         delete [] libname;
     if (label)
@@ -136,6 +140,12 @@ const void* ladspa_module::get_param(int pt) const
 
 bool ladspa_module::create_custom_ui_items()
 {
+    if (!libname || !label) {
+        debug("LADSPA library and plugin label unspecified.\n");
+        invalidate();
+        return false;
+    }
+
     #if DEBUG
     if (custom_created) {
         debug("\n****************************************************\n"
@@ -186,6 +196,22 @@ bool ladspa_module::create_custom_ui_items()
 
     activate_custom_ui_items();
 
+    char* pl;
+    {
+        size_t l1 = strlen(l_descriptor->Name);
+        size_t l2 = strlen(l_descriptor->Maker);
+        size_t l3 = (l1 > l2 ? l1 : l2);
+        l1 = strlen(l_descriptor->Copyright);
+        l2 = (l1 > l3 ? l1 : l3);
+        pl = pretty_line("-+=+-", l2);
+    }
+
+    register_comment(pl);
+    register_comment(l_descriptor->Name);
+    register_comment(l_descriptor->Maker);
+    register_comment(l_descriptor->Copyright);
+    register_comment(pl)->set_flags(ui::UI_DELDESCR);
+
     for (portix = 0; portix < port_count; ++portix) {
         debug("processing port index %d name '%s'\n", portix,
                                                       l_descriptor->PortNames[portix]);
@@ -223,6 +249,17 @@ bool ladspa_module::create_custom_ui_items()
     deactivate_custom_ui_items();
 
     return true;
+}
+
+
+bool ladspa_module::activate_custom_ui_items()
+{
+    if (libname && label) {
+        custom = true;
+        return true;
+    }
+    custom = false;
+    return false;
 }
 
 

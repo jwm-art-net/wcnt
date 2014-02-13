@@ -245,6 +245,21 @@ char* new_strdup(const char* src)
 }
 
 
+char* pretty_line(const char* segment, size_t len)
+{
+    size_t slen = strlen(segment);
+    int count = (len / (double)slen) + 2;
+    char* pl = new char[count * slen + 1];
+    char* p = pl;
+    while(count) {
+        strcpy(p, segment);
+        p += slen;
+        --count;
+    }
+    return pl;
+}
+
+
 spaces::~spaces()
 {
     if (data) {

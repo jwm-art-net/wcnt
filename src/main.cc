@@ -50,14 +50,24 @@ int main(const int argc, char** argv)
     // with modlist which needed to be delete BEFORE ladspa_loader.
     #ifdef WITH_LADSPA
     ladspa_loader* ladspaloader = new ladspa_loader;
-/*
-    char* p = ladspaloader->find_lib_path("caps");
 
-    if (p) {
-        debug("found path:'%s'\n", p);
-        delete [] p;
+    ladspaloader->load_all();
+
+    ladspa_lib* l = ladspaloader->goto_first();
+    while(l) {
+        debug("path: '%s'\n", l->get_path());
+        for (int plug_ix = 0;; plug_ix++) {
+            const LADSPA_Descriptor* descr = (l->get_descr_func())(plug_ix);
+            if (!descr)
+                break;
+            debug("\tlabel: '%s'\n", descr->Label);
+        }
+        l = ladspaloader->goto_next();
     }
-*/
+
+
+
+
     wcnt::jwm.register_ladspaloader(ladspaloader);
     #endif
     synthmod::list* modlist = new synthmod::list(DELETE_DATA);
@@ -66,6 +76,8 @@ int main(const int argc, char** argv)
     // prompted (by commandline) to create help (ie for modules etc).
 
     if (!cmd->scan()) {
+        if (!wcnt::jwm.is_no_title())
+            title();
         std::cout << cmd->get_message() << std::endl;
         delete cmd;
         delete modlist;

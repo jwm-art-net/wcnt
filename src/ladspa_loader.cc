@@ -10,6 +10,7 @@
 #include <cstdlib>
 #include <limits.h>
 #include <sys/stat.h>
+#include <dirent.h>
 
 #include "../include/globals.h"
 
@@ -183,14 +184,18 @@ bool ladspa_plug::get_port_upper_bound(int portix, LADSPA_Data* result)
 ladspa_lib::ladspa_lib( const char* _path,
                         LADSPA_Handle _handle,
                         LADSPA_Descriptor_Function _descrfunc) :
- path(_path), handle(_handle), descrfunc(_descrfunc)
+ path(), handle(_handle), descrfunc(_descrfunc)
 {
+    path = new_strdup(_path);
 }
 
 
 ladspa_lib::~ladspa_lib()
 {
-    dlclose(handle);
+    if (handle)
+        dlclose(handle);
+    if (path)
+        delete [] path;
 }
 
 
@@ -229,6 +234,13 @@ ladspa_plug* ladspa_lib::get_plugin(const char* name)
     }
     return plug;
 }
+
+
+void ladspa_lib::load_all()
+{
+
+}
+
 
 //-------------------------------------------------------------
 
@@ -377,6 +389,96 @@ ladspa_loader::get_plugin(const char* path, const char* label)
     }
 
     return lib->get_plugin(label);
+}
+
+
+void ladspa_loader::load_all()
+{
+    const char* start = 0;
+    const char* end = 0;
+
+    if (!(start = getenv("LADSPA_PATH")))
+        start = wcnt::ladspa_path_if_env_not_set;
+
+    while (*start != '\0') {
+        end = start;
+        for (end = start; *end != ':' && *end != '\0'; ++end);
+        char* path = new char[(end - start) + 2];
+        strncpy(path, start, end - start);
+
+        int need_slash = 0;
+        if (*(end - 1) != '/') {
+            need_slash = 1;
+            path[end - start] = '/';
+        }
+
+        path[(end - start) + need_slash] = '\0';
+
+        debug("path:'%s'\n", path);
+
+        DIR* dir = opendir(path);
+        if (dir) {
+            size_t plen = strlen(path);
+            struct dirent* de = 0;
+            debug("Reading dir '%s'...\n", path);
+            do {
+                de = readdir(dir);
+                if (de) {
+                    char* libfname = new char[plen + strlen(de->d_name) + 1];
+                    strcpy(libfname, path);
+                    strcpy(libfname + plen, de->d_name);
+                    debug("libfname: '%s'\n", libfname);
+                    quick_open_lib(libfname);
+                    delete [] libfname;
+                }
+            } while(de);
+            closedir(dir);
+        }
+        else {
+            debug("Failed opendir '%s'\n", path);
+        }
+
+        delete [] path;
+        start = end;
+        if (*start == ':')
+            start++;
+    }
+}
+
+ladspa_lib* ladspa_loader::quick_open_lib(const char* path)
+{
+    ladspa_lib* lib = 0;
+
+    void* handle = dlopen(path, RTLD_LAZY);
+
+    if (!handle)
+        return 0;
+
+    dlerror();
+    LADSPA_Descriptor_Function descrfunc =
+                    (LADSPA_Descriptor_Function)
+                                    dlsym(handle, "ladspa_descriptor");
+    char* dlerr = dlerror();
+
+    if (dlerr) {
+        debug("not a LADSPA library '%s'\n", path);
+        return 0;
+    }
+
+    if (!(lib = new ladspa_lib(path, handle, descrfunc))) {
+        debug("Failed to allocate ladspa_lib data\n");
+        dlclose(handle);
+        return 0;
+    }
+
+    if (!add_at_tail(lib)) {
+        dlclose(handle);
+        delete lib;
+        debug("Failed to add ladspa_lib data\n");
+        return 0;
+    }
+
+    return lib;
 }
 
 

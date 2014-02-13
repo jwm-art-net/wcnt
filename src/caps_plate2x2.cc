@@ -32,9 +32,11 @@ void caps_plate2x2::register_ui()
 
     ladspa_plug* lp = 0;
 
-    if ((lp = wcnt::jwm.get_ladspaloader()->get_plugin("caps", "Plate2x2")))
+    char* libpath = wcnt::jwm.get_ladspaloader()->find_lib_path("caps");
+
+    if ((lp = wcnt::jwm.get_ladspaloader()->get_plugin(libpath, "Plate2x2")))
         plugin_name = "Plate2x2";
-    else if ((lp = wcnt::jwm.get_ladspaloader()->get_plugin("caps", "PlateX2")))
+    else if ((lp = wcnt::jwm.get_ladspaloader()->get_plugin(libpath, "PlateX2")))
         plugin_name = "PlateX2";
 
     if (lp->get_port_index("in:l") != -1)
@@ -42,6 +44,7 @@ void caps_plate2x2::register_ui()
     else if (lp->get_port_index("in.l") != -1)
         plugin_port_sep = '.';
 
+    delete [] libpath;
 }
 
 ui::moditem_list* caps_plate2x2::get_ui_items()

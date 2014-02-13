@@ -132,7 +132,7 @@ namespace synthmod
     // the implementation of set_custom_ui_items should ensure the call to
     // get_ui_items returns the custom ui items created by
     // create_custom_ui_items. the next call should not.
-    virtual void activate_custom_ui_items();
+    virtual bool activate_custom_ui_items();
     virtual void deactivate_custom_ui_items();
 
   protected:

@@ -32,19 +32,19 @@ cmdline::switches cmdline::swdata[SW_COUNT] = {
 };
 
 
-//  ID              long            short   min/max-args    valid flags
+//  ID              long            short   min/max-args,   wc_opt,    valid flags
 cmdline::commands cmdline::cmddata[CMD_COUNT] = {
- {  RUN,            0,              0,      1,1,  VERBOSE | NO_RUN | NO_TITLE | NO_PROGRESS },
- {  HELP,           "help",         "h",    0,0,  VERBOSE | NO_TITLE },
- {  MOD_HELP,       "mod-help",     "mh",   0,1,  VERBOSE | NO_TITLE | MINIMAL },
- {  DOBJ_HELP,      "dobj-help",    "dh",   0,1,  VERBOSE | NO_TITLE | MINIMAL },
- {  INPUT_HELP,     "input-help",   "ih",   1,2,  NO_TITLE },
- {  LADSPA_HELP,    "ladspa-help",  "lh",   0,2,  VERBOSE | NO_TITLE | MINIMAL },
- {  SAMPLE_INFO,    "sample-info",  "si",   1,1,  NO_TITLE },
- {  NOTE_INFO,      "note-info",    "ni",   1,2,  NO_TITLE },
- {  FREQ_INFO,      "freq-info",    "fi",   1,1,  NO_TITLE },
- {  HEADER,         "header",       0,      0,0,  NO_TITLE },
- {  ABOUT,          "about",        0,      0,0,  0 }
+ {  RUN,            0,              0,      1,1,    1,  VERBOSE | NO_RUN | NO_TITLE | NO_PROGRESS },
+ {  HELP,           "help",         "h",    0,0,    0,  VERBOSE | NO_TITLE },
+ {  MOD_HELP,       "mod-help",     "mh",   0,1,    0,  VERBOSE | NO_TITLE | MINIMAL },
+ {  DOBJ_HELP,      "dobj-help",    "dh",   0,1,    0,  VERBOSE | NO_TITLE | MINIMAL },
+ {  INPUT_HELP,     "input-help",   "ih",   1,2,    3,  NO_TITLE },
+ {  LADSPA_HELP,    "ladspa-help",  "lh",   0,2,    0,  VERBOSE | NO_TITLE | MINIMAL },
+ {  SAMPLE_INFO,    "sample-info",  "si",   1,1,    0,  NO_TITLE },
+ {  NOTE_INFO,      "note-info",    "ni",   1,2,    0,  NO_TITLE },
+ {  FREQ_INFO,      "freq-info",    "fi",   1,1,    0,  NO_TITLE },
+ {  HEADER,         "header",       0,      0,0,    0,  NO_TITLE },
+ {  ABOUT,          "about",        0,      0,0,    0,  0 }
 };
 
 // ID               description\display
@@ -94,12 +94,14 @@ cmdline::textuals cmdline::texts[CMD_COUNT] = {
 
 
 cmdline::cmdline(int argc, char** argv) :
- opt_count(0), opts(0), switch_flags(0), ladspa_lib(0), ladspa_label(0)
+ opt_count(0), opts(0), switch_flags(0), ladspa_lib(0), ladspa_label(0),
+ wc_file(0)
 {
     int opt = 0;;
     opts = new char*[argc];
     for (int arg = 0; arg < argc; ++arg) {
         opts[arg] = 0;
+        debug("checking argv[%d] ('%s')...\n", arg, argv[arg]);
         if (*argv[arg] == '-') {
             bool match = false;
             debug("checking argv[%d] ('%s') against switches\n", arg, argv[arg]);
@@ -108,16 +110,20 @@ cmdline::cmdline(int argc, char** argv) :
                     if (strcmp(argv[arg] + 2, swdata[sw]._long) == 0) {
                         switch_flags |= swdata[sw].value;
                         match = true;
+                        debug("matched '%s'\n", swdata[sw]._long);
                     }
                 }
                 else if (strcmp(argv[arg] + 1, swdata[sw]._short) == 0) {
                     switch_flags |= swdata[sw].value;
                     match = true;
+                    debug("matched '%s'\n", swdata[sw]._long);
                 }
             }
             if (!match) // assume is not switch, process later...
                 opts[opt++] = argv[arg];
         }
+        else
+            opts[opt++] = argv[arg];
     }
     opt_count = opt;
 }
@@ -133,9 +139,20 @@ cmdline::~cmdline()
 bool cmdline::scan()
 {
     int cmd;
+    int match_cmd = RUN; // RUN == 0
+
+    #if DEBUG
+    for (int i = 0; i < opt_count; ++i)
+        debug("cmd opts[%d] '%s'\n", i, opts[i]);
+    #endif
+
+    if (opt_count < 2) {
+        help();
+        return false;
+    }
 
     if (*opts[1] == '-') {
-        int match_cmd = -1;
+        match_cmd = -1;
         for (cmd = 1; cmd < CMD_COUNT; ++cmd) {
             if (*(opts[1] + 1) == '-') {
                 if (strcmp(opts[1] + 2, cmddata[cmd]._long) == 0) {
@@ -148,36 +165,52 @@ bool cmdline::scan()
                 break;
             }
         }
+
         if (match_cmd == -1) {
             debug("unrecognized argument.\n");
             invalid_args();
             return false;
         }
-        if (opt_count - 1 < cmddata[match_cmd].min_args
-         || opt_count - 1 > cmddata[match_cmd].max_args) {
+        #if DEBUG
+        else
+            debug("matched '%s'\n", cmddata[match_cmd]._long);
+        #endif
+
+        if (opt_count - 2 < cmddata[match_cmd].min_args
+         || opt_count - 2 > cmddata[match_cmd].max_args) {
             debug("wrong argument count.\n");
             invalid_args();
             return false;
         }
-        switch(match_cmd) {
-          case MOD_HELP:    mod_help();     break;
-          case DOBJ_HELP:   dobj_help();    break;
-          case INPUT_HELP:  input_help();   break;
-          case LADSPA_HELP: ladspa_help();  break;
-          case SAMPLE_INFO: sample_info();  break;
-          case NOTE_INFO:   note_info();    break;
-          case FREQ_INFO:   freq_info();    break;
-          case HEADER:      header();       break;
-          case ABOUT:       about();        break;
-          default:
-            help();
-        }
-        return false;
     }
 
-    // wcnt file
+    debug("match_cmd:%d\n",match_cmd);
 
-    return true;
+    int wc_opt = cmddata[match_cmd].wc_opt;
+
+    if (wc_opt && wc_opt < opt_count) {
+        wc_file = opts[wc_opt];
+        debug(".wc file '%s'\n", wc_file);
+    }
+
+    set_jwm_globals();
+
+    switch(match_cmd) {
+      case RUN:         return true;
+      case MOD_HELP:    mod_help();     break;
+      case DOBJ_HELP:   dobj_help();    break;
+      case INPUT_HELP:  input_help();   break;
+      case LADSPA_HELP: ladspa_help();  break;
+      case SAMPLE_INFO: sample_info();  break;
+      case NOTE_INFO:   note_info();    break;
+      case FREQ_INFO:   freq_info();    break;
+      case HEADER:      header();       break;
+      case ABOUT:       about();        break;
+      default:
+        help();
+    }
+
+    return false;
 }
 
 
@@ -188,46 +221,47 @@ bool cmdline::set_jwm_globals()
     wcnt::jwm.no_title =    (switch_flags & NO_TITLE);
     wcnt::jwm.no_progress = (switch_flags & NO_PROGRESS);
 
-    if (wcnt::jwm.wc_path || wcnt::jwm.wc_file){
+    if (wcnt::jwm.wc_path || wcnt::jwm.wc_file) {
         msg = "\nGlobals (path) being set again... I won't do it.";
         return false;
     }
-    const char* filename = 0;
-    const char* ptr = 0;
-    const char* fnptr;
-    char* path = 0;
 
-    if (!(filename = opts[data[WC_IX].par1])) {
-        msg = "\nFilename not set.";
-        return false;
-    }
+    if (wc_file) {
+        const char* ptr = 0;
+        const char* fnptr;
+        char* path = 0;
 
-    fnptr = ptr = filename;
+        fnptr = ptr = wc_file;
 
-    while (*ptr != '\0') {
-        if (*ptr == '/') fnptr = ptr + 1;
-        ptr++;
+        while (*ptr != '\0') {
+            if (*ptr == '/')
+                fnptr = ptr + 1;
+            ptr++;
+        }
+
+        if (fnptr != wc_file) {
+            path = new char[fnptr - wc_file + 1];
+            strncpy(path, wc_file, fnptr - wc_file);
+            path[fnptr - wc_file] = '\0';
+        }
+
+        wcnt::jwm.wc_path  = path;
+        wcnt::jwm.wc_file  = new_strdup(wc_file);
     }
-    if (fnptr != filename) {
-        path = new char[fnptr - filename + 1];
-        strncpy(path, filename, fnptr - filename);
-        path[fnptr - filename] = '\0';
-    }
-    wcnt::jwm.wc_path  = path;
-    wcnt::jwm.wc_file  = new char[strlen(filename) + 1];
-    strcpy(wcnt::jwm.wc_file, filename);
     return true;
 }
+
 
 const char* cmdline::get_message() const
 {
     return msg.c_str();
 }
 
+
 void cmdline::invalid_args()
 {
     msg = "\nInvalid command line arguements:\n    ";
-    for(int i = 0; i < opts_count; i++) {
+    for(int i = 0; i < opt_count; i++) {
         msg += opts[i];
         msg += " ";
     }
@@ -236,11 +270,12 @@ void cmdline::invalid_args()
 
 void cmdline::module_help_list_all()
 {
-    if (data[MH_IX].par1 != 0) {
-        msg = "\nUnknown synth module: ";
-        if (data[MH_IX].par1 < opts_count)
-            msg += opts[data[MH_IX].par1];
-        msg += "\n";
+    if (opt_count) {
+        if (opts[2] != 0) {
+            msg = "\nUnknown synth module: ";
+            msg += opts[1];
+            msg += "\n";
+        }
     }
     msg += "\nAvailable module types are:\n";
 
@@ -272,15 +307,21 @@ void cmdline::module_help_list_all()
 }
 
 
-void cmdline::module_help()
+void cmdline::mod_help()
 {
-    int n = data[MH_IX].par1;
     int smt;
 
     if (ladspa_lib && ladspa_label)
         smt = synthmod::LADSPA;
+    else if (opt_count > 2)
+        smt = synthmod::names::type(opts[2]);
     else
-        smt = synthmod::names::type((n != 0 && n < opts_count) ? opts[n] : "" );
+        smt = synthmod::ERR_TYPE;
+
+    if (smt == synthmod::ERR_TYPE) {
+        module_help_list_all();
+        return;
+    }
 
     if (smt == synthmod::NONEZERO) {
         if (wcnt::jwm.is_verbose())
@@ -288,14 +329,6 @@ void cmdline::module_help()
                 "\n;any input is turned 'off'. It provides a zero or "
                 "\n;equivalent value while the module ensures that the"
                 "\n;expected 'off' behaviour is exhibited.";
-        return;
-    }
-    if (smt == synthmod::ERR_TYPE) {
-        if (data[MH_IX].par1 != 0 && strcmp(opts[data[MH_IX].par1], "-v") == 0) {
-            data[MH_IX].par1 = 0;
-            wcnt::jwm.set_verbose(true);
-        }
-        module_help_list_all();
         return;
     }
 
@@ -364,12 +397,14 @@ void cmdline::module_help()
             break;
           }
           case ui::UI_CUSTOM: {
-            sm->create_custom_ui_items();
-            sm->activate_custom_ui_items();
-            items = sm->get_ui_items();
-            item = items->first_item();
-            custom = true;
-            continue;
+            if (sm->create_custom_ui_items()) {
+                sm->activate_custom_ui_items();
+                items = sm->get_ui_items();
+                item = items->first_item();
+                custom = true;
+                continue;
+            }
+            break;
           }
           default:
             l1 = l2 = 0;
@@ -419,7 +454,7 @@ void cmdline::module_help()
                 const char* c = mc->get_descr();
                 msg += "\n";
                 if (c) {
-                    msg += "  // ";
+                    msg += "    // ";
                     msg += c;
                 }
                 break;
@@ -486,10 +521,12 @@ void cmdline::module_help()
                 break;
               }
               case ui::UI_CUSTOM: {
-                sm->activate_custom_ui_items();
-                items = sm->get_ui_items();
-                item = items->first_item();
-                continue;
+                if (sm->activate_custom_ui_items()) {
+                    items = sm->get_ui_items();
+                    item = items->first_item();
+                    continue;
+                }
+                break;
               }
               default:
                 break;
@@ -690,16 +727,18 @@ void cmdline::dobj_help_items(dobj::TYPE dt, int indent_level)
 
 void cmdline::dobj_help()
 {
-    int n = data[DH_IX].par1;
-    std::string dname = (n != 0 && n < opts_count) ? opts[n] : "";
-    int dt = dobj::names::type(dname.c_str());
+    int dt;
 
-    dobj::base* dob = wcnt::get_dobjlist()->create_dobj(dt);
-    if (!dob) {
-        // incorrect dobj name or no name specified
-        // (dt will be dobj::ERR_TYPE).
-        if (opts_count == 3)
-            msg = "\nno data object available named " + dname;
+    if (opt_count)
+        dt = dobj::names::type(opts[1]);
+    else
+        dt = dobj::ERR_TYPE;
+
+    if (dt == dobj::ERR_TYPE) {
+        if (opt_count) {
+            msg = "\nno data object available named ";
+            msg += opts[1];
+        }
         msg += "\navailable data object types are:\n\n";
         int count = 0;
         const char** dbjnames =
@@ -710,6 +749,8 @@ void cmdline::dobj_help()
         delete [] dbjnames;
         return;
     }
+
+    dobj::base* dob = wcnt::get_dobjlist()->create_dobj(dt);
 
     msg += "\n";
     msg += dobj::names::get(dt);
@@ -818,10 +859,13 @@ void cmdline::dobj_help()
 
 void cmdline::ladspa_help()
 {
-    ladspa_lib = data[LAD_IX].par1;
-    ladspa_label = data[LAD_IX].par2;
+    if (opt_count > 2) {
+        ladspa_lib = 2;
+        if (opt_count > 3)
+            ladspa_label = 3;
+    }
 
-    if (ladspa_lib == 0 || ladspa_label == 0) {
+    if (!ladspa_lib || !ladspa_label) {
         msg = "Please specify the LADSPA library name and the LADSPA plugin\n"
               "label to show the ladspa module definition help for.\n\n";
         msg+= "Note: depending on where the LADSPA library you wish to use\n"
@@ -835,7 +879,7 @@ void cmdline::ladspa_help()
         return;
     }
 
-    module_help();
+    mod_help();
 }
 
 
@@ -845,12 +889,12 @@ void cmdline::input_help()
 // decide by the number of options passed on command line whether to
 // load a wcnt file or to create all possible modules in order to
 // access outputs.
-    int intype = input::names::type(opts[data[IH_IX].par1]);
+    int intype = input::names::type(opts[2]);
     if (intype == input::ERR_TYPE) {
         msg = "";
-        if (data[IH_IX].par1) {
+        if (opts[2]) {
             msg = "\nUnknown input type: ";
-            msg += opts[data[IH_IX].par1];
+            msg += opts[1];
         }
         msg += "\nAvailable input types are:\n";
         int incount = input::LAST_TYPE - 1;
@@ -884,8 +928,9 @@ void cmdline::input_help()
     }
     msg = "";
     iocat::TYPE incat = input::names::category(intype);
-    if (data[WC_IX].par1 > 0) {
-        // must create all modules to gain access to compatible outputs
+    if (wc_file) {
+        debug("Reading .wc file '%s'...\n", wc_file);
+        // only create modules specified in wc file
         wcnt::synth jwm_synth;
         if (!jwm_synth.is_valid() || !jwm_synth.generate_synth()) {
             msg =
@@ -894,12 +939,12 @@ void cmdline::input_help()
         }
     }
     else {
-        // only create modules within a .wc file to access outputs
         synthmod::base* sm;
-        int i;
-        for (i = synthmod::ERR_TYPE + 1; i < synthmod::LAST_TYPE; i++)
+        for (int i = synthmod::ERR_TYPE + 1; i < synthmod::LAST_TYPE; i++)
         {
             if (i != synthmod::NONEZERO) {
+                debug("creating synthmod '%s'\n",
+                                synthmod::names::get((synthmod::TYPE)i));
                 sm = synthmod::list::create_module((synthmod::TYPE)i,
                                 synthmod::names::get((synthmod::TYPE)i));
                 if (!sm) {
@@ -948,6 +993,7 @@ void cmdline::input_help()
 
 void cmdline::sample_info()
 {
+#ifdef TEDIUM_UNITED
     if (!data[SI_IX].par1) {
         msg = "\nPlease specify an audio sample file to display"
             " information about.";
@@ -989,10 +1035,12 @@ void cmdline::sample_info()
     conv << " seconds)\n";
     msg += conv.str();
     return;
+#endif
 }
 
 void cmdline::note_info()
 {
+#ifdef TEDIUM_UNITED
     if (!data[NI_IX].par1){
         msg = "\nPlease specify the name of a note to be converted to"
             " a frequency.\n(Note name examples: c#-2  e1  f#0  b-1)";
@@ -1007,10 +1055,12 @@ void cmdline::note_info()
     conv << " is frequency " << note_to_freq(opts[data[NI_IX].par1]);
     msg = conv.str();
     return;
+#endif
 }
 
 void cmdline::freq_info()
 {
+#ifdef TEDIUM_UNITED
     if (!data[FI_IX].par1){
         msg = "\nPlease specify a frequency and samplerate for "
             "converting to phase_step.";
@@ -1038,6 +1088,7 @@ void cmdline::freq_info()
     conv << "\n\tsamples  " << freq_to_samples(frequency);
     msg = conv.str();
     return;
+#endif
 }
 void cmdline::header()
 {
@@ -1049,28 +1100,15 @@ void cmdline::help()
 {
     const char* const wcnt = "\nwcnt ";
     msg = "\nwcnt command line help\n";
-    for(int i = WC_FILE; i < OPTS_COUNT; i++){
+    for (int i = 0; i < CMD_COUNT; ++i) {
         msg += wcnt;
-        if (data[i].olong && data[i].oshort) {
-            msg += data[i].olong;
-            msg += " (or ";
-            msg += data[i].oshort;
-            msg += ") ";
-        }
-        else {
-            if (data[i].olong)
-                msg += data[i].olong;
-            else if (data[i].oshort)
-                msg += data[i].oshort;
-            msg += " ";
-        }
-        if (data[i].odisplay)
-            msg += data[i].odisplay;
-        if (opts_flags & LONGHELP) {
-            if (data[i].helptext) {
-                msg += "\n";
-                msg += data[i].helptext;
-                msg += "\n";
+        if (cmddata[i]._long) {
+            msg += "--";
+            msg += cmddata[i]._long;
+            if (cmddata[i]._short) {
+                msg += " (or -";
+                msg += cmddata[i]._short;
+                msg += ") ";
             }
         }
     }

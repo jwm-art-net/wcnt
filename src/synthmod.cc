@@ -136,12 +136,13 @@ namespace synthmod
     return false;
  }
 
- void base::activate_custom_ui_items()
+ bool base::activate_custom_ui_items()
  {
     #if DEBUG
     sm_err("%s invalid request for module %s to activate custom ui items.",
                                         errors::stock::major, username);
     #endif
+    return false;
  }
 
  void base::deactivate_custom_ui_items()

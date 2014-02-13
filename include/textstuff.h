@@ -62,6 +62,9 @@ char* sanitize_name(const char* src, const char* badchars, int replace, const ch
 char* new_strdup(const char*);
 
 
+char* pretty_line(const char* segment, size_t len);
+
+
 class spaces
 {
  public:

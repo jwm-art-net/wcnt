@@ -85,6 +85,7 @@ class cmdline
         const char* const _short;
         int min_args;
         int max_args;
+        int wc_opt;
         int valid_flags;
     } commands;
 
@@ -100,6 +101,7 @@ class cmdline
 
     int ladspa_lib;
     int ladspa_label;
+    const char* wc_file;
 
     std::string msg;
 

@@ -56,7 +56,9 @@ class ladspa_lib : public linked_list<ladspa_plug>
     LADSPA_Handle              get_handle()     const { return handle;}
     LADSPA_Descriptor_Function get_descr_func() const { return descrfunc; }
 
-    ladspa_plug* get_plugin(const char* name);
+    ladspa_plug*               get_plugin(const char* name);
+
+    void                       load_all();
 
  private:
     const char*                path;
@@ -79,7 +81,12 @@ class ladspa_loader : public linked_list<ladspa_lib>
     ladspa_lib*  load_lib(const char* path);
     ladspa_plug* get_plugin(const char* path, const char* label);
 
+    void         load_all(); // load all LADSPA libraries...
+
     static const char* get_error_msg();
+
+    private:
+    ladspa_lib* quick_open_lib(const char* path);
 
 };
 

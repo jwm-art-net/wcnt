@@ -20,7 +20,7 @@ class ladspa_module : public synthmod::base
     const void* get_param(int param_type) const;
 
     bool create_custom_ui_items();
-    void activate_custom_ui_items() { custom = true; }
+    bool activate_custom_ui_items();
     void deactivate_custom_ui_items() { custom = false; }
 
  private:
