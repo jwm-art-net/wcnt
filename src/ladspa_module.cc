@@ -7,8 +7,19 @@
 
 ladspa_module::ladspa_module(const char* uname) :
  synthmod::base(synthmod::LADSPA, uname, SM_DEFAULT),
- libname(0), label(0), path(0), plugin_items(0), l_descriptor(0), l_handle(0),
- lp(0), port_count(0), port_mappings(0),
+ libname(0), label(0), path(0),
+ plugin_items(0),
+ l_descriptor(0), l_handle(0), lp(0),
+ port_count(0),
+
+ in_int_count(0),       in_int(0),      in_int_px(0),
+ in_float_count(0),     in_float(0),    in_float_px(0),
+ out_int_count(0),      out_int(0),     out_int_px(0),
+ out_float_count(0),    out_float(0),   out_float_px(0),
+ param_int_count(0),    param_int(0),   param_int_px(0),
+ param_float_count(0),  param_float(0), param_float_px(0),
+
+ ports(0), port_mappings(0),
  custom(false)
  #if DEBUG
  , custom_created(false)
@@ -46,13 +57,38 @@ ladspa_module::~ladspa_module()
             l_descriptor->deactivate(l_handle);
         l_descriptor->cleanup(l_handle);
     }
-    if (port_mappings) {
-        for (int portix = 0; portix < port_count; ++portix) {
-            if (port_mappings[portix].buf)
-                delete [] port_mappings[portix].buf;
-        }
+
+    if (ports)
+        delete [] ports;
+
+    if (port_mappings)
         delete [] port_mappings;
+
+    if (in_int_count) {
+        delete [] in_int;
+        delete [] in_int_px;
     }
+    if (in_float_count) {
+        delete [] in_float;
+        delete [] in_float_px;
+    }
+    if (out_int_count) {
+        delete [] out_int;
+        delete [] out_int_px;
+    }
+    if (out_float_count) {
+        delete [] out_float;
+        delete [] out_float_px;
+    }
+    if (param_int_count) {
+        delete [] param_int;
+        delete [] param_int_px;
+    }
+    if (param_float_count) {
+        delete [] param_float;
+        delete [] param_float_px;
+    }
+
     if (plugin_items)
         delete plugin_items;
 
@@ -67,20 +103,29 @@ ladspa_module::~ladspa_module()
 
 const void* ladspa_module::get_out(int ot) const
 {
+    int px;
+    for (px = 0; px < port_count; ++px) {
+        port_map* pm = &port_mappings[px];
+        LADSPA_PortDescriptor pd = l_descriptor->PortDescriptors[px];
+        if (pm->type == ui::UI_OUTPUT && pm->id == ot) {
+            return (LADSPA_IS_HINT_INTEGER(pd) ? (void*)&out_int[pm->index]
+                                               : (void*)&out_float[pm->index]);
+        }
+    }
     return 0;
 }
 
 const void* ladspa_module::set_in(int it, const void* o)
 {
-    int portix;
-    for (portix = 0; portix < port_count; ++portix) {
-        port_map* pm = &port_mappings[portix];
-        debug("checking port index %d id %d for id %d\n", portix, pm->id, it);
-        if (pm->type == ui::UI_INPUT) {
-            if (pm->id == it) {
-                pm->input = (double*)o;
-                return pm->input;
-            }
+    int px;
+    for (px = 0; px < port_count; ++px) {
+        port_map* pm = &port_mappings[px];
+        LADSPA_PortDescriptor pd = l_descriptor->PortDescriptors[px];
+        if (pm->type == ui::UI_INPUT && pm->id == it) {
+            if (LADSPA_IS_HINT_INTEGER(pd))
+                return (in_int[pm->index] = (wcint_t*)o);
+            else
+                return (in_float[pm->index] = (double*)o);
         }
     }
     return 0;
@@ -88,6 +133,15 @@ const void* ladspa_module::set_in(int it, const void* o)
 
 const void* ladspa_module::get_in(int it) const
 {
+    int px;
+    for (px = 0; px < port_count; ++px) {
+        port_map* pm = &port_mappings[px];
+        LADSPA_PortDescriptor pd = l_descriptor->PortDescriptors[px];
+        if (pm->type == ui::UI_INPUT && pm->id == it) {
+            return (LADSPA_IS_HINT_INTEGER(pd) ? (void*)in_int[pm->index]
+                                               : (void*)in_float[pm->index]);
+        }
+    }
     return 0;
 }
 
@@ -108,35 +162,36 @@ bool ladspa_module::set_param(int pt, const void* data)
           "\n£*£(£*£(£*£(£*£(£*£(£*£(£*£(£*£(£*£(£*£(£*£(£*£(£*£(£*£"
           "\n-------- setting param ...\n");
 
-    int portix;
-    for (portix = 0; portix < port_count; ++portix) {
-        port_map* pm = &port_mappings[portix];
-        debug("checking port index %d id %d for id %d\n", portix, pm->id, pt);
-        if (pm->type == ui::UI_PARAM) {
-            if (pm->id == pt) {
-                pm->param = *((double*)data);
-                return true;
-            }
+    int px;
+    for (px = 0; px < port_count; ++px) {
+        port_map* pm = &port_mappings[px];
+        LADSPA_PortDescriptor pd = l_descriptor->PortDescriptors[px];
+        if (pm->type == ui::UI_PARAM && pm->id == pt) {
+            if (LADSPA_IS_HINT_INTEGER(pd))
+                param_int[pm->index] = *((wcint_t*)data);
+            else
+                param_float[pm->index] = *((double*)data);
+            return true;
         }
     }
+
     return false;
 }
 
 
 const void* ladspa_module::get_param(int pt) const
 {
-    int portix;
-    for (portix = 0; portix < port_count; ++portix) {
-        port_map* pm = &port_mappings[portix];
-        debug("checking port index %d id %d for id %d\n", portix, pm->id, pt);
-        if (pm->type == ui::UI_PARAM) {
-            if (pm->id == pt)
-                return &pm->param;
+    int px;
+    for (px = 0; px < port_count; ++px) {
+        port_map* pm = &port_mappings[px];
+        LADSPA_PortDescriptor pd = l_descriptor->PortDescriptors[px];
+        if (pm->type == ui::UI_PARAM && pm->id == pt) {
+            return (LADSPA_IS_HINT_INTEGER(pd) ? (void*)&param_int[pm->index]
+                                               : (void*)&param_float[pm->index]);
         }
     }
     return 0;
 }
-
 
 bool ladspa_module::create_custom_ui_items()
 {
@@ -184,16 +239,6 @@ bool ladspa_module::create_custom_ui_items()
         return false;
     }
 
-    int portix = 0;
-    port_count = l_descriptor->PortCount;
-
-    if (!(port_mappings = new port_map[port_count])) {
-        sm_err("Port mapping allocation for LADSPA plugin '%s' '%s' failed.",
-                                                        path, label);
-        invalidate();
-        return false;
-    }
-
     activate_custom_ui_items();
 
     char* pl;
@@ -212,37 +257,150 @@ bool ladspa_module::create_custom_ui_items()
     register_comment(l_descriptor->Copyright);
     register_comment(pl)->set_flags(ui::UI_DELDESCR);
 
-    for (portix = 0; portix < port_count; ++portix) {
-        debug("processing port index %d name '%s'\n", portix,
-                                                      l_descriptor->PortNames[portix]);
-        port_map* pm = &port_mappings[portix];
+    // gather counts of ports by type...
+    int px = 0;
+    port_count = l_descriptor->PortCount;
+
+    debug("gathering data about LADSPA port types...");
+    for (px = 0; px < port_count; ++px) {
+        LADSPA_PortDescriptor pd = l_descriptor->PortDescriptors[px];
+        if (LADSPA_IS_PORT_INPUT(pd)) {
+            if (LADSPA_IS_PORT_CONTROL(pd)) {
+                if (LADSPA_IS_HINT_INTEGER(pd))
+                    ++param_int_count;
+                else
+                    ++param_float_count;
+            }
+            else if (LADSPA_IS_PORT_AUDIO(pd)) {
+                if (LADSPA_IS_HINT_INTEGER(pd))
+                    ++in_int_count;
+                else
+                    ++in_float_count;
+            }
+            #if DEBUG
+            else
+                debug("Port '%s' is neither control nor audio!\n",
+                                l_descriptor->PortNames[px]);
+            #endif
+        }
+        else if (LADSPA_IS_PORT_OUTPUT(pd)) {
+            if (LADSPA_IS_HINT_INTEGER(pd))
+                ++out_int_count;
+            else
+                ++out_float_count;
+        }
+        #if DEBUG
+        else
+            debug("Port '%s' is neither input nor output!\n",
+                            l_descriptor->PortNames[px]);
+        #endif
+    }
+
+    if (in_int_count) {
+        in_int = new wcint_t*[in_int_count];
+        in_int_px = new int[in_int_count];
+    }
+    if (in_float_count) {
+        in_float = new double*[in_float_count];
+        in_float_px = new int[in_float_count];
+    }
+    if (out_int_count) {
+        out_int = new wcint_t[out_int_count];
+        out_int_px = new int[out_int_count];
+    }
+    if (out_float_count) {
+        out_float = new double[out_float_count];
+        out_float_px = new int[out_float_count];
+    }
+    if (param_int_count) {
+        param_int = new wcint_t[param_int_count];
+        param_int_px = new int[param_int_count];
+    }
+    if (param_float_count) {
+        param_float = new double[param_float_count];
+        param_float_px = new int[param_float_count];
+    }
+
+    int in_int_ix = 0;
+    int in_float_ix = 0;
+    int out_int_ix = 0;
+    int out_float_ix = 0;
+    int param_int_ix = 0;
+    int param_float_ix = 0;
+
+    if (!(port_mappings = new port_map[port_count])) {
+        sm_err("Port mapping allocation for LADSPA plugin '%s' '%s' failed.",
+                                                        path, label);
+        invalidate();
+        return false;
+    }
+
+    if (!(ports = new LADSPA_Data[port_count])) {
+        sm_err("LADSPA Port data allocation failed for LADSPA plugin '%s' '%s'.\n",
+                                                                    path, label);
+        invalidate();
+        return false;
+    }
+
+    for (px = 0; px < port_count; ++px) {
+        debug("processing port index %d name '%s'\n", px, l_descriptor->PortNames[px]);
+        port_map* pm = &port_mappings[px];
         pm->id = 0;
         pm->type = 0;
-        pm->control = 0;
-        pm->buf = 0;
-        pm->param = 0;
-        pm->input = 0;
-        if (LADSPA_IS_PORT_INPUT(l_descriptor->PortDescriptors[portix])) {
-            if (LADSPA_IS_PORT_CONTROL(l_descriptor->PortDescriptors[portix])) {
-                int id = param::names::register_type(l_descriptor->PortNames[portix], iocat::DOUBLE, 0);
+        pm->index = 0;
+        LADSPA_PortDescriptor pd = l_descriptor->PortDescriptors[px];
+
+        int id;
+        iocat::TYPE ioc;
+
+        if (LADSPA_IS_HINT_INTEGER(pd))
+            ioc = iocat::WCINT_T;
+        else
+            ioc = iocat::DOUBLE;
+
+        if (LADSPA_IS_PORT_INPUT(pd)) {
+            if (LADSPA_IS_PORT_CONTROL(pd)) {
+                id = param::names::register_type(l_descriptor->PortNames[px], ioc, 0);
                 register_param(id);
                 pm->id = id;
                 pm->type = ui::UI_PARAM;
+                if (ioc == iocat::WCINT_T) {
+                    pm->index = param_int_ix;
+                    param_int_px[param_int_ix++] = px;
+                }
+                else {
+                    pm->index = param_float_ix;
+                    param_float_px[param_float_ix++] = px;
+                }
             }
             else {
-                int id = input::names::register_type(l_descriptor->PortNames[portix], iocat::DOUBLE, 0);
+                id = input::names::register_type(l_descriptor->PortNames[px], ioc, 0);
                 register_input(id);
                 pm->id = id;
                 pm->type = ui::UI_INPUT;
-                pm->buf = new LADSPA_Data[1];
+                if (ioc == iocat::WCINT_T) {
+                    pm->index = in_int_ix;
+                    in_int_px[in_int_ix++] = px;
+                }
+                else {
+                    pm->index = in_float_ix;
+                    in_float_px[in_float_ix++] = px;
+                }
             }
         }
-        else if (LADSPA_IS_PORT_OUTPUT(l_descriptor->PortDescriptors[portix])) {
-            int id = output::names::register_type(l_descriptor->PortNames[portix], iocat::DOUBLE, 0);
+        else if (LADSPA_IS_PORT_OUTPUT(pd)) {
+            id = output::names::register_type(l_descriptor->PortNames[px], ioc, 0);
             register_output(id);
             pm->id = id;
             pm->type = ui::UI_OUTPUT;
-            pm->buf = new LADSPA_Data[1];
+            if (ioc == iocat::WCINT_T) {
+                pm->index = out_int_ix;
+                out_int_px[out_int_ix++] = px;
+            }
+            else {
+                pm->index = out_float_ix;
+                out_float_px[out_float_ix++] = px;
+            }
         }
     }
 
@@ -278,25 +436,47 @@ void ladspa_module::init()
         invalidate();
         return;
     }
-/*
-    l_input = new LADSPA_Data[1];
-    l_output = new LADSPA_Data[1];
-    l_descriptor->connect_port(l_inst_handle, 0, &l_cutoff_freq);
-    l_descriptor->connect_port(l_inst_handle, 1, &l_stages);
-    l_descriptor->connect_port(l_inst_handle, 2, l_input);
-    l_descriptor->connect_port(l_inst_handle, 3, l_output);
-    l_descriptor->activate(l_inst_handle);
-    l_stages = stages;
-*/
+
+    int px;
+    for (px = 0; px < port_count; ++px)
+        l_descriptor->connect_port(l_handle, px, &ports[px]);
 }
 
 
 errors::TYPE ladspa_module::validate()
 {
+    // FIXME: TODO
+    debug("%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*\n");
+    debug("%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*\n");
+    debug("%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*\n");
+    debug("^&*^&*^&*^&*^&* NO PARAMETER VALIDATION ON LADSPA ^&*^&*^&*^&*^&\n");
+    debug("%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*\n");
+    debug("%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*%%^&*\n");
     return errors::NO_ERROR;
 }
 
 void ladspa_module::run()
 {
+    int ix;
+
+    for (ix = 0; ix < in_int_count; ++ix)
+        ports[in_int_px[ix]] = *in_int[ix];
+
+    for (ix = 0; ix < in_float_count; ++ix)
+        ports[in_float_px[ix]] = *in_float[ix];
+
+    for (ix = 0; ix < param_int_count; ++ix)
+        ports[param_int_px[ix]] = param_int[ix];
+
+    for (ix = 0; ix < param_float_count; ++ix)
+        ports[param_float_px[ix]] = param_float[ix];
+
+    l_descriptor->run(l_handle, 1);
+
+    for (ix = 0; ix < out_int_count; ++ix)
+        out_int[ix] = ports[out_int_px[ix]];
+
+    for (ix = 0; ix < out_float_count; ++ix)
+        out_float[ix] = ports[out_float_px[ix]];
 }
 

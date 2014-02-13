@@ -2,20 +2,98 @@ wcnt-1.30/jwmsynth
 
 samplerate 44100
 
+constant one value 1.0 one
+
+// duration of sound
+
+timer
+t
+    timings
+        time seconds 0.0
+        time seconds 20.0
+    timings
+    time_is_relative off
+    recycle_mode off
+t
+
+adsr
+eg
+    envelope
+        section name   attack   time 422.5    level 0.75
+        section name   decay    time 1550      level 0.5
+        section name   release  time 6150.0   level 0.0
+    envelope
+    in_note_on_trig     t out_trig
+    in_note_off_trig    off
+    sustain_state       off
+eg
+
+noise_generator ng ng
+
+
+multiplier noise in_signal1 ng out_output in_signal2 eg out_output noise
+
 ladspa
-flanger
-    ladspa_lib     retro_flange_1208
-    ladspa_label   retroflange
-    average_stall_ms        150
-    flange_frequency_hz     0.3333
-    in_input    off
-flanger
+flanger-l
+// Performs processing using the specified LADSPA plugin.
+//----
+    ladspa_lib           retro_flange_1208
+    ladspa_label         retroflange
+    // -+=+--+=+--+=+--+=+--+=+--+=+--+=+--+=+-
+    // Retro Flanger
+    // Steve Harris <steve@plugin.org.uk>
+    // GPL
+    // -+=+--+=+--+=+--+=+--+=+--+=+--+=+--+=+-
+    average_stall_ms     10
+    flange_frequency_hz  0.5
+    in_input             noise out_output
+// outputs for ladspa
+// out_output
+flanger-l
+
+
+ladspa
+flanger-r
+    ladspa_lib           retro_flange_1208
+    ladspa_label         retroflange
+    average_stall_ms     10
+    flange_frequency_hz  0.5
+    in_input             noise out_output
+flanger-r
+
+
+wavfile_out
+wavwet
+    in_left     flanger-l out_output
+    in_right    flanger-r out_output
+    in_bar      t   out_count
+    data_format float32
+    filename    ladspa_wet.wav
+    start_bar   0
+    end_bar     1
+wavwet
+
+wavfile_out
+wavdry
+    in_left     noise out_output
+    in_bar      t   out_count
+    data_format float32
+    filename    ladspa_dry.wav
+    start_bar   0
+    end_bar     1
+wavdry
+
 
 wcnt_exit
-x
-    in_bar      off
-    exit_bar    0
-x
+wcnt_exit_module
+    in_bar      t out_count
+    exit_bar    1
+wcnt_exit_module
+
+
+
+wcnt-1.30/jwmsynth
+
 
 wcnt-1.30/jwmsynth
 

@@ -51,6 +51,7 @@ int main(const int argc, char** argv)
     #ifdef WITH_LADSPA
     ladspa_loader* ladspaloader = new ladspa_loader;
 
+    /*
     ladspaloader->load_all();
 
     ladspa_lib* l = ladspaloader->goto_first();
@@ -64,7 +65,7 @@ int main(const int argc, char** argv)
         }
         l = ladspaloader->goto_next();
     }
-
+    */
 
 
 
