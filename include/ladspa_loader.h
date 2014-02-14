@@ -4,6 +4,10 @@
 
 #include "ladspa.h"
 #include "linkedlist.h"
+#include "listwork.h"
+#include "textstuff.h"
+
+#include <cstring>
 
 //-------------------------------------------------------------
 
@@ -53,6 +57,7 @@ class ladspa_lib : public linked_list<ladspa_plug>
     ladspa_lib(const char* path, LADSPA_Handle, LADSPA_Descriptor_Function);
     ~ladspa_lib();
 
+    int                        filename_cmp(const ladspa_lib*) const; // <-- for sort
     const char*                get_path()       const { return path;  }
     LADSPA_Handle              get_handle()     const { return handle;}
     LADSPA_Descriptor_Function get_descr_func() const { return descrfunc; }
@@ -60,6 +65,8 @@ class ladspa_lib : public linked_list<ladspa_plug>
     ladspa_plug*               get_plugin(const char* name);
 
     void                       load_all();
+
+//  bool operator()(fnobj::name & n) const     { return n(username); }
 
  private:
     const char*                path;
@@ -83,6 +90,8 @@ class ladspa_loader : public linked_list<ladspa_lib>
     ladspa_plug* get_plugin(const char* path, const char* label);
 
     void         load_all(); // load all LADSPA libraries...
+
+    void         sort() { sort_list(this, &ladspa_lib::filename_cmp); }
 
     static const char* get_error_msg();
 

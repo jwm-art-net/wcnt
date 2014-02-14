@@ -210,6 +210,25 @@ ladspa_lib::~ladspa_lib()
         delete [] path;
 }
 
+int ladspa_lib::filename_cmp(const ladspa_lib* lib2) const
+{
+    const char* fn1 = strrchr(path, '/');
+    const char* fn2 = strrchr(lib2->get_path(), '/');
+
+    if (!fn1 && !fn2)
+        return 0;
+
+    if (!fn1)
+        return -1;
+    if (!fn2)
+        return 1;
+
+    fn1++;
+    fn2++;
+
+    return strcmp(fn1, fn2);
+}
+
 
 ladspa_plug* ladspa_lib::get_plugin(const char* name)
 {
@@ -426,25 +445,25 @@ void ladspa_loader::load_all()
 
         path[(end - start) + need_slash] = '\0';
 
-        debug("path:'%s'\n", path);
-
         DIR* dir = opendir(path);
         if (dir) {
             size_t plen = strlen(path);
             struct dirent* de = 0;
             debug("Reading dir '%s'...\n", path);
+            int count = 0;
             do {
                 de = readdir(dir);
                 if (de) {
                     char* libfname = new char[plen + strlen(de->d_name) + 1];
                     strcpy(libfname, path);
                     strcpy(libfname + plen, de->d_name);
-                    debug("libfname: '%s'\n", libfname);
-                    quick_open_lib(libfname);
+                    if (quick_open_lib(libfname))
+                        ++count;
                     delete [] libfname;
                 }
             } while(de);
             closedir(dir);
+            debug("%d LADSPA libraries found.\n", count);
         }
         else {
             debug("Failed opendir '%s'\n", path);

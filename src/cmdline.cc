@@ -857,6 +857,75 @@ void cmdline::dobj_help()
 }
 
 
+void cmdline::ladspa_help_lib(ladspa_lib* lib, int indent)
+{
+    if (!lib)
+        return;
+
+    const char* libname = strrchr(lib->get_path(), '/') + 1;
+    int len = strlen(libname);
+    if (indent < len)
+        indent = len;
+
+    const char* spc = spaces::get(indent + 3);
+    msg.append(spc, indent - strlen(libname));
+    msg += libname;
+    msg += ":  ";
+
+    // now get plugin labels..
+    for (int plug_ix = 0;; plug_ix++) {
+        const LADSPA_Descriptor* descr = (lib->get_descr_func())(plug_ix);
+        if (!descr)
+            break;
+        if (plug_ix > 0)
+            msg.append(spc, indent + 3);
+        msg += descr->Label;
+        msg += "\n";
+    }
+}
+
+
+void cmdline::ladspa_help_lib_all()
+{
+    ladspa_loader* ladspaloader = wcnt::jwm.get_ladspaloader();
+    ladspaloader->load_all();
+    ladspaloader->sort();
+
+    ladspa_lib* lib = ladspaloader->goto_first();
+
+    size_t indent = 0;
+    while(lib) {
+        const char* libname = strrchr(lib->get_path(), '/') + 1;
+        size_t len = strlen(libname);
+        if (indent < len)
+            indent = len;
+        lib = ladspaloader->goto_next();
+    }
+
+    lib = ladspaloader->goto_first();
+    int lastcount = 0;
+    while(lib) {
+        int plug_ix = 0;
+        // get a blank line before library containing a set of plugins
+        for (;; plug_ix++)
+            if (!(lib->get_descr_func())(plug_ix))
+                break;
+
+        if (plug_ix > 1 && lastcount <= 1)
+            msg += "\n";
+
+        ladspa_help_lib(lib, indent);
+
+        if (plug_ix > 1)
+            msg += "\n";
+
+        lastcount = plug_ix;
+
+        lib = ladspaloader->goto_next();
+    }
+}
+
+
 void cmdline::ladspa_help()
 {
     if (opt_count > 2) {
@@ -881,31 +950,32 @@ void cmdline::ladspa_help()
     }
 
     if (!ladspa_lib_arg) {
-        ladspa_loader* ladspaloader = wcnt::jwm.get_ladspaloader();
-        ladspaloader->load_all();
+        ladspa_help_lib_all();
+        return;
+    }
 
-        ladspa_lib* l = ladspaloader->goto_first();
-        while(l) {
-            const char* libname = strrchr(l->get_path(), '/') + 1;
-            msg += libname;
-            msg += "\n";
-            for (int plug_ix = 0;; plug_ix++) {
-                const LADSPA_Descriptor* descr = (l->get_descr_func())(plug_ix);
-                if (!descr)
-                    break;
-                msg += "\t";
-                msg += descr->Label;
-                msg += "\n";
-            }
-            msg += "\n";
-            l = ladspaloader->goto_next();
+    if (!ladspa_label_arg) {
+        ladspa_loader* ladspaloader = wcnt::jwm.get_ladspaloader();
+        char* path = ladspaloader->find_lib_path(opts[ladspa_lib_arg]);
+        ladspa_lib* lib = 0;
+
+        if (path)
+            lib = ladspaloader->load_lib(path);
+
+        if (!path || !lib) {
+            msg += "Invalid LADSPA library name '";
+            msg += opts[ladspa_lib_arg];
+            msg += "'\n";
+            ladspa_help_lib_all();
+            return;
         }
+
+        ladspa_help_lib(lib, 0);
         return;
     }
 
     mod_help();
 }
-
 
 
 void cmdline::input_help()

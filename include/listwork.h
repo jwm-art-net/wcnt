@@ -3,6 +3,9 @@
 
 #include "linkedlist.h"
 
+#include <stddef.h>
+
+
 template <typename T, typename R>
 ll_item<T>*
 ordered_insert(linked_list<T>* list, T* data, R(T::*func)() const)
@@ -185,6 +188,27 @@ void sort_list(linked_list<T>* list, R (T::*func)() const)
             if (tmp && (tmp->get_data()->*func)()
               < (smallest->get_data()->*func)())
                 smallest = tmp;
+        }
+        T* n = expos->get_data();
+        expos->set_data(smallest->get_data());
+        smallest->set_data(n);
+        expos = expos->get_next();
+    }
+}
+
+template <typename T>
+void sort_list(linked_list<T>* list, int (T::*cmpfunc)(const T*) const)
+{
+    ll_item<T>* expos = list->sneak_first();
+    while(expos) {
+        ll_item<T>* tmp = expos;
+        ll_item<T>* smallest = tmp;
+        while (tmp) {
+            tmp = tmp->get_next();
+            if (tmp) {
+                if ((tmp->get_data()->*cmpfunc)(smallest->get_data()) < 0)
+                    smallest = tmp;
+            }
         }
         T* n = expos->get_data();
         expos->set_data(smallest->get_data());

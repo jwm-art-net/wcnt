@@ -3,6 +3,7 @@
 
 #include "synthmodnames.h"
 #include "dobjnames.h"
+#include "ladspa_loader.h"
 
 #include <string>
 
@@ -119,6 +120,8 @@ class cmdline
     void about();
 
     void module_help_list_all();
+    void ladspa_help_lib(ladspa_lib* lib, int indent);
+    void ladspa_help_lib_all();
     void input_help_with_wcfile();
 
     void dobj_help(dobj::TYPE parent, dobj::TYPE child, int indent_level);
