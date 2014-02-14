@@ -99,8 +99,8 @@ class cmdline
 
     static textuals texts[CMD_COUNT];
 
-    int ladspa_lib;
-    int ladspa_label;
+    int ladspa_lib_arg;
+    int ladspa_label_arg;
     const char* wc_file;
 
     std::string msg;

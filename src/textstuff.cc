@@ -217,7 +217,6 @@ char* sanitize_name(const char* src, const char* badchars, int replace, const ch
 
     for (*d = '\0', --d; *d == replace; --d) {
         *d = '\0';
-        --d;
     }
 
     if (prefix) {

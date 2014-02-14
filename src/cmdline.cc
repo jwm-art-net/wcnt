@@ -15,7 +15,7 @@
 #include "../include/textstuff.h"
 #include "../include/ui_dobjitem.h"
 #include "../include/ui_moditem.h"
-
+#include "../include/ladspa_loader.h"
 #include <cstring>
 #include <cstdlib>
 #include <sstream>
@@ -94,7 +94,7 @@ cmdline::textuals cmdline::texts[CMD_COUNT] = {
 
 
 cmdline::cmdline(int argc, char** argv) :
- opt_count(0), opts(0), switch_flags(0), ladspa_lib(0), ladspa_label(0),
+ opt_count(0), opts(0), switch_flags(0), ladspa_lib_arg(0), ladspa_label_arg(0),
  wc_file(0)
 {
     int opt = 0;;
@@ -311,7 +311,7 @@ void cmdline::mod_help()
 {
     int smt;
 
-    if (ladspa_lib && ladspa_label)
+    if (ladspa_lib_arg && ladspa_label_arg)
         smt = synthmod::LADSPA;
     else if (opt_count > 2)
         smt = synthmod::names::type(opts[2]);
@@ -362,9 +362,9 @@ void cmdline::mod_help()
     int mxl2 = 0;
     bool custom = false;
 
-    if (ladspa_lib && ladspa_label) {
-        sm->set_param(param::LADSPA_LIB, opts[ladspa_lib]);
-        sm->set_param(param::LADSPA_LABEL, opts[ladspa_label]);
+    if (ladspa_lib_arg && ladspa_label_arg) {
+        sm->set_param(param::LADSPA_LIB, opts[ladspa_lib_arg]);
+        sm->set_param(param::LADSPA_LABEL, opts[ladspa_label_arg]);
     }
 
     while(item) {
@@ -469,10 +469,10 @@ void cmdline::mod_help()
                 iocat::TYPE ioc = param::names::category(pt);
                 const char* s2 = 0;
 
-                if (ladspa_lib && pt == param::LADSPA_LIB)
-                    s2 = opts[ladspa_lib];
-                else if (ladspa_label && pt == param::LADSPA_LABEL)
-                    s2 = opts[ladspa_label];
+                if (ladspa_lib_arg && pt == param::LADSPA_LIB)
+                    s2 = opts[ladspa_lib_arg];
+                else if (ladspa_label_arg && pt == param::LADSPA_LABEL)
+                    s2 = opts[ladspa_label_arg];
                 else if (ioc == iocat::FIX_STR) {
                     fixstrparam* fsp;
                     fsp = wcnt::get_fxsparamlist()->get_fix_str_param(pt);
@@ -860,22 +860,46 @@ void cmdline::dobj_help()
 void cmdline::ladspa_help()
 {
     if (opt_count > 2) {
-        ladspa_lib = 2;
+        ladspa_lib_arg = 2;
         if (opt_count > 3)
-            ladspa_label = 3;
+            ladspa_label_arg = 3;
     }
 
-    if (!ladspa_lib || !ladspa_label) {
+    if (!ladspa_lib_arg || !ladspa_label_arg) {
         msg = "Please specify the LADSPA library name and the LADSPA plugin\n"
               "label to show the ladspa module definition help for.\n\n";
-        msg+= "Note: depending on where the LADSPA library you wish to use\n"
-              "      is located, and whether the LADSPA_PATH environment\n"
-              "      variable is set or not, you may not need to specify\n"
-              "      the full path to the plugin. When LADSPA_PATH is not\n"
-              "      set, and the full plugin path is not specified, wcnt\n"
-              "      will use:\n\n    ";
-        msg += wcnt::ladspa_path_if_env_not_set;
-        msg += "\n";
+        if (wcnt::jwm.is_verbose()) {
+            msg+= "Note: depending on where the LADSPA library you wish to use\n"
+                  "      is located, and whether the LADSPA_PATH environment\n"
+                  "      variable is set or not, you may not need to specify\n"
+                  "      the full path to the plugin. When LADSPA_PATH is not\n"
+                  "      set, and the full plugin path is not specified, wcnt\n"
+                  "      will use:\n\n    ";
+            msg += wcnt::ladspa_path_if_env_not_set;
+            msg += "\n";
+        }
+    }
+
+    if (!ladspa_lib_arg) {
+        ladspa_loader* ladspaloader = wcnt::jwm.get_ladspaloader();
+        ladspaloader->load_all();
+
+        ladspa_lib* l = ladspaloader->goto_first();
+        while(l) {
+            const char* libname = strrchr(l->get_path(), '/') + 1;
+            msg += libname;
+            msg += "\n";
+            for (int plug_ix = 0;; plug_ix++) {
+                const LADSPA_Descriptor* descr = (l->get_descr_func())(plug_ix);
+                if (!descr)
+                    break;
+                msg += "\t";
+                msg += descr->Label;
+                msg += "\n";
+            }
+            msg += "\n";
+            l = ladspaloader->goto_next();
+        }
         return;
     }
 

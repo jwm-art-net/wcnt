@@ -35,6 +35,7 @@ class ladspa_plug
     // validate_port returns an error string on invalid port data:
     // the string should be free'd.
     char* validate_port(const char* port, LADSPA_Data* data);
+    char* validate_port(int port_index, LADSPA_Data* data);
 
     bool get_port_lower_bound(int port_index, LADSPA_Data* result);
     bool get_port_upper_bound(int port_index, LADSPA_Data* result);
