@@ -3,6 +3,7 @@
 #include "../include/globals.h"
 
 #include <climits>
+#include <cmath>
 
 
 ladspa_module::ladspa_module(const char* uname) :
@@ -355,15 +356,38 @@ bool ladspa_module::create_custom_ui_items()
         int id;
         iocat::TYPE ioc;
 
-        if (LADSPA_IS_HINT_INTEGER(pd))
+        char buf[80] = "";
+
+        LADSPA_Data up_bound;
+        bool has_up_bound = lp->get_port_upper_bound(px, &up_bound);
+        LADSPA_Data lo_bound;
+        bool has_lo_bound = lp->get_port_lower_bound(px, &lo_bound);
+
+        if (LADSPA_IS_HINT_INTEGER(pd)) {
             ioc = iocat::WCINT_T;
+            if (has_up_bound)
+                up_bound = roundf(up_bound);
+            if (has_lo_bound)
+                lo_bound = roundf(lo_bound);
+        }
         else
             ioc = iocat::DOUBLE;
+
+        if (has_up_bound && has_lo_bound)
+            snprintf(buf, 79, "Min %f, Max %f", lo_bound, up_bound);
+        else if (has_up_bound)
+            snprintf(buf, 79, "Max %f", up_bound);
+        else if (has_lo_bound)
+            snprintf(buf, 79, "Min %f", lo_bound);
+
+        char* pdstr = 0;
+        if (strlen(buf))
+            pdstr = new_strdup(buf);
 
         if (LADSPA_IS_PORT_INPUT(pd)) {
             if (LADSPA_IS_PORT_CONTROL(pd)) {
                 id = param::names::register_type(l_descriptor->PortNames[px], ioc, 0);
-                register_param(id);
+                register_param(id)->add_descr(pdstr)->set_flags(ui::UI_DELDESCR);
                 pm->id = id;
                 pm->type = ui::UI_PARAM;
                 if (ioc == iocat::WCINT_T) {
@@ -377,7 +401,7 @@ bool ladspa_module::create_custom_ui_items()
             }
             else {
                 id = input::names::register_type(l_descriptor->PortNames[px], ioc, 0);
-                register_input(id);
+                register_input(id)->add_descr(pdstr)->set_flags(ui::UI_DELDESCR);
                 pm->id = id;
                 pm->type = ui::UI_INPUT;
                 if (ioc == iocat::WCINT_T) {
@@ -393,6 +417,7 @@ bool ladspa_module::create_custom_ui_items()
         else if (LADSPA_IS_PORT_OUTPUT(pd)) {
             id = output::names::register_type(l_descriptor->PortNames[px], ioc, 0);
             register_output(id);
+            delete [] pdstr;
             pm->id = id;
             pm->type = ui::UI_OUTPUT;
             if (ioc == iocat::WCINT_T) {

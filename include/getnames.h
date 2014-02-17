@@ -217,18 +217,25 @@ int getnames<T, C>::register_type(const char* name, C cat, const char* descr, co
     }
     #endif
 
-    char* descr_str = (descr != 0 ? new_strdup(descr) : 0);
+    debug("descr: '%s' (%p)\n", (descr ? descr : ""), descr);
+
+    char* descr_str = new_strdup(descr); // returns 0 if passed 0
+
+
+    debug("descr_str: '%s' (%p)\n", (descr_str ? descr_str : ""), descr_str);
+
     extdata* xd = new extdata(next_type_id++, name_str, cat, descr_str);
 
+
     if (!xd) {
-        delete [] descr;
+        delete [] descr_str;
         delete [] name_str;
         return 0;
     }
 
     if (!ext->add_at_tail(xd)) {
         debug("failed to add new registered type '%s'\n", name_str);
-        delete [] descr;
+        delete [] descr_str;
         delete [] name_str;
         delete xd;
         return 0;
@@ -250,10 +257,10 @@ int getnames<T, C>::ext_type(const char* name)
     extdata* xd = find_in_data(ext->sneak_first(), fnobj::name(name))->get_data();
 
     if (xd) {
-        debug("found name '%s'\n", name);
+/*      debug("found name '%s'\n", name);
         debug("id/type: %d\n", xd->type);
         debug("cat: %2p\n", (void*)xd->cat);
-        debug("descr: '%s'\n", (xd->descr ? xd->descr : "NULL"));
+        debug("descr: '%s'\n", (xd->descr ? xd->descr : "NULL"));   */
         return xd->type;
     }
 
@@ -269,10 +276,10 @@ const char* getnames<T, C>::ext_get(int t)
     extdata* xd = find_in_data(ext->sneak_first(), fnobj::intval(t))->get_data();
 
     if (xd) {
-        debug("name '%s'\n", xd->name);
+/*      debug("name '%s'\n", xd->name);
         debug("found id/type: %d\n", xd->type);
         debug("cat: %2p\n", (void*)xd->cat);
-        debug("descr: '%s'\n", (xd->descr ? xd->descr : "NULL"));
+        debug("descr: '%s'\n", (xd->descr ? xd->descr : "NULL")); */
         return xd->name;
     }
 
@@ -288,10 +295,10 @@ C getnames<T, C>::ext_category(int t)
     extdata* xd = find_in_data(ext->sneak_first(), fnobj::intval(t))->get_data();
 
     if (xd) {
-        debug("name '%s'\n", xd->name);
+/*      debug("name '%s'\n", xd->name);
         debug("found id/type: %d\n", xd->type);
         debug("cat: %2p\n", (void*)xd->cat);
-        debug("descr: '%s'\n", (xd->descr ? xd->descr : "NULL"));
+        debug("descr: '%s'\n", (xd->descr ? xd->descr : "NULL")); */
         return xd->cat;
     }
 
@@ -307,10 +314,10 @@ const char* getnames<T, C>::ext_descr(int t)
     extdata* xd = find_in_data(ext->sneak_first(), fnobj::intval(t))->get_data();
 
     if (xd) {
-        debug("name '%s'\n", xd->name);
+/*      debug("name '%s'\n", xd->name);
         debug("found id/type: %d\n", xd->type);
         debug("cat: %2p\n", (void*)xd->cat);
-        debug("descr: '%s'\n", (xd->descr ? xd->descr : "NULL"));
+        debug("descr: '%s'\n", (xd->descr ? xd->descr : "NULL")); */
         return xd->descr;
     }
 

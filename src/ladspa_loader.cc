@@ -230,6 +230,20 @@ int ladspa_lib::filename_cmp(const ladspa_lib* lib2) const
 }
 
 
+int ladspa_lib::get_plugin_count()
+{
+    const LADSPA_Descriptor* descr = 0;
+
+    for (int px = 0;; ++px) {
+        if (!(descr = (descrfunc)(px)))
+            return px;
+    }
+    debug("LADSPA plugin count (logic?) error!\n");
+    return -1;
+}
+
+
+
 ladspa_plug* ladspa_lib::get_plugin(const char* name)
 {
     if(name == 0)

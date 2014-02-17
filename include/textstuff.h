@@ -88,8 +88,10 @@ class spaces
             __FILE__, __LINE__, __FUNCTION__);  \
     fprintf(stderr, __VA_ARGS__);               \
 }
+#define debug_ifptr(ptr, ...) { if ((ptr)) debug(__VA_ARGS__); }
 #else
 #define debug(...)
+#define debug_ifptr(...)
 #endif
 
 

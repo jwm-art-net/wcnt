@@ -118,8 +118,10 @@ namespace ui
         bool    choice_specified_dup;
         #endif
         void reset() {
+            choice_ended = false;
             group_head = 0;
             group_id = UI_DEFAULT;
+            group_ended = false;
             #if DEBUG
             choice_specified_dup = false;
             #endif

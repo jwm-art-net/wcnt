@@ -101,7 +101,8 @@ class cmdline
     static textuals texts[CMD_COUNT];
 
     int ladspa_lib_arg;
-    int ladspa_label_arg;
+    //int ladspa_label_arg;
+    const char* ladspa_label;
     const char* wc_file;
 
     std::string msg;
@@ -121,7 +122,7 @@ class cmdline
 
     void module_help_list_all();
     void ladspa_help_lib(ladspa_lib* lib, int indent);
-    void ladspa_help_lib_all();
+    void ladspa_help_load_all();
     void input_help_with_wcfile();
 
     void dobj_help(dobj::TYPE parent, dobj::TYPE child, int indent_level);

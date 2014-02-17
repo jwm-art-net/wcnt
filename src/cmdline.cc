@@ -94,7 +94,8 @@ cmdline::textuals cmdline::texts[CMD_COUNT] = {
 
 
 cmdline::cmdline(int argc, char** argv) :
- opt_count(0), opts(0), switch_flags(0), ladspa_lib_arg(0), ladspa_label_arg(0),
+ opt_count(0), opts(0), switch_flags(0),
+ ladspa_lib_arg(0), /*ladspa_label_arg(0),*/ ladspa_label(0),
  wc_file(0)
 {
     int opt = 0;;
@@ -311,7 +312,7 @@ void cmdline::mod_help()
 {
     int smt;
 
-    if (ladspa_lib_arg && ladspa_label_arg)
+    if (ladspa_lib_arg && ladspa_label)
         smt = synthmod::LADSPA;
     else if (opt_count > 2)
         smt = synthmod::names::type(opts[2]);
@@ -362,14 +363,19 @@ void cmdline::mod_help()
     int mxl2 = 0;
     bool custom = false;
 
-    if (ladspa_lib_arg && ladspa_label_arg) {
+    if (ladspa_lib_arg && ladspa_label) {
         sm->set_param(param::LADSPA_LIB, opts[ladspa_lib_arg]);
-        sm->set_param(param::LADSPA_LABEL, opts[ladspa_label_arg]);
+        sm->set_param(param::LADSPA_LABEL, ladspa_label);
     }
+
+    debug("\n\n\n\n");
 
     while(item) {
         int l1 = 0;
         int l2 = 0;
+        #if DEBUG
+        item->dump();
+        #endif
         switch(item->get_item_type()) {
           case ui::UI_PARAM: {
             ui::modparam* mp = static_cast<ui::modparam*>(item);
@@ -417,6 +423,9 @@ void cmdline::mod_help()
     }
     mxl1 += 2;
 
+
+    debug("\n\n\n\n");
+
     if (custom) {
         sm->deactivate_custom_ui_items();
         items = sm->get_ui_items();
@@ -428,7 +437,9 @@ void cmdline::mod_help()
         if (!item->is_dummy()) {
             const char* lead = "\n    ";
             char flags[8] = "";
-
+            #if DEBUG
+            item->dump();
+            #endif
             ui::TYPE itemtype = item->get_item_type();
 
             if (wcnt::jwm.is_verbose()) {
@@ -451,11 +462,11 @@ void cmdline::mod_help()
             switch(itemtype) {
               case ui::UI_COMMENT: {
                 ui::modcomment* mc = static_cast<ui::modcomment*>(item);
-                const char* c = mc->get_descr();
+                const char* descr = mc->get_descr();
                 msg += "\n";
-                if (c) {
+                if (descr) {
                     msg += "    // ";
-                    msg += c;
+                    msg += descr;
                 }
                 break;
               }
@@ -471,8 +482,8 @@ void cmdline::mod_help()
 
                 if (ladspa_lib_arg && pt == param::LADSPA_LIB)
                     s2 = opts[ladspa_lib_arg];
-                else if (ladspa_label_arg && pt == param::LADSPA_LABEL)
-                    s2 = opts[ladspa_label_arg];
+                else if (ladspa_label && pt == param::LADSPA_LABEL)
+                    s2 = ladspa_label;
                 else if (ioc == iocat::FIX_STR) {
                     fixstrparam* fsp;
                     fsp = wcnt::get_fxsparamlist()->get_fix_str_param(pt);
@@ -488,10 +499,16 @@ void cmdline::mod_help()
                     msg.append(spaces::get(mxl2), mxl2 - strlen(s2));
                     msg += " // ";
                     msg += flags;
-                    const char* c = item->get_descr();
-                    const char* descr = (!c ? param::names::descr(pt) : c);
-                    msg += " ";
-                    msg += descr;
+                    const char* descr = item->get_descr();
+                    debug_ifptr(descr, "descr from item '%s' (%p)\n", descr, descr);
+                    if (!descr) {
+                        descr = param::names::descr(pt);
+                        debug_ifptr(descr, "descr from param::names '%s' (%p)\n", descr, descr);
+                    }
+                    if (descr) {
+                        msg += " ";
+                        msg += descr;
+                    }
                 }
                 break;
               }
@@ -499,7 +516,6 @@ void cmdline::mod_help()
                 ui::modinput* mi = static_cast<ui::modinput*>(item);
                 int it = mi->get_input_type();
                 const char* s1 = input::names::get(it);
-
                 msg += lead;
                 msg += s1;
                 msg.append(spaces::get(mxl1), mxl1 - strlen(s1));
@@ -508,10 +524,17 @@ void cmdline::mod_help()
                     msg.append(spaces::get(mxl2), mxl2 - strlen(outstr));
                     msg += " // ";
                     msg += flags;
-                    const char* c = item->get_descr();
-                    const char* descr = (!c ? input::names::descr(it) : c);
-                    msg += " ";
-                    msg += descr;
+                    const char* descr = item->get_descr();
+                    debug_ifptr(descr, "descr from item '%s' (%p)\n", descr, descr);
+                    if (!descr) {
+                        descr = input::names::descr(it);
+                        debug_ifptr(descr, "descr from input::names '%s' (%p)\n", descr, descr);
+                    }
+                    if (descr) {
+                        msg += " ";
+                        msg += descr;
+                        debug("descr: '%s' (%p)\n", descr, descr);
+                    }
                 }
                 break;
               }
@@ -559,9 +582,11 @@ void cmdline::mod_help()
             output = outlist->goto_next();
             if (wcnt::jwm.is_verbose()) {
                 const char* descr = output::names::descr(ot);
-                msg.append(spaces::get(mxl1), mxl1 - strlen(s1));
-                msg += "// ";
-                msg += descr;
+                if (descr) {
+                    msg.append(spaces::get(mxl1), mxl1 - strlen(s1));
+                    msg += "// ";
+                    msg += descr;
+                }
             }
         }
     }
@@ -863,12 +888,20 @@ void cmdline::ladspa_help_lib(ladspa_lib* lib, int indent)
         return;
 
     const char* libname = strrchr(lib->get_path(), '/') + 1;
-    int len = strlen(libname);
-    if (indent < len)
-        indent = len;
+    int lnlen = strlen(libname);
+
+    if (!indent) {
+        if (lib->get_plugin_count() == 1) {
+            const LADSPA_Descriptor* descr = (lib->get_descr_func())(0);
+            ladspa_label = descr->Label;
+            mod_help();
+            return;
+        }
+        indent = lnlen;
+    }
 
     const char* spc = spaces::get(indent + 3);
-    msg.append(spc, indent - strlen(libname));
+    msg.append(spc, indent - lnlen);
     msg += libname;
     msg += ":  ";
 
@@ -885,7 +918,7 @@ void cmdline::ladspa_help_lib(ladspa_lib* lib, int indent)
 }
 
 
-void cmdline::ladspa_help_lib_all()
+void cmdline::ladspa_help_load_all()
 {
     ladspa_loader* ladspaloader = wcnt::jwm.get_ladspaloader();
     ladspaloader->load_all();
@@ -931,10 +964,10 @@ void cmdline::ladspa_help()
     if (opt_count > 2) {
         ladspa_lib_arg = 2;
         if (opt_count > 3)
-            ladspa_label_arg = 3;
+            ladspa_label = opts[3];
     }
 
-    if (!ladspa_lib_arg || !ladspa_label_arg) {
+    if (!ladspa_lib_arg || !ladspa_label) {
         msg = "Please specify the LADSPA library name and the LADSPA plugin\n"
               "label to show the ladspa module definition help for.\n\n";
         if (wcnt::jwm.is_verbose()) {
@@ -950,11 +983,11 @@ void cmdline::ladspa_help()
     }
 
     if (!ladspa_lib_arg) {
-        ladspa_help_lib_all();
+        ladspa_help_load_all();
         return;
     }
 
-    if (!ladspa_label_arg) {
+    if (!ladspa_label) {
         ladspa_loader* ladspaloader = wcnt::jwm.get_ladspaloader();
         char* path = ladspaloader->find_lib_path(opts[ladspa_lib_arg]);
         ladspa_lib* lib = 0;
@@ -966,9 +999,12 @@ void cmdline::ladspa_help()
             msg += "Invalid LADSPA library name '";
             msg += opts[ladspa_lib_arg];
             msg += "'\n";
-            ladspa_help_lib_all();
+            delete [] path;
+            ladspa_help_load_all();
             return;
         }
+
+        delete [] path;
 
         ladspa_help_lib(lib, 0);
         return;
