@@ -11,10 +11,14 @@ timer
 t
     timings
         time seconds 0.0
-        time seconds 20.0
+        time seconds 0.125
+        time seconds 0.125
+        time seconds 0.125
+        time seconds 0.5
+        time seconds 0.85
     timings
-    time_is_relative off
-    recycle_mode off
+    time_is_relative on
+    recycle_mode on
 t
 
 adsr
@@ -52,14 +56,14 @@ wav1
     data_format float32
     filename    reverb.wav
     start_bar   0
-    end_bar     1
+    end_bar     25
 wav1
 
 
 wcnt_exit
 wcnt_exit_module
     in_bar      t out_count
-    exit_bar    1
+    exit_bar    25
 wcnt_exit_module
 
 

@@ -21,7 +21,7 @@ Ports:
     "Cutoff Frequency (Hz)" input, control,
         1e-04*srate to 0.45*srate, default 0.000819036*srate, logarithmic
 
-    "Resonance" input, control, 
+    "Resonance" input, control,
         0.1 to 1.41, default 0.755
 
     "Input" input, audio
@@ -46,7 +46,7 @@ class glame_butterworth : public synthmod::base
  private:
     // inputs
     const double* in_signal;
-    const double* in_phase_step; // cutoff freq 
+    const double* in_phase_step; // cutoff freq
     const double* in_res_mod;
     // output
     double output;
@@ -57,7 +57,8 @@ class glame_butterworth : public synthmod::base
 
     // LADSPA data
     const LADSPA_Descriptor* l_descriptor;
-    LADSPA_Handle            l_inst_handle;
+    LADSPA_Handle            l_handle;
+    static ladspa_plug*      lp;
     LADSPA_Data* l_input;
     LADSPA_Data* l_output;
     LADSPA_Data  l_cut_off;

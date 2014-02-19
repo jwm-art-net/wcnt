@@ -1,0 +1,21 @@
+wcnt-1.30/jwmsynth
+
+samplerate 44100
+
+caps_plate
+r
+    in_left    off
+    bandwidth  0.999
+    tail       0.999
+    damping    0.0005
+    wet/dry    0.125
+r
+
+wcnt_exit
+x
+    in_bar      off
+    exit_bar    0
+x
+
+wcnt-1.30/jwmsynth
+

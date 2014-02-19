@@ -60,15 +60,16 @@ class sc1 : public synthmod::base
 
     // LADSPA data
     const LADSPA_Descriptor* l_descriptor;
-    LADSPA_Handle            l_inst_handle;
-    LADSPA_Data  l_attack;
-    LADSPA_Data  l_release;
-    LADSPA_Data  l_thresh;
-    LADSPA_Data  l_ratio;
-    LADSPA_Data  l_knee;
-    LADSPA_Data  l_makeup;
-    LADSPA_Data* l_input;
-    LADSPA_Data* l_output;
+    LADSPA_Handle            l_handle;
+    static ladspa_plug*     lp;
+    LADSPA_Data l_attack;
+    LADSPA_Data l_release;
+    LADSPA_Data l_thresh;
+    LADSPA_Data l_ratio;
+    LADSPA_Data l_knee;
+    LADSPA_Data l_makeup;
+    LADSPA_Data l_input;
+    LADSPA_Data l_output;
     void register_ui();
     ui::moditem_list* get_ui_items();
 };

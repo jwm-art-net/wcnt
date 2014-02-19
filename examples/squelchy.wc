@@ -384,7 +384,7 @@ mix1b
     mean_total off
 mix1b
 
-caps_plate2x2
+caps_plate
 cp1
     in_left     mix1  out_output
     in_right    mix1b out_output

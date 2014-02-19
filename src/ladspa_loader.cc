@@ -366,6 +366,8 @@ ladspa_lib* ladspa_loader::load_lib(const char* path)
         return 0;
     }
 
+    debug("path:'%s'\n", path);
+
     if (path[0] != '/') {
         debug("***** Relative path *****\n");
         return 0;
@@ -375,6 +377,7 @@ ladspa_lib* ladspa_loader::load_lib(const char* path)
     while (lib) {
         if (strcasecmp(lib->get_path(), path) == 0)
             return lib;
+        lib = goto_next();
     }
 
     void* handle = dlopen(path, RTLD_LAZY);
@@ -423,10 +426,13 @@ ladspa_loader::get_plugin(const char* path, const char* label)
     // see if plugin lib is already loaded...
     ladspa_lib* lib = goto_first();
     while(lib){
+        debug("lib path:'%s'\n", lib->get_path());
         if (strcasecmp(lib->get_path(), path) == 0)
             return lib->get_plugin(label);
         lib = goto_next();
     }
+
+    debug("need to load lib (%s)...\n", path);
 
     if (!(lib = load_lib(path))) {
         ladspa_err("Failed to load LADSPA library '%s'\n", path);

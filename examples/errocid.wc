@@ -201,7 +201,7 @@ ek2
 
 constant_freq
 bass
-    freq 80.0
+    freq 60.0
 bass
 
 single_band_parametric

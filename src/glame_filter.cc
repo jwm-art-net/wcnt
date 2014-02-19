@@ -2,23 +2,40 @@
 #ifdef WITH_LADSPA
 #include "../include/globals.h"
 
+
+ladspa_plug* glame_filter::lp_hipass = 0;
+ladspa_plug* glame_filter::lp_lopass = 0;
+
+
 glame_filter::glame_filter(const char* uname) :
  synthmod::base(synthmod::GLAME_FILTER, uname, SM_HAS_OUT_OUTPUT),
  in_signal(0), in_freq_mod1(0), output(0),
  type(LOPASS), cutoff_freq(440.0), freq_mod1size(1.0), stages(1),
- l_descriptor(0), l_inst_handle(0),
+ l_descriptor(0), l_handle(0),
  l_cutoff_freq(440.0), l_stages(1),
- l_input(0), l_output(0)
+ l_input(0), l_output(0), lp(0)
 {
     register_output(output::OUT_OUTPUT);
     type_names[0] = "lowpass_iir";
     type_names[1] = "highpass_iir";
-    min_cutoff = 0.0001 * wcnt::jwm.samplerate();
-    max_cutoff = 0.45 * wcnt::jwm.samplerate();
 }
+
 
 void glame_filter::register_ui()
 {
+    ladspa_loader* ll = wcnt::jwm.get_ladspaloader();
+    char* path = ll->find_lib_path("lowpass_iir_1891");
+
+    if (path) {
+        lp_lopass = ll->get_plugin(path, "lowpass_iir");
+        delete [] path;
+    }
+
+    if ((path = ll->find_lib_path("highpass_iir_1890"))) {
+        lp_hipass = ll->get_plugin(path, "highpass_iir");
+        delete [] path;
+    }
+
     register_param(param::GLAME_FILTER_TYPE, "lowpass|highpass");
     register_input(input::IN_SIGNAL);
     register_param(param::FREQ);
@@ -26,6 +43,7 @@ void glame_filter::register_ui()
     register_param(param::FREQ_MOD1SIZE)->set_flags(ui::UI_GROUP1);
     register_param(param::STAGES);
 }
+
 
 ui::moditem_list* glame_filter::get_ui_items()
 {
@@ -35,10 +53,10 @@ ui::moditem_list* glame_filter::get_ui_items()
 
 glame_filter::~glame_filter()
 {
-    if (l_descriptor) l_descriptor->cleanup(l_inst_handle);
-    if (l_input) delete [] l_input;
-    if (l_output) delete [] l_output;
+    if (l_descriptor)
+        l_descriptor->cleanup(l_handle);
 }
+
 
 const void* glame_filter::get_out(int ot) const
 {
@@ -48,6 +66,7 @@ const void* glame_filter::get_out(int ot) const
         default: return 0;
     }
 }
+
 
 const void*
 glame_filter::set_in(int it, const void* o)
@@ -63,6 +82,7 @@ glame_filter::set_in(int it, const void* o)
     }
 }
 
+
 const void* glame_filter::get_in(int it) const
 {
     switch(it)
@@ -72,6 +92,7 @@ const void* glame_filter::get_in(int it) const
         default: return 0;
     }
 }
+
 
 bool
 glame_filter::set_param(int pt, const void* data)
@@ -95,6 +116,7 @@ glame_filter::set_param(int pt, const void* data)
     }
 }
 
+
 const void* glame_filter::get_param(int pt) const
 {
     switch(pt)
@@ -107,75 +129,71 @@ const void* glame_filter::get_param(int pt) const
     }
 }
 
+
 errors::TYPE glame_filter::validate()
 {
-    if (cutoff_freq < min_cutoff || cutoff_freq > max_cutoff) {
-        sm_err("%s must be within range 0.0001 * samplerate ~ "
-               "0.45 * samplerate.",
-                param::names::get(param::FREQ));
+    char* err = 0;
+
+    if (!(lp = (type == LOPASS ? lp_lopass : lp_hipass))) {
+        sm_err("%s", "Failed to load LADSPA plugin.");
         invalidate();
         return errors::ERROR;
     }
-    if (stages < 1 || stages > 10){
-        sm_err("%s must be within range 1 ~ 10",
-                    param::names::get(param::STAGES));
+
+    if ((err = lp->validate_port("Cutoff Frequency", &l_cutoff_freq))) {
+        sm_err("%s %s.", param::names::get(param::FREQ), err);
+        delete [] err;
         invalidate();
         return errors::ERROR;
     }
+
+    if ((err = lp->validate_port("Stages(2 poles per stage)", &l_stages))) {
+        sm_err("%s %s.", param::names::get(param::STAGES), err);
+        delete [] err;
+        invalidate();
+        return errors::ERROR;
+    }
+
     if (!validate_param(param::FREQ_MOD1SIZE, errors::RANGE_FMOD))
         return errors::RANGE_FMOD;
 
     return errors::NO_ERROR;
 }
 
+
 void glame_filter::init()
 {
-    ladspa_loader* ll = wcnt::jwm.get_ladspaloader();
-    ladspa_plug* lp = 0;
-    if(type == LOPASS)
-        lp = ll->get_plugin("lowpass_iir_1891", "lowpass_iir");
-    else
-        lp = ll->get_plugin("highpass_iir_1890", "highpass_iir");
-    if (lp == 0) {
-        sm_err("%s", ladspa_loader::get_error_msg());
-        invalidate();
-        return;
-    }
     if ((l_descriptor = lp->get_descriptor()) == 0) {
         sm_err("%s", ladspa_loader::get_error_msg());
         invalidate();
         return;
     }
-    if ((l_inst_handle = lp->instantiate()) == 0) {
+    if ((l_handle = lp->instantiate()) == 0) {
         sm_err("%s", ladspa_loader::get_error_msg());
         invalidate();
         return;
     }
-    l_input = new LADSPA_Data[1];
-    l_output = new LADSPA_Data[1];
-    l_descriptor->connect_port(l_inst_handle, 0, &l_cutoff_freq);
-    l_descriptor->connect_port(l_inst_handle, 1, &l_stages);
-    l_descriptor->connect_port(l_inst_handle, 2, l_input);
-    l_descriptor->connect_port(l_inst_handle, 3, l_output);
-    l_descriptor->activate(l_inst_handle);
+
+    l_descriptor->connect_port(l_handle, 0, &l_cutoff_freq);
+    l_descriptor->connect_port(l_handle, 1, &l_stages);
+    l_descriptor->connect_port(l_handle, 2, &l_input);
+    l_descriptor->connect_port(l_handle, 3, &l_output);
+    l_descriptor->activate(l_handle);
     l_stages = stages;
 }
 
+
 void glame_filter::run()
 {
-    *l_input = *in_signal;
+    l_input = *in_signal;
 
     if (*in_freq_mod1 < 0)
         l_cutoff_freq = cutoff_freq /(1 + freq_mod1size * -*in_freq_mod1);
     else
         l_cutoff_freq = cutoff_freq * (1 + freq_mod1size * *in_freq_mod1);
-    if (l_cutoff_freq < min_cutoff)
-        l_cutoff_freq = min_cutoff;
-    else if
-       (l_cutoff_freq > max_cutoff)
-        l_cutoff_freq = max_cutoff;
-    l_descriptor->run(l_inst_handle, 1);
-    output = *l_output;
+
+    l_descriptor->run(l_handle, 1);
+    output = l_output;
 }
 
 #endif // WITH_LADSPA

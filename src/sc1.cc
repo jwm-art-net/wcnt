@@ -2,12 +2,16 @@
 #ifdef WITH_LADSPA
 #include "../include/globals.h"
 
+
+ladspa_plug* sc1::lp = 0;
+
+
 sc1::sc1(const char* uname) :
  synthmod::base(synthmod::SC1, uname, SM_HAS_OUT_OUTPUT),
  input(0), in_thresh_mod(0), in_ratio_mod(0), in_knee_mod(0),
  in_makeup_mod(0), output(0),
  attack(101.5), release(401), thresh(0), ratio(1), knee(3.25), makeup(0),
- l_descriptor(0), l_inst_handle(0),
+ l_descriptor(0), l_handle(0),
  l_attack(0), l_release(0), l_thresh(0), l_ratio(0), l_knee(0),
  l_makeup(0), l_input(0), l_output(0)
 {
@@ -16,6 +20,15 @@ sc1::sc1(const char* uname) :
 
 void sc1::register_ui()
 {
+    ladspa_loader* ll = wcnt::jwm.get_ladspaloader();
+    lp = ll->get_plugin("sc1_1425",
+                                     "sc1");
+    if (lp == 0) {
+        sm_err("%s", ladspa_loader::get_error_msg());
+        invalidate();
+        return;
+    }
+
     register_input(input::IN_SIGNAL);
     register_param(param::ATTACK_TIME);
     register_param(param::RELEASE_TIME);
@@ -33,9 +46,8 @@ ui::moditem_list* sc1::get_ui_items()
 
 sc1::~sc1()
 {
-    if (l_descriptor) l_descriptor->cleanup(l_inst_handle);
-    if (l_input)  delete [] l_input;
-    if (l_output) delete [] l_output;
+    if (l_descriptor)
+        l_descriptor->cleanup(l_handle);
 }
 
 const void* sc1::get_out(int ot) const
@@ -145,34 +157,25 @@ errors::TYPE sc1::validate()
 
 void sc1::init()
 {
-    ladspa_loader* ll = wcnt::jwm.get_ladspaloader();
-    ladspa_plug* lp = ll->get_plugin("sc1_1425",
-                                     "sc1");
-    if (lp == 0) {
-        sm_err("%s", ladspa_loader::get_error_msg());
-        invalidate();
-        return;
-    }
     if ((l_descriptor = lp->get_descriptor()) == 0) {
         sm_err("%s", ladspa_loader::get_error_msg());
         invalidate();
         return;
     }
-    if ((l_inst_handle = lp->instantiate()) == 0) {
+    if ((l_handle = lp->instantiate()) == 0) {
         sm_err("%s", ladspa_loader::get_error_msg());
         invalidate();
         return;
     }
-    l_input = new LADSPA_Data[1];
-    l_output = new LADSPA_Data[1];
-    l_descriptor->connect_port(l_inst_handle, 0, &l_attack);
-    l_descriptor->connect_port(l_inst_handle, 1, &l_release);
-    l_descriptor->connect_port(l_inst_handle, 2, &l_thresh);
-    l_descriptor->connect_port(l_inst_handle, 3, &l_ratio);
-    l_descriptor->connect_port(l_inst_handle, 4, &l_knee);
-    l_descriptor->connect_port(l_inst_handle, 5, &l_makeup);
-    l_descriptor->connect_port(l_inst_handle, 6, l_input);
-    l_descriptor->connect_port(l_inst_handle, 7, l_output);
+
+    l_descriptor->connect_port(l_handle, 0, &l_attack);
+    l_descriptor->connect_port(l_handle, 1, &l_release);
+    l_descriptor->connect_port(l_handle, 2, &l_thresh);
+    l_descriptor->connect_port(l_handle, 3, &l_ratio);
+    l_descriptor->connect_port(l_handle, 4, &l_knee);
+    l_descriptor->connect_port(l_handle, 5, &l_makeup);
+    l_descriptor->connect_port(l_handle, 6, &l_input);
+    l_descriptor->connect_port(l_handle, 7, &l_output);
     // ___this has no activate function ;-)___
     // initialise unchanging controls...from paramters
     l_attack = attack;
@@ -185,9 +188,9 @@ void sc1::init()
 
 void sc1::run()
 {
-    *l_input  = *input;
-    l_descriptor->run(l_inst_handle, 1);
-    output = *l_output;
+    l_input  = *input;
+    l_descriptor->run(l_handle, 1);
+    output = l_output;
 }
 
 

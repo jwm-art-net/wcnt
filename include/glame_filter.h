@@ -53,11 +53,15 @@ class glame_filter : public synthmod::base
 
     // LADSPA data
     const LADSPA_Descriptor* l_descriptor;
-    LADSPA_Handle            l_inst_handle;
+    LADSPA_Handle            l_handle;
     LADSPA_Data l_cutoff_freq;
     LADSPA_Data l_stages;
-    LADSPA_Data* l_input;
-    LADSPA_Data* l_output;
+    LADSPA_Data l_input;
+    LADSPA_Data l_output;
+    static ladspa_plug*     lp_hipass;
+    static ladspa_plug*     lp_lopass;
+    ladspa_plug*            lp;
+
 
     const char* type_names[2];
 

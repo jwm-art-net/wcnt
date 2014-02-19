@@ -60,15 +60,16 @@ class caps_plate2x2 : public synthmod::base
 
     // LADSPA data
     const LADSPA_Descriptor* l_descriptor;
-    LADSPA_Handle            l_inst_handle;
-    LADSPA_Data* l_in_left;
-    LADSPA_Data* l_in_right;
-    LADSPA_Data  l_bandwidth;
-    LADSPA_Data  l_tail;
-    LADSPA_Data  l_damping;
-    LADSPA_Data  l_blend;
-    LADSPA_Data* l_out_left;
-    LADSPA_Data* l_out_right;
+    LADSPA_Handle            l_handle;
+    static ladspa_plug*     lp;
+    LADSPA_Data l_in_left;
+    LADSPA_Data l_in_right;
+    LADSPA_Data l_bandwidth;
+    LADSPA_Data l_tail;
+    LADSPA_Data l_damping;
+    LADSPA_Data l_blend;
+    LADSPA_Data l_out_left;
+    LADSPA_Data l_out_right;
     void register_ui();
     ui::moditem_list* get_ui_items();
 };

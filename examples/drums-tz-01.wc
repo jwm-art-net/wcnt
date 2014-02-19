@@ -442,7 +442,7 @@ pan2
     pan_mod_size  0.95
 pan2
 
-caps_plate2x2
+caps_plate
 cp1
     in_left   pan1 out_left
     in_right  pan1 out_right
@@ -452,7 +452,7 @@ cp1
     wet/dry    0.125
 cp1
 
-caps_plate2x2
+caps_plate
 cp2
     in_left   pan2 out_left
     in_right  pan2 out_right

@@ -48,7 +48,7 @@ timing* timer::add_timing(timing* t)
     if (!t) return 0;
     return add_at_tail(t)->get_data();
 }
-#include <iostream>
+
 
 void timer::init()
 {

@@ -134,7 +134,11 @@ errors::TYPE single_band_para::validate()
 void single_band_para::init()
 {
     ladspa_loader* ll = wcnt::jwm.get_ladspaloader();
-    ladspa_plug* lp = ll->get_plugin("single_para_1203", "singlePara");
+    char* libpath = ll->find_lib_path("single_para_1203");
+    ladspa_plug* lp = ll->get_plugin(libpath, "singlePara");
+
+    //delete [] libpath;
+
     if (lp == 0) {
         sm_err("%s", ladspa_loader::get_error_msg());
         invalidate();

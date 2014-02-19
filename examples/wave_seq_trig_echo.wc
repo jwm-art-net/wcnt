@@ -120,7 +120,7 @@ amp1
 
 caps_plate
 reverb
-    in_signal  amp1 out_output
+    in_left  amp1 out_output
     bandwidth  0.95
     tail       0.27
     damping    0.63
