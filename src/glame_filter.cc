@@ -23,6 +23,13 @@ glame_filter::glame_filter(const char* uname) :
 
 void glame_filter::register_ui()
 {
+    register_param(param::GLAME_FILTER_TYPE, "lowpass|highpass");
+    register_input(input::IN_SIGNAL);
+    register_param(param::FREQ);
+    register_input(input::IN_FREQ_MOD1)->set_flags(ui::UI_GROUP1);
+    register_param(param::FREQ_MOD1SIZE)->set_flags(ui::UI_GROUP1);
+    register_param(param::STAGES);
+
     ladspa_loader* ll = wcnt::jwm.get_ladspaloader();
     char* path = ll->find_lib_path("lowpass_iir_1891");
 
@@ -35,13 +42,6 @@ void glame_filter::register_ui()
         lp_hipass = ll->get_plugin(path, "highpass_iir");
         delete [] path;
     }
-
-    register_param(param::GLAME_FILTER_TYPE, "lowpass|highpass");
-    register_input(input::IN_SIGNAL);
-    register_param(param::FREQ);
-    register_input(input::IN_FREQ_MOD1)->set_flags(ui::UI_GROUP1);
-    register_param(param::FREQ_MOD1SIZE)->set_flags(ui::UI_GROUP1);
-    register_param(param::STAGES);
 }
 
 

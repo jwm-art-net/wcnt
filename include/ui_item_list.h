@@ -517,8 +517,20 @@ namespace ui
  template <class T>
  base<T>* item_list<T>::match_item(const char* str)
  {
-    if (!listtype || !str || this->is_empty())
+    #if DEBUG
+    if (!str) {
+        debug("***** NOTHING TO MATCH *****\n");
         return 0;
+    }
+    if (this->is_empty()) {
+        debug("***** EMPTY UI ITEM LIST *****\n");
+        return 0;
+    }
+    if (!listtype) {
+        debug("***** LISTTYPE UNSET *****\n");
+        return 0;
+    }
+    #endif
 
     debug("match_item(%s)\n", str);
 

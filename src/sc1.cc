@@ -18,17 +18,9 @@ sc1::sc1(const char* uname) :
     register_output(output::OUT_OUTPUT);
 }
 
+
 void sc1::register_ui()
 {
-    ladspa_loader* ll = wcnt::jwm.get_ladspaloader();
-    lp = ll->get_plugin("sc1_1425",
-                                     "sc1");
-    if (lp == 0) {
-        sm_err("%s", ladspa_loader::get_error_msg());
-        invalidate();
-        return;
-    }
-
     register_input(input::IN_SIGNAL);
     register_param(param::ATTACK_TIME);
     register_param(param::RELEASE_TIME);
@@ -36,7 +28,16 @@ void sc1::register_ui()
     register_param(param::RATIO_1N);
     register_param(param::KNEE_DB);
     register_param(param::MAKEUP_DB);
+
+    ladspa_loader* ll = wcnt::jwm.get_ladspaloader();
+    char* path = ll->find_lib_path("sc1_1425");
+
+    if (path) {
+        lp = ll->get_plugin(path, "sc1");
+        delete [] path;
+    }
 }
+
 
 ui::moditem_list* sc1::get_ui_items()
 {
@@ -44,11 +45,13 @@ ui::moditem_list* sc1::get_ui_items()
     return &items;
 }
 
+
 sc1::~sc1()
 {
     if (l_descriptor)
         l_descriptor->cleanup(l_handle);
 }
+
 
 const void* sc1::get_out(int ot) const
 {
@@ -58,6 +61,7 @@ const void* sc1::get_out(int ot) const
     }
 }
 
+
 const void* sc1::set_in(int it, const void* o)
 {
     switch(it){
@@ -66,6 +70,7 @@ const void* sc1::set_in(int it, const void* o)
     }
 }
 
+
 const void* sc1::get_in(int it) const
 {
     switch(it) {
@@ -73,6 +78,7 @@ const void* sc1::get_in(int it) const
         default: return 0;
     }
 }
+
 
 bool sc1::set_param(int pt, const void* data)
 {
@@ -100,6 +106,7 @@ bool sc1::set_param(int pt, const void* data)
     }
 }
 
+
 const void* sc1::get_param(int pt) const
 {
     switch(pt)
@@ -114,46 +121,63 @@ const void* sc1::get_param(int pt) const
     }
 }
 
+
 errors::TYPE sc1::validate()
 {
-    if (attack  < 2 || attack > 400) {
-        sm_err("%s must be within range 2 ~ 400.",
-                param::names::get(param::ATTACK_TIME));
+    char* err = 0;
+
+    l_attack = attack;
+    l_release = release;
+    l_thresh = thresh;
+    l_ratio = ratio;
+    l_knee = knee;
+    l_makeup = makeup;
+
+    if ((err = lp->validate_port("Attack time (ms)", &l_attack))) {
+        sm_err("%s %s.", param::names::get(param::ATTACK_TIME), err);
+        delete [] err;
         invalidate();
         return errors::ERROR;
     }
-    if (release  < 2 || release > 800) {
-        sm_err("%s must be within range 2 ~ 800.",
-                param::names::get(param::RELEASE_TIME));
+
+    if ((err = lp->validate_port("Release time (ms)", &l_release))) {
+        sm_err("%s %s.", param::names::get(param::RELEASE_TIME), err);
+        delete [] err;
         invalidate();
         return errors::ERROR;
     }
-    if (thresh  < -30 || thresh > 0) {
-        sm_err("%s must be within range -30 ~ 0",
-                 param::names::get(param::THRESH_DB));
+
+    if ((err = lp->validate_port("Threshold level (dB)", &l_thresh))) {
+        sm_err("%s %s.", param::names::get(param::THRESH_DB), err);
+        delete [] err;
         invalidate();
         return errors::ERROR;
     }
-    if (ratio  < 1 || ratio > 10) {
-        sm_err("%s must be within range 1 ~ 10",
-                param::names::get(param::RATIO_1N));
+
+    if ((err = lp->validate_port("Ratio (1:n)", &l_ratio))) {
+        sm_err("%s %s.", param::names::get(param::RATIO_1N), err);
+        delete [] err;
         invalidate();
         return errors::ERROR;
     }
-    if (knee  < 1 || knee > 10) {
-        sm_err("%s must be within range 1 ~ 10",
-                param::names::get(param::KNEE_DB));
+
+    if ((err = lp->validate_port("Knee radius (dB)", &l_knee))) {
+        sm_err("%s %s.", param::names::get(param::KNEE_DB), err);
+        delete [] err;
         invalidate();
         return errors::ERROR;
     }
-    if (makeup  < 0 || makeup > 24) {
-        sm_err("%s must be within range 0 ~ 24",
-                param::names::get(param::MAKEUP_DB));
+
+    if ((err = lp->validate_port("Makeup gain (dB)", &l_makeup))) {
+        sm_err("%s %s.", param::names::get(param::MAKEUP_DB), err);
+        delete [] err;
         invalidate();
         return errors::ERROR;
     }
+
     return errors::NO_ERROR;
 }
+
 
 void sc1::init()
 {
@@ -178,13 +202,8 @@ void sc1::init()
     l_descriptor->connect_port(l_handle, 7, &l_output);
     // ___this has no activate function ;-)___
     // initialise unchanging controls...from paramters
-    l_attack = attack;
-    l_release = release;
-    l_thresh = thresh;
-    l_ratio = ratio;
-    l_knee = knee;
-    l_makeup = makeup;
 }
+
 
 void sc1::run()
 {

@@ -37,11 +37,14 @@ void caps_plate2x2::register_ui()
 
     delete [] libpath;
 
-    if (lp->get_port_index("in:l") != -1)
-        plugin_port_sep = ':';
-    else if (lp->get_port_index("in.l") != -1)
-        plugin_port_sep = '.';
+    if (lp) {
+        if (lp->get_port_index("in:l") != -1)
+            plugin_port_sep = ':';
+        else if (lp->get_port_index("in.l") != -1)
+            plugin_port_sep = '.';
+    }
 }
+
 
 ui::moditem_list* caps_plate2x2::get_ui_items()
 {
@@ -49,11 +52,13 @@ ui::moditem_list* caps_plate2x2::get_ui_items()
     return &items;
 }
 
+
 caps_plate2x2::~caps_plate2x2()
 {
     if (l_descriptor)
         l_descriptor->cleanup(l_handle);
 }
+
 
 const void* caps_plate2x2::get_out(int ot) const
 {
@@ -65,8 +70,8 @@ const void* caps_plate2x2::get_out(int ot) const
     }
 }
 
-const void*
-caps_plate2x2::set_in(int it, const void* o)
+
+const void* caps_plate2x2::set_in(int it, const void* o)
 {
     switch(it)
     {
@@ -79,6 +84,7 @@ caps_plate2x2::set_in(int it, const void* o)
     }
 }
 
+
 const void* caps_plate2x2::get_in(int it) const
 {
     switch(it)
@@ -89,8 +95,8 @@ const void* caps_plate2x2::get_in(int it) const
     }
 }
 
-bool
-caps_plate2x2::set_param(int pt, const void* data)
+
+bool caps_plate2x2::set_param(int pt, const void* data)
 {
     switch(pt)
     {
@@ -111,6 +117,7 @@ caps_plate2x2::set_param(int pt, const void* data)
     }
 }
 
+
 const void* caps_plate2x2::get_param(int pt) const
 {
     switch(pt)
@@ -122,6 +129,7 @@ const void* caps_plate2x2::get_param(int pt) const
     default: return 0;
     }
 }
+
 
 errors::TYPE caps_plate2x2::validate()
 {
@@ -180,6 +188,7 @@ errors::TYPE caps_plate2x2::validate()
     return errors::NO_ERROR;
 }
 
+
 void caps_plate2x2::init()
 {
     bool didnotconnect = false;
@@ -216,6 +225,7 @@ void caps_plate2x2::init()
 
     l_descriptor->activate(l_handle);
 }
+
 
 void caps_plate2x2::run()
 {
