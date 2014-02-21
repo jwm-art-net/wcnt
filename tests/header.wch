@@ -1,0 +1,10 @@
+samplerate 44100
+
+This file is a Wav Composer Not Toilet header file (.wch). A header file
+is used to tell wcnt what samplerate is should operate at. By doing this
+inside a header file, many .wc files in a group can be updated easily to
+a different sample rate without using tools such as sed.
+
+The very first line of a .wch file must specify the sample rate:
+samplerate n
+Where n is the samplerate to be used, ie 44100, 48000, etc.

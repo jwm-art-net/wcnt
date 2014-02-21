@@ -4,6 +4,9 @@
 #include "../include/globals.h"
 
 
+#include <iostream>
+
+
 timer::timer(const char* uname) :
  synthmod::base(synthmod::TIMER, uname, SM_UNDUPLICABLE | SM_UNGROUPABLE
                                                 | SM_HAS_OUT_TRIG),

@@ -21,7 +21,7 @@ class getnames
     static int chk(int t)
         { return (t > 0 && t < gn_count ? t : 0); }
     #else
-    static T chk(int t) { return t; }
+    static int chk(int t) { return t; }
     #endif
     static int          type(const char* name);
     // static int          type(const char* name, T type_hint);

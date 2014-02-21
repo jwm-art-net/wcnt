@@ -162,7 +162,7 @@ namespace ui
 
     virtual const char* get_name()      { return 0; }
 
-    base<T>* add_descr(const char* literal) { if (descr) debug("descr already set with '%s'\n", descr); descr = literal; debug("added descr '%s'\n", descr); return this; }
+    base<T>* add_descr(const char* literal) { descr = literal; return this; }
     virtual const char* get_descr()     { return descr; }
 
     bool is_name_match(const char* str) { return name_match(str); }

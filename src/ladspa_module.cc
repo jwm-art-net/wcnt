@@ -4,6 +4,7 @@
 
 #include <climits>
 #include <cmath>
+#include <cstdio>
 
 
 ladspa_module::ladspa_module(const char* uname) :
