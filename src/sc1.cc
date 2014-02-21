@@ -181,6 +181,12 @@ errors::TYPE sc1::validate()
 
 void sc1::init()
 {
+    if (!lp) {
+        sm_err("%s", "Failed to load plugin.");
+        invalidate();
+        return;
+    }
+
     if ((l_descriptor = lp->get_descriptor()) == 0) {
         sm_err("%s", ladspa_loader::get_error_msg());
         invalidate();

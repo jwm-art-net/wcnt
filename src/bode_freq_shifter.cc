@@ -3,21 +3,21 @@
 #include "../include/globals.h"
 
 
-static float shift_min = 0.0f;
-static float shift_max = 0.0f;
+ladspa_plug* bode_freq_shifter::lp = 0;
 
 
 bode_freq_shifter::bode_freq_shifter(const char* uname) :
  synthmod::base(synthmod::BODE_FREQ_SHIFTER, uname, SM_DEFAULT),
  in_signal(0), in_shift_mod(0), out_up(0), out_down(0),
  freq_shift(0), shift_modsize(0.0),
- l_descriptor(0), l_inst_handle(0),
+ l_descriptor(0), l_handle(0),
  l_freq_shift(0.0), l_input(0), l_out_down(0), l_out_up(0),
  l_out_latency(0)
 {
     register_output(output::OUT_UP);
     register_output(output::OUT_DOWN);
 }
+
 
 void bode_freq_shifter::register_ui()
 {
@@ -26,16 +26,15 @@ void bode_freq_shifter::register_ui()
     register_input(input::IN_SHIFT_MOD);
     register_param(param::SHIFT_MODSIZE);
 
-    ladspa_plug* lp = wcnt::jwm.get_ladspaloader()->get_plugin("bode_shifter_1431", "bodeShifter");
+    ladspa_loader* ll = wcnt::jwm.get_ladspaloader();
+    char* path = ll->find_lib_path("bode_shifter_1431");
 
-    if (lp) {
-        int portix = lp->get_port_index("Frequency shift");
-        if (portix != -1) {
-            lp->get_port_lower_bound(portix, &shift_min);
-            lp->get_port_upper_bound(portix, &shift_max);
-        }
+    if (path) {
+        lp = ll->get_plugin(path, "bodeShifter");
+        delete [] path;
     }
 }
+
 
 ui::moditem_list* bode_freq_shifter::get_ui_items()
 {
@@ -43,14 +42,13 @@ ui::moditem_list* bode_freq_shifter::get_ui_items()
     return &items;
 }
 
+
 bode_freq_shifter::~bode_freq_shifter()
 {
-    if (l_descriptor) l_descriptor->cleanup(l_inst_handle);
-    if (l_input) delete [] l_input;
-    if (l_out_down) delete [] l_out_down;
-    if (l_out_up) delete [] l_out_up;
-    if (l_out_latency) delete [] l_out_latency;
+    if (l_descriptor)
+        l_descriptor->cleanup(l_handle);
 }
+
 
 const void* bode_freq_shifter::get_out(int ot) const
 {
@@ -61,8 +59,8 @@ const void* bode_freq_shifter::get_out(int ot) const
     }
 }
 
-const void*
-bode_freq_shifter::set_in(int it, const void* o)
+
+const void* bode_freq_shifter::set_in(int it, const void* o)
 {
     switch(it) {
     case input::IN_SIGNAL:
@@ -74,6 +72,7 @@ bode_freq_shifter::set_in(int it, const void* o)
     }
 }
 
+
 const void* bode_freq_shifter::get_in(int it) const
 {
     switch(it) {
@@ -82,6 +81,7 @@ const void* bode_freq_shifter::get_in(int it) const
     default: return 0;
     }
 }
+
 
 bool bode_freq_shifter::set_param(int pt, const void* data)
 {
@@ -97,6 +97,7 @@ bool bode_freq_shifter::set_param(int pt, const void* data)
     }
 }
 
+
 const void* bode_freq_shifter::get_param(int pt) const
 {
     switch(pt) {
@@ -106,9 +107,9 @@ const void* bode_freq_shifter::get_param(int pt) const
     }
 }
 
+
 errors::TYPE bode_freq_shifter::validate()
 {
-    ladspa_plug* lp = wcnt::jwm.get_ladspaloader()->get_plugin("bode_shifter_1431", "bodeShifter");
 
     if (!lp) {
         sm_err("Failed to load %s.", "LADSPA plugin");
@@ -121,7 +122,7 @@ errors::TYPE bode_freq_shifter::validate()
         invalidate();
         return errors::ERROR;
     }
-    if ((l_inst_handle = lp->instantiate()) == 0) {
+    if ((l_handle = lp->instantiate()) == 0) {
         sm_err("%s", ladspa_loader::get_error_msg());
         invalidate();
         return errors::ERROR;
@@ -140,20 +141,31 @@ errors::TYPE bode_freq_shifter::validate()
     return errors::NO_ERROR;
 }
 
+
 void bode_freq_shifter::init()
 {
-    ladspa_plug* lp = wcnt::jwm.get_ladspaloader()->get_plugin("bode_shifter_1431", "bodeShifter");
+    if (!lp) {
+        sm_err("%s", "Failed to load plugin.");
+        invalidate();
+        return;
+    }
 
-    l_input = new LADSPA_Data[1];
-    l_out_down = new LADSPA_Data[1];
-    l_out_up = new LADSPA_Data[1];
-    l_out_latency = new LADSPA_Data[1];
+    if ((l_descriptor = lp->get_descriptor()) == 0) {
+        sm_err("%s", ladspa_loader::get_error_msg());
+        invalidate();
+        return;
+    }
+    if ((l_handle = lp->instantiate()) == 0) {
+        sm_err("%s", ladspa_loader::get_error_msg());
+        invalidate();
+        return;
+    }
 
-    if (lp->connect_port(l_inst_handle, "Frequency shift", &l_freq_shift) < 0
-     || lp->connect_port(l_inst_handle, "Input",            l_input)      < 0
-     || lp->connect_port(l_inst_handle, "Down out",         l_out_down)   < 0
-     || lp->connect_port(l_inst_handle, "Up out",           l_out_up)     < 0
-     || lp->connect_port(l_inst_handle, "latency",          l_out_latency)< 0)
+    if (lp->connect_port(l_handle, "Frequency shift", &l_freq_shift) < 0
+     || lp->connect_port(l_handle, "Input",           &l_input)      < 0
+     || lp->connect_port(l_handle, "Down out",        &l_out_down)   < 0
+     || lp->connect_port(l_handle, "Up out",          &l_out_up)     < 0
+     || lp->connect_port(l_handle, "latency",         &l_out_latency)< 0)
     {
         debug("failed to connect port(s).");
         invalidate();
@@ -165,16 +177,20 @@ void bode_freq_shifter::init()
 
 void bode_freq_shifter::run()
 {
-    *l_input = *in_signal;
+    l_input = *in_signal;
     l_freq_shift = freq_shift + *in_shift_mod * shift_modsize;
+
+    /*
     if (l_freq_shift < shift_min)
         l_freq_shift = shift_min;
     else if
        (l_freq_shift > shift_max)
         l_freq_shift = shift_max;
-    l_descriptor->run(l_inst_handle, 1);
-    out_up = *l_out_up;
-    out_down = *l_out_down;
+    */
+
+    l_descriptor->run(l_handle, 1);
+    out_up = l_out_up;
+    out_down = l_out_down;
 }
 
 #endif // WITH_LADSPA

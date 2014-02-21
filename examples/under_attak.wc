@@ -242,7 +242,7 @@ sc
 
 caps_plate
 reverb
-    in_signal  sc out_output
+    in_left  sc out_output
     bandwidth  0.75
     tail       0.25
     damping    0.63

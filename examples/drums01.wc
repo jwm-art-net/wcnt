@@ -454,7 +454,7 @@ revb
     in_left   dynl out_output
     in_right  dynr out_output
     bandwidth  0.622233  // 0.6235
-    tail       1.0 //0.0489987 // 0.0367
+    tail       0.0489987 // 0.0367
     damping    0.0595298 //0.06
     wet/dry    0.648420 // 0.5 
 revb

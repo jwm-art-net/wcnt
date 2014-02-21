@@ -56,12 +56,13 @@ class bode_freq_shifter : public synthmod::base
 
     // LADSPA data
     const LADSPA_Descriptor* l_descriptor;
-    LADSPA_Handle            l_inst_handle;
+    LADSPA_Handle            l_handle;
+    static ladspa_plug* lp;
     LADSPA_Data l_freq_shift;
-    LADSPA_Data* l_input;
-    LADSPA_Data* l_out_down;
-    LADSPA_Data* l_out_up;
-    LADSPA_Data* l_out_latency;
+    LADSPA_Data l_input;
+    LADSPA_Data l_out_down;
+    LADSPA_Data l_out_up;
+    LADSPA_Data l_out_latency;
     void register_ui();
     ui::moditem_list* get_ui_items();
 };
