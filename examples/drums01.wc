@@ -449,7 +449,7 @@ dynr
 
 // amplify
 
-caps_plate2x2
+caps_plate
 revb
     in_left   dynl out_output
     in_right  dynr out_output

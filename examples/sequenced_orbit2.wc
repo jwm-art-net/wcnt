@@ -321,7 +321,7 @@ cmb-r
 cmb-r
 
 
-caps_plate2x2
+caps_plate
 cp1
     in_left     cmb-l out_output
     in_right    cmb-r out_output

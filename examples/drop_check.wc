@@ -265,7 +265,7 @@ stmix
     master_level 0.5
 stmix
 
-caps_plate2x2
+caps_plate
 revb
     in_left   stmix out_left
     in_right  stmix out_right

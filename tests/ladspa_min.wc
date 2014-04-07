@@ -1,0 +1,97 @@
+wcnt-1.30/jwmsynth
+
+samplerate 44100
+
+ladspa
+f1
+    ladspa_lib           retro_flange_1208
+    ladspa_label         retroflange
+    average_stall_ms     10
+    flange_frequency_hz  0.5
+    in_input             off
+f1
+ladspa
+f2
+    ladspa_lib           retro_flange_1208
+    ladspa_label         retroflange
+    average_stall_ms     10
+    flange_frequency_hz  0.5
+    in_input             off
+f2
+ladspa
+f3
+    ladspa_lib           retro_flange_1208
+    ladspa_label         retroflange
+    average_stall_ms     10
+    flange_frequency_hz  0.5
+    in_input             off
+f3
+ladspa
+f4
+    ladspa_lib           retro_flange_1208
+    ladspa_label         retroflange
+    average_stall_ms     10
+    flange_frequency_hz  0.5
+    in_input             off
+f4
+ladspa
+f5
+    ladspa_lib           retro_flange_1208
+    ladspa_label         retroflange
+    average_stall_ms     10
+    flange_frequency_hz  0.5
+    in_input             off
+f5
+ladspa
+f6
+    ladspa_lib           retro_flange_1208
+    ladspa_label         retroflange
+    average_stall_ms     10
+    flange_frequency_hz  0.5
+    in_input             off
+f6
+ladspa
+f7
+    ladspa_lib           retro_flange_1208
+    ladspa_label         retroflange
+    average_stall_ms     10
+    flange_frequency_hz  0.5
+    in_input             off
+f7
+ladspa
+f8
+    ladspa_lib           retro_flange_1208
+    ladspa_label         retroflange
+    average_stall_ms     10
+    flange_frequency_hz  0.5
+    in_input             off
+f8
+ladspa
+f9
+    ladspa_lib           retro_flange_1208
+    ladspa_label         retroflange
+    average_stall_ms     10
+    flange_frequency_hz  0.5
+    in_input             off
+f9
+ladspa
+f0
+    ladspa_lib           retro_flange_1208
+    ladspa_label         retroflange
+    average_stall_ms     10
+    flange_frequency_hz  0.5
+    in_input             off
+f0
+
+
+
+wcnt_exit
+xxx
+    in_bar      off
+    exit_bar    0
+xxx
+
+
+wcnt-1.30/jwmsynth
+
+

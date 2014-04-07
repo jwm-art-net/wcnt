@@ -22,7 +22,7 @@ DEFS=-O2 -fomit-frame-pointer -DWITH_LADSPA
 # SANITY_CHECKS = Some sort of half assed check for program sanity.
 
 
-DEFS=-ggdb -fno-inline -DWITH_LADSPA -DDEBUG -DSTR_DEBUG #-DSANITY_CHECKS
+#DEFS=-ggdb -fno-inline -DWITH_LADSPA -DDEBUG -DSTR_DEBUG #-DSANITY_CHECKS
 
 # nothing to be modified further:
 PROG=wcnt

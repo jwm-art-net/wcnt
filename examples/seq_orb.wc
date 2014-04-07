@@ -183,7 +183,7 @@ pe1
 pe1
 
 
-caps_plate2x2
+caps_plate
 revb
     in_left   g1.m out_output
     in_right  g2.m out_output

@@ -333,7 +333,7 @@ mix1
     master_level  0.75
 mix1
 
-caps_plate2x2
+caps_plate
 rvb
     in_left mix1 out_left
     in_right mix1 out_right
