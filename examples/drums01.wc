@@ -456,7 +456,7 @@ revb
     bandwidth  0.622233  // 0.6235
     tail       1.0 //0.0489987 // 0.0367
     damping    0.0595298 //0.06
-    wet/dry    0.648420 // 0.5 
+    wet/dry    0.2648420 // 0.5 
 revb
 
 constant_freq f2 freq 110 f2
