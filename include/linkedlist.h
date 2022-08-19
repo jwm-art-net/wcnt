@@ -44,9 +44,9 @@ class ll_item
     void set_prev(ll_item* p) { prev = p; }
     void set_next(ll_item* n) { next = n; }
     void set_data(T* d)       { data = d; }
-    T* get_data()       { return (this ? data : 0); }
-    ll_item* get_prev() { return (this ? prev : 0); }
-    ll_item* get_next() { return (this ? next : 0); }
+    T* get_data()       { return data; }
+    ll_item* get_prev() { return prev; }
+    ll_item* get_next() { return next; }
 
  private:
     T*       data;
@@ -70,16 +70,16 @@ class linked_list
         return current->get_data();
     }
     T* goto_first() {
-        return (current = head->get_next())->get_data();
+        return (current = head->get_next()) ? current->get_data() : 0;
     }
     T* goto_last() {
-        return (current = tail->get_prev())->get_data();
+        return (current = tail->get_prev()) ? current->get_data() : 0;
     }
     T* goto_prev() {
-        return (current = current->get_prev())->get_data();
+        return (current = current->get_prev()) ? current->get_data() : 0;
     }
     T* goto_next() {
-        return (current = current->get_next())->get_data();
+        return (current = current->get_next()) ? current->get_data() : 0;
     }
 
     T* goto_item(llitem* item) {

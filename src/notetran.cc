@@ -205,38 +205,26 @@ errors::TYPE notetran::validate()
 
 void notetran::set_no_lo_notename(const char* nol)
 {
-    int n = strlen(nol);
-    if (n > wcnt::note_name_len)
-        n = wcnt::note_name_len;
-    strncpy(no_lo_notename, nol, n);
-    no_lo_notename[n] = '\0';
+    strncpy(no_lo_notename, nol, wcnt::note_name_len);
+    no_lo_notename[wcnt::note_name_len] = '\0';
 }
 
 void notetran::set_no_hi_notename(const char* noh)
 {
-    int n = strlen(noh);
-    if (n > wcnt::note_name_len)
-        n = wcnt::note_name_len;
-    strncpy(no_hi_notename, noh, n);
-    no_hi_notename[n] = '\0';
+    strncpy(no_hi_notename, noh, wcnt::note_name_len);
+    no_hi_notename[wcnt::note_name_len] = '\0';
 }
 
 void notetran::set_ns_lo_notename(const char* nsl)
 {
-    int n = strlen(nsl);
-    if (n > wcnt::note_name_len)
-        n = wcnt::note_name_len;
-    strncpy(ns_lo_notename, nsl, n);
-    ns_lo_notename[n] = '\0';
+    strncpy(ns_lo_notename, nsl, wcnt::note_name_len);
+    ns_lo_notename[wcnt::note_name_len] = '\0';
 }
 
 void notetran::set_ns_hi_notename(const char* nsh)
 {
-    int n = strlen(nsh);
-    if (n > wcnt::note_name_len)
-        n = wcnt::note_name_len;
-    strncpy(ns_hi_notename, nsh, n);
-    ns_hi_notename[n] = '\0';
+    strncpy(ns_hi_notename, nsh, wcnt::note_name_len);
+    ns_hi_notename[wcnt::note_name_len] = '\0';
 }
 
 void notetran::init()

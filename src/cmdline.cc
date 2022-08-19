@@ -775,7 +775,7 @@ void cmdline::dobj_help()
     item = items->first_item();
     while(item) {
         if (!item->is_dummy()) {
-            char flags[8];
+            char flags[9];
             std::string str = items->get_item_header();
             if (str != "") {
                 msg += "\n    ";

@@ -68,7 +68,7 @@ bool copier::set_param(param::TYPE pt, const void* data)
     switch(pt)
     {
     case param::COPYFROM:
-        if (!set_from_name((const char* const)data))
+        if (!set_from_name((const char*)data))
         {
             dobjerr("Cannot copy %s, no such module or data object.",
                                                     (const char*)data);

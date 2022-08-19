@@ -59,10 +59,10 @@ connector* connector::duplicate(synthmod::base* sm)
 
 bool connector::connect()
 {
-    if (!this) {
+    /*if (!this) {
         connerr("%s", "Cannot make connection, connection does not exist!");
         return false;
-    }
+    }*/
     const synthmod::base* outmod =
         wcnt::jwm.get_modlist()->get_synthmod_by_name(out_mod_uname);
     if (!in_mod) {

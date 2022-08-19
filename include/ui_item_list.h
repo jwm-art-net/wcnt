@@ -798,12 +798,12 @@ restart:
                 choice.reset();
                 if (!validate_matches_choice())
                     return error_item<T>::err();
-                item = this->sneak_current()->get_data();
+                item = this->sneak_current() ? this->get_current() : 0;
             }
             else if ((id = item->get_group_id()) & UI_GROUP_MASK) {
                 if (!validate_matches_group())
                     return error_item<T>::err();
-                item = this->sneak_current()->get_data();
+				item = this->sneak_current() ? this->get_current() : 0;
             }
             else {
                 if (!item->is_matched()) {

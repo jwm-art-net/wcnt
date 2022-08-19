@@ -23,7 +23,8 @@ namespace dobj
     static dobj::base* create_dobj(dobj::TYPE);
 
     dobj::base* get_dobj_by_name(const char* n) {
-        return find_in_data(sneak_first(), name(n))->get_data();
+		llitem* tmp = find_in_data(sneak_first(), name(n));
+        return tmp ? tmp->get_data() : 0;
     }
 
     dobj::base* get_first_of_type(dobj::TYPE dt) {

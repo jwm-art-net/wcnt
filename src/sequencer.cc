@@ -243,8 +243,10 @@ riff_node* sequencer::add_riff_node(riff_node* rn)
             add_at_tail(rn);
         if (rep > 0)
             rn = rn->duplicate_for_bar(rn->get_start_bar() + repstr);
-        oldrn_i = find_in_data_or_last_less_than(
-            oldrn_i->get_next(), rn, &riff_node::get_start_bar);
+        if (oldrn_i)
+			oldrn_i = find_in_data_or_last_less_than(
+				oldrn_i->get_next(), rn, &riff_node::get_start_bar);
+
         rep--;
     }while (rep >= 0);
     return rn;

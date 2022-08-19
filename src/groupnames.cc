@@ -47,10 +47,12 @@ char* set_groupname(const char* const groupname, const char* const name)
     char* newname = new char[newlen];
     // stop valgrind from reporting conditional jumps on unitiated values:
     for (int i = 0; i < newlen; i++) newname[i] = 0;
-    strncpy(newname, groupname, glen);
-    strncpy(newname + glen + 1, non_grp_name, nlen);
+    //strncpy(newname, groupname, glen);
+    strcpy(newname, groupname);
+    //strncpy(newname + glen + 1, non_grp_name, nlen);
+	strcpy(newname + glen + 1, non_grp_name);
     newname[glen] = '.';
-    newname[newlen - 1] = '\0';
+    //newname[newlen - 1] = '\0';
     delete [] non_grp_name;
     return newname;
 }

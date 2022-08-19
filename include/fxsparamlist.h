@@ -14,7 +14,8 @@ class fxsparamlist : public linked_list<fixstrparam>
 
     fixstrparam* get_fix_str_param(param::TYPE pt)
     {
-        return find_in_data(sneak_first(), pt)->get_data();
+		llitem* tmp = find_in_data(sneak_first(), pt);
+        return tmp ? tmp->get_data() : 0;
     }
 
     #ifdef DEBUG

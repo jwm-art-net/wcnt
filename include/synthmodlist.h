@@ -27,12 +27,13 @@ namespace synthmod
     bool delete_module(synthmod::base*);
 
     synthmod::base* get_synthmod_by_name(const char* const n) {
-        return find_in_data(sneak_first(), name(n))->get_data();
+		llitem* tmp = find_in_data(sneak_first(), name(n));
+        return tmp ? tmp->get_data() : 0;
     }
 
     synthmod::base* get_first_of_type(synthmod::TYPE smt) {
         result = find_in_data(sneak_first(), search = smt);
-        return result->get_data();
+        return result ? result->get_data() : 0;
     }
 
     synthmod::base* get_next_of_type() {

@@ -7,12 +7,10 @@
 //                     O---/      [::>    <::]      \---O                |
 //                                     ||                                |
 //                          ========================                     |
-//                          | 2007 James W. Morris.|                     |
-//                          ------------------------                     |
-//                          |  Made In Stourmouth  |                     |
+//                          | 2022 James W. Morris.|                     |
 //                          ------------------------                     |
 //                                                                       /
-// contact: James_W.Morris ( james@jwm-art.net )                         /
+// contact: jwm.art.net@gmail.com                                        /
 //                                                                       /
 //----------------------------------------------------------------------*/
 
@@ -93,14 +91,13 @@ int main(const int argc, const char** const argv)
 
 void title()
 {
-    std::cout << "              .    .          |||/" << std::endl;
-    std::cout << "           [:::>  <:::]      /---O" << std::endl;
-    std::cout << " .----------   wcnt   ---------- /" << std::endl;
-    std::cout << "     Wav Composer Not Toilet!     " << std::endl;
-    std::cout << "/ ---------- " << std::setw(8) << wcnt::wcnt_version
-              << " ----------'" << std::endl;
-    std::cout << "O---/     [::> ROTL <::]      " << std::endl;
-    std::cout << "/|||" << std::endl;
+    std::cout << " \\ wcnt \\" << std::endl;
+    std::cout << "  \\      X----------------------X" << std::endl;
+    std::cout << "   \\  Wav Composer Not Toilet!   \\" << std::endl;
+    std::cout << "    X-----------------X           \\" << std::endl;
+    std::cout << "                       \\ " << wcnt::wcnt_version;
+    std::cout << " \\ " << std::endl;
+
 }
 
 void exitramblings()

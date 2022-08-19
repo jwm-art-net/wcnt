@@ -29,7 +29,7 @@ class synthfilereader;
 
 namespace wcnt
 {
- const char* const wcnt_version = "1.30.0 ";
+ const char* const wcnt_version = "1.30.2022";
  const char* const wcnt_id = "wcnt-1.30/jwmsynth";
  const samp_t default_samplerate          = 44100UL;
  const wcint_t min_bpm                    = 10;

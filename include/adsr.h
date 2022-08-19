@@ -51,7 +51,8 @@ public:
     #endif
 
     adsr_coord* goto_section(adsr_coord::SECT sect) {
-        return find_in_data(sneak_first(), sect)->get_data();
+		llitem* tmp = find_in_data(sneak_first(), sect);
+        return tmp ? tmp->get_data() : 0;
     }
 
     // virtual funcs

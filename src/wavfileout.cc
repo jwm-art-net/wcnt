@@ -3,7 +3,8 @@
 #include "../include/conversions.h"
 
 #include <iostream>         // <-- for messages while running
-#include <sys/timeb.h>      // <-- filename timestamp
+#include <sys/time.h>      // <-- filename timestamp
+#include <math.h>
 
 wavfileout::wavfileout(const char* uname) :
  synthmod::base(synthmod::WAVFILEOUT, uname, SM_DEFAULT),
@@ -170,13 +171,22 @@ void wavfileout::timestamp_filename()
 {
     if (filename && filename != _filename)
         delete [] filename;
-    char timestr[30];
-    timeb now;
-    ftime(&now);
-    tm* l_time = localtime(&now.time);
-    strftime(timestr, 30, "-%Y%m%d-%H%M%S-", l_time);
+ 
+    struct timespec tv;
+    clock_gettime(CLOCK_REALTIME, &tv);
+    char timestr[127];
+    sprintf(timestr, "%ld UTC", tv.tv_sec);
+    struct tm tm;
+    memset(&tm, 0, sizeof(struct tm));
+    sprintf(timestr, "%ld UTC", tv.tv_sec);
+    strptime(timestr, "%s %U", &tm);
+    int ms = round((double)tv.tv_nsec / 1e6);
+
+    strftime(timestr, sizeof(timestr), "-%Y%m%d-%H%M%S-", &tm);
     size_t len = strlen(timestr);
-    snprintf(timestr + len, 4, "%03d", now.millitm);
+    sprintf(timestr + len, "%03d", ms);
+
+
     len = strlen(timestr) + strlen(_filename);
     char* newname = new char[len + 1];
     char* dp = strrchr(_filename, '.');
@@ -187,7 +197,7 @@ void wavfileout::timestamp_filename()
     strcat(newname, dp);
     filename = newname;
 }
-
+  
 
 WAV_STATUS wavfileout::open_wav()
 {

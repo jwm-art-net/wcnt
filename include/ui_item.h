@@ -197,7 +197,7 @@ namespace ui
     }
 
     bool get_item_flags(char* buf, size_t sz) {
-        int i = 0;
+        size_t i = 0;
         for (; i < sz - 1; ++i)
             buf[i] = ' ';
         buf[i] = '\0';
