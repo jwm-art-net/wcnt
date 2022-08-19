@@ -60,16 +60,21 @@ Finally, you can also:
 make clean
 make clean_examples
 
-Please do email me at james@jwm-art.net if you have difficulties getting
+Please do email me at jwm.art.net@gmail.com if you have difficulties getting
 wcnt to compile. If it crashes then please send me the .wc file(s) which
 it happened to be processing at the time of the crash.
 
-I have tested wcnt within Debian Etch on an AMD Athlon XP 3000, with
-2GB of dodgy SDRAM :(
+hahahahaha: I have tested wcnt within Debian Etch on an AMD Athlon XP 3000, with
+hahahahaha: 2GB of dodgy SDRAM :(
 
-As a side note, make examples on my machine takes just under two and a half
-minutes to generate 19 minutes worth of audio.
+It amused me to read that in 2022. Currently building within Arch Linux on a
+12th Gen Intel i5-12600KF with 32gb RAM.
 
-[eof]
+hahahahaha: As a side note, make examples on my machine takes just under two and a half
+hahahahaha: minutes to generate 19 minutes worth of audio.
 
---jwm2008
+
+hahahahaha: --jwm2008
+
+--jwm 2022
+
