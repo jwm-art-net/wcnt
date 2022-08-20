@@ -5,11 +5,11 @@ samplerate 44100
 synth_file_reader
 sfr
     filename    mixer.wc
-    mod_action  exclude
+    mod_action  exclude_listed
     modules
     modules
 
-    dobj_action include
+    dobj_action include_listed
     data_objects
     data_objects
 sfr

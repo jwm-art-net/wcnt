@@ -9,23 +9,10 @@ wcnt-1.30/jwmsynth
 
 header header.wch
 
-// within the synth_file_reader:
-// the two actions expressed below (both exclude) dictate not what to do
-// with modules in the file to be included - but what to do with modules
-// from the file which match the names listed in the two lists
-
-// *** there are no modules or data_objects are listed for exclusion ***
-
 
 synth_file_reader
 sfr
-    filename     time.wch
-    mod_action   exclude
-    dobj_action  exclude
-    modules
-    modules
-    data_objects
-    data_objects
+    filename time.wch
 sfr
 
 // create base riff

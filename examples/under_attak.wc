@@ -2,18 +2,6 @@ wcnt-1.30/jwmsynth
 
 header header.wch
 
-// synth_file_reader sfr
-//
-// grab time map module from time.wch
-//
-// mod action is exclude - to exclude specified modules.
-// (here, no modules are specified for exclusion so all are included).
-// on the command line use:
-//
-//      wcnt --data-object-help synth_file_reader
-//
-// to see how to do this.
-
 synth_file_reader
 sfr
     filename     time.wch

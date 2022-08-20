@@ -10,12 +10,6 @@ header header.wch
 synth_file_reader
 timefile
     filename time.wch
-    mod_action  exclude
-    dobj_action exclude
-    modules
-    modules
-    data_objects
-    data_objects
 timefile
 
 riff

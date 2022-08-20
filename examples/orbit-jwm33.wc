@@ -38,13 +38,15 @@ t1
 synth_file_reader
 orbit-mods
     filename orbit.wc
-    mod_action  exclude
-    dobj_action include
-    modules
-        mod name t1
-    modules
-    data_objects // don't read any data objects just yet...
-    data_objects
+
+    mod_action  exclude_listed
+        modules
+            mod name t1
+        modules
+
+    dobj_action include_listed
+        data_objects // don't read any data objects just yet...
+        data_objects
 orbit-mods
 
 // **-----------............._________>>>
@@ -111,12 +113,14 @@ ie
 synth_file_reader
 orbit-dobjs
     filename orbit.wc
-    mod_action  include // only include modules specified below
-    dobj_action exclude // create any data object NOT specified below
-    modules // none specified
-    modules // don't read any modules this time...
-    data_objects // none specified 
-    data_objects // just read all the data objects...
+    
+    mod_action  include_listed
+        modules // no modules specified to include...
+        modules // ... meaning don't read any of them.
+
+    dobj_action exclude_listed
+        data_objects // no data objects to exclude...
+        data_objects // ...meaning read them all.
 orbit-dobjs
 
 

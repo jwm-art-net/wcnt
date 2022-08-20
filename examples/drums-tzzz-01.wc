@@ -14,14 +14,11 @@ header header.wch
 synth_file_reader
 tz-01-file
     filename drums-tz-01.wc
-    mod_action  exclude
-    dobj_action exclude
+    mod_action  exclude_listed
     modules
         mod name dyn-m1 // this module is removed so a certain sound
                         // is not too harsh.
     modules
-    data_objects
-    data_objects
 tz-01-file
 
 // *****************************************************************

@@ -12,12 +12,6 @@ header header.wch
 synth_file_reader
 wc1
     filename       drums01.wc
-    mod_action     exclude
-    dobj_action    exclude
-    modules
-    modules
-    data_objects
-    data_objects
 wc1
 
 constant_freq cf1 freq 0.31125421 cf1

@@ -19,12 +19,6 @@ orb_freq
 synth_file_reader
 timefile
     filename time.wch
-    mod_action  exclude
-    modules
-    modules
-    dobj_action exclude
-    data_objects
-    data_objects
 timefile
 
 riff

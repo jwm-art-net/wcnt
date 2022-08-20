@@ -1,4 +1,4 @@
-wcnt-1.26/jwmsynth
+wcnt-1.30/jwmsynth
 
 samplerate 44100
 
@@ -8,6 +8,8 @@ t
         time seconds 0
         time seconds 1
     timings
+
+    time_is_relative off
 t
 
 constant_note middle-c name c0 middle-c
@@ -45,7 +47,6 @@ sine
 fader
 fade
     in_bar       t out_count
-    in_bar_trig  t out_trig
     start_bar      0
     end_bar        1
     fade_in_time   100
@@ -69,14 +70,12 @@ g1
 g1
 
 copier cp from g1 to g2 cp
-copier c2p from g1 to g2 c2p
 
 wavfile_out
 wav
     in_left     g2.out out_output
     in_right    g2.out out_output
-    in_bar      g2.fade out_bar
-    in_bar_trig g2.fade out_bar_trig
+    in_bar      g2.fade out_index
     snapshot_mode off
     data_format pcm16
     filename    copier.wav
@@ -86,11 +85,11 @@ wav
 
 wcnt_exit
 exit
-    in_bar      g2.fade out_bar
+    in_bar      g2.fade out_index
     exit_bar    1
 exit
 
-wcnt-1.26/jwmsynth
+wcnt-1.30/jwmsynth
 
 
 
