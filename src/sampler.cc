@@ -510,7 +510,7 @@ void sampler::run()
                 std::cout << "\n(samp_t)xf_buf_pos = ";
                 std::cout << (samp_t)xf_buf_pos;
                 std::cout << "\nmodule responsible " << get_username();
-                std::cout << "\nPlease report this to james@jwm-art.net";
+                std::cout << "\nPlease report this to " << wcnt::email;
                 std::cout << " specifying";
                 std::cout << "\nlength, format, samplerate of wavfile, or";
                 std::cout << "the sample";

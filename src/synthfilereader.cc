@@ -141,7 +141,7 @@ bool synthfilereader::read_and_create()
         }
     }
     const char* com = read_command();
-    while (strcmp(com, wcnt::wcnt_id) != 0)
+    while (strcmp(com, wcnt::file_id) != 0)
     {
         // test for string being a data object name - there
         // are fewer data objects than modules...
@@ -1002,7 +1002,7 @@ synthfilereader::open_file()
         filestatus = NOT_FOUND;
     else {
         *synthfile >> *synthheader;
-        if (*synthheader == wcnt::wcnt_id)
+        if (*synthheader == wcnt::file_id)
             filestatus = FILE_OPEN;
         else
             filestatus = INVALID_HEADER;

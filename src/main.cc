@@ -95,7 +95,7 @@ void title()
     std::cout << "  \\      X----------------------X" << std::endl;
     std::cout << "   \\  Wav Composer Not Toilet!   \\" << std::endl;
     std::cout << "    X-----------------X           \\" << std::endl;
-    std::cout << "                       \\ " << wcnt::wcnt_version;
+    std::cout << "                       \\ " << wcnt::version;
     std::cout << " \\ " << std::endl;
 
 }

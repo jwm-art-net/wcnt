@@ -356,7 +356,8 @@ void cmdline::module_help()
     if (sm == 0) {
         msg += " module has not been fully\nincorporated into the ";
         msg += "wcnt user interface.  Oops! \n Send an email to ";
-        msg += "james@jwm-art.net to complain.\n";
+        msg += wcnt::email;
+        msg += " to complain.\n";
         return;
     }
     msg += "\n";
@@ -1038,7 +1039,7 @@ void cmdline::freq_info()
 void cmdline::header()
 {
     msg = "\nwcnt .wc file header (and footer) is:\n\t";
-    msg += wcnt::wcnt_id;
+    msg += wcnt::file_id;
 }
 
 void cmdline::help()
@@ -1076,15 +1077,14 @@ void cmdline::about()
 {
     msg =
         "\nwcnt - Wav Composer Not Toilet"
-        "\n  Programmed by James W. Morris --> http://www.jwm-art.net"
+        "\n  Developed by James W. Morris"
         "\n  GNU GPL'ed Free Libre Open Source Software."
         "\n  wcnt on the web:"
         "\n    http://wcnt.sourceforge.net"
-        "\n    http://www.jwm-art.net/o7.php&p=keywords&k=wcnt"
         "\n    https://github.com/jwm-art-net/wcnt"
         "\n  Send bug reports, patches, requests, suggestions,"
         "\n  or if you wish to share your .wc creations to:"
-        "\n    james@jwm-art.net";
+        "\n    ";
+    msg += wcnt::email;
 }
 
-//#include "../data/commandline_help.h"
