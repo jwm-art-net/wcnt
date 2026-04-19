@@ -1,0 +1,20 @@
+wcnt-1.30/jwmsynth
+
+samplerate 44100
+
+
+wcnt_trigger
+trig1
+	in_trig off
+trig1
+
+
+inspector
+aninspectorcalls
+	_in_state_		off
+	_state_msg_ 	Triggered!
+	_in_state_trig_	trig1 out_trig
+aninspectorcalls
+
+
+wcnt-1.30/jwmsynth
