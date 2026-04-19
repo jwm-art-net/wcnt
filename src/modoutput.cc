@@ -19,20 +19,17 @@ modoutput::~modoutput()
 
 synthmod::TYPE modoutput::get_moduletype() const
 {
-    return (this != 0) ? module->get_module_type()
-                       : synthmod::ERR_TYPE;
+    return module->get_module_type();
 }
 
 output::TYPE modoutput::get_outputtype() const
 {
-    return (this != 0) ? output_type
-                       : output::ERR_TYPE;
+    return output_type;
 }
 
 iocat::TYPE modoutput::get_outputcategory() const
 {
-    return (this != 0) ? output::names::category(output_type)
-                       : iocat::ERR_TYPE;
+    return output::names::category(output_type);
 }
 
 #ifdef DATA_STATS

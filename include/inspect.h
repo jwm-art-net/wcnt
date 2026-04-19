@@ -19,7 +19,7 @@ class inspect : public synthmod::base
     inspect(const char*);
     ~inspect();
     void run();
-    const void* get_out(output::TYPE) { return 0; }
+    const void* get_out(output::TYPE) const { return 0; }
     const void* set_in(input::TYPE, const void*);
     const void* get_in(input::TYPE) const;
     bool set_param(param::TYPE, const void*);

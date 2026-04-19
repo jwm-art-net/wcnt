@@ -1,5 +1,5 @@
 #ifndef SUBTRACTER_H
-#define SUBTRACT_H
+#define SUBTRACTER_H
 
 #include "synthmod.h"
 

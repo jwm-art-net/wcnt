@@ -89,10 +89,10 @@ class note_data : public dobj::base
     void set_position(double p) { position = p; }
     void set_velocity(double v) { velocity = v; }
 
-    const char* get_name() const{ return (this == NULL) ? NULL : notename; }
-    double get_length() const   { return (this == NULL) ? 0 : length; }
-    double get_position()const  { return (this == NULL) ? 0 : position; }
-    double get_velocity() const { return (this == NULL) ? 0.00 : velocity; }
+    const char* get_name() const{ return notename; }
+    double get_length() const   { return length; }
+    double get_position()const  { return position; }
+    double get_velocity() const { return velocity; }
     // the following only used with edit notes...
     NOTE_SEL_OP get_note_sel_op() const;
     NOTE_SEL    get_note_sel() const;
