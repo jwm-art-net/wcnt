@@ -32,6 +32,8 @@ class input_module
 class connector
 {
  public:
+    enum CSTATE { FAIL = 1, POSTPONE, SUCCESS};
+
     connector(synthmod::base* input_module,
               input::TYPE input_type,
               const char* output_module_name,
@@ -50,7 +52,7 @@ class connector
 //  otherwise modules may reference as yet uncreated modules.
 //  connect() would start crying if that happend.
 */
-    bool connect();
+    CSTATE connect();
     connector* duplicate();
     connector* duplicate(synthmod::base*);
     static const char* get_connect_err_msg() { return err_msg;}

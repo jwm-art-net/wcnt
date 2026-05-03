@@ -42,7 +42,8 @@ namespace synthmod
         SM_UNDUPLICABLE =       0x0008,
         SM_HAS_OUT_OUTPUT =     0x0010,
         SM_HAS_STEREO_OUTPUT =  0x0020,
-        SM_HAS_OUT_TRIG =       0x0040
+        SM_HAS_OUT_TRIG =       0x0040,
+        SM_PASSTHROUGH =        0x0080
     };
 
 //    friend modpart::base;

@@ -2,7 +2,8 @@
 
 wcnt_trigger::wcnt_trigger(const char* uname) :
  synthmod::base(synthmod::WCNTTRIGGER, uname, SM_EMPTY_RUN |
-                                              SM_HAS_OUT_TRIG),
+                                              SM_HAS_OUT_TRIG |
+                                              SM_PASSTHROUGH),
  in_trig(0)
 {
     register_output(output::OUT_TRIG);

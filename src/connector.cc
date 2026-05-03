@@ -4,6 +4,9 @@
 #include "../include/globals.h"
 
 
+#include <iostream>
+
+
 #ifdef DEBUG
 #define connerr(fmt, ... )                              \
 {                                                       \
@@ -57,12 +60,8 @@ connector* connector::duplicate(synthmod::base* sm)
     return 0;
 }
 
-bool connector::connect()
+connector::CSTATE connector::connect()
 {
-    /*if (!this) {
-        connerr("%s", "Cannot make connection, connection does not exist!");
-        return false;
-    }*/
     const synthmod::base* outmod =
         wcnt::jwm.get_modlist()->get_synthmod_by_name(out_mod_uname);
     if (!in_mod) {
@@ -70,30 +69,36 @@ bool connector::connect()
                 "connect to. FYI input type is set as %s and out module "
                 "name is %s.", input::names::get(in_type),
                                                         out_mod_uname);
-        return false;
+        return FAIL;
     }
+
     if (!outmod) {
         connerr("In module %s cannot connect input %s, module %s does "
                 "not exist.", in_mod->get_username(),
                 input::names::get(in_type), out_mod_uname);
-        return false;
+        return FAIL;
     }
     const void* const out_data = outmod->get_out(out_type);
 
     if (!out_data) {
+        if (outmod->flag(synthmod::base::SM_PASSTHROUGH)) {
+            std::cout << "\nconnector::connect - postponing connection" << std::endl;
+            return POSTPONE;
+        }
+
         connerr("In module %s cannot connect input %s. Module %s does not "
                 "have any %s output.", in_mod->get_username(),
                 input::names::get(in_type), out_mod_uname,
                 output::names::get(out_type));
-        return false;
+        return FAIL;
     }
     if (!in_mod->set_in(in_type, out_data)) {
         connerr("*** MODULE ERROR *** In module %s not programmed to "
                 "accept connections for input %s.", in_mod->get_username(),
                                                 input::names::get(in_type));
-        return false;
+        return FAIL;
     }
-    return true;
+    return SUCCESS;
 }
 
 char connector::err_msg[STRBUFLEN];

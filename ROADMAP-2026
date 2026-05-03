@@ -1,0 +1,544 @@
+I've returned to programming in a small way; it won't be as intensive as
+in the past. This is in part thanks to social media! I've been making
+short clips and started adding some of the sounds created long ago using
+wcnt, to the clips. When I wanted to create new sounds, building wcnt
+brought up lots of warnings from the compiler. Fixing them gave me a
+little taster for coding again.
+
+While using wcnt attempting to build more complex layers of sound, I
+soon discovered its no easy task. My time away from it for well over
+a decade provided fresh insight on the problems for users wcnt has.
+
+When I first abstracted the code for reading and processing .wc files,
+into something the user could use for including content from other .wc
+files, one reason for doing so was the idea of creating commonly used
+chains of modules for use by other files.
+
+Later on, I implemented another method to re-use of chains of modules,
+the capability to group modules together and then duplicate the entire
+chain while preserving the input/output connection relationship from the
+old group to the new group. This was paired with an input_editor and
+param_editor in order to create variation amongst layers.
+
+At the time I was really happy at achieving these goals, which had
+taken wcnt beyond what I had originally ever envisioned it being
+capable of. The reality however is, wcnt is quite clunky; these
+mechanisms do not work as smoothly from a user's perspective as I'd
+like.
+
+I've come up with three ideas to address this issue: entry points,
+automatic grouping, nameless data objects, and handful of other
+improvements along the way.
+
+This file has been used by me to think about these improvements through
+writing about them. In the past I don't believe I ever thought through
+my ideas to this extent before diving into changing and adding code to
+the existing codebase.
+
+=================
+1) "Entry points"
+=================
+
+Suppose you create a whole bunch of modules in one file to create a
+voice part. In another file you create somes riffs and a sequencer
+using that voice part and output the result to a wav.
+
+Every module in the voice part requiring sequencer outputs would need
+manually connecting using the input_editor. The more modules within the
+voice part requiring connection to sequencer outputs from another
+file, the more difficult it becomes to keep track of what needed
+connecting and to ensure they everything was fully connected in the
+chain.
+
+It caused me to consider what if I could create an "entry point" for a
+file through which the file would connect to all the sequencer outputs,
+and all the modules that needed them would be connected to these "entry
+points" instead.
+
+I realized that wcnt already has the mechanism to do this in the form of
+wcnt_trigger and wcnt_signal modules. In the voice part file, generally
+all that is needed is three wcnt_trigger modules to represent each of
+the sequencer note_* trigger outputs, and two wcnt_signal modules to
+represent its velocity and frequency outputs. All the modules in the
+voice part file can then connect to these modules instead of initially
+being set 'off' because in that file the sequencer did not exist.
+to. Then when included, it's just a matter of connecting the entry
+point modules to the sequencer outputs.
+
+This worked well for reducing the number of modules and inputs for a
+complex multi-layered voice part down to just 5 as an "entry point".
+
+However, a strange error arose - wcnt insisted the wcnt_trigger module
+didn't have an out_trig output. Some detective work revealed the
+wcnt_trigger module uses SM_EMPTY_RUN. It's run method is empty, because
+while it does register out_trig as it's output, it doesn't actually have
+a variable for it, whatever output was connected to its in_trig input is
+returned instead (so no need for a run method to transfer the input's
+value to an output).
+
+So in my use case, its in_trig input wasn't set when its out_trig
+output was requested - it was still a NULL pointer - producing the
+confusing error (as NULL returned by synthmod::base::get_out is taken as
+an indication the output requested does not exist in the module).
+
+I considered the idea of creating an actual output and scrapping the
+SM_EMPTY_RUN method to solve the problem. But after some experimentation
+I simply disliked that idea as a solution from the view point of
+introducing uneccessary work to be done for every sample processed.
+word.
+
+Instead, I added a new module flag SM_PASSTHROUGH to handle the new case
+for modules which pass their input directly as an output without any
+processing (note: not all SM_EMPTY_RUN modules will need the new
+SM_PASSTHROUGH flag, ie the constant module uses the parameter value as
+output).
+
+Now when the connection failed and both these SM_PASSTHROUGH and
+SM_EMPTY_RUN flags were detected, the connection is postponed by moving
+it from its current position in the connection list, to the very end.
+The next time the connection in question is reached, then the connection
+which sets the input used by the SM_PASSTHROUGH module should have then
+been processed allowing something to be returned when its output is
+requested!
+
+The simplest basic use case is tested and works. It keeps tracks of the
+existing tail of the connection list and upon reaching it (and there are
+still more connections remaining) any connections thereafter, must be
+postponed connections.
+
+I suspect there may be more complex corner/edge cases which could
+require postponed modules to be further postponed, but this is yet to be
+tested. However, I don't think it would be overly complex to handle, and
+the potential for an inifinite loop to occur can be limited by a simple
+counter of how many times the former-tail is reached (and updated with
+the new tail).
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *  TODO: finish error handling, finish implementation to handle     * *
+* * multiple postponement, and infinite loop limiting counter.        *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+=====================
+2) Automatic grouping
+=====================
+
+For the idea of creating complex compositions with wcnt by using
+multiple files for different layers of sound, we currently must ensure
+each file uses unique module names to avoid name clashes.
+
+Its no use within a non-real-time text-based modular system for it to
+generate randomn names for things! Names need to be identifiable by the
+user ahead of time. If the system is generating names, those generated
+names must follow an easily predictable format.
+
+The currently implemented way to generate unique names is for the user
+to provide initial names to modules, and then group them using the group
+data object with a unique username. Unfortunately this method is a
+little awkward. Only after the modules have been created can they be
+added to a group. To do so, the user has to specify all the modules to
+be added to the group in the group definition. If there are many to add
+then likelihood of user error increases. Additionally, if at a later
+date the user changes the chain of modules either by adding or deleting
+some, then the group definition will need to be updated also - when
+production of a desired sound is the focus these snags can be causes of
+disruption to the creative flow.
+
+In the case of using multiple files (by including files using a
+synth_file_reader data object), using groups to create unique names also
+runs into problems. The modules are defined and created before grouping
+occurs, so name clashes could still occur before the group is created
+and the modules added to it.
+
+This is where the idea of automatic grouping comes in. Automatic
+grouping takes some of the burden away from the user for the task of
+grouping modules.
+
+Three initial ideas arose:
+
+  i automatic grouping specified at the start of a file to apply to
+    everything created within the file.
+ ii some sort of autogroup directive or data object which can be placed
+    anywhere in the file to initialize autogrouping, and then again
+    anywhere later in the file to end autogrouping.
+iii optional ability for synth_file_reader to group contents of a file
+    into a specified group.
+
+Options i is discredited in favour of ii, and option iii could still be
+useful.
+
+Q) What if the included file already contains groups?
+R) Right now I really don't know...
+...
+A) Currently wcnt quits with an error message if a module already added
+   to a group is added to a second group.
+...
+
+--
+What problem does grouping solve? Which problems arise from not being
+able to group already grouped modules?
+--
+
+Firstly, grouping allows a selection of modules to be brought together
+as a group. The group can be duplicated and the relationships between
+the connections of inputs and outputs are preserved in the duplicate.
+It reduces the effort required to build layers of similar sounds.
+
+-- By preventing the addition of grouped modules to a new (parent) group
+-- it is not possible to have more than one instance of a multi-layered
+-- voice created by the use of grouping.
+-- Why?
+-- Because the method to create a multi-layered voice might rely on
+-- duplicating a group to create each layer, if groups of groups of
+-- modules are disallowed, this won't be possible.
+
+
+How does grouping work?
+It basically changes the name of objects in a predefined manner, and
+updates the relevant connections to reflect the name change.
+Each module name is prefixed by the username of the group data object
+and the period (.) (usernames can't otherwise have a period within
+them).
+
+What if there was a degroup data object? A data object which removes the
+modules from a group - but preserves the group name and replaces the
+period (.) with another character (underscore perhaps)?
+
+Mostly the purpose of grouping a collection of modules is simply to
+duplicate many modules at once. In this case, once duplicated, grouping
+has served its purpose.
+
+However, given a voice with 10 layers, who is going to want to specify
+in a group all of the de-grouped modules which go into creating 10
+layers of sound? Not me!
+
+********************************
+STEPS TO IMPLEMENT AUTOGROUPING: STAGE ONE
+********************************
+
+Below, in the 'previous thoughts' section, I go into further
+complications which arise from the idea of nested grouping. However I
+have now reconsidered my approach and decided to discontinue along the
+nested grouping path.
+
+The concept of nested grouping is a no-go. I am not familiar with the
+code base enough, nor have enough time, tolerance, or skill to tackle
+it. The level of rewrite required, the level of understanding I'd need
+to reaquaint myself with over how it all currently fits together, the
+thinking through of the concept to formulate a concrete plan, it's all
+together not something I am willing to commit myself to.
+
+- - - - - - - - - - - - - - - - - -
+STEPS TO IMPLEMENT BASIC AUTOGROUPING
+- - - - - - - - - - - - - - - - - -
+
+The first step is to settle on the method of autogrouping as a state
+which can be on or off: will I introduce the concept of 'directives' for
+this purpose, or can it be handled by data objects?
+
+directive example:
+        autogroup begin group1
+        ; group modules etc defined here
+        autogroup end group1
+  pros:
+    * one liner, easily understandable, unambiguous
+    * easy to hard-code an inflexible handling of directives into the
+      synth_file_reader data object.
+  cons:
+    * no parameters to control behaviour
+    * no well designed and extendable directive handling infrastructure
+      exists yet
+
+data object example:
+        autogroup ag1 begin group1 ag1
+        ; group modules etc defined here
+        autogroup ag2 end group1 ag2
+
+  pros:
+    * data_object infrastructure already exists
+    * supports parameters to control behaviour
+    * matches wcnt's existing syntax/definition
+  cons:
+    * behavioural divergence - something is happening outside of the
+      data object definition
+    * behavioural divergence - two data objects are used to create one
+      thing/process
+    * data objects require unique names, so the D_O username to begin
+      autogrouping and the D_O username to end autogrouping cannot match.
+
+
+behaviour challenges?
+
+When autogrouping is in progress, when specifying outputs for inputs,
+should the module name for the output be with the group name or without
+group name? (ie group1.osc1 or osc1)
+
+   i) connection handling should be specified by non-group name
+      - autogrouping handles updating the connections - this allows
+      the user to easily add or remove autogrouping from a file without
+      editing all the module names for outputs used as inputs.
+
+
+ -  -  -  -  -  -  -  -
+potential for ambiguity - HOWEVER
+-  -  -  -  -  -  -  -
+
+The group data object groups modules after their creation, it is not
+possible for ambiguity over usernames to arise. Autogrouping will cause
+modules to be grouped from their inception - this will introduce
+potential for username ambiguity.
+
+Given two modules clock1, and group1.clock1:
+
+  * Using the group data object, the grouped module must be created
+    and grouped before the non-grouped module, otherwise a name clash
+    arises
+
+  * Using autogrouping, group1.clock1 is grouped from the start (it will
+    never exist as an ungrouped module), so order of creation is of no
+    relevance to this example.
+
+Given three modules clock1, group1.clock1 and sine1:
+
+    clock clock1 freq 100.0 clock1
+
+    autogroup begin group1
+
+    clock clock1 freq 1500.0 clock1
+
+    wave sine1
+      type sine
+      in_phase_step clock1 out_phase_step
+    sine1
+
+    autogroup end group1
+
+   i) which clock1 is sine1 connecting to? the autogrouped clock1 or the
+      preceding clock1? which clock1 would you expect it to connect to?
+  ii) my logic expressed earlier for minimum fuss caused by adding or
+      removing auto-grouping from a file might suggest a preference for
+      connecting to the autogrouped modules when such a name ambiguity
+      arises. however this example does not apply 1:1 to that logic, as
+      without autogrouping, this example would result in error and halt.
+ iii) think then in terms similar to C-like programming languages,
+      looking at how those languages handle local vs global variable
+      scope within function definitions. a local variable within a
+      function definition overrides a global variable.
+iiii) i think it is fair to impose upon the user the expectation that
+      modules within the group are the source of connection over
+      modules outside of the group
+
+Given autogrouped modules and the group data object:
+
+    clock clock1 freq 100.0 clock1
+
+    autogroup begin group1
+
+    clock clock1 freq 1500.0 clock1
+
+    group g2
+        synthmod name clock1
+    g2
+
+    autogroup end group1
+
+   --i) initially, at first sight, and then in principle if this were
+        allowed, g2.clock1 would refer to the clock1 running at 100 hrtz
+        defined outside of the autogroup because clock1 within the
+        autogroup is already named group1.clock1.
+
+  --ii) this brings me to another unknown - data objects within modules
+        used to refer to other modules, by name. i need to investigate
+        how this is handled. is it handled properly by wcnt at this
+        point?
+
+    ----- something to get straight and remind ourselves of -----
+  after grouping has occurred, modules outside of the group, but with
+  connections to modules within the group, must refer to the grouped
+   module name, not the pre-grouped module name. updating names doesn't
+   happen going forward beyond the group.
+
+ --iii) so, following the same logic as connections then, given a module
+        with data objects referencing other modules, provided that
+        module is created before those modules are grouped, it will
+        still use the grouped modules (I mean why wouldn't it?)
+
+--iiii) so, then, just as connections also, after the group is formed
+        everything created at a later stage cannot refer to the anything
+        by pre-grouped name.
+
+                 *** SO THIS ALL SUGGESTS SOMETHING ***
+
+In the example above, it will not be possible for clock1 outside of the
+autogroup to be added to group g2 because the logic dictates a
+preference for "local over global", the assumption is that if clock1 is
+definied within the group then clock1 is a reference to that grouped
+module.
+
+In addition, the question arises as to what purpose it even serves to
+allow creation of a group data object within an autogroup? For one,
+nested grouping is not allowed, and two, the group data object can just
+be created outside of the autogrouping, nothing will be lost.
+
+I am here then setting limits on program behaviour defined by my
+inability to implement otherwise. Do I have reasonable justification?
+Can I tolerate spending so much time on programming that my ability to
+implement changes improves? That my ability to scour through my code and
+understand it, remember how it works, and then on top of that hold all
+the new features to implement and how to go about that, in mind?
+
+The suggestion now then is the limitation of the group data object to
+outside of autogrouping. I see no advantage to do otherwise. Some
+responsibility to has to be passed to the user here. The advantage to
+not do so would be minimal - not having to move a group data object in a
+file outside of the scope of a newly introduced autogroup to that file.
+
+ * * * * AND WHAT ELSE * * * * *
+
+Should autogrouping allow for the ability to add modules to an existing
+group or not? I do not yet see a reason to limit it to not. But I am
+also yet to see a use case where it would be beneficial.
+
+(However, I have not been using wcnt, I've been instead thinking about
+how to arrive at a concrete understanding of how the new features will
+work before I implement them.)
+
+Previously I was thinking of two autogroup directives - begin and end.
+However I expect it to be more purposeful/intentional to include a
+third possibility specifically for adding to an existing group - add.
+It would reduce chances of accidentally adding modules to an existing
+group when a completely new group was intended.
+
+The directives (or data objects - still undecided which yet) would then
+become:
+autogroup create mygroupname
+autogroup add mygroupname
+autogroup end mygroupname
+
+/////////////////////////////////////
+//////////// AND FINALLY ////////////
+/////////////////////////////////////
+
+We can safely choose implementation of autogrouping using directives as
+the preference. The cons of doing so - no parameters to control
+behaviour have been shown to be uneeded because the situations which I
+was considering before thinking through it all will no longer arise due
+to defined behaviours, limitations and restrictions.
+
+; .................................
+; PREVIOUS THOUGHTS ON AUTOGROUPING - only for showing earlier thinking
+; '''''''''''''''''''''''''''''''''
+;
+; The first stage is to give the synth_file_reader an optional parameter
+; for a group name to autogroup modules into. The group could already
+; exist. If the parameter is not given a value, then autogrouping will not
+; occur. The autogrouping will ***attempt to*** group entire contents of
+; file. If file contains non-groupable items, then the attempt will fail
+; if the inclusion/exclusion options fail to prevent their exclusion.
+;
+; Second stage is to investigate opportunity for specifying auto-grouping.
+;
+; A data object for autogroup with a single multiple choice parameter
+; either begin or end, and then the group name (as value). As a data
+; object, it could be named. It would require two seperate data objects
+; with different usernames to begin and end the group, example below:
+;
+; autogroup ag1 begin group1 ag1
+; autogroup ag2 end group1 ag2
+;
+; If the begin parameter is specified, and the group specified does not
+; exist, the autogroup will create the group. It then instructs the
+; synth_file_reader to add all further modules to the group.
+;
+; If the end parameter is specified, the autogroup instructs the
+; synth_file_reader to stop adding modules to the group from this point
+; on.
+;
+; Q) is there method to do this? is there method to find the active
+;    synth_file_reader?
+;
+; Validation:
+;  *** a begin autogroup must be followed by an end autogroup
+;  *** no nesting of autogroups
+;  *** a nested synth_file_reader within an autogroup should add to
+;      that group unless it specifies a different group in which case
+;  *** no nesting of autogroups
+;
+;
+; ************************************
+; * THERE IS STILL A PROBLEM HERE!!! *
+; ************************************
+;
+; 1) Currently module creation and grouping is a two step process.
+;    The creation of a module with a name already in use is blocked,
+;    error reported, program terminates.
+;
+; 2) No nested grouping? So what is this all for? A synth_file_reader is
+;    auto-grouping, and comes across a group of modules, grouped to allow
+;    duplication, but which, due to my earlier thinking, are then
+;    degrouped to allow the duplicated groups to be grouped together.
+;
+; ----- so how will that work then if no nested grouping? Is a
+;       synth_file_reader to have it's own temporary space in which to
+;       create the things before adding them to the main?
+;
+; ----- fuck i've opened up a can of worms here.
+;
+; +++ could we have nested grouping but not multiple grouping, so no sub
+;     groups, at least not without de-grouping them (but preserving group
+;     names to avoid clash). nested grouping (group-x) when degrouped
+;     joins the outer group (group-y):
+;     group-x.osc >>> group-y.group-x_osc
+;
+
+========================
+3) Nameless data objects
+========================
+
+As already mentioned, it can be a pain to create unique identifiers,
+however several of the data_objects don't necessarily require a username
+at all (with the exception of when using the exclude/include directives
+of the synth_file_reader).
+
+In wcnt, the username of a module or data object are also used in the
+same way open & closing braces are used in programming languages.
+Perhaps then, we could allow braces to be used instead and create
+nameless data objects.
+
+(Although I like square braces, not curly, if this idea gets
+implemented).
+
+Obviously if data objects are created without a name then they won't be
+able to be specified for inclusion or exclusion by a synth_file_reader,
+nor for parameter editing by a param_editor.
+
+Some data objects (ie riff, wavfilein) require a name.
+
+====================================
+4) Some other notes about redundancy
+====================================
+
+Currently, every file is required to state a sample rate. When files are
+included by another, multiple files stating sample rates is a clash.
+
+1) Sample rate of first file is the one that sets it, provide warnings
+   for any further attempts at setting sample rate if mismatch.
+
+2) Add commandline option to override sample rate of files
+
+3) Sample rate setting should be changed from mandatory to optional
+   * warning if no sample rate set: defaulting to 44100
+
+
+=====================================
+5) Other new features
+=====================================
+The process of thinking through how autogrouping will work has suggested
+a new data object which will be used to delete modules or data objects.
+I have also considered a rename data object for renaming things, but
+then considered it unessecary. Both of these features will require
+further thought, possibly through actually usage of wcnt once the
+auto-grouping is implemented.

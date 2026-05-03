@@ -20,9 +20,11 @@ DEFS=-O2 -fomit-frame-pointer -DWITH_LADSPA
 #
 # NOTE_EDIT_DEBUG=display note_data debugging info.
 # SANITY_CHECKS = Some sort of half assed check for program sanity.
+#                 - NOTE: SANITY_CHECKS DOES NOT COMPILE DUE TO INCMPATIBILTY
 
 
 #DEFS=-ggdb -fno-inline -DWITH_LADSPA -DDEBUG -DSTR_DEBUG #-DSANITY_CHECKS
+DEFS=-ggdb -fno-inline -DWITH_LADSPA -DDEBUG
 
 # nothing to be modified further:
 PROG=wcnt

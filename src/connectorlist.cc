@@ -152,25 +152,74 @@ bool connectorlist::make_connections()
 {
     std::string cmsg;
     connector* connect = goto_first();
+    llitem* lastitem = sneak_last();
+    llitem* item = sneak_current();
+    bool processing_postponed_connections = false;
+
     while(connect){
-        if (!connect->connect())
-            return false;
-        if (wcnt::jwm.is_verbose()) {
-            const char* spc = spaces::get(40);
-            cmsg = connect->get_output_module_name();
-            cmsg += " ";
-            cmsg += output::names::get(
-                connect->get_output_type());
-            int i = cmsg.length();
-            if (i > 30)
-                i = 30;
-            cmsg.append(spc, 30 - i);
-            std::cout << "\n" << cmsg << "-->  ";
-            std::cout << connect->get_input_module()->get_username();
-            std::cout << " " << input::names::get(
-                                        connect->get_input_type());
+        llitem* nextitem = 0;
+        // build informative connection text for user
+        const char* spc = spaces::get(40);
+        cmsg = connect->get_output_module_name();
+        cmsg += " ";
+        cmsg += output::names::get(
+            connect->get_output_type());
+        int i = cmsg.length();
+        if (i > 30)
+            i = 30;
+        cmsg.append(spc, 30 - i);
+        cmsg += "-->  ";
+        cmsg += connect->get_input_module()->get_username();
+        cmsg += " ";
+        cmsg += input::names::get(connect->get_input_type());
+
+        std::cout << "Processing connection: " << cmsg << std::endl;
+
+        switch(connect->connect())
+        {
+            case connector::SUCCESS:
+                if (wcnt::jwm.is_verbose()) {
+                    std::cout << cmsg << std::endl;
+                }
+                break;
+
+            case connector::POSTPONE:
+                #ifdef DEBUG
+                std::cout << "POSTPONING CONNECTION!  " << cmsg << std::endl;
+                #endif
+                if (processing_postponed_connections) {
+                    // FIXME: sort proper error message handling
+                    #ifdef DEBUG
+                    std::cout << "connection postponed failed." << std::endl;
+                    #endif
+                    return false;
+                }
+                // need to keep track of next item
+                nextitem = sneak_next();
+                if (!nextitem) {
+                    #ifdef DEBUG
+                    std::cout << "connection postponed, but no other connections remain." << std::endl;
+                    #endif
+                    return false;
+                }
+                item = sneak_current();
+                unlink_item(item);
+                add_at_tail(item->get_data());
+                // make current point back to what was next
+                break;
+            default:
+                return false;
         }
-        connect = goto_next();
+        if (sneak_current() == lastitem) {
+            processing_postponed_connections = true;
+            #ifdef DEBUG
+            std::cout << "Beginning postponed connections processing..." << std::endl;
+            #endif
+        }
+        if (!nextitem)
+            connect = goto_next();
+        else
+            connect = goto_item(nextitem);
     }
     std::cout << std::endl;
     return true;

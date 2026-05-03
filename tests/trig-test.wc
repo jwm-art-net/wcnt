@@ -1,50 +1,85 @@
 wcnt-1.30/jwmsynth
 
-// trigger test 
+// trigger test
 //
 // purpose:
-// 
-//		highlight bug in existing code where:
 //
-// 		in file 1, a wcnt_trigger module is defined, it's input is set
-//		off, another module in the file connects to the output of the
-//		wcnt_trigger.
+//      highlight bug in existing code where:
 //
-//		in file 2, a module 'M' with a trigger output is created.
-//		a synth_file_reader includes the content of file 1.
-//		an input_editor connects the trigger output of module 'M'
-//		to the wcnt_trigger.
+//      in file 1, a wcnt_trigger module is defined, it's input is set
+//      off, another module in the file connects to the output of the
+//      wcnt_trigger.
+//
+//      in file 2, a module 'M' with a trigger output is created.
+//      a synth_file_reader includes the content of file 1.
+//      an input_editor connects the trigger output of module 'M'
+//      to the wcnt_trigger.
 //
 // problem:
 //
-//		wcnt emits a confusing error message in which it claims the
-//		wcnt_trigger module doesn't have the trigger output (when it
-//		clearly does).
+//      wcnt emits a confusing error message in which it claims the
+//      wcnt_trigger module doesn't have the trigger output (when it
+//      clearly does).
 //
 // analysis:
 //
-//		* wcnt_trigger has an empty run() method
-//		* when out_trig is requested from the wcnt_trigger it
-//		  simply returns its input trigger (which is why run() 
-//		  is empty).
+//      * wcnt_trigger has an empty run() method
+//      * when out_trig is requested from the wcnt_trigger it
+//        simply returns its input trigger (which is why run()
+//        is empty).
 //
-//		so if the input is not set when the output is requested
-//		the module returns 0 and the connection logic assumes the
-//		module doesn't have the output (despite having registered it).
+//      so if the input is not set when the output is requested
+//      the module returns 0 and the connection logic assumes the
+//      module doesn't have the output (despite having registered it).
 //
-//		in tests, i attempted to resolve the problem by creating an
-//		actual output rather than passing through the input. the run()
-//		method could no longer be empty as it needed to set the output
-//		to the value of the input.
+//      in tests, i attempted to resolve the problem by creating an
+//      actual output rather than passing through the input. the run()
+//      method could no longer be empty as it needed to set the output
+//      to the value of the input.
 //
-//		however, while this solution allowed wcnt to process the file
-//		without error, the wcnt_trigger failed to be triggered! there
-//		was still a problem with the connection for some reason.
+//      however, while this solution allowed wcnt to process the file
+//      without error, the wcnt_trigger failed to be triggered! there
+//      was still a problem with the connection for some reason.
 //
-//		further investigation is required to identify where the problem
-//		really resides - is it the connection logic, is it the
-//		synth_file_reader logic?
-
+//      further investigation is required to identify where the problem
+//      really resides - is it the connection logic, is it the
+//      synth_file_reader logic?
+//
+// SM_EMPTY_RUN
+//
+//      the wcnt_trigger module sets the SM_EMPTY_RUN flag during its
+//      creation. this causes the module to be removed from the run
+//      list so there are never any calls to its run() method.
+//
+//      the above solution then, once the SM_EMPTY_RUN flag is removed,
+//      does infact work.
+//
+//      however i am not entirely certain it will be without
+//      consequences - for example the *router modules create
+//      wcnt_trigger modules to route their input triggers to.
+//
+//      and, i dislike doing away with the SM_EMPTY_RUN flag for it,
+//      and not just passing the input as output.
+//
+// potential solution:
+//
+//      * create a new flag synthmod::base::SM_PASSTHROUGH
+//
+//      * any modules which pass through their input as an output
+//        must register themselves with the new flag
+//
+//      * within connectorlist::make_connections() determine if the
+//        output module for the connection uses SM_PASSTHROUGH.
+//
+//      * if the output module's output is non-zero, the input is set,
+//        connection can proceed as normal.
+//
+//      * else if the output module's output is zero/NULL then the
+//        connection cannot be made until the input is set.
+//
+// ***** BUT HOW SHOULD THIS BE HANDLED ??? *****
+//
+//
 
 samplerate 44100
 
@@ -68,7 +103,7 @@ clock1
 
 synth_file_reader
 sfr
-	filename trig-test-inc.wc
+    filename trig-test-inc.wc
 sfr
 
 

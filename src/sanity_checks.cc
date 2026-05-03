@@ -1,4 +1,3 @@
-
 #include "../include/sanity_checks.h"
 
 #ifdef SANITY_CHECKS
@@ -6,17 +5,17 @@
 #include "../include/ladspa_loader.h"
 #include "../include/synthmod.h"
 #include "../include/synthmodlist.h"
-#include "../include/modinputlist.h"
+//#include "../include/modinputlist.h"
 #include "../include/modoutputlist.h"
-#include "../include/modparamlist.h"
+//#include "../include/modparamlist.h"
 #include "../include/fxsparamlist.h"
-
+#include "../include/synthmodnames.h"
 #include <iostream>
 #include <cstdlib>
 
 void module_iop_checks();
 
-int check_mod_param_fixed_string(synthmod*, param::TYPE);
+int check_mod_param_fixed_string(synthmod::base*, param::TYPE);
 
 void sanity_checks()
 {
@@ -25,7 +24,7 @@ void sanity_checks()
     ladspa_loader* ladspaloader = new ladspa_loader;
     wcnt::jwm.register_ladspaloader(ladspaloader);
     #endif
-    synthmodlist* modlist = new synthmodlist(DELETE_DATA);
+    synthmod::list* modlist = new synthmod::list(DELETE_DATA);
     wcnt::jwm.register_modlist(modlist);
 
     std::cout << "\nPerforming sanity checks...";
@@ -56,16 +55,16 @@ void module_iop_checks()
     std::cout << "\nSanity checking module's inputs/outputs/params..."
         "\nNote: Data objects within certain types of module will not be"
         " checked.";
-    synthmodlist* modlist = wcnt::jwm.get_modlist();
+    synthmod::list* modlist = wcnt::jwm.get_modlist();
     bool sanity = true;
-    for (int i = module::ERR_TYPE + 2; i < module::LAST_TYPE; i++)
+    for (int i = synthmod::ERR_TYPE + 2; i < synthmod::LAST_TYPE; i++)
     {
         synthmod::TYPE smt =
             (synthmod::TYPE)i;
-        const char* const modname = module::names::get(smt);
+        const char* const modname = synthmod::names::get(smt);
         std::cout << "\n--------------------------------------------"
             "\nChecking module type: " << modname;
-        synthmod* sm = 0;
+        synthmod::base* sm = 0;
         if (!(sm = modlist->create_module(smt, modname))) {
             std::cout << "\n***** Could not create module type: "
                 << modname;
@@ -89,7 +88,7 @@ void module_iop_checks()
     std::cout<<"\n===================================================\n";
 }
 
-bool mod_check_inputs(synthmod* sm)
+bool mod_check_inputs(synthmod::base* sm)
 {
     modinputlist::linkedlist* inlist =
         new_list_of_by(wcnt::get_inputlist(), sm);

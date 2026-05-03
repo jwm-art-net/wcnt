@@ -2,18 +2,20 @@ wcnt-1.30/jwmsynth
 
 samplerate 44100
 
+clock c1 freq 10 c1
+constant v value 0.5 v
 
 wcnt_trigger
 trig1
-	in_trig off
+    in_trig off
 trig1
 
 
 inspector
 aninspectorcalls
-	_in_state_		off
-	_state_msg_ 	Triggered!
-	_in_state_trig_	trig1 out_trig
+    _in_float_      v out_output
+    _float_msg_     Triggered!
+    _in_float_trig_ trig1 out_trig
 aninspectorcalls
 
 

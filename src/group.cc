@@ -187,7 +187,7 @@ bool group::groupify(synthmod::base* sm)
     char* from = new char [strlen(sm->get_username()) + 1];
     strcpy(from, sm->get_username());
     sm->set_group_name(get_username());
-   wcnt::get_connectlist()->reconnect_output_module_by_name(from,
+    wcnt::get_connectlist()->reconnect_output_module_by_name(from,
                                                     sm->get_username());
     delete [] from;
     return true;
