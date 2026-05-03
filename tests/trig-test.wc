@@ -106,6 +106,13 @@ sfr
     filename trig-test-inc.wc
 sfr
 
+input_editor
+ie1
+    editlist
+        connect trig1 in_trig t1 out_trig
+    editlist
+ie1
+
 
 wcnt_exit
 wcnt_exit_module

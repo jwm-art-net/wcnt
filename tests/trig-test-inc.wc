@@ -5,18 +5,67 @@ samplerate 44100
 clock c1 freq 10 c1
 constant v value 0.5 v
 
-wcnt_trigger
-trig1
-    in_trig off
-trig1
+// lets purposely do things backwards to trgger postponement of
+// connections with the wcnt_trigger modules - they use SM_PASSTHROUGH
+// and SM_EMPTY_RUN because when their output is requested they pass
+// through whatever their input is connected to. If the input isn't yet
+// connected then postponement of that connection until it is, is
+// necessary. currently there is a limit to the number of times the
+// postponement processing loops around which is set to 10. this doesn't
+// mean the total number of postponed connections is limited to ten,
+// just that how many levels of postponement chained together is
+// limited.
 
 
 inspector
 aninspectorcalls
     _in_float_      v out_output
     _float_msg_     Triggered!
-    _in_float_trig_ trig1 out_trig
+    _in_float_trig_ trig7 out_trig
 aninspectorcalls
+
+
+wcnt_trigger
+trig7
+    in_trig trig6 out_trig
+trig7
+
+wcnt_trigger
+trig6
+    in_trig trig5 out_trig
+trig6
+
+wcnt_trigger
+trig5
+    in_trig trig4 out_trig
+trig5
+
+wcnt_trigger
+trig4
+    in_trig trig3 out_trig
+trig4
+
+wcnt_trigger
+trig3
+    in_trig trig2 out_trig
+trig3
+
+wcnt_trigger
+trig2
+    in_trig trig1 out_trig
+trig2
+
+wcnt_trigger
+trig1
+    in_trig off
+trig1
+
+// up the connection postponement complexity by
+// causing a 2nd level of connection postponement
+
+
+// it should not cause any problem whatsoever
+
 
 
 wcnt-1.30/jwmsynth

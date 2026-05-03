@@ -43,6 +43,7 @@ namespace wcnt
  const wcint_t wav_buffer_size            = 4096; //16384;
  const wcint_t max_xfade_samples          = wav_buffer_size / 2 - 1;
  const wcint_t sr_div_bi                  = 8;
+ const wcint_t max_connection_postponement_level = 10;
 
  const char* const ladspa_path_if_env_not_set =
     "/usr/local/lib/ladspa/:/usr/lib/ladspa/";

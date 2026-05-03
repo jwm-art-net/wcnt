@@ -34,7 +34,18 @@ connector* connectorlist::add_connector(connector* c)
 {
     if (!c)
         return 0;
-    return add_at_head(c)->get_data();
+    // for some reason I am yet to fathom, add_at_head was used here
+    // previously, which meant wcnt processed connections in reverse
+    // order to what they were created in. Previously it didn't matter
+    // until a certain use case caused the necessity for postponing
+    // connections. however while that feature is still needed, due to
+    // use of add_at_head here (and related functions) the postponement
+    // of connections was arising when strictly speaking, from a user's
+    // perspective, postponement shouldn't have been happening.
+    // Initial tests suggest it changes nothing, and served no purpose.
+    // however, should reverse processing of connections prove to be
+    // a better case, then please add a note here stating why!
+    return add_at_tail(c)->get_data();
 }
 
 connector* connectorlist::add_connector_off(synthmod::base* sm, input::TYPE it)
@@ -69,7 +80,7 @@ connector* connectorlist::add_connector(synthmod::base* sm, input::TYPE it,
 {
     connector* c = new connector(sm, it, out_mod, ot);
     if (c) {
-        if (!add_at_head(c)) {
+        if (!add_at_tail(c)) {
             delete c;
             c = 0;
         }
@@ -114,7 +125,7 @@ connectorlist::duplicate_connections_for_module(
         conlist = new linkedlist(MULTIREF_OFF, PRESERVE_DATA);
     llitem* i = find_in_data(sneak_first(), input_module(from_mod));
     while(i){
-        conlist->add_at_head(i->get_data()->duplicate(to_mod));
+        conlist->add_at_tail(i->get_data()->duplicate(to_mod));
         i = find_in_data(i->get_next(), input_module(from_mod));
     }
     return conlist;
@@ -154,7 +165,7 @@ bool connectorlist::make_connections()
     connector* connect = goto_first();
     llitem* lastitem = sneak_last();
     llitem* item = sneak_current();
-    bool processing_postponed_connections = false;
+    int postponed_connection_level = 0;
 
     while(connect){
         llitem* nextitem = 0;
@@ -173,8 +184,6 @@ bool connectorlist::make_connections()
         cmsg += " ";
         cmsg += input::names::get(connect->get_input_type());
 
-        std::cout << "Processing connection: " << cmsg << std::endl;
-
         switch(connect->connect())
         {
             case connector::SUCCESS:
@@ -184,22 +193,22 @@ bool connectorlist::make_connections()
                 break;
 
             case connector::POSTPONE:
-                #ifdef DEBUG
-                std::cout << "POSTPONING CONNECTION!  " << cmsg << std::endl;
-                #endif
-                if (processing_postponed_connections) {
-                    // FIXME: sort proper error message handling
-                    #ifdef DEBUG
-                    std::cout << "connection postponed failed." << std::endl;
-                    #endif
+                if (postponed_connection_level > wcnt::max_connection_postponement_level) {
+                    // FIXME: look into better error handling for wcnt, there's no error handling for
+                    // the connectorlist itself, only for the connect class
+                    std::cout << "Connection postponement failed - maximum connection postponement level "
+                              << wcnt::max_connection_postponement_level << " exceeded!" << std::endl;
                     return false;
                 }
+                if (wcnt::jwm.is_verbose()) {
+                    std::cout << "Postponing connection " << cmsg << std::endl;
+                }
+
                 // need to keep track of next item
                 nextitem = sneak_next();
                 if (!nextitem) {
-                    #ifdef DEBUG
+                    // FIXME: error handling (see above).
                     std::cout << "connection postponed, but no other connections remain." << std::endl;
-                    #endif
                     return false;
                 }
                 item = sneak_current();
@@ -208,13 +217,15 @@ bool connectorlist::make_connections()
                 // make current point back to what was next
                 break;
             default:
+                // FIXME: error handling (see above).
                 return false;
         }
-        if (sneak_current() == lastitem) {
-            processing_postponed_connections = true;
+        if (sneak_current() == lastitem && lastitem != sneak_last()) {
+            postponed_connection_level++;
             #ifdef DEBUG
-            std::cout << "Beginning postponed connections processing..." << std::endl;
+            std::cout << "Beginning postponed connections processing... level:" << postponed_connection_level << std::endl;
             #endif
+            lastitem = sneak_last();
         }
         if (!nextitem)
             connect = goto_next();
