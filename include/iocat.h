@@ -37,6 +37,9 @@ namespace iocat
     // read data types ie riffs, adsrs, envelopes, tracks etc rather
     // than it being specialistically hard coded as before.
     //----------------------------------------------------------------
+    // extra type for special cases of inputs which when turned off
+    // require a different value than 0.0
+    DOUBLE1,
     // keep last:
     LAST_TYPE
  };

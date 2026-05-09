@@ -30,7 +30,7 @@ bool parameditor::do_param_edits()
             std::cout << pe->get_name();
         }
         if (!pe->do_param_edits()) {
-            dobjerr("In %s %s, parameter set attempt failed %s",
+            dobjerr("In %s %s, parameter set attempt failed: %s",
                     dobj::names::get(get_object_type()),
                                             get_username(), err_msg);
             invalidate();

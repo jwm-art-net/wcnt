@@ -50,7 +50,7 @@ namespace wcnt
 
  bool synth::connect_synth()
  {
-    if (wcnt::jwm.is_verbose()) {
+     if (wcnt::jwm.is_verbose()) {
         std::cout << "\n\nWill now attempt to connect inputs and outputs";
         std::cout << ", hold your horses:" << std::endl;
     }
@@ -188,4 +188,5 @@ namespace wcnt
         destroy_array_moved_from_list(runlist);
     return true;
  }
+
 }; // namespace wcnt

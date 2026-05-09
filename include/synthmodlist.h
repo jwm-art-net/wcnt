@@ -6,6 +6,7 @@
 #include "listwork.h"
 #include "namefuncobj.h"
 #include "boolfuncobj.h"
+#include "constmod.h"
 
 class nonezero;
 #include "synthmod.h"

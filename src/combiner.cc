@@ -110,8 +110,7 @@ void combiner::init()
     while(sm) {
         sigs[ix] = (double const*)sm->get_out(output::OUT_OUTPUT);
         if (!sigs[ix]) {
-            sm_err("Things not looking good ;-(... %s",
-                   "Don't worry, I have no idea what this means either.");
+            sm_err("UNEXPECTED ERROR initializing combiner %s", ".");
             invalidate();
             return;
         }

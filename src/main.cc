@@ -82,6 +82,8 @@ int main(const int argc, const char** const argv)
         std::cout << std::endl;
     else
         exitramblings();
+    // once more for an empty line
+    std::cout << std::endl;
     delete modlist;
     #ifdef WITH_LADSPA
     delete ladspaloader;
@@ -91,14 +93,16 @@ int main(const int argc, const char** const argv)
 
 void title()
 {
-    std::cout << " \\ wcnt \\" << std::endl;
-    std::cout << "  \\      X----------------------X" << std::endl;
-    std::cout << "   \\  Wav Composer Not Toilet!   \\" << std::endl;
-    std::cout << "    X-----------------X           \\" << std::endl;
-    std::cout << "                       \\ " << wcnt::version;
-    std::cout << " \\ " << std::endl;
-
+    std::cout << "'+\\  +  +  \\+, , , , , , , , , , ," << std::endl;
+    std::cout << " '+\\  wcnt  \\+\\j\\w\\m\\a\\r\\t\\n\\e\\t\\+," << std::endl;
+    std::cout << "  '+\\                            \\+," << std::endl;
+    std::cout << "   '+\\  Wav Composer Not Toilet!  \\+," << std::endl;
+    std::cout << "    '+\\                            \\+," << std::endl;
+    std::cout << "     '+\\+\\+\\+\\+\\+\\+\\+\\   " << wcnt::version;
+    std::cout << "  \\+," << std::endl;
+    std::cout << "      ' ' ' ' ' ' ' '+\\   +   +   +  \\+," << std::endl;
 }
+
 
 void exitramblings()
 {

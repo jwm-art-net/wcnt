@@ -25,7 +25,6 @@ sinewave1
     type sine
 sinewave1
 
-wcnt_signal ws1 in_signal sinewave1 out_output level 1.0 ws1
 
 square_wave
 squ_wave1
@@ -36,12 +35,12 @@ squ_wave1
     recycle_mode  off
 squ_wave1
 
-wcnt_signal ws2 in_signal squ_wave1 out_output level 1.0 ws2
+constant c value 2.333 c
 
-wcnt_signal
+multiplier
 cws1
-    in_signal clock1 out_phase_step
-    level 2.333
+    in_signal1 clock1 out_phase_step
+    in_signal2 c out_output
 cws1
 
 wave
@@ -50,7 +49,6 @@ triwave1
     type tri
 triwave1
 
-wcnt_signal ws3 in_signal triwave1 out_output level 1.0 ws3
 
 clock
 clock2
@@ -84,9 +82,9 @@ clock4
 switcher
 sw1
     signals
-        synthmod name ws1
-        synthmod name ws2
-        synthmod name ws3
+        synthmod name sinewave1
+        synthmod name squ_wave1
+        synthmod name triwave1
     signals
     in_trig clock4 out_phase_trig
     xfade_time 15.0

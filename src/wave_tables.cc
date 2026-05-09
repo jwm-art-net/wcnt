@@ -1,7 +1,11 @@
 #include "../include/wave_tables.h"
 
 #include <math.h>
+
+#ifdef DEBUG
 #include <iostream>
+#endif
+
 wave_tables::wave_tables()
 {
     for(int i = 0; i < WT_LAST; i++)
@@ -13,7 +17,9 @@ wave_tables::wave_tables()
 
 wave_tables::~wave_tables()
 {
+#ifdef DEBUG
     std::cout << "deleting wave_tables..." << std::endl;
+#endif
     for (int i = 0; i < WT_LAST; i++)
         if (table[i])
             delete [] table[i];

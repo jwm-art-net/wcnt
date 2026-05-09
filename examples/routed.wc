@@ -2,7 +2,7 @@ wcnt-1.30/jwmsynth
 //------------------------------------------------------------------------
 //
 // routed.wc
-//  
+//
 //------------------------------------------------------------------------
 
 header header.wch
@@ -219,10 +219,11 @@ lpf
     res_mod_size  0
 lpf
 
-wcnt_signal
+
+mono_amp
 out
     in_signal lpf out_output
-    level     0.75
+    gain 0.75
 out
 
 group

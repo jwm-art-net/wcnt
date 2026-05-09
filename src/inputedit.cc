@@ -85,7 +85,7 @@ bool inputedit::create_connectors()
         strm >> out_modname;
         if (strcmp(out_modname.c_str(), "off") == 0) {
             out_type = output::names::get_off_type(
-                        input::names::category(in_type));
+                        input::names::get_off_category_for_input(in_type));
         }
         else {
             // allow output module to not exist yet.

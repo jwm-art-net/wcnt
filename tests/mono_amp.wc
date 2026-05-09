@@ -1,0 +1,64 @@
+wcnt-1.30/jwmsynth
+
+samplerate 44100
+
+; mono_amp.wc
+;   tests the newly created optional ui items of the mono amp aren't
+;   broken if unspecified.
+;   paying particular importance to in_eg (E.nvelope G.enerator)
+;   which requires the new off type which feeds it 1.0 instead of the
+;   regular off type which feeds 0.0.
+
+
+timer
+t
+    timings
+        time seconds 0
+        time seconds 1
+    timings
+    time_is_relative off
+t
+
+constant_freq
+cf
+    freq 220
+cf
+
+wave
+s
+    type            sine
+    in_phase_step   cf out_phase_step
+s
+
+constant c value 0.5 c
+
+mono_amp
+a
+    in_signal s out_output
+    gain 0.95
+a
+
+input_editor
+ie
+    editlist
+      //  connect a in_amp_eg off
+    editlist
+ie
+
+wavfile_out
+w
+    filename        mono_amp.wav
+    data_format     float32
+    in_left         a out_output
+    in_bar          t out_index
+    start_bar       0
+    end_bar         1
+w
+
+wcnt_exit
+x
+    in_bar      t out_index
+    exit_bar    1
+x
+
+wcnt-1.30/jwmsynth

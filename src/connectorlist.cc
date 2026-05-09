@@ -34,24 +34,14 @@ connector* connectorlist::add_connector(connector* c)
 {
     if (!c)
         return 0;
-    // for some reason I am yet to fathom, add_at_head was used here
-    // previously, which meant wcnt processed connections in reverse
-    // order to what they were created in. Previously it didn't matter
-    // until a certain use case caused the necessity for postponing
-    // connections. however while that feature is still needed, due to
-    // use of add_at_head here (and related functions) the postponement
-    // of connections was arising when strictly speaking, from a user's
-    // perspective, postponement shouldn't have been happening.
-    // Initial tests suggest it changes nothing, and served no purpose.
-    // however, should reverse processing of connections prove to be
-    // a better case, then please add a note here stating why!
     return add_at_tail(c)->get_data();
 }
 
 connector* connectorlist::add_connector_off(synthmod::base* sm, input::TYPE it)
 {
-    return add_connector(sm, it, "off", output::names::get_off_type(
-                                                input::names::category(it)));
+    return add_connector(sm, it, "off",
+                            output::names::get_off_type(
+                                input::names::get_off_category_for_input(it)));
 }
 
 connector* connectorlist::add_connector_self(synthmod::base* sm, input::TYPE it,
@@ -76,7 +66,7 @@ connector* connectorlist::add_connector_as(synthmod::base* sm, input::TYPE it,
 }
 
 connector* connectorlist::add_connector(synthmod::base* sm, input::TYPE it,
-                                    const char* out_mod, output::TYPE ot)
+                                        const char* out_mod, output::TYPE ot)
 {
     connector* c = new connector(sm, it, out_mod, ot);
     if (c) {
@@ -113,7 +103,6 @@ connectorlist::duplicate_connections(const synthmod::base* from_mod,
     }
     return true;
 }
-
 
 connectorlist::linkedlist*
 connectorlist::duplicate_connections_for_module(
@@ -158,9 +147,6 @@ connectorlist::reconnect_output_module_by_name(
         connect = goto_next();
     }
 }
-
-
-
 
 bool connectorlist::make_connections()
 {
@@ -235,57 +221,6 @@ bool connectorlist::make_connections()
         else
             connect = goto_item(nextitem);
     }
-    std::cout << std::endl;
     return true;
 }
 
-#ifdef UNUSED
-connector*
-connectorlist::duplicate_connections_for_group(
-    const char* from, const char* to)
-{
-    /* FIXME: "nothing here codes be doing.." */
-/*
-    synthmodlist::linkedlist* fromlist =
-        new_list_of_by(jwm.get_modlist(), from);
-
-    synthmodlist::linkedlist* tolist =
-        new_list_of_by(jwm.get_modlist(), to);
-
-    if (!grpmodlist)
-        return 0;
-
-    synthmod* mod = fromlist->goto_first();
-    synthmod* to_mod = tolist->goto_first();
-    while(mod) {
-        connectorlist*
-            conlist = duplicate_connections_for_module(mod, to_mod);
-        connector* con = conlist->goto_first();
-    }
-*/
-    return 0;
-}
-
-bool
-connectorlist::remake_connections(
-    synthmod* sm, output::TYPE ot, output::TYPE new_ot)
-{
-    const char* smname = sm->get_username();
-    llitem* i = find_in_data(sneak_first(), name(smname));
-    if (!i)
-        return false;
-    if (wcnt::jwm.is_verbose())
-        std::cout << "\nRemaking connections for " << smname;
-    while(i){
-        connector* connect = i->get_data();
-        if (connect->get_output_type() == ot) {
-            connect->set_output_type(new_ot);
-            if (!connect->connect()) {
-                return false;
-            }
-        }
-        i = find_in_data(i->get_next(), name(smname));
-    }
-    return true;
-}
-#endif

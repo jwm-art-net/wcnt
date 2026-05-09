@@ -3,28 +3,27 @@
 namespace output
 {
 
-
  TYPE names::get_off_type(iocat::TYPE ioc)
  {
-    TYPE ot;
     switch(ioc)
     {
-    case iocat::DOUBLE:     ot = OUT_NONE_DOUBLE;   break;
-    case iocat::WCINT_T:    ot = OUT_NONE_WCINT_T;  break;
-    case iocat::SAMP_T:     ot = OUT_NONE_SAMP_T;   break;
-    case iocat::TRIG:       ot = OUT_NONE_TRIG;     break;
-    case iocat::STATE:      ot = OUT_NONE_STATE;    break;
-    case iocat::STRING:     ot = OUT_NONE_STRING;   break;
-    default:
-        return ERR_TYPE;
+        case iocat::DOUBLE:     return OUT_NONE_DOUBLE;   break;
+        case iocat::DOUBLE1:    return OUT_ONE_DOUBLE;    break;
+        case iocat::WCINT_T:    return OUT_NONE_WCINT_T;  break;
+        case iocat::SAMP_T:     return OUT_NONE_SAMP_T;   break;
+        case iocat::TRIG:       return OUT_NONE_TRIG;     break;
+        case iocat::STATE:      return OUT_NONE_STATE;    break;
+        case iocat::STRING:     return OUT_NONE_STRING;   break;
+        default:
+            return ERR_TYPE;
     }
-    return ot;
 }
 
  const struct names::gn_data names::data[LAST_TYPE] =
  {
     { ERR_TYPE,             "BAD_OUTPUT_TYPE",      iocat::ERR_TYPE,"ERROR!"   },
     { OUT_NONE_DOUBLE,      "off",                  iocat::DOUBLE,  "Input turned off"  },
+    { OUT_ONE_DOUBLE,       "off",                  iocat::DOUBLE,  "Input turned off"  },
     { OUT_NONE_WCINT_T,     "off",                  iocat::WCINT_T, "Input turned off"  },
     { OUT_NONE_SAMP_T,      "off",                  iocat::SAMP_T,  "Input turned off"  },
     { OUT_NONE_TRIG,        "off",                  iocat::TRIG,    "Input turned off"  },

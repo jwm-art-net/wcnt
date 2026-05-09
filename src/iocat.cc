@@ -14,6 +14,7 @@ namespace iocat
     { FIX_STR,      "TEXT",                 0, "Multiple choice." },
     { METER,        "INTEGER/INTEGER",      0, "Time signature, ie 5/8." },
     { DOBJ,         "DATA-OBJECT",          0, "The name of a data object." },
-    { SYNTHMOD,     "MODULE",               0, "The name of a module." }
+    { SYNTHMOD,     "MODULE",               0, "The name of a module." },
+    { DOUBLE1,      "DECIMAL",              0, "Internal usage only." }
  };
 }; // namespace iocat

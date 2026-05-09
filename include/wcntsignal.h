@@ -16,17 +16,13 @@ public:
     ~wcnt_signal();
 
     // virtual funcs
-    void run() { out_output = *in_signal * level; }
+    void run() {};
     const void* get_out(output::TYPE) const;
     const void* set_in(input::TYPE, const void*);
     const void* get_in(input::TYPE) const;
-    bool set_param(param::TYPE, const void*);
-    const void* get_param(param::TYPE) const;
 
 private:
     const double* in_signal;
-    double out_output;
-    double level;
     void register_ui();
     ui::moditem_list* get_ui_items();
 };

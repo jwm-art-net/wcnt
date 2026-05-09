@@ -1,8 +1,6 @@
-wcnt-1.30/jwmsynth
+wcnt-1.32/jwmsynth
 
 samplerate 44100
-
-constant one value 1.0 one
 
 timer
 t
@@ -203,7 +201,7 @@ single_band_parametric
 eql
     in_signal       cl out_output
     in_phase_step   eqf out_phase_step
-    gain_db 16.0
+    gain_db 20.0
     bandwidth 2
 eql
 
@@ -211,7 +209,7 @@ single_band_parametric
 eqr
     in_signal       cr out_output
     in_phase_step   eqf out_phase_step
-    gain_db 16.0
+    gain_db 20.0
     bandwidth 2
 eqr
 
@@ -269,14 +267,21 @@ rev
 rev
 
 
+stereo_amp
+st
+    in_left  rev out_left
+    in_right rev out_right
+    level  2.65
+st
+
 wavfile_out
 wav1
-    in_left     rev out_left
-    in_right    rev out_right
+    in_left     st out_left
+    in_right    st out_right
     in_bar t    out_count
     snapshot_mode off
     data_format float32
-    filename    bounce2.wav
+    filename    bounce.wav
     start_bar   0
     end_bar     1
 wav1
@@ -288,4 +293,4 @@ x
     exit_bar    1
 x
 
-wcnt-1.30/jwmsynth
+wcnt-1.32/jwmsynth

@@ -191,8 +191,18 @@ mmr
 mmr
 
 
-wcnt_signal ws-l in_signal mml out_output level 0.125 ws-l
-wcnt_signal ws-r in_signal mmr out_output level 0.125 ws-r
+mono_amp
+ma-l
+    in_signal mml out_output
+    gain 0.125
+ma-l
+
+mono_amp
+ma-r
+    in_signal mmr out_output
+    gain 0.125
+ma-r
+
 
 
 group g1
@@ -208,8 +218,8 @@ modules
     synthmod name shaped-r
     synthmod name mml
     synthmod name mmr
-    synthmod name ws-l
-    synthmod name ws-r
+    synthmod name ma-l
+    synthmod name ma-r
 modules
 g1
 
@@ -292,14 +302,14 @@ pe1
 combiner
 cmb-l
     signals
-        synthmod name g1.ws-l
-        synthmod name g2.ws-l
-        synthmod name g3.ws-l
-        synthmod name g4.ws-l
-        synthmod name g5.ws-l
-        synthmod name g6.ws-l
-        synthmod name g7.ws-l
-        synthmod name g8.ws-l
+        synthmod name g1.ma-l
+        synthmod name g2.ma-l
+        synthmod name g3.ma-l
+        synthmod name g4.ma-l
+        synthmod name g5.ma-l
+        synthmod name g6.ma-l
+        synthmod name g7.ma-l
+        synthmod name g8.ma-l
     signals
     mean_total off
 cmb-l
@@ -308,14 +318,14 @@ cmb-l
 combiner
 cmb-r
     signals
-        synthmod name g1.ws-r
-        synthmod name g2.ws-r
-        synthmod name g3.ws-r
-        synthmod name g4.ws-r
-        synthmod name g5.ws-r
-        synthmod name g6.ws-r
-        synthmod name g7.ws-r
-        synthmod name g8.ws-r
+        synthmod name g1.ma-r
+        synthmod name g2.ma-r
+        synthmod name g3.ma-r
+        synthmod name g4.ma-r
+        synthmod name g5.ma-r
+        synthmod name g6.ma-r
+        synthmod name g7.ma-r
+        synthmod name g8.ma-r
     signals
     mean_total off
 cmb-r

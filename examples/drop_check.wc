@@ -1,4 +1,4 @@
-wcnt-1.30/jwmsynth
+wcnt-1.32/jwmsynth
 
 //------------------------------------------------------------------------
 //
@@ -71,8 +71,8 @@ swave2
 constant_note n1 name c-1 n1
 constant_note n2 name c#1 n2
 
-wcnt_signal nws1 in_signal n1 out_frequency level 1.0 nws1
-wcnt_signal nws2 in_signal n2 out_frequency level 1.0 nws2
+wcnt_signal nws1 in_signal n1 out_frequency nws1
+wcnt_signal nws2 in_signal n2 out_frequency nws2
 
 switcher
 sw1
@@ -176,13 +176,13 @@ constant_note nn3ii name d-1 nn3ii
 constant_note nn3iii name b-1 nn3iii
 constant_note nn3iiii name g-1 nn3iiii
 
-wcnt_signal nnws1 in_signal nn1 out_phase_step level 1.0 nnws1
-wcnt_signal nnws2 in_signal nn2 out_phase_step level 1.0 nnws2
-wcnt_signal nnws3 in_signal nn3 out_phase_step level 1.0 nnws3
-wcnt_signal nnws3i in_signal nn3i out_phase_step level 1.0 nnws3i
-wcnt_signal nnws3ii in_signal nn3ii out_phase_step level 1.0 nnws3ii
-wcnt_signal nnws3iii in_signal nn3iii out_phase_step level 1.0 nnws3iii
-wcnt_signal nnws3iiii in_signal nn3iiii out_phase_step level 1.0 nnws3iiii
+wcnt_signal nnws1 in_signal nn1 out_phase_step nnws1
+wcnt_signal nnws2 in_signal nn2 out_phase_step nnws2
+wcnt_signal nnws3 in_signal nn3 out_phase_step nnws3
+wcnt_signal nnws3i in_signal nn3i out_phase_step nnws3i
+wcnt_signal nnws3ii in_signal nn3ii out_phase_step nnws3ii
+wcnt_signal nnws3iii in_signal nn3iii out_phase_step nnws3iii
+wcnt_signal nnws3iiii in_signal nn3iiii out_phase_step nnws3iiii
 
 timer
 tsw1
@@ -238,11 +238,7 @@ m2
     type m2
 m2
 
-wcnt_signal
-mm
-    in_signal m2 out_output
-    level 2
-mm
+wcnt_signal mm in_signal m2 out_output mm
 
 mix_chan
 ch1
@@ -314,4 +310,4 @@ wcnt_exit_module
     exit_bar    1
 wcnt_exit_module
 
-wcnt-1.30/jwmsynth
+wcnt-1.32/jwmsynth

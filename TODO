@@ -1,3 +1,17 @@
+May 2026
+
+    * commandline options -mh -v should be changed to display the
+      modules alphabetically
+
+    * investigate possiblity to specify parameter types for those
+      modules which process outputs from a list of other modules
+      (switcher, trig_switcher, combiner, etc)
+
+    * rename data object (or directive?) for renaming stuff
+      specifically groups, all the modules in the group, and their
+      connections.
+
+
 
 4th February 2008
 -- -- -- -- -- --

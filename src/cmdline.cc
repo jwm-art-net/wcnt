@@ -62,7 +62,7 @@ cmdline::cmd_opts_data cmdline::data[OPTS_COUNT] =
 { MOD_HELP,
     "--module-help",        "-mh",  "[module_type]",                0,0,4,
     "\tDisplay a list of all wcnt synth modules, or display a specific\n"
-    "\tmodule definition.",
+    "\tmodule definition. Add -v for more information on a definition.",
     &cmdline::module_help
 },
 { IN_HELP,
@@ -76,7 +76,7 @@ cmdline::cmd_opts_data cmdline::data[OPTS_COUNT] =
 { DOBJ_HELP,
     "--data-object-help",   "-dh",  "[data_object_type]",           0,0,4,
     "\tDisplay list of data object types or display a data object's\n"
-    "\tdefinition.",
+    "\tdefinition. Add -v for more information on a definition.",
     &cmdline::dobj_help
 },
 { SAMPLE_INFO,

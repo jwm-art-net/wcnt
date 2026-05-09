@@ -81,6 +81,7 @@ namespace input
  {
   public:
     static void instantiate() { static names inputnames; }
+    static iocat::TYPE get_off_category_for_input(TYPE);
 
   private:
     names() : getnames(LAST_TYPE, data) {}

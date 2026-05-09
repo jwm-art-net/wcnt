@@ -50,7 +50,11 @@ a1
     in_signal2 one  out_output
 a1
 
-wcnt_signal saws in_signal a1 out_output level 0.5 saws
+mono_amp
+saws
+    in_signal a1 out_output
+    gain 0.5
+saws
 
 clock
 clock3

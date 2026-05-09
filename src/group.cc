@@ -11,13 +11,13 @@
 
 group::group() :
  dobj::base(dobj::DEF_GROUP),
- is_duplicate(false), controlled(false), autogrouped_mods(0)
+ is_duplicate(false), controlled(false)
 {
 }
 
 group::group(CLONE) :
  dobj::base(dobj::DEF_GROUP),
- is_duplicate(true), controlled(false), autogrouped_mods(0)
+ is_duplicate(true), controlled(false)
 {
 }
 
@@ -146,9 +146,6 @@ dobj::base* group::duplicate_dobj(const char* new_group_name)
     synthmod::base* to_mod = duplist->goto_first();
 
     while(mod) {
-        if (wcnt::jwm.is_verbose())
-            std::cout << "\nchecking potential connections for " <<
-                                                to_mod->get_username();
         connectorlist::linkedlist* conlist =
            wcnt::get_connectlist() ->
                 duplicate_connections_for_module(mod, to_mod);
@@ -159,7 +156,7 @@ dobj::base* group::duplicate_dobj(const char* new_group_name)
             if (mod_groupname) {
                 if (strcmp(get_username(), mod_groupname) == 0) {
                     if (wcnt::jwm.is_verbose())
-                        std::cout << "\nreforming connection " <<
+                        std::cout << "\nReforming connection " <<
                             con->get_output_module_name() << " to ";
                     const char* const new_mod_name =
                         set_groupname(new_group_name,

@@ -1,4 +1,51 @@
 --------------------------------------------------------------
+date May 2026 - wcnt-1.32.2026
+
+NEW FEATURES
+    * Autogrouping - modules can now be added to a group in the same
+      step as their creation using three new directives autogroup_add,
+      autogroup_create, and autogroup_stop (or autogroup_stop can be
+      replaced simply with the group name alone).
+
+    * New examples showing autogrouping and how to use wcnt_triggers
+      and wcnt_signals as entry points to a file for easier connection.
+      For example connecting a sequencer in one file to a group of
+      modules creating a voice part in another file.
+
+CHANGES:
+    * Allow processing of files with compatible older headers.
+
+    * It was bugging me that wcnt_signal wasn't paired behaviourally
+      with wcnt_trigger - but now both are SM_EMPTY_RUN SM_PASSTHROUGH.
+      This means the level parameter is gone from wcnt_signal. I rarely
+      set it to anything other than 1.0 anyway, so effectively it was
+      pointless.
+
+    * Added a new internal-use-only input/output category to assist
+      with the infrequent cases where an input needs to be fed with 1.0
+      when turned off rather than 0.0. inputnames.h now defines a
+      function which will provide this new off catergory for only those
+      inputs that require it. The connectorlist then uses that value to
+      obtain the off output type for the connection.
+
+    * Made more features of the mono_amp optional (in_eg uses the new
+      off type to be fed with constant 1.0), to allow it to be used
+      simply with nothing other than in_signal and gain being set.
+      (making up for removing level from wcnt_signal). Did the same
+      to the stereo_amp, but noticed it uses level rather than gain.
+
+FIXES:
+    * wcnt_trigger modules required connection to their output to be
+      postponed until their input was set. This now happens, and allows
+      wcnt_triggers and wcnt_signals to be used as entry points.
+
+    * deprecated enum/math calculation warnings fixed for timemap::TPQN.
+
+Apologies for my messy git commits, usually with a million random
+whitespace and indentation changes interspersed throughout the actual
+important changes.
+
+--------------------------------------------------------------
 Friday 19th August 2022 - wcnt-1.30.2022
 
 FIXES:
@@ -108,7 +155,7 @@ CHANGES:
       synthmod::enum - for use by linkedlist requiring a
       function object, or by more general usage with,
       for example:
-      	synthmod::flag(SM_UNGROUPABLE)
+        synthmod::flag(SM_UNGROUPABLE)
 
     * #ifdef IO_DEBUG
       disabled checking of inputs being set for a module
@@ -215,7 +262,7 @@ CHANGES:
       nasty spikes occurr).
 
     * wave_phase (i'm not sure about this)
-      
+
 --------------------------------------------------------------
 Thursday 24th January 2008
 
@@ -274,7 +321,7 @@ NOTES:
     * regarding the conversion to a templatized linked_list
       class, this evening around 9pm was the first time the
       whole thing compiled. so far it will display module
-      definitions via the commandline module help option - 
+      definitions via the commandline module help option -
       but only if the module does not contain any dobj shit.
 
 --------------------------------------------------------------
@@ -361,7 +408,7 @@ CHANGES:
       have been grouped to the specified group name. creates
       and returns a new synthmodlist containing the grouped
       modules.
-      
+
       two new member methods have been added, validate_modules
       and init_modules, see jwmsynth below for why.
 
@@ -371,7 +418,7 @@ CHANGES:
       and initialise the modules it has removed from the main
       synthmodlist (see yesterdays notes regarding the planned
       'voice' module) without duplicating the code to do so..
-      
+
 --------------------------------------------------------------
 Saturday 12th January 2008
 
@@ -542,7 +589,7 @@ CHANGES:
       very first item in the list if the unlinked item was the
       first item in the list - otherwise current points to the
       item previous to the unlinked item.
-      
+
 --------------------------------------------------------------
 Saturday 29th December 2007
 
@@ -628,7 +675,7 @@ FIXES:
 
     * minor memory leaks fixed in duplicate_module methods of
       combiner, spreader, stereo_mixer, switcher, and
-      trig_switcher modules. 
+      trig_switcher modules.
 
     * fixed segfault occurring when EOF occurred unexpectedly
       in a circumstance (outside of skip_remarks or
@@ -943,7 +990,7 @@ ADDITIONS:
 
 CHANGES:
     * added extra check for module validity after the call to
-      synthmod::init() in jwmsynth. this because LADSPA 
+      synthmod::init() in jwmsynth. this because LADSPA
       modules instantiate the LADSPA plugin within their init
       method.
 

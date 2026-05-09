@@ -46,6 +46,20 @@ namespace wcnt
     return &dbjlist;
  }
 
+ bool header_is_compatible(const char* header)
+ {
+    static const char* compathdrs [] = {
+       wcnt::file_id,
+       "wcnt-1.30/jwmsynth",
+       0
+    };
+    for (int i = 0; compathdrs[i] != 0; i++) {
+       if (strcmp(header, compathdrs[i]) == 0)
+          return true;
+    }
+    return false;
+ }
+
  globals::globals() :
   modlist(0),
   wc_path(0),    wc_file(0),

@@ -11,6 +11,8 @@ wcnt-1.30/jwmsynth
 
 header header.wch
 
+constant one value 1.0 one
+
 //------------------------------------------------------------------------
 
 // the time_map's main job is to provides a clock source for the
@@ -26,8 +28,6 @@ time1
         tempo bpm 130 bar 0
     bpm_map
 time1
-
-constant one value 1.0 one
 
 //------------------------------------------------------------------------
 // End Of File _jwm 2005.

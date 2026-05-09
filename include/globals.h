@@ -29,8 +29,8 @@ class synthfilereader;
 
 namespace wcnt
 {
- const char* const version = "1.30.2022";
- const char* const file_id = "wcnt-1.30/jwmsynth";
+ const char* const version = "1.32.2026";
+ const char* const file_id = "wcnt-1.32/jwmsynth";
  const char* const email = "jwm.art.net@gmail.com";
  const samp_t default_samplerate          = 44100UL;
  const wcint_t min_bpm                    = 10;
@@ -45,6 +45,7 @@ namespace wcnt
  const wcint_t sr_div_bi                  = 8;
  const wcint_t max_connection_postponement_level = 10;
 
+
  const char* const ladspa_path_if_env_not_set =
     "/usr/local/lib/ladspa/:/usr/lib/ladspa/";
 
@@ -54,6 +55,8 @@ namespace wcnt
  connectorlist*     get_connectlist();
  fxsparamlist*      get_fxsparamlist();
  dobj::list*        get_dobjlist();
+
+ bool header_is_compatible(const char* header);
 
  class globals
  {

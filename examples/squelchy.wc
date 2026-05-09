@@ -162,21 +162,21 @@ sw2
     phase_cycles         1
 sw2
 
-wcnt_signal wv1 in_signal sw1 out_output level 1.0 wv1
-wcnt_signal wv2 in_signal sw2 out_output level 1.0 wv2
-
 spreader
 sp1
     signals
-        synthmod    name  wv1
-        synthmod    name  wv2
+        synthmod    name  sw1
+        synthmod    name  sw2
     signals
     in_modulation bwv out_output
     start_level 0.0
     end_level   1.0
 sp1
 
-wcnt_signal out in_signal sp1 out_output level 0.3333 out
+mono_amp
+out
+    in_signal sp1 out_output gain 0.3333
+out
 
 group
 grp1
@@ -190,8 +190,6 @@ grp1
         synthmod name uw1
         synthmod name xmx1
         synthmod name sw2
-        synthmod name wv1
-        synthmod name wv2
         synthmod name sp1
         synthmod name out
     modules
@@ -222,7 +220,7 @@ pe1
         edit grp1.clock1b   freq 37
         edit grp1.clock2    freq 25.0
         edit grp1.clockx    freq 3.7
-        edit grp1.out       level 0.7
+        edit grp1.out       gain 0.7
         // ---------
         edit grp2.clock1    freq 73
         edit grp2.clock1b   freq 7.3
@@ -243,7 +241,7 @@ pe1
         edit grp5.clock1b   freq 13.2
         edit grp5.clock2    freq 205
         edit grp5.clockx    freq 13.2
-        edit grp5.out       level 0.4
+        edit grp5.out       gain 0.4
         // ---------
         edit grp6.clock1    freq 170
         edit grp6.clock1b   freq 170
@@ -254,20 +252,20 @@ pe1
         edit grp7.clock1b   freq 1.51
         edit grp7.clock2    freq 1236.5
         edit grp7.clockx    freq 1.51
-        edit grp7.out       level 0.175
+        edit grp7.out       gain 0.175
         // ---------
         edit grp8.clock1    freq 131.3
         edit grp8.clock1b   freq 131.3
         edit grp8.clock2    freq 1290
         edit grp8.clockx    freq 1313
-        edit grp8.out       level 0.175
+        edit grp8.out       gain 0.175
 //---------------------- b ---------------
         // ---------
         edit grp1b.clock1    freq 93.456 //36
         edit grp1b.clock1b   freq 93.456 //36
         edit grp1b.clock2    freq 62.304 //24.0
         edit grp1b.clockx    freq 10.1244 //3.9
-        edit grp1b.out       level 0.7
+        edit grp1b.out       gain 0.7
         // ---------
         edit grp2b.clock1    freq 190.157 //73.25
         edit grp2b.clock1b   freq 18.24988 //7.03
@@ -288,7 +286,7 @@ pe1
         edit grp5b.clock1b   freq 34.5268 //13.3
         edit grp5b.clock2    freq 533.478 //205.5
         edit grp5b.clockx    freq 34.7864 //13.4
-        edit grp5b.out       level 0.4
+        edit grp5b.out       gain 0.4
         // ---------
         edit grp6b.clock1    freq 443.3370892 //170.777
         edit grp6b.clock1b   freq 443.3370892 //170.777
@@ -299,19 +297,19 @@ pe1
         edit grp7b.clock1b   freq 3.94592 //1.52
         edit grp7b.clock2    freq 3213.7182 //1237.95
         edit grp7b.clockx    freq 3.92645 //1.5125
-        edit grp7b.out       level 0.175
+        edit grp7b.out       gain 0.175
         // ---------
         edit grp8b.clock1    freq 341.6336 //131.6
         edit grp8b.clock1b   freq 341.6336 //131.6
         edit grp8b.clock2    freq 3349.0996 //1290.1
         edit grp8b.clockx    freq 3408.8076 //1313.1
-        edit grp8b.out       level 0.175
+        edit grp8b.out       gain 0.175
 
         edit grp1.clock1    freq 94.456 //36
         edit grp1.clock1b   freq 94.456 //36
         edit grp1.clock2    freq 61.304 //24.0
         edit grp1.clockx    freq 9.1244 //3.9
-        edit grp1.out       level 0.7
+        edit grp1.out       gain 0.7
         // ---------
         edit grp2.clock1    freq 191.157 //73.25
         edit grp2.clock1b   freq 17.24988 //7.03
@@ -332,7 +330,7 @@ pe1
         edit grp5.clock1b   freq 35.5268 //13.3
         edit grp5.clock2    freq 534.478 //205.5
         edit grp5.clockx    freq 33.7864 //13.4
-        edit grp5.out       level 0.4
+        edit grp5.out       gain 0.4
         // ---------
         edit grp6.clock1    freq 442.3370892 //170.777
         edit grp6.clock1b   freq 441.3370892 //170.777
@@ -343,13 +341,13 @@ pe1
         edit grp7.clock1b   freq 3.84592 //1.52
         edit grp7.clock2    freq 3212.7182 //1237.95
         edit grp7.clockx    freq 3.82645 //1.5125
-        edit grp7.out       level 0.175
+        edit grp7.out       gain 0.175
         // ---------
         edit grp8.clock1    freq 340.6336 //131.6
         edit grp8.clock1b   freq 340.6336 //131.6
         edit grp8.clock2    freq 3348.0996 //1290.1
         edit grp8.clockx    freq 3407.8076 //1313.1
-        edit grp8.out       level 0.175
+        edit grp8.out       gain 0.175
 
     editlist
 pe1

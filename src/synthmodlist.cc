@@ -7,9 +7,11 @@
 
 #include <iostream>
 
+
 namespace synthmod
 {
  nonezero* list::off = 0;
+
 
  list::list(DESTRUCTION d) :
   linkedlist(MULTIREF_OFF, d),

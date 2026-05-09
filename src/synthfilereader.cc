@@ -142,7 +142,9 @@ bool synthfilereader::read_and_create()
         }
     }
     const char* com = read_command();
-    while (strcmp(com, wcnt::file_id) != 0)
+
+    // end processing on footer identical to file_id read as header.
+    while (strcmp(com, synthheader->c_str()) != 0)
     {
         directive::TYPE dt;
         if (*com == ';') // quickets easiest test first
@@ -309,8 +311,8 @@ bool synthfilereader::autogroup_stop(const char* com)
                 // found, so update connector to refer to the grouped module
                 // (it's likely possible the ungrouped name does not exist!)
                 if (wcnt::jwm.is_verbose())
-                    cout << "updating pendin connection for output module "
-                         << outmod << " to " << gsmn << endl;
+                    cout << "updating pending autogroup connection for output "
+                            "module " << outmod << " to " << gsmn << endl;
                 c->set_output_module_name(gsmn);
             }
             delete [] gsmn;
@@ -865,10 +867,6 @@ bool synthfilereader::read_ui_dobjitems(dobj::base* dob, const char* parent)
         std::cout << "eeep reading... str: '" << str << "'" << std::endl;
         std::cout << "eeep comparing with parent: '" << (parent ? parent : "NULL") << "'" << std::endl;
         #endif
-        /*if (parent && strcmp(str, parent) == 0) {
-            command = new string(str);
-            break;
-        }*/
 
         #ifdef DEBUG
         std::cout << "comparing with dob: '" << dobjname << "'" << std::endl;
@@ -1201,7 +1199,7 @@ synthfilereader::open_file()
         filestatus = NOT_FOUND;
     else {
         *synthfile >> *synthheader;
-        if (*synthheader == wcnt::file_id)
+        if (wcnt::header_is_compatible(synthheader->c_str()))
             filestatus = FILE_OPEN;
         else
             filestatus = INVALID_HEADER;

@@ -59,10 +59,12 @@ clockb
     freq_mod1_size      4
 clockb
 
-wcnt_signal
+constant c value 1.6818181818181818 c
+
+multiplier
 cfrq
-    in_signal note out_frequency
-    level 1.6818181818181818
+    in_signal1 note out_frequency
+    in_signal2 c out_output
 cfrq
 
 osc_clock
@@ -90,10 +92,12 @@ wp1
     phase_cycles        0.5
 wp1
 
-wcnt_signal
+constant d value 2.72727272727272727 d
+
+multiplier
 dfrq
-    in_signal note out_frequency
-    level 2.72727272727272727
+    in_signal1 note out_frequency
+    in_signal2 d out_output
 dfrq
 
 osc_clock
@@ -145,7 +149,7 @@ clockf
     in_freq_mod1    lfowave2 out_output
     freq            110
     freq_mod1_size  2.0
-clockf 
+clockf
 
 glame_butterworth
 hpf1
@@ -165,7 +169,11 @@ lpf1
     stages          1
 lpf1
 
-wcnt_signal out in_signal lpf1 out_output level 0.8 out
+mono_amp
+out
+    in_signal lpf1 out_output
+    gain 0.8
+out
 
 peak_detector
 pk1

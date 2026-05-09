@@ -4,7 +4,7 @@ stereo_amp::stereo_amp(const char* uname) :
  synthmod::base(synthmod::STEREOAMP, uname, SM_HAS_STEREO_OUTPUT),
  in_left(0), in_right(0), in_amp_eg(0), in_amp_mod(0),
  out_left(0), out_right(0),
- left_level(0), right_level(0), amp_modsize(0), clip_level(0),
+ left_level(1.0), right_level(1.0), amp_modsize(0), clip_level(1.0),
  left(0), right(0)
 {
     register_output(output::OUT_LEFT);
@@ -16,13 +16,13 @@ void stereo_amp::register_ui()
     register_input(input::IN_LEFT);
     register_input(input::IN_RIGHT)->set_connect_as(input::IN_LEFT)
                                    ->set_flags(ui::UI_OPTIONAL);
-    register_input(input::IN_EG);
+    register_input(input::IN_EG)->set_flags(ui::UI_OPTIONAL);
     register_param(param::LEVEL)->set_flags(ui::UI_OPTION1);
     register_param(param::LEFT_LEVEL)->set_flags(ui::UI_OPTION2 | ui::UI_OPT_DUPLICATE);
     register_param(param::RIGHT_LEVEL)->set_flags(ui::UI_OPTION2 | ui::UI_OPT_DUPLICATE);
     register_input(input::IN_AMP_MOD)->set_flags(ui::UI_GROUP1);
     register_param(param::AMP_MODSIZE)->set_flags(ui::UI_GROUP1);
-    register_param(param::CLIP_LEVEL);
+    register_param(param::CLIP_LEVEL)->set_flags(ui::UI_OPTIONAL);
 }
 
 ui::moditem_list* stereo_amp::get_ui_items()

@@ -169,7 +169,9 @@ size_t cfmt(char* buf, size_t bufsz, const char* fmt, ...)
 spaces::~spaces()
 {
     if (data) {
+#ifdef DEBUG
         std::cout << "~spaces freeing data length: " << len << std::endl;
+#endif
         delete [] data;
         data = 0;
         len = 0;

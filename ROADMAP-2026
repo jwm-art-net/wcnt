@@ -454,6 +454,25 @@ group1
 
 group1
 
+--------------------------
+BUT USAGE PROBLEMS PREVAIL
+--------------------------
+
+This problem isn't strictly tied to autogrouping. It's more the
+inability to rename a group. Consider the entry points to a voice part.
+To save time the user might decide to put the entry point modules into
+their own file and group them. Then every voice part file that requires
+entry points simply reads that file. But, if then a further file
+utilizes multiple voice parts with each voice part file reading the
+entry points, it's going to stop dead when as soon as the attempt to
+create the second entry point group is encountered.
+
+This could be worked around by the ability to rename the group. Okay so
+the group data object is renamed, but then all the modules which are
+members of that group must be renamed. Then all the connections for
+those updated modules must also be updated too.
+
+This stuff added to TODO.
 
 ; .................................
 ; PREVIOUS THOUGHTS ON AUTOGROUPING - only for showing earlier thinking

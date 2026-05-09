@@ -40,7 +40,7 @@ riff1
 
 sequencer
 seq1
-    track 
+    track
         riff_node
             riff riff1  bar 0   transpose 0
             repeat 31 repeat_stripe 1
@@ -60,7 +60,7 @@ seq1
 // crappytvsample.wav is 5.24771 seconds & 231424 samples
 // 5512.5625 samples per 16th note
 // 82688.438 position of last drum noise
-                                                                             
+
 wavfilein
 drumloop
     filename    samples/crappytvsamplev2.wav
@@ -113,7 +113,7 @@ sampler2
         phase_step_amount          1.0
 sampler2
 
-riff 
+riff
 riff2
     quarter_value 1
     notelist
@@ -296,10 +296,8 @@ drumpos1i
     xfade_time  0.0
 drumpos1i
 
-
-constant t1 value 1.0 t1
-wcnt_signal wst0 in_signal t1 out_output level 0.0 wst0
-wcnt_signal wst1 in_signal t1 out_output level -2.0 wst1
+constant wst0 value 0.0  wst0
+constant wst1 value -2.0 wst1
 
 switcher
 drumtone
@@ -639,7 +637,7 @@ amp1
     in_amp_mod    off
     left_level    0.9
     right_level   0.9
-    amp_mod_size  0.0 
+    amp_mod_size  0.0
     clip_level    1.0
 amp1
 
@@ -651,7 +649,7 @@ amp2
     in_amp_mod   off
     left_level   0.4
     right_level  0.4
-    amp_mod_size 0.0 
+    amp_mod_size 0.0
     clip_level   1.0
 amp2
 

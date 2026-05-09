@@ -39,9 +39,7 @@ seq
     in_beats_per_bar  time1 out_beats_per_bar
     in_beat_value     time1 out_beat_value
     in_pos_step_size  time1 out_pos_step_size
-
     velocity_response_time  1.0
-
 seq
 
 adsr
@@ -120,7 +118,6 @@ sine
     in_phase_step     clock out_phase_step
 sine
 
-
 //----------------------------------------
 
 osc_clock
@@ -133,8 +130,6 @@ pclock
     tuning_semitones  0.0
     in_freq_mod1        penv2 out_output
     freq_mod1_size    2.0
-    in_freq_mod2        one out_output
-    freq_mod2_size    1.0
     portamento_time   15.0
     response_time     2.0
 pclock
@@ -164,8 +159,8 @@ psine
 
 adder
 sine_plus_1
-    in_signal1 psine out_output
-    in_signal2 one out_output
+    in_signal1 one out_output
+    in_signal2 psine out_output
 sine_plus_1
 
 osc_clock

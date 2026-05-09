@@ -2,6 +2,19 @@
 
 namespace input
 {
+
+ iocat::TYPE names::get_off_category_for_input(TYPE it)
+ {
+    switch(it)
+    {
+       case IN_EG:
+          return iocat::DOUBLE1;
+       default:
+          return data[chk(it)].cat;
+    }
+ }
+
+
  const struct names::gn_data names::data[LAST_TYPE] =
  {
     { ERR_TYPE,             "BAD_INPUT_TYPE",       iocat::ERR_TYPE,"INPUT ERROR"   },
@@ -31,7 +44,7 @@ namespace input
     { IN_H_MOD,             "in_time_mod",          iocat::DOUBLE,  "Output time (H) modulation." },
     { IN_TRIG1,             "in_trig1",             iocat::TRIG,    "1st trigger input." },
     { IN_TRIG2,             "in_trig2",             iocat::TRIG,    "2nd trigger input." },
-    { IN_BAR,               "in_bar",               iocat::WCINT_T,   "Input for bar number." },
+    { IN_BAR,               "in_bar",               iocat::WCINT_T, "Input for bar number." },
     { IN_BAR_TRIG,          "in_bar_trig",          iocat::TRIG,    "Input to trigger the start of a new bar." },
     { IN_POS_STEP_SIZE,     "in_pos_step_size",     iocat::DOUBLE,  "Input for stepping through position in bar per sample, TPQN dependent." },
     { IN_WRITE_TRIG,        "in_write_trig",        iocat::TRIG,    "Trigger to start writing." },
@@ -43,10 +56,10 @@ namespace input
     { IN_GAIN_MOD,          "in_gain_mod",          iocat::DOUBLE,  "Gain modulation input." },
     { IN_FEEDBACK,          "in_feedback",          iocat::DOUBLE,  "Feedback input (hint: has to originate from same module somewhere along the line.)" },
     { IN_FB_MOD,            "in_feedback_mod",      iocat::DOUBLE,  "Feedback modulation input." },
-    { IN_BEATS_PER_BAR,     "in_beats_per_bar",     iocat::WCINT_T,   "Beats per bar of current time signature." },
-    { IN_BEAT_VALUE,        "in_beat_value",        iocat::WCINT_T,   "Beat value of current time signature." },
+    { IN_BEATS_PER_BAR,     "in_beats_per_bar",     iocat::WCINT_T, "Beats per bar of current time signature." },
+    { IN_BEAT_VALUE,        "in_beat_value",        iocat::WCINT_T, "Beat value of current time signature." },
     { IN_MODULATION,        "in_modulation",        iocat::DOUBLE,  "Modulation source. "},
-    { IN_DETRANSPOSE,       "in_detranspose",       iocat::WCINT_T,   "Input providing value to say how much notes were transposed." },
+    { IN_DETRANSPOSE,       "in_detranspose",       iocat::WCINT_T, "Input providing value to say how much notes were transposed." },
     { IN_STATE,             "in_state",             iocat::STATE,   "ON or OFF." },
     { IN_PLAY_STATE,        "in_play_state",        iocat::STATE,   "ON or OFF." },
     { IN_RESTART_TRIG,      "in_restart_trig",      iocat::TRIG,    "Hard restart trigger." },
@@ -62,7 +75,7 @@ namespace input
     { IN_SIGNAL2,           "in_signal2",           iocat::DOUBLE,  "2nd signal." },
     { IN_INSP_DF,           "_in_float_",           iocat::DOUBLE,  "Floating point input."  },
     { IN_INSP_DF_TRIG,      "_in_float_trig_",      iocat::TRIG,    "Trigger to display value of floating point input." },
-    { IN_INSP_SI,           "_in_int_",             iocat::WCINT_T,   "Integer input." },
+    { IN_INSP_SI,           "_in_int_",             iocat::WCINT_T, "Integer input." },
     { IN_INSP_SI_TRIG,      "_in_int_trig_",        iocat::TRIG,    "Trigger to display value of integer input." },
     { IN_INSP_UL,           "_in_sample_",          iocat::SAMP_T,  "Long integer input." },
     { IN_INSP_UL_TRIG,      "_in_sample_trig_",     iocat::TRIG,    "Trigger to display value of long integer input." },

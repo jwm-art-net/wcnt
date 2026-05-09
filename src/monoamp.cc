@@ -6,7 +6,7 @@ mono_amp::mono_amp(const char* uname) :
  gain(this),
  in_signal(0), in_amp_eg(0),
  out_output(0),
- clip_level(0)
+ clip_level(1.0)
 {
     register_output(output::OUT_OUTPUT);
 }
@@ -14,8 +14,8 @@ mono_amp::mono_amp(const char* uname) :
 void mono_amp::register_ui()
 {
     gain::register_ui();
-    register_input(input::IN_EG);
-    register_param(param::CLIP_LEVEL);
+    register_input(input::IN_EG)->set_flags(ui::UI_OPTIONAL);;
+    register_param(param::CLIP_LEVEL)->set_flags(ui::UI_OPTIONAL);;
 }
 
 ui::moditem_list* mono_amp::get_ui_items()
@@ -41,7 +41,7 @@ const void* mono_amp::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case input::IN_EG:     return in_amp_eg = (double*)o;
+        case input::IN_EG: return in_amp_eg = (double*)o;
         default:
             return gain::set_in(it, o);
     }
@@ -51,7 +51,7 @@ const void* mono_amp::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case input::IN_EG:     return in_amp_eg;
+        case input::IN_EG: return in_amp_eg;
         default:
             return gain::get_in(it);
     }
@@ -73,7 +73,7 @@ const void* mono_amp::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case param::CLIP_LEVEL:    return &clip_level;
+        case param::CLIP_LEVEL: return &clip_level;
         default:
             return gain::get_param(pt);
     }

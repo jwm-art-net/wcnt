@@ -119,8 +119,9 @@ bool paramedit::mod_param_edit(synthmod::base* mod, const char* parname,
     items->match_edit(mod);
     ui::moditem* item = items->match_item(parname);
 
-    if (!item) {
-        dobjerr("Module %s does not have any parameter named %s.",
+    if (item->get_item_type() == ui::UI_ERROR) {
+        dobjerr("%s module %s does not have any parameter named %s.",
+                synthmod::names::get(mod->get_module_type()),
                                         mod->get_username(), parname);
         invalidate();
         return false;

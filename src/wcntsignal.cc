@@ -1,17 +1,18 @@
 #include "../include/wcntsignal.h"
 
 wcnt_signal::wcnt_signal(const char* uname) :
- synthmod::base(synthmod::WCNTSIGNAL, uname, SM_HAS_OUT_OUTPUT),
- in_signal(0), out_output(0.0), level(1.0)
+synthmod::base(synthmod::WCNTSIGNAL, uname, SM_HAS_OUT_OUTPUT |
+                                            SM_EMPTY_RUN |
+                                            SM_HAS_OUT_TRIG |
+                                            SM_PASSTHROUGH),
+ in_signal(0)
 {
     register_output(output::OUT_OUTPUT);
-    register_output(output::OUT_THROUGH);
 }
 
 void wcnt_signal::register_ui()
 {
     register_input(input::IN_SIGNAL);
-    register_param(param::LEVEL)->set_flags(ui::UI_OPTIONAL);
 }
 
 ui::moditem_list* wcnt_signal::get_ui_items()
@@ -28,8 +29,7 @@ const void* wcnt_signal::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case output::OUT_OUTPUT: return &out_output;
-        case output::OUT_THROUGH:return in_signal;
+        case output::OUT_OUTPUT: return in_signal;
         default: return 0;
     }
 }
@@ -52,24 +52,5 @@ const void* wcnt_signal::get_in(input::TYPE it) const
     }
 }
 
-bool wcnt_signal::set_param(param::TYPE pt, const void* data)
-{
-    switch(pt)
-    {
-        case param::LEVEL:
-            level = *(double*)data;
-            return true;
-        default:
-            return false;
-    }
-}
 
-const void* wcnt_signal::get_param(param::TYPE pt) const
-{
-    switch(pt)
-    {
-        case param::LEVEL: return &level;
-        default: return 0;
-    }
-}
 
