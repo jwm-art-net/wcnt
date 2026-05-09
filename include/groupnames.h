@@ -17,5 +17,4 @@ const char* get_groupname(const char* name);
 */
 char* set_groupname(const char* const groupname, const char* constname);
 
-
 #endif

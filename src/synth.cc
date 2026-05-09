@@ -158,7 +158,6 @@ namespace wcnt
         int samplesperbig = wcnt::jwm.samplerate();
         int divisions = 4;
         int samplespersmall = samplesperbig / divisions;
-        int counter = 0;
         int divcounter = 0;
 
         std::cout << "Running synth (one '" << bigcount
@@ -173,8 +172,7 @@ namespace wcnt
                 sm = runlist[++count];
             }
             sample++;
-            counter++;
-            if (counter == samplespersmall) {
+            if (sample == samplespersmall) {
                 divcounter++;
                 if (divcounter == divisions) {
                     std::cout << bigcount;
@@ -182,7 +180,7 @@ namespace wcnt
                 }
                 else std::cout << littlecount;
                 std::cout.flush();
-                counter = 0;
+                sample = 0;
             }
         }
     }

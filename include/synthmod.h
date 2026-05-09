@@ -46,8 +46,6 @@ namespace synthmod
         SM_PASSTHROUGH =        0x0080
     };
 
-//    friend modpart::base;
-
     base(TYPE, const char* const uname, int _flags_);
     virtual ~base();
 
@@ -135,7 +133,7 @@ namespace synthmod
     /*  if the module has inputs, parameters, or data objects, they
         should be registered within register_ui by using the register
         methods below, it should register each in turn.
-        register_ui itself will be called after object creat
+        register_ui itself will be called after object create
      */
     virtual void register_ui() = 0;
 
@@ -143,14 +141,14 @@ namespace synthmod
         the UI. These should be called only once when a call to
         do_registration() returns true.
      */
-    ui::modparam* register_param(param::TYPE);
-    ui::modparam* register_param(param::TYPE, const char* fixed_string);
-    ui::modinput* register_input(input::TYPE);
-    ui::moddobj* register_dobj(dobj::TYPE parent, dobj::TYPE sprog);
+    ui::modparam*   register_param(param::TYPE);
+    ui::modparam*   register_param(param::TYPE, const char* fixed_string);
+    ui::modinput*   register_input(input::TYPE);
+    ui::moddobj*    register_dobj(dobj::TYPE parent, dobj::TYPE sprog);
     ui::modcomment* register_comment(const char* literal);
 
     /*  Method for output registration, outputs must be registered per
-        instance.S
+        instance.
      */
     void register_output(output::TYPE);
 

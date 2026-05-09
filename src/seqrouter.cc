@@ -177,7 +177,7 @@ void seq_router::create_wcnt_notes()
         synthmod::base* sm = sml->create_module(synthmod::WCNT_NOTE,
                                                     ostr.str().c_str());
         sml->add_module(sm);
-        grp->group_module(sm);
+        grp->group_module(sm); // FIXME: no error checking here...
         if (verbose) {
             wcnt::jwm.set_verbose(true);
             std::cout << "\n      grouped as " << sm->get_username();

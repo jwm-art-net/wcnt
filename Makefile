@@ -24,7 +24,7 @@ DEFS=-O2 -fomit-frame-pointer -DWITH_LADSPA
 
 
 #DEFS=-ggdb -fno-inline -DWITH_LADSPA -DDEBUG -DSTR_DEBUG #-DSANITY_CHECKS
-DEFS=-ggdb -fno-inline -DWITH_LADSPA -DDEBUG
+#DEFS=-ggdb -fno-inline -DWITH_LADSPA -DDEBUG
 
 # nothing to be modified further:
 PROG=wcnt

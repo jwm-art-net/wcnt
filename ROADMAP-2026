@@ -428,6 +428,33 @@ behaviour have been shown to be uneeded because the situations which I
 was considering before thinking through it all will no longer arise due
 to defined behaviours, limitations and restrictions.
 
+/\/ \/ \/ \/ \/ \/ \/\
+\/\ FURTHER LIMITS /\/
+/\/ \/ \/ \/ \/ \/ \/\
+
+The following data objects will not be allowed to be defined within
+any autogroup section of a .wc file:
+    * synth_file_reader
+    * group
+    * copier, input/param_editor?
+
+________________________
+
+!!! ACTUALLY FINALLY !!!
+________________________
+
+Realized we don't actually need the autogroup_stop directive. If we
+instead scan for the group name that can be used instead as the trigger
+for stopping autogrouping. syntax then becomes, aided by indentation
+
+autogroup
+group1
+    clock  c1 freq 100 c1
+    wave w type sine in_phase_step c1 out_phase step w
+
+group1
+
+
 ; .................................
 ; PREVIOUS THOUGHTS ON AUTOGROUPING - only for showing earlier thinking
 ; '''''''''''''''''''''''''''''''''

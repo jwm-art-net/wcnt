@@ -11,13 +11,13 @@
 
 group::group() :
  dobj::base(dobj::DEF_GROUP),
- is_duplicate(false), controlled(false)
+ is_duplicate(false), controlled(false), autogrouped_mods(0)
 {
 }
 
 group::group(CLONE) :
  dobj::base(dobj::DEF_GROUP),
- is_duplicate(true), controlled(false)
+ is_duplicate(true), controlled(false), autogrouped_mods(0)
 {
 }
 
@@ -70,6 +70,17 @@ synthmod::base* group::group_module(synthmod::base* sm)
     return sm;
 }
 
+
+synthmod::base* group::autogroup_module(synthmod::base* sm)
+{
+    if (sm->flag(synthmod::base::SM_UNGROUPABLE))
+        return 0;
+
+    sm->set_group_name(get_username());
+    return sm;
+}
+
+
 dobj::base* group::add_dobj(dobj::base* dbj)
 {
     if (dbj->get_object_type() == dobj::DOBJ_SYNTHMOD) {
@@ -87,7 +98,7 @@ dobj::base* group::add_dobj(dobj::base* dbj)
         }
         // add the dobj synthmod wrapper to the dobjlist
         // so it gets deleted in the end.
-       wcnt::get_dobjlist()->add_dobj(dbj);
+        wcnt::get_dobjlist()->add_dobj(dbj);
         return dbj;
     }
 

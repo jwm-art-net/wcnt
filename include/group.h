@@ -2,6 +2,7 @@
 #define GROUP_H
 
 #include "dobj.h"
+#include "synthmodlist.h"
 
 /*
     group
@@ -95,13 +96,20 @@ class group : public dobj::base
     bool is_controlled()  const { return controlled; }
     void set_controlled() { controlled = true; }
 
-    synthmod::base* group_module(synthmod::base* s);
+    synthmod::base* group_module(synthmod::base*);
+    synthmod::base* autogroup_module(synthmod::base*);
 
     void cancel_duplicate_status() { is_duplicate = false; }
     // virtuals from dobj
     dobj::base* add_dobj(dobj::base*);
     errors::TYPE validate();
     dobj::base* duplicate_dobj(const char*);
+
+    // returns a list containing not only all modules added to group during
+    // autogrouping, but also, all modules in the group prior to when the
+    // current round of autogrouping began
+    /*synthmod::list::linkedlist* get_autogrouped_mods()
+            { return autogroup_mods; }*/
 
  private:
     enum CLONE { DUPLICATE = 1 };
@@ -112,6 +120,27 @@ class group : public dobj::base
 
     void register_ui();
     ui::dobjitem_list* get_ui_items();
+
+    // autogrouped modules go in here.
+    synthmod::list::linkedlist* autogrouped_mods;
+
+    // autogrouping groups modules as they're created, was fine in theory, but
+    // in terms of implementation it brings with it unforeseen problems!
+
+    // the problem being in terms of input/output connection - because I have
+    // demanded that autogrouping should be unobtrusive in how it is introduced
+    // or removed from a .wc file.
+
+    // meaning, if the user has created a bunch of modules and decides to
+    // then add a pair of open and closing autogroup directives around those
+    // modules, the user should not have to take care to update the names of
+    // the auto grouped modules whose outputs are specified for inputs within
+    // other auto grouped modules.
+
+    // however, beyond the scope of the autogroup directives - once autogrouping
+    // is stopped, any modules after that, whoses inputs were connected to the
+    // outputs of autogrouped modules - WILL NEED their output module names
+    // updating manually by the user.
 };
 
 

@@ -9,8 +9,7 @@
 
 namespace synthmod
 {
-
-    nonezero* list::off = 0;
+ nonezero* list::off = 0;
 
  list::list(DESTRUCTION d) :
   linkedlist(MULTIREF_OFF, d),
@@ -176,8 +175,7 @@ namespace synthmod
 
  void list::remove_empty_run_modules()
  {
-    emptyrunlist = move_to_new_list_of_by(this,
-                                            synthmod::base::SM_EMPTY_RUN);
+    emptyrunlist = move_to_new_list_of_by(this, synthmod::base::SM_EMPTY_RUN);
     if (wcnt::jwm.is_verbose()) {
         synthmod::base* sm = emptyrunlist->goto_first();
         while(sm) {

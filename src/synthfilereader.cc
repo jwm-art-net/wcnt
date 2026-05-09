@@ -1,6 +1,7 @@
 #include "../include/synthfilereader.h"
 
 #include "../include/connectorlist.h"
+#include "../include/directivenames.h"
 #include "../include/dobjlist.h"
 #include "../include/fxsparamlist.h"
 #include "../include/globals.h"
@@ -39,7 +40,7 @@ synthfilereader::synthfilereader() :
  modnamelist(0), dobjnamelist(0),
  wc_file_type(WC_INCLUDE_FILE),
  filestatus(NOT_FOUND), synthfile(0), buff(0), command(0),
- synthheader(0), inc_current(false), mod_lineage(false)
+ synthheader(0), inc_current(false), mod_lineage(false), autogroup(0)
 {
     synthfile = new ifstream;
     buff = new string;
@@ -55,7 +56,7 @@ synthfilereader::synthfilereader(WC_FILE_TYPE ft) :
  modnamelist(0), dobjnamelist(0),
  wc_file_type(ft),
  filestatus(NOT_FOUND), synthfile(0), buff(0), command(0),
- synthheader(0), inc_current(false), mod_lineage(false)
+ synthheader(0), inc_current(false), mod_lineage(false), autogroup(0)
 {
     synthfile = new ifstream;
     buff = new string;
@@ -143,16 +144,27 @@ bool synthfilereader::read_and_create()
     const char* com = read_command();
     while (strcmp(com, wcnt::file_id) != 0)
     {
-        // test for string being a data object name - there
-        // are fewer data objects than modules...
-        if (*com == ';')
+        directive::TYPE dt;
+        if (*com == ';') // quickets easiest test first
             print_msg();
+        // check against directives first as few of them
+        else if (autogroup && strcmp(autogroup->get_username(), com) == 0) {
+            if (!autogroup_stop(com))
+                return false;
+        }
+        else if ((dt = directive::names::type(com)) > directive::ERR_TYPE)
+        {
+            if (!process_directive(dt))
+                return false;
+        }
+        // next standalone data objects, fewer of them than modules
         else if (dobj::names::category(com) == dobj::CAT_DEF)
         {
             mod_lineage = false;
             if (!read_and_create_dobj(com))
                 return false;
         }
+        // anything else has to be a module type
         else {
             mod_lineage = true;
             if (!read_and_create_synthmod(com))
@@ -167,6 +179,155 @@ bool synthfilereader::read_and_create()
         cout << "end wcnt/jwmsynth: " << wc_filename << endl;
     return true;
 }
+
+
+bool synthfilereader::process_directive(directive::TYPE dt)
+{
+    switch(dt)
+    {
+        case directive::AUTOGROUP_ADD:
+            return autogroup_add(read_command());
+        case directive::AUTOGROUP_CREATE:
+            return autogroup_create(read_command());
+        case directive::AUTOGROUP_STOP:
+            return autogroup_stop(read_command());
+            break;
+        default:
+            break;
+    }
+    return false;
+}
+
+
+bool synthfilereader::autogroup_add(const char* com)
+{
+    if (wcnt::jwm.is_verbose()) {
+        cout << "-------------------------" << endl;
+        cout << "autogroup_add " << com << endl;
+        cout << "-------------------------" << endl;
+    }
+
+    if (autogroup) {
+        wc_err("Cannot use autogroup_add while within autogroup %s.",
+               autogroup->get_username());
+    }
+    // check there is a group already created with this name...
+    dobj::base* dbj = wcnt::get_dobjlist()->get_dobj_by_name(com);
+    if (!dbj) {
+        wc_err("Cannot use autogroup_add, no group named %s exists.", com);
+        return false;
+    }
+    // check named dobj is a group
+    if (dbj->get_object_type() != dobj::DEF_GROUP) {
+        wc_err("Data object %s specified for autogroup_add is of type %s, "
+               "not a group.", com, dobj::names::get(dbj->get_object_type()));
+    }
+
+    autogroup = static_cast<group*>(dbj);
+
+    return true;
+}
+
+bool synthfilereader::autogroup_create(const char* com)
+{
+    if (wcnt::jwm.is_verbose()) {
+        cout << "-------------------------" << endl;
+        cout << "autogroup_create " << com << endl;
+        cout << "-------------------------" << endl;
+    }
+
+    if (autogroup) {
+        wc_err("Cannot create new autogroup %s without stopping current"
+               " autogroup %s.", com, autogroup->get_username());
+        return false;
+    }
+    // check new group name is not already in use as a data object
+    dobj::base* dbj = wcnt::get_dobjlist()->get_dobj_by_name(com);
+    if (dbj) {
+        wc_err("Cannot create autogroup, the name %s is already in use "
+               "by a %s data object.", com,
+               dobj::names::get(dbj->get_object_type()));
+        return false;
+    }
+    // check new group name is not already in use as a module
+    synthmod::base* sm = wcnt::jwm.get_modlist()->get_synthmod_by_name(com);
+    if (sm) {
+        wc_err("Cannot create autogroup, the name %s is already in use "
+               "by a %s module.", com,
+               synthmod::names::get(sm->get_module_type()));
+        return false;
+    }
+
+    autogroup = new group;
+    autogroup->set_username(com);
+
+    if (!wcnt::get_dobjlist()->add_dobj(autogroup)) {
+        wc_err("Could not add data object %s to list.",
+               autogroup->get_username());
+        return false;
+    }
+
+    return true;
+}
+
+bool synthfilereader::autogroup_stop(const char* com)
+{
+    if (wcnt::jwm.is_verbose()) {
+        cout << "-------------------------" << endl;
+        cout << "autogroup_stop " << com << endl;
+        cout << "-------------------------" << endl;
+    }
+
+    if (strcmp(com, autogroup->get_username()) != 0) {
+        wc_err("Autogroup_stop directive %s mismatches active autogroup %s.",
+               com, autogroup->get_username());
+        return 0;
+    }
+    // update group_pending connections
+    connectorlist::linkedlist*
+            cl = wcnt::get_connectlist()->get_group_pending_connections();
+
+    if (!cl) {
+        wc_err("List failure for group %s pending connections.", com);
+        return 0;
+    }
+
+    synthmod::list* sml = wcnt::jwm.get_modlist();
+
+    connector* c = cl->goto_first();
+    while (c) {
+        const char* outmod = c->get_output_module_name();
+#ifdef DEBUG
+        cout << "checking pending connection using output module name: " << outmod << endl;
+#endif
+        if (!get_groupname(outmod)) {
+            char* gsmn = set_groupname(autogroup->get_username(), outmod);
+            synthmod::base* sm = sml->get_synthmod_by_name(gsmn);
+            if (sm) {
+                // precedence for outputs with matching module name is for
+                // within the autogroup group, and such a module has been
+                // found, so update connector to refer to the grouped module
+                // (it's likely possible the ungrouped name does not exist!)
+                if (wcnt::jwm.is_verbose())
+                    cout << "updating pendin connection for output module "
+                         << outmod << " to " << gsmn << endl;
+                c->set_output_module_name(gsmn);
+            }
+            delete [] gsmn;
+        }
+        c->clear_group_pending();
+        c = cl->goto_next();
+    }
+
+    delete cl;
+
+    // group data object destruction will be handled by dobjlist,
+    // but autogroup is finished for now so set the ptr null.
+    autogroup = 0;
+
+    return true;
+}
+
 
 void synthfilereader::print_msg()
 {
@@ -276,6 +437,9 @@ bool synthfilereader::include_mod(const char* name)
 {
     if (wc_file_type == WC_MAIN_FILE)
         return true;
+    // look through the list of named modules to see if name matches.
+    // if so, then mod_action will determine if the module is included
+    // (ie used) or excluded (ie discarded).
     modnamedobj* modname = modnamelist->goto_first();
     while(modname) {
         if (strcmp(modname->get_modname(), name) == 0)
@@ -291,6 +455,9 @@ bool synthfilereader::include_dbj(const char* name)
         return true;
     if (mod_lineage && inc_current)
         return true;
+    // look through the list of named data object to see if name matches.
+    // if so, then dobj_action will determine if the data object is included
+    // (ie used) or excluded (ie discarded).
     dobjnamedobj* dobjname = dobjnamelist->goto_first();
     while(dobjname) {
         if (strcmp(dobjname->get_dobjname(), name) == 0)
@@ -308,6 +475,7 @@ synthmod::base* synthfilereader::read_synthmodule(const char* com)
         wc_err("Unrecognised wcnt/jwmsynth module %s.", com);
         return 0;
     }
+
     string modname;
     *synthfile >> modname;
     if (strcmp(modname.c_str(), "off") == 0) {
@@ -320,6 +488,7 @@ synthmod::base* synthfilereader::read_synthmodule(const char* com)
                     dobj::names::get(dobj::LST_EDITS), com);
         return 0;
     }
+    // prevent the user from defining a module using a grouped name
     const char* const grpname = get_groupname(modname.c_str());
     if (grpname) {
         delete [] grpname;
@@ -329,6 +498,16 @@ synthmod::base* synthfilereader::read_synthmodule(const char* com)
                 synthmod::names::get(smt), modname.c_str());
         return 0;
     }
+
+    // we need to check that the grouped module name is not in use, but not
+    // set the module to have that grouped name until later...
+    string nongroupname = modname;
+
+    if (autogroup) {
+        modname = "." + modname;
+        modname = autogroup->get_username() + modname;
+    }
+
     if (include_mod(modname.c_str())) {
         if (wcnt::jwm.get_modlist()->get_synthmod_by_name(modname.c_str()))
         {
@@ -349,26 +528,50 @@ synthmod::base* synthfilereader::read_synthmodule(const char* com)
     }
     else
         inc_current = false;
+
     if (wcnt::jwm.is_verbose()) {
         cout << "================================" << endl;
         cout << "Creating synth module " << modname << endl;
     }
-    synthmod::base* sm = synthmod::list::create_module(smt,modname.c_str());
 
+    // use the non grouped name for module creation, because...
+    synthmod::base* sm = synthmod::list::create_module(smt, nongroupname.c_str());
+
+    // read_ui_moditems cannot handle autogrouping...
+    // ...because in the file itself the module has the non-grouped name
     if (!read_ui_moditems(sm)) {
         wc_err("In module %s, %s.", sm->get_username(), wc_err_msg);
         delete sm;
         return 0;
     }
 
+    // and pretend auto grouping doesn't exist here also!
     com = read_command();
-    if (strcmp(com, modname.c_str()) != 0) {
+    if (strcmp(com, nongroupname.c_str()) != 0) {
         wc_err("In module %s expected definition termination %s, "
-                "got %s instead.", sm->get_username(), sm->get_username(),
-                                                                    com);
+               "got %s instead.",
+               sm->get_username(), nongroupname.c_str(), com);
         delete sm;
         return 0;
     }
+
+    // uhuh, so we must create a module to determine if it's groupable or not
+    if (autogroup && sm->flag(synthmod::base::SM_UNGROUPABLE)) {
+        wc_err("The %s module %s within the autogroup section %s is not "
+        "a groupable module.", synthmod::names::get(smt), com,
+               autogroup->get_username());
+        delete sm;
+        return 0;
+    }
+
+    // okay now it's safe!
+    if (autogroup) {
+        if (!autogroup->autogroup_module(sm)) {
+            // FIXME: get error message from group and output it
+            return 0;
+        }
+    }
+
     return sm;
 }
 
@@ -417,9 +620,10 @@ dobj::base* synthfilereader::read_dobj(const char* com)
         return 0;
     }
     if (include_dbj(dobjname.c_str())) {
-        if (wcnt::get_dobjlist()->get_dobj_by_name(dobjname.c_str())) {
-            wc_err("A data object %s already uses the name %s.",
-                                                com, dobjname.c_str());
+        dobj::base* exists = wcnt::get_dobjlist()->get_dobj_by_name(dobjname.c_str());
+        if (exists) {
+            wc_err("A %s data object already uses the name %s.",
+                    dobj::names::get(exists->get_object_type()), dobjname.c_str());
             return 0;
         }
         synthmod::base* sm =
@@ -571,12 +775,6 @@ bool synthfilereader::read_ui_moditems(synthmod::base* sm)
         std::cout << "()()() read command gave \"" << str << "\" ()()()" << std::endl;
         #endif
 
-  /*      if (strcmp(str, sm->get_username()) == 0) {
-            maybe_end = true;
-            //command = new string(str);
-            //break;
-        }
-*/
         item = items->match_item(str);
 
         switch(item->get_item_type()) {
@@ -778,9 +976,10 @@ synthfilereader::read_ui_modinput(synthmod::base* sm, input::TYPE inptype)
     }
 
     if (include_mod(sm->get_username())) {
-        wcnt::get_connectlist()->add_connector(sm, inptype,
-                                                   outmod.c_str(),
-                                                   outtype);
+        connector* c = wcnt::get_connectlist()
+                        ->add_connector(sm, inptype, outmod.c_str(), outtype);
+        if (autogroup)
+            c->set_group_pending();
         if (wcnt::jwm.is_verbose()) {
             cout << "added connector " << inpname << "\t"
                  << outmod << "\t" << outname << endl;
@@ -1190,12 +1389,12 @@ const dobj::base* synthfilereader::add_dobj(dobj::base* dbj)
     dobj::TYPE dbjtype = dbj->get_object_type();
     switch(dbjtype)
     {
-    case dobj::SIN_DOBJNAME:
+    case dobj::SIN_DOBJNAME: // dobjnamedobj for data object to include/exclued
         retv = dobjnamelist->add_at_tail((dobjnamedobj*)dbj)->get_data();
         if (!retv)
             dobjerr("Could not add dobjname to %s.", get_username());
         break;
-    case dobj::SIN_MODNAME:
+    case dobj::SIN_MODNAME: // modnamedobj for module to include/exclued
         retv = modnamelist->add_at_tail((modnamedobj*)dbj)->get_data();
         if (!retv)
             dobjerr("Could not add modname to %s.", get_username());

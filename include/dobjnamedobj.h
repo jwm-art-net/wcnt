@@ -3,6 +3,14 @@
 
 #include "dobj.h"
 
+// A data object for holding the username of a named data object.
+// named data objects are standalone data objects of themselves, not
+// something contained by another data object or module.
+// ie riff, wavfilein, group
+
+// however some modules and data objects require a list of named data objects.
+// dobjnamedobj is used for passing a named data object to them by name only.
+
 class dobjnamedobj : public dobj::base
 {
 public:

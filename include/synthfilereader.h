@@ -3,13 +3,15 @@
 
 #include <sstream>
 
+#include "directivenames.h"
 #include "dobj.h"
+#include "dobjnamedobj.h"
+#include "dobjnames.h"
+#include "group.h"
+#include "inputnames.h"
 #include "linkedlist.h"
 #include "modnamedobj.h"
-#include "dobjnamedobj.h"
-#include "inputnames.h"
 #include "paramnames.h"
-#include "dobjnames.h"
 #include "ui_moditem.h"
 
 /*
@@ -83,7 +85,9 @@ private:
     char wc_err_msg[STRBUFLEN];
 
     bool inc_current;   // include current? - bodgish
-    bool mod_lineage;
+    bool mod_lineage;   // is data object part of a module?
+
+    group* autogroup;
 
 //--- private member methods ---//
 
@@ -91,6 +95,7 @@ private:
     bool        read_header(samp_t* samplerate);
     const char* read_command();
     void        print_msg();
+    bool              process_directive(directive::TYPE dt);
     synthmod::base*   read_synthmodule(const char* command);
     dobj::base*       read_dobj(const char* command);
 
@@ -109,7 +114,12 @@ private:
     bool read_ui_dobjitems(dobj::base*, const char* parent);
     bool read_ui_dobjparam(dobj::base*, param::TYPE, const char* parent);
     bool read_ui_dobjdobj(dobj::base*, dobj::TYPE, dobj::TYPE);
-/*
+
+    bool autogroup_add(const char*);
+    bool autogroup_create(const char*);
+    bool autogroup_stop(const char*);
+
+    /*
     // method to read sub-parts of standalone dobjs
     bool read_dobjs(dobj::base*);
 

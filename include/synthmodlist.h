@@ -1,5 +1,5 @@
-#ifndef SYNTHMODULELIST_H
-#define SYNTHMODULELIST_H
+#ifndef SYNTHMODLIST_H
+#define SYNTHMODLIST_H
 
 #include "synthmodnames.h"
 #include "linkedlist.h"
@@ -27,7 +27,7 @@ namespace synthmod
     bool delete_module(synthmod::base*);
 
     synthmod::base* get_synthmod_by_name(const char* const n) {
-		llitem* tmp = find_in_data(sneak_first(), name(n));
+        llitem* tmp = find_in_data(sneak_first(), name(n));
         return tmp ? tmp->get_data() : 0;
     }
 
@@ -67,6 +67,14 @@ namespace synthmod
     */
     linkedlist* remove_modules_of_group(const char* const n) {
         return move_to_new_list_of_by(this, groupname(n));
+    }
+
+    /* list_of_modules_of_group
+     *    //  adds a specific group's modules from this, into a new
+     *    //  synthmodlist.
+     */
+    linkedlist* list_of_modules_of_group(const char* const n) {
+        return new_list_of_by(this, groupname(n));
     }
 
     /* validate_modules & init_modules

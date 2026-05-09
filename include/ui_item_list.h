@@ -12,7 +12,6 @@
 
 // currently ui_item.h contains all the information about how this works.
 
-
 class connector;
 
 namespace wcnt {

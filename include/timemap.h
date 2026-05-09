@@ -22,7 +22,8 @@
 class timemap : public synthmod::base
 {
 public:
-    enum { TPQN = 6720 }; // Ticks Per Quarter Note
+    static const int TPQN = 6720; // Ticks Per Quarter Note
+
     timemap(const char*);
     ~timemap();
 

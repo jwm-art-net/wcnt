@@ -11,6 +11,7 @@
 #include "../include/conversions.h"
 #include "../include/ui_moditem.h"
 #include "../include/ui_dobjitem.h"
+#include "../include/directivenames.h"
 
 #ifdef DATA_STATS
 #include "../include/linkedlist.h"
@@ -61,6 +62,7 @@ namespace wcnt
     param::names::instantiate();
     synthmod::names::instantiate();
     dobj::names::instantiate();
+    directive::names::instantiate();
     errors::stock::instantiate();
     wave_tables::instantiate();
  }

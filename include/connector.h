@@ -33,6 +33,7 @@ class connector
 {
  public:
     enum CSTATE { FAIL = 1, POSTPONE, SUCCESS};
+    enum CONFLAGS { GROUP_PENDING = 0x01 };
 
     connector(synthmod::base* input_module,
               input::TYPE input_type,
@@ -48,7 +49,7 @@ class connector
     const char*     get_output_module_name() const  { return out_mod_uname;}
     output::TYPE    get_output_type() const { return out_type;}
 /*
-//  only do this once all synth modules have been created.
+//  only call connect once all synth modules have been created.
 //  otherwise modules may reference as yet uncreated modules.
 //  connect() would start crying if that happend.
 */
@@ -60,6 +61,11 @@ class connector
     bool operator()(input_module & inmod) { return (inmod(in_mod)); }
     bool operator()(name & outname) { return (outname(out_mod_uname)); }
 
+    bool is_group_pending() { return flags & GROUP_PENDING; }
+    void set_group_pending() { flags |= GROUP_PENDING; }
+    void clear_group_pending() { flags &=~ GROUP_PENDING; }
+    int operator()(CONFLAGS & _flags) const { return _flags & flags; }
+
     #ifdef DATA_STATS
     STATS_FUNCS
     #endif
@@ -70,6 +76,8 @@ class connector
     char*           out_mod_uname;
     output::TYPE    out_type;
     static char     err_msg[STRBUFLEN];
+
+    int flags;
 
     #ifdef DATA_STATS
     STATS_VARS

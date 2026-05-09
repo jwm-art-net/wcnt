@@ -84,10 +84,10 @@ find_in_data_or_last_less_than(ll_item<T>* from, T* data,
 }
 
 template <typename T, typename R>
-size_t
+wcint_t
 copy_by_to_list(linked_list<T>* dest, linked_list<T>* src, R needle)
 {
-    size_t count = 0;
+    wcint_t count = 0;
     ll_item<T>*
         tmp = find_in_data(src->sneak_first(), needle);
     while(tmp){

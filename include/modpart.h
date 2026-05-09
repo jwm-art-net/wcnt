@@ -8,9 +8,15 @@
 #include "types.h"
 #include "ui_moditem.h"
 
+/* Really wish that I documented my code more. From what I can tell...
+ * modpart = module part
+ * - a reusable part which can be common to two or more modules.
+ *
+ * there is only a single modpart at present gain - see gain.h
+ * and it is used by the delay, echo, and monoamp modules.
+*/
 
 namespace synthmod { class base; }
-
 
 namespace modpart
 {

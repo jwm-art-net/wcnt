@@ -1,3 +1,76 @@
+THIS THIS IS THE NEWS - May 2026 - THE NEWS IS THIS THIS
+--------------------------------------------------------
+  (Urrrrrgh, where am I? Wait... Wut!?!? It's 2026!?!?)
+
+New features for Wav Composer Not Toilet!
+
+Autogrouping
+------------
+Autogrouping introduces an easier way of adding modules to a group.
+Instead of the creation of modules and then grouping then as a two step
+process, autogrouping groups the modules as they're created.
+
+    * Simpler syntax than the group data object.
+    * Less work to keep track of modules which need to be added to
+      (or removed from) a group.
+    * Quicker and easier to introduce to or remove from a file
+    * Allows modules to be added to new and/or existing groups.
+
+The concept of directives was introduced to make this happen, with three
+for the autogrouping process: autogroup_create, autogroup_add, and
+autogroup_stop. The name of the group must be specified alongside each
+of them.
+
+    // example:
+    autogroup_create group1
+        constant one value 1.0 one
+    autogroup_stop group1
+
+    // something else here...
+
+    autogroup_add
+    group1
+        constant_freq cf value 440.0 cf
+
+        multiplier
+        m
+            in_signal1 one out_output
+            in_signal2 cf out_output
+        m
+    group1
+
+autogroup_stop is optional to explicilty specify, but must be triggered
+by using the name of the group instead, which makes the syntax of
+autogroup definitions in keeping with modules and data objects.
+
+See tests/autogroup.wc for a simple example, and examples/bounce2.wc
+for more a complex examples.
+
+
+Entry Points
+------------
+The concept of entry points arises from the wish to create a voice part
+in a file which can then be reused by multiple other files. Modules in
+the voice part connect to the entry point, and then when that voice part
+is used, the entry point is connected up appropriately.
+
+For multi-layered voice parts, this concept dramatically reduces the
+number of inputs requiring reconnection.
+
+It's not exactly a new feature, the pieces were in place - wcnt_trigger
+and wcnt_signal modules.
+
+However, due to the way these modules work (wcnt_trigger actually does
+nothing at all in the main processing loop), and the fact I had never
+thought to use them in this way, the way the logic of how connections
+are formed didn't accommodate all this, which created an error saying
+outputs didn't exist when they do!
+
+The fix was to postpone these connections until... they were ready.
+
+---jwm/9th May 2026
+
+
 THIS IS THE NEWS - February 2014 - THE NEWS IS THIS
 
      **** Wav Composer Not Toilet 1.30.0 ****
@@ -5,9 +78,9 @@ THIS IS THE NEWS - February 2014 - THE NEWS IS THIS
 
                    [:::>  <:::]      /---O
          .----------   wcnt   ---------- /
-             Wav Composer Not Toilet!     
-        / ----------  1.30.0  ----------' 
-        O---/     [::> ROTL <::]          
+             Wav Composer Not Toilet!
+        / ----------  1.30.0  ----------'
+        O---/     [::> ROTL <::]
 
      The runt of the litter for command line
        modular audio synthesis in Linux!

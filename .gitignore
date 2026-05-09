@@ -18,6 +18,9 @@
 # Kdevelop
 *.kdev4
 
+# backup files
+*~
+
 wcnt
 examples/*.wav
 tests/*.wav

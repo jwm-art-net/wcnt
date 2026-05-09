@@ -1,0 +1,291 @@
+wcnt-1.30/jwmsynth
+
+samplerate 44100
+
+constant one value 1.0 one
+
+timer
+t
+    timings
+        time seconds 0
+        time seconds 180
+    timings
+    time_is_relative off
+t
+
+clock
+lfo
+    freq 0.125
+lfo
+
+wave
+s
+    type sine
+    in_phase_step lfo out_phase_step
+s
+
+clock
+lfo2
+    freq 0.0625
+lfo2
+
+wave
+s2
+    type sine
+    in_phase_step lfo out_phase_step
+s2
+
+
+autogroup_create
+group1
+
+    constant_freq
+    cf
+        freq 110
+    cf
+
+    osc_clock
+    osc
+        in_note_on_trig t out_trig
+        in_note_slide_trig off
+        in_frequency cf out_frequency
+        octave_offset -1
+    osc
+
+    wave
+    w
+        in_phase_step     osc out_phase_step
+        type saw
+    w
+
+    clock
+    tik
+        freq 1.0
+        in_freq_mod1 s out_output
+        freq_mod1_size 1.5
+    tik
+
+group1
+
+
+// just testing the new autogroup_* directives
+
+
+autogroup_add
+group1
+
+    adsr
+    env1
+        envelope
+            section name attack
+                time 2 level 1
+            section name decay
+                time 20 level 0.6
+            section name release
+                time 195 level 0
+        envelope
+        in_note_on_trig tik out_phase_trig
+        sustain_state off
+        in_note_off_trig off
+    env1
+
+    multiplier
+    m
+        in_signal1 w out_output
+        in_signal2 env1 out_output
+    m
+
+group1
+
+
+copier g12 from group1 to group2 g12
+copier g13 from group1 to group3 g13
+copier g14 from group1 to group4 g14
+copier g15 from group1 to group5 g15
+copier g16 from group1 to group6 g16
+copier g17 from group1 to group7 g17
+copier g18 from group1 to group8 g18
+copier g19 from group1 to group9 g19
+copier g110 from group1 to group10 g110
+copier g111 from group1 to group11 g111
+
+param_editor
+pe
+    editlist
+        edit group2.tik freq 1.11
+        edit group2.cf freq 220
+        edit group3.tik freq 1.22
+        edit group3.cf freq 330
+        edit group4.tik freq 1.33
+        edit group4.cf freq 440
+        edit group5.tik freq 1.44
+        edit group5.cf freq 550
+        edit group6.tik freq 1.55
+        edit group6.cf freq 660
+        edit group7.tik freq 1.66
+        edit group7.cf freq 770
+        edit group8.tik freq 1.77
+        edit group8.cf freq 880
+        edit group9.tik freq 1.88
+        edit group9.cf freq 990
+        edit group10.tik freq 1.99
+        edit group10.cf freq 1000
+        edit group11.tik freq 2.0
+        edit group11.cf freq 1110
+    editlist
+pe
+
+input_editor
+ie
+    editlist
+        connect group1.osc in_freq_mod1 group2.m out_output
+        connect group2.osc in_freq_mod1 group3.m out_output
+        connect group3.osc in_freq_mod1 group4.m out_output
+        connect group4.osc in_freq_mod1 group5.m out_output
+        connect group5.osc in_freq_mod1 group6.m out_output
+        connect group6.osc in_freq_mod1 group7.m out_output
+        connect group7.osc in_freq_mod1 group8.m out_output
+        connect group8.osc in_freq_mod1 group9.m out_output
+        connect group9.osc in_freq_mod1 group10.m out_output
+        connect group10.osc in_freq_mod1 group11.m out_output
+        connect group11.osc in_freq_mod1 group1.m out_output
+    editlist
+ie
+
+param_editor
+pe1
+    editlist
+        edit group1.osc freq_mod1_size 2.5
+        edit group2.osc freq_mod1_size 2.5
+        edit group3.osc freq_mod1_size 2.5
+        edit group4.osc freq_mod1_size 2.5
+        edit group5.osc freq_mod1_size 2.5
+        edit group6.osc freq_mod1_size 2.5
+        edit group7.osc freq_mod1_size 2.5
+        edit group8.osc freq_mod1_size 2.5
+        edit group9.osc freq_mod1_size 2.5
+        edit group10.osc freq_mod1_size 2.5
+        edit group11.osc freq_mod1_size 2.5
+    editlist
+pe1
+
+combiner
+cl
+    signals
+        synthmod name group1.m
+        synthmod name group3.m
+        synthmod name group5.m
+        synthmod name group7.m
+        synthmod name group9.m
+        synthmod name group11.m
+    signals
+    mean_total on
+cl
+
+combiner
+cr
+    signals
+        synthmod name group2.m
+        synthmod name group4.m
+        synthmod name group6.m
+        synthmod name group8.m
+        synthmod name group10.m
+    signals
+    mean_total on
+cr
+
+constant_freq
+eqf
+    freq 80
+eqf
+
+single_band_parametric
+eql
+    in_signal       cl out_output
+    in_phase_step   eqf out_phase_step
+    gain_db 16.0
+    bandwidth 2
+eql
+
+single_band_parametric
+eqr
+    in_signal       cr out_output
+    in_phase_step   eqf out_phase_step
+    gain_db 16.0
+    bandwidth 2
+eqr
+
+clock
+lpclk
+    freq 2500
+    in_freq_mod1 s2 out_output
+    freq_mod1_size 3
+lpclk
+
+glame_butterworth
+lpl
+    filter_type lowpass
+    in_signal eql out_output
+    in_cutoff_phase_step lpclk out_phase_step
+    resonance 0.276
+lpl
+
+glame_butterworth
+lpr
+    filter_type lowpass
+    in_signal eqr out_output
+    in_cutoff_phase_step lpclk out_phase_step
+    resonance 0.276
+lpr
+
+echo
+el
+    in_signal lpl out_output
+    gain 0.75
+    delay_time 55
+    feedback 0.6
+    in_feedback er out_output
+    wet/dry 0.32
+el
+
+echo
+er
+    in_signal lpr out_output
+    gain 0.75
+    delay_time 165
+    feedback 0.6
+    in_feedback el out_output
+    wet/dry 0.32
+er
+
+caps_plate
+rev
+    in_left el out_output
+    in_right er out_output
+    bandwidth 0.79
+    tail 0.7367
+    damping 0.35
+    wet/dry 0.2
+rev
+
+
+wavfile_out
+wav1
+    in_left     rev out_left
+    in_right    rev out_right
+    in_bar t    out_count
+    snapshot_mode off
+    data_format float32
+    filename    bounce2.wav
+    start_bar   0
+    end_bar     1
+wav1
+
+
+wcnt_exit
+x
+    in_bar      t out_count
+    exit_bar    1
+x
+
+wcnt-1.30/jwmsynth

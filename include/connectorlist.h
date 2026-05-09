@@ -2,6 +2,7 @@
 #define CONNECTORLIST_H
 
 #include "linkedlist.h"
+#include "listwork.h"
 #include "connector.h"
 
 /*
@@ -54,6 +55,10 @@ public:
 
     void reconnect_output_module_by_name(const char*from, const char*to);
 
+    linkedlist*
+    get_group_pending_connections()
+        {   return new_list_of_by(this, connector::GROUP_PENDING);  }
+
     bool make_connections();
 
     #ifdef UNUSED
@@ -65,7 +70,7 @@ public:
     duplicate_connections_for_group(const char* from, const char* to);
 
     // wcnt_signal uses output = input * level.
-    // when level is 1.0, output == input, and the run method
+    // when level is 1.0, &output == &input, and the run method
     // is removed, and the output is redirected to become the input.
     // unfortunately, this is done via synthmod::init, which is called
     // after make_connections, so, remake_connections is called during
