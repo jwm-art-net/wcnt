@@ -1,8 +1,5 @@
 May 2026
 
-    * commandline options -mh -v should be changed to display the
-      modules alphabetically
-
     * investigate possiblity to specify parameter types for those
       modules which process outputs from a list of other modules
       (switcher, trig_switcher, combiner, etc)

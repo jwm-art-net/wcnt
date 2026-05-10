@@ -34,6 +34,10 @@ CHANGES:
       (making up for removing level from wcnt_signal). Did the same
       to the stereo_amp, but noticed it uses level rather than gain.
 
+    * Updated command line option to display list of modules and their
+      descriptions alphabetically, as well as layout adjustment for
+      improved readability.
+
 FIXES:
     * wcnt_trigger modules required connection to their output to be
       postponed until their input was set. This now happens, and allows

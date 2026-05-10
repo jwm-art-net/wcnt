@@ -16,10 +16,12 @@
 #include "../include/ui_dobjitem.h"
 #include "../include/ui_moditem.h"
 
+#include <algorithm>
 #include <cstring>
 #include <cstdlib>
 #include <sstream>
 #include <iostream>
+
 
 
 cmdline::cmdline(int const argc, const char** const argv) :
@@ -33,6 +35,10 @@ cmdline::~cmdline()
 
 cmdline::cmd_opts_data cmdline::data[OPTS_COUNT] =
 {
+//  type,
+//  olong,               oshort,    odisplay,               par1,par2,max_args,
+//  helptext,
+//  helpfunc
 { WC_FILE,
     0,                      0,      "<filename.wc>",                0,0,2,
     "\tGenerate and run jwmsynth specified in filename.wc.",
@@ -41,7 +47,8 @@ cmdline::cmd_opts_data cmdline::data[OPTS_COUNT] =
 { VERBOSE,
     "--verbose",            "-v",   "<filename.wc>",                0,0,6,
     "\tDisplay lots of information as modules and data objects are\n"
-    "\tcreated.",
+    "\tcreated. Can also be combined with module help for a more\n"
+    "\tdescriptive help about the parts of a module.",
     0
 },
 { DONT_RUN,
@@ -295,23 +302,31 @@ void cmdline::module_help_list_all()
             msg += opts[data[MH_IX].par1];
         msg += "\n";
     }
-    msg += "\nAvailable module types are:\n";
-
+    msg += "\nAvailable module types are:\n\n";
+    int modcount = synthmod::LAST_TYPE - 2;
     if (wcnt::jwm.is_verbose()) {
+        // sort list of modnames alphabetically...
+        const char** modnames = new const char*[modcount];
         for (int i = synthmod::ERR_TYPE + 2; i < synthmod::LAST_TYPE; ++i) {
             synthmod::TYPE smt = (synthmod::TYPE)i;
-            std::string mhv = synthmod::names::get(smt);
+            modnames[i - 2] = synthmod::names::get(smt);
+        }
+        std::sort(modnames, modnames + modcount, std::less<std::string>());
+
+        for (int i = 0; i < modcount; i++) {
+            synthmod::TYPE smt = synthmod::names::type(modnames[i]);
+            std::string mhv = modnames[i];
             const char* descr = synthmod::names::descr(smt);
-            mhv += " - ";
-            std::string* d = justify(descr, 60, ' ', "\n    ",
-                                                        mhv.c_str());
+            msg += modnames[i];
+            msg += "\n";
+            std::string* d = justify(descr, 60, ' ', "\n    ", "  - ");
             msg += *d;
             msg += "\n\n";
             delete d;
         }
+        delete []  modnames;
     }
     else {
-        int modcount = synthmod::LAST_TYPE - 2;
         const char** modnames = new const char*[modcount];
         for (int i = synthmod::ERR_TYPE + 2;
                  i < synthmod::LAST_TYPE; i++) {
@@ -716,6 +731,7 @@ void cmdline::dobj_help()
     dobj::TYPE dt = dobj::names::type(dname.c_str());
 
     dobj::base* dob = wcnt::get_dobjlist()->create_dobj(dt);
+    wcnt::get_dobjlist()->add_dobj(dob);
     if (!dob) {
         // incorrect dobj name or no name specified
         // (dt will be dobj::ERR_TYPE).
@@ -1076,15 +1092,17 @@ void cmdline::help()
 void cmdline::about()
 {
     msg =
-        "\nwcnt - Wav Composer Not Toilet"
-        "\n  Developed by James W. Morris"
-        "\n  GNU GPL'ed Free Libre Open Source Software."
-        "\n  wcnt on the web:"
+        "\nDeveloped by James W. Morris"
+        "\n    GNU GPL'ed Free Libre Open Source Software.\n"
+        "\nwcnt on the web:\n"
         "\n    http://wcnt.sourceforge.net"
-        "\n    https://github.com/jwm-art-net/wcnt"
-        "\n  Send bug reports, patches, requests, suggestions,"
-        "\n  or if you wish to share your .wc creations to:"
-        "\n    ";
+        "\n    https://github.com/jwm-art-net/wcnt\n"
+        "\nBug reports, patches, requests, suggestions can be made on"
+        "\ngithub or by email if you prefer: ";
     msg += wcnt::email;
+    msg +=
+        "\n\nFeel free to share your .wc creations with me by either"
+        "\nby email or social media:\n"
+        "\n    instagram: @jwm_art_net        youtube: @jwmartnet\n";
 }
 
