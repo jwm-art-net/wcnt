@@ -8,6 +8,9 @@ May 2026
       specifically groups, all the modules in the group, and their
       connections.
 
+    * decide how to handle a copier data object embedded within
+      an autogroup section - if copying a module - it may need to
+      look for the auto-grouped name of the module
 
 
 4th February 2008

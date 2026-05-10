@@ -565,15 +565,17 @@ synthmod::base* synthfilereader::read_synthmodule(const char* com)
         delete sm;
         return 0;
     }
-
     // okay now it's safe!
     if (autogroup) {
-        if (!autogroup->autogroup_module(sm)) {
-            // FIXME: get error message from group and output it
+        synthmod::base* ret = autogroup->autogroup_module(sm);
+        // SM_UNGROUPABLE only reason this autogroup_module would fail,
+        // and that was already caught earlier, above.
+        if (!ret) {
+            wc_err("Undefined error autogrouping module %s",
+                   sm->get_username());
             return 0;
         }
     }
-
     return sm;
 }
 

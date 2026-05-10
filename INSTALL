@@ -18,16 +18,16 @@ default location wcnt searches for plugins.
 (only a very small percentage of these plugins can be used by wcnt).
 
 --------------------------------------------------
-libsndfile:   http://www.mega-nerd.com/libsndfile/
-SWH plugins:  http://www.plugin.org.uk
-CAPS plugins: http://quitte.de/dsp/caps.html
+libsndfile:   https://www.mega-nerd.com/libsndfile/
+SWH plugins:  https://github.com/swh/ladspa
+CAPS plugins: https://quitte.de/dsp/caps.html
 --------------------------------------------------
 
 
 ************************************************************************
 By default, wcnt is compiled with compiler optimizations and without
-debuggin information.  Look in the top of the Makefile if you dislike this,
-it will tell you what you must do to change it - it's very simple.
+debuggin information.  Look in the top of the Makefile if you dislike
+this, it will tell you what you must do to change it - it's very simple.
 ************************************************************************
 
 
@@ -50,8 +50,8 @@ You cannot type make install to install wcnt anymore. You could try
 
 su -c "install wcnt /usr/local/bin"
 
-in the main wcnt directory.  Change the path if you do not want to install
-there.  To uninstall, become super user, and type:
+in the main wcnt directory.  Change the path if you do not want to
+install there.  To uninstall, become super user, and type:
 
 rm /usr/local/bin/wcnt
 
@@ -60,23 +60,7 @@ Finally, you can also:
 make clean
 make clean_examples
 
-Please do email me at jwm.art.net@gmail.com if you have difficulties getting
-wcnt to compile. If it crashes then please send me the .wc file(s) which
-it happened to be processing at the time of the crash.
-
-hahahahaha: I have tested wcnt within Debian Etch on an AMD Athlon XP 3000, with
-hahahahaha: 2GB of dodgy SDRAM :(
-
-It amused me to read that in 2022. Currently building within Arch Linux on a
-12th Gen Intel i5-12600KF with 32gb RAM.
-
-hahahahaha: As a side note, make examples on my machine takes just under two and a half
-hahahahaha: minutes to generate 19 minutes worth of audio.
-
-In 2022 it took less than 16s to produce 28 minutes worth of audio.
-
-
-hahahahaha: --jwm2008
-
---jwm 2022
-
+Please do email me at jwm.art.net@gmail.com or submit issues to github
+https://github.com/jwm-art-net/wcnt if you have difficulties building
+wcnt. If it crashes then please submit the .wc file(s) which wcnt was
+processing at the time of the crash.

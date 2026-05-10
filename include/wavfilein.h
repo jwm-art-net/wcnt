@@ -12,7 +12,7 @@
 //  instead of:(old style)
 //  wavfilein samples/percuss/alsshat01.wav
 //  sampler::wavfilein samples/percuss/alsshat01.wav
-//  
+//
 //  use this:  (new style)
 //  wavfilein
 //  hat
@@ -31,9 +31,6 @@ class wavfilein : public dobj::base
     void set_root_note(const char * rn);
     WAV_STATUS get_status() const{ return status; }
     WAV_CHANNELS get_channel_status() const;
-    #ifdef UNUSED // usage of libsamplerate makes bitrate transparent
-    WAV_BITRATE get_bitrate() const; /* FIXME: used?? */
-    #endif
     samp_t get_length() const;
     samp_t get_sample_rate() const;
     void read_wav_at(void* buf, samp_t smp);

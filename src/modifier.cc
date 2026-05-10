@@ -1,5 +1,7 @@
 #include "../include/modifier.h"
 
+#include <math.h>
+
 modifier::modifier(const char* uname) :
  synthmod::base(synthmod::MODIFIER, uname, SM_HAS_OUT_OUTPUT),
  in_signal1(0), in_signal2(0), in_bias(0),
@@ -16,7 +18,6 @@ void modifier::register_ui()
     register_input(input::IN_SIGNAL2);
     register_input(input::IN_BIAS);
     register_param(param::MODIFIER_TYPE, "m1|m2")->set_flags(ui::UI_OPTIONAL);
-//  register_param(param::BIAS);
 }
 
 ui::moditem_list* modifier::get_ui_items()
@@ -70,11 +71,6 @@ bool modifier::set_param(param::TYPE pt, const void* data)
         case param::MODIFIER_TYPE:
             type = (TYPE)(*(int*)data);
             return true;
-/* FIXME: wtf is going on here then????
-        case param::BIAS:
-            bias = *(double*)data;
-            return true;
-*/
         default:
             return false;
     }
@@ -86,26 +82,9 @@ const void* modifier::get_param(param::TYPE pt) const
     {
         case param::FUNC:          return &func;
         case param::MODIFIER_TYPE: return &type;
-//        case param::BIAS:          return &bias;
         default: return 0;
     }
 }
-
-errors::TYPE modifier::validate()
-{
-/*
-    if (!validate_param(param::BIAS,
-                                        errors::RANGE_0_1))
-    {
-        *err_msg = param::names::get(param::BIAS);
-        invalidate();
-        return errors::RANGE_0_1;
-    }
-*/
-    return errors::NO_ERROR;
-}
-
-#include <math.h>
 
 void modifier::run()
 {

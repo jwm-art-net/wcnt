@@ -1,0 +1,24 @@
+wcnt-1.30/jwmsynth
+
+samplerate 44100
+
+; autogroup.wc
+;   testing autogroup feature
+
+
+autogroup_create
+group1
+
+    constant cv value 1.25 cv
+
+    copier cc from cv to cv-copy cc
+
+group1
+
+wcnt_exit
+x
+    in_bar      off
+    exit_bar    0
+x
+
+wcnt-1.30/jwmsynth

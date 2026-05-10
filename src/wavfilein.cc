@@ -43,19 +43,6 @@ WAV_CHANNELS wavfilein::get_channel_status() const
     return WAV_CH_UNKNOWN;
 }
 
-#ifdef UNUSED
-WAV_BITRATE wavfilein::get_bitrate() const
-{
-    /*
-    if (header->GetResolution() == 8)
-        return WAV_BIT_8;
-    else if (header->GetResolution() == 16)
-        return WAV_BIT_16;
-    else
-    */
-    return WAV_BIT_OTHER;
-}
-#endif
 
 samp_t wavfilein::get_length() const
 {

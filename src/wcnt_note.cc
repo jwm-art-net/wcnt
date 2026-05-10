@@ -1,7 +1,7 @@
 #include "../include/wcnt_note.h"
 
 wcnt_note::wcnt_note(const char* uname) :
- synthmod::base(synthmod::WCNT_NOTE, uname, SM_EMPTY_RUN),
+ synthmod::base(synthmod::WCNT_NOTE, uname, SM_EMPTY_RUN | SM_PASSTHROUGH),
  io_note_on_trig(0), io_note_slide_trig(0), io_note_off_trig(0),
  io_freq(0), io_velocity(0)
 {

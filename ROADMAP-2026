@@ -122,6 +122,16 @@ the new tail).
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
+I made all the changes to get wcnt_signal and wcnt_trigger modules ready
+for using as entry points, created the connection postponement code to
+handle their inputs passed as outputs (SM_PASSTHROUGH), then implemeted
+autogrouping - an even bigger kettle of fish - now, when getting ready
+to make a finished release, I discover, wcnt_note module - the perfect
+entry point module for sequencer to voice part already exists and did
+want I wanted all along. It just amuses me how much of what has been
+done in the past I've forgotten all about and/or overlooked.
+
+
 =====================
 2) Automatic grouping
 =====================

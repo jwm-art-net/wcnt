@@ -1,7 +1,29 @@
 wcnt - Wav Composer Not Toilet
 
-wcnt is a text based modular audio system intended for the creation of WAV audio files. Consequentally wcnt does not respond to, or operate in, real time. wcnt is not intended as a professional quality audio tool, it is made by a hobbyist developer in their spare time.
+wcnt is a text based modular audio system intended for the creation of
+WAV audio files. Consequentally wcnt does not respond to, or operate in,
+real time. wcnt is not intended as a professional quality audio tool,
+it is made by a hobbyist developer in their spare time.
 
-While wcnt is text based, it is a modular audio system and not an audio programming language like chuck or csound. But with over 80 modules providing complex functionality such as sequencing, sampling, and dynamic routing, DSP modules (via LADSPA), down to simple modules to provide constant signals, wcnt is more than capable of providing unique sounds.
+While wcnt is text based, it is a modular audio system and not an audio
+programming language like chuck or csound. But with over 80 modules
+providing complex functionality such as sequencing, sampling, and
+dynamic routing, DSP modules (via LADSPA), down to simple modules to
+provide constant signals, wcnt is more than capable of providing unique
+sounds.
 
+wcnt is available at https://github.com/jwm-art-net/wcnt
+
+wcnt is unsophisticated in its general handling of audio, it's limited
+by a lack of good maths skill on my part. Waveforms are drawn, their
+speed is modulated, they are triggered, it's more mechanically minded
+than mathematically minded. I'm not mathematically minded. There's
+no mathematical transforms or analysis.
+
+However a handful of LADSPA plugins provide the features my maths skills
+prevent me from tackling; filters, reverb, eq, pitch shifting, limiting
+and compression.
+
+Please see the INSTALL file for build instructions, and dependencies,
+in particular you will want specific LADSPA plugin packages installed.
 
