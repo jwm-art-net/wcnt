@@ -6,10 +6,10 @@
 #include "listwork.h"
 #include "namefuncobj.h"
 #include "boolfuncobj.h"
-#include "constmod.h"
+#include "synthmod.h"
 
 class nonezero;
-#include "synthmod.h"
+class group;
 
 namespace synthmod
 {
@@ -27,10 +27,28 @@ namespace synthmod
 
     bool delete_module(synthmod::base*);
 
-    synthmod::base* get_synthmod_by_name(const char* const n) {
-        llitem* tmp = find_in_data(sneak_first(), name(n));
-        return tmp ? tmp->get_data() : 0;
-    }
+
+    bool    set_autogroup(group*);
+    group*  get_autogroup() { return autogroup; }
+    void    clear_autogroup() { autogroup = 0; }
+
+    // get_synthmod_by_name
+    // matches a module with identical name
+    synthmod::base* get_synthmod_by_name(const char* const modname);
+
+    // if autogrouping, get synthmod by autogroup groupp modname,
+    // if not found or not autogrouping, returns 0.
+    synthmod::base* autogroup_only_get_synthmod_by_name(const char* const modname,
+                                                            char** grpmodname);
+    // if autogrouping get synthmod by autogroup group modname,
+    // if not autogrouping get synthmod by name. return 0 if not found.
+    synthmod::base* autogroup_or_not_get_synthmod_by_name(const char* const modname,
+                                                          char** grpmodname);
+
+    // if autogrouping get synthmod by autogroup group modname,
+    // if not found, regardless of autogrouping, get synthmod by name
+    synthmod::base* autogroup_or_any_get_synthmod_by_name(const char* const modname,
+                                                             char** grpmodname);
 
     synthmod::base* get_first_of_type(synthmod::TYPE smt) {
         result = find_in_data(sneak_first(), search = smt);
@@ -88,6 +106,7 @@ namespace synthmod
     linkedlist*         emptyrunlist;
     synthmod::TYPE      search;
     llitem*             result;
+    group*              autogroup;
     static nonezero*    off;
  };
 }; // namespace synthmod

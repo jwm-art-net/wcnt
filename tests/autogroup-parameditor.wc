@@ -1,0 +1,46 @@
+wcnt-1.30/jwmsynth
+
+samplerate 44100
+
+; autogroup.wc
+;   testing a param_editor within an autogroup
+
+
+autogroup_create
+group1
+
+    constant nn value 100.0 nn
+    constant mm value 330.0 mm
+
+    param_editor
+    pe
+        editlist
+            edit mm
+                value 1000
+        editlist
+    pe
+
+    wcnt_signal
+    w
+        in_signal mm out_output
+    w
+
+    input_editor
+    ie
+        editlist
+            connect w
+                in_signal nn out_output
+        editlist
+    ie
+
+group1
+
+
+wcnt_exit
+x
+    in_bar      off
+    exit_bar    0
+x
+
+
+wcnt-1.30/jwmsynth

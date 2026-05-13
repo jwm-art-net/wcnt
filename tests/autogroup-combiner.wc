@@ -1,0 +1,57 @@
+wcnt-1.30/jwmsynth
+
+samplerate 44100
+
+; autogroup.wc
+;   testing a param_editor within an autogroup
+
+timer
+t
+    timings
+        time seconds 0
+        time seconds 1
+    timings
+    time_is_relative off
+t
+
+autogroup_create
+group1
+
+    clock c freq 5 c
+
+    constant aa value 100.0 aa
+    constant bb value 200.0 bb
+    constant cc value 300.0 cc
+    constant dd value 400.0 dd
+
+    combiner
+    mmm
+        signals
+            synthmod name aa
+            synthmod name bb
+            synthmod name cc
+            synthmod name dd
+        signals
+        mean_total off
+    mmm
+
+    inspector
+    calls
+        _in_float_      mmm out_output
+        _float_msg_     does_it_work?
+        _in_float_trig_ c out_phase_trig
+    calls
+
+group1
+
+
+
+
+wcnt_exit
+x
+    in_bar      t out_index
+    exit_bar    1
+x
+
+
+wcnt-1.30/jwmsynth

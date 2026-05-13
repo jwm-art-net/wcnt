@@ -32,7 +32,6 @@ public:
 private:
     double out_output;
     STATUS meantotal;
-    double total;
     double const** sigs;
     int sigcount;
     void register_ui();

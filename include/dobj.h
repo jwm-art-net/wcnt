@@ -19,6 +19,12 @@ namespace dobj
  class base
  {
  public:
+    enum DO_FLAGS
+    {
+      DO_DEFAULT,
+      DO_VALID    = 0x0001,
+      DO_EDITABLE = 0x0002
+    };
     base(TYPE);
     virtual ~base();
 

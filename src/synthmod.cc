@@ -102,7 +102,7 @@ namespace synthmod
  base* base::duplicate_module(const char* uname, DUP_IO iocon)
  {
     if (flag(SM_UNDUPLICABLE)) {
-        sm_err("Duplication of module %s is forbidden due to type %s.",
+        sm_err("Duplication of module %s is forbidden for type %s.",
                 username, synthmod::names::get(modtype));
         return 0;
     }

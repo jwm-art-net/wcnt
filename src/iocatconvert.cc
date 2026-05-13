@@ -125,7 +125,7 @@ void* cstr_to_iocat(iocat::TYPE ioc, const char* cstrval,
             *result << cstrval;
         break;
     case iocat::SYNTHMOD:
-        data = wcnt::jwm.get_modlist()->get_synthmod_by_name(cstrval);
+        data = wcnt::jwm.get_modlist()->autogroup_or_any_get_synthmod_by_name(cstrval, 0);
         if (!data) {
             iocat_err("No synthmod named %s found.", cstrval);
             return 0;

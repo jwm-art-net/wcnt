@@ -3,7 +3,7 @@
 #include <cstdio>
 #include <cstring>
 
-const char* get_groupname(const char* const name)
+char* get_groupname(const char* const name)
 {
     if (!name) return 0;
     char* chkname = new char[strlen(name) + 1];

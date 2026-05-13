@@ -729,9 +729,8 @@ void cmdline::dobj_help()
     int n = data[DH_IX].par1;
     std::string dname = (n != 0 && n < opts_count) ? opts[n] : "";
     dobj::TYPE dt = dobj::names::type(dname.c_str());
-
     dobj::base* dob = wcnt::get_dobjlist()->create_dobj(dt);
-    wcnt::get_dobjlist()->add_dobj(dob);
+
     if (!dob) {
         // incorrect dobj name or no name specified
         // (dt will be dobj::ERR_TYPE).
@@ -747,6 +746,8 @@ void cmdline::dobj_help()
         delete [] dbjnames;
         return;
     }
+
+    wcnt::get_dobjlist()->add_dobj(dob);
 
     msg += "\n";
     msg += dobj::names::get(dt);

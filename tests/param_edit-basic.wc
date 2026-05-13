@@ -1,0 +1,29 @@
+wcnt-1.30/jwmsynth
+
+samplerate 44100
+
+clock
+c
+    in_freq_mod1    off
+    freq   10
+    freq_mod1_size 1.0
+c
+
+param_editor
+pe1
+    editlist
+        edit c freq_mod1_size 0.5
+    editlist
+pe1
+
+
+wcnt_exit
+x
+    in_bar      off
+    exit_bar    0
+x
+
+wcnt-1.30/jwmsynth
+
+
+

@@ -26,7 +26,8 @@ CHANGES:
       when turned off rather than 0.0. inputnames.h now defines a
       function which will provide this new off catergory for only those
       inputs that require it. The connectorlist then uses that value to
-      obtain the off output type for the connection.
+      obtain the off output type for the connection. in_amp_eg is the
+      only input set to use it so far.
 
     * Made more features of the mono_amp optional (in_eg uses the new
       off type to be fed with constant 1.0), to allow it to be used
@@ -38,10 +39,15 @@ CHANGES:
       descriptions alphabetically, as well as layout adjustment for
       improved readability.
 
+    * Lots of new .wc files in the tests directory I found useful during
+      development of autogrouping.
+
 FIXES:
     * wcnt_trigger modules required connection to their output to be
       postponed until their input was set. This now happens, and allows
-      wcnt_triggers and wcnt_signals to be used as entry points.
+      wcnt_triggers and wcnt_signals to be used as entry points. Also
+      wcnt_note modules too (which are better suited as entry points
+      than the aforementioned modules).
 
     * deprecated enum/math calculation warnings fixed for timemap::TPQN.
 

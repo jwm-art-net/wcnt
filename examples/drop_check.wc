@@ -238,7 +238,11 @@ m2
     type m2
 m2
 
-wcnt_signal mm in_signal m2 out_output mm
+adder
+mm
+    in_signal1 m2 out_output
+    in_signal2 m2 out_output
+mm
 
 mix_chan
 ch1

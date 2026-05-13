@@ -67,7 +67,9 @@ errors::TYPE adsr_scaler::validate()
     // hang on... the adsr_coords will get validated themselves
     //  - won't they???
     // well no, not if the adsr was defined before the adsr_scaler ;-)
-    // (clue: it would have to be).
+    // - ah but you're forgetting that modules are validated only
+    // after file processing has finished.
+
     if (!validate_param(param::ATTACK_SCALE, errors::NEGATIVE))
         return errors::NEGATIVE;
 

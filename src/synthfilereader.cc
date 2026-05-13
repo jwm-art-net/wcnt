@@ -226,7 +226,7 @@ bool synthfilereader::autogroup_add(const char* com)
     }
 
     autogroup = static_cast<group*>(dbj);
-
+    wcnt::jwm.get_modlist()->set_autogroup(autogroup);
     return true;
 }
 
@@ -268,6 +268,8 @@ bool synthfilereader::autogroup_create(const char* com)
                autogroup->get_username());
         return false;
     }
+
+    wcnt::jwm.get_modlist()->set_autogroup(autogroup);
 
     return true;
 }
@@ -326,6 +328,7 @@ bool synthfilereader::autogroup_stop(const char* com)
     // group data object destruction will be handled by dobjlist,
     // but autogroup is finished for now so set the ptr null.
     autogroup = 0;
+    wcnt::jwm.get_modlist()->clear_autogroup();
 
     return true;
 }

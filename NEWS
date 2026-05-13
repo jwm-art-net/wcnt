@@ -7,14 +7,14 @@ New features for Wav Composer Not Toilet!
 Autogrouping
 ------------
 Autogrouping introduces an easier way of adding modules to a group.
-Instead of the creation of modules and then grouping then as a two step
+Instead of the creation of modules and then grouping as a two step
 process, autogrouping groups the modules as they're created.
 
     * Simpler syntax than the group data object.
     * Less work to keep track of modules which need to be added to
       (or removed from) a group.
     * Quicker and easier to introduce to or remove from a file
-    * Allows modules to be added to new and/or existing groups.
+    * Allows further modules to be added to existing groups.
 
 The concept of directives was introduced to make this happen, with three
 for the autogrouping process: autogroup_create, autogroup_add, and
@@ -46,6 +46,12 @@ autogroup definitions in keeping with modules and data objects.
 See tests/autogroup.wc for a simple example, and examples/bounce2.wc
 for more a complex examples.
 
+In some files, or through your own usage you might come across data
+objects within an autogroup section. These are not grouped but do work
+with the autogroup in that, for instance, you wanted to edit group1.cf,
+doing so within the autogroup you would only need specify cf as the
+module name and not the full group qualified name (group1.cf).
+
 
 Entry Points
 ------------
@@ -58,7 +64,12 @@ For multi-layered voice parts, this concept dramatically reduces the
 number of inputs requiring reconnection.
 
 It's not exactly a new feature, the pieces were in place - wcnt_trigger
-and wcnt_signal modules.
+and wcnt_signal modules... No! No! No! No!
+
+It's not exactly a new feature, the piece is already in place - the
+wcnt_note module. The wcnt_note has everything we need all in one place,
+which really shouldn't come as a suprise to me as I created it for
+the seq_router module.
 
 However, due to the way these modules work (wcnt_trigger actually does
 nothing at all in the main processing loop), and the fact I had never

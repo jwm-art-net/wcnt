@@ -5,20 +5,74 @@ samplerate 44100
 ; autogroup.wc
 ;   testing autogroup feature
 
+timer
+t
+    timings
+        time seconds 0
+        time seconds 1
+    timings
+    time_is_relative off
+t
+
 
 autogroup_create
 group1
 
-    constant cv value 1.25 cv
+    constant cv value 110.0 cv
 
-    copier cc from cv to cv-copy cc
+    constant mm value 330.0 mm
+
+    adder
+    aa
+        in_signal1 cv out_output
+        in_signal2 mm out_output
+    aa
+
+    // copier can be used, but it doesn't get group membership
+    // from autogroup. the copied module will get group membership.
+    copier cc from aa to aa-copy cc
 
 group1
 
+
+autogroup_create
+group2
+    // cannot copy a group within an autogroup section
+    // copier dd from group1 to group3 dd
+
+    clock c     freq 4      c
+
+    osc_clock
+    o
+        in_frequency  group1.aa-copy out_output
+        in_note_on_trig c out_phase_trig
+        in_note_slide_trig off
+    o
+
+    wave
+    w
+        type sine
+        in_phase_step o out_phase_step
+    w
+
+group2
+
+wavfile_out
+wav
+    in_left     group2.w out_output
+    in_bar t    out_count
+    snapshot_mode off
+    data_format float32
+    filename    autogroup-with-copier.wav
+    start_bar   0
+    end_bar     1
+wav
+
 wcnt_exit
 x
-    in_bar      off
-    exit_bar    0
+    in_bar      t out_count
+    exit_bar    1
 x
+
 
 wcnt-1.30/jwmsynth

@@ -52,7 +52,7 @@ namespace synthmod
     TYPE        get_module_type() const { return modtype; }
     const char* get_username()  const   { return username; }
 
-    const char* get_group_name() const {
+    char* get_group_name() const {
             return ((flags & SM_UNGROUPABLE)
                         ? 0 : get_groupname(username));
         }

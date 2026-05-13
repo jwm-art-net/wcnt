@@ -5,8 +5,7 @@
 combiner::combiner(const char* uname) :
  synthmod::base(synthmod::COMBINER, uname, SM_HAS_OUT_OUTPUT),
  linkedlist(MULTIREF_OFF, PRESERVE_DATA),
- out_output(0), meantotal(OFF),
- total(0), sigs(0), sigcount(0)
+ out_output(0), meantotal(OFF), sigs(0), sigcount(0)
 {
     register_output(output::OUT_OUTPUT);
 }
@@ -123,14 +122,12 @@ void combiner::init()
 
 void combiner::run()
 {
-    total = 0;
+    out_output = 0;
     long ix = 0;
     double const* o;
     while((o = sigs[ix++]))
-        total += *o;
+        out_output += *o;
     if (meantotal == ON)
-        out_output = total / sigcount;
-    else
-        out_output = total;
+        out_output /= sigcount;
 }
 

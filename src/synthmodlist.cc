@@ -14,10 +14,8 @@ namespace synthmod
 
 
  list::list(DESTRUCTION d) :
-  linkedlist(MULTIREF_OFF, d),
-  emptyrunlist(0),
-  search(synthmod::ERR_TYPE),
-  result(0)
+  linkedlist(MULTIREF_OFF, d), emptyrunlist(0), search(synthmod::ERR_TYPE),
+  result(0), autogroup(0)
  {
     // nonezero module is not user accessable.
     // it's outputs are used when ever a module's input is set to off.
@@ -151,6 +149,124 @@ namespace synthmod
         return true;
     }
     return false;
+ }
+
+
+ bool list::set_autogroup(group* ag)
+ {
+     if (autogroup) {
+         // should be prevented by SFR.
+         return false;
+     }
+
+    autogroup = ag;
+    return true;
+ }
+
+
+ // get_synthmod_by_name
+ // matches a module with identical name
+ synthmod::base* list::get_synthmod_by_name(const char* const n)
+ {
+    llitem* tmp = find_in_data(sneak_first(), name(n));
+    return tmp ? tmp->get_data() : 0;
+ }
+
+
+ // if autogrouping, get synthmod by autogroup groupp modname,
+ // if not found or not autogrouping, returns 0.
+ synthmod::base* list::autogroup_only_get_synthmod_by_name(const char* const modname,
+                                                        char** grpmodname)
+ {
+    if (!modname || !autogroup)
+         return 0;
+    llitem* tmp = 0;
+    if (grpmodname)
+         *grpmodname = 0;
+    // does modname already have a group name?
+    char* existinggroupname = get_groupname(modname);
+    if (existinggroupname) {
+        if (strcmp(existinggroupname, autogroup->get_username()) == 0)
+            tmp  = find_in_data(sneak_first(), name(modname));
+        delete [] existinggroupname;
+        return tmp ? tmp->get_data() : 0;
+    }
+    // no group, search for module name combined with autogroup group name:
+    char* gmn = set_groupname(autogroup->get_username(), modname);
+    tmp = find_in_data(sneak_first(), name(gmn));
+    if (tmp) { // found it
+        if (grpmodname)
+            *grpmodname = gmn;
+        else
+            delete [] gmn;
+        return tmp->get_data();
+    }
+    delete [] gmn;
+    return 0;
+ }
+
+ // if autogrouping get synthmod by autogroup group modname,
+ // if not autogrouping get synthmod by name. return 0 if not found.
+ synthmod::base* list::autogroup_or_not_get_synthmod_by_name(const char* const modname,
+                                                                char** grpmodname)
+ {
+    if (!modname)
+        return 0;
+    llitem* tmp = 0;
+    if (grpmodname)
+        *grpmodname = 0;
+    if (autogroup) {
+        char* existinggroupname = get_groupname(modname);
+        if (existinggroupname) {
+            if (strcmp(existinggroupname, autogroup->get_username()) == 0)
+                tmp  = find_in_data(sneak_first(), name(modname));
+            delete [] existinggroupname;
+        }
+        else {
+            char* gmn = set_groupname(autogroup->get_username(), modname);
+            tmp = find_in_data(sneak_first(), name(gmn));
+            if (tmp) { // found it
+                if (grpmodname)
+                    *grpmodname = gmn;
+                else
+                    delete [] gmn;
+            }
+        }
+        return tmp ? tmp->get_data() : 0;
+    }
+    tmp = find_in_data(sneak_first(), name(modname));
+    return tmp ? tmp->get_data() : 0;
+ }
+
+ // if autogrouping get synthmod by autogroup group modname,
+ // if not found, regardless of autogrouping, get synthmod by name
+ synthmod::base* list::autogroup_or_any_get_synthmod_by_name(const char* const modname,
+                                                            char** grpmodname)
+ {
+    if (!modname)
+        return 0;
+    llitem* tmp = 0;
+    if (grpmodname)
+        *grpmodname = 0;
+    // does modname already have a group name?
+    char* existinggroupname = get_groupname(modname);
+    if (!existinggroupname && autogroup) {
+        // no group, search for it combined with the autogroup group name:
+        char* gmn = set_groupname(autogroup->get_username(), modname);
+        tmp = find_in_data(sneak_first(), name(gmn));
+        if (tmp) { // found it
+            if (grpmodname)
+                *grpmodname = gmn;
+            else
+                delete [] gmn;
+            return tmp->get_data();
+        }
+        delete [] gmn;
+        // not found, search for it as is...
+    }
+    delete [] existinggroupname;
+    tmp  = find_in_data(sneak_first(), name(modname));
+    return tmp ? tmp->get_data() : 0;
  }
 
  list::linkedlist* list::duplicate_group(const char* from, const char* to)

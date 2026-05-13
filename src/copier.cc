@@ -4,6 +4,7 @@
 #include "../include/synthmodlist.h"
 #include "../include/groupnames.h"
 #include "../include/globals.h"
+#include "../include/group.h"
 
 
 copier::copier() :
@@ -39,9 +40,18 @@ bool copier::set_from_name(const char* name)
         from_name = new char[strlen(name) + 1];
         strcpy(from_name, name); // copy to from_name.
     }
-    if ((from_dobj = wcnt::get_dobjlist()->get_dobj_by_name(name)))
+    if ((from_dobj = wcnt::get_dobjlist()->get_dobj_by_name(name))) {
+        if (wcnt::jwm.get_modlist()->get_autogroup()
+            && from_dobj->get_object_type() == dobj::DEF_GROUP)
+        {
+            // FIXME: this error message needs to not be ignored!
+            dobjerr("Copying a group (%s) within an autogroup section is not allowed",
+                    name);
+            return false;
+        }
         return true;
-    if ((from_mod = wcnt::jwm.get_modlist()->get_synthmod_by_name(name)))
+    }
+    if ((from_mod = wcnt::jwm.get_modlist()->autogroup_or_not_get_synthmod_by_name(name, 0)))
         return true;
     return false;
 }
@@ -58,7 +68,7 @@ bool copier::set_to_name(const char* name)
         return false;
     if (wcnt::get_dobjlist()->get_dobj_by_name(name))
         return false;
-    if (wcnt::jwm.get_modlist()->get_synthmod_by_name(name))
+    if (wcnt::jwm.get_modlist()->autogroup_or_not_get_synthmod_by_name(name, 0))
         return false;
     return true;
 }
@@ -115,10 +125,15 @@ const void* copier::get_param(param::TYPE pt) const
 
 errors::TYPE copier::validate()
 {
+/*
+ * for what purpose are these called in validate???
     if (!set_param(param::COPYFROM, from_name))
         return errors::ERROR;
     if (!set_param(param::COPYTO, to_name))
         return errors::ERROR;
+*/
+
+    group* autogroup = wcnt::jwm.get_modlist()->get_autogroup();
     if (from_mod) {
         if (!(to_mod = from_mod->duplicate_module(to_name,
                                     synthmod::base::AUTO_CONNECT)))
@@ -126,6 +141,8 @@ errors::TYPE copier::validate()
             dobjerr("%s", synthmod::base::get_error_msg());
             return errors::ERROR;
         }
+        if (autogroup)
+            autogroup->autogroup_module(to_mod);
         if (!wcnt::jwm.get_modlist()->add_module(to_mod)) {
             dobjerr("Could not add module %s copied from %s to module "
                                                        "run list. Bad.",

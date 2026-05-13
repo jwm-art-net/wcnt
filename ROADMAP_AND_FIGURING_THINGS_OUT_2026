@@ -1,3 +1,86 @@
+Autogrouping STAGE 2
+====================
+
+I thought I was having fun with Autogrouping stage 1, in getting the
+basics working, and I was, but growing tired and wanting to finish
+because it's taking over and rather time consuming.
+
+Thought I was near finishing until I changed a file to use autogrouping,
+and right in the middle of that autogroup was a copier data object which
+I realized needed to stay. It should stay and implementation must not
+reject it. It is fully justifiable to have it there, and there is no
+justifiable reason to disallow it.
+
+For clarification, I should say the copier was being used to copy a
+single module
+
+The copier however presents a problem when within an autogroup. It must
+create the copy using the group name - a group name it is unaware of -
+only the synth_file_reader (SFR) knows.
+
+A briefly explored idea was to add an autogroup ptr to the synthmodlist
+(SML) similar to how its handled in the SFR.
+This poses problems however...
+
+; And along the way discover how dobj and synthmod behaviour differ,
+; from asking the question of what happens if I edit the parameters
+; of a copier data object?
+;
+; It doesn't work of course. The copying takes place during the copier
+; validation - and data object validation occurs after creation and
+; before the SFR continues onto the next item in the file. Module
+; validation however happens after all modules have been created. Data
+; objects perform their duties immediately after creation before
+; processing, modules are the processing.
+;
+; However a couple of data objects can be edited: wavfilein, and riff.
+; Validation wouldn't occur unless explicitly called by the
+; param_editor. Which I don't think there's any reason that shouldn't
+; be possible.
+
+But anyway. My first solution to the copier in the autogroup didn't
+work out, it wasn't thought through enough. but only after removing it,
+then inspecting differnt pieces of code did I realize I had been on the
+right track. I just should not have changed get_synthmod_by_name, and
+instead introduced a fuzzier variant:
+
+    autogroup_get_synthmod_by_name.
+
+This method, provided the name passed doesn't express membership of a
+group, and that autogrouping is in progress will search for the module
+firstly as if it did have the autogroup group name, if found that's
+done. If any of the prerequisites for searching with the autogroup group
+name were not met, or if they were but the module wasn't found, the
+search for the synthmod name as is takes place.
+
+So a copier copying a single module within an autogroup works, provided
+that module doesn't have any inputs, like the constant module lol.
+give it an input, and the connection still needs to be updated to the
+group name which isn't currently happening.
+
+ * update connections for modules created by copier within autogroup
+ * check what happens with combiner/switcher/etc modules copied by
+   copier within autogroup
+ * figure out what's happening with autogroup within a synth_file_reader
+   included by another file
+ * data object param editor needs to handle autogrouping if module
+   it is editing was autogrouped - this is baffling me as to where i
+   even begin to locate where the handling of autogrouping needs to be!
+   it's like a web and i can't tell where it goes!
+
+  * done!
+  * done!
+  * done!
+  * done!
+
+I THINK AUTOGROUPING IS COMPLETE MAYBE!?!?
+
+########################################################################
+########################################################################
+========================================================================
+========================================================================
+------------------------------------------------------------------------
+------------------------------------------------------------------------
 I've returned to programming in a small way; it won't be as intensive as
 in the past. This is in part thanks to social media! I've been making
 short clips and started adding some of the sounds created long ago using

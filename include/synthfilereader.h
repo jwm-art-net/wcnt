@@ -119,13 +119,6 @@ private:
     bool autogroup_create(const char*);
     bool autogroup_stop(const char*);
 
-    /*
-    // method to read sub-parts of standalone dobjs
-    bool read_dobjs(dobj::base*);
-
-    // method to read parameters of dobjs
-    bool read_dobj_params(dobj::base*, const char* endterm);
-*/
     std::string* read_string_list_param(const char* enda, const char* endb);
     // method for ......
     bool eff_ing_header_bodge(samp_t *samplerate);

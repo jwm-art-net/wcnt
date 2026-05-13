@@ -32,8 +32,8 @@ duplicate_list_module(T* sm, D* _data,
     sm->duplicate_params_to(dup);
     const char* const module_type_name = synthmod::names::get(
                                                   sm->get_module_type());
-    const char* const current_grp = get_groupname(sm->get_username());
-    const char* const new_grp = get_groupname(uname);
+    char* current_grp = get_groupname(sm->get_username());
+    char* new_grp = get_groupname(uname);
     bool regroup = false;
     if (current_grp && new_grp)
         if (strcmp(current_grp, new_grp) != 0)
@@ -44,13 +44,11 @@ duplicate_list_module(T* sm, D* _data,
             << module_type_name << " module " << uname;
     D* data = sm->goto_first();
     while (data) {
-        const char* const data_grp =
-            get_groupname(data->get_username());
+        char* data_grp = get_groupname(data->get_username());
         D* data_to_add = data;
         if (data_grp && regroup == true) {
             if (strcmp(data_grp, current_grp) == 0) {
-                const char* const grpname =
-                        set_groupname(new_grp, data->get_username());
+                char* grpname = set_groupname(new_grp, data->get_username());
                 synthmod::base* grpdata =
                             modlist->get_synthmod_by_name(grpname);
                 if (grpdata)

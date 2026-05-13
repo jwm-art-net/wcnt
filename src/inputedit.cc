@@ -38,13 +38,18 @@ inputedit::~inputedit()
 
 bool inputedit::set_modname(const char* n)
 {
-    synthmod::base* sm = wcnt::jwm.get_modlist()->get_synthmod_by_name(n);
+    char* grpmodname = 0;
+    synthmod::base* sm = wcnt::jwm.get_modlist()->autogroup_or_any_get_synthmod_by_name(n, &grpmodname);
     if (!sm)
         return false;
     if (modname)
         delete [] modname;
-    modname = new char[strlen(n) + 1];
-    strcpy(modname, n);
+    if (grpmodname)
+        modname = grpmodname;
+    else {
+        modname = new char[strlen(n) + 1];
+        strcpy(modname, n);
+    }
     return true;
 }
 
@@ -123,6 +128,8 @@ bool inputedit::create_connectors()
                     conlist->delete_connector(con);
                     con = new connector(in_sm, in_type,
                                     out_modname.c_str(), out_type);
+                    if (smlist->get_autogroup())
+                        con->set_group_pending();
                     conlist->add_connector(con);
                     success = true;
                 }

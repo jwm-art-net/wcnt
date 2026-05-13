@@ -1,6 +1,7 @@
 #include "../include/connectorlist.h"
 #include "../include/synthmod.h"
 #include "../include/globals.h"
+#include "../include/group.h"
 #include "../include/listwork.h"
 
 #include <iostream>
@@ -90,15 +91,17 @@ bool connectorlist::delete_connector(connector* c)
     return true;
 }
 
-bool
-connectorlist::duplicate_connections(const synthmod::base* from_mod,
-                                           synthmod::base* to_mod)
+bool connectorlist::duplicate_connections(const synthmod::base* from_mod,
+                                                synthmod::base* to_mod)
 {
     if (from_mod->get_module_type() != to_mod->get_module_type())
         return false;
+    group* autogroup = wcnt::jwm.get_modlist()->get_autogroup();
     llitem* i = find_in_data(sneak_first(), input_module(from_mod));
     while(i){
-        add_connector(i->get_data()->duplicate(to_mod));
+        connector* c = add_connector(i->get_data()->duplicate(to_mod));
+        if (autogroup)
+            c->set_group_pending();
         i = find_in_data(i->get_next(), input_module(from_mod));
     }
     return true;

@@ -41,14 +41,22 @@ paramedit::~paramedit()
 
 bool paramedit::set_name(const char* n)
 {
-    synthmod::base* sm = wcnt::jwm.get_modlist()->get_synthmod_by_name(n);
+#ifdef DEBUG
+    std::cout << "paramedit::set_name(\"" << n << "\"" << std::endl;
+#endif
+    char* grpmodname = 0;
+    synthmod::base* sm = wcnt::jwm.get_modlist()->autogroup_or_any_get_synthmod_by_name(n, &grpmodname);
     dobj::base* dbj =wcnt::get_dobjlist()->get_dobj_by_name(n);
     if (!sm && !dbj)
         return false;
     if (name)
         delete [] name;
-    name = new char[strlen(n) + 1];
-    strcpy(name, n);
+    if (grpmodname)
+        name = grpmodname;
+    else {
+        name = new char[strlen(n) + 1];
+        strcpy(name, n);
+    }
     return true;
 }
 
@@ -65,7 +73,7 @@ void paramedit::set_parstr(const char* n)
 bool paramedit::do_param_edits()
 {
     synthmod::base* sm =
-                wcnt::jwm.get_modlist()->get_synthmod_by_name(name);
+                wcnt::jwm.get_modlist()->autogroup_or_any_get_synthmod_by_name(name, 0);
     dobj::base* dbj =wcnt::get_dobjlist()->get_dobj_by_name(name);
     if (sm && dbj) {
         dobjerr("A data object and module share the username %s. Cannot "
