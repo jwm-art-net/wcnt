@@ -42,6 +42,14 @@ CHANGES:
     * Lots of new .wc files in the tests directory I found useful during
       development of autogrouping.
 
+    * Added some basic flags to data objects. These are rarely used, so
+      setting them is via specific protected methods in dobj. public
+      methods can inspect the state of specific flags. They all must be
+      specifically set with the exception of DO_VALID which can only be
+      unset. The flags are used to allow editing, or to allow a data
+      object inside an autogroup (data objects aren't groupable
+      however).
+
 FIXES:
     * wcnt_trigger modules required connection to their output to be
       postponed until their input was set. This now happens, and allows

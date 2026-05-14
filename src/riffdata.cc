@@ -15,6 +15,7 @@ riffdata::riffdata() :
  tpqn(0),
  editlist(0)
 {
+    set_editable();
 }
 
 void riffdata::register_ui()

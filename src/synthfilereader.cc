@@ -656,6 +656,13 @@ dobj::base* synthfilereader::read_dobj(const char* com)
     }
     dob->set_username(dobjname.c_str());
 
+    if (autogroup && !dob->is_allowed_in_autogroup()) {
+        wc_err("Data object %s of type %s is not allowed inside an autogroup.",
+                dobjname.c_str(), dobj::names::get(dobjtype));
+        delete dob;
+        return 0;
+    }
+
     if (!read_ui_dobjitems(dob, dob->get_username())) {
         wc_err("In data object %s, %s.", dob->get_username(), wc_err_msg);
         delete dob;

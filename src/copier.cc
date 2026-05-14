@@ -13,6 +13,7 @@ copier::copier() :
  from_mod(0), to_mod(0),
  from_dobj(0), to_dobj(0)
 {
+    set_allowed_in_autogroup();
 }
 
 void copier::register_ui()

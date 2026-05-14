@@ -86,80 +86,71 @@ eg
 eg
 
 
+autogroup_create
+g1
 
-osc_clock
-orb_clock
-        in_note_on_trig     seq out_start_trig
-        in_note_slide_trig  off
-        in_play_state       off
-        in_frequency        orb_freq out_frequency
-        in_freq_mod1        orb out_x
-        in_freq_mod2        orb out_y
-        octave_offset       0
-        tuning_semitones    0
-        portamento_time     1.0
-        response_time       5.0
-        freq_mod1_size      1
-        freq_mod2_size      1
-orb_clock
+    osc_clock
+    orb_clock
+            in_note_on_trig     seq out_start_trig
+            in_note_slide_trig  off
+            in_play_state       off
+            in_frequency        orb_freq out_frequency
+            in_freq_mod1        orb out_x
+            in_freq_mod2        orb out_y
+            octave_offset       0
+            tuning_semitones    0
+            portamento_time     1.0
+            response_time       5.0
+            freq_mod1_size      1
+            freq_mod2_size      1
+    orb_clock
 
-rnd_trigger
-rtrg
-    in_trig seq out_note_on_trig
-    probability 0.15
-    not_probability 0.25
-rtrg
+    rnd_trigger
+    rtrg
+        in_trig seq out_note_on_trig
+        probability 0.15
+        not_probability 0.25
+    rtrg
 
 
-orbit
-orb
-    in_restart_trig  rtrg out_trig
-    in_trig          orb_clock  out_phase_trig
-    orbit_type       quadrup //hopalong
-    a  -3.05025
-    b 0.116540632
-    c  -0.0075850434
-    test_iterations  100000
-orb
+    orbit
+    orb
+        in_restart_trig  rtrg out_trig
+        in_trig          orb_clock  out_phase_trig
+        orbit_type       quadrup //hopalong
+        a  -3.05025
+        b 0.116540632
+        c  -0.0075850434
+        test_iterations  100000
+    orb
 
-osc_clock
-osc
-        in_note_on_trig     seq out_note_on_trig
-        in_note_slide_trig  seq out_note_slide_trig
-        in_play_state       off
-        in_frequency        seq out_frequency
-        in_freq_mod1        orb out_x
-        in_freq_mod2        orb out_y
-        octave_offset       0
-        tuning_semitones    0
-        portamento_time     15.0
-        response_time       5.0
-        freq_mod1_size      4.0
-        freq_mod2_size      2.0
-osc
+    osc_clock
+    osc
+            in_note_on_trig     seq out_note_on_trig
+            in_note_slide_trig  seq out_note_slide_trig
+            in_play_state       off
+            in_frequency        seq out_frequency
+            in_freq_mod1        orb out_x
+            in_freq_mod2        orb out_y
+            octave_offset       0
+            tuning_semitones    0
+            portamento_time     15.0
+            response_time       5.0
+            freq_mod1_size      4.0
+            freq_mod2_size      2.0
+    osc
 
-wave
-sine
-    in_phase_step  osc out_phase_step
-    type sine
-sine
+    wave
+    sine
+        in_phase_step  osc out_phase_step
+        type sine
+    sine
 
-multiplier
-m
-    in_signal1  sine out_output
-    in_signal2  eg out_output
-m
-
-group g1
-modules
-    synthmod name orb_clock
-    synthmod name rtrg
-    synthmod name orb
-    synthmod name osc
-    synthmod name sine
-    synthmod name eg
-    synthmod name m
-modules
+    multiplier
+    m
+        in_signal1  sine out_output
+        in_signal2  eg out_output
+    m
 g1
 
 copier c1 from g1 to g2 c1

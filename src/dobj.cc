@@ -8,7 +8,7 @@ namespace dobj
 {
 
  base::base(TYPE dt) :
-  object_type(dt), username(0), valid(true)
+  object_type(dt), username(0), flags(DO_VALID)
  {
     #ifdef DATA_STATS
     STATS_INC
@@ -39,7 +39,8 @@ namespace dobj
     {
         dobjerr("Error in object %s type %s.",
                 (username ? username : ""), names::get(object_type));
-        return (valid = false);
+        invalidate();
+        return false;
     }
     return true;
  }
@@ -49,17 +50,20 @@ namespace dobj
     if (!is_named_by_user()) {// should not be given username
         dobjerr("Tried to set username of object type %s, but %s "
                 "does not require naming.", names::get(object_type));
-        return (valid = false);
+        invalidate();
+        return false;
     }
     if (un == 0) {
         dobjerr("NULL username specified for object type %s.",
                                             names::get(object_type));
-        return (valid = false);
+        invalidate();
+        return false;
     }
     if (strlen(un) == 0) {
         dobjerr("NULL length username specified for object type %s.",
                                             names::get(object_type));
-        return (valid = false);
+        invalidate();
+        return false;
     }
     if (username) delete [] username;
     username = new char[strlen(un) + 1];
@@ -108,21 +112,21 @@ namespace dobj
 
  ui::dobjparam* base::register_param(param::TYPE pt)
  {
-    if (!valid)
+    if (!is_valid())
         return 0;
 
     ui::dobjparam* i = get_ui_items()->add_param_item(pt);
     if (!i) {
         dobjerr("Failed to register param %s with data object type %s.",
                             param::names::get(pt), names::get(object_type));
-        valid = false;
+        invalidate();
     }
     return i;
  }
 
  ui::dobjparam* base::register_param(param::TYPE pt, const char* fixstr)
  {
-    if (!valid)
+    if (!is_valid())
         return 0;
 
     ui::dobjparam* i = get_ui_items()->add_param_item(pt, fixstr);
@@ -131,14 +135,14 @@ namespace dobj
                             "with data object type %s.",
                             param::names::get(pt), fixstr,
                             names::get(object_type));
-        valid = false;
+        invalidate();
     }
     return i;
  }
 
  ui::dobjdobj* base::register_dobj(TYPE parent, TYPE sprog)
  {
-    if (!valid)
+    if (!is_valid())
         return 0;
     ui::dobjdobj* i = get_ui_items()->add_dobj_item(parent, sprog);
     if (!i)
@@ -146,14 +150,14 @@ namespace dobj
         dobjerr("Failed to register parent data object %s with child data "
                 "object %s as part of data object %s", names::get(parent),
                                 names::get(sprog), names::get(object_type));
-        valid = false;
+        invalidate();
     }
     return i;
  }
 
  ui::dobjcomment* base::register_comment(const char* literal)
  {
-    if (!valid)
+    if (!is_valid())
         return 0;
 
     ui::dobjcomment* i = get_ui_items()->add_comment_item(literal);
@@ -161,7 +165,7 @@ namespace dobj
         dobjerr("Failed to register comment \"%s\" "
                                      "with data object type %s.", literal,
                                                 names::get(object_type));
-        valid = false;
+        invalidate();
     }
     return i;
  }

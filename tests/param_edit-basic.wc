@@ -9,12 +9,33 @@ c
     freq_mod1_size 1.0
 c
 
+
 param_editor
 pe1
     editlist
         edit c freq_mod1_size 0.5
     editlist
 pe1
+
+
+// will fail if uncommented (handled by dobj virtual func)
+// copier cp from pe1 to pe2 cpq
+
+
+wavfilein
+wavin
+    filename ../examples/samples/drumloop01-2b.wav
+    root_note c0
+wavin
+
+
+param_editor
+pe2
+    editlist
+        edit wavin root_note c1
+    editlist
+pe2
+
 
 
 wcnt_exit

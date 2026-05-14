@@ -87,6 +87,7 @@ bool paramedit::do_param_edits()
         invalidate();
         return false;
     }
+
     std::stringstream strm;
     std::string parname;
     std::string valstr;
@@ -157,6 +158,12 @@ bool paramedit::dobj_param_edit(dobj::base* dob, const char* parname,
                                                  const char* valstr)
 {
     param::TYPE partype = param::names::type(parname);
+
+    if (!dob->is_editable()) {
+        dobjerr("Data object %s type %s is not editable",
+                dob->get_username(), dobj::names::get(dob->get_object_type()));
+        return 0;
+    }
 
     if (partype == param::ERR_TYPE) {
         dobjerr("No such parameter as '%s'.", parname);

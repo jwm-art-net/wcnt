@@ -3,20 +3,27 @@ May 2026
 ---[note to self]-----
 *** regularly make clean and make clean_examples to avoid confusion ***
 
+TODO BEFORE RELEASE
+
+...?
+
+TODO NEW FEATURES FOR A FUTURE RELEASE (not next release)
+
+
     * investigate possiblity to for a parameter to specify the output
       type for those modules which process outputs from a list of other
       modules (switcher, trig_switcher, combiner, etc)
 
+    * or better yet - investigate possibility of specifying outputs
+      directily for those modules which currently process outputs from
+      a list of modules (switcher, trig_switcher, combiner, etc).
+      ie if the input_editor can do this... why can't that functionality
+      be brought to modules that need it - and do away with the clunky
+      adding of modules to modules!?
+
     * rename data object (or directive?) for renaming stuff
       specifically groups, all the modules in the group, and their
       connections.
-
-    * param_editor should not be able to edit the params of the copier
-
-    * check for memory leaks from use of get_grpname etc, definite
-      leaks in duplicate_list_module, check also modules which use
-      that, or anywhere where get_grpname is called.
-
 
 4th February 2008
 -- -- -- -- -- --

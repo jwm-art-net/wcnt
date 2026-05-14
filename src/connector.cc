@@ -82,7 +82,6 @@ connector::CSTATE connector::connect()
 
     if (!out_data) {
         if (outmod->flag(synthmod::base::SM_PASSTHROUGH)) {
-            std::cout << "\nconnector::connect - postponing connection" << std::endl;
             return POSTPONE;
         }
 

@@ -67,133 +67,119 @@ swyy
 swyy
 
 
-//************************************************************************
-// start of modules to be grouped --------->>>
-
-clock
-clock1
-    in_freq_mod1    swbb out_output
-    freq            30
-    freq_mod1_size  1.025
-clock1
-
-wave
-sw1
-    in_phase_step         clock1 out_phase_step
-    type sine
-sw1
-
-clock
-clock1b
-    in_freq_mod1    swzz out_output
-    freq            70
-    freq_mod1_size  1.025
-clock1b
-
-user_wave
-bwv
-     waveform
-        vertex
-            deg  0.0    level 0.0
-        vertex
-            deg 90.0    level 0.0
-        vertex
-            deg 180.0   level 1.0
-        vertex
-            deg 270.0   level 0.0
-        vertex
-            deg 360.0   level 0.0
-    waveform
-    in_phase_trig  clock1b out_phase_trig
-    in_phase_step    clock1b out_phase_step
-    recycle_mode    on
-    zero_retrigger  off
-    drop_check_range 0
-bwv
-
-lfo_clock
-clock2
-    in_phase_trig off
-    in_freq_mod1    sw1 out_output
-    in_freq_mod2    swyy out_output
-    freq            500
-    freq_mod1_size  2.25
-    freq_mod2_size  2.25
-clock2
-
-clock
-clockx
-    in_freq_mod1 swyy out_output
-    freq 2.25
-    freq_mod1_size 1.025
-clockx
-
-user_wave
-uw1
-     waveform
-        vertex
-            deg 0.0     level 0.0125
-        vertex
-            deg 180.0   level 1.0
-        vertex
-            deg 360.0   level 0.0125
-    waveform
-    in_phase_trig  clockx out_phase_trig
-    in_phase_step    clockx out_phase_step
-    recycle_mode    on
-    zero_retrigger  off
-    drop_check_range 0
-uw1
-
-multiplier
-xmx1
-    in_signal1 clock2 out_phase_step
-    in_signal2 uw1 out_output
-xmx1
-
-wave_phase
-sw2
-    in_phase_trig        clock1 out_phase_trig
-    in_phase_step        xmx1 out_output
-    type                 sine
-    on_trig_reset_phase  off
-    recycle_mode         on
-    invert_alt           off
-    phase_cycles         1
-sw2
-
-spreader
-sp1
-    signals
-        synthmod    name  sw1
-        synthmod    name  sw2
-    signals
-    in_modulation bwv out_output
-    start_level 0.0
-    end_level   1.0
-sp1
-
-mono_amp
-out
-    in_signal sp1 out_output gain 0.3333
-out
-
-group
+autogroup_create
 grp1
-    modules
-        synthmod name clock1
-        synthmod name sw1
-        synthmod name clock1b
-        synthmod name bwv
-        synthmod name clock2
-        synthmod name clockx
-        synthmod name uw1
-        synthmod name xmx1
-        synthmod name sw2
-        synthmod name sp1
-        synthmod name out
-    modules
+
+    clock
+    clock1
+        in_freq_mod1    swbb out_output
+        freq            30
+        freq_mod1_size  1.025
+    clock1
+
+    wave
+    sw1
+        in_phase_step         clock1 out_phase_step
+        type sine
+    sw1
+
+    clock
+    clock1b
+        in_freq_mod1    swzz out_output
+        freq            70
+        freq_mod1_size  1.025
+    clock1b
+
+    user_wave
+    bwv
+         waveform
+            vertex
+                deg  0.0    level 0.0
+            vertex
+                deg 90.0    level 0.0
+            vertex
+                deg 180.0   level 1.0
+            vertex
+                deg 270.0   level 0.0
+            vertex
+                deg 360.0   level 0.0
+        waveform
+        in_phase_trig  clock1b out_phase_trig
+        in_phase_step    clock1b out_phase_step
+        recycle_mode    on
+        zero_retrigger  off
+        drop_check_range 0
+    bwv
+
+    lfo_clock
+    clock2
+        in_phase_trig off
+        in_freq_mod1    sw1 out_output
+        in_freq_mod2    swyy out_output
+        freq            500
+        freq_mod1_size  2.25
+        freq_mod2_size  2.25
+    clock2
+
+    clock
+    clockx
+        in_freq_mod1 swyy out_output
+        freq 2.25
+        freq_mod1_size 1.025
+    clockx
+
+    user_wave
+    uw1
+         waveform
+            vertex
+                deg 0.0     level 0.0125
+            vertex
+                deg 180.0   level 1.0
+            vertex
+                deg 360.0   level 0.0125
+        waveform
+        in_phase_trig  clockx out_phase_trig
+        in_phase_step    clockx out_phase_step
+        recycle_mode    on
+        zero_retrigger  off
+        drop_check_range 0
+    uw1
+
+    multiplier
+    xmx1
+        in_signal1 clock2 out_phase_step
+        in_signal2 uw1 out_output
+    xmx1
+
+    wave_phase
+    sw2
+        in_phase_trig        clock1 out_phase_trig
+        in_phase_step        xmx1 out_output
+        type                 sine
+        on_trig_reset_phase  off
+        recycle_mode         on
+        invert_alt           off
+        phase_cycles         1
+    sw2
+
+    spreader
+    sp1
+        signals
+            synthmod    name  sw1
+            synthmod    name  sw2
+        signals
+        in_modulation bwv out_output
+        start_level 0.0
+        end_level   1.0
+    sp1
+
+    mono_amp
+    out
+        in_signal sp1 out_output gain 0.3333
+    out
+
 grp1
+
 
 copier c1 from grp1 to grp2 c1
 copier c2 from grp1 to grp3 c2

@@ -93,6 +93,9 @@ group1
         in_signal2 e out_output
     m
 
+    // synth_file_reader not allowed inside autogroup
+    // synth_file_reader sfr filename param_edit-basic.wc sfr
+
 group1
 
 

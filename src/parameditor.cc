@@ -8,6 +8,7 @@
 parameditor::parameditor() :
  dobj::base(dobj::DEF_PARAMEDITOR)
 {
+    set_allowed_in_autogroup();
 }
 
 void parameditor::register_ui()

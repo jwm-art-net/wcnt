@@ -7,6 +7,7 @@
 inputeditor::inputeditor() :
  dobj::base(dobj::DEF_INPUTEDITOR)
 {
+    set_allowed_in_autogroup();
 }
 
 void inputeditor::register_ui()

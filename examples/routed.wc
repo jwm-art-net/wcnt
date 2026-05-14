@@ -110,136 +110,123 @@ tr
     wrap   off
 tr
 
-sample_hold
-vel
-    in_trig     off // later..
-    in_signal   te out_velocity
-    decay_time 0
-vel
-
-adsr
-env
-    envelope
-        section name attack
-            ut  5.0    ul  1.0
-            lt  10.0   ll  0.0125
-        section name decay
-            ut  135.0    ul  0.8
-            lt  75.0    ll  0.1
-        section name release
-            ut  575.0    ul  0.0
-            lt  125.0    ll  0.0
-    envelope
-    // will connect later...
-    in_note_on_trig     off
-    in_note_off_trig    off
-    in_velocity         vel out_output
-    up_thresh        1.0
-    lo_thresh        0.0
-    start_level      0.0
-    min_time         0.0
-    max_sustain_time 0.0
-    release_is_ratio off
-    sustain_state    off
-    zero_retrigger   off
-env
-
-sample_hold
-freq
-    in_trig     off // later..
-    in_signal   seq out_frequency
-    decay_time 0
-freq
-
-osc_clock
-osc1
-    in_note_on_trig     off // later..
-    in_note_slide_trig  off
-    in_play_state       env out_play_state
-    in_frequency        freq out_output
-    in_freq_mod1        off
-    in_freq_mod2        off
-    octave_offset       0
-    tuning_semitones    0
-    portamento_time     125
-    response_time       1
-    freq_mod1_size      1
-    freq_mod2_size      1
-osc1
-
-osc_clock
-osc2
-    in_note_on_trig     off // later..
-    in_note_slide_trig  off
-    in_play_state       env out_play_state
-    in_frequency        freq out_output
-    in_freq_mod1        wv out_output
-    in_freq_mod2        off
-    octave_offset       0
-    tuning_semitones    0
-    portamento_time     125
-    response_time       1
-    freq_mod1_size      1.25
-    freq_mod2_size      1
-osc2
-
-wave_phase
-wv
-    in_phase_trig       osc1 out_phase_trig
-    in_phase_step       osc1 out_phase_step
-    in_shape_phase_step osc2 out_phase_step
-    type                saw
-    shape_type          tri
-    on_trig_reset_phase on
-    recycle_mode        on
-    sync_shape          on
-    invert_alt          on
-    phase_cycles        0.5
-wv
-
-mono_amp
-amp
-    in_signal   wv out_output
-    in_gain_mod  off
-    in_amp_eg   env out_output
-    gain           1.0
-    gain_mod_size    0.0
-    clip_level      1.0
-amp
-
-constant_freq f freq 500 f
-
-glame_butterworth
-lpf
-    in_signal             amp out_output
-    in_cutoff_phase_step  f out_phase_step
-    in_res_mod            off
-    filter_type   lowpass
-    resonance     0.5
-    res_mod_size  0
-lpf
-
-
-mono_amp
-out
-    in_signal lpf out_output
-    gain 0.75
-out
-
-group
+autogroup_create
 g0
-    modules
-        synthmod name vel
-        synthmod name env
-        synthmod name freq
-        synthmod name osc1
-        synthmod name osc2
-        synthmod name wv
-        synthmod name amp
-        synthmod name f
-        synthmod name lpf
-        synthmod name out
-    modules
+    sample_hold
+    vel
+        in_trig     off // later..
+        in_signal   te out_velocity
+        decay_time 0
+    vel
+
+    adsr
+    env
+        envelope
+            section name attack
+                ut  5.0    ul  1.0
+                lt  10.0   ll  0.0125
+            section name decay
+                ut  135.0    ul  0.8
+                lt  75.0    ll  0.1
+            section name release
+                ut  575.0    ul  0.0
+                lt  125.0    ll  0.0
+        envelope
+        // will connect later...
+        in_note_on_trig     off
+        in_note_off_trig    off
+        in_velocity         vel out_output
+        up_thresh        1.0
+        lo_thresh        0.0
+        start_level      0.0
+        min_time         0.0
+        max_sustain_time 0.0
+        release_is_ratio off
+        sustain_state    off
+        zero_retrigger   off
+    env
+
+    sample_hold
+    freq
+        in_trig     off // later..
+        in_signal   seq out_frequency
+        decay_time 0
+    freq
+
+    osc_clock
+    osc1
+        in_note_on_trig     off // later..
+        in_note_slide_trig  off
+        in_play_state       env out_play_state
+        in_frequency        freq out_output
+        in_freq_mod1        off
+        in_freq_mod2        off
+        octave_offset       0
+        tuning_semitones    0
+        portamento_time     125
+        response_time       1
+        freq_mod1_size      1
+        freq_mod2_size      1
+    osc1
+
+    osc_clock
+    osc2
+        in_note_on_trig     off // later..
+        in_note_slide_trig  off
+        in_play_state       env out_play_state
+        in_frequency        freq out_output
+        in_freq_mod1        wv out_output
+        in_freq_mod2        off
+        octave_offset       0
+        tuning_semitones    0
+        portamento_time     125
+        response_time       1
+        freq_mod1_size      1.25
+        freq_mod2_size      1
+    osc2
+
+    wave_phase
+    wv
+        in_phase_trig       osc1 out_phase_trig
+        in_phase_step       osc1 out_phase_step
+        in_shape_phase_step osc2 out_phase_step
+        type                saw
+        shape_type          tri
+        on_trig_reset_phase on
+        recycle_mode        on
+        sync_shape          on
+        invert_alt          on
+        phase_cycles        0.5
+    wv
+
+    mono_amp
+    amp
+        in_signal   wv out_output
+        in_gain_mod  off
+        in_amp_eg   env out_output
+        gain           1.0
+        gain_mod_size    0.0
+        clip_level      1.0
+    amp
+
+    constant_freq f freq 500 f
+
+    glame_butterworth
+    lpf
+        in_signal             amp out_output
+        in_cutoff_phase_step  f out_phase_step
+        in_res_mod            off
+        filter_type   lowpass
+        resonance     0.5
+        res_mod_size  0
+    lpf
+
+
+    mono_amp
+    out
+        in_signal lpf out_output
+        gain 0.75
+    out
 g0
 
 

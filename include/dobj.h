@@ -21,9 +21,9 @@ namespace dobj
  public:
     enum DO_FLAGS
     {
-      DO_DEFAULT,
-      DO_VALID    = 0x0001,
-      DO_EDITABLE = 0x0002
+      DO_VALID    =             0x0001,
+      DO_EDITABLE =             0x0002,
+      DO_ALLOWED_IN_AUTOGROUP = 0x0004
     };
     base(TYPE);
     virtual ~base();
@@ -34,14 +34,17 @@ namespace dobj
     // some dobj are unamed by user, but contain another string which
     // is helpful when identifying errors, which is why get_username()
     // is now virtual.
-    virtual const char*     get_username();
-    bool                    is_valid() const   { return valid; }
-    virtual errors::TYPE    validate() = 0;
+    virtual const char*   get_username();
+    bool                  is_valid() const   { return flags & DO_VALID; }
+    bool                  is_allowed_in_autogroup() const
+                          { return flags & DO_ALLOWED_IN_AUTOGROUP; }
+    virtual errors::TYPE  validate() = 0;
 
     virtual bool        set_param(param::TYPE, const void*);
     virtual const void* get_param(param::TYPE) const;
     virtual const base* add_dobj(base*); // don't be fooled...
     virtual base*       duplicate_dobj(const char*);
+    bool is_editable() { return flags & DO_EDITABLE; }
 
     static const char* get_error_msg() { return err_msg; }
 
@@ -62,18 +65,20 @@ namespace dobj
 
   protected:
     static char err_msg[STRBUFLEN];
-    void invalidate(){ valid = false;}
+    void invalidate(){ flags &=~ DO_VALID;}
     virtual void register_ui() = 0;
     ui::dobjparam*   register_param(param::TYPE);
     ui::dobjparam*   register_param(param::TYPE, const char* fixed_string);
     ui::dobjdobj*    register_dobj(TYPE parent, TYPE sprog);
     ui::dobjcomment* register_comment(const char* literal);
     bool    validate_param(param::TYPE, errors::TYPE);
+    void set_editable(){ flags |= DO_EDITABLE; }
+    void set_allowed_in_autogroup() { flags |= DO_ALLOWED_IN_AUTOGROUP; }
 
   private:
     TYPE object_type;
     char* username;
-    bool valid;
+    int flags;
 
     #ifdef DATA_STATS
     STATS_VARS
