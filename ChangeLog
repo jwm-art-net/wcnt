@@ -2,18 +2,58 @@
 date May 2026 - wcnt-1.32.2026
 
 NEW FEATURES
-    * Autogrouping - modules can now be added to a group in the same
-      step as their creation using three new directives autogroup_add,
-      autogroup_create, and autogroup_stop (or autogroup_stop can be
-      replaced simply with the group name alone).
+    * Directives concept - this is a new mechanism to allow shorter
+      statements or instructions... ie directives.. possible...
 
-    * New examples showing autogrouping and how to use wcnt_triggers
-      and wcnt_signals as entry points to a file for easier connection.
-      For example connecting a sequencer in one file to a group of
-      modules creating a voice part in another file.
+    * Autogrouping consists of a directive which firstly creates a group
+      data object, so that all subsequent modules are added straight
+      into the group during their creation. Autogrouping is stopped by
+      the autogroup_stop directive, or, more simply, the name of the
+      group started by the autogroup_create directive. autogroup_add
+      further expands functionality of groups in wcnt to allow adding
+      more modules to an existing group.
+      Additionally, autogrouping acts as a namespace to allow references
+      to modules within the group to not need the fully qualified group
+      name. Note: when a group, created by an autogroup, is duplicated,
+      the actions of data objects are not repeated (as data objects are
+      not group members) however, if the results of the actions of a
+      data object apply to a module, then these results are duplicated.
+
+    * New examples showing autogrouping and how to use wcnt_note as an
+      entry point to a file (for example defining only a voice part),
+      for easier connection. An entry point is a concept for connecting
+      up modules in a file which should be connected to a sequencer but
+      without having a sequencer definition to connect to.
+
+    * Auto connection is a new very needed time saving feature.
+      It allows quick connection of a group of inputs in a module to
+      matching outputs in another module. Simply use connect followed
+      by the name of the module providing the outputs to connect to.
+      Not all modules implement this feature as it only makes sense in
+      some circumstances.
+      The most common examples would be for connecting the time_map
+      outputs to sequencer inputs, and sequencer outputs to adsr and
+      osc_clock inputs.
+
+    * New features introduced to the wave_phase module - funnily enough
+      ironic even... phase modulation, and start phase... yes I know.
+      Full disclosure, I consulted claude.ai as my neurodivergent brain
+      was stuck trying to figure out how it differs from frequency
+      modulation. Then again, I had to consult claude.ai to help with
+      the wave tables and bit shifting operations - for which I have no
+      record of the sources I originally used to implement them. I
+      haven't used AI to code anywhere else.
 
 CHANGES:
-    * Allow processing of files with compatible older headers.
+
+    * All modules with stereo inputs can now connect a mono source by
+      using the in_signal input. Previously, ommitting to connect
+      in_right would cause it to connect to the same output as in_left.
+      Connecting to in_signal instead is clearer, hopefully.
+
+    * Allow processing of files with compatible older headers... and
+      then promptly introduce changes which make 95% of all older files
+      incompatible!
 
     * It was bugging me that wcnt_signal wasn't paired behaviourally
       with wcnt_trigger - but now both are SM_EMPTY_RUN SM_PASSTHROUGH.
@@ -30,10 +70,12 @@ CHANGES:
       only input set to use it so far.
 
     * Made more features of the mono_amp optional (in_eg uses the new
-      off type to be fed with constant 1.0), to allow it to be used
-      simply with nothing other than in_signal and gain being set.
-      (making up for removing level from wcnt_signal). Did the same
-      to the stereo_amp, but noticed it uses level rather than gain.
+      off type to be fed with constant 1.0) to allow it to be used
+      simply with nothing other than in_signal being set! Additionally
+      a new eg_amount parameter which defaults to 1.0 for the envelope
+      to have full effect, but reducing the value will reduce the effect
+      of the envelope. 0.0 means the envelope isn't applied at all to
+      the signal.
 
     * Updated command line option to display list of modules and their
       descriptions alphabetically, as well as layout adjustment for
@@ -52,10 +94,10 @@ CHANGES:
 
 FIXES:
     * wcnt_trigger modules required connection to their output to be
-      postponed until their input was set. This now happens, and allows
-      wcnt_triggers and wcnt_signals to be used as entry points. Also
-      wcnt_note modules too (which are better suited as entry points
-      than the aforementioned modules).
+      postponed until their input was set. This bug was never caught
+      until I started thinking about entry points. Connection
+      postponement now happens, and allows wcnt_note, wcnt_trigger,
+      and wcnt_signal modules to be used as entry points.
 
     * deprecated enum/math calculation warnings fixed for timemap::TPQN.
 

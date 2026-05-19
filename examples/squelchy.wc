@@ -1,4 +1,4 @@
-wcnt-1.30/jwmsynth
+wcnt-1.32/jwmsynth
 
 // examples/sinewave.wc
 
@@ -410,5 +410,5 @@ wcnt_exit_module
     exit_bar    1
 wcnt_exit_module
 
-wcnt-1.30/jwmsynth
+wcnt-1.32/jwmsynth
 

@@ -16,7 +16,6 @@
 #ifdef DATA_STATS
 #include "../include/linkedlist.h"
 #include "../include/notedata.h"
-#include <iostream>
 #endif
 
 
@@ -46,11 +45,25 @@ namespace wcnt
     return &dbjlist;
  }
 
+bool could_be_header(const char* header)
+{
+    if (strncmp("wcnt", header, 4) != 0)
+        return false;
+    const char* ptr = header;
+    while (*ptr++ != 0);
+    ptr -= 9;
+    if (ptr <= header)
+        return false;
+    if (strcmp(ptr, "jwmsynth") != 0)
+        return false;
+    return true;
+
+}
+
  bool header_is_compatible(const char* header)
  {
     static const char* compathdrs [] = {
        wcnt::file_id,
-       "wcnt-1.30/jwmsynth",
        0
     };
     for (int i = 0; compathdrs[i] != 0; i++) {

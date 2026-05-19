@@ -13,6 +13,7 @@ class wcnt_note : public synthmod::base
     const void* get_out(output::TYPE) const;
     const void* set_in(input::TYPE, const void*);
     const void* get_in(input::TYPE) const;
+    bool        set_param(param::TYPE, const void*);
 
  private:
     const STATUS*   io_note_on_trig;

@@ -18,13 +18,17 @@ square_wave::square_wave(const char* uname) :
 
 void square_wave::register_ui()
 {
-    register_input(input::IN_PHASE_TRIG);
-    register_input(input::IN_PHASE_STEP);
-    register_param(param::RATE)->set_flags(ui::UI_OPTIONAL);
+    register_param(param::CONNECT)      ->set_flags(ui::UI_OPTION1);
+    register_input(input::IN_PHASE_TRIG)->set_flags(ui::UI_OPT2_DUP);
+    register_input(input::IN_PHASE_STEP)->set_flags(ui::UI_OPT2_DUP);
+    register_param(param::RATE)         ->set_flags(ui::UI_OPTIONAL);
     register_param(param::PULSE_WIDTH);
-    register_input(input::IN_PWM)->set_flags(ui::UI_GROUP1);
-    register_param(param::PWM_SIZE)->set_flags(ui::UI_GROUP1);
-    register_param(param::RECYCLE_MODE)->add_descr("Once a waveform cycle ends, whether to begin a new cycle or not. Usually used when the phase step is out of sync with the phase trig.");
+    register_input(input::IN_PWM)       ->set_flags(ui::UI_GROUP1);
+    register_param(param::PWM_SIZE)     ->set_flags(ui::UI_GROUP1);
+    register_param(param::RECYCLE_MODE)
+        ->add_descr("Once a waveform cycle ends, whether to begin a new cycle "
+                    "or not. Usually used when the phase step is out of sync "
+                    "with the phase trig.");
 }
 
 ui::moditem_list* square_wave::get_ui_items()
@@ -86,6 +90,8 @@ bool square_wave::set_param(param::TYPE pt, const void* data)
         case param::RECYCLE_MODE:
             recycle = *(STATUS*)data;
             return true;
+        case param::CONNECT:
+            return auto_connect_module((const char*)data);
         default:
             return false;
     }

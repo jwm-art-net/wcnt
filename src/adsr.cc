@@ -22,17 +22,21 @@ adsr::adsr(const char* uname) :
 void adsr::register_ui()
 {
     register_dobj(dobj::LST_ENVELOPE, dobj::SIN_COORD);
-    register_input(input::IN_NOTE_ON_TRIG);
-    register_param(param::ZERO_RETRIGGER)   ->set_flags(ui::UI_OPTIONAL);
-    register_param(param::START_LEVEL)      ->set_flags(ui::UI_OPTIONAL);
-    register_input(input::IN_VELOCITY)      ->set_flags(ui::UI_OPTIONAL);
-    register_param(param::UP_THRESH)        ->set_flags(ui::UI_GROUP1);
-    register_param(param::LO_THRESH)        ->set_flags(ui::UI_GROUP1);
-    register_param(param::MIN_TIME)         ->set_flags(ui::UI_OPTIONAL);
+
+    register_param(param::CONNECT)         ->set_flags(ui::UI_OPTION1);
+    register_input(input::IN_NOTE_ON_TRIG) ->set_flags(ui::UI_OPT2_DUP);
+    register_input(input::IN_NOTE_OFF_TRIG)->set_flags(ui::UI_OPT2_DUP |
+                                                       ui::UI_OPTIONAL);
+    register_input(input::IN_VELOCITY)     ->set_flags(ui::UI_OPT2_DUP |
+                                                       ui::UI_OPTIONAL);
+    register_param(param::ZERO_RETRIGGER)  ->set_flags(ui::UI_OPTIONAL);
+    register_param(param::START_LEVEL)     ->set_flags(ui::UI_OPTIONAL);
+    register_param(param::UP_THRESH)       ->set_flags(ui::UI_GROUP1);
+    register_param(param::LO_THRESH)       ->set_flags(ui::UI_GROUP1);
+    register_param(param::MIN_TIME)        ->set_flags(ui::UI_OPTIONAL);
     register_param(param::SUSTAIN_STATUS);
-    register_param(param::MAX_SUSTAIN_TIME) ->set_flags(ui::UI_OPTIONAL);
-    register_input(input::IN_NOTE_OFF_TRIG);
-    register_param(param::RELEASE_RATIO)    ->set_flags(ui::UI_OPTIONAL);
+    register_param(param::MAX_SUSTAIN_TIME)->set_flags(ui::UI_OPTIONAL);
+    register_param(param::RELEASE_RATIO)   ->set_flags(ui::UI_OPTIONAL);
 }
 
 ui::moditem_list* adsr::get_ui_items()
@@ -111,6 +115,8 @@ bool adsr::set_param(param::TYPE pt, const void* data)
     case param::MAX_SUSTAIN_TIME:
         max_sus_time = *(double*)data;
         return true;
+    case param::CONNECT:
+        return auto_connect_module((const char*)data);
     default:
         return false;
     }

@@ -21,9 +21,9 @@ fast_lookahead_limiter::fast_lookahead_limiter(const char* uname) :
 
 void fast_lookahead_limiter::register_ui()
 {
-    register_input(input::IN_LEFT);
-    register_input(input::IN_RIGHT)->set_connect_as(input::IN_LEFT)
-                                   ->set_flags(ui::UI_OPTIONAL);
+    register_input(input::IN_SIGNAL)->set_flags(ui::UI_OPTION1);
+    register_input(input::IN_LEFT)->set_flags(ui::UI_OPTION2 | ui::UI_OPT_DUPLICATE);
+    register_input(input::IN_RIGHT)->set_flags(ui::UI_OPTION2 | ui::UI_OPT_DUPLICATE);
     register_param(param::GAIN_DB);
     register_param(param::LIMIT_DB);
     register_param(param::RELEASE_SECS);
@@ -49,7 +49,7 @@ fast_lookahead_limiter::get_out(output::TYPE ot) const
 {
     switch(ot)
     {
-        case output::OUT_LEFT: return &out_left;
+        case output::OUT_LEFT:  return &out_left;
         case output::OUT_RIGHT: return &out_right;
         default: return 0;
     }
@@ -60,8 +60,9 @@ fast_lookahead_limiter::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case input::IN_LEFT:  return in_left = (double*)o;
-        case input::IN_RIGHT: return in_right = (double*)o;
+        case input::IN_SIGNAL:  return in_left = in_right = (double*)o;
+        case input::IN_LEFT:    return in_left = (double*)o;
+        case input::IN_RIGHT:   return in_right = (double*)o;
         default: return 0;
     }
 }

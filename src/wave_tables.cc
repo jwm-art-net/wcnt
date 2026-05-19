@@ -12,7 +12,7 @@ wave_tables::wave_tables()
         table[i] = 0;
     table_size = (1 << wave_tables::table_bits);
     if (phase_step_base == 0)
-        phase_step_base = pow(2, sizeof(unsigned long) * 8) / 360;
+        phase_step_base = pow(2, sizeof(uint32_t) * 8) / 360;
 }
 
 wave_tables::~wave_tables()
@@ -25,7 +25,7 @@ wave_tables::~wave_tables()
             delete [] table[i];
 }
 
-void wave_tables::calc_phase_step_scalar(unsigned long samplerate)
+void wave_tables::calc_phase_step_scalar(uint32_t samplerate)
 {
     phase_step_scalar = (phase_step_base * 360) / samplerate;
 }
@@ -39,7 +39,7 @@ const double* wave_tables::get_table(WT type)
 
 void wave_tables::create_table(WT type)
 {
-    unsigned long i;
+    uint32_t i;
     switch(type)
     {
         case ONE:
@@ -66,7 +66,7 @@ void wave_tables::create_table(WT type)
             table[type] = new double[table_size];
             int s;
             double lvl, dir;
-            unsigned long ssz = table_size / 4;
+            uint32_t ssz = table_size / 4;
             double rt = 1.0 / (double)ssz;
             for (s = 0; s < 4; s++){
                 switch(s){
@@ -92,8 +92,7 @@ void wave_tables::create_table(WT type)
             double ht = table_size / 2;
             double rt = 1.0 / ht;
             for (i = 0; i < table_size; i++) {
-                double l = -1 + ((unsigned long)
-                    (i + ht) % table_size) * rt;
+                double l = -1 + ((uint32_t)(i + ht) % table_size) * rt;
                 table[type][i] = (type == SAW) ? l : (1.0 + l) / 2.0;
             }
             break;
@@ -111,5 +110,5 @@ const int wave_tables::table_shift = TABLE_SHIFT;
 double wave_tables::phase_step_base = 0;
 double wave_tables::phase_step_scalar = 0;
 
-unsigned long wave_tables::table_size = 0;
+uint32_t wave_tables::table_size = 0;
 double* wave_tables::table[WT_LAST] = { 0 };

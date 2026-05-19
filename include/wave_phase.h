@@ -22,6 +22,7 @@ class wave_phase : public synthmod::base
     STATUS const* in_phase_trig;
     double const* in_phase_step;
     double const* in_shape_phase_step;
+    double const* in_phase_mod;
     double output;
     double pre_shape_output;
     STATUS play_state;
@@ -32,8 +33,15 @@ class wave_phase : public synthmod::base
     STATUS invert_alt;
     STATUS sync_shape;
     double cycles;
-    unsigned long phase;
-    unsigned long shape_phase;
+    double start_phase;
+    double shape_start_phase;
+    double phase_mod_size;
+    STATUS zero_when_off;
+    uint32_t phase;
+    uint32_t shape_phase;
+    uint32_t startphase;
+    uint32_t shapestartphase;
+    int64_t phzamt;
     double degs;
     double max_degs;
     int invph;

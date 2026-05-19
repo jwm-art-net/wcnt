@@ -1,4 +1,4 @@
-wcnt-1.30/jwmsynth
+wcnt-1.32/jwmsynth
 
 header header.wch
 
@@ -120,6 +120,7 @@ sinewave
     in_shape_phase_step  osc4 out_phase_step
     type                 sine
     shape_type           saw
+    shape_start_phase   0
     on_trig_reset_phase  on
     recycle_mode         on
     sync_shape           on
@@ -134,6 +135,7 @@ sinewave2
     in_shape_phase_step  osc3 out_phase_step
     type                 sine
     shape_type           saw
+    shape_start_phase   0
     on_trig_reset_phase  on
     recycle_mode         on
     sync_shape           on
@@ -384,4 +386,4 @@ wcnt_exit_module
     exit_bar 34
 wcnt_exit_module
 
-wcnt-1.30/jwmsynth
+wcnt-1.32/jwmsynth

@@ -29,6 +29,8 @@ class mono_amp : public synthmod::base, public gain
 
     // params
     double clip_level;
+    double eg_amount;
+    double eg_base;
     void register_ui();
     ui::moditem_list* get_ui_items();
 };

@@ -5,7 +5,7 @@
 
 /*
 //  inspect
-//  
+//
 //  contains an input for each of the input/output types along with
 //  a corresponding trigger input. when the corresponding trigger
 //  input triggers, the message for that type is displayed, along
@@ -31,7 +31,7 @@ class inspect : public synthmod::base
     STATUS const*   in_df_trig;
     wcint_t const*  in_si;            /* int (previously short) */
     STATUS const*   in_si_trig;
-    samp_t const*   in_ul;            /* samp_t (previously unsigned long)*/
+    samp_t const*   in_ul;            /* samp_t */
     STATUS const*   in_ul_trig;
     STATUS const*   in_st;            /* state */
     STATUS const*   in_st_trig;

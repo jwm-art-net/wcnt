@@ -14,11 +14,12 @@ wcnt_note::wcnt_note(const char* uname) :
 
 void wcnt_note::register_ui()
 {
-    register_input(input::IN_NOTE_ON_TRIG);
-    register_input(input::IN_NOTE_SLIDE_TRIG);
-    register_input(input::IN_NOTE_OFF_TRIG);
-    register_input(input::IN_FREQ);
-    register_input(input::IN_VELOCITY);
+    register_param(param::CONNECT)->set_flags(ui::UI_OPTION1);
+    register_input(input::IN_NOTE_ON_TRIG)   ->set_flags(ui::UI_OPT2_DUP);
+    register_input(input::IN_NOTE_SLIDE_TRIG)->set_flags(ui::UI_OPT2_DUP);
+    register_input(input::IN_NOTE_OFF_TRIG)  ->set_flags(ui::UI_OPT2_DUP);
+    register_input(input::IN_FREQ)           ->set_flags(ui::UI_OPT2_DUP);
+    register_input(input::IN_VELOCITY)       ->set_flags(ui::UI_OPT2_DUP);
 }
 
 ui::moditem_list* wcnt_note::get_ui_items()
@@ -73,5 +74,15 @@ const void* wcnt_note::get_in(input::TYPE it) const
     case input::IN_FREQ:            return io_freq;
     case input::IN_VELOCITY:        return io_velocity;
     default: return 0;
+    }
+}
+
+bool wcnt_note::set_param(param::TYPE pt, const void* data)
+{
+    switch(pt)
+    {
+        case param::CONNECT:
+            return auto_connect_module((const char*)data);
+        default: return 0;
     }
 }

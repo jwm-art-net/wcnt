@@ -1,4 +1,4 @@
-wcnt-1.30/jwmsynth
+wcnt-1.32/jwmsynth
 
 //------------------------------------------------------------------------
 // examples/inspector.wc
@@ -130,4 +130,4 @@ x
     exit_bar    2
 x
 
-wcnt-1.30/jwmsynth
+wcnt-1.32/jwmsynth

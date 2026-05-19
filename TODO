@@ -5,10 +5,16 @@ May 2026
 
 TODO BEFORE RELEASE
 
-...?
+    * be explicit about the modulation type featured in the various
+      clock modules - it probably does not work as people expect!
 
 TODO NEW FEATURES FOR A FUTURE RELEASE (not next release)
 
+    * wave_phase cycle sync can be a problem, using on_trig_reset_phase
+      can cause clicks especially for regular waveforms, but even
+      without, such as a sawtooth without on_trig_phase_reset, but with
+      phase modulation, will have a single sample click every several
+      cycles.
 
     * investigate possiblity to for a parameter to specify the output
       type for those modules which process outputs from a list of other

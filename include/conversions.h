@@ -4,7 +4,7 @@
 #include "types.h"
 
 /*----------------------------------------------------------------
-    conversion of note names to frequencies have been adapted 
+    conversion of note names to frequencies have been adapted
     from code contained in a book by Ian Waugh, entitled:
     Making Music on The Amstrad CPC 464 & 664.  with additions
     for tuning frequencies via semitones from sources on the web
@@ -15,15 +15,13 @@
 // (transpose_notename is not used by them)
 double note_to_step(const char *note_name);
 double note_to_step(const char *note_name, char oct_offset);
-double note_to_step(
-    const char *note_name, char oct_offset, double semitones);
+double note_to_step(const char *note_name, char oct_offset, double semitones);
 double freq_to_step(double freq);
 double freq_to_step(double freq, char oct_offset);
 double freq_to_step(double freq, char oct_offset, double semitones);
 double note_to_freq(const char *note_name);
 double note_to_freq(const char *note_name, char oct_offset);
-double note_to_freq(
-    const char *note_name, char oct_offset, double semitones);
+double note_to_freq(const char *note_name, char oct_offset, double semitones);
 
 // transpose one note name to another note name
 const char* transpose_notename(const char* note_name, char semitones);

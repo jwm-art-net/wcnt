@@ -160,9 +160,11 @@ namespace synthmod
     void duplicate_inputs_to(base*) const;
     void duplicate_params_to(base*) const;
 
+    bool auto_connect_module(const char* name);
+
     static char err_msg[STRBUFLEN];
 
-  private:
+ private:
     TYPE            modtype;
     char*           username;
     int             flags;

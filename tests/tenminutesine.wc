@@ -1,4 +1,4 @@
-wcnt-1.30/jwmsynth
+wcnt-1.32/jwmsynth
 
 samplerate 44100
 
@@ -52,7 +52,7 @@ x
     exit_bar    1
 x
 
-wcnt-1.30/jwmsynth
+wcnt-1.32/jwmsynth
 
 wavfile_out
 w

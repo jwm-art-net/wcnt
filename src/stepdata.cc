@@ -16,8 +16,8 @@ void step_data::register_ui()
 {
     register_param(param::POS);
     register_param(param::LEVEL)->set_flags(ui::UI_OPTION1);
-    register_param(param::UPLEVEL)->set_flags(ui::UI_OPTION2 | ui::UI_OPT_DUPLICATE);
-    register_param(param::LOLEVEL)->set_flags(ui::UI_OPTION2 | ui::UI_OPT_DUPLICATE);
+    register_param(param::UPLEVEL)->set_flags(ui::UI_OPT2_DUP);
+    register_param(param::LOLEVEL)->set_flags(ui::UI_OPT2_DUP);
 }
 
 ui::dobjitem_list* step_data::get_ui_items()

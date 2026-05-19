@@ -1,16 +1,18 @@
 #ifndef TYPES_H
 #define TYPES_H
 
+#include <cstdint>
+
 enum STATUS
 {
     OFF = 0x0,
     ON  = 0x1
 };
 
-typedef long samp_t;
-typedef unsigned long usamp_t;
-typedef int  wcint_t;
-typedef unsigned int  uwcint_t;
+typedef int64_t     samp_t;
+typedef uint64_t    usamp_t;
+typedef int32_t     wcint_t;
+typedef uint32_t    uwcint_t;
 
 #define SAMP_T_MAX ((samp_t)(((usamp_t)-1) >> 2))
 #define WCINT_T_MAX ((wcint_t)(((uwcint_t)-1) >> 2))

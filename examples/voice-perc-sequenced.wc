@@ -1,0 +1,178 @@
+wcnt-1.32/jwmsynth
+
+
+header header.wch
+
+
+time_map
+tm
+    meter_map
+        meter tsig 4/4 bar 0
+    meter_map
+    bpm_map
+        tempo bpm 130 bar 0
+    bpm_map
+tm
+
+constant one value 1.0 one
+
+sync_clock
+16ths
+    quarter_value 64
+    len 16
+    snap_to 16
+    connect tm
+    in_freq_mod1    lfowv out_output
+    freq_mod1_size  2.5
+16ths
+
+
+sync_clock
+lfosyc
+    quarter_value 64
+    len 512
+    snap_to 64
+    connect tm
+lfosyc
+
+wave
+lfowv
+    in_phase_step lfosyc out_phase_step
+    type sine
+lfowv
+
+
+pattern_trig    cow-pat   in_trig 16ths out_phase_trig
+    pattern 0100001000010000-0001000010000100
+cow-pat
+pattern_trig    snare-pat   in_trig 16ths out_phase_trig
+    pattern 0010001000100100-0010001000100001
+snare-pat
+pattern_trig    kick-pat    in_trig 16ths out_phase_trig
+   // pattern 0000
+    pattern 1000100010010010-1000100010001010
+kick-pat
+
+
+
+constant_note   cow-note    name c1     cow-note
+constant_note   snare-note  name c1     snare-note
+constant_note   kick-note   name e-2    kick-note
+
+
+synth_file_reader
+sfr1
+    filename voice-kick.wch
+sfr1
+
+autogroup_add
+voice-kick
+
+    // data objects (ie not modules) such as the input editor are not
+    // actually grouped, however, when they are situated inside an
+    // autogroup section, they use the group "namespace".  this means
+    // the output modules specified for inputs are firstly assumed to
+    // be modules in the group. if no such module exists with the group
+    // only then is the module for the connection looked for outside of
+    // the group.
+
+    input_editor
+    ie1
+        editlist
+            connect enter in_note_on_trig       kick-pat out_trig
+            connect enter in_frequency          kick-note out_frequency
+            connect enter in_velocity           one out_output
+        editlist
+    ie1
+
+voice-kick
+
+
+synth_file_reader
+sfr2
+    filename voice-snare.wch
+sfr2
+
+autogroup_add
+voice-snare
+
+    // data objects (ie not modules) such as the input editor are not
+    // actually grouped, however, when they are situated inside an
+    // autogroup section, they use the group "namespace".  this means
+    // the output modules specified for inputs are firstly assumed to
+    // be modules in the group. if no such module exists with the group
+    // only then is the module for the connection looked for outside of
+    // the group.
+
+    input_editor
+    ie2
+        editlist
+            connect enter in_note_on_trig       snare-pat out_trig
+            connect enter in_frequency          snare-note out_frequency
+            connect enter in_velocity           one out_output
+        editlist
+    ie2
+
+voice-snare
+
+
+
+synth_file_reader
+sfr3
+    filename voice-cow.wch
+sfr3
+
+autogroup_add
+voice-cow
+
+    // data objects (ie not modules) such as the input editor are not
+    // actually grouped, however, when they are situated inside an
+    // autogroup section, they use the group "namespace".  this means
+    // the output modules specified for inputs are firstly assumed to
+    // be modules in the group. if no such module exists with the group
+    // only then is the module for the connection looked for outside of
+    // the group.
+
+    input_editor
+    ie3
+        editlist
+            connect enter in_note_on_trig       cow-pat out_trig
+            connect enter in_frequency          cow-note out_frequency
+            connect enter in_velocity           one out_output
+        editlist
+    ie3
+
+voice-cow
+
+
+mixer
+mix
+    mix
+        synthmod name voice-kick.out
+        synthmod name voice-snare.out
+        synthmod name voice-cow.out
+    mix
+    master_level 0.5
+mix
+
+wavfile_out
+wfo
+    filename    voice-perc-sequenced.wav
+    data_format pcm16
+    in_left     mix out_left
+    in_right    mix out_right
+    in_bar      tm out_bar
+    start_bar   0
+    end_bar     16
+    snapshot_mode off
+wfo
+
+
+wcnt_exit
+exit
+    in_bar      tm out_bar
+    exit_bar    16
+exit
+
+
+wcnt-1.32/jwmsynth

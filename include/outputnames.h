@@ -75,7 +75,6 @@ namespace output
     OUT_DOWN,
     OUT_PRE_COUNT,
     OUT_PRE_SHAPE_OUTPUT,
-    OUT_THROUGH,
     LAST_TYPE
  };
 

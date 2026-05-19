@@ -1,0 +1,127 @@
+wcnt-1.32/jwmsynth
+
+samplerate 44100
+
+
+timer
+t
+    timings
+        time seconds 0
+        time seconds 12
+    timings
+    time_is_relative off
+t
+
+clock
+lfo
+    freq 0.5
+lfo
+
+wave
+lfow
+    type sine
+    in_phase_step lfo out_phase_step
+lfow
+
+
+wave_phase
+lfowp
+    in_phase_trig       lfo  out_phase_trig
+    in_phase_step       lfo  out_phase_step
+    type                tri
+    on_trig_reset_phase off
+    recycle_mode        off
+    invert_alt          off
+    start_phase         0.0
+    phase_cycles        1.0
+    zero_when_off       off
+    in_phase_mod    lfow out_output
+    phase_mod_amount 1.0
+lfowp
+
+
+
+
+
+constant_note n2f name c0 n2f
+
+
+osc_clock
+o1
+        in_note_on_trig     t out_trig
+        in_note_slide_trig  off
+        in_frequency        n2f out_frequency
+        octave_offset       0
+o1
+
+
+osc_clock
+o2
+        in_note_on_trig     t out_trig
+        in_note_slide_trig  off
+        in_frequency        n2f out_frequency
+        octave_offset       0
+o2
+
+osc_clock
+o3
+        in_note_on_trig     t out_trig
+        in_note_slide_trig  off
+        in_frequency        n2f out_frequency
+        tuning_semitones 0
+        octave_offset       -1
+o3
+
+
+wave
+w
+    in_phase_step o3 out_phase_step
+    type tri
+w
+
+multiplier
+m
+    in_signal1 w out_output
+    in_signal2 lfowp out_output
+m
+
+
+wave_phase
+wp
+    in_phase_trig       o1  out_phase_trig
+    in_phase_step       o2  out_phase_step
+    type                tri
+    on_trig_reset_phase off
+    recycle_mode        off
+    invert_alt          off
+    start_phase         0.0
+    phase_cycles        1.0
+    zero_when_off       off
+    in_phase_mod    m out_output
+    phase_mod_amount 1.0
+wp
+
+
+wavfile_out
+wav
+    in_signal   wp out_output
+    in_bar      t out_count
+    snapshot_mode off
+    data_format pcm16
+    filename    wave_phase1.wav
+    start_bar   0
+    end_bar     1
+wav
+
+
+wcnt_exit
+exit
+    in_bar      t out_count
+    exit_bar    1
+exit
+
+
+wcnt-1.32/jwmsynth
+
+
+

@@ -22,9 +22,9 @@ caps_plate2x2::caps_plate2x2(const char* uname) :
 
 void caps_plate2x2::register_ui()
 {
-    register_input(input::IN_LEFT);
-    register_input(input::IN_RIGHT)->set_connect_as(input::IN_LEFT)
-                                   ->set_flags(ui::UI_OPTIONAL);
+    register_input(input::IN_SIGNAL)->set_flags(ui::UI_OPTION1);
+    register_input(input::IN_LEFT)  ->set_flags(ui::UI_OPT2_DUP);
+    register_input(input::IN_RIGHT) ->set_flags(ui::UI_OPT2_DUP);
     register_param(param::BANDWIDTH);
     register_param(param::TAIL);
     register_param(param::DAMPING);
@@ -79,10 +79,9 @@ caps_plate2x2::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-    case input::IN_LEFT:
-        return in_left = (double*)o;
-    case input::IN_RIGHT:
-        return in_right = (double*)o;
+    case input::IN_SIGNAL:  return in_left = in_right = (double*)o;
+    case input::IN_LEFT:    return in_left = (double*)o;
+    case input::IN_RIGHT:   return in_right = (double*)o;
     default:
         return 0;
     }

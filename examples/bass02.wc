@@ -1,4 +1,4 @@
-wcnt-1.30/jwmsynth
+wcnt-1.32/jwmsynth
 //------------------------------------------------------------------------
 //
 //  produces a bass line
@@ -75,18 +75,17 @@ bass02_ie
 
 mix_chan
 ch1
-    in_left   g1.amp1   out_output
-    // in_right connects as in_left when unspecified
+    in_signal   g1.amp1   out_output
 ch1
 
 mix_chan
 ch2
-    in_left   g2.amp1   out_output
+    in_signal   g2.amp1   out_output
 ch2
 
 mix_chan
 ch3
-    in_left   g3.amp1   out_output
+    in_signal   g3.amp1   out_output
 ch3
 
 mixer
@@ -102,4 +101,4 @@ mix1
 //------------------------------------------------------------------------
 // End Of File _jwm 2005.
 //------------------------------------------------------------------------
-wcnt-1.30/jwmsynth
+wcnt-1.32/jwmsynth

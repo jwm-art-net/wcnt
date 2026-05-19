@@ -18,8 +18,10 @@ void trigcounter::register_ui()
 {
     register_input(input::IN_TRIG);
     register_param(param::PRE_COUNT)->set_flags(ui::UI_GROUP1);
-    register_param(param::COUNT)->set_flags(ui::UI_GROUP1)->add_descr("The number of triggers to count (and output), 0 for unlimited.");
-    register_param(param::WRAP)->set_flags(ui::UI_GROUP1);
+    register_param(param::COUNT)    ->set_flags(ui::UI_GROUP1)
+                    ->add_descr("The number of triggers to count (and output), "
+                                "0 for unlimited.");
+    register_param(param::WRAP)         ->set_flags(ui::UI_GROUP1);
     register_input(input::IN_RESET_TRIG)->set_flags(ui::UI_GROUP1);
 }
 

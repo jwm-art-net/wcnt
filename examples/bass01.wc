@@ -1,4 +1,4 @@
-wcnt-1.30/jwmsynth
+wcnt-1.32/jwmsynth
 //------------------------------------------------------------------------
 //
 //  produces a bass line
@@ -105,12 +105,9 @@ seq1
             transpose 7
     track
 
+    connect time1
+
     start_bar               0
-    in_bar              time1 out_bar
-    in_bar_trig         time1 out_bar_trig
-    in_beats_per_bar    time1 out_beats_per_bar
-    in_beat_value       time1 out_beat_value
-    in_pos_step_size    time1 out_pos_step_size
     velocity_response_time  5
 seq1
 
@@ -130,12 +127,12 @@ adsr1
             ut  175.0    ul  0.0
             lt  125.0    ll  0.0
         envelope
-        in_note_on_trig     seq1    out_note_on_trig
+
+        connect seq1
+
         zero_retrigger   off
-        in_velocity         seq1    out_velocity
         min_time         10.0
         sustain_state    on
-        in_note_off_trig    seq1    out_note_off_trig
 adsr1
 
 
@@ -288,7 +285,7 @@ wavfile_out
 wav1
     filename    bass01.wav
     data_format float32
-    in_left     amp1 out_output
+    in_signal   amp1 out_output
     in_bar      time1   out_bar
     start_bar   0
     end_bar     16
@@ -305,4 +302,4 @@ wcnt_exit_module
 //------------------------------------------------------------------------
 // End Of File _jwm 2005.
 //------------------------------------------------------------------------
-wcnt-1.30/jwmsynth
+wcnt-1.32/jwmsynth

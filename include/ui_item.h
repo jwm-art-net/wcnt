@@ -110,6 +110,11 @@ namespace ui
 
     // NOTE: items CANNOT be part of a group and option simultaneously.
 
+    // Convenience:
+    // The new connect parameter means boths these flags are repeatedly set
+    // over and over, so provide a more convenient variant
+    UI_OPT2_DUP = ui::UI_OPTION2 | ui::UI_OPT_DUPLICATE,
+
     // implementation only:
     UI_OPTION_MASK=     0x00f0,
     UI_GROUP_MASK =    0xff000,

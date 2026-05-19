@@ -1,4 +1,4 @@
-wcnt-1.30/jwmsynth
+wcnt-1.32/jwmsynth
 
 // quick test of the new self-connect input functionality.
 // when an input can self-connect, rather than being set to 'off'
@@ -114,5 +114,5 @@ exit
     exit_bar    1
 exit
 
-wcnt-1.30/jwmsynth
+wcnt-1.32/jwmsynth
 

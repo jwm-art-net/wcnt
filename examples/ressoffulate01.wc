@@ -1,4 +1,4 @@
-wcnt-1.30/jwmsynth
+wcnt-1.32/jwmsynth
 //------------------------------------------------------------------------
 // ressoffulate01.wc experimenting with pairs of resonating frequencies
 //------------------------------------------------------------------------
@@ -170,12 +170,9 @@ wave_phase
 sine1
     in_phase_trig       osc1 out_phase_trig
     in_phase_step       osc2 out_phase_step
-    in_shape_phase_step off
     type                sine
-    shape_type          one
     on_trig_reset_phase off
     recycle_mode        on
-    sync_shape          on
     invert_alt          off
     phase_cycles        1.5
 sine1
@@ -184,12 +181,9 @@ wave_phase
 sine2
     in_phase_trig       osc1 out_phase_trig
     in_phase_step       osc3 out_phase_step
-    in_shape_phase_step off
     type                sine
-    shape_type          one
     on_trig_reset_phase off
     recycle_mode        on
-    sync_shape          on
     invert_alt          off
     phase_cycles        2.5
 sine2
@@ -370,7 +364,7 @@ ressoff_pe1
             delay_time  10.0
         edit g3.delayed_freq
             delay_time  10.0
-// 
+//
         edit g4.delayed_note_on
             delay_time  15.0
         edit g4.delayed_note_slide
@@ -493,4 +487,4 @@ wcnt_exit_module
 wcnt_exit_module
 
 //------------------------------------------------------------------------
-wcnt-1.30/jwmsynth
+wcnt-1.32/jwmsynth

@@ -21,9 +21,10 @@ user_wave::user_wave(const char* uname) :
 
 void user_wave::register_ui()
 {
-    register_input(input::IN_PHASE_TRIG);
+    register_param(param::CONNECT)      ->set_flags(ui::UI_OPTION1);
+    register_input(input::IN_PHASE_TRIG)->set_flags(ui::UI_OPT2_DUP);
+    register_input(input::IN_PHASE_STEP)->set_flags(ui::UI_OPT2_DUP);
     register_param(param::ZERO_RETRIGGER);
-    register_input(input::IN_PHASE_STEP);
     register_dobj(dobj::LST_WAVEFORM, dobj::SIN_VERTEX);
     register_input(input::IN_V_MOD)->set_flags(ui::UI_OPTIONAL);
     register_input(input::IN_H_MOD)->set_flags(ui::UI_OPTIONAL);
@@ -90,6 +91,8 @@ bool user_wave::set_param(param::TYPE pt, const void* data)
         case param::DROP_CHECK_RANGE:
             drop_check_range = *(wcint_t*)data;
             return true;
+        case param::CONNECT:
+            return auto_connect_module((const char*)data);
         default:
             return false;
     }

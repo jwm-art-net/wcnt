@@ -56,6 +56,7 @@ namespace wcnt
  fxsparamlist*      get_fxsparamlist();
  dobj::list*        get_dobjlist();
 
+ bool could_be_header(const char* header);
  bool header_is_compatible(const char* header);
 
  class globals

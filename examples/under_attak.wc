@@ -1,4 +1,4 @@
-wcnt-1.30/jwmsynth
+wcnt-1.32/jwmsynth
 
 header header.wch
 
@@ -230,7 +230,7 @@ sc
 
 caps_plate
 reverb
-    in_left  sc out_output
+    in_signal  sc out_output
     bandwidth  0.75
     tail       0.25
     damping    0.63
@@ -266,5 +266,5 @@ exit
     exit_bar    8
 exit
 
-wcnt-1.30/jwmsynth
+wcnt-1.32/jwmsynth
 

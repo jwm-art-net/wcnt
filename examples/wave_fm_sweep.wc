@@ -1,4 +1,4 @@
-wcnt-1.30/jwmsynth
+wcnt-1.32/jwmsynth
 
 // examples/lp_filter_test.wc
 
@@ -94,7 +94,7 @@ amp1
 
 wavfile_out
 wav1
-    in_left     amp1 out_output
+    in_signal   amp1 out_output
     in_bar t1   out_count
     snapshot_mode off
     data_format float32
@@ -109,4 +109,4 @@ wcnt_exit_module
     exit_bar    1
 wcnt_exit_module
 
-wcnt-1.30/jwmsynth
+wcnt-1.32/jwmsynth

@@ -1,4 +1,4 @@
-wcnt-1.30/jwmsynth
+wcnt-1.32/jwmsynth
 //------------------------------------------------------------------------
 //
 //  drums01-b.wc:
@@ -45,15 +45,19 @@ rclock
 
 wave_phase
 wvy1
-    in_phase_trig rclock out_phase_trig
-    in_phase_step osc1 out_phase_step
-    in_shape_phase_step rclock out_phase_step
-    type sine
-    shape_type saw_01
+    type    sine
+    in_phase_trig       rclock out_phase_trig
+    in_phase_step       osc1 out_phase_step
     on_trig_reset_phase on
+
+    shape_type  saw_01
+    in_shape_phase_step rclock out_phase_step
+    shape_start_phase 0
+
     recycle_mode on
     sync_shape on
     invert_alt on
+
     phase_cycles 0.5
 wvy1
 
@@ -199,4 +203,4 @@ par-master
 par-master
 
 //------------------------------------------------------------------------
-wcnt-1.30/jwmsynth
+wcnt-1.32/jwmsynth

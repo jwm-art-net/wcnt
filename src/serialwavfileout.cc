@@ -27,9 +27,9 @@ void serialwavfileout::register_ui()
     register_param(param::WAV_BASENAME);
     register_param(param::DATA_FMT,
                     "pcm16/pcm24/pcm32/float32/float64");
-    register_input(input::IN_LEFT);
-    register_input(input::IN_RIGHT)->set_connect_as(input::IN_LEFT)
-                                   ->set_flags(ui::UI_OPTIONAL);
+    register_input(input::IN_SIGNAL)->set_flags(ui::UI_OPTION1);
+    register_input(input::IN_LEFT)  ->set_flags(ui::UI_OPT2_DUP);
+    register_input(input::IN_RIGHT) ->set_flags(ui::UI_OPT2_DUP);
     register_input(input::IN_BAR);
     register_param(param::START_BAR);
     register_param(param::END_BAR);
@@ -76,16 +76,12 @@ serialwavfileout::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case input::IN_LEFT:
-            return in_l = (const double*)o;
-        case input::IN_RIGHT:
-            return in_r = (const double*)o;
-        case input::IN_BAR:
-            return in_bar = (const wcint_t*)o;
-        case input::IN_WRITE_TRIG:
-            return in_write_trig = (STATUS*)o;
-        case input::IN_STOP_TRIG:
-            return in_stop_trig = (STATUS*)o;
+        case input::IN_SIGNAL:      return in_l = in_r = (double*)o;
+        case input::IN_LEFT:        return in_l = (const double*)o;
+        case input::IN_RIGHT:       return in_r = (const double*)o;
+        case input::IN_BAR:         return in_bar = (const wcint_t*)o;
+        case input::IN_WRITE_TRIG:  return in_write_trig = (STATUS*)o;
+        case input::IN_STOP_TRIG:   return in_stop_trig = (STATUS*)o;
         default:
             return 0;
     }

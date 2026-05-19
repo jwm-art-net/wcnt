@@ -17,11 +17,12 @@ triangle_wave2::triangle_wave2(const char* uname) :
 
 void triangle_wave2::register_ui()
 {
-    register_input(input::IN_PHASE_TRIG);
-    register_input(input::IN_PHASE_STEP);
+    register_param(param::CONNECT)      ->set_flags(ui::UI_OPTION1);
+    register_input(input::IN_PHASE_TRIG)->set_flags(ui::UI_OPT2_DUP);
+    register_input(input::IN_PHASE_STEP)->set_flags(ui::UI_OPT2_DUP);
     register_param(param::NORM_FREQ);
-    register_input(input::IN_NORM_MOD)->set_flags(ui::UI_GROUP1);
-    register_param(param::NORM_MODSIZE)->set_flags(ui::UI_GROUP1);
+    register_input(input::IN_NORM_MOD)  ->set_flags(ui::UI_GROUP1);
+    register_param(param::NORM_MODSIZE) ->set_flags(ui::UI_GROUP1);
     register_param(param::RECYCLE_MODE);
     register_param(param::ZERO_RETRIGGER);
 }
@@ -84,6 +85,8 @@ bool triangle_wave2::set_param(param::TYPE pt, const void* data)
         case param::ZERO_RETRIGGER:
             zero_retrigger_mode = *(STATUS*)data;
             return true;
+        case param::CONNECT:
+            return auto_connect_module((const char*)data);
         default:
             return false;
     }

@@ -18,11 +18,12 @@ class wave : public synthmod::base
     const void* get_param(param::TYPE) const;
 
  private:
-    double output;
-    const double* in_phase_step;
+    double          output;
+    const double*   in_phase_step;
     wave_tables::WT type;
-    unsigned long phase;
-    const double* table;
+    uint32_t        phase;
+    const double*   table;
+
     void register_ui();
     ui::moditem_list* get_ui_items();
 };

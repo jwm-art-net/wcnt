@@ -23,8 +23,8 @@ void stepper::register_ui()
     register_input(input::IN_TRIG);
     register_input(input::IN_RESTART_TRIG);
     register_input(input::IN_MODULATION)->set_flags(ui::UI_GROUP1);
-    register_param(param::UP_THRESH)->set_flags(ui::UI_GROUP1);
-    register_param(param::LO_THRESH)->set_flags(ui::UI_GROUP1);
+    register_param(param::UP_THRESH)    ->set_flags(ui::UI_GROUP1);
+    register_param(param::LO_THRESH)    ->set_flags(ui::UI_GROUP1);
     register_param(param::RESPONSE_TIME);
     register_param(param::RECYCLE_MODE);
 }

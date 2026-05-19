@@ -477,6 +477,11 @@ synthmod::base* synthfilereader::read_synthmodule(const char* com)
     synthmod::TYPE smt = synthmod::names::type(com);
     if (smt == synthmod::ERR_TYPE || smt == synthmod::NONEZERO)
     {
+        if (wcnt::could_be_header(com)) {
+            wc_err("Mismatch between footer %s and header %s.",
+                                        com, synthheader->c_str());
+            return 0;
+        }
         wc_err("Unrecognised wcnt/jwmsynth module %s.", com);
         return 0;
     }

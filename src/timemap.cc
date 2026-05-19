@@ -208,7 +208,7 @@ void timemap::run()
             out_bpm += bpmrampsize;
             bpmchange_ratio = (double) bpmchange_pos / bpmchange_notelen;
             bpmsampletot = (samp_t)(wcnt::jwm.samplerate() * (60 / out_bpm)
-                         * ((double) (bpmchange_notelen - bpmchange_pos) 
+                         * ((double) (bpmchange_notelen - bpmchange_pos)
                          / beatlength));
             bpmrampsize = (targbpm - out_bpm) / (double) bpmsampletot;
             out_pos_step_size = barlength / (wcnt::jwm.samplerate()

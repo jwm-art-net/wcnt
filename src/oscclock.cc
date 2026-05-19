@@ -19,20 +19,21 @@ osc_clock::osc_clock(const char* uname) :
 
 void osc_clock::register_ui()
 {
-    register_input(input::IN_NOTE_ON_TRIG);
-    register_input(input::IN_NOTE_SLIDE_TRIG);
-    register_input(input::IN_PLAY_STATE)->set_flags(ui::UI_OPTIONAL)
-                                        ->add_descr("Hint to the osc_clock to"
-                                        " tell if it's driving an audible "
-                                        "sound or not.");
-    register_input(input::IN_FREQ);
-    register_param(param::OCTAVE)->set_flags(ui::UI_OPTIONAL);
-    register_param(param::TUNING_SEMITONES)->set_flags(ui::UI_OPTIONAL);
+    register_param(param::CONNECT)           ->set_flags(ui::UI_OPTION1);
+    register_input(input::IN_NOTE_ON_TRIG)   ->set_flags(ui::UI_OPT2_DUP);
+    register_input(input::IN_NOTE_SLIDE_TRIG)->set_flags(ui::UI_OPT2_DUP);
+    register_input(input::IN_FREQ)           ->set_flags(ui::UI_OPT2_DUP);
+
+    register_input(input::IN_PLAY_STATE)     ->set_flags(ui::UI_OPTIONAL)
+                        ->add_descr("Hint to the osc_clock to tell if it's "
+                                    "driving an audible sound or not.");
+    register_param(param::OCTAVE)            ->set_flags(ui::UI_OPTIONAL);
+    register_param(param::TUNING_SEMITONES)  ->set_flags(ui::UI_OPTIONAL);
     register_input(input::IN_FREQ_MOD1) ->set_flags(ui::UI_GROUP1);
     register_param(param::FREQ_MOD1SIZE)->set_flags(ui::UI_GROUP1);
     register_input(input::IN_FREQ_MOD2) ->set_flags(ui::UI_GROUP2);
     register_param(param::FREQ_MOD2SIZE)->set_flags(ui::UI_GROUP2);
-    register_param(param::PORTAMENTO)->set_flags(ui::UI_OPTIONAL);
+    register_param(param::PORTAMENTO)   ->set_flags(ui::UI_OPTIONAL);
     register_param(param::RESPONSE_TIME)->set_flags(ui::UI_OPTIONAL);
 }
 
@@ -125,6 +126,8 @@ bool osc_clock::set_param(param::TYPE pt, const void* data)
         case param::RESPONSE_TIME:
             response_time = *(double*)data;
             return true;
+        case param::CONNECT:
+            return auto_connect_module((const char*)data);
         default:
             return false;
     }

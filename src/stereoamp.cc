@@ -13,16 +13,16 @@ stereo_amp::stereo_amp(const char* uname) :
 
 void stereo_amp::register_ui()
 {
-    register_input(input::IN_LEFT);
-    register_input(input::IN_RIGHT)->set_connect_as(input::IN_LEFT)
-                                   ->set_flags(ui::UI_OPTIONAL);
-    register_input(input::IN_EG)->set_flags(ui::UI_OPTIONAL);
-    register_param(param::LEVEL)->set_flags(ui::UI_OPTION1);
-    register_param(param::LEFT_LEVEL)->set_flags(ui::UI_OPTION2 | ui::UI_OPT_DUPLICATE);
-    register_param(param::RIGHT_LEVEL)->set_flags(ui::UI_OPTION2 | ui::UI_OPT_DUPLICATE);
-    register_input(input::IN_AMP_MOD)->set_flags(ui::UI_GROUP1);
+    register_input(input::IN_SIGNAL)  ->set_flags(ui::UI_OPTION1);
+    register_input(input::IN_LEFT)    ->set_flags(ui::UI_OPT2_DUP);
+    register_input(input::IN_RIGHT)   ->set_flags(ui::UI_OPT2_DUP);
+    register_input(input::IN_EG)      ->set_flags(ui::UI_OPTIONAL);
+    register_param(param::LEVEL)      ->set_flags(ui::UI_OPTION1);
+    register_param(param::LEFT_LEVEL) ->set_flags(ui::UI_OPT2_DUP);
+    register_param(param::RIGHT_LEVEL)->set_flags(ui::UI_OPT2_DUP);
+    register_input(input::IN_AMP_MOD) ->set_flags(ui::UI_GROUP1);
     register_param(param::AMP_MODSIZE)->set_flags(ui::UI_GROUP1);
-    register_param(param::CLIP_LEVEL)->set_flags(ui::UI_OPTIONAL);
+    register_param(param::CLIP_LEVEL) ->set_flags(ui::UI_OPTIONAL);
 }
 
 ui::moditem_list* stereo_amp::get_ui_items()
@@ -49,6 +49,7 @@ const void* stereo_amp::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
+        case input::IN_SIGNAL: return in_left = in_right = (double*)o;
         case input::IN_LEFT:   return in_left = (double*)o;
         case input::IN_RIGHT:  return in_right = (double*)o;
         case input::IN_EG:     return in_amp_eg = (double*)o;

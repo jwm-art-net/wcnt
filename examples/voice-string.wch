@@ -1,0 +1,290 @@
+wcnt-1.32/jwmsynth
+header header.wch
+
+autogroup_create
+voice-string
+
+    wcnt_note
+    enter
+        in_note_on_trig     off
+        in_note_slide_trig  off
+        in_note_off_trig    off
+        in_frequency        off
+        in_velocity         off
+    enter
+
+    constant detune_multiplier value 1.0 detune_multiplier
+
+    multiplier
+    frequency
+        in_signal1 enter out_frequency
+        in_signal2 detune_multiplier out_output
+    frequency
+
+
+    adsr
+    env1
+        // intended volume envelope
+        envelope
+            section name attack
+                ut  250.0    ul  1.0
+                lt  300.0    ll  1.0
+            section name decay
+                ut  175.0   ul  0.8
+                lt  145.0   ll  0.8
+            section name release
+                ut  1735.0   ul  0.0
+                lt  1755.0   ll  0.0
+        envelope
+
+        in_note_on_trig     enter out_note_on_trig
+        in_note_off_trig    enter out_note_off_trig
+        in_velocity         enter out_velocity
+        up_thresh        1.0
+        lo_thresh        0.0
+        start_level      0.0
+        min_time         100.0
+        max_sustain_time 0.0
+        release_is_ratio off
+        sustain_state    on
+        zero_retrigger   off
+    env1
+
+    osc_clock
+    orb_clock
+        in_note_on_trig     enter out_note_on_trig
+        in_note_slide_trig  enter out_note_slide_trig
+        in_frequency        frequency out_output
+        octave_offset     -8
+        tuning_semitones 0
+    orb_clock
+
+
+    orbit
+    orbit1
+        in_restart_trig  off
+        in_trig          orb_clock  out_phase_trig
+        orbit_type       threeply
+        a  -1.576159
+        b -10.1042914
+        c  1.0116122
+        test_iterations  100000
+    orbit1
+
+    lfo_clock
+    lfoclk
+        freq 4
+        in_phase_trig   enter out_note_on_trig
+        in_freq_mod1    orbit1 out_y
+        freq_mod1_size  1.1
+        in_freq_mod2    env1 out_output
+        freq_mod2_size  1.5
+    lfoclk
+
+    wave_phase
+    lfowv
+        type sine
+        in_phase_trig   enter out_note_on_trig
+        in_phase_step   lfoclk out_phase_step
+        on_trig_reset_phase on
+        recycle_mode on
+    lfowv
+
+    osc_clock
+    osc1
+        in_note_on_trig     enter out_note_on_trig
+        in_note_slide_trig  enter out_note_slide_trig
+        in_frequency        frequency out_output
+        in_freq_mod1    lfowv out_output
+        freq_mod1_size  1.005
+        octave_offset  0
+    osc1
+
+    wave
+    wf1
+        type saw
+        in_phase_step osc1 out_phase_step
+    wf1
+
+    glame_filter
+    lpf1
+        in_signal wf1 out_output
+        filter_type lowpass
+        freq 2500
+        stages 2
+        in_freq_mod1 env1 out_output
+        freq_mod1_size 0.5
+    lpf1
+
+    osc_clock
+    osc2a
+        in_note_on_trig     enter out_note_on_trig
+        in_note_slide_trig  enter out_note_slide_trig
+        in_frequency        frequency out_output
+        tuning_semitones 0
+        octave_offset  0
+    osc2a
+
+    osc_clock
+    osc2b
+        in_note_on_trig     enter out_note_on_trig
+        in_note_slide_trig  enter out_note_slide_trig
+        in_frequency        frequency out_output
+        tuning_semitones 6
+        octave_offset  0
+    osc2b
+
+    wave_phase
+    wf2
+        type sine
+        in_phase_trig osc2a out_phase_trig
+        in_phase_step osc2b out_phase_step
+        on_trig_reset_phase on
+        phase_cycles 1.0
+        recycle_mode off
+    wf2
+
+    glame_filter
+    lpf2
+        in_signal wf2 out_output
+        filter_type lowpass
+        freq 2500
+        stages 1
+        in_freq_mod1 env1 out_output
+        freq_mod1_size 0.5
+    lpf2
+
+    osc_clock
+    osc3a
+        in_note_on_trig     enter out_note_on_trig
+        in_note_slide_trig  enter out_note_slide_trig
+        in_frequency        frequency out_output
+        tuning_semitones 0
+        octave_offset  -1
+        in_freq_mod1    lfowv out_output
+        freq_mod1_size  1.005
+    osc3a
+
+    osc_clock
+    osc3b
+        in_note_on_trig     enter out_note_on_trig
+        in_note_slide_trig  enter out_note_slide_trig
+        in_frequency        frequency out_output
+        tuning_semitones 0
+        octave_offset  0
+        in_freq_mod1    lfowv out_output
+        freq_mod1_size  1.005
+    osc3b
+
+    wave_phase
+    wf3
+        type tri
+        in_phase_trig osc3a out_phase_trig
+        in_phase_step osc3b out_phase_step
+        on_trig_reset_phase on
+        phase_cycles 1.0
+        recycle_mode off
+    wf3
+
+    glame_filter
+    lpf3
+        in_signal wf3 out_output
+        filter_type lowpass
+        freq 2500
+        stages 2
+        in_freq_mod1 env1 out_output
+        freq_mod1_size 0.5
+    lpf3
+
+
+    osc_clock
+    osc4
+        in_note_on_trig     enter out_note_on_trig
+        in_note_slide_trig  enter out_note_slide_trig
+        in_frequency        frequency out_output
+        in_freq_mod1    lfowv out_output
+        freq_mod1_size  1.025
+        octave_offset  1
+        tuning_semitones 6
+    osc4
+
+    noise_generator ng1 ng1
+
+    glame_filter
+    hpf4
+        in_signal ng1 out_output
+        filter_type highpass
+        freq 100
+        stages 1
+        in_freq_mod1 env1 out_output
+        freq_mod1_size 0.5
+    hpf4
+
+    glame_butterworth
+    lpf4
+        filter_type           lowpass
+        in_signal             hpf4 out_output
+        in_cutoff_phase_step  osc4 out_phase_step
+        resonance             0.93
+    lpf4
+
+    mono_amp
+    out1
+        in_signal lpf1 out_output
+        in_amp_eg env1 out_output
+        in_gain_mod wf3 out_output
+        gain_mod_size 0.51
+        gain 0.5
+    out1
+
+    mono_amp
+    out2
+        in_signal lpf2 out_output
+        in_amp_eg env1 out_output
+        in_gain_mod wf3 out_output
+        gain_mod_size 0.51
+        gain 0.235
+    out2
+
+    mono_amp
+    out3
+        in_signal lpf3 out_output
+        in_amp_eg env1 out_output
+        gain 0.35
+    out3
+
+    mono_amp
+    out4
+        in_signal lpf4 out_output
+        in_amp_eg env1 out_output
+        gain 0.12
+    out4
+
+    combiner
+    mix
+        signals
+            synthmod name out1
+            synthmod name out2
+            synthmod name out3
+            synthmod name out4
+        signals
+        mean_total off
+    mix
+
+    single_band_parametric
+    eq
+        in_signal mix   out_output
+        in_phase_step   osc4 out_phase_step
+        gain_db -16.0
+        bandwidth 0.5
+    eq
+
+    panner
+    pan
+        in_signal eq out_output
+        pan 0.0
+    pan
+
+voice-string
+
+wcnt-1.32/jwmsynth

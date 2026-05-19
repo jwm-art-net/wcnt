@@ -200,6 +200,12 @@ namespace param
     STR_UNNAMED,
     STR_LIST,
     TIME_IS_RELATIVE,
+    START_PHASE,
+    SHAPE_START_PHASE,
+    ZERO_WHEN_OFF,
+    PHASE_MOD_SIZE,
+    EG_AMOUNT,
+    CONNECT,
     LAST_TYPE
  };
 

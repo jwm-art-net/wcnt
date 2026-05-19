@@ -54,11 +54,14 @@ void sequencer::register_ui()
 {
     register_dobj(dobj::LST_TRACK, dobj::SIN_RIFFNODE);
     register_param(param::START_BAR);
-    register_input(input::IN_BAR);
-    register_input(input::IN_BAR_TRIG);
-    register_input(input::IN_BEATS_PER_BAR);
-    register_input(input::IN_BEAT_VALUE);
-    register_input(input::IN_POS_STEP_SIZE);
+
+    register_param(param::CONNECT)         ->set_flags(ui::UI_OPTION1);
+    register_input(input::IN_BAR)          ->set_flags(ui::UI_OPT2_DUP);
+    register_input(input::IN_BAR_TRIG)     ->set_flags(ui::UI_OPT2_DUP);
+    register_input(input::IN_BEATS_PER_BAR)->set_flags(ui::UI_OPT2_DUP);
+    register_input(input::IN_BEAT_VALUE)   ->set_flags(ui::UI_OPT2_DUP);
+    register_input(input::IN_POS_STEP_SIZE)->set_flags(ui::UI_OPT2_DUP);
+
     register_param(param::VELOCITY_RESPONSE)->set_flags(ui::UI_OPTIONAL);
 }
 
@@ -163,6 +166,8 @@ bool sequencer::set_param(param::TYPE pt, const void* data)
         case param::START_BAR:
             start_bar = *(wcint_t*)data;
             return true;
+        case param::CONNECT:
+            return auto_connect_module((const char*)data);
         default:
             return false;
     }

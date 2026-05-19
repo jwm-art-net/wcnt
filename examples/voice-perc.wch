@@ -1,0 +1,173 @@
+wcnt-1.32/jwmsynth
+header header.wch
+
+autogroup_create
+voice-perc
+
+    wcnt_note
+    enter
+        in_note_on_trig     off
+        in_note_slide_trig  off
+        in_note_off_trig    off
+        in_frequency        off
+        in_velocity         off
+    enter
+
+    adsr
+    env1
+        // intended volume envelope
+        envelope
+            section name attack
+                ut  5.0    ul  1.0
+                lt  5.0    ll  1.0
+            section name decay
+                ut  15.0   ul  0.58
+                lt  15.0   ll  0.58
+            section name release
+                ut  135.0   ul  0.0
+                lt  155.0   ll  0.0
+        envelope
+
+        in_note_on_trig     enter out_note_on_trig
+        in_note_off_trig    enter out_note_off_trig
+        in_velocity         enter out_velocity
+        up_thresh        1.0
+        lo_thresh        0.0
+        start_level      0.0
+        min_time         1.0
+        max_sustain_time 25.0
+        release_is_ratio off
+        sustain_state    on
+        zero_retrigger   off
+    env1
+
+    adsr
+    env2
+        // intended PM envelope
+        envelope
+            section name attack
+                ut  2.0    ul  1.0
+                lt  2.0    ll  1.0
+            section name decay
+                ut  45.0   ul  0.3
+                lt  65.0   ll  0.3
+            section name release
+                ut  135.0   ul  0.0
+                lt  155.0   ll  0.0
+        envelope
+
+        in_note_on_trig     enter out_note_on_trig
+        in_note_off_trig    enter out_note_off_trig
+        in_velocity         enter out_velocity
+        up_thresh        1.0
+        lo_thresh        0.0
+        start_level      0.0
+        min_time         3.0
+        max_sustain_time 2.0
+        release_is_ratio off
+        sustain_state    on
+        zero_retrigger   off
+    env2
+
+
+    osc_clock
+    o1
+        in_note_on_trig     enter out_note_on_trig
+        in_note_slide_trig  enter out_note_slide_trig
+        in_frequency        enter out_frequency
+        octave_offset   -1
+    o1
+
+    mono_amp
+    pm2
+        in_signal wp2 out_output
+        in_amp_eg env2 out_output
+        eg_amount 1.0
+    pm2
+
+    wave_phase
+    wp1
+        type sine
+        in_phase_trig        o1 out_phase_trig
+        in_phase_step        o1 out_phase_step
+        on_trig_reset_phase  off
+        phase_cycles         1.0
+        start_phase          0.0
+        in_phase_mod         pm2 out_output
+        phase_mod_size       1.0
+        invert_alt           off
+        zero_when_off        off
+        recycle_mode         off
+    wp1
+
+
+    osc_clock
+    o2
+        in_note_on_trig     enter out_note_on_trig
+        in_note_slide_trig  enter out_note_slide_trig
+        in_frequency        enter out_frequency
+        tuning_semitones    1.0
+        octave_offset   -1
+        in_freq_mod1    env2 out_output
+        freq_mod1_size 2
+    o2
+
+    mono_amp
+    pm3
+        in_signal wp3 out_output
+        in_amp_eg env2 out_output
+        eg_amount 1.0
+    pm3
+
+    wave_phase
+    wp2
+        type sine
+        in_phase_trig        o2 out_phase_trig
+        in_phase_step        o2 out_phase_step
+        on_trig_reset_phase  off
+        phase_cycles         1.0
+        start_phase          0.0
+        in_phase_mod         pm3 out_output
+        phase_mod_size     1.0
+        invert_alt           off
+        zero_when_off        off
+        recycle_mode         off
+    wp2
+
+
+    osc_clock
+    o3
+        in_note_on_trig     enter out_note_on_trig
+        in_note_slide_trig  enter out_note_slide_trig
+        in_frequency        enter out_frequency
+        tuning_semitones    4.0
+        octave_offset   -1
+    o3
+
+    wave_phase
+    wp3
+        type sine
+        in_phase_trig        o3 out_phase_trig
+        in_phase_step        o3 out_phase_step
+        on_trig_reset_phase  off
+        phase_cycles         1.0
+        start_phase          0.0
+        in_phase_mod         off
+        phase_mod_size     0.0
+        invert_alt           off
+        zero_when_off        off
+        recycle_mode         off
+    wp3
+
+    mono_amp
+    out
+        in_signal wp1 out_output
+        gain 1.0
+        in_amp_eg env1 out_output
+        clip_level 1.0
+    out
+
+
+voice-perc
+
+wcnt-1.32/jwmsynth

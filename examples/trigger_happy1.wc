@@ -1,4 +1,4 @@
-wcnt-1.30/jwmsynth
+wcnt-1.32/jwmsynth
 
 header header.wch
 
@@ -133,7 +133,7 @@ amp1
 
 wavfile_out
 wav1
-    in_left     amp1 out_output
+    in_signal   amp1 out_output
     in_bar      t1 out_count
     data_format pcm16 //float32
     filename    trigger_happy1.wav
@@ -147,4 +147,4 @@ wcnt_exit_module
     exit_bar    1
 wcnt_exit_module
 
-wcnt-1.30/jwmsynth
+wcnt-1.32/jwmsynth

@@ -3,6 +3,7 @@
 
 #include "getnames.h"
 #include "iocat.h"
+#include "outputnames.h"
 
 namespace input
 {
@@ -74,10 +75,11 @@ namespace input
     IN_INSP_ST_TRIG,
     IN_INSP_STR,
     IN_INSP_STR_TRIG,
+    IN_PHASE_MOD,
     LAST_TYPE
  };
 
- class names : public getnames<TYPE, iocat::TYPE>
+ class names : public getnames<TYPE, iocat::TYPE, output::TYPE>
  {
   public:
     static void instantiate() { static names inputnames; }

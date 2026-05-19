@@ -1,0 +1,279 @@
+wcnt-1.32/jwmsynth
+
+
+header header.wch
+
+
+time_map
+tm
+    meter_map
+        meter tsig 4/4 bar 0
+    meter_map
+    bpm_map
+        tempo bpm 130 bar 0
+    bpm_map
+tm
+
+
+riff
+riff1
+    quarter_value   16
+    notelist
+        note name c0   pos 0      len 80  vel 1.0
+        note name e0   pos 128    len 80  vel 1.0
+        note name g0   pos 256    len 200  vel 1.0
+    notelist
+riff1
+
+
+sequencer
+seq1
+    track
+        riff_node
+            riff riff1
+            bar 0 repeat 4 repeat_stripe 8
+            transpose -5
+    track
+
+    start_bar               0
+    in_bar              tm out_bar
+    in_bar_trig         tm out_bar_trig
+    in_beats_per_bar    tm out_beats_per_bar
+    in_beat_value       tm out_beat_value
+    in_pos_step_size    tm out_pos_step_size
+    velocity_response_time  5
+seq1
+
+
+
+synth_file_reader
+sfr
+    filename voice-string.wch
+sfr
+
+
+autogroup_add
+voice-string
+
+    // data objects (ie not modules) such as the input editor are not
+    // actually grouped, however, when they are situated inside an
+    // autogroup section, they use the group "namespace".  this means
+    // the output modules specified for inputs are firstly assumed to
+    // be modules in the group. if no such module exists with the group
+    // only then is the module for the connection looked for outside of
+    // the group.
+
+    input_editor
+    ie1
+        editlist
+            connect enter in_note_on_trig    seq1 out_note_on_trig
+            connect enter in_note_slide_trig seq1 out_note_slide_trig
+            connect enter in_note_off_trig   seq1 out_note_off_trig
+            connect enter in_frequency       seq1 out_frequency
+            connect enter in_velocity        seq1 out_velocity
+        editlist
+    ie1
+
+    stereo_amp
+    stout
+        in_left  voice-string.pan out_left
+        in_right voice-string.pan out_right
+        level  0.43
+    stout
+
+    adsr_scaler
+    egsc1
+        adsr_name       env1
+        attack_scale    1.5
+        decay_scale     1.5
+        release_scale   1.5
+    egsc1
+
+voice-string
+
+copier c1 from voice-string to voice-string2 c1
+copier c2 from voice-string to voice-string3 c2
+copier c3 from voice-string to voice-string4 c3
+copier c4 from voice-string to voice-string5 c4
+
+param_editor
+pe1
+    editlist
+        edit voice-string2.detune_multiplier value 0.98
+        edit voice-string3.detune_multiplier value 0.99
+        edit voice-string4.detune_multiplier value 1.01
+        edit voice-string5.detune_multiplier value 1.02
+
+        edit voice-string2.lfoclk freq 2
+        edit voice-string3.lfoclk freq 3
+        edit voice-string4.lfoclk freq 5
+        edit voice-string5.lfoclk freq 6
+
+        edit voice-string2.pan pan  0.3
+        edit voice-string3.pan pan -0.3
+        edit voice-string4.pan pan  0.5
+        edit voice-string5.pan pan -0.5
+    editlist
+pe1
+
+mixer
+out1
+    mix
+        synthmod name voice-string.stout
+        synthmod name voice-string2.stout
+        synthmod name voice-string3.stout
+        synthmod name voice-string4.stout
+        synthmod name voice-string5.stout
+    mix
+    master_level 0.75
+out1
+
+
+riff
+riff2
+    quarter_value   16
+    notelist
+        note name c0   pos 32     len 64  vel 1.0
+        note name e0   pos 144    len 64  vel 1.0
+        note name g0   pos 256    len 208  vel 1.0
+    notelist
+riff2
+
+
+
+sequencer
+seq2
+    track
+        riff_node
+            riff riff2
+            bar 8
+            transpose -10
+        riff_node
+            riff riff2
+            bar 16
+            transpose -12
+        riff_node
+            riff riff2
+            bar 24
+            transpose -8
+        riff_node
+            riff riff2
+            bar 32
+            transpose -10
+    track
+
+    start_bar               0
+    in_bar              tm out_bar
+    in_bar_trig         tm out_bar_trig
+    in_beats_per_bar    tm out_beats_per_bar
+    in_beat_value       tm out_beat_value
+    in_pos_step_size    tm out_pos_step_size
+    velocity_response_time  5
+seq2
+
+
+copier cc1 from voice-string to voice2-string1 cc1
+
+autogroup_add
+voice2-string1
+
+    input_editor
+    ie2
+        editlist
+            connect enter in_note_on_trig    seq2 out_note_on_trig
+            connect enter in_note_slide_trig seq2 out_note_slide_trig
+            connect enter in_note_off_trig   seq2 out_note_off_trig
+            connect enter in_frequency       seq2 out_frequency
+            connect enter in_velocity        seq2 out_velocity
+        editlist
+    ie2
+
+    adsr_scaler
+    egsc2
+        adsr_name       env1
+        attack_scale    1.5
+        decay_scale     1.5
+        release_scale   2.5
+    egsc2
+
+voice2-string1
+
+copier cc2 from voice2-string1 to voice2-string2 cc2
+copier cc3 from voice2-string1 to voice2-string3 cc3
+copier cc4 from voice2-string1 to voice2-string4 cc4
+copier cc5 from voice2-string1 to voice2-string5 cc5
+
+param_editor
+pe2
+    editlist
+        edit voice2-string2.detune_multiplier value 0.98
+        edit voice2-string3.detune_multiplier value 0.99
+        edit voice2-string4.detune_multiplier value 1.01
+        edit voice2-string5.detune_multiplier value 1.02
+
+        edit voice2-string2.lfoclk freq 2
+        edit voice2-string3.lfoclk freq 3
+        edit voice2-string4.lfoclk freq 5
+        edit voice2-string5.lfoclk freq 6
+
+        edit voice2-string2.pan pan  0.6
+        edit voice2-string3.pan pan -0.6
+        edit voice2-string4.pan pan  0.9
+        edit voice2-string5.pan pan -0.9
+    editlist
+pe2
+
+mixer
+out2
+    mix
+        synthmod name voice2-string1.stout
+        synthmod name voice2-string2.stout
+        synthmod name voice2-string3.stout
+        synthmod name voice2-string4.stout
+        synthmod name voice2-string5.stout
+    mix
+    master_level 0.75
+out2
+
+mixer
+out
+    mix
+        synthmod name out1
+        synthmod name out2
+    mix
+    master_level 0.85
+out
+
+
+caps_plate
+revb
+    in_left    out out_left
+    in_right   out out_right
+    bandwidth  0.9
+    tail       0.9
+    damping    0.1
+    wet/dry    0.4
+revb
+
+
+wavfile_out
+wfo
+    filename    voice-string-sequence.wav
+    data_format pcm16
+    in_left     revb out_left
+    in_right    revb out_right
+    in_bar      tm out_bar
+    start_bar   0
+    end_bar     44
+    snapshot_mode off
+wfo
+
+
+wcnt_exit
+exit
+    in_bar      tm out_bar
+    exit_bar    44
+exit
+
+
+wcnt-1.32/jwmsynth

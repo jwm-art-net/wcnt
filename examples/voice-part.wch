@@ -1,0 +1,190 @@
+wcnt-1.32/jwmsynth
+header header.wch
+
+autogroup_create
+voice-part
+
+    wcnt_note
+    enter
+        in_note_on_trig     off
+        in_note_slide_trig  off
+        in_note_off_trig    off
+        in_frequency        off
+        in_velocity         off
+    enter
+
+    adsr
+    env1
+        // intended volume envelope
+        envelope
+            section name attack
+                ut  5.0    ul  1.0
+                lt  10.0    ll  1.0
+            section name decay
+                ut  75.0   ul  0.86
+                lt  45.0   ll  0.86
+            section name release
+                ut  235.0   ul  0.0
+                lt  295.0   ll  0.0
+        envelope
+
+        in_note_on_trig     enter out_note_on_trig
+        in_note_off_trig    enter out_note_off_trig
+        in_velocity         enter out_velocity
+        up_thresh        1.0
+        lo_thresh        0.0
+        start_level      0.0
+        min_time         100.0
+        max_sustain_time 0.0
+        release_is_ratio off
+        sustain_state    on
+        zero_retrigger   off
+    env1
+
+    logic_trigger
+    lg
+        in_trig1 enter out_note_on_trig
+        function or
+        in_trig2 enter out_note_slide_trig
+        precision 1
+    lg
+
+    adsr
+    env2
+        // intended tone envelope
+        envelope
+            section name attack
+                ut  5.0    ul  1.0
+                lt  3.0    ll  1.0
+            section name decay
+                ut  35.0   ul  0.0
+                lt  15.0   ll  0.0
+            section name release
+                ut  135.0   ul  0.0
+                lt  95.0   ll  0.0
+        envelope
+
+        in_note_on_trig     lg out_trig //out_note_on_trig
+        in_note_off_trig    enter out_note_off_trig
+        in_velocity         enter out_velocity
+        up_thresh        1.0
+        lo_thresh        0.0
+        start_level      1.0
+        min_time         100.0
+        max_sustain_time 0.0
+        release_is_ratio off
+        sustain_state    on
+        zero_retrigger   on
+    env2
+
+
+    osc_clock
+    orb_clock
+        in_note_on_trig     enter out_note_on_trig
+        in_note_slide_trig  enter out_note_slide_trig
+        in_frequency        enter out_frequency
+        in_freq_mod1    orbit1 out_y
+        freq_mod1_size  1.75
+        in_freq_mod2    env2 out_output
+        freq_mod2_size  1.75
+        octave_offset     2
+        tuning_semitones 3
+    orb_clock
+
+
+    orbit
+    orbit1
+        in_restart_trig  off
+        in_trig          orb_clock  out_phase_trig
+        orbit_type       threeply //hopalong
+        a  -1.576159
+        b -10.1042914
+        c  1.0116122
+        test_iterations  100000
+    orbit1
+
+
+    osc_clock
+    osc1
+        in_note_on_trig     enter out_note_on_trig
+        in_note_slide_trig  enter out_note_slide_trig
+        in_frequency        enter out_frequency
+        in_freq_mod1    orbit1 out_x
+        freq_mod1_size  1.75
+        in_freq_mod2    orbit1 out_y
+        freq_mod2_size  1.75
+        octave_offset  -1
+    osc1
+
+
+    copier c1 from osc1 to osc2 c1
+
+
+    param_editor
+    pe1
+        editlist
+            edit osc2
+                octave_offset -1
+                tuning_semitones 5
+        editlist
+    pe1
+
+    wave_phase
+    wvph
+        type                 sine
+        in_phase_trig        osc1 out_phase_trig
+        in_phase_step        osc1 out_phase_step
+        on_trig_reset_phase  off
+        phase_cycles         1.5
+        invert_alt           on
+        shape_type           saw
+        in_shape_phase_step  osc2 out_phase_step
+        sync_shape           on
+        recycle_mode         on
+    wvph
+
+
+    clock
+    lfoclk
+        freq 0.0235
+    lfoclk
+
+
+    wave
+    lfowv
+        in_phase_step lfoclk out_phase_step
+        type sine
+    lfowv
+
+
+    osc_clock
+    lpfosc
+        in_note_on_trig     enter out_note_on_trig
+        in_note_slide_trig  enter out_note_slide_trig
+        in_frequency        enter out_frequency
+        in_freq_mod1    env2 out_output
+        freq_mod1_size  1.75
+        in_freq_mod2    lfowv out_output
+        freq_mod2_size  2
+        octave_offset  0
+    lpfosc
+
+
+    glame_butterworth
+    lpf
+        filter_type lowpass
+        in_signal wvph out_output
+        in_cutoff_phase_step lpfosc out_phase_step
+        resonance 0.2
+    lpf
+
+
+    multiplier
+    out
+        in_signal1 lpf out_output
+        in_signal2 env1 out_output
+    out
+
+voice-part
+
+wcnt-1.32/jwmsynth

@@ -33,10 +33,10 @@ wavfileout::wavfileout(const char* uname) :
 void wavfileout::register_ui()
 {
     register_param(param::FILENAME);
-    register_param(param::DATA_FMT,"pcm16|pcm24|pcm32|float32|float64");
-    register_input(input::IN_LEFT);
-    register_input(input::IN_RIGHT)->set_connect_as(input::IN_LEFT)
-                                   ->set_flags(ui::UI_OPTIONAL);
+    register_param(param::DATA_FMT, "pcm16|pcm24|pcm32|float32|float64");
+    register_input(input::IN_SIGNAL)->set_flags(ui::UI_OPTION1);
+    register_input(input::IN_LEFT)  ->set_flags(ui::UI_OPT2_DUP);
+    register_input(input::IN_RIGHT) ->set_flags(ui::UI_OPT2_DUP);
     register_input(input::IN_BAR);
     register_param(param::START_BAR);
     register_param(param::END_BAR);
@@ -78,9 +78,10 @@ const void* wavfileout::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
-        case input::IN_LEFT:       return in_l = (double*)o;
-        case input::IN_RIGHT:      return in_r = (double*)o;
-        case input::IN_BAR:        return in_bar = (wcint_t*)o;
+        case input::IN_SIGNAL:  return in_l = in_r = (double*)o;
+        case input::IN_LEFT:    return in_l = (double*)o;
+        case input::IN_RIGHT:   return in_r = (double*)o;
+        case input::IN_BAR:     return in_bar = (wcint_t*)o;
         default: return 0;
     }
 }
@@ -89,9 +90,9 @@ const void* wavfileout::get_in(input::TYPE it) const
 {
     switch(it)
     {
-        case input::IN_LEFT:       return in_l;
-        case input::IN_RIGHT:      return in_r;
-        case input::IN_BAR:        return in_bar;
+        case input::IN_LEFT:    return in_l;
+        case input::IN_RIGHT:   return in_r;
+        case input::IN_BAR:     return in_bar;
         default: return 0;
     }
 }
@@ -171,7 +172,7 @@ void wavfileout::timestamp_filename()
 {
     if (filename && filename != _filename)
         delete [] filename;
- 
+
     struct timespec tv;
     clock_gettime(CLOCK_REALTIME, &tv);
     char timestr[127];
@@ -197,7 +198,7 @@ void wavfileout::timestamp_filename()
     strcat(newname, dp);
     filename = newname;
 }
-  
+
 
 WAV_STATUS wavfileout::open_wav()
 {

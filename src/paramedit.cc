@@ -18,8 +18,7 @@ paramedit::paramedit() :
 void paramedit::register_ui()
 {
     register_param(param::STR_UNNAMED)->add_descr("MODULE-OR-DATA-OBJECT");
-    register_param(param::STR_LIST)
-            ->add_descr("PARAMETER-NAME VALUE (...)");
+    register_param(param::STR_LIST)->add_descr("PARAMETER-NAME VALUE (...)");
 }
 
 
@@ -45,7 +44,8 @@ bool paramedit::set_name(const char* n)
     std::cout << "paramedit::set_name(\"" << n << "\"" << std::endl;
 #endif
     char* grpmodname = 0;
-    synthmod::base* sm = wcnt::jwm.get_modlist()->autogroup_or_any_get_synthmod_by_name(n, &grpmodname);
+    synthmod::base* sm = wcnt::jwm.get_modlist()
+                    ->autogroup_or_any_get_synthmod_by_name(n, &grpmodname);
     dobj::base* dbj =wcnt::get_dobjlist()->get_dobj_by_name(n);
     if (!sm && !dbj)
         return false;
@@ -72,8 +72,8 @@ void paramedit::set_parstr(const char* n)
 
 bool paramedit::do_param_edits()
 {
-    synthmod::base* sm =
-                wcnt::jwm.get_modlist()->autogroup_or_any_get_synthmod_by_name(name, 0);
+    synthmod::base* sm = wcnt::jwm.get_modlist()
+                            ->autogroup_or_any_get_synthmod_by_name(name, 0);
     dobj::base* dbj =wcnt::get_dobjlist()->get_dobj_by_name(name);
     if (sm && dbj) {
         dobjerr("A data object and module share the username %s. Cannot "
@@ -103,14 +103,12 @@ bool paramedit::do_param_edits()
         }
 
         if (sm) {
-            if (!mod_param_edit(sm, parname.c_str(), valstr.c_str())) {
+            if (!mod_param_edit(sm, parname.c_str(), valstr.c_str()))
                 return false;
-            }
         }
         else {
-            if (!dobj_param_edit(dbj, parname.c_str(), valstr.c_str())) {
+            if (!dobj_param_edit(dbj, parname.c_str(), valstr.c_str()))
                 return false;
-            }
         }
         if (wcnt::jwm.is_verbose())
             std::cout << "\n    " << parname << " " << valstr;

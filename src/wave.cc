@@ -85,6 +85,5 @@ void wave::init()
 void wave::run()
 {
     output = table[phase >> wave_tables::table_shift];
-    phase += (unsigned long)
-        (*in_phase_step * wave_tables::phase_step_base);
+    phase += (uint32_t)(*in_phase_step * wave_tables::phase_step_base);
 }

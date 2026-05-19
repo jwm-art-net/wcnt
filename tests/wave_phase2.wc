@@ -1,0 +1,120 @@
+wcnt-1.32/jwmsynth
+
+samplerate 44100
+
+
+timer
+t
+    timings
+        time seconds 0
+        time seconds 12
+    timings
+    time_is_relative off
+t
+
+
+constant_note n2f name c-1 n2f
+
+
+osc_clock
+o1
+        in_note_on_trig     t out_trig
+        in_note_slide_trig  off
+        in_frequency        n2f out_frequency
+        octave_offset       -1
+        in_freq_mod1    wp3 out_output
+        freq_mod1_size 1.25
+o1
+
+
+osc_clock
+o2
+        in_note_on_trig     t out_trig
+        in_note_slide_trig  off
+        in_frequency        n2f out_frequency
+        octave_offset       -1
+        tuning_semitones    10
+        in_freq_mod1    wv out_output
+        freq_mod1_size 1.25
+o2
+
+wave
+wv
+    type saw
+    in_phase_step o2 out_phase_step
+wv
+
+
+wave_phase
+wp1
+    in_phase_trig       o1  out_phase_trig
+    in_phase_step       o1  out_phase_step
+    type                sine
+    on_trig_reset_phase off
+    recycle_mode        off
+    invert_alt          off
+    start_phase         0.0
+    phase_cycles        1
+    zero_when_off       on
+    in_phase_mod    wp2 out_output
+    phase_mod_amount 0.5
+    shape_type      sine
+    in_shape_phase_step o2 out_phase_step
+    sync_shape off
+wp1
+
+
+wave_phase
+wp2
+    in_phase_trig       o1  out_phase_trig
+    in_phase_step       o1  out_phase_step
+    type                sine
+    on_trig_reset_phase off
+    recycle_mode        off
+    invert_alt          off
+    start_phase         0.0
+    phase_cycles        1
+    zero_when_off       on
+    in_phase_mod    wp3 out_output
+    phase_mod_amount 0.5
+wp2
+
+wave_phase
+wp3
+    in_phase_trig       o2  out_phase_trig
+    in_phase_step       o2  out_phase_step
+    type                sine
+    on_trig_reset_phase off
+    recycle_mode        off
+    invert_alt          off
+    start_phase         0.0
+    phase_cycles        1
+    zero_when_off       on
+    in_phase_mod    wv out_output
+    phase_mod_amount 0.5
+wp3
+
+
+wavfile_out
+wav
+    in_signal   wp1 out_output
+    in_bar      t out_count
+    snapshot_mode off
+    data_format pcm16
+    filename    wave_phase2.wav
+    start_bar   0
+    end_bar     1
+wav
+
+
+wcnt_exit
+exit
+    in_bar      t out_count
+    exit_bar    1
+exit
+
+
+wcnt-1.32/jwmsynth
+
+
+

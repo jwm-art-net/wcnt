@@ -1,0 +1,41 @@
+wcnt-1.32/jwmsynth
+
+samplerate 44100
+
+
+wcnt_note
+wn1
+    connect off
+wn1
+
+
+wcnt_note
+wn2
+    connect wn1
+wn2
+
+
+adsr
+eg
+    envelope
+        section name attack
+            time 5 level 0.85
+        section name decay
+            time 95 level 0.85
+        section name release
+            time 95 level 0.0
+    envelope
+
+    connect wn1
+
+    sustain_state       on
+eg
+
+
+wcnt_exit
+x
+    in_bar      off
+    exit_bar    0
+x
+
+wcnt-1.32/jwmsynth

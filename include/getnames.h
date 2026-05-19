@@ -5,7 +5,7 @@
 #include <cstring>
 
 
-template <typename T, typename C>
+template <typename T, typename C, typename M = int>
 class getnames
 {
  public:
@@ -18,10 +18,11 @@ class getnames
     #endif
     static T            type(const char* name);
     static T            type(const char* name, T type_hint);
-    static const char*  get(T t)        { return gn_data[chk(t)].name;    }
-    static C category(T t)              { return gn_data[chk(t)].cat;     }
-    static C category(const char* name) { return gn_data[type(name)].cat; }
-    static const char*  descr(T t)      { return gn_data[chk(t)].descr;   }
+    static const char*  get(T t)         { return gn_data[chk(t)].name;    }
+    static C category(T t)               { return gn_data[chk(t)].cat;     }
+    static C category(const char* name)  { return gn_data[type(name)].cat; }
+    static const char*  descr(T t)       { return gn_data[chk(t)].descr;   }
+    static M misc(T t)                   { return gn_data[chk(t)].misc;    }
     static const char** all_in_category(C cat, int* return_count);
     #ifdef UNUSED
     static T*           get_types_in_category(C cat);
@@ -34,6 +35,7 @@ class getnames
         const char* const   name;
         C                   cat;
         const char* const   descr;
+        M                   misc;
     };
 
     getnames(T count, const struct gn_data*);
@@ -47,8 +49,8 @@ class getnames
     #endif
 };
 
-template <typename T, typename C>
-getnames<T, C>::getnames(T count, const struct gn_data* data)
+template <typename T, typename C, typename M>
+getnames<T, C, M>::getnames(T count, const struct gn_data* data)
 {
     gn_data = data;
     gn_count = count;
@@ -57,8 +59,8 @@ getnames<T, C>::getnames(T count, const struct gn_data* data)
     #endif
 }
 
-template <typename T, typename C>
-T getnames<T, C>::type(const char* name)
+template <typename T, typename C, typename M>
+T getnames<T, C, M>::type(const char* name)
 {
     for (int i = 1; i < gn_count; ++i)
         if (strcmp(name, gn_data[i].name) == 0)
@@ -66,8 +68,8 @@ T getnames<T, C>::type(const char* name)
     return (T)0;
 }
 
-template <typename T, typename C>
-T getnames<T, C>::type(const char* name, T type_hint)
+template <typename T, typename C, typename M>
+T getnames<T, C, M>::type(const char* name, T type_hint)
 {
     if (strcmp(name, gn_data[chk(type_hint)].name) == 0)
         return type_hint;
@@ -75,8 +77,8 @@ T getnames<T, C>::type(const char* name, T type_hint)
 }
 
 #ifdef UNUSED
-template <typename T, typename C>
-T* getnames<T, C>::get_types_in_category(C cat)
+template <typename T, typename C, typename M>
+T* getnames<T, C, M>::get_types_in_category(C cat)
 {
     if (!cat)
         return 0;
@@ -96,8 +98,8 @@ T* getnames<T, C>::get_types_in_category(C cat)
 }
 #endif
 
-template <typename T, typename C>
-const char** getnames<T, C>::all_in_category(C cat, int* ret_count)
+template <typename T, typename C, typename M>
+const char** getnames<T, C, M>::all_in_category(C cat, int* ret_count)
 {
     if (ret_count)
         *ret_count = 0;
@@ -123,8 +125,8 @@ const char** getnames<T, C>::all_in_category(C cat, int* ret_count)
 
 #ifdef DEBUG
 #include <iostream>
-template <typename T, typename C>
-void getnames<T, C>::check_index()
+template <typename T, typename C, typename M>
+void getnames<T, C, M>::check_index()
 {
     for (int i = 0; i < gn_count; ++i) {
         if (gn_data[i].type != i) {
@@ -137,10 +139,10 @@ void getnames<T, C>::check_index()
 }
 #endif
 
-template <typename T, typename C>
-struct getnames<T, C>::gn_data const* getnames<T, C>::gn_data = 0;
+template <typename T, typename C, typename M>
+struct getnames<T, C, M>::gn_data const* getnames<T, C, M>::gn_data = 0;
 
-template <typename T, typename C>
-int getnames<T, C>::gn_count = 0;
+template <typename T, typename C, typename M>
+int getnames<T, C, M>::gn_count = 0;
 
 #endif

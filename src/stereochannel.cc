@@ -1,8 +1,9 @@
 #include "../include/stereochannel.h"
 
 stereo_channel::stereo_channel(const char* uname) :
- synthmod::base(synthmod::STEREOCHANNEL, uname, SM_HAS_STEREO_OUTPUT
-                                      | SM_EMPTY_RUN),
+ synthmod::base(synthmod::STEREOCHANNEL, uname, SM_HAS_STEREO_OUTPUT |
+                                                SM_EMPTY_RUN |
+                                                SM_PASSTHROUGH),
  io_left(0), io_right(0)
 {
     register_output(output::OUT_LEFT);
@@ -11,9 +12,9 @@ stereo_channel::stereo_channel(const char* uname) :
 
 void stereo_channel::register_ui()
 {
-    register_input(input::IN_LEFT);
-    register_input(input::IN_RIGHT)->set_connect_as(input::IN_LEFT)
-                                   ->set_flags(ui::UI_OPTIONAL);
+    register_input(input::IN_SIGNAL)->set_flags(ui::UI_OPTION1);
+    register_input(input::IN_LEFT)  ->set_flags(ui::UI_OPT2_DUP);
+    register_input(input::IN_RIGHT) ->set_flags(ui::UI_OPT2_DUP);
 }
 
 ui::moditem_list* stereo_channel::get_ui_items()
@@ -40,6 +41,7 @@ const void* stereo_channel::set_in(input::TYPE it, const void* o)
 {
     switch(it)
     {
+        case input::IN_SIGNAL: return io_left = io_right = (double*)o;
         case input::IN_LEFT:   return io_left = (double*)o;
         case input::IN_RIGHT:  return io_right = (double*)o;
         default: return 0;

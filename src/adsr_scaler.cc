@@ -6,6 +6,7 @@ adsr_scaler::adsr_scaler() :
  padsr(0),
  attack_scale(1.0), decay_scale(1.0), release_scale(1.0)
 {
+    set_allowed_in_autogroup();
 }
 
 void adsr_scaler::register_ui()

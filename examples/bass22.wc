@@ -1,4 +1,4 @@
-wcnt-1.30/jwmsynth
+wcnt-1.32/jwmsynth
 
 //  wc file for testing modules implimenting LADSPA plugins
 //  -------------------------------------------------------
@@ -253,7 +253,7 @@ lpf
 
 wavfile_out
 wav
-    in_left      lpf out_output
+    in_signal    lpf out_output
     in_bar       time1 out_bar
     data_format  float32
     filename     bass22.wav
@@ -268,5 +268,5 @@ exit
     exit_bar    4
 exit
 
-wcnt-1.30/jwmsynth
+wcnt-1.32/jwmsynth
 

@@ -7,6 +7,7 @@
 #include "../include/modoutputlist.h"
 #include "../include/synthmodlist.h"
 #include "../include/ui_moditem.h"
+#include "../include/listwork.h"
 
 #include <iostream>
 
@@ -283,6 +284,50 @@ namespace synthmod
     }
     return true;
  }
+
+ bool base::auto_connect_module(const char* name)
+ {
+    ui::moditem_list* items = get_ui_items();
+    // we need to sneak around the list as it's in use by the synth_file_reader!
+    ll_item<ui::base<synthmod::base*>>* llitem = items->sneak_first();
+    bool off = strcmp(name, "off") == 0;
+    while(llitem) {
+        bool connections_made = false;
+        ui::moditem* item = llitem->get_data();
+        if (item->get_item_type() == ui::UI_PARAM
+         && strcmp(item->get_name(), "connect") == 0
+         && item->get_option_no() == 1)
+        {
+            llitem = llitem->get_next();
+            while (llitem) {
+                item = llitem->get_data();
+                if (item->get_option_no() != 2)
+                    break;
+                if (item->get_item_type() == ui::UI_INPUT) {
+                    ui::modinput* mi = static_cast<ui::modinput*>(item);
+                    std::cout << "auto connect " << name << " --> item: " << item->get_name() << std::endl;
+                    input::TYPE it = mi->get_input_type();
+                    connectorlist* cl = wcnt::get_connectlist();
+                    connector* con = 0;
+                    if (off)
+                        con = cl->add_connector_off(this, it);
+                    else
+                        con = cl->add_connector(this, it, name, input::names::misc(it));
+                    if (wcnt::jwm.get_modlist()->get_autogroup())
+                        con->set_group_pending();
+                    connections_made = true;
+                }
+                llitem = llitem->get_next();
+            }
+        }
+        if (connections_made)
+            return true;
+        if (llitem)
+            llitem = llitem->get_next();
+    }
+    return false;
+ }
+
 
 
  #ifdef DEBUG

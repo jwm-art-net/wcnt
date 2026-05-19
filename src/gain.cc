@@ -5,7 +5,7 @@ gain::gain(synthmod::base* _sm) :
  modpart::base(_sm),
  out(0.0f),
  in_signal(0), in_mod(0),
- level(0.0), mod_amount(0.0),
+ level(1.0), mod_amount(0.0),
  center(0.0), half_range(0.0)
 {
 }
@@ -13,7 +13,7 @@ gain::gain(synthmod::base* _sm) :
 void gain::register_ui()
 {
     register_sm_input(input::IN_SIGNAL);
-    register_sm_param(param::GAIN);
+    register_sm_param(param::GAIN)->set_flags(ui::UI_OPTIONAL);
     register_sm_input(input::IN_GAIN_MOD)->set_flags(ui::UI_GROUP1);
     register_sm_param(param::GAIN_MODSIZE)->set_flags(ui::UI_GROUP1);
 }
