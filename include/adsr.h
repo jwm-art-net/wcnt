@@ -13,17 +13,17 @@
 //  release sections, but any number of sub sections can be added Another
 //  un-standard feature is that each ADSR is really two ADSRs: lower and
 //  upper. Using the velocity input will modulate the output between these
-//  two adsrs. The value of the velocity input is only checked at the 
+//  two adsrs. The value of the velocity input is only checked at the
 //  begining of each section or sub section not constantly. You can also
 //  turn OFF zero re-triggering and the sustain section if you wish.
-//  
+//
 //  what's new in wcnt-1.1001?
-//  
+//
 //  upper_thresh and lower_thresh which are threshholds by the sound of
 //  it. all values above upper_thresh use the upper envelope, while all
 //  values below lower_thresh use the lower envelope. simple, but nice.
-//  
-//  
+//
+//
 //  what's new in wcnt-1.128?
 //      new parameters:
 //        release_is_ratio
@@ -51,7 +51,7 @@ public:
     #endif
 
     adsr_coord* goto_section(adsr_coord::SECT sect) {
-		llitem* tmp = find_in_data(sneak_first(), sect);
+        llitem* tmp = find_in_data(sneak_first(), sect);
         return tmp ? tmp->get_data() : 0;
     }
 

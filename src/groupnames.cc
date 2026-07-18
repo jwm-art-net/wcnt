@@ -1,6 +1,7 @@
 #include "../include/groupnames.h"
 
-#include <cstdio>
+#include "../include/debug.h"
+
 #include <cstring>
 
 char* get_groupname(const char* const name)
@@ -28,9 +29,7 @@ char* get_groupname(const char* const name)
 
 char* set_groupname(const char* const groupname, const char* const name)
 {
-#ifdef DEBUG
-    std::cout << "set_groupname: groupname " << groupname << " name: " << name << std::endl;
-#endif
+    D_BUG("groupname %s name %s\n", groupname, name);
     char* non_grp_name;
     char* tmp_name = new char[strlen(name ) + 1];
     strcpy(tmp_name, name);

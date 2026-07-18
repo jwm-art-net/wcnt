@@ -9,8 +9,9 @@ timemap::timemap(const char* uname) :
  out_bar(0), out_bar_trig(OFF), out_pos_in_bar(0), out_pos_step_size(0),
  out_bpm(0.0), out_sample_total(0), out_sample_in_bar(0),
  out_beats_per_bar(0), out_beat_value(0), out_bpm_change_trig(OFF),
- out_meter_change_trig(OFF), out_bpm_change_state(OFF), bpm_map(0),
- meter_map(0),  currentbpm(0), targetbpm(0), currentmeter(0),
+ out_meter_change_trig(OFF), out_bpm_change_state(OFF),
+ bpm_changes_rel(OFF), bpm_map(0), meter_map(0),
+ currentbpm(0), targetbpm(0), currentmeter(0),
  bpmsampletot(0), bpmchangesamp(0), bpmchange_pos(0), bpmrampsize(0),
  bpmchange_ratio(0), targbpm(0), pos_in_bar(0), bpmchange_notelen(0),
  bpmchangebar(0), barlength(0), beatlength(0), meterchangebar(0), p_bpm(0)
@@ -34,7 +35,9 @@ timemap::timemap(const char* uname) :
 
 void timemap::register_ui()
 {
+
     register_dobj(dobj::LST_METER, dobj::SIN_METER);
+    register_param(param::BPM_CHANGES_REL);
     register_dobj(dobj::LST_BPM, dobj::SIN_BPM);
 }
 
@@ -51,6 +54,27 @@ timemap::~timemap()
     if (meter_map)
         delete meter_map;
 }
+
+
+bool timemap::set_param(param::TYPE pt, const void* data)
+{
+    switch(pt) {
+        case param::BPM_CHANGES_REL: bpm_changes_rel = *(STATUS*)data; break;
+        default:
+            return false;
+    }
+    return true;
+}
+
+const void* timemap::get_param(param::TYPE pt) const
+{
+    switch(pt) {
+        case param::BPM_CHANGES_REL: return &bpm_changes_rel;
+        default:
+            return 0;
+    }
+}
+
 
 bpmchange* timemap::add_bpm_change(bpmchange * bch)
 {
@@ -79,12 +103,15 @@ errors::TYPE timemap::validate()
         invalidate();
         return errors::ERROR;
     }
+// FIXME: these checks for something at bar 0 shouldn't be necessary
+// shouldn't really start at bar zero either
     if (currentmeter->get_bar() > 0) {
         sm_err("The first added time signature is at bar %d. Should be "
                                     "at bar 0.", currentmeter->get_bar());
         invalidate();
         return errors::ERROR;
     }
+
     if (currentbpm->get_bar() > 0) {
         sm_err("The first added tempo is at bar %d. Should start at "
                                         "bar 0.", currentbpm->get_bar());
@@ -93,7 +120,8 @@ errors::TYPE timemap::validate()
     }
     double bpm = 0;
     while(currentbpm){
-        bpm += currentbpm->get_bpm();
+        bpm = (bpm_changes_rel) ? bpm + currentbpm->get_bpm()
+                                : currentbpm->get_bpm();
         if (bpm < wcnt::min_bpm) {
             sm_err("At bar %d BPM change takes tempo below minimum "
                                     "BPM of %d.", currentbpm->get_bar(),
@@ -112,7 +140,7 @@ errors::TYPE timemap::validate()
     }
     return errors::NO_ERROR;
 }
-#include <cstdio>
+
 void timemap::init()
 {
     currentbpm = bpm_map->goto_first();
@@ -135,7 +163,10 @@ void timemap::run()
         pos_in_bar -= barlength;
         out_bar_trig = ON;
     }
-    else if (out_bar_trig == ON) out_bar_trig = OFF;
+    else if (out_bar_trig == ON) {
+        out_bar_trig = OFF;
+    }
+
     // do meter changes before bpm changes
     if (out_bar == meterchangebar) {
         if (currentmeter) {
@@ -151,12 +182,14 @@ void timemap::run()
                 meterchangebar = currentmeter->get_bar();
         }
     }
-    else
-    if (out_meter_change_trig == ON)
+    else if (out_meter_change_trig == ON) {
         out_meter_change_trig = OFF;
+    }
+
     if (out_bar == bpmchangebar) {
         currentbpm = targetbpm;
-        out_bpm = p_bpm + currentbpm->get_bpm();
+        out_bpm = (bpm_changes_rel) ? p_bpm + currentbpm->get_bpm()
+                                    : currentbpm->get_bpm();
         p_bpm = out_bpm;
         targetbpm = bpm_map->goto_next();
         out_bpm_change_trig = ON;
@@ -169,7 +202,9 @@ void timemap::run()
             if (bpmchangebar == out_bar) {
                 //immediate change -- not ramped.
                 currentbpm = targetbpm;
-                out_bpm += currentbpm->get_bpm();
+                out_bpm = (bpm_changes_rel) ? p_bpm + currentbpm->get_bpm()
+                                            : currentbpm->get_bpm();
+                out_bpm = currentbpm->get_bpm();
                 p_bpm = out_bpm; // make it so.
                 targetbpm = bpm_map->goto_next();
                 out_bpm_change_state = ON;
@@ -182,7 +217,8 @@ void timemap::run()
                 bpmchangebar = targetbpm->get_bar();
                 bpmchange_notelen = (samp_t)
                     ((bpmchangebar - currentbpm->get_bar()) * barlength);
-                targbpm = p_bpm + targetbpm->get_bpm();
+                targbpm = (bpm_changes_rel) ? p_bpm + targetbpm->get_bpm()
+                                            : currentbpm->get_bpm();
                 // these will change during bpm ramp
                 bpmchange_pos = 0;
                 bpmsampletot = notelen_to_samples(bpmchange_notelen);
@@ -194,7 +230,9 @@ void timemap::run()
          (60.0 / out_bpm) * out_beats_per_bar);
     }
     else {
-        if (out_bpm_change_trig == ON) out_bpm_change_trig = OFF;
+        if (out_bpm_change_trig == ON) {
+            out_bpm_change_trig = OFF;
+        }
         if (bpmrampsize != 0) {
             if (out_meter_change_trig == ON) {// there's always one!
                 bpmchange_notelen = (samp_t)
@@ -214,7 +252,8 @@ void timemap::run()
             out_pos_step_size = barlength / (wcnt::jwm.samplerate()
                               * (60 / out_bpm) * out_beats_per_bar);
             bpmchange_pos += out_pos_step_size;
-        } else out_bpm_change_state = OFF;
+        } else
+            out_bpm_change_state = OFF;
     }
     out_sample_total++;
     out_sample_in_bar++;

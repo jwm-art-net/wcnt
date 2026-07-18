@@ -383,8 +383,7 @@ amp1
     in_left cp1 out_left
     in_right cp1 out_right
     in_amp_eg   one out_output
-    left_level    0.5
-    right_level   0.5
+    gain    0.5
     clip_level    0.96
 amp1
 

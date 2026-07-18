@@ -46,7 +46,6 @@ namespace param
     PAN,
     PAN_MODSIZE,
     CLIP_LEVEL,
-    MASTER_LEVEL,
     NORM_FREQ,
     NORM_MODSIZE,
     TRIGGER_LEVEL,
@@ -80,8 +79,6 @@ namespace param
     FEED_MODSIZE,
     EXIT_BAR,
     RESPONSE_TIME,
-    LEFT_LEVEL,
-    RIGHT_LEVEL,
     RMS_TIME,
     DC_TIME,
     UP_THRESH,
@@ -206,6 +203,9 @@ namespace param
     PHASE_MOD_SIZE,
     EG_AMOUNT,
     CONNECT,
+    OUTPUT,
+    BALANCE,
+    BPM_CHANGES_REL,
     LAST_TYPE
  };
 

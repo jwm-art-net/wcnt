@@ -280,8 +280,8 @@ amp1
     in_signal   psquare out_output
     in_amp_eg   env     out_output
     gain            1.0
-    in_gain_mod     ng1     out_output
-    gain_mod_size  0.475
+    in_amp_mod     ng1     out_output
+    amp_mod_size  0.475
     clip_level    1.0
 amp1
 
@@ -393,8 +393,7 @@ boost_and_clip
     in_right    ch12_r out_output
     in_amp_eg   one out_output
     in_amp_mod  off
-    left_level    1.75
-    right_level   1.75
+    gain    1.75
     amp_mod_size  0.0
     clip_level    0.9
 boost_and_clip

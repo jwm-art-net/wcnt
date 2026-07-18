@@ -95,7 +95,7 @@ mix1
         synthmod name ch2
         synthmod name ch3
     mix
-    master_level  0.37
+    gain  0.37
 mix1
 
 //------------------------------------------------------------------------

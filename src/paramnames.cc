@@ -42,7 +42,6 @@ namespace param
     { PAN,              "pan",                  iocat::DOUBLE,  "Pan position, -1.0 = left, 0.0 = center, +1.0 = right." ,0 },
     { PAN_MODSIZE,      "pan_mod_size",         iocat::DOUBLE,  "Pan modulation amount. ",0 },
     { CLIP_LEVEL,       "clip_level",           iocat::DOUBLE,  "Level to clip amplitude at, 1.0 is a fairly sane value - perhaps." ,0 },
-    { MASTER_LEVEL,     "master_level",         iocat::DOUBLE,  "Master level, somewhere around just below 1.0 usually." ,0 },
     { NORM_FREQ,        "normal_freq",          iocat::DOUBLE,  "Frequency the waveform considers it normal to operate at." ,0 },
     { NORM_MODSIZE,     "norm_mod_size",        iocat::DOUBLE,  "Modulation amount of the normal operating frequency." ,0 },
     { TRIGGER_LEVEL,    "trigger_level",        iocat::DOUBLE,  "Signal level which will cause trigger output." ,0 },
@@ -76,8 +75,6 @@ namespace param
     { FEED_MODSIZE,     "feedback_mod_size",    iocat::DOUBLE,  "Feedback modulation amount." ,0 },
     { EXIT_BAR,         "exit_bar",             iocat::WCINT_T, "Bar to stop all processing and exit the program at." ,0 },
     { RESPONSE_TIME,    "response_time",        iocat::DOUBLE,  "Length of time (ms) taken to respond to input." ,0 },
-    { LEFT_LEVEL,       "left_level",           iocat::DOUBLE,  "Level of left output signal, 0.95 is a fair value perhaps." ,0 },
-    { RIGHT_LEVEL,      "right_level",          iocat::DOUBLE,  "Level of right output signal, 0.95 is a fair value perhaps." ,0 },
     { RMS_TIME,         "rms_time",             iocat::DOUBLE,  "Length of time (ms) to calculate the Root Mean Square over." ,0 },
     { DC_TIME,          "dc_time",              iocat::DOUBLE,  "Length of time (ms) to calculate the mean over." ,0 },
     { UP_THRESH,        "up_thresh",            iocat::DOUBLE,  "Threshold level of modulation input causing usage of upper shape." ,0 },
@@ -203,6 +200,10 @@ namespace param
     { ZERO_WHEN_OFF,    "zero_when_off",        iocat::STATE,   "Forces output to zero when play state is off." ,0 },
     { PHASE_MOD_SIZE,   "phase_mod_size",       iocat::DOUBLE,  "Amount of phase modulation to apply 0.0 for none." ,0 },
     { EG_AMOUNT,        "eg_amount",            iocat::DOUBLE,  "How much effect the Envelope Generator has. 1.0 normal full effect. Range 0.0 ~ 1.0" ,0 },
-    { CONNECT,          "connect",              iocat::STRING,  "Name of module for connecting the outputs of with the input group which follows." ,0 }
+    { CONNECT,          "connect",              iocat::STRING,  "Name of module for connecting the outputs of with the input group which follows." ,0 },
+    { OUTPUT,           "output",               iocat::STRING,  "name of specific output when default does not work.", 0 },
+    { BALANCE,          "balance",              iocat::DOUBLE,  "Balance of left & right signals. -1 all left no right, 0 both left and right, +1, all right no left.", 0 },
+    { BPM_CHANGES_REL,  "bpm_changes_relative", iocat::STATE,   "whether bpm changes are relative (on) or absolute values (off)", 0 }
+
  };
 }; // namespace param

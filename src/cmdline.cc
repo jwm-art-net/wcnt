@@ -129,10 +129,9 @@ cmdline::cmd_opts_data cmdline::data[OPTS_COUNT] =
 bool cmdline::scan()
 {
 #ifdef DEBUG
-    std::cout << "\ncmdline::scan()";
-    std::cout << "\ncommandline arguements count: " << opts_count;
+    D_BUG("commandline arguements count: %d\n", opts_count);
     for(int i = 0; i < opts_count; i++) {
-        std::cout << "\n" << i << " = '" << opts[i] << "'";
+        D_BUG( "%d = '%s'\n", i, opts[i]);
     }
 #endif
     if (opts_count == 1) {
@@ -141,27 +140,21 @@ bool cmdline::scan()
     }
     bool extraneous = false;
     for (int arg = 1; arg < opts_count; arg++) {
-#ifdef DEBUG
-        std::cout << "\nprocessing arg: " << opts[arg];
-#endif
+        D_BUG("processing arg: '%s'\n", opts[arg]);
         int o;
         for (o = 1; o < OPTS_COUNT; o++){
-#ifdef DEBUG
-            std::cout << "\n    comparing with: " << data[o].olong;
-#endif
+            D_BUG("    comparing with: '%s'\n", data[o].olong);
             if (((data[o].olong) ?
                     strcmp(opts[arg], data[o].olong) == 0  : false)
                     ||
                 ((data[o].oshort) ?
                     strcmp(opts[arg], data[o].oshort) == 0 : false))
             {
-#ifdef DEBUG
-                std::cout << "\n    adding: " << data[o].type;
-#endif
+                D_BUG("    adding: type %x\n", data[o].type);
                 opts_flags += data[o].type;
-#ifdef DEBUG
-                std::cout << " to flags ( now: " << opts_flags << " )";
-#endif
+
+                D_BUG(" to flags ( now: %x)\n", opts_flags);
+
                 switch(data[o].type){
                     case VERBOSE:
                     case DONT_RUN:
@@ -171,36 +164,22 @@ bool cmdline::scan()
                     case HELP:
                     case LONGHELP:
                         data[o].par1 = 1;
-#ifdef DEBUG
-                        std::cout << "\n    arg ";
-                        std::cout << data[o].olong;
-                        std::cout << " set to 1 : " << data[o].par1;
-#endif
+                        D_BUG("    arg %s set to 1 : %d\n", data[o].olong, data[o].par1);
                         o = 100;
                         break;
                     default:
                         if (data[o].type == 0)std::cout << "!$*%&(@!";
                         data[o].par1 = (arg + 1 < opts_count)? ++arg : 0;
                         data[o].par2 = (arg + 1 < opts_count)? arg+1 : 0;
-#ifdef DEBUG
-                        std::cout << "\n    arg may require two params: ";
-                        std::cout << data[o].par1 << " and "
-                            << data[o].par2;
-#endif
+                        D_BUG("    arg may require two params: %d and %d\n", data[o].par1, data[o].par2);
                         o = 100;
                 }
             }
         }
             if(o == OPTS_COUNT)
             {
-#ifdef DEBUG
-                std::cout << "\n    comparison failed.";
-#endif
                 if(data[WC_IX].par1 == 0) {
-#ifdef DEBUG
-                    std::cout << "\n    using '" << opts[arg] << "'";
-                    std::cout << " as .wc file." << std::endl;
-#endif
+                    D_BUG("    comparison failed! using '%s' as .wc file.\n", opts[arg]);
                     data[WC_IX].par1 = arg;
                 }
                 else

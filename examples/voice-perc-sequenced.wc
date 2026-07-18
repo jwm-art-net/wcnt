@@ -9,6 +9,7 @@ tm
     meter_map
         meter tsig 4/4 bar 0
     meter_map
+    bpm_changes_relative off
     bpm_map
         tempo bpm 130 bar 0
     bpm_map
@@ -19,11 +20,11 @@ constant one value 1.0 one
 sync_clock
 16ths
     quarter_value 64
-    len 16
-    snap_to 16
+    len 32
+    snap_to 8
     connect tm
     in_freq_mod1    lfowv out_output
-    freq_mod1_size  2.5
+    freq_mod1_size  3
 16ths
 
 
@@ -45,17 +46,21 @@ lfowv
 pattern_trig    cow-pat   in_trig 16ths out_phase_trig
     pattern 0100001000010000-0001000010000100
 cow-pat
+
 pattern_trig    snare-pat   in_trig 16ths out_phase_trig
     pattern 0010001000100100-0010001000100001
 snare-pat
+
 pattern_trig    kick-pat    in_trig 16ths out_phase_trig
-   // pattern 0000
     pattern 1000100010010010-1000100010001010
 kick-pat
 
 
 
-constant_note   cow-note    name c1     cow-note
+constant   cow-note1    value 400     cow-note1
+constant   cow-note2    value 500     cow-note2
+constant   cow-note3    value 600     cow-note3
+
 constant_note   snare-note  name c1     snare-note
 constant_note   kick-note   name e-2    kick-note
 
@@ -82,8 +87,16 @@ voice-kick
             connect enter in_note_on_trig       kick-pat out_trig
             connect enter in_frequency          kick-note out_frequency
             connect enter in_velocity           one out_output
+            connect o1 in_freq_mod1 lfowv out_output
         editlist
     ie1
+
+    param_editor
+    pe1
+        editlist
+            edit o1 freq_mod1_size 2.0
+        editlist
+    pe1
 
 voice-kick
 
@@ -133,11 +146,21 @@ voice-cow
     // only then is the module for the connection looked for outside of
     // the group.
 
+    switcher
+    cowfreq
+        in_trig cow-pat out_trig
+        signals
+            synthmod name cow-note1
+            synthmod name cow-note2
+            synthmod name cow-note3
+        signals
+    cowfreq
+
     input_editor
     ie3
         editlist
             connect enter in_note_on_trig       cow-pat out_trig
-            connect enter in_frequency          cow-note out_frequency
+            connect enter in_frequency          cowfreq out_output
             connect enter in_velocity           one out_output
         editlist
     ie3
@@ -152,18 +175,57 @@ mix
         synthmod name voice-snare.out
         synthmod name voice-cow.out
     mix
-    master_level 0.5
+    gain 0.5
 mix
+
+echo
+el
+    in_signal mix out_left
+    delay_time 137
+    feedback 0.87
+    in_feedback     hpf out_output
+    wet/dry 0.3
+el
+
+constant_freq lpff freq 660 lpff
+constant_freq hpff freq 13000 hpff
+
+
+glame_butterworth
+lpf
+    filter_type           lowpass
+    in_signal             el out_wet_output
+    in_cutoff_phase_step  lpff out_phase_step
+    resonance             0.52
+lpf
+
+echo
+er
+    in_signal mix out_left
+    delay_time 783
+    feedback 0.87
+    in_feedback     lpf out_output
+    wet/dry 0.3
+er
+
+glame_butterworth
+hpf
+    filter_type           highpass
+    in_signal             er out_wet_output
+    in_cutoff_phase_step  hpff out_phase_step
+    resonance             0.52
+hpf
+
 
 wavfile_out
 wfo
     filename    voice-perc-sequenced.wav
     data_format pcm16
-    in_left     mix out_left
-    in_right    mix out_right
+    in_left     el out_output //mix out_left
+    in_right    er out_output //mix out_right
     in_bar      tm out_bar
     start_bar   0
-    end_bar     16
+    end_bar     34
     snapshot_mode off
 wfo
 
@@ -171,7 +233,7 @@ wfo
 wcnt_exit
 exit
     in_bar      tm out_bar
-    exit_bar    16
+    exit_bar    34
 exit
 
 

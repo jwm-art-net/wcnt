@@ -1,4 +1,36 @@
 --------------------------------------------------------------
+date July 2026 - wcnt-1.32.2026
+
+note: I still haven't made an actual release. Not sure I will. It's just
+fine on github. If I were to make a release, the bulk of the changes
+since the last release, were made in the May entry below this entry.
+
+I also am unsure if I've done anything which should have been reverted.
+I had a bunch of grand ideas but reached the point where I felt they
+were demanding too much of me so had to step back (into the real world).
+
+CHANGES:
+   * time_map now has a single parameter: bpm_changes_relative which
+     can be set to either be on or off. When off, bpm values are
+     absolute. While on, the bpm changes are relative to the current bpm
+     at that point in time. Absolute values are more expected, but
+     relative values allow the entire bpm range to be moved up or down.
+
+    * Started the groundwork to tidy up the debug message printing,
+      it was very inconsistent from file to file. It's still not great
+      and i dont
+
+FIXES:
+    * When a group was created in one stage, and then in a second stage
+      more modules were added to it, connections to inputs from modules
+      in the first stage, to outputs from modules in the second stage,
+      no longer fail.
+
+    * Error reporting for failed connections made by the input_editor
+      now states they were edited connections.
+
+
+--------------------------------------------------------------
 date May 2026 - wcnt-1.32.2026
 
 NEW FEATURES
@@ -91,6 +123,13 @@ CHANGES:
       unset. The flags are used to allow editing, or to allow a data
       object inside an autogroup (data objects aren't groupable
       however).
+
+    * I disliked the different uses of level and gain and amp
+      (amplitude). Due to in_amp_eg, I found myself typing in_amp_mod,
+      but the input was named in_gain_mod. Ugly! So *gain_mod* has
+      become *amp_mod*. left_level and right_level, and master_level have
+      become gain - but note, not left_gain or right_gain, just gain.
+      The stereo_amp module has a naive balance implementation instead.
 
 FIXES:
     * wcnt_trigger modules required connection to their output to be

@@ -18,7 +18,7 @@ void switcher::register_ui()
 {
     register_input(input::IN_TRIG);
     register_dobj(dobj::LST_SIGNALS, dobj::DOBJ_SYNTHMOD);
-    register_param(param::XFADE_TIME);
+    register_param(param::XFADE_TIME)->set_flags(ui::UI_OPTIONAL);
 }
 
 ui::moditem_list* switcher::get_ui_items()

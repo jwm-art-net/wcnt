@@ -7,8 +7,7 @@ dobjmod::dobjmod() :
 
 void dobjmod::register_ui()
 {
-    register_param(param::MODNAME)
-            ->add_descr("Name of module.");
+    register_param(param::MODNAME);
 }
 
 ui::dobjitem_list* dobjmod::get_ui_items()
@@ -34,7 +33,7 @@ const void* dobjmod::get_param(param::TYPE pt) const
     switch(pt)
     {
         case param::MODNAME:
-            return synth_mod; // aparently, there _was_ no reason to use this??
+            return synth_mod;
         default: return 0;
     }
 }

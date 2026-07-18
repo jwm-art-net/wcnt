@@ -37,6 +37,8 @@ public:
     void init(); // init will grab global bpm to start with
     errors::TYPE validate();
     const void* get_out(output::TYPE) const;
+    bool        set_param(param::TYPE, const void*);
+    const void* get_param(param::TYPE) const;
     synthmod::base* duplicate_module(const char* uname, DUP_IO);
     dobj::base* add_dobj(dobj::base*);
 
@@ -54,6 +56,8 @@ private:
     STATUS out_bpm_change_trig;
     STATUS out_meter_change_trig;
     STATUS out_bpm_change_state;
+    // params
+    STATUS bpm_changes_rel;
     // list variables
     linked_list<bpmchange>*   bpm_map;
     linked_list<meterchange>* meter_map;

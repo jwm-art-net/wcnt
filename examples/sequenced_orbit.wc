@@ -329,8 +329,7 @@ stereo_amp amp1
     in_right   cmb-r out_output
     in_amp_eg  one   out_output
     in_amp_mod off
-    left_level   1.0
-    right_level  1.0
+    gain   1.0
     amp_mod_size 0.0
     clip_level   1.0
 amp1

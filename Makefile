@@ -13,7 +13,10 @@ DEFS=-O2 -fomit-frame-pointer -DWITH_LADSPA
 #---------------------------------------------------
 # development/debugging #DEFINES 
 #---------------------------------------------------
-# DEBUG		= show various information supposedly to aid debugging.
+# DEBUG		= show various general information supposedly to aid debugging.
+# DEBUG_CONNECT = debug info for connection handling.
+# DEBUG_LADSPA  = debug info for LADSPA plugin handling.
+# DEBUG_UIITEM  = debug info for the complexitiy of UI item handling.
 # DATA_STATS    = show counts of the construction/destruction of select
 # 		  classes.
 # CRAZY_SAMPLER = to see far too much infomation concerning the sampler.
@@ -22,9 +25,7 @@ DEFS=-O2 -fomit-frame-pointer -DWITH_LADSPA
 # SANITY_CHECKS = Some sort of half assed check for program sanity.
 #                 - NOTE: SANITY_CHECKS DOES NOT COMPILE DUE TO INCMPATIBILTY
 
-
-#DEFS=-ggdb -fno-inline -DWITH_LADSPA -DDEBUG -DSTR_DEBUG #-DSANITY_CHECKS
-DEFS=-ggdb -fno-inline -DWITH_LADSPA #-DDEBUG
+#DEFS=-ggdb -fno-inline -DWITH_LADSPA #-DDEBUG
 
 # nothing to be modified further:
 PROG=wcnt

@@ -52,9 +52,7 @@ bool set_param(T* obj, param::TYPE pt, const char* value,
     iocat::TYPE ioc = param::names::category(pt);
     const char* par = param::names::get(pt);
 
-    #ifdef DEBUG
-    std::cout << "\t\tset_param:\t'" << par << "' '" << value << "'" << std::endl;
-    #endif
+    D_BUG("\tset_param: '%s' '%s'\n", par, value);
 
     int op = get_operator(value);
     if (op)
@@ -74,11 +72,11 @@ bool set_param(T* obj, param::TYPE pt, const char* value,
         #ifdef DEBUG
             wcnt::get_fxsparamlist()->dump();
             if (!wcnt::get_fxsparamlist()->get_fix_str_param(param::FUNC))
-                std::cout << "still failed manually to get param::FUNC" << std::endl;
+                D_BUG("still failed manually to get param::FUNC\n");
             if (!wcnt::get_fxsparamlist()->get_fix_str_param(param::DATA_FMT))
-                std::cout << "still failed manually to get param::DATA_FMT" << std::endl;
+                D_BUG("still failed manually to get param::DATA_FMT\n");
             if (!wcnt::get_fxsparamlist()->get_fix_str_param(param::WAVE_TYPE))
-                std::cout << "still failed manually to get param::WAVE_TYPE" << std::endl;
+                D_BUG("still failed manually to get param::WAVE_TYPE\n");
         #endif
 
             iocatconv::destroy_iocat_data(ioc, data);
@@ -104,12 +102,8 @@ bool set_param(T* obj, param::TYPE pt, const char* value,
         }
     }
     if (!obj->set_param(pt, data)) {
-        #ifdef DEBUG
-        printf("obj:%p\n", obj);
-        printf("obj username: %s\n", obj->get_username());
-        printf("par:%s\n", par);
-        printf("value:%s\n", value);
-        #endif
+        D_BUG("obj:%p username:'%s' par:'%s' value:'%s'\n", obj,
+              obj->get_username(), par, value);
         if (ioc == iocat::FIX_STR) {
             delete (int*)data;
             data = datatmp;

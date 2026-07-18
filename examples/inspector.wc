@@ -15,6 +15,7 @@ tm
     meter_map
         meter tsig 4/4 bar 0
     meter_map
+    bpm_changes_relative off
     bpm_map
         tempo bpm 120 bar 0
     bpm_map

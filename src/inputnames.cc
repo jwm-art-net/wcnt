@@ -53,7 +53,6 @@ namespace input
     { IN_POWER_MOD,         "in_power_mod",         iocat::DOUBLE,  "Power modulation input.",              output::OUT_OUTPUT },
     { IN_RUDE_SWITCH_TRIG,  "in_rude_switch_trig",  iocat::TRIG,    "Trigger to toggle rude mode ON/OFF.",  output::OUT_TRIG },
     { IN_NOTENAME,          "in_notename",          iocat::STRING,  "Note name input.",             output::OUT_NOTENAME },
-    { IN_GAIN_MOD,          "in_gain_mod",          iocat::DOUBLE,  "Gain modulation input.",       output::OUT_OUTPUT },
     { IN_FEEDBACK,          "in_feedback",          iocat::DOUBLE,  "Feedback input (hint: has to originate from same module somewhere along the line.)", output::OUT_WET_OUTPUT },
     { IN_FB_MOD,            "in_feedback_mod",      iocat::DOUBLE,  "Feedback modulation input.",               output::OUT_OUTPUT },
     { IN_BEATS_PER_BAR,     "in_beats_per_bar",     iocat::WCINT_T, "Beats per bar of current time signature.", output::OUT_BEATS_PER_BAR },

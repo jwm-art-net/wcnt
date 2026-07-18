@@ -151,8 +151,7 @@ stereo_amp amp1
     in_right    sine_r out_output
     in_amp_eg   env out_output
     in_amp_mod  off
-    left_level      0.75
-    right_level     0.75
+    gain      0.75
     amp_mod_size    0.0
     clip_level      1.0
 amp1
@@ -196,17 +195,13 @@ pe1
         edit g4.clock_r octave_offset 0
 
         edit g2.amp1
-            left_level  0.6
-            right_level 0.6
+            gain  0.6
         edit g3.amp1
-            left_level  0.5
-            right_level 0.5
+            gain  0.5
         edit g4.amp1
-            left_level  0.4
-            right_level 0.4
+            gain  0.4
         edit g5.amp1
-            left_level  0.25
-            right_level 0.25
+            gain  0.25
 
         edit g2.orbit1
             a                2.0057
@@ -330,7 +325,7 @@ mix1
         synthmod name ch2
         synthmod name ch3
     mix
-    master_level  0.75
+    gain  0.75
 mix1
 
 caps_plate

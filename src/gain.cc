@@ -14,8 +14,8 @@ void gain::register_ui()
 {
     register_sm_input(input::IN_SIGNAL);
     register_sm_param(param::GAIN)->set_flags(ui::UI_OPTIONAL);
-    register_sm_input(input::IN_GAIN_MOD)->set_flags(ui::UI_GROUP1);
-    register_sm_param(param::GAIN_MODSIZE)->set_flags(ui::UI_GROUP1);
+    register_sm_input(input::IN_AMP_MOD)->set_flags(ui::UI_GROUP1);
+    register_sm_param(param::AMP_MODSIZE)->set_flags(ui::UI_GROUP1);
 }
 
 gain::~gain()
@@ -27,7 +27,7 @@ const void* gain::set_in(input::TYPE it, const void* o)
     switch(it)
     {
         case input::IN_SIGNAL:  return in_signal = (double*)o;
-        case input::IN_GAIN_MOD:return in_mod = (double*)o;
+        case input::IN_AMP_MOD:return in_mod = (double*)o;
         default: return 0;
     }
 }
@@ -37,7 +37,7 @@ const void* gain::get_in(input::TYPE it) const
     switch(it)
     {
         case input::IN_SIGNAL:  return in_signal;
-        case input::IN_GAIN_MOD:return in_mod;
+        case input::IN_AMP_MOD:return in_mod;
         default: return 0;
     }
 }
@@ -49,7 +49,7 @@ bool gain::set_param(param::TYPE pt, const void* data)
         case param::GAIN:
             level = *(double*)data;
             return true;
-        case param::GAIN_MODSIZE:
+        case param::AMP_MODSIZE:
             mod_amount = *(double*)data;
             return true;
         default:
@@ -62,7 +62,7 @@ const void* gain::get_param(param::TYPE pt) const
     switch(pt)
     {
         case param::GAIN:         return &level;
-        case param::GAIN_MODSIZE:   return &mod_amount;
+        case param::AMP_MODSIZE:   return &mod_amount;
         default: return 0;
     }
 }
@@ -78,7 +78,7 @@ void gain::init()
 
 errors::TYPE gain::validate()
 {
-    if (!validate_sm_param(param::GAIN_MODSIZE, errors::RANGE_0_1))
+    if (!validate_sm_param(param::AMP_MODSIZE, errors::RANGE_0_1))
         return errors::RANGE_0_1;
 
     return errors::NO_ERROR;

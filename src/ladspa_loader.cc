@@ -12,21 +12,8 @@
 
 #include "../include/globals.h"
 
-
-#ifdef DEBUG
-#define ladspa_err(fmt, ... )                           \
-{                                                       \
-    printf("%40s:%5d %-35s\n",                          \
-                    __FILE__, __LINE__, __FUNCTION__);  \
-    cfmt(ladspa_err_msg, STRBUFLEN, fmt, __VA_ARGS__);  \
-}
-#else
 #define ladspa_err(fmt, ... ) \
     cfmt(ladspa_err_msg, STRBUFLEN, fmt, __VA_ARGS__)
-#endif
-
-
-
 
 //-------------------------------------------------------------
 
@@ -85,10 +72,10 @@ int ladspa_plug::connect_port(LADSPA_Handle handle, const char* port, LADSPA_Dat
 {
     int portix = get_port_index(port);
 
-    debug("Connecting port '%s'...\n", port);
+    D_LADSPA("Connecting port '%s'...\n", port);
 
     if (portix == -1) {
-        debug("Invalid port '%s'\n", port);
+        D_LADSPA("Invalid port '%s'\n", port);
         return -1;
     }
 
@@ -108,7 +95,7 @@ char* ladspa_plug::validate_port(const char* port, LADSPA_Data* data)
         return strdup(buf);
     }
 
-    debug("Validating port: '%s' value: %f\n", port, *data);
+    D_LADSPA("Validating port: '%s' value: %f\n", port, *data);
 
     if (LADSPA_IS_PORT_INPUT(descriptor->PortDescriptors[portix])) {
         if (LADSPA_IS_PORT_CONTROL(descriptor->PortDescriptors[portix])) {
@@ -207,16 +194,16 @@ ladspa_plug* ladspa_lib::get_plugin(const char* name)
     descrfunc = (LADSPA_Descriptor_Function) dlsym(lib_handle, "ladspa_descriptor");
     char* dlerr = dlerror();
     if(dlerr) {
-        debug("failed to get descriptor function. reason: %s\n", dlerr);
+        D_LADSPA("failed to get descriptor function. reason: %s\n", dlerr);
         return 0;
     }
 
     for(plug_ix = 0;; plug_ix++) {
         if((ldescr = (descrfunc)(plug_ix)) == 0) {
-            debug("Plugin count for %s: %lu\n", filename, plug_ix);
+            D_LADSPA("Plugin count for %s: %lu\n", filename, plug_ix);
             return 0;
         }
-        debug("checking descriptor '%s' for match with '%s'\n", ldescr->Label, name);
+        D_LADSPA("checking descriptor '%s' for match with '%s'\n", ldescr->Label, name);
         if(strcmp(ldescr->Label, name) == 0)
             break;
     }
@@ -256,14 +243,14 @@ ladspa_loader::get_plugin(const char* fname, const char* label)
     // requested plugin lib not yet loaded...
     LADSPA_Handle lhandle;
     if (!(lhandle = dlopen_plugin(fname, RTLD_NOW))){
-        debug("dlopen_plugin '%s' '%s' failed\n", fname, label);
+        D_LADSPA("dlopen_plugin '%s' '%s' failed\n", fname, label);
         ladspa_err("Could not open LADSPA plugin %s %s. Please ensure "
                     "the LADSPA_PATH environment variable is set.",
                                                         fname, label);
         return 0;
     }
     if (!(lib = new ladspa_lib(fname, lhandle))) {
-        debug("failed to get new ladspa_lib for plugin '%s' '%s'\n", fname, label);
+        D_LADSPA("failed to get new ladspa_lib for plugin '%s' '%s'\n", fname, label);
     }
     if (add_at_tail(lib) == 0){
         if (lib)

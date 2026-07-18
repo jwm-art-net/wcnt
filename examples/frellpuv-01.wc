@@ -240,12 +240,12 @@ swad2
 echo
 echo-ch
     in_signal        sinewave    out_output
-    in_gain_mod      off
+    in_amp_mod      off
     in_feedback      rl-ch2     out_output
     in_feedback_mod  adsr1       out_output
     delay_time        7.0
     gain                1.0
-    gain_mod_size        0.0
+    amp_mod_size        0.0
     feedback            0.975
     feedback_mod_size    1.0
     wet/dry             0.5
@@ -261,12 +261,12 @@ rl-ch
 echo
 echo-ch2
     in_signal        sinewave2    out_output
-    in_gain_mod      off
+    in_amp_mod      off
     in_feedback      rl-ch     out_output
     in_feedback_mod  adsr1       out_output
     delay_time        15.0
     gain                1.0
-    gain_mod_size        0.0
+    amp_mod_size        0.0
     feedback            0.975
     feedback_mod_size    1.0
     wet/dry             0.5
@@ -282,12 +282,12 @@ rl-ch2
 echo
 echo-l
     in_signal        swad    out_output
-    in_gain_mod      off
+    in_amp_mod      off
     in_feedback      rl-er  out_output
     in_feedback_mod  echo-ch    out_output
     delay_time        12.0
     gain                1.0
-    gain_mod_size        0.0
+    amp_mod_size        0.0
     feedback            0.99
     feedback_mod_size    1.0
     wet/dry             0.5
@@ -303,12 +303,12 @@ rl-el
 echo
 echo-r
     in_signal        swad2    out_output
-    in_gain_mod      off
+    in_amp_mod      off
     in_feedback      rl-el  out_output
     in_feedback_mod  echo-ch2    out_output
     delay_time        12.3
     gain                1.0
-    gain_mod_size        0.0
+    amp_mod_size        0.0
     feedback            0.99
     feedback_mod_size    1.0
     wet/dry             0.5
@@ -324,12 +324,12 @@ rl-er
 echo
 echo-ll
     in_signal        echo-l    out_output
-    in_gain_mod      off
+    in_amp_mod      off
     in_feedback      echo-rr  out_wet_output
     in_feedback_mod  off
     delay_time        25.4
     gain                1.0
-    gain_mod_size        0.0
+    amp_mod_size        0.0
     feedback            0.5
     feedback_mod_size    0.0
     wet/dry             0.5
@@ -338,12 +338,12 @@ echo-ll
 echo
 echo-rr
     in_signal        echo-r    out_output
-    in_gain_mod      off
+    in_amp_mod      off
     in_feedback      echo-ll  out_wet_output
     in_feedback_mod  off
     delay_time        624.30
     gain                1.0
-    gain_mod_size        0.0
+    amp_mod_size        0.0
     feedback            0.85
     feedback_mod_size    0.0
     wet/dry             0.5
@@ -358,8 +358,7 @@ amp1
     in_right    dc-r   out_output
     in_amp_eg   one    out_output
     in_amp_mod  off
-    left_level      1.0
-    right_level     1.0
+    gain      1.0
     amp_mod_size    0.0
     clip_level      1.0
 amp1

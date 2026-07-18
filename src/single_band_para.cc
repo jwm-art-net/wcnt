@@ -4,9 +4,9 @@
 
 single_band_para::single_band_para(const char* uname) :
  synthmod::base(synthmod::SINGLE_BAND_PARA, uname, SM_HAS_OUT_OUTPUT),
- in_signal(0), in_phase_step(0), in_gain_mod(0), in_bandwidth_mod(0),
+ in_signal(0), in_phase_step(0), in_amp_mod(0), in_bandwidth_mod(0),
  output(0),
- gain_db(0), gain_mod_size(0), bandwidth(0), bandwidth_mod_size(0),
+ gain_db(0), amp_mod_size(0), bandwidth(0), bandwidth_mod_size(0),
  l_descriptor(0), l_inst_handle(0),
  l_input(0), l_output(0),
  l_gain_db(0), l_frequency(440), l_bandwidth(1)
@@ -21,8 +21,8 @@ void single_band_para::register_ui()
     register_input(input::IN_SIGNAL);
     register_input(input::IN_PHASE_STEP);
     register_param(param::GAIN_DB);
-    register_input(input::IN_GAIN_MOD)->set_flags(ui::UI_GROUP1);
-    register_param(param::GAIN_MODSIZE)->set_flags(ui::UI_GROUP1);
+    register_input(input::IN_AMP_MOD)->set_flags(ui::UI_GROUP1);
+    register_param(param::AMP_MODSIZE)->set_flags(ui::UI_GROUP1);
     register_param(param::BANDWIDTH);
     register_input(input::IN_BANDWIDTH_MOD)->set_flags(ui::UI_GROUP2);
     register_param(param::BANDWIDTH_MODSIZE)->set_flags(ui::UI_GROUP2);
@@ -59,8 +59,8 @@ single_band_para::set_in(input::TYPE it, const void* o)
             return in_signal = (double*)o;
         case input::IN_PHASE_STEP:
             return in_phase_step = (double*)o;
-        case input::IN_GAIN_MOD:
-            return in_gain_mod = (double*)o;
+        case input::IN_AMP_MOD:
+            return in_amp_mod = (double*)o;
         case input::IN_BANDWIDTH_MOD:
             return in_bandwidth_mod = (double*)o;
         default:
@@ -74,7 +74,7 @@ const void* single_band_para::get_in(input::TYPE it) const
     {
         case input::IN_SIGNAL:         return in_signal;
         case input::IN_PHASE_STEP:     return in_phase_step;
-        case input::IN_GAIN_MOD:       return in_gain_mod;
+        case input::IN_AMP_MOD:       return in_amp_mod;
         case input::IN_BANDWIDTH_MOD:  return in_bandwidth_mod;
         default: return 0;
     }
@@ -88,8 +88,8 @@ single_band_para::set_param(param::TYPE pt, const void* data)
         case param::GAIN_DB:
             gain_db = *(double*)data;
             return true;
-        case param::GAIN_MODSIZE:
-            gain_mod_size = *(double*)data;
+        case param::AMP_MODSIZE:
+            amp_mod_size = *(double*)data;
             return true;
         case param::BANDWIDTH:
             bandwidth = *(double*)data;
@@ -107,7 +107,7 @@ const void* single_band_para::get_param(param::TYPE pt) const
     switch(pt)
     {
         case param::GAIN_DB:           return &gain_db;
-        case param::GAIN_MODSIZE:      return &gain_mod_size;
+        case param::AMP_MODSIZE:       return &amp_mod_size;
         case param::BANDWIDTH:         return &bandwidth;
         case param::BANDWIDTH_MODSIZE: return &bandwidth_mod_size;
         default: return 0;
@@ -166,8 +166,8 @@ void single_band_para::run()
     l_frequency = (*in_phase_step * wcnt::jwm.samplerate()) / 360;
     if (l_frequency < 0) l_frequency = 0;
     else if (l_frequency > max_freq) l_frequency = max_freq;
-    l_gain_db = gain_db * (1 - gain_mod_size) + gain_db *
-              *in_gain_mod * gain_mod_size;
+    l_gain_db = gain_db * (1 - amp_mod_size) + gain_db *
+              *in_amp_mod * amp_mod_size;
     if (l_gain_db < -70) l_gain_db = -70;
     else if(l_gain_db > 30) l_gain_db = 30;
     l_bandwidth = bandwidth * (1 - bandwidth_mod_size) + bandwidth *

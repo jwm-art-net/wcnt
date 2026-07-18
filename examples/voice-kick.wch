@@ -166,7 +166,7 @@ voice-kick
     stereo_amp
     out
         in_signal wp1 out_output
-        level 1.0
+        gain 1.0
         in_amp_eg env1 out_output
         clip_level 1.0
     out

@@ -468,7 +468,7 @@ mix1
         synthmod name  cp1
         synthmod name  cp2
     mix
-    master_level  0.75
+    gain  0.75
 mix1
 
 wavfile_out

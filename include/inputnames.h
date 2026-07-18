@@ -45,7 +45,6 @@ namespace input
     IN_POWER_MOD,
     IN_RUDE_SWITCH_TRIG,
     IN_NOTENAME,
-    IN_GAIN_MOD,
     IN_FEEDBACK,
     IN_FB_MOD,
     IN_BEATS_PER_BAR,

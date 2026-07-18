@@ -11,17 +11,8 @@
 
 namespace wcnt
 {
- #ifdef DEBUG
- #define jwm_err(fmt, ... )                              \
- {                                                       \
-    printf("%40s:%5d %-35s\n",                          \
-                    __FILE__, __LINE__, __FUNCTION__);  \
-    cfmt(err_msg, STRBUFLEN, fmt, __VA_ARGS__);  \
- }
- #else
  #define jwm_err(fmt, ... ) \
     cfmt(err_msg, STRBUFLEN, fmt, __VA_ARGS__)
- #endif
 
 
  synth::synth() :
@@ -68,7 +59,7 @@ namespace wcnt
     synthmod::base* sm;
     sm = wcnt::jwm.get_modlist()->goto_first();
     while(sm) {
-        debug("validating module: '%s'\n", sm->get_username());
+        D_BUG("validating module: '%s'\n", sm->get_username());
         errors::TYPE et = sm->validate();
         if (et != errors::NO_ERROR) {
             jwm_err("Module %s is a little odd: %s %s %s",
@@ -102,7 +93,7 @@ namespace wcnt
     synthmod::list* sml = wcnt::jwm.get_modlist();
     sm = sml->goto_first();
     while(sm) {
-        debug("initializing module: '%s'\n", sm->get_username());
+        D_BUG("initializing module: '%s'\n", sm->get_username());
         sm->init();
         #ifdef DEBUG
         if (!sm->check_inputs()) {

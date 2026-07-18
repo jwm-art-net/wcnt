@@ -233,8 +233,8 @@ amp1
     in_signal   gbw_lp  out_output
     in_amp_eg   env     out_output
     gain         0.85
-    in_gain_mod  ng1     out_output
-    gain_mod_size  0.0275
+    in_amp_mod  ng1     out_output
+    amp_mod_size  0.0275
     clip_level    1.0
 amp1
 

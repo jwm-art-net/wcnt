@@ -25,7 +25,7 @@ namespace ui
         }
     }
 
-    #ifdef DEBUG
+    #ifdef D_UUITEM
     i->dump();
     #endif
 
@@ -36,7 +36,7 @@ namespace ui
  connector* item_list<synthmod::base*>::add_connector_off(synthmod::base* sm,
                                                           input::TYPE it)
  {
-    debug("\\________ adding connector 'off' to input '%s' '%s'\n", sm->get_username(),
+    D_UIITEM("\\________ adding connector 'off' to input '%s' '%s'\n", sm->get_username(),
                                                         input::names::get(it));
     return wcnt::get_connectlist()->add_connector_off(sm, it);
  }
@@ -46,7 +46,7 @@ namespace ui
                                                         input::TYPE it,
                                                         output::TYPE ot)
  {
-    debug("\\________ adding connector 'self' to input '%s' '%s' '%s'\n", sm->get_username(),
+    D_UIITEM("\\________ adding connector 'self' to input '%s' '%s' '%s'\n", sm->get_username(),
                                                         input::names::get(it),
                                                         output::names::get(ot));
     return wcnt::get_connectlist()->add_connector_self(sm, it, ot);
@@ -57,7 +57,7 @@ namespace ui
                                                         input::TYPE it,
                                                         input::TYPE asit)
  {
-    debug("\\________ adding connector 'as' to input '%s' '%s' '%s'\n", sm->get_username(),
+    D_UIITEM("\\________ adding connector 'as' to input '%s' '%s' '%s'\n", sm->get_username(),
                                                         input::names::get(it),
                                                         input::names::get(asit));
     return wcnt::get_connectlist()->add_connector_as(sm, it, asit);

@@ -490,8 +490,8 @@ echo
 lecho
     in_signal       dl      out_output
     gain            0.95
-    in_gain_mod     adsr4   out_output
-    gain_mod_size   1.0
+    in_amp_mod     adsr4   out_output
+    amp_mod_size   1.0
 
     delay_time          325
     feedback            0.9995
@@ -505,8 +505,8 @@ echo
 recho
     in_signal       dr      out_output
     gain            0.95
-    in_gain_mod     adsr4   out_output
-    gain_mod_size   1.0
+    in_amp_mod     adsr4   out_output
+    amp_mod_size   1.0
 
     delay_time          317.5
     feedback            0.9995
@@ -519,12 +519,12 @@ recho
 echo
 clecho
     in_signal       dcl      out_output
-    in_gain_mod     adsr4   out_output
+    in_amp_mod     adsr4   out_output
     in_feedback     crecho   out_wet_output
     in_feedback_mod glpf1-left out_output //sampler1 out_left
     delay_time          225
     gain                0.95
-    gain_mod_size        1.0
+    amp_mod_size        1.0
     feedback            0.9995
     feedback_mod_size    1.0
     wet/dry             1.0
@@ -533,12 +533,12 @@ clecho
 echo
 crecho
     in_signal       dcr      out_output
-    in_gain_mod     adsr4   out_output
+    in_amp_mod     adsr4   out_output
     in_feedback     clecho   out_wet_output
     in_feedback_mod glpf1-right out_output //sampler1 out_right
     delay_time          277.5
     gain                0.95
-    gain_mod_size        1.0
+    amp_mod_size        1.0
     feedback            0.9995
     feedback_mod_size    1.0
     wet/dry             1.0
@@ -635,8 +635,7 @@ amp1
     in_right    drums_r    out_output
     in_amp_eg   adsr1   out_output
     in_amp_mod    off
-    left_level    0.9
-    right_level   0.9
+    gain    0.9
     amp_mod_size  0.0
     clip_level    1.0
 amp1
@@ -647,8 +646,7 @@ amp2
     in_right    dynr    out_output
     in_amp_eg   adsr1 out_output
     in_amp_mod   off
-    left_level   0.4
-    right_level  0.4
+    gain    0.4
     amp_mod_size 0.0
     clip_level   1.0
 amp2
@@ -659,7 +657,7 @@ mix1
         synthmod name amp1
         synthmod name amp2
     mix
-    master_level 1.0
+    gain 1.0
 mix1
 
 wavfile_out

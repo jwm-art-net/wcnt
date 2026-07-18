@@ -262,7 +262,7 @@ stmix
         synthmod name ch1
         synthmod name ch2
     mix
-    master_level 0.5
+    gain 0.5
 stmix
 
 caps_plate
@@ -290,9 +290,8 @@ amp
     in_right    revb out_right
     in_amp_eg   fade out_output
     in_amp_mod  off
-    left_level  0.9
-    right_level 0.9
     amp_mod_size 0
+    gain  0.9
     clip_level   1
 amp
 

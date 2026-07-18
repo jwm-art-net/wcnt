@@ -33,14 +33,12 @@ private:
     double out_right;
 
     // params
-    double left_level;
-    double right_level;
+    double gain;
+    double balance;
     double amp_modsize;
     double clip_level;
 
     // working
-    double left;
-    double right;
     void register_ui();
     ui::moditem_list* get_ui_items();
 };

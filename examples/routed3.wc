@@ -13,6 +13,7 @@ time1
     meter_map
         meter tsig 4/4 bar 0
     meter_map
+    bpm_changes_relative off
     bpm_map
         tempo bpm 140 bar 0
     bpm_map
@@ -76,7 +77,7 @@ seq
 
 ; change seq_echo to note_echo
 ; create new seq_echo module echo using time_map data
-; ..... but.... could we not process such echo data 
+; ..... but.... could we not process such echo data
 ; before hand... ? .. ?? ??
 
 
@@ -253,8 +254,7 @@ amp
     in_right    lpfy out_output
     in_amp_eg   env out_output
     in_amp_mod  off
-    left_level      0.7
-    right_level     0.7
+    gain      0.7
     amp_mod_size    0.0
     clip_level      1.0
 amp
@@ -507,16 +507,16 @@ pe
         edit g8.f freq 500
         edit g9.f freq 300
 
-        edit g0.amp left_level  0.9 right_level 0.0
-        edit g1.amp left_level  0.0 right_level 0.9
-        edit g2.amp left_level  0.7 right_level 0.2
-        edit g3.amp left_level  0.2 right_level 0.7
-        edit g4.amp left_level  0.4 right_level 0.5
-        edit g5.amp left_level  0.5 right_level 0.4
-        edit g6.amp left_level  0.6 right_level 0.3
-        edit g7.amp left_level  0.3 right_level 0.6
-        edit g8.amp left_level  0.8 right_level 0.1
-        edit g9.amp left_level  0.1 right_level 0.8
+        edit g0.amp balance -0.9  //gain  0.9 right_level 0.0
+        edit g1.amp balance  0.9  //gain  0.0 right_level 0.9
+        edit g2.amp balance -0.7  //gain  0.7 right_level 0.2
+        edit g3.amp balance  0.7  //gain  0.2 right_level 0.7
+        edit g4.amp balance -0.4  //gain  0.4 right_level 0.5
+        edit g5.amp balance  0.4  //gain  0.5 right_level 0.4
+        edit g6.amp balance -0.6  //gain  0.6 right_level 0.3
+        edit g7.amp balance  0.6  //gain  0.3 right_level 0.6
+        edit g8.amp balance -0.8  //gain  0.8 right_level 0.1
+        edit g9.amp balance  0.8  //gain  0.1 right_level 0.8
 
     editlist
 pe
@@ -535,7 +535,7 @@ mix
         synthmod name   g8.amp
         synthmod name   g9.amp
     mix
-    master_level 0.4
+    gain 0.4
 mix
 
 fader
@@ -549,12 +549,12 @@ f
 echo
 echol
     in_signal        mix out_left
-    in_gain_mod      f out_output
+    in_amp_mod      f out_output
     in_feedback      echor out_wet_output
     in_feedback_mod  off
     delay_time         237
     gain               0.9
-    gain_mod_size      1
+    amp_mod_size      1
     feedback           0.6425
     feedback_mod_size  0
     wet/dry            0.125
@@ -563,12 +563,12 @@ echol
 echo
 echor
     in_signal        mix out_right
-    in_gain_mod      f out_output
+    in_amp_mod      f out_output
     in_feedback      echol out_wet_output
     in_feedback_mod  off
     delay_time         280
     gain               0.9
-    gain_mod_size      1
+    amp_mod_size      1
     feedback           0.825
     feedback_mod_size  0
     wet/dry            0.125

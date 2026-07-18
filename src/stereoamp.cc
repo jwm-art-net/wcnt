@@ -4,8 +4,7 @@ stereo_amp::stereo_amp(const char* uname) :
  synthmod::base(synthmod::STEREOAMP, uname, SM_HAS_STEREO_OUTPUT),
  in_left(0), in_right(0), in_amp_eg(0), in_amp_mod(0),
  out_left(0), out_right(0),
- left_level(1.0), right_level(1.0), amp_modsize(0), clip_level(1.0),
- left(0), right(0)
+ gain(1.0), balance(0.0), amp_modsize(0.0), clip_level(1.0)
 {
     register_output(output::OUT_LEFT);
     register_output(output::OUT_RIGHT);
@@ -17,9 +16,8 @@ void stereo_amp::register_ui()
     register_input(input::IN_LEFT)    ->set_flags(ui::UI_OPT2_DUP);
     register_input(input::IN_RIGHT)   ->set_flags(ui::UI_OPT2_DUP);
     register_input(input::IN_EG)      ->set_flags(ui::UI_OPTIONAL);
-    register_param(param::LEVEL)      ->set_flags(ui::UI_OPTION1);
-    register_param(param::LEFT_LEVEL) ->set_flags(ui::UI_OPT2_DUP);
-    register_param(param::RIGHT_LEVEL)->set_flags(ui::UI_OPT2_DUP);
+    register_param(param::GAIN);
+    register_param(param::BALANCE)    ->set_flags(ui::UI_OPTIONAL);
     register_input(input::IN_AMP_MOD) ->set_flags(ui::UI_GROUP1);
     register_param(param::AMP_MODSIZE)->set_flags(ui::UI_GROUP1);
     register_param(param::CLIP_LEVEL) ->set_flags(ui::UI_OPTIONAL);
@@ -74,14 +72,11 @@ bool stereo_amp::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case param::LEVEL:
-            left_level = right_level = *(double*)data;
+        case param::GAIN:
+            gain = *(double*)data;
             return true;
-        case param::LEFT_LEVEL:
-            left_level = *(double*)data;
-            return true;
-        case param::RIGHT_LEVEL:
-            right_level = *(double*)data;
+        case param::BALANCE:
+            balance = *(double*)data;
             return true;
         case param::AMP_MODSIZE:
             amp_modsize = *(double*)data;
@@ -98,8 +93,8 @@ const void* stereo_amp::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case param::LEFT_LEVEL:  return &left_level;
-        case param::RIGHT_LEVEL: return &right_level;
+        case param::GAIN:        return &gain;
+        case param::BALANCE:     return &balance;
         case param::AMP_MODSIZE: return &amp_modsize;
         case param::CLIP_LEVEL:  return &clip_level;
         default: return 0;
@@ -111,6 +106,9 @@ errors::TYPE stereo_amp::validate()
     if (!validate_param(param::AMP_MODSIZE, errors::RANGE_0_1))
         return errors::RANGE_0_1;
 
+    if (!validate_param(param::BALANCE, errors::RANGE_M1_1))
+        return errors::RANGE_M1_1;
+
     if (!validate_param(param::CLIP_LEVEL, errors::NEG_OR_ZERO))
         return errors::NEG_OR_ZERO;
 
@@ -119,19 +117,27 @@ errors::TYPE stereo_amp::validate()
 
 void stereo_amp::run()
 {
-    left = *in_left * ((left_level * (1 - amp_modsize) +
-           left_level * *in_amp_mod * amp_modsize) * *in_amp_eg);
-    out_left = left;
-    if (left < -clip_level)
+    double gg = (gain * (1 - amp_modsize) + gain * *in_amp_mod * amp_modsize) * *in_amp_eg;
+    double ll, rl;
+    if (balance < 0) {
+        ll = 1;
+        rl = 1 + balance;
+    }
+    else {
+        ll = 1 - balance;
+        rl = 1;
+    }
+
+    out_left = *in_left * gg * ll;
+    out_right = *in_right * gg * rl;
+
+    if (out_left < -clip_level)
         out_left = -clip_level;
-    else if (left > clip_level)
+    else if (out_left > clip_level)
         out_left = clip_level;
-    right = *in_right * ((right_level * (1 - amp_modsize) +
-            right_level * *in_amp_mod * amp_modsize) * *in_amp_eg);
-    out_right = right;
-    if (right < -clip_level)
+    if (out_right < -clip_level)
         out_right = -clip_level;
-    else if (right > clip_level)
+    else if (out_right > clip_level)
         out_right = clip_level;
 }
 

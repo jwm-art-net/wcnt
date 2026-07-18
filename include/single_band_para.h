@@ -40,13 +40,13 @@ class single_band_para : public synthmod::base
     // inputs
     const double* in_signal;
     const double* in_phase_step;
-    const double* in_gain_mod;
+    const double* in_amp_mod;
     const double* in_bandwidth_mod;
     // output
     double output;
     // params
     double gain_db;
-    double gain_mod_size;
+    double amp_mod_size;
     double bandwidth;
     double bandwidth_mod_size;
 

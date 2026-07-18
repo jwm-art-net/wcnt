@@ -136,7 +136,7 @@ dobj::base* group::duplicate_dobj(const char* new_group_name)
     if (wcnt::jwm.is_verbose())
         std::cout
             << "\nDuplicating connections in group " << get_username()
-            <<" to " << new_group_name << "... ";
+            <<" to " << new_group_name << "... " << std::endl;;
 
 
     synthmod::list::linkedlist* grplist =
@@ -146,18 +146,20 @@ dobj::base* group::duplicate_dobj(const char* new_group_name)
     synthmod::base* to_mod = duplist->goto_first();
 
     while(mod) {
+        D_CONNECT("Checking connections for module %s\n", mod->get_username());
         connectorlist::linkedlist* conlist =
            wcnt::get_connectlist() ->
                 duplicate_connections_for_module(mod, to_mod);
         connector* con = conlist->goto_first();
         while(con) {
+            D_CONNECT("-- output module name %s\n", con->get_output_module_name());
             const char* const mod_groupname =
                 get_groupname(con->get_output_module_name());
             if (mod_groupname) {
                 if (strcmp(get_username(), mod_groupname) == 0) {
                     if (wcnt::jwm.is_verbose())
-                        std::cout << "\nReforming connection " <<
-                            con->get_output_module_name() << " to ";
+                        std::cout << "\nReforming connection "
+                                  << con->get_output_module_name() << " to ";
                     const char* const new_mod_name =
                         set_groupname(new_group_name,
                             con->get_output_module_name());
@@ -168,7 +170,7 @@ dobj::base* group::duplicate_dobj(const char* new_group_name)
                             << " --> "
                             << con->get_input_module()->get_username()
                             << " "
-                            << input::names::get(con->get_input_type());
+                            << input::names::get(con->get_input_type()) << std::endl;;
                     }
                     delete [] new_mod_name;
                 }

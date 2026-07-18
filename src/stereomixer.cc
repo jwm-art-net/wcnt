@@ -5,7 +5,7 @@
 stereomixer::stereomixer(const char* uname) :
  synthmod::base(synthmod::STEREOMIXER, uname, SM_HAS_STEREO_OUTPUT),
  linkedlist(MULTIREF_ON, PRESERVE_DATA),
- out_left(0), out_right(0), master_level(0.75),
+ out_left(0), out_right(0), gain(0.75),
  chans_left(0), chans_right(0)
 {
     register_output(output::OUT_LEFT);
@@ -15,7 +15,7 @@ stereomixer::stereomixer(const char* uname) :
 void stereomixer::register_ui()
 {
     register_dobj(dobj::LST_MIX, dobj::DOBJ_SYNTHMOD);
-    register_param(param::MASTER_LEVEL);
+    register_param(param::GAIN);
 }
 
 ui::moditem_list* stereomixer::get_ui_items()
@@ -46,8 +46,8 @@ bool stereomixer::set_param(param::TYPE pt, const void* data)
 {
     switch(pt)
     {
-        case param::MASTER_LEVEL:
-            master_level = *(double*)data;
+        case param::GAIN:
+            gain = *(double*)data;
             return true;
         default:
             return false;
@@ -58,7 +58,7 @@ const void* stereomixer::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case param::MASTER_LEVEL: return &master_level;
+        case param::GAIN: return &gain;
         default: return 0;
     }
 }
@@ -69,17 +69,6 @@ stereomixer::duplicate_module(const char* uname, DUP_IO dupio)
     return duplicate_list_module(this, goto_first(), uname, dupio);
 }
 
-errors::TYPE stereomixer::validate()
-{
-    if (master_level == 0) {
-        // FIXME: should probably allow zero amplitude...
-        sm_err("%s is zero, all will be very quiet!",
-                param::names::get(param::MASTER_LEVEL));
-        invalidate();
-        return errors::ERROR;
-    }
-    return errors::NO_ERROR;
-}
 
 dobj::base* stereomixer::add_dobj(dobj::base* dbj)
 {
@@ -141,6 +130,6 @@ void stereomixer::run()
         out_left  += *chans_left[ix];
         out_right += *chans_right[ix];
     }
-    out_left  *= master_level;
-    out_right *= master_level;
+    out_left  *= gain;
+    out_right *= gain;
 }

@@ -136,7 +136,7 @@ mix1
         synthmod name g8.ch
         synthmod name g9.ch
     mix
-    master_level 0.5333
+    gain 0.5333
 mix1
 
 input_editor

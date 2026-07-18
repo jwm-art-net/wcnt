@@ -8,6 +8,9 @@ TODO BEFORE RELEASE
     * be explicit about the modulation type featured in the various
       clock modules - it probably does not work as people expect!
 
+    * new parameter for time_map - bpm_changes_relative on/off - allow
+      to specify absolute or relative bpm changes. [DONE]
+
 TODO NEW FEATURES FOR A FUTURE RELEASE (not next release)
 
     * wave_phase cycle sync can be a problem, using on_trig_reset_phase
@@ -26,10 +29,24 @@ TODO NEW FEATURES FOR A FUTURE RELEASE (not next release)
       ie if the input_editor can do this... why can't that functionality
       be brought to modules that need it - and do away with the clunky
       adding of modules to modules!?
+      -- tried adding optional output name parameter to dobjmod but
+      combiner etc store each dobjmod as a linked list of
+      synthmod::base* so no current way of storing which output to use.
 
     * rename data object (or directive?) for renaming stuff
       specifically groups, all the modules in the group, and their
       connections.
+
+ideas
+
+    * chain copy? set modules to copy as comma seperated list without
+      whitespace (ie osc1,wave1,adsr1,amp1). set either name prefix, or
+      name suffix, for renaming all copied modules. connections
+      duplicated additionally.
+
+    * creation loops with iterative values, basic maths, for creating
+      copies of modules
+
 
 4th February 2008
 -- -- -- -- -- --

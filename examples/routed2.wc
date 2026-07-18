@@ -187,8 +187,8 @@ amp
     in_signal   wv out_output
     in_amp_eg   env out_output
     gain           1.0
-    in_gain_mod  off
-    gain_mod_size    0.0
+    in_amp_mod  off
+    amp_mod_size    0.0
     clip_level      1.0
 amp
 
@@ -343,12 +343,12 @@ c
 echo
 echol
     in_signal        c out_output
-    in_gain_mod      off
+    in_amp_mod      off
     in_feedback      echor out_wet_output
     in_feedback_mod  off
     delay_time         170
     gain               0.55
-    gain_mod_size      0
+    amp_mod_size      0
     feedback           0.725
     feedback_mod_size  0
     wet/dry            0.25
@@ -357,12 +357,12 @@ echol
 echo
 echor
     in_signal        c out_output
-    in_gain_mod      off
+    in_amp_mod      off
     in_feedback      echol out_wet_output
     in_feedback_mod  off
     delay_time         180
     gain               0.55
-    gain_mod_size      0
+    amp_mod_size      0
     feedback           0.725
     feedback_mod_size  0
     wet/dry            0.25

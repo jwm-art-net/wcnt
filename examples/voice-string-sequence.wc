@@ -9,6 +9,7 @@ tm
     meter_map
         meter tsig 4/4 bar 0
     meter_map
+    bpm_changes_relative off
     bpm_map
         tempo bpm 130 bar 0
     bpm_map
@@ -78,7 +79,7 @@ voice-string
     stout
         in_left  voice-string.pan out_left
         in_right voice-string.pan out_right
-        level  0.43
+        gain  0.43
     stout
 
     adsr_scaler
@@ -125,7 +126,7 @@ out1
         synthmod name voice-string4.stout
         synthmod name voice-string5.stout
     mix
-    master_level 0.75
+    gain 0.75
 out1
 
 
@@ -232,7 +233,7 @@ out2
         synthmod name voice2-string4.stout
         synthmod name voice2-string5.stout
     mix
-    master_level 0.75
+    gain 0.75
 out2
 
 mixer
@@ -241,7 +242,7 @@ out
         synthmod name out1
         synthmod name out2
     mix
-    master_level 0.85
+    gain 0.85
 out
 
 

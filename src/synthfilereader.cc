@@ -22,17 +22,9 @@
 using namespace std; // just this once as it's used so much in here...
 
 
-#ifdef DEBUG
-#define wc_err(fmt, ... )                               \
-{                                                       \
-    printf("%40s:%5d %-35s\n",                          \
-                    __FILE__, __LINE__, __FUNCTION__);  \
-    cfmt(wc_err_msg, STRBUFLEN, fmt, __VA_ARGS__);      \
-}
-#else
 #define wc_err(fmt, ... ) \
     cfmt(wc_err_msg, STRBUFLEN, fmt, __VA_ARGS__)
-#endif
+
 
 synthfilereader::synthfilereader() :
  dobj::base(dobj::DEF_WCFILE),
@@ -301,25 +293,34 @@ bool synthfilereader::autogroup_stop(const char* com)
     connector* c = cl->goto_first();
     while (c) {
         const char* outmod = c->get_output_module_name();
-#ifdef DEBUG
-        cout << "checking pending connection using output module name: " << outmod << endl;
-#endif
-        if (!get_groupname(outmod)) {
-            char* gsmn = set_groupname(autogroup->get_username(), outmod);
-            synthmod::base* sm = sml->get_synthmod_by_name(gsmn);
-            if (sm) {
-                // precedence for outputs with matching module name is for
-                // within the autogroup group, and such a module has been
-                // found, so update connector to refer to the grouped module
-                // (it's likely possible the ungrouped name does not exist!)
-                if (wcnt::jwm.is_verbose())
-                    cout << "updating pending autogroup connection for output "
-                            "module " << outmod << " to " << gsmn << endl;
-                c->set_output_module_name(gsmn);
+        D_CONNECT("checking pending connection using output module name: %s "
+                  "(to input module %s)\n", outmod, c->get_input_module()->get_username());
+        if (strcmp(c->get_input_module()->get_group_name(), autogroup->get_username()) == 0) {
+            // due to autogroup_add, grouping can be staged, so *must* ensure
+            // group names match!
+            if (!get_groupname(outmod)) {
+                char* gsmn = set_groupname(autogroup->get_username(), outmod);
+                synthmod::base* sm = sml->get_synthmod_by_name(gsmn);
+                if (sm) {
+                    // precedence for outputs with matching module name is for
+                    // within the autogroup group, and such a module has been
+                    // found, so update connector to refer to the grouped module
+                    // (it's likely possible the ungrouped name does not exist!)
+                    if (wcnt::jwm.is_verbose())
+                        cout << "updating pending autogroup connection for output "
+                                "module " << outmod << " to " << gsmn << endl;
+                    c->set_output_module_name(gsmn);
+                    c->clear_group_pending();
+                }
+                else if ((sm = sml->get_synthmod_by_name(outmod))) {
+                    // module isn't within the current autogroup,
+                    // BUT, has been found outside of it, so clear group pending.
+                    D_CONNECT("Clearing group pending on connection with non-group output module %s\n", outmod);
+                    c->clear_group_pending();
+                }
+                delete [] gsmn;
             }
-            delete [] gsmn;
         }
-        c->clear_group_pending();
         c = cl->goto_next();
     }
 
@@ -701,12 +702,9 @@ dobj::base* synthfilereader::read_dobj(const char* com)
 string*  synthfilereader::read_string_list_param (const char* enda,
                                                   const char* endb)
 {
-    #ifdef STR_DEBUG
-    cout << "read_string_list_param:";
-    if (enda) cout << " enda = " << enda;
-    if (endb) cout << " endb = " << endb;
-    cout << endl;
-    #endif
+    D_UIITEM("%s %s %s %s\n",
+             (enda) ? "enda = " : "", (enda) ? enda : "",
+             (endb) ? "endb = " : "", (endb) ? endb : "");
     if (enda == 0 && endb == 0) {
         wc_err("%s read_string_list_param(char*, char*) called with"
                             " NULL arguements.", errors::stock::major);
@@ -723,9 +721,8 @@ string*  synthfilereader::read_string_list_param (const char* enda,
             invalidate();
             return 0;
         }
-        #ifdef STR_DEBUG
-        cout << "read_string_list_param got " << com << endl;
-        #endif
+
+        D_UIITEM("got %s\n", com);
         if (enda) {
             if (strcmp(com, enda) == 0) {
                 if (!ready_to_finish) {
@@ -736,10 +733,7 @@ string*  synthfilereader::read_string_list_param (const char* enda,
                 // tell read_command() the next command it should
                 // return has already been read and it is enda:
                 command = new string(enda);
-                #ifdef STR_DEBUG
-                cout << "command set to " << enda << endl;
-                cout << "returning : " << strlist << endl;
-                #endif
+                D_UIITEM("command set to %s\n returning %s\n", enda, strlist.c_str());
                 return new string(strlist);
             }
         }
@@ -751,10 +745,7 @@ string*  synthfilereader::read_string_list_param (const char* enda,
                     return 0;
                 }
                 command = new string(endb);
-                #ifdef STR_DEBUG
-                cout << "command set to " << endb << endl;
-                cout << "returning : " << strlist << endl;
-                #endif
+                D_UIITEM("command set to %s\n returning %s\n", endb, strlist.c_str());
                 return new string(strlist);
             }
         }
@@ -778,42 +769,26 @@ bool synthfilereader::read_ui_moditems(synthmod::base* sm)
 
     items->match_begin(sm, sm->get_username());
 
-    #ifdef DEBUG
-    std::cout << "=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=" << std::endl;
-    std::cout << "_-_-_-_-_-_-_--- read_ui_moditems ---_-_-_-_-_-_-_" << std::endl;
-    std::cout << "=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=" << std::endl;
-    #endif
-
     ui::moditem* item = 0;
     bool reading = true;
 
     while (reading) {
         const char* str = read_command();
-
-        #ifdef DEBUG
-        std::cout << "()()() read command gave \"" << str << "\" ()()()" << std::endl;
-        #endif
-
+        D_BUG("()()() read command gave %s ()()()\n", str);
         item = items->match_item(str);
 
         switch(item->get_item_type()) {
           case ui::UI_ERROR:
-            #ifdef DEBUG
-            std::cout << "***** ERROR ERROR ERROR *****" << std::endl;
-            #endif
+            D_BUG("***** ERROR ERROR ERROR *****\n");
             wc_err("%s", item->get_descr());
             return false;
           case ui::UI_USERNAME:
-            #ifdef DEBUG
-            std::cout << "ui::UI_USERNAME!" << std::endl;
-            #endif
+            D_BUG("***** UI_USERNAME\n");
             command = new string(str);
             reading = false;
             break;
           case ui::UI_COMMENT:
-            #ifdef DEBUG
-            std::cout << "match_item didn't skip comment - wierd" << std::endl;
-            #endif
+            D_BUG("match_item didn't skip comment - wierd\n");
             break;
           case ui::UI_PARAM: {
             ui::modparam* mp = static_cast<ui::modparam*>(item);
@@ -862,12 +837,7 @@ bool synthfilereader::read_ui_dobjitems(dobj::base* dob, const char* parent)
     if (!items)
         return true;
 
-    #ifdef DEBUG
-    std::cout << "===========================================" << std::endl;
-    std::cout << "read_ui_dobjitems(dob, parent '" << (parent ? parent : "NULL") << "')" << std::endl;
-    std::cout << "===========================================" << std::endl;
-    #endif
-
+    D_BUG("parent: '%s'\n", (parent ? parent : ""));
 
     if (wcnt::jwm.is_verbose())
         cout << "--------" << endl;
@@ -880,14 +850,9 @@ bool synthfilereader::read_ui_dobjitems(dobj::base* dob, const char* parent)
 
     while (reading) {
         const char* str = read_command();
-        #ifdef DEBUG
-        std::cout << "eeep reading... str: '" << str << "'" << std::endl;
-        std::cout << "eeep comparing with parent: '" << (parent ? parent : "NULL") << "'" << std::endl;
-        #endif
-
-        #ifdef DEBUG
-        std::cout << "comparing with dob: '" << dobjname << "'" << std::endl;
-        #endif
+        D_BUG("eeep reading... str: '%s', comparing with parent '%s'\n",
+            str, (parent ? parent : ""));
+        D_BUG("...comparing with dob: '%s'\n", dobjname);
         if (strcmp(str, dobjname) == 0) {
             command = new string(str);
             break;
@@ -900,21 +865,17 @@ bool synthfilereader::read_ui_dobjitems(dobj::base* dob, const char* parent)
             wc_err("%s match_item returned null item.", errors::stock::major);
             return false;
         }
-        std::cout << "about to switch.." << std::endl;
+        D_BUG("about to switch..\n");
         #endif
 
 
         switch (item->get_item_type()) {
           case ui::UI_ERROR:
-            #ifdef DEBUG
-            std::cout << "***** ERROR ERROR ERROR *****" << std::endl;
-            #endif
+            D_BUG("***** ERROR ERROR ERROR *****\n");
             wc_err("%s", item->get_descr());
             return false;
           case ui::UI_USERNAME:
-            #ifdef DEBUG
-            std::cout << "ui::UI_USERNAME!" << std::endl;
-            #endif
+            D_BUG("ui::UI_USERNAME!\n");
             command = new string(str);
             reading = false;
             break;
@@ -925,9 +886,7 @@ bool synthfilereader::read_ui_dobjitems(dobj::base* dob, const char* parent)
             param::TYPE pt = dp->get_param_type();
             if (pt == param::STR_UNNAMED || pt == param::STR_LIST) {
                 command = new string(str);
-                #ifdef DEBUG
-                std::cout << "putting string '" << str << "' back..." << std::endl;
-                #endif
+                D_BUG("putting string '%s' back...\n", str);
                 if (strcmp(str, parent) == 0)
                     return true;
             }
@@ -997,7 +956,11 @@ synthfilereader::read_ui_modinput(synthmod::base* sm, input::TYPE inptype)
             c->set_group_pending();
         if (wcnt::jwm.is_verbose()) {
             cout << "added connector " << inpname << "\t"
-                 << outmod << "\t" << outname << endl;
+                 << outmod << "\t" << outname;
+            if (c->is_group_pending())
+                cout << "\t(G)";
+            cout << endl;
+
         }
     }
     return true;
@@ -1051,9 +1014,7 @@ synthfilereader::read_ui_dobjparam(dobj::base* dob, param::TYPE partype,
             *synthfile >> *datastr;
         }
     }
-    #ifdef DEBUG
-    std::cout << "datastr: " << *datastr << std::endl;
-    #endif
+    D_BUG("datastr: '%s'\n", datastr->c_str());
     if (include_dbj(dob->get_username())) {
         if (!setpar::set_param(dob, partype, datastr->c_str(), &conv))
         {

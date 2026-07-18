@@ -9,6 +9,7 @@ tm
     meter_map
         meter tsig 4/4 bar 0
     meter_map
+    bpm_changes_relative off
     bpm_map
         tempo bpm 130 bar 0
     bpm_map
@@ -125,8 +126,7 @@ stereo_amp
 stout
     in_left       el out_output
     in_right      er out_output
-    left_level    0.7
-    right_level   0.7
+    gain    0.7
     clip_level    0.99
 stout
 

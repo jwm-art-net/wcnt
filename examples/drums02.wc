@@ -1,7 +1,7 @@
 wcnt-1.32/jwmsynth
 //------------------------------------------------------------------------
 //
-//  drums02.wc:  
+//  drums02.wc:
 //      re-arranges a 2 second sample of a 1 bar drumloop.
 //      uses the wait_trig module with two lfo_clock triggers
 //      to create an interesting rythmic pattern. (ie the sequencer
@@ -76,10 +76,11 @@ sampler1b
 constant one value 1.0 one
 
 time_map
-time1  
+time1
     meter_map
         meter tsig 4/4 bar 0
     meter_map
+    bpm_changes_relative off
     bpm_map
         tempo bpm 130 bar 0
     bpm_map
@@ -87,7 +88,7 @@ time1
 
 // the drums are not triggered by the sequencer...
 
-riff 
+riff
 riff1
     quarter_value 1
     notelist
@@ -510,12 +511,12 @@ dynr
 echo
 lecho
     in_signal       dl      out_output
-    in_gain_mod     adsr1   out_output
+    in_amp_mod     adsr1   out_output
     in_feedback     recho   out_wet_output
     in_feedback_mod dlb     out_output
     delay_time          25
     gain                1.0
-    gain_mod_size        1.0
+    amp_mod_size        1.0
     feedback            0.9995
     feedback_mod_size    0.5350
     wet/dry             0.75
@@ -524,12 +525,12 @@ lecho
 echo
 recho
     in_signal       dr      out_output
-    in_gain_mod     adsr1   out_output
+    in_amp_mod     adsr1   out_output
     in_feedback     lecho   out_wet_output
     in_feedback_mod drb     out_output
     delay_time          17.5
     gain                1.0
-    gain_mod_size        1.0
+    amp_mod_size        1.0
     feedback            0.9995
     feedback_mod_size    0.5350
     wet/dry             0.75
@@ -545,8 +546,7 @@ amp1
     in_right        dynr    out_output
     in_amp_eg   adsr1   out_output
     in_amp_mod      off
-    left_level      0.975
-    right_level     0.975
+    gain      0.975
     amp_mod_size    0.0
     clip_level      1.0
 amp1
@@ -557,8 +557,7 @@ amp1b
     in_right        recho  out_output
     in_amp_eg   adsr1  out_output
     in_amp_mod      off
-    left_level      0.975
-    right_level     0.975
+    gain      0.975
     amp_mod_size    0.0
     clip_level      1.0
 amp1b
@@ -583,7 +582,7 @@ mix1
         synthmod
             name  ch1b
     mix
-    master_level  0.75
+    gain  0.75
 mix1
 
 wavfile_out

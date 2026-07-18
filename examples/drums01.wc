@@ -1,7 +1,7 @@
 wcnt-1.32/jwmsynth
 //------------------------------------------------------------------------
 //
-//  drums01.wc:  
+//  drums01.wc:
 //      re-arranges a 2 second sample of a 1 bar drumloop, in which
 //      the drums are positioned on sixteenths.  The drums are re
 //      'sequenced' by using lfo_clock modules to trigger them.
@@ -78,10 +78,11 @@ sampler1
 constant one value 1.0 one
 
 time_map
-time1  
+time1
     meter_map
         meter tsig 4/4 bar 0
     meter_map
+    bpm_changes_relative off
     bpm_map
         tempo bpm 130 bar 0
     bpm_map
@@ -89,7 +90,7 @@ time1
 
 // the drums are not triggered by the sequencer...
 
-riff 
+riff
 riff1
     quarter_value 1
     notelist
@@ -456,7 +457,7 @@ revb
     bandwidth  0.622233  // 0.6235
     tail       1.0 //0.0489987 // 0.0367
     damping    0.0595298 //0.06
-    wet/dry    0.2648420 // 0.5 
+    wet/dry    0.2648420 // 0.5
 revb
 
 constant_freq f2 freq 110 f2
@@ -465,10 +466,10 @@ single_band_parametric
 sbp-l
     in_signal         revb out_left
     in_phase_step     f2 out_phase_step
-    in_gain_mod       off
+    in_amp_mod       off
     in_bandwidth_mod  off
     gain_db             8
-    gain_mod_size       0
+    amp_mod_size       0
     bandwidth           0.5
     bandwidth_mod_size  0
 sbp-l
@@ -477,10 +478,10 @@ single_band_parametric
 sbp-r
     in_signal         revb out_right
     in_phase_step     f2 out_phase_step
-    in_gain_mod       off
+    in_amp_mod       off
     in_bandwidth_mod  off
     gain_db             8
-    gain_mod_size       0
+    amp_mod_size       0
     bandwidth           0.5
     bandwidth_mod_size  0
 sbp-r
@@ -491,8 +492,7 @@ amp1
     in_right    sbp-r    out_output
     in_amp_eg   adsr1   out_output
     in_amp_mod      off
-    left_level      0.75
-    right_level     0.75
+    gain            0.75
     amp_mod_size    0.0
     clip_level      32767
 amp1

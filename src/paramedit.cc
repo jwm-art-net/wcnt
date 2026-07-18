@@ -40,9 +40,7 @@ paramedit::~paramedit()
 
 bool paramedit::set_name(const char* n)
 {
-#ifdef DEBUG
-    std::cout << "paramedit::set_name(\"" << n << "\"" << std::endl;
-#endif
+    D_BUG("name '%s'\n", n);
     char* grpmodname = 0;
     synthmod::base* sm = wcnt::jwm.get_modlist()
                     ->autogroup_or_any_get_synthmod_by_name(n, &grpmodname);

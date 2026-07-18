@@ -33,12 +33,12 @@ class connector
 {
  public:
     enum CSTATE { FAIL = 1, POSTPONE, SUCCESS};
-    enum CONFLAGS { GROUP_PENDING = 0x01 };
+    enum CONFLAGS { GROUP_PENDING = 0x01, EDITED = 0x02 };
 
     connector(synthmod::base* input_module,
               input::TYPE input_type,
               const char* output_module_name,
-              output::TYPE output_type );
+              output::TYPE output_type);
     ~connector();
 
     void set_output_module_name(const char*);
@@ -64,6 +64,8 @@ class connector
     bool is_group_pending() { return flags & GROUP_PENDING; }
     void set_group_pending() { flags |= GROUP_PENDING; }
     void clear_group_pending() { flags &=~ GROUP_PENDING; }
+    bool is_edited() { return flags & EDITED; }
+    void set_edited() { flags |= EDITED; }
     int operator()(CONFLAGS & _flags) const { return _flags & flags; }
 
     #ifdef DATA_STATS
@@ -71,6 +73,13 @@ class connector
     #endif
 
  private:
+
+    connector(synthmod::base* input_module,
+              input::TYPE input_type,
+              const char* output_module_name,
+              output::TYPE output_type,
+              int conflags);
+
     synthmod::base* in_mod;
     input::TYPE     in_type;
     char*           out_mod_uname;

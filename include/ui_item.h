@@ -2,6 +2,7 @@
 #define UI_ITEM_H
 
 #include "checkvalue.h"
+#include "debug.h"
 #include "dobjnames.h"
 #include "inputnames.h"
 #include "paramnames.h"
@@ -17,9 +18,6 @@
 // items may also be arranged in groups if they are optional, or arranged
 // as multiple-choices.
 
-#ifdef DEBUG
-#include "textstuff.h"
-#endif
 
 #include "sstream"
 
@@ -226,7 +224,7 @@ namespace ui
     virtual void dump() {
         char buf[40];
         get_item_flags(buf, 40);
-        debug("%s\n", buf);
+        D_UIITEM("%s\n", buf);
     };
     #endif
 
@@ -261,7 +259,7 @@ namespace ui
     #ifdef DEBUG
     if (f < 0) {
         this->dump();
-        debug("invalid ui item flags: %d\n", f);
+        D_UIITEM("invalid ui item flags: %d\n", f);
         return 0;
     }
 
@@ -273,7 +271,7 @@ namespace ui
 
     if (group > 1) {
         this->dump();
-        debug("invalid ui item flags: %d "
+        D_UIITEM("invalid ui item flags: %d "
               "item has more than one group-id bit set.\n", f);
         return 0;
     }
@@ -286,14 +284,14 @@ namespace ui
 
     if (option > 1) {
         this->dump();
-        debug("invalid ui item flags: %d "
+        D_UIITEM("invalid ui item flags: %d "
               "item has more than one option-id bit set.\n", f);
         return 0;
     }
 
     if (group && option) {
         this->dump();
-        debug("invalid ui item flags: %d "
+        D_UIITEM("invalid ui item flags: %d "
               "item has both option-id and group-id bits set.\n", f);
         return 0;
     }
@@ -304,7 +302,7 @@ namespace ui
          || f & UI_OPT_DUMMY)
         {
             this->dump();
-            debug("invalid ui item flags: %d "
+            D_UIITEM("invalid ui item flags: %d "
                   "item has UI_OPT_xxx flags set without UI_OPTIONx set.\n", f);
             return 0;
         }
@@ -340,7 +338,7 @@ namespace ui
         static error_item<T> err;
         if (err_buf)
             err.err_msg = err_buf;
-        debug("err.err_msg: %p\n", err.err_msg);
+        D_UIITEM("err.err_msg: %p\n", err.err_msg);
         return &err;
     }
 
@@ -368,7 +366,7 @@ namespace ui
 
     #ifdef DEBUG
     void dump() {
-        debug("comment: %s (0x%p)\n", base<T>::get_descr(), this);
+        D_UIITEM("comment: %s (0x%p)\n", base<T>::get_descr(), this);
     }
     #endif
  };
@@ -392,7 +390,7 @@ namespace ui
     bool validate(T, errors::TYPE);
 
     bool name_match(const char* str) {
-        debug("checking '%s' against '%s'\n", str, param::names::get(partype));
+        D_UIITEM("checking '%s' against '%s'\n", str, param::names::get(partype));
         if (partype == param::STR_UNNAMED || partype == param::STR_LIST)
             return true;
         return (strcmp(str, param::names::get(partype)) == 0);
@@ -402,7 +400,7 @@ namespace ui
     void dump() {
         char buf[40];
         this->get_item_flags(buf, 40);
-        debug("%s param: '%s' (0x%p)\n", buf, param::names::get(partype), this);
+        D_UIITEM("%s param: '%s' (0x%p)\n", buf, param::names::get(partype), this);
     }
     #endif
 
@@ -452,7 +450,7 @@ namespace ui
     bool validate(T, errors::TYPE) { return true; }
 
     bool name_match(const char* str) {
-        debug("checking '%s' against '%s'\n", str, input::names::get(intype));
+        D_UIITEM("checking '%s' against '%s'\n", str, input::names::get(intype));
         return (strcmp(str, input::names::get(intype)) == 0);
     }
 
@@ -460,7 +458,7 @@ namespace ui
     void dump() {
         char buf[40];
         this->get_item_flags(buf, 40);
-        debug("%s input: '%s' (0x%p)\n", buf, input::names::get(intype), this);
+        D_UIITEM("%s input: '%s' (0x%p)\n", buf, input::names::get(intype), this);
     }
     #endif
 
@@ -487,7 +485,7 @@ namespace ui
     bool validate(T, errors::TYPE) { return true; }
 
     bool name_match(const char* str) {
-        debug ("checking '%s' against '%s'\n", str, dobj::names::get(parent));
+        D_UIITEM ("checking '%s' against '%s'\n", str, dobj::names::get(parent));
         return (strcmp(str, dobj::names::get(parent)) == 0);
     }
 
@@ -495,7 +493,7 @@ namespace ui
     void dump() {
         char buf[40];
         this->get_item_flags(buf, 40);
-        debug("%s dobj: parent: '%s' (0x%p) child: '%s'\n", buf,
+        D_UIITEM("%s dobj: parent: '%s' (0x%p) child: '%s'\n", buf,
                                                 dobj::names::get(parent),
                                                 this,
                                                 dobj::names::get(child));

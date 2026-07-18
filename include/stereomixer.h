@@ -18,7 +18,6 @@ class stereomixer: public synthmod::base,
                                 const char* uname, synthmod::base::DUP_IO);
     void run();
     void init();
-    errors::TYPE validate();
     const void* get_out(output::TYPE) const;
     bool set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE) const;
@@ -28,7 +27,7 @@ class stereomixer: public synthmod::base,
  private:
     double out_left;
     double out_right;
-    double master_level;
+    double gain;
     double const** chans_left;
     double const** chans_right;
     void register_ui();

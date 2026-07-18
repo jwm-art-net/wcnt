@@ -112,13 +112,13 @@ namespace ui
         FLAGS   group_id;
         bool    group_ended;
 
-        #if DEBUG
+        #ifdef DEBUG_UIITEM
         bool    choice_specified_dup;
         #endif
         void reset() {
             group_head = 0;
             group_id = UI_DEFAULT;
-            #if DEBUG
+            #ifdef DEBUG_UIITEM
             choice_specified_dup = false;
             #endif
         }
@@ -139,21 +139,21 @@ namespace ui
             opt0id = chosen0id = UI_DEFAULT;
         }
 
-        #if DEBUG
+        #ifdef DEBUG_UIITEM
         void dump() {
-            debug("option:\thead %p ", head);
+            D_UIITEM("option:\thead %p ", head);
             if (head)
-                debug(" ('%s')", head->get_data()->get_name());
-            debug("\topt0 %p", opt0);
+                D_UIITEM(" ('%s')", head->get_data()->get_name());
+            D_UIITEM("\topt0 %p", opt0);
             if (opt0)
-                debug(" ('%s')", opt0->get_data()->get_name());
-            debug("\tchosen0 %p", chosen0);
+                D_UIITEM(" ('%s')", opt0->get_data()->get_name());
+            D_UIITEM("\tchosen0 %p", chosen0);
             if (chosen0)
-                debug(" ('%s')", chosen0->get_data()->get_name());
-            debug("\tlast %p", last);
+                D_UIITEM(" ('%s')", chosen0->get_data()->get_name());
+            D_UIITEM("\tlast %p", last);
             if (last)
-                debug(" ('%s')", last->get_name());
-            debug("\n");
+                D_UIITEM(" ('%s')", last->get_name());
+            D_UIITEM("\n");
         }
         #endif
 
@@ -199,10 +199,7 @@ namespace ui
   item(0), prev(0), last(0), editing(false),
   listtype(0), def_username(0)
  {
-    debug("\n______________________________________________________"
-          "\n^&*^&*^&*^&*^&*^&*^&*^&*^&*^&*^&*^&*^&*^&*^&*^&*^&*^&*\n");
-    debug("item_list<T>::item_list<T>()\n");
-    debug(" + err_msg: %p\n", err_msg);
+    D_UIITEM("item_list<T>::item_list<T>() + err_msg: %p\n", err_msg);
     error_item<T>::err(err_msg);
  }
 
@@ -224,7 +221,7 @@ namespace ui
             i = 0;
         }
     }
-    #ifdef DEBUG
+    #ifdef DEBUG_UIITEM
     i->dump();
     #endif
     return i;
@@ -254,7 +251,7 @@ namespace ui
             i = 0;
         }
     }
-    #ifdef DEBUG
+    #ifdef DEBUG_UIITEM
     i->dump();
     #endif
     return i;
@@ -272,7 +269,7 @@ namespace ui
             i = 0;
         }
     }
-    #ifdef DEBUG
+    #ifdef DEBUG_UIITEM
     i->dump();
     #endif
     return i;
@@ -288,7 +285,7 @@ namespace ui
             i = 0;
         }
     }
-    #ifdef DEBUG
+    #ifdef DEBUG_UIITEM
     i->dump();
     #endif
     return i;
@@ -310,7 +307,7 @@ namespace ui
     if (id & UI_OPTION_MASK) {
         choice.head = choice.opt0 = this->sneak_current();
         choice.opt0id = id;
-        #ifdef DEBUG
+        #ifdef DEBUG_UIITEM
         if (item->should_duplicate())
             track.choice_specified_dup = true;
         #endif
@@ -348,9 +345,9 @@ namespace ui
     if (choice.opt0id & UI_OPTION_MASK) {
         if (id & UI_OPTION_MASK) {
             if (id == UI_OPTION1 && choice.opt0id > UI_OPTION1) {
-                #ifdef DEBUG
+                #ifdef DEBUG_UIITEM
                 if (!track.choice_specified_dup) {
-                    debug("***** WARNING *****\n\tno items in multiple choice"
+                    D_UIITEM("***** WARNING *****\n\tno items in multiple choice"
                           " marked to duplicate.\n");
                 }
                 #endif
@@ -364,20 +361,20 @@ namespace ui
                 choice.opt0 = this->sneak_current();
                 choice.opt0id = id;
             }
-            #ifdef DEBUG
+            #ifdef DEBUG_UIITEM
             if (item->is_ui_opt_duplicate())
                 track.choice_specified_dup = true;
             if (!this->sneak_next()
              && !track.choice_specified_dup) {
-                debug("***** WARNING *****\n\tno items in multiple choice "
+                D_UIITEM("***** WARNING *****\n\tno items in multiple choice "
                       "marked to duplicate.\n");
             }
             #endif
         }
         else {
-            #ifdef DEBUG
+            #ifdef DEBUG_UIITEM
             if (!track.choice_specified_dup) {
-                debug("***** WARNING *****\n\tno items in multiple choice "
+                D_UIITEM("***** WARNING *****\n\tno items in multiple choice "
                       "marked to duplicate.\n");
             }
             #endif
@@ -391,7 +388,7 @@ namespace ui
         if (id & UI_OPTION_MASK) {
             choice.head = choice.opt0 = this->sneak_current();
             choice.opt0id = id;
-            #ifdef DEBUG
+            #ifdef DEBUG_UIITEM
             if (item->is_ui_opt_duplicate())
                 track.choice_specified_dup = true;
             #endif
@@ -457,9 +454,9 @@ namespace ui
  template <class T>
  void item_list<T>::match_begin_proper(T t)
  {
-    #ifdef DEBUG
+    #ifdef DEBUG_UIITEM
     int n = 0;
-    debug("\n----------------------------------------------- match_begin()\n");
+    D_UIITEM("------ match_begin()\n");
     #endif
 
     editing = false;
@@ -470,9 +467,9 @@ namespace ui
 
     do {
         item->reset_matched();
-        #ifdef DEBUG
+        #ifdef DEBUG_UIITEM
         llitem* li = this->sneak_current();
-        debug("ll_item: %p\titem: %d\n", li, ++n);
+        D_UIITEM("ll_item: %p\titem: %d\n", li, ++n);
         item->dump();
         #endif
     } while ((item = this->goto_next()) != 0);
@@ -500,22 +497,22 @@ namespace ui
     if (!listtype || !str || this->is_empty())
         return 0;
 
-    debug("match_item(%s)\n", str);
+    D_UIITEM("match_item(%s)\n", str);
 
     base<T>* failchoice = 0;
 
 restart:
     if (!item)
         item = this->goto_first();
-    #ifdef DEBUG
-    debug("passed restart\n");
-    debug("item dump:\n");
+    #ifdef DEBUG_UIITEM
+    D_UIITEM("passed restart\n");
+    D_UIITEM("item dump:\n");
     item->dump();
-    debug("last dump:\n");
+    D_UIITEM("last dump:\n");
     if (last)
         last->dump();
     else
-        debug("NULL\n");
+        D_UIITEM("NULL\n");
     #endif
 
     if (last == item) {
@@ -529,15 +526,15 @@ restart:
     }
 
     if (choice.opt0) {
-        debug("\t(CHOICE.CUR0)\n");
+        D_UIITEM("\t(CHOICE.CUR0)\n");
         base<T>* i = match_item_choice(str);
         if (i)
             return i;
         failchoice = choice.head->get_data();
-        #ifdef DEBUG
-        debug("\t*+*+*+*+*+*+*+ \tlast:\n"); last->dump();
-        debug("\t*+*+*+*+*+*+*+ \tchoice.last:\n"); choice.last->dump();
-        debug("\t*+*+*+*+*+*+*+ \tfailchoice:\n"); failchoice->dump();
+        #ifdef DEBUG_UIITEM
+        D_UIITEM("\t*+*+*+*+*+*+*+ \tlast:\n"); last->dump();
+        D_UIITEM("\t*+*+*+*+*+*+*+ \tchoice.last:\n"); choice.last->dump();
+        D_UIITEM("\t*+*+*+*+*+*+*+ \tfailchoice:\n"); failchoice->dump();
         #endif
         skip_choice();
     }
@@ -545,8 +542,8 @@ restart:
     do {
         if (item->get_item_type() != UI_COMMENT) {
 
-            #ifdef DEBUG
-            debug("match_item loop on:\n");
+            #ifdef DEBUG_UIITEM
+            D_UIITEM("match_item loop on:\n");
             item->dump();
             #endif
 
@@ -554,7 +551,7 @@ restart:
 
             if (id & UI_OPTION_MASK) {
                 if (item == failchoice) {
-                    debug("\tFAILCHOICE BREAK 1\n");
+                    D_UIITEM("\tFAILCHOICE BREAK 1\n");
                     break;
                 }
                 choice.head = choice.opt0 = this->sneak_current();
@@ -562,21 +559,21 @@ restart:
                 choice.chosen0 = 0;
                 choice.chosen0id = UI_DEFAULT;
                 choice.last = 0;
-                debug("/////////// choice.head llitem: %p\n", choice.head);
+                D_UIITEM("/////////// choice.head llitem: %p\n", choice.head);
                 base<T>* ic = match_item_choice(str);
                 if (ic)
                     return ic;
                 if (!failchoice) {
                     failchoice = choice.head->get_data();
-                    #ifdef DEBUG
-                    debug("\t*+*+*+*+*+*+*+ \tfailchoice: ");
+                    #ifdef DEBUG_UIITEM
+                    D_UIITEM("\t*+*+*+*+*+*+*+ \tfailchoice: ");
                     failchoice->dump();
                     #endif
                 }
-                debug("resetting choice before restart...\n");
+                D_UIITEM("resetting choice before restart...\n");
                 skip_choice();
                 if (item == failchoice) {
-                    debug("\tFAILCHOICE BREAK 2\n");
+                    D_UIITEM("\tFAILCHOICE BREAK 2\n");
                     break;
                 }
                 goto restart;
@@ -589,15 +586,15 @@ restart:
                     ui_err("Duplicate item: %s.", item->get_name());
                     return error_item<T>::err();
                 }
-                debug("item matched, not choice/group\n");
+                D_UIITEM("item matched, not choice/group\n");
                 item->set_matched();
                 last = item;
                 return item;
             }
         }
-        #ifdef DEBUG
+        #ifdef DEBUG_UIITEM
         else {
-            debug("skipping comment '%s'\n", item->get_descr());
+            D_UIITEM("skipping comment '%s'\n", item->get_descr());
         }
         #endif
 
@@ -640,9 +637,9 @@ restart:
 
     str = buf;
 
-    #ifdef DEBUG
-    debug("match_item_choice(str:'%s', item: '%s')\n", str, item->get_name());
-    debug("-------------------- choice.head llitem: %p\n", choice.head);
+    #ifdef DEBUG_UIITEM
+    D_UIITEM("match_item_choice(str:'%s', item: '%s')\n", str, item->get_name());
+    D_UIITEM("-------------------- choice.head llitem: %p\n", choice.head);
     #endif
 
     if (!choice.last)
@@ -652,15 +649,15 @@ restart:
             this->goto_choice_head();
         //choice.last = item;
     }
-    #ifdef DEBUG
-    debug("\t!^!^!^!^!^!^!^ \tchoice.last:\n");
-    if (choice.last) choice.last->dump(); else debug("NULL\n");
+    #ifdef DEBUG_UIITEM
+    D_UIITEM("\t!^!^!^!^!^!^!^ \tchoice.last:\n");
+    if (choice.last) choice.last->dump(); else D_UIITEM("NULL\n");
     #endif
 
     do {
         if (item->get_item_type() != UI_COMMENT) {
-            #ifdef DEBUG
-            debug("   match_item_choice\n");
+            #ifdef DEBUG_UIITEM
+            D_UIITEM("   match_item_choice\n");
             item->dump();
             #endif
 
@@ -668,7 +665,7 @@ restart:
 
             if (id & UI_OPTION_MASK) {
                 if (choice.opt0id > UI_OPTION1 && id == UI_OPTION1) {
-                    debug("\t*1*CHOICETAIL == ITEM (%p)\n", item);
+                    D_UIITEM("\t*1*CHOICETAIL == ITEM (%p)\n", item);
                     this->goto_choice_head();
                     continue;
                 }
@@ -682,7 +679,7 @@ restart:
                         if (item->is_matched() && !item->was_forced()) {
                             if (def_username && strcmp(def_username, str) == 0)
                                 return username_item<T>::username();
-                            debug("detected previously matched choice item\n");
+                            D_UIITEM("detected previously matched choice item\n");
                             choice.chosen0 = choice.opt0;
                             choice.chosen0id = choice.opt0id;
                         }
@@ -703,7 +700,7 @@ restart:
                                 choice.chosen0id = choice.opt0id;
                             }
                             else if (id != choice.chosen0id) {
-                                debug("validity failed\n");
+                                D_UIITEM("validity failed\n");
                                 match_item_chosen_invalid_error();
                                 return error_item<T>::err();
                             }
@@ -716,21 +713,21 @@ restart:
                 }
             }
             else {
-                debug("\t*2*CHOICETAIL == ITEM (%p)\n", item);
+                D_UIITEM("\t*2*CHOICETAIL == ITEM (%p)\n", item);
                 this->goto_choice_head();
                 continue;
             }
         }
-        #ifdef DEBUG
+        #ifdef DEBUG_UIITEM
         else {
-            debug("skipping comment '%s'\n", item->get_descr());
+            D_UIITEM("skipping comment '%s'\n", item->get_descr());
         }
         #endif
 
         item = this->goto_next();
 
         if (choice.last && !item) {
-            debug("out of items. goto choice.head\n");
+            D_UIITEM("out of items. goto choice.head\n");
             this->goto_choice_head();
         }
     } while(item != choice.last);
@@ -739,7 +736,7 @@ restart:
     //      * there was no item matching str *in the choice*
     // but several reasons why that might be so,
     // so delay judgement for now...
-   debug("returning from choice with nothing!\n");
+   D_UIITEM("returning from choice with nothing!\n");
 
     return 0;
  }
@@ -759,7 +756,7 @@ restart:
             if (it->get_option_id() != choice.chosen0id)
                 break;
             if (it->is_matched()) {
-                debug("adding error item:'%s'\n", it->get_name());
+                D_UIITEM("adding error item:'%s'\n", it->get_name());
                 errstr += (items == 0 ? "'" : ", '");
                 errstr += it->get_name();
                 errstr += "'";
@@ -781,11 +778,11 @@ restart:
         return 0;
 
     item = this->goto_first();
-    debug("\n(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)\nvalidate_matches()\n");
+    D_UIITEM("validate_matches()\n");
 
     while (item) {
-            #ifdef DEBUG
-            debug("validate_matches:\n");
+            #ifdef DEBUG_UIITEM
+            D_UIITEM("validate_matches:\n");
             item->dump();
             #endif
         if (item->get_item_type() == UI_COMMENT)
@@ -802,7 +799,7 @@ restart:
             else if ((id = item->get_group_id()) & UI_GROUP_MASK) {
                 if (!validate_matches_group())
                     return error_item<T>::err();
-				item = this->sneak_current() ? this->get_current() : 0;
+                item = this->sneak_current() ? this->get_current() : 0;
             }
             else {
                 if (!item->is_matched()) {
@@ -845,10 +842,10 @@ restart:
     // FIXME:   when one of the options in a choice contains an input,
     //          detect when developer has not added a dummy option to
     //          any choices which allow the input to not be specified.
-    //          (nb, otherwise its a bit of a bugger to debug!)
+    //          (nb, otherwise its a bit of a bugger to D_UIITEM!)
     // *****    and, not forgetting UI_OPT_DUPLICATE
 
-    debug("\n(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)\nvalidate_matches_choice()\n");
+    D_UIITEM("validate_matches_choice()\n");
 
 
     bool choice_optional = item->is_optional();
@@ -861,8 +858,8 @@ restart:
 
     while (item) {
         if (item->get_item_type() != UI_COMMENT) {
-            #ifdef DEBUG
-            debug("validate_matches_choice:\n");
+            #ifdef DEBUG_UIITEM
+            D_UIITEM("validate_matches_choice:\n");
             item->dump();
             #endif
 
@@ -884,7 +881,7 @@ restart:
     }
 
     if (choice_optional && !choice.chosen0) {
-        debug("choice_optional && !choice.chosen0\n");
+        D_UIITEM("choice_optional && !choice.chosen0\n");
         // selection of the choice was optional and this fact
         // has been taken advantage of.  all that needs to be
         // done is to add off-connectors for any inputs in the
@@ -892,8 +889,8 @@ restart:
         item = this->goto_item(choice.head);
         while (item) {
             if (item->get_item_type() != UI_COMMENT) {
-                #ifdef DEBUG
-                debug("validate_matches_choice(2):\n");
+                #ifdef DEBUG_UIITEM
+                D_UIITEM("validate_matches_choice(2):\n");
                 item->dump();
                 #endif
                 FLAGS id = item->get_option_id();
@@ -921,7 +918,7 @@ restart:
     }
 
     // second pass
-    debug("second pass... \n");
+    D_UIITEM("second pass... \n");
     std::string errstr = "";
     std::string goodstr = "";
     int errors = 0;
@@ -930,21 +927,21 @@ restart:
     item = this->goto_item(choice.chosen0);
 
     while (item) {
-        #ifdef DEBUG
-        debug("validate\n");
+        #ifdef DEBUG_UIITEM
+        D_UIITEM("validate\n");
         item->dump();
         #endif
         if (item->get_item_type() != UI_COMMENT) {
-            #ifdef DEBUG
-            debug("validate_matches_choice(3):\n");
+            #ifdef DEBUG_UIITEM
+            D_UIITEM("validate_matches_choice(3):\n");
             item->dump();
             #endif
             FLAGS id = item->get_option_id();
             if (id != choice.chosen0id) {
-                debug("breakout, no longer in chosen\n");
+                D_UIITEM("breakout, no longer in chosen\n");
                 break;
             }
-            debug("processing...\n");
+            D_UIITEM("processing...\n");
             if (item->is_matched()) {
                 goodstr += (goods == 0 ? "'" : ", '");
                 goodstr += item->get_name();
@@ -996,27 +993,27 @@ template <class T>
     llitem* group0 = this->sneak_current();
     FLAGS group0id = item->get_group_id();
 
-    debug("\n(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)\nvalidate_matches_group()\n");
+    D_UIITEM("validate_matches_group()\n");
 
     while (item) {
         if (item->get_item_type() != UI_COMMENT) {
-            #ifdef DEBUG
-            debug("validate_matches_group:\t");
+            #ifdef DEBUG_UIITEM
+            D_UIITEM("validate_matches_group:\t");
             item->dump();
             #endif
             if (item->get_group_id() != group0id)
                 break;
             if (item->is_matched()) {
                 selected = true;
-                debug("selected\n");
+                D_UIITEM("selected\n");
             }
             else {
                 if (!item->is_optional()) {
                     unmatched = true;
-                    debug("unmatched\n");
+                    D_UIITEM("unmatched\n");
                 }
                 if (*item == UI_INPUT) {
-                    debug("adding off connector...\n");
+                    D_UIITEM("adding off connector...\n");
                     // optimized for non-error situation
                     input_item<T>* in = static_cast<input_item<T>*>(item);
                     output::TYPE ot = in->get_self_connect();
@@ -1048,8 +1045,8 @@ template <class T>
 
     while (item) {
         if (item->get_item_type() != UI_COMMENT) {
-            #ifdef DEBUG
-            debug("validate_matches_group(2):\t");
+            #ifdef DEBUG_UIITEM
+            D_UIITEM("validate_matches_group(2):\t");
             item->dump();
             #endif
             if (item->get_group_id() != group0id)
@@ -1099,7 +1096,7 @@ template <class T>
  {
     FLAGS cid = item->get_option_id();
     bool wrap = false;
-    debug("\t\t\tSKIPPING CHOICE (\n");
+    D_UIITEM("\t\t\tSKIPPING CHOICE (\n");
     do {
         if (item->get_item_type() != UI_COMMENT) {
             if (wrap && this->sneak_current() == choice.head)
@@ -1109,7 +1106,7 @@ template <class T>
               || id == UI_DEFAULT)
                 break;
             cid = id;
-            debug("'%s'\n", item->get_name());
+            D_UIITEM("'%s'\n", item->get_name());
         }
         if (!(item = this->goto_next())) {
             item = this->goto_first();
@@ -1118,7 +1115,7 @@ template <class T>
         }
     } while (true);
 
-    debug("\t\t\t) SKIPPED CHOICE\n");
+    D_UIITEM("\t\t\t) SKIPPED CHOICE\n");
 
     choice.reset();
  }

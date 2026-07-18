@@ -202,10 +202,10 @@ g0
     mono_amp
     amp
         in_signal   wv out_output
-        in_gain_mod  off
+        in_amp_mod  off
         in_amp_eg   env out_output
         gain           1.0
-        gain_mod_size    0.0
+        amp_mod_size    0.0
         clip_level      1.0
     amp
 
@@ -355,11 +355,11 @@ c
 echo
 echol
     in_signal        c out_output
-    in_gain_mod      off
+    in_amp_mod      off
     in_feedback      echor out_wet_output
     in_feedback_mod  off
     gain           1.0
-    gain_mod_size    0.0
+    amp_mod_size    0.0
     delay_time         170
     feedback           0.725
     feedback_mod_size  0
@@ -369,11 +369,11 @@ echol
 echo
 echor
     in_signal        c out_output
-    in_gain_mod      off
+    in_amp_mod      off
     in_feedback      echol out_wet_output
     in_feedback_mod  off
     gain           1.0
-    gain_mod_size    0.0
+    amp_mod_size    0.0
     delay_time         180
     feedback           0.725
     feedback_mod_size  0

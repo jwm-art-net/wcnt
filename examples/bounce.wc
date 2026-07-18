@@ -271,7 +271,7 @@ stereo_amp
 st
     in_left  rev out_left
     in_right rev out_right
-    level  2.65
+    gain  2.65
 st
 
 wavfile_out

@@ -1,14 +1,11 @@
 #include "../include/riffdata.h"
+#include "../include/debug.h"
 #include "../include/globals.h"
 #include "../include/conversions.h"
 
 #include "../include/listwork.h"
 
-#include <iostream> // for "ignoring note-edit" message
-
-#ifdef NOTE_EDIT_DEBUG
-using std::cout;
-#endif
+#include <iostream>
 
 riffdata::riffdata() :
  dobj::base(dobj::DEF_RIFF),
@@ -38,16 +35,10 @@ riffdata::~riffdata()
 
 note_data* riffdata::insert_and_position_note(note_data* newnote)
 {
-    #ifdef NOTE_EDIT_DEBUG
-    cout << "\nriff: ";
-    if (get_username())
-        cout << get_username();
-    cout << " insert_and_position_note"
-        << "\n\tname " << newnote->get_name()
-        << " pos " << newnote->get_position()
-        << " len " << newnote->get_length()
-        << " vel " << newnote->get_velocity();
-    #endif
+    D_NOTEEDIT("riff: %s \n", (get_username() ? get_username() : "<unnamed>"));
+    D_NOTEEDIT("insert_and_position_note name:%s pos:%d len:%d vel:%d\n",
+               newnote->get_name(), newnote->get_position(),
+               newnote->get_length(), newnote->get_velocity());
     if (!newnote)
         return 0;
     // removed checking of notename, because it's done by note_data
@@ -132,22 +123,17 @@ note_data* riffdata::edit_notes(note_data* editnote)
                     pronote = true;
                 break;
             default:
-                std::cout << "\nIgnoring edit note "
-                    << editnote->get_name()
-                    << " it is not a valid note editing command.";
+                std::cout << "Ignoring edit note " << editnote->get_name()
+                          << " it is not a valid note editing command.\n";
                 break;
         }
         if (pronote == true) {
             double oldval = (note->*rhs_func1)();
             double newval = calc_note_param(note_op, oldval,
                                             (editnote->*rhs_func2)());
-            #ifdef NOTE_EDIT_DEBUG
-            cout << "\nProcessing note name " <<note->get_name()
-                << " pos " << note->get_position()
-                << " len " << note->get_length() << " vel "
-                << note->get_velocity()
-                << "\toldval: " << oldval << "\tnewval: " << newval;
-            #endif
+            D_NOTEEDIT("Processing note name:%s pos:%d len:%d vel:%d... oldval:%d newval:%d...\n",
+                      note->get_name(), note->get_position(), note->get_length(),
+                      note->get_velocity(), oldval, newval);
             switch(note_par)
             {
                 case note_data::NOTE_PAR_DEL: {
@@ -165,20 +151,14 @@ note_data* riffdata::edit_notes(note_data* editnote)
                     else if (itr > 60) tr = 60;
                     tmpname = transpose_notename(note->get_name(), tr);
                     note->set_name(tmpname);
-                    #ifdef NOTE_EDIT_DEBUG
-                    cout << "\t* new name "
-                        << tmpname << " transposed by "
-                        << (int)tr << " *";
-                    #endif
-                    if (tmpname) delete [] tmpname;
+                    D_NOTEEDIT("* new name %s transposed by %d *\n", tmpname, (int)tr);
+                    if (tmpname)
+                        delete [] tmpname;
                 }
                 break;
                 case note_data::NOTE_PAR_POS: {
                     delnote = true;
-                    #ifdef NOTE_EDIT_DEBUG
-                    cout << "\t* new pos  ";
-                    cout << newval << " *";
-                    #endif
+                    D_NOTEEDIT("* new pos  %d *\n", newval);
                     if (newval >= 0) {
                         note_data* shft_note = new note_data(
                             note->get_name(), newval,
@@ -186,18 +166,12 @@ note_data* riffdata::edit_notes(note_data* editnote)
                             ordered_insert(
                                 shft_note_list, shft_note,
                                 &note_data::get_position);
-                    #ifdef NOTE_EDIT_DEBUG
-                        cout << " - from note: "
-                            << shft_note->get_position();
-                    #endif
+                        D_NOTEEDIT(" - from note (pos):%d\n", shft_note->get_position());
                     }
                 }
                 break;
                 case note_data::NOTE_PAR_LEN: {
-                    #ifdef NOTE_EDIT_DEBUG
-                    std::cout << "\t* new len ";
-                    std::cout << newval << " *";
-                    #endif
+                    D_NOTEEDIT("* new len %d *\n", newval);
                     if (newval > 0)
                         note->set_length(newval);
                     else
@@ -205,18 +179,12 @@ note_data* riffdata::edit_notes(note_data* editnote)
                 }
                 break;
                 case note_data::NOTE_PAR_VEL: {
-                    #ifdef NOTE_EDIT_DEBUG
-                    std::cout << "\t* new vel ";
-                    std::cout << newval << " *";
-                    #endif
+                    D_NOTEEDIT("* new vel %d *\n", newval);
                     note->set_velocity(newval);
                 }
                 break;
                 case note_data::NOTE_PAR_QOPY:{
-                    #ifdef NOTE_EDIT_DEBUG
-                    std::cout << "\t* new pos  ";
-                    std::cout << newval << " *";
-                    #endif
+                    D_NOTEEDIT("* new pos %d *\n", newval);
                     if (newval >= 0) {
                         note_data* shft_note = new note_data(
                             note->get_name(), newval,
@@ -224,28 +192,19 @@ note_data* riffdata::edit_notes(note_data* editnote)
                             ordered_insert(
                                 shft_note_list, shft_note,
                                 &note_data::get_position);
-                    #ifdef NOTE_EDIT_DEBUG
-                        std::cout << " - from note: ";
-                        std::cout << shft_note->get_position();
-                    #endif
+                            D_NOTEEDIT(" - from note (pos):%d\n", shft_note->get_position());
                     }
                 }
                 break;
                 default:
-                    std::cout << "\nIgnoring edit note ";
-                    std::cout << editnote->get_name();
-                    std::cout << " it is not a valid note editing"
-                                 " command.";
+                    std::cout << "Ignoring edit note " << editnote->get_name()
+                              << " it is not a valid note editing command.\n";
                     break;
             }
             if (delnote) {
-                #ifdef NOTE_EDIT_DEBUG
-                std::cout << "\n\t*** deleting note ";
-                std::cout << "\t name " <<note->get_name();
-                std::cout << " pos " << note->get_position();
-                std::cout << " len " << note->get_length() << " vel ";
-                std::cout << note->get_velocity() << " ***";
-                #endif
+                D_NOTEEDIT("*** deleteing note name:%s pos:%d len:%d vel:%d ***\n",
+                          note->get_name(), note->get_position(), note->get_length(),
+                          note->get_velocity());
                 note_data* tmpnote = note;
                 llitem* tmpitem = sneak_current();
                 note = goto_next();
@@ -261,13 +220,9 @@ note_data* riffdata::edit_notes(note_data* editnote)
     if (shft_note_list) {
         note_data* shftnote = shft_note_list->goto_first();
         while (shftnote) {
-        #ifdef NOTE_EDIT_DEBUG
-        std::cout << "\nadding edited notes\n\tname "
-            << shftnote->get_name()
-            << " pos " << shftnote->get_position()
-            << " len " << shftnote->get_length()
-            << " vel " << shftnote->get_velocity() << "...";
-        #endif
+            D_NOTEEDIT("adding edited notes name:%s pos:%d len:%d vel:%d...\n",
+                      shftnote->get_name(), shftnote->get_position(),
+                      shftnote->get_length(), shftnote->get_velocity());
             ordered_insert(this, shftnote, &note_data::get_position);
             shftnote = shft_note_list->goto_next();
         }
@@ -334,17 +289,11 @@ dobj::base* riffdata::duplicate_dobj(const char* name)
     dupriff->set_username(name);
     dupriff->set_tpqn(tpqn);
     note_data* note = goto_first();
-    #ifdef NOTE_EDIT_DEBUG
-    std::cout << "\nduplicating riff from " << get_username();
-    std::cout << " to " << name;
-    #endif
+    D_NOTEEDIT("duplicating riff from '%s' to '%s'\n", get_username(), name);
     while (note) {
-        #ifdef NOTE_EDIT_DEBUG
-        std::cout << "\nduplicating note name " << note->get_name();
-        std::cout << " pos " << note->get_position();
-        std::cout << " len " << note->get_length();
-        std::cout << " vel " << note->get_velocity() << "...";
-        #endif
+        D_NOTEEDIT("duplicating note name:%s pos:%d len:%d vel:%d...\n",
+                  note->get_name(), note->get_position(), note->get_length(),
+                  note->get_velocity());
         note_data* dupnote = new note_data(note->get_name(),
                                     note->get_position(),
                                     note->get_length(),

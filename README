@@ -1,18 +1,39 @@
 wcnt - Wav Composer Not Toilet
+==============================
 
 wcnt is a text file based non-interactive modular audio system intended
-for the production of WAV audio files. The user writes a text file, wcnt
-processes that file, then produces an audio file.
+for the production of WAV audio files. The user writes a text file
+containing wcnt module definitions, and wcnt processes the file to
+produce an audio file.
 
-While wcnt is text based, it isn't like a programming language such as
-what chuck or csound are. But with over 80 modules providing complex
-functionality such as sequencing, sampling, dynamic routing, grouping
-and duplication, plus DSP modules (via LADSPA plugins), wcnt is more
-than capable of producing unique sounds.
+Wcnt has over 80 modules providing functionality for synthesis,
+sequencing, sampling, routing, grouping, duplication, and effects (via
+a limited subset of LADSPA plugins).
 
 wcnt is available at https://github.com/jwm-art-net/wcnt
 
-Please see the INSTALL file for build instructions, and dependencies,
-in particular you will want specific LADSPA plugin packages installed.
+Please see the INSTALL file for build instructions, and dependencies.
 
-wcnt comes with over 40 examples to help get you started.
+The examples directory contains over 40 examples of usage.
+
+
+
+        [ --------- WHY WCNT STILL EXISTS -------- ]
+        [                                          ]
+        [ wcnt is NOT a project I recommend people ]
+        [ use. I continue developing wcnt because  ]
+        [ I decided to use it rather than throw    ]
+        [ away all the time and effort I have put  ]
+        [ into it over the years.                  ]
+        [                                          ]
+        [ For the majority of users there are far  ]
+        [ BETTER SOLUTIONS!                        ]
+        [                                          ]
+        [ I do not have the technical nor          ]
+        [ mathematical knowledge for wcnt to       ]
+        [ achieve professional quality audio       ]
+        [ processing.                              ]
+        [                                          ]
+        [ wcnt is NOT about professional quality   ]
+        [ audio.                                   ]
+        [ ---------------------------------------- ]

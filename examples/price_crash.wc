@@ -308,8 +308,8 @@ mono_amp
 amp1
     in_signal       sq1     out_output
     gain            0.211
-    in_gain_mod     env     out_output
-    gain_mod_size   1.0
+    in_amp_mod     env     out_output
+    amp_mod_size   1.0
     in_amp_eg       env_alt out_output
     clip_level      1.0
 amp1
@@ -487,12 +487,12 @@ dc-r
 echo
 ekl
     in_signal        dc-l out_output
-    in_gain_mod      off
+    in_amp_mod      off
     in_feedback      ekr out_wet_output
     in_feedback_mod  off
     delay_time         125
     gain               1.0
-    gain_mod_size      0.0
+    amp_mod_size      0.0
     feedback           0.85236
     feedback_mod_size  0.0
     wet/dry            0.335
@@ -501,12 +501,12 @@ ekl
 echo
 ekr
     in_signal        dc-r out_output
-    in_gain_mod      off
+    in_amp_mod      off
     in_feedback      ekl out_wet_output
     in_feedback_mod  off
     delay_time         207.5
     gain               1.0
-    gain_mod_size      0.0
+    amp_mod_size      0.0
     feedback           0.85236
     feedback_mod_size  0.0
     wet/dry            0.335

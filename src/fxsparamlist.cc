@@ -1,4 +1,5 @@
 #include "../include/fxsparamlist.h"
+#include "../include/debug.h"
 
 fixstrparam*
 fxsparamlist::add_param(const char* str_list, param::TYPE pt)
@@ -18,14 +19,12 @@ fxsparamlist::add_param(const char* str_list, param::TYPE pt)
 }
 
 #ifdef DEBUG
-#include <iostream>
 void fxsparamlist::dump()
 {
     fixstrparam* f = goto_first();
-    std::cout << "fxsparamlist::dump()" << std::endl;
     while (f) {
-        std::cout << "FXS: '" << param::names::get(f->get_param_type());
-        std::cout << "'\t'" << f->get_string_list() << "'" << std::endl;
+        D_BUG("FXS: '%s'\t'%s'\n" , param::names::get(f->get_param_type()),
+                                    f->get_string_list());
         f = goto_next();
     }
 }

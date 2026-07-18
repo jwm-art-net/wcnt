@@ -232,8 +232,8 @@ voice-string
     out1
         in_signal lpf1 out_output
         in_amp_eg env1 out_output
-        in_gain_mod wf3 out_output
-        gain_mod_size 0.51
+        in_amp_mod wf3 out_output
+        amp_mod_size 0.51
         gain 0.5
     out1
 
@@ -241,8 +241,8 @@ voice-string
     out2
         in_signal lpf2 out_output
         in_amp_eg env1 out_output
-        in_gain_mod wf3 out_output
-        gain_mod_size 0.51
+        in_amp_mod wf3 out_output
+        amp_mod_size 0.51
         gain 0.235
     out2
 

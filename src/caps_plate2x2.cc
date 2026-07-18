@@ -231,7 +231,7 @@ void caps_plate2x2::init()
      || lp->connect_port(l_inst_handle, "damping",   &l_damping) < 0
      || lp->connect_port(l_inst_handle, "blend",     &l_blend) < 0)
     {
-        debug("failed to connect port(s).");
+        sm_err("failed to connect %s.", "port(s).");
         invalidate();
         return;
     }

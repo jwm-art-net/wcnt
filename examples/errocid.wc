@@ -11,10 +11,11 @@ time
     meter_map
         meter   tsig 4/4    bar 0
     meter_map
+    bpm_changes_relative off
     bpm_map
         tempo   bpm 140     bar 0
-        tempo   bpm 0       bar 12 // @ bar 4, is still 140
-        tempo   bpm -60     bar 24 // @ from bar 4, graduates to 70.
+        tempo   bpm 140     bar 12 // @ bar 4, is still 140
+        tempo   bpm 80      bar 24 // @ from bar 4, graduates to 70.
     bpm_map
 time
 
@@ -174,8 +175,8 @@ echo
 ek1
     in_signal   lpf1 out_output
     gain        0.65
-        in_gain_mod     off
-        gain_mod_size   0.0
+        in_amp_mod     off
+        amp_mod_size   0.0
     in_feedback      ek2 out_wet_output
     in_feedback_mod  off
     delay_time         275
@@ -189,8 +190,8 @@ echo
 ek2
     in_signal   lpf1 out_output
     gain        0.65
-        in_gain_mod     off
-        gain_mod_size   0.0
+        in_amp_mod     off
+        amp_mod_size   0.0
     in_feedback      ek1 out_wet_output
     in_feedback_mod  off
     delay_time         375
@@ -209,8 +210,8 @@ eq
     in_signal       ek2 out_output
     in_phase_step   bass out_phase_step
     gain_db         4.0
-        in_gain_mod         off
-        gain_mod_size       0
+        in_amp_mod         off
+        amp_mod_size       0
     bandwidth       2.0
         in_bandwidth_mod    off
         bandwidth_mod_size  0

@@ -130,6 +130,7 @@ bool inputedit::create_connectors()
                                     out_modname.c_str(), out_type);
                     if (smlist->get_autogroup())
                         con->set_group_pending();
+                    con->set_edited();
                     conlist->add_connector(con);
                     success = true;
                 }

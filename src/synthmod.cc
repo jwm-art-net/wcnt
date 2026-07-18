@@ -305,7 +305,8 @@ namespace synthmod
                     break;
                 if (item->get_item_type() == ui::UI_INPUT) {
                     ui::modinput* mi = static_cast<ui::modinput*>(item);
-                    std::cout << "auto connect " << name << " --> item: " << item->get_name() << std::endl;
+                    if (wcnt::jwm.is_verbose())
+                        std::cout << "auto connect " << name << " --> item: " << item->get_name() << std::endl;
                     input::TYPE it = mi->get_input_type();
                     connectorlist* cl = wcnt::get_connectlist();
                     connector* con = 0;
@@ -344,10 +345,17 @@ namespace synthmod
         if (*item == ui::UI_INPUT) {
             ui::modinput* mi = static_cast<ui::modinput*>(item);
             if (!get_in(mi->get_input_type())) {
-                sm_err("%s Module %s does not have its %s input set.",
+                // if input is not one of a multiple choice set, its an error
+                // that it is not set
+                if (!mi->get_option_id()) {
+                    //register_input(input::IN_SIGNAL)->set_flags(ui::UI_OPTION1);
+                    //register_input(input::IN_LEFT)  ->set_flags(ui::UI_OPT2_DUP);
+                    //register_input(input::IN_RIGHT) ->set_flags(ui::UI_OPT2_DUP);
+                    sm_err("%s Module %s does not have its %s input set.",
                                 errors::stock::major, get_username(),
                                 input::names::get(mi->get_input_type()));
-                return false;
+                    return false;
+                }
             }
         }
         item = items->goto_next();

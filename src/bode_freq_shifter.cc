@@ -155,7 +155,9 @@ void bode_freq_shifter::init()
      || lp->connect_port(l_inst_handle, "Up out",           l_out_up)     < 0
      || lp->connect_port(l_inst_handle, "latency",          l_out_latency)< 0)
     {
-        debug("failed to connect port(s).");
+        // FIXME:
+        //debug("failed to connect port(s).");
+        sm_err("failed to connect %s.", "port(s).");
         invalidate();
         return;
     }

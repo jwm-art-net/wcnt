@@ -166,12 +166,12 @@ g1
     echo
     echosl
         in_signal        pan1   out_left
-        in_gain_mod      off
+        in_amp_mod      off
         in_feedback      echosr  out_wet_output
         in_feedback_mod  off
         delay_time        125
         gain              1.0
-        gain_mod_size     0.0
+        amp_mod_size     0.0
         feedback         -0.5
         feedback_mod_size 0.0
         wet/dry           0.384
@@ -180,12 +180,12 @@ g1
     echo
     echosr
         in_signal        pan1   out_right
-        in_gain_mod      off
+        in_amp_mod      off
         in_feedback      echosl  out_wet_output
         in_feedback_mod  off
         delay_time        155
         gain              1.0
-        gain_mod_size     0.0
+        amp_mod_size     0.0
         feedback          0.5
         feedback_mod_size 0.0
         wet/dry           0.384
@@ -197,8 +197,7 @@ g1
         in_right    echosr out_output
         in_amp_eg   one    out_output
         in_amp_mod  off
-        left_level      0.75
-        right_level     0.75
+        gain      0.75
         amp_mod_size    0.0
         clip_level      1.0
     stamp
@@ -300,7 +299,7 @@ mix1
         synthmod name g9.stamp
         synthmod name g10.stamp
     mix
-    master_level  0.5
+    gain  0.5
 mix1
 
 peak_detector

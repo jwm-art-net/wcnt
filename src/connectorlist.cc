@@ -117,6 +117,9 @@ connectorlist::duplicate_connections_for_module(
         conlist = new linkedlist(MULTIREF_OFF, PRESERVE_DATA);
     llitem* i = find_in_data(sneak_first(), input_module(from_mod));
     while(i){
+        D_CONNECT("duplicating connector: %s %s %s", from_mod->get_username(),
+                  input::names::get(i->get_data()->get_input_type()),
+                  (i->get_data()->is_group_pending()) ? "(G)" : "");
         conlist->add_at_tail(i->get_data()->duplicate(to_mod));
         i = find_in_data(i->get_next(), input_module(from_mod));
     }
@@ -210,13 +213,12 @@ bool connectorlist::make_connections()
                 break;
             default:
                 // FIXME: error handling (see above).
+                std::cout << "unhandled connection return value!" << std::endl;
                 return false;
         }
         if (sneak_current() == lastitem && lastitem != sneak_last()) {
             postponed_connection_level++;
-            #ifdef DEBUG
-            std::cout << "Beginning postponed connections processing... level:" << postponed_connection_level << std::endl;
-            #endif
+            D_CONNECT("Beginning postponed connections processing... level: %d", postponed_connection_level);
             lastitem = sneak_last();
         }
         if (!nextitem)

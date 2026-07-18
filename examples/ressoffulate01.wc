@@ -430,12 +430,12 @@ g1g2g3g4_r
 echo
 ec_l
     in_signal   g1g2g3g4_l  out_output
-    in_gain_mod      off
+    in_amp_mod      off
     in_feedback      ec_r   out_wet_output
     in_feedback_mod  off
     delay_time        37.5
     gain              1.0
-    gain_mod_size      0.0
+    amp_mod_size      0.0
     feedback          -0.75
     feedback_mod_size  0.0
     wet/dry           0.175
@@ -444,12 +444,12 @@ ec_l
 echo
 ec_r
     in_signal   g1g2g3g4_r  out_output
-    in_gain_mod      off
+    in_amp_mod      off
     in_feedback      ec_l   out_wet_output
     in_feedback_mod  off
     delay_time        15.8
     gain              1.0
-    gain_mod_size      0.0
+    amp_mod_size      0.0
     feedback          -0.75
     feedback_mod_size  0.0
     wet/dry           0.175
@@ -463,8 +463,7 @@ amp1
     in_right        ec_r    out_output
     in_amp_eg   boost   out_output
     in_amp_mod  off
-    left_level   1.0
-    right_level  1.0
+    gain   1.0
     amp_mod_size     0.0
     clip_level       1.0
 amp1

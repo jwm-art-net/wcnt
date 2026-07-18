@@ -1,5 +1,36 @@
-Autogrouping STAGE 2
-====================
+
+Autogrouping - fixes - July 2026
+================================
+
+*** lost pending connections between seperate autogroup stages ***
+
+Using the autogroup_add directive, allows modules to be added to a group
+in stages. The current way the implementation handles connections during
+autogrouping, does not cope when an module used to provide an output to
+a module input in the current autogroup stage, is created and grouped
+during a seperate stage later in the file.
+
+bug: the group pending flag was cleared regardless of whether a
+     connection was successfuly updated or not.
+
+fix: only clear the group pending flag when connection is updated.
+
+bug: when using the copier data object on a group, the group pending
+     flag was not set (if it needed to be) in the duplicated
+     connections.
+fix: duplicate the group pending flag when duplicating connections.
+fix: check pending connection input group name matches active autogroup
+
+I spent some time checking the 2nd fix wondering why it did not work.
+Eventually I realized it was a connection made with the input_editor.
+
+The error reporting for connections does not report the connection
+was made with the input editor. That can be fixed by adding an edited
+setting for the connection flags. Easy!
+
+
+Autogrouping STAGE 2 - May 2026
+===============================
 
 I thought I was having fun with Autogrouping stage 1, in getting the
 basics working, and I was, but growing tired and wanting to finish

@@ -1,11 +1,7 @@
 #include "../include/notedata.h"
 #include "../include/globals.h"
 #include "../include/conversions.h"
-
-#ifdef NOTE_EDIT_DEBUG
-#include <iostream>
-#endif
-
+#include "../include/debug.h"
 
 
 note_data::note_data() :
@@ -136,27 +132,19 @@ note_data::NOTE_TYPE note_data::get_note_type()
         retv = note_type = NOTE_TYPE_EDIT;
         if (get_note_sel_op() == NOTE_SEL_OP_ERR) {
             retv = NOTE_TYPE_ERR;
-            #ifdef NOTE_EDIT_DEBUG
-            std::cout << "\n\tfailed on note_sel_op";
-            #endif
+            D_NOTEEDIT("failed on note_sel_op\n", "");
         }
         if (get_note_sel() == NOTE_SEL_ERR) {
             retv = NOTE_TYPE_ERR;
-            #ifdef NOTE_EDIT_DEBUG
-            std::cout << "\n\tfailed on note_sel";
-            #endif
+            D_NOTEEDIT("failed on note_sel\n", "");
         }
         if (get_note_op() == NOTE_OP_ERR) {
             retv = NOTE_TYPE_ERR;
-            #ifdef NOTE_EDIT_DEBUG
-            std::cout << "\n\tfailed on note_op";
-            #endif
+            D_NOTEEDIT("failed on note_op\n", "");
         }
         if (get_note_par() == NOTE_PAR_ERR) {
             retv = NOTE_TYPE_ERR;
-            #ifdef NOTE_EDIT_DEBUG
-            std::cout << "\n\tfailed on note_par";
-            #endif
+            D_NOTEEDIT("failed on note_par\n", "");
         }
     }
     return (note_type = retv);

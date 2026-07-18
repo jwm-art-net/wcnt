@@ -4,20 +4,8 @@
 #include "../include/globals.h"
 
 
-#include <iostream>
-
-
-#ifdef DEBUG
-#define connerr(fmt, ... )                              \
-{                                                       \
-    printf("%40s:%5d %-35s\n",                          \
-                    __FILE__, __LINE__, __FUNCTION__);  \
-    cfmt(connector::err_msg, STRBUFLEN, fmt, __VA_ARGS__);   \
-}
-#else
 #define connerr(fmt, ... ) \
-    cfmt(connector::err_msg, STRBUFLEN, fmt, __VA_ARGS__)
-#endif
+cfmt(connector::err_msg, STRBUFLEN, fmt, __VA_ARGS__)
 
 
 connector::connector(
@@ -25,6 +13,20 @@ connector::connector(
  const char* output_module_name, output::TYPE output_type)
 : in_mod(input_module), in_type(input_type), out_mod_uname(0),
   out_type(output_type), flags(0)
+{
+    set_output_module_name(output_module_name);
+    #ifdef DATA_STATS
+    STATS_INC
+    #endif
+}
+
+
+connector::connector(
+ synthmod::base* input_module, input::TYPE input_type,
+ const char* output_module_name, output::TYPE output_type,
+ int conflags)
+: in_mod(input_module), in_type(input_type), out_mod_uname(0),
+  out_type(output_type), flags(conflags)
 {
     set_output_module_name(output_module_name);
     #ifdef DATA_STATS
@@ -50,13 +52,13 @@ void connector::set_output_module_name(const char* output_module_name)
 
 connector* connector::duplicate()
 {
-    return new connector(in_mod, in_type, out_mod_uname, out_type);
+    return new connector(in_mod, in_type, out_mod_uname, out_type, flags);
 }
 
 connector* connector::duplicate(synthmod::base* sm)
 {
     if (in_mod->get_module_type() == sm->get_module_type())
-        return new connector(sm, in_type, out_mod_uname, out_type);
+        return new connector(sm, in_type, out_mod_uname, out_type, flags);
     return 0;
 }
 
@@ -73,8 +75,9 @@ connector::CSTATE connector::connect()
     }
 
     if (!outmod) {
-        connerr("In module %s cannot connect input %s, module %s does "
-                "not exist.", in_mod->get_username(),
+        connerr("In%s module %s cannot connect input %s, module %s does "
+                "not exist.", (is_edited() ? " edited connection" : ""),
+                in_mod->get_username(),
                 input::names::get(in_type), out_mod_uname);
         return FAIL;
     }
@@ -85,8 +88,9 @@ connector::CSTATE connector::connect()
             return POSTPONE;
         }
 
-        connerr("In module %s cannot connect input %s. Module %s does not "
-                "have any %s output.", in_mod->get_username(),
+        connerr("In%s module %s cannot connect input %s. Module %s does not "
+                "have any %s output.", (is_edited() ? " edited connection" : ""),
+                in_mod->get_username(),
                 input::names::get(in_type), out_mod_uname,
                 output::names::get(out_type));
         return FAIL;
