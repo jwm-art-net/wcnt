@@ -7,6 +7,8 @@
 
 #include <string>
 
+
+
 /*
 // if collumnize is called with sort set to true, then it will sort
 // the array of c-strings alphanumerically within each collumn such that
@@ -60,5 +62,9 @@ class spaces
     static char* data;
     static int len;
 };
+
+static const int NAMELESS_NAME_LENGTH = 24;
+
+char* nameless_name();
 
 #endif

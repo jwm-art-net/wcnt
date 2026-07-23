@@ -44,7 +44,7 @@ void wave_tables::create_table(WT type)
     {
         case ONE:
         {
-            table[ONE] = new double[table_size];
+            table[type] = new double[table_size];
             for (i = 0; i < table_size; i++)
                 table[ONE][i] = 1.0;
             break;
@@ -89,13 +89,24 @@ void wave_tables::create_table(WT type)
         case SAW_01:
         {
             table[type] = new double[table_size];
-            double ht = table_size / 2;
+            uint32_t ht = table_size / 2;
             double rt = 1.0 / ht;
             for (i = 0; i < table_size; i++) {
-                double l = -1 + ((uint32_t)(i + ht) % table_size) * rt;
+                double l = -1 + ((i + ht) % table_size) * rt;
                 table[type][i] = (type == SAW) ? l : (1.0 + l) / 2.0;
             }
             break;
+        }
+        case SQU:
+        case SQU_01:
+        {
+            table[type] = new double [table_size];
+            uint32_t ht = table_size / 2;
+            double min = (type == SQU) ? -1.0 : 0.0;
+            for (i = 0; i < ht; i++)
+                table[type][i] = 1.0;
+            for (i = ht; i < table_size; i++)
+                table[type][i] = min;
         }
         default:
             return;
@@ -103,7 +114,7 @@ void wave_tables::create_table(WT type)
 }
 
 const char* const
-wave_tables::fxstring = "one|sine|tri|saw|sine_01|tri_01|saw_01";
+wave_tables::fxstring = "one|sine|tri|saw|squ|sine_01|tri_01|saw_01|squ_01";
 
 const int wave_tables::table_bits = TABLE_BITS;
 const int wave_tables::table_shift = TABLE_SHIFT;

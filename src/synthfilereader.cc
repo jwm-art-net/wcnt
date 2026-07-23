@@ -614,6 +614,17 @@ dobj::base* synthfilereader::read_dobj(const char* com)
     }
     string dobjname;
     *synthfile >> dobjname;
+
+    bool nameless = false;
+
+    if (strcmp(dobjname.c_str(), "[") == 0) {
+        // nameless data object handling
+        char* n = nameless_name();
+        dobjname = n;
+        delete n;
+        nameless = true;
+    }
+
     if (strcmp(dobjname.c_str(), "off") == 0) {
         wc_err("Cannot use reserved word off to name %s.", com);
         return 0;
@@ -660,17 +671,29 @@ dobj::base* synthfilereader::read_dobj(const char* com)
         wc_err("Could note create data object of type %s.", com);
         return 0;
     }
+
+    if (nameless && !dob->is_allow_nameless()) {
+        wc_err("Data object of type %s is not allowed to be nameless.",
+               dobj::names::get(dobjtype));
+        delete dob;
+        return 0;
+    }
+
     dob->set_username(dobjname.c_str());
 
-    if (autogroup && !dob->is_allowed_in_autogroup()) {
+    if (autogroup && !dob->is_allow_in_autogroup()) {
         wc_err("Data object %s of type %s is not allowed inside an autogroup.",
                 dobjname.c_str(), dobj::names::get(dobjtype));
         delete dob;
         return 0;
     }
 
-    if (!read_ui_dobjitems(dob, dob->get_username())) {
-        wc_err("In data object %s, %s.", dob->get_username(), wc_err_msg);
+    if (!read_ui_dobjitems(dob, (nameless ? "]" : dob->get_username()))) {
+        // FIXME: include name of type in error message, and if it is nameless
+        // or not
+        wc_err("In %s data object %s, %s.",
+               dobj::names::get(dob->get_object_type()),
+               (nameless ? "[nameless]" : dob->get_username()), wc_err_msg);
         delete dob;
         return 0;
     }
@@ -679,20 +702,21 @@ dobj::base* synthfilereader::read_dobj(const char* com)
         if (wcnt::jwm.is_verbose()) cout << "---- validating..." << endl;
         errors::TYPE et = dob->validate();
         if (et != errors::NO_ERROR) {
-            wc_err("In data object %s, parameter %s %s %s",
-                    dob->get_username(), dobj::base::get_error_msg(),
-                    errors::stock::get_prefix_msg(et),
-                    errors::stock::get(et));
+            wc_err("In %s data object %s, parameter %s %s %s",
+                   dobj::names::get(dob->get_object_type()),
+                   (nameless ? "[nameless]" : dob->get_username()),
+                   dobj::base::get_error_msg(),
+                   errors::stock::get_prefix_msg(et),
+                   errors::stock::get(et));
             delete dob;
             return 0;
         }
         if (wcnt::jwm.is_verbose()) cout << "Ok." << endl;
     }
     com = read_command();
-    if (strcmp(com, dobjname.c_str()) != 0) {
+    if (strcmp(com, (nameless == 0 ? dob->get_username() : "]" )) != 0) {
         wc_err("In data object %s expected definition termination %s, got "
-                                        "%s instead.", dob->get_username(),
-                                        dob->get_username(), com);
+               "%s instead.", dob->get_username(), dob->get_username(), com);
         delete dob;
         return 0;
     }

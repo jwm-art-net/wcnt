@@ -12,7 +12,7 @@ riffdata::riffdata() :
  tpqn(0),
  editlist(0)
 {
-    set_editable();
+    set_flags(DO_EDITABLE);
 }
 
 void riffdata::register_ui()

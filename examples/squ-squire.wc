@@ -1,0 +1,143 @@
+wcnt-1.32/jwmsynth
+
+samplerate 44100
+
+// duration of sound
+
+timer
+t1
+    timings
+        time seconds 0.0
+        time seconds 10.0
+    timings
+    time_is_relative off
+t1
+
+
+autogroup_create
+lfo1
+    clock c freq 330.05 c
+    wave_phase
+    w
+        type sine
+        in_phase_trig osc1 out_phase_trig
+        on_trig_reset_phase on
+        recycle_mode off
+        in_phase_step c out_phase_step
+    w
+lfo1
+
+copier [ from lfo1 to lfo2 ]
+
+param_editor
+[
+    editlist
+        edit lfo1.c freq_mod1_size 2.0
+        edit lfo2.c freq 1.44
+        edit lfo2.w
+            recycle_mode on
+            on_trig_reset_phase off
+    editlist
+]
+
+input_editor
+[
+    editlist
+        connect lfo1.c in_freq_mod1 lfo2.w out_output
+        connect lfo2.w in_phase_trig off
+    editlist
+]
+
+autogroup_create
+f1
+    constant_freq f freq 100 f
+    wcnt_signal s in_signal f out_frequency s
+f1
+
+copier [ from f1 to f2 count 4 ]
+
+param_editor
+[
+    editlist
+        edit f1.f freq 100.0
+        edit f2.f freq 400.0
+        edit f3.f freq 500.0
+        edit f4.f freq 200.0
+        edit f5.f freq 300.0
+    editlist
+]
+
+clock
+swc
+    freq 1.75
+swc
+
+switcher
+sw1
+    in_trig swc out_phase_trig
+    signals
+        synthmod name f1.s
+        synthmod name f2.s
+        synthmod name f3.s
+        synthmod name f4.s
+        synthmod name f5.s
+    signals
+    xfade_time 0.0
+sw1
+
+
+osc_clock
+osc1
+    in_note_on_trig     swc out_phase_trig
+    in_note_slide_trig  off
+    in_frequency        sw1 out_output
+    response_time 5.0
+osc1
+
+
+wave_phase
+w1
+    type sine
+    in_phase_trig osc1 out_phase_trig
+    on_trig_reset_phase on
+    recycle_mode off
+    in_phase_step osc1 out_phase_step
+    in_phase_mod lfo1.w out_output
+    phase_mod_size 2
+w1
+
+wave_phase
+w2
+    type squ
+    in_phase_trig t1 out_trig
+    on_trig_reset_phase off
+    recycle_mode on
+    in_phase_step osc1 out_phase_step
+w2
+
+balance
+out
+    in_signal1 w1 out_output
+    function add
+    in_signal2 w2 out_output
+    bias 0.05
+out
+
+wavfile_out
+wav1
+    filename squ-squire.wav
+    data_format pcm16
+    in_signal out out_output
+    in_bar t1 out_count
+    start_bar 0
+    end_bar 1
+wav1
+
+// when to stop
+
+wcnt_exit wcnt_exit_module
+    in_bar t1 out_count
+    exit_bar 1
+wcnt_exit_module
+
+wcnt-1.32/jwmsynth

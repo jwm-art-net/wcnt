@@ -24,7 +24,6 @@
 #include "../include/synthmodlist.h"
 #include "../include/sanity_checks.h"
 
-
 void title();
 void exitramblings();
 

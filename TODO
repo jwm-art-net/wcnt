@@ -8,10 +8,14 @@ TODO BEFORE RELEASE
     * be explicit about the modulation type featured in the various
       clock modules - it probably does not work as people expect!
 
-    * new parameter for time_map - bpm_changes_relative on/off - allow
-      to specify absolute or relative bpm changes. [DONE]
-
 TODO NEW FEATURES FOR A FUTURE RELEASE (not next release)
+
+    * investigate if param_editor and input_editor could be replaced
+      with a single editor to handle both inputs and outputs
+
+    * adsr_scaler - needs to be a bit more versatile - allow scaling of
+      output levels as well as time, apply scale to upper, lower, not
+      just both shapes.
 
     * wave_phase cycle sync can be a problem, using on_trig_reset_phase
       can cause clicks especially for regular waveforms, but even

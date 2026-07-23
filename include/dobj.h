@@ -21,9 +21,13 @@ namespace dobj
  public:
     enum DO_FLAGS
     {
-      DO_VALID    =             0x0001,
-      DO_EDITABLE =             0x0002,
-      DO_ALLOWED_IN_AUTOGROUP = 0x0004
+      DO_VALID    =           0x0001,
+      // the following apply only to standalone data objects (ie copier
+      // riff, wavfilein etc), these flags are irrelevant to data objects
+      // defined within something else (ie shape, editlist, signals etc):
+      DO_EDITABLE =           0x0002,
+      DO_ALLOW_IN_AUTOGROUP = 0x0004,
+      DO_ALLOW_NAMELESS =     0x0008
     };
     base(TYPE);
     virtual ~base();
@@ -35,9 +39,10 @@ namespace dobj
     // is helpful when identifying errors, which is why get_username()
     // is now virtual.
     virtual const char*   get_username();
-    bool                  is_valid() const   { return flags & DO_VALID; }
-    bool                  is_allowed_in_autogroup() const
-                          { return flags & DO_ALLOWED_IN_AUTOGROUP; }
+    bool is_valid() const { return flags & DO_VALID; }
+    bool is_allow_in_autogroup() const { return flags & DO_ALLOW_IN_AUTOGROUP; }
+    bool is_allow_nameless() const { return flags & DO_ALLOW_NAMELESS; }
+
     virtual errors::TYPE  validate() = 0;
 
     virtual bool        set_param(param::TYPE, const void*);
@@ -72,8 +77,7 @@ namespace dobj
     ui::dobjdobj*    register_dobj(TYPE parent, TYPE sprog);
     ui::dobjcomment* register_comment(const char* literal);
     bool    validate_param(param::TYPE, errors::TYPE);
-    void set_editable(){ flags |= DO_EDITABLE; }
-    void set_allowed_in_autogroup() { flags |= DO_ALLOWED_IN_AUTOGROUP; }
+    void set_flags(int f) { flags |= f; }
 
   private:
     TYPE object_type;

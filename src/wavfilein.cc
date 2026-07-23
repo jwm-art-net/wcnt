@@ -8,7 +8,7 @@ wavfilein::wavfilein() :
  fname(0), rootnote(0),
  filein(0), status(WAV_STATUS_INIT)
 {
-    set_editable();
+    set_flags(DO_EDITABLE);
 }
 
 void wavfilein::register_ui()

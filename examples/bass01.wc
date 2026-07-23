@@ -47,34 +47,33 @@ riff_sc
     notelist
 riff_sc
 
-copier c1 from riff1 to riff1a c1
-copier c2 from riff1 to riff1b c2
+copier [ from riff1 to riff1a ]
+copier [ from riff1 to riff1b ]
 
 riff_editor
-re_a
+[
     riff riff1a
     notelist
         note name <P+N pos 128.0 len 8.0 vel 0.0
         note name OP*L pos 96 len 64 vel 0.125
     notelist
-re_a
+]
 
 riff_editor
-re_b
+[
     riff riff1b
     notelist
         note name >P-N pos 128.0 len 8.0 vel 0.0
         note name IP*L pos 96 len 64 vel 1.125
     notelist
-re_b
+]
 
 clock
 clock1
     freq            0.025
 clock1
 
-copier c5 from clock1 to clock2 c5
-copier c8 from clock1 to clock3 c8
+copier [ from clock1 to clock2 count 2 ]
 
 wave
 sinetime
@@ -136,7 +135,7 @@ adsr1
 adsr1
 
 
-copier c3 from adsr1 to adsr2 c3
+copier [ from adsr1 to adsr2 ]
 
 osc_clock
 osc1
@@ -149,7 +148,7 @@ osc1
         response_time       5.0
 osc1
 
-copier c6 from osc1 to osc2 c6
+copier [ from osc1 to osc2 ]
 
 wave
 sine
@@ -157,7 +156,7 @@ sine
     in_phase_step   osc1 out_phase_step
 sine
 
-copier c7 from sine to sine2 c7
+copier [ from sine to sine2 ]
 
 multiplier
 m1
@@ -176,7 +175,7 @@ con1
     wet/dry    0.125
 con1
 
-copier c4 from con1 to con2 c4
+copier [ from con1 to con2 ]
 
 sample_hold
 sh1
@@ -186,7 +185,7 @@ sh1
 sh1
 
 input_editor
-ie1
+[
     editlist
         connect con2
             in_signal           adsr1   out_output
@@ -205,10 +204,10 @@ ie1
             in_freq_mod1        sh1     out_output
 
     editlist
-ie1
+]
 
 param_editor
-p1
+[
     editlist
         edit clock2
             freq            1.75
@@ -227,7 +226,7 @@ p1
             freq_mod1_size  2.0
 
     editlist
-p1
+]
 
 dynamic
 dynsine

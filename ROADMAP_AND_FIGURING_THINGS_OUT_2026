@@ -1,4 +1,71 @@
 
+
+Make a single 'editor' to replace both param_editor and input_editor
+====================================================================
+
+Why?
+----
+
+Because the input_editor and param_editor seperate the editing of
+paramters and inputs of the same module into two different data objects
+at two different locations in the file.
+
+editing in_freq_mod1, and freq_mod1_size, is a typical use case that
+would be better served by a single 'editor', as the parameter is paired
+with the input.
+
+The 'edit' data object would be the child of the 'editor'. The data
+object would determine if an edit was of a parameter or an input
+
+
+Allow nameless standalone data object definitions
+=================================================
+
+Care to elaborate?
+------------------
+
+Standalone data object definitions are data objects which are not part
+of any other data object. They stand alone as definitions, in the same
+way modules do. They also require naming, however, naming some of these
+data objects only serves to cause aggravation for the user.
+
+It is proposed to allow some data objects (determined by a flag) to not
+require naming. Instead of the name delimitting the defintion, a symbol
+or pair of symbols is used, such as square brackets.
+
+
+synthfileread.cc 606:
+dobj::base* synthfilereader::read_dobj(const char* com)
+{
+...
+}
+
+
+There is currently a problem with data object flags. The flags are
+per-instance, instead of static and per-type. Flags are per-instance
+for storing the VALID flag. The remaining flags should be static and
+per-type: DO_EDITABLE, DO_ALLOW_IN_AUTOGROUP, DO_ALLOW_NAMELESS.
+
+Is there an advantage to creating two sets of flags, one for static
+per-type usage without object instantiation, and another for per-object
+instantiated usage? Currently DO_VALID is the only flag used for the
+latter.
+
+The problem for nameless data object handling is the naming of a data
+object and the subsequent checking for existing same-name usage, plus
+possible group name convention usage all takes place before data object
+instantiation. The flags don't exist before instantiation.
+
+Is this a actually a problem however?
+
+The nameless data object could be given a unique name (ie from a hash
+of the current system time etc) instead of the user naming it, then
+the usual checks and creation process is followed. Only once the data
+object is created does the check for DO_ALLOW_NAMELESS happen.
+
+
+
+
 Autogrouping - fixes - July 2026
 ================================
 

@@ -168,6 +168,12 @@ uwave2
     drop_check_range 2
 uwave2
 
+// you can tell how old this example is by the fact I have manually
+// created these pairs of modules. now i would group the pair then
+// duplicate it multiple times with the copier, and then use the
+// param_editor to change the note names. this would take up a few more
+// lines, but it handles the naming of the modules much more sanely.
+
 constant_note nn1 name e0 nn1
 constant_note nn2 name f0 nn2
 constant_note nn3 name e-1 nn3

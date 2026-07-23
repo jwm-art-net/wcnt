@@ -1,4 +1,5 @@
 #include "../include/textstuff.h"
+#include "../include/debug.h"
 
 #include <functional>
 #include <algorithm>
@@ -8,6 +9,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <cstdarg>
+#include <random>
 
 
 std::string*
@@ -169,9 +171,7 @@ size_t cfmt(char* buf, size_t bufsz, const char* fmt, ...)
 spaces::~spaces()
 {
     if (data) {
-#ifdef DEBUG
-        std::cout << "~spaces freeing data length: " << len << std::endl;
-#endif
+        D_BUG("~spaces freeing data length: %d\n", len);
         delete [] data;
         data = 0;
         len = 0;
@@ -202,3 +202,18 @@ const char* spaces::get(int n)
 
 char* spaces::data = 0;
 int spaces::len = 0;
+
+char* nameless_name()
+{
+    char* buf = new char[NAMELESS_NAME_LENGTH + 1];
+    std::random_device os_seed;
+    const int seed = os_seed();
+    std::mt19937 generator( seed );
+    std::uniform_int_distribution< int > distribute( 0, 25 );
+    buf[0] = ' ';
+    for (int i = 1; i < NAMELESS_NAME_LENGTH; i++)
+        buf[i] = 'a' + distribute( generator );
+    buf[NAMELESS_NAME_LENGTH] = '\0';
+    D_BUG("nameless name: '%s'\n", buf);
+    return buf;
+}

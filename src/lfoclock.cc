@@ -147,8 +147,8 @@ void lfo_clock::run()
     }
     out_phase_step = degsize2;
     degs += out_phase_step;
-    if (degs >= 360) {
-        degs -= 360;
+    if (degs >= 360.0) {
+        degs -= 360.0;
         out_phase_trig = ON;
     }
     else if (out_phase_trig == ON)

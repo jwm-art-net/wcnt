@@ -35,11 +35,10 @@ g1
     modules
 g1
 
-copier grp1cp from g1 to g2 grp1cp
-copier grp2cp from g2 to g3 grp2cp
+copier [ from g1 to g2 count 2 ]
 
 param_editor
-bass02_pe
+[
     editlist
         edit g2.clock2
             freq            0.975
@@ -61,32 +60,22 @@ bass02_pe
         edit wav1
             filename        bass02.wav
     editlist
-bass02_pe
+]
 
 input_editor
-bass02_ie
+[
     editlist
         connect wav1
             in_left     mix1    out_left
             in_right    mix1    out_right
     editlist
-bass02_ie
+]
 
 
-mix_chan
-ch1
-    in_signal   g1.amp1   out_output
-ch1
+mix_chan ch1 in_signal   g1.amp1 out_output     ch1
+mix_chan ch2 in_signal   g2.amp1 out_output     ch2
+mix_chan ch3 in_signal   g3.amp1 out_output     ch3
 
-mix_chan
-ch2
-    in_signal   g2.amp1   out_output
-ch2
-
-mix_chan
-ch3
-    in_signal   g3.amp1   out_output
-ch3
 
 mixer
 mix1

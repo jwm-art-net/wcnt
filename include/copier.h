@@ -35,6 +35,7 @@ class copier : public dobj::base
  private:
     char* from_name;
     char* to_name;
+    wcint_t count;
     synthmod::base* from_mod;
     synthmod::base* to_mod;
     dobj::base* from_dobj;

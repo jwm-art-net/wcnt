@@ -96,19 +96,10 @@ group1
 group1
 
 
-copier g12 from group1 to group2 g12
-copier g13 from group1 to group3 g13
-copier g14 from group1 to group4 g14
-copier g15 from group1 to group5 g15
-copier g16 from group1 to group6 g16
-copier g17 from group1 to group7 g17
-copier g18 from group1 to group8 g18
-copier g19 from group1 to group9 g19
-copier g110 from group1 to group10 g110
-copier g111 from group1 to group11 g111
+copier [ from group1 to group2 count 11 ]
 
 param_editor
-pe
+[
     editlist
         edit group2.tik freq 1.11
         edit group2.cf freq 220
@@ -131,10 +122,10 @@ pe
         edit group11.tik freq 2.0
         edit group11.cf freq 1110
     editlist
-pe
+]
 
 input_editor
-ie
+[
     editlist
         connect group1.osc in_freq_mod1 group2.m out_output
         connect group2.osc in_freq_mod1 group3.m out_output
@@ -148,10 +139,10 @@ ie
         connect group10.osc in_freq_mod1 group11.m out_output
         connect group11.osc in_freq_mod1 group1.m out_output
     editlist
-ie
+]
 
 param_editor
-pe1
+[
     editlist
         edit group1.osc freq_mod1_size 2.5
         edit group2.osc freq_mod1_size 2.5
@@ -165,7 +156,7 @@ pe1
         edit group10.osc freq_mod1_size 2.5
         edit group11.osc freq_mod1_size 2.5
     editlist
-pe1
+]
 
 combiner
 cl

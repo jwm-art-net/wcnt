@@ -6,6 +6,7 @@
 riff_editor::riff_editor() :
  dobj::base(dobj::DEF_RIFFEDITOR), riff_source(0)
 {
+    set_flags(DO_ALLOW_NAMELESS);
 }
 
 void riff_editor::register_ui()

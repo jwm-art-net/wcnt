@@ -15,9 +15,11 @@ class wave_tables
         SINE,
         TRI,
         SAW,
+        SQU,
         SINE_01,
         TRI_01,
         SAW_01,
+        SQU_01,
         WT_LAST
     };
 

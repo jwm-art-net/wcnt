@@ -9,17 +9,18 @@
 
 copier::copier() :
  dobj::base(dobj::DEF_COPIER),
- from_name(0), to_name(0),
+ from_name(0), to_name(0), count(1),
  from_mod(0), to_mod(0),
  from_dobj(0), to_dobj(0)
 {
-    set_allowed_in_autogroup();
+    set_flags(DO_ALLOW_IN_AUTOGROUP | DO_ALLOW_NAMELESS);
 }
 
 void copier::register_ui()
 {
     register_param(param::COPYFROM);
     register_param(param::COPYTO);
+    register_param(param::COUNT)->set_flags(ui::UI_OPTIONAL);
 }
 
 ui::dobjitem_list* copier::get_ui_items()
@@ -109,6 +110,9 @@ bool copier::set_param(param::TYPE pt, const void* data)
         }
         return true;
     }
+    case param::COUNT:
+        count = *(wcint_t*)data;
+        return true;
     default:
         return false;
     }
@@ -118,45 +122,63 @@ const void* copier::get_param(param::TYPE pt) const
 {
     switch(pt)
     {
-        case param::COPYFROM:  return from_name;
-        case param::COPYTO:    return to_name;
+        case param::COPYFROM: return from_name;
+        case param::COPYTO:   return to_name;
+        case param::COUNT:    return &count;
         default: return 0;
     }
 }
-
+#include <iostream>
 errors::TYPE copier::validate()
 {
-/*
- * for what purpose are these called in validate???
-    if (!set_param(param::COPYFROM, from_name))
-        return errors::ERROR;
-    if (!set_param(param::COPYTO, to_name))
-        return errors::ERROR;
-*/
-
     group* autogroup = wcnt::jwm.get_modlist()->get_autogroup();
-    if (from_mod) {
-        if (!(to_mod = from_mod->duplicate_module(to_name,
-                                    synthmod::base::AUTO_CONNECT)))
-        {
-            dobjerr("%s", synthmod::base::get_error_msg());
-            return errors::ERROR;
-        }
-        if (autogroup)
-            autogroup->autogroup_module(to_mod);
-        if (!wcnt::jwm.get_modlist()->add_module(to_mod)) {
-            dobjerr("Could not add module %s copied from %s to module "
-                                                       "run list. Bad.",
-                        to_mod->get_username(), from_mod->get_username());
-            return errors::ERROR;
-        }
-        return errors::NO_ERROR;
+    if (count < 1 || count > wcnt::max_copies) {
+        dobjerr("count outside range of 1 ~ %d copies.", wcnt::max_copies);
+        return errors::ERROR;
     }
-    else if (from_dobj) {
-        if (!(to_dobj = from_dobj->duplicate_dobj(to_name)))
-            return errors::ERROR;
-        wcnt::get_dobjlist()->add_dobj(to_dobj);
-        return errors::NO_ERROR;
+    int start_no = 0;
+    std::string copyname = to_name;
+    D_BUG("count: %d\n", count);
+    int ix = 0;
+    if (count > 1) { // try to determine number at end of to_name.
+        int c, l = strlen(to_name);
+        ix = l;
+        do {
+            ix--;
+            c = to_name[ix];
+            D_BUG("c:'%c' ", c);
+        } while (c >= '0' && c <= '9' && ix > 0);
+        if (ix + 1 < l) {
+            start_no = std::stoi(to_name + ix + 1);
+            D_BUG(" start_no: %d\n", start_no);
+        }
     }
-    return errors::ERROR;
+    for (int i = 0; i < count; i++) {
+        if (count > 1 && i > 0) {
+            to_name[ix + 1] = '\0';
+            copyname = to_name + std::to_string(start_no + i);
+        }
+        if (from_mod) {
+            if (!(to_mod = from_mod->duplicate_module(copyname.c_str(),
+                                        synthmod::base::AUTO_CONNECT)))
+            {
+                dobjerr("%s", synthmod::base::get_error_msg());
+                return errors::ERROR;
+            }
+            if (autogroup)
+                autogroup->autogroup_module(to_mod);
+            if (!wcnt::jwm.get_modlist()->add_module(to_mod)) {
+                dobjerr("Could not add module %s copied from %s to module "
+                "run list. Bad.",
+                to_mod->get_username(), from_mod->get_username());
+                return errors::ERROR;
+            }
+        }
+        else if (from_dobj) {
+            if (!(to_dobj = from_dobj->duplicate_dobj(copyname.c_str())))
+                return errors::ERROR;
+            wcnt::get_dobjlist()->add_dobj(to_dobj);
+        }
+    }
+    return errors::NO_ERROR;
 }

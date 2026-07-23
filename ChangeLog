@@ -12,13 +12,33 @@ were demanding too much of me so had to step back (into the real world).
 CHANGES:
    * time_map now has a single parameter: bpm_changes_relative which
      can be set to either be on or off. When off, bpm values are
-     absolute. While on, the bpm changes are relative to the current bpm
-     at that point in time. Absolute values are more expected, but
+     absolute. While on, the bpm changes are relative to the current
+     bpm at that point in time. Absolute values are more expected, but
      relative values allow the entire bpm range to be moved up or down.
 
     * Started the groundwork to tidy up the debug message printing,
       it was very inconsistent from file to file. It's still not great
-      and i dont
+      and i dont...
+
+    * Some data objects can now be nameless. The copier, input_editor
+      and param_editor are the main use case for namelessness.
+      Note: names in wcnt are used as delimiters, and delimiting still
+      needs to occur. Namelessness requires replacing the name at the
+      start of the definition with an opening square brace '[', and the
+      name at the end should be replaced with a closing square brace
+      ']'.
+
+    * copier can now make multiple copies via the optional count
+      parameter. Numbering of the copies is incremental starting with
+      the value determined by the name of the target copy set using the
+      'to' parameter. The copier is currently hard-limited to a maximum
+      of 50 copies using this method. If you want more you can, but I
+      reserve the right to make you work for it.
+
+    * a basic square wave has been added to the wave tables as used by
+      the wave and wave_phase modules. it was annoying to need to use
+      a seperate module. the square_wave module provides a wave form
+      with pulse width modulation.
 
 FIXES:
     * When a group was created in one stage, and then in a second stage
