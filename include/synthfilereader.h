@@ -55,15 +55,16 @@ public:
     void set_wc_filename(const char* filename);
 
     bool read_and_create();
-
     const char* get_wc_error_msg() const { return wc_err_msg; }
 
     virtual errors::TYPE validate();
     bool set_param(param::TYPE, const void*);
     const void* get_param(param::TYPE pt) const;
     const dobj::base* add_dobj(dobj::base*);
+    bool do_actions() { return read_and_create(); }
 
 private:
+
 
     // params
     char* wc_filename;
@@ -90,7 +91,6 @@ private:
     group* autogroup;
 
 //--- private member methods ---//
-
     FILE_STATUS open_file();
     bool        read_header(samp_t* samplerate);
     const char* read_command();

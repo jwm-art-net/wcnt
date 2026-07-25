@@ -59,6 +59,8 @@ namespace wcnt
 
  bool could_be_header(const char* header);
  bool header_is_compatible(const char* header);
+ bool name_is_reserved_word(const char*);
+
 
  class globals
  {

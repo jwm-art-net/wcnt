@@ -11,6 +11,9 @@
 #include <sstream>
 
 // currently ui_item.h contains all the information about how this works.
+// well, no, it doesn't contain any information about how it works which
+// could aid with debugging it! it only contains information about how to
+// use it for registering ui components.
 
 class connector;
 

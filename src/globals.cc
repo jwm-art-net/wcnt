@@ -73,6 +73,22 @@ bool could_be_header(const char* header)
     return false;
  }
 
+ bool name_is_reserved_word(const char* name)
+ {
+    const char* reserved[] =
+    {
+         "off",
+         dobj::names::get(dobj::LST_EDITS),
+         dobj::names::get(dobj::SIN_EDIT),
+         0
+    };
+    for (int i = 0; reserved[i] != 0; i++)
+        if (strcmp(name, reserved[i]) == 0)
+            return true;
+    return false;
+ }
+
+
  globals::globals() :
   modlist(0),
   wc_path(0),    wc_file(0),

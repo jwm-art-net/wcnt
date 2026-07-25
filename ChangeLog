@@ -9,7 +9,15 @@ I also am unsure if I've done anything which should have been reverted.
 I had a bunch of grand ideas but reached the point where I felt they
 were demanding too much of me so had to step back (into the real world).
 
+NEW FEATURES
+    * editor data object supercedes the seperate param_editor and
+      input_editor data objects by unifying their functionality into a
+      single unit.
+
 CHANGES:
+   * pattern_trig now has an out_not_trig for when the pattern means the
+     input trigger doesn't output to the out_trig
+
    * time_map now has a single parameter: bpm_changes_relative which
      can be set to either be on or off. When off, bpm values are
      absolute. While on, the bpm changes are relative to the current

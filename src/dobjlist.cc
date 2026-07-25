@@ -44,6 +44,9 @@ namespace dobj
     case dobj::SIN_EDIT_INPUT:
         dobjy = new inputedit;
         break;
+    case dobj::SIN_EDIT:
+        dobjy = new edit;
+        break;
     case dobj::SIN_STEP:
         dobjy = new step_data;
         break;
@@ -61,6 +64,9 @@ namespace dobj
         break;
     case dobj::DEF_INPUTEDITOR:
         dobjy = new inputeditor;
+        break;
+    case dobj::DEF_EDITOR:
+        dobjy = new editor;
         break;
     case dobj::DEF_RIFFEDITOR:
         dobjy = new riff_editor;

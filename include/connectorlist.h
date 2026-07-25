@@ -37,6 +37,8 @@ public:
                                                     input::TYPE as);
     connector* add_connector(synthmod::base* sm,  input::TYPE,
                              const char* out_mod, output::TYPE);
+    connector* add_connector(synthmod::base* sm,  input::TYPE,
+                             const char* out_mod, const char* output);
     bool delete_connector(connector*);
 
     /*

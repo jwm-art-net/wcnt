@@ -10,6 +10,27 @@ TODO BEFORE RELEASE
 
 TODO NEW FEATURES FOR A FUTURE RELEASE (not next release)
 
+    * DEBUG the new editor and ui_item* workings. The example file
+      voice-per-sequenced.wc fails if the input_editor in the
+      voice-snare autogroup section is replaced with the editor
+
+    * the whole header situation is a bit of a mess. I think the only
+      place sample rate should be set within the file processed from
+      the command line. Sample rate set in any included files will be
+      verbosely ignored.
+
+    * data object new virtual "action" method - input/param editor have
+      type specific action methods causing synth_file_reader to make
+      special cases for them. other data objects misuse the validate()
+      method.
+
+    * functionality to delete modules and rename modules
+
+    * does autogrouping need 'autogroup_create' and 'autogroup_add'
+      directives, not just the simpler 'autogroup'? - my thinking was
+      to avoid confusion, force use of 'add' when the group already
+      existed (for example in an included file) but might be missed.
+
     * investigate if param_editor and input_editor could be replaced
       with a single editor to handle both inputs and outputs
 
@@ -23,7 +44,7 @@ TODO NEW FEATURES FOR A FUTURE RELEASE (not next release)
       phase modulation, will have a single sample click every several
       cycles.
 
-    * investigate possiblity to for a parameter to specify the output
+    * investigate possiblity for a parameter to specify the output
       type for those modules which process outputs from a list of other
       modules (switcher, trig_switcher, combiner, etc)
 

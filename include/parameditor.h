@@ -19,6 +19,7 @@ class parameditor : public dobj::base, public linked_list<paramedit>
     }
 
     const dobj::base* add_dobj(dobj::base* dbj);
+    bool do_actions() { return do_param_edits(); }
 
  private:
     void register_ui();

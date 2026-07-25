@@ -220,7 +220,7 @@ namespace ui
         return true;
     }
 
-    #ifdef DEBUG
+    #ifdef DEBUG_UIITEM
     virtual void dump() {
         char buf[40];
         get_item_flags(buf, 40);
@@ -256,7 +256,7 @@ namespace ui
  {
     flags = f;
 
-    #ifdef DEBUG
+    #ifdef DEBUG_UIITEM
     if (f < 0) {
         this->dump();
         D_UIITEM("invalid ui item flags: %d\n", f);
@@ -364,7 +364,7 @@ namespace ui
     bool validate(T, errors::TYPE) { return true; }
     bool name_match(const char*) { return false; }
 
-    #ifdef DEBUG
+    #ifdef DEBUG_UIITEM
     void dump() {
         D_UIITEM("comment: %s (0x%p)\n", base<T>::get_descr(), this);
     }
@@ -396,7 +396,7 @@ namespace ui
         return (strcmp(str, param::names::get(partype)) == 0);
     }
 
-    #ifdef DEBUG
+    #ifdef DEBUG_UIITEM
     void dump() {
         char buf[40];
         this->get_item_flags(buf, 40);
@@ -454,7 +454,7 @@ namespace ui
         return (strcmp(str, input::names::get(intype)) == 0);
     }
 
-    #ifdef DEBUG
+    #ifdef DEBUG_UIITEM
     void dump() {
         char buf[40];
         this->get_item_flags(buf, 40);
@@ -489,7 +489,7 @@ namespace ui
         return (strcmp(str, dobj::names::get(parent)) == 0);
     }
 
-    #ifdef DEBUG
+    #ifdef DEBUG_UIITEM
     void dump() {
         char buf[40];
         this->get_item_flags(buf, 40);

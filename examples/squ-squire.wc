@@ -27,14 +27,18 @@ lfo1
     w
 lfo1
 
-copier [ from lfo1 to lfo2 ]
+copier [ from lfo1 to lfo2 count 2 ]
 
 param_editor
 [
     editlist
         edit lfo1.c freq_mod1_size 2.0
-        edit lfo2.c freq 1.44
+        edit lfo2.c freq 0.144
         edit lfo2.w
+            recycle_mode on
+            on_trig_reset_phase off
+        edit lfo3.c freq 0.02385213
+        edit lfo3.w
             recycle_mode on
             on_trig_reset_phase off
     editlist
@@ -44,7 +48,8 @@ input_editor
 [
     editlist
         connect lfo1.c in_freq_mod1 lfo2.w out_output
-        connect lfo2.w in_phase_trig off
+        connect lfo2.w in_phase_trig t1 out_trig
+        connect lfo3.w in_phase_trig t1 out_trig
     editlist
 ]
 
@@ -67,9 +72,14 @@ param_editor
     editlist
 ]
 
+
+
+
 clock
 swc
     freq 1.75
+    in_freq_mod1 lfo3.w out_output
+    freq_mod1_size 2.0
 swc
 
 switcher
@@ -85,25 +95,44 @@ sw1
     xfade_time 0.0
 sw1
 
+pattern_trig
+pp
+    in_trig swc out_phase_trig
+    pattern 1010011
+pp
 
 osc_clock
 osc1
-    in_note_on_trig     swc out_phase_trig
-    in_note_slide_trig  off
+    in_note_on_trig     pp out_trig
+    in_note_slide_trig  pp out_not_trig
     in_frequency        sw1 out_output
-    response_time 5.0
+    octave_offset -1
+    response_time 0.0
+    portamento_time 150
 osc1
+
+wave_phase
+ws
+    type saw
+    in_phase_trig t1 out_trig
+    on_trig_reset_phase off
+    recycle_mode on
+    in_phase_step osc1 out_phase_step
+ws
 
 
 wave_phase
 w1
-    type sine
+    type saw
     in_phase_trig osc1 out_phase_trig
     on_trig_reset_phase on
     recycle_mode off
     in_phase_step osc1 out_phase_step
     in_phase_mod lfo1.w out_output
-    phase_mod_size 2
+    shape_type saw
+    in_shape_phase_step osc1 out_phase_step
+    sync_shape on
+    phase_mod_size 4
 w1
 
 wave_phase
@@ -120,7 +149,7 @@ out
     in_signal1 w1 out_output
     function add
     in_signal2 w2 out_output
-    bias 0.05
+    bias 0.75
 out
 
 wavfile_out

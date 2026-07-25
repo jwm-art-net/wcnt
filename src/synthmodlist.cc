@@ -173,7 +173,7 @@ namespace synthmod
  }
 
 
- // if autogrouping, get synthmod by autogroup groupp modname,
+ // if autogrouping, get synthmod by autogroup group modname,
  // if not found or not autogrouping, returns 0.
  synthmod::base* list::autogroup_only_get_synthmod_by_name(const char* const modname,
                                                         char** grpmodname)

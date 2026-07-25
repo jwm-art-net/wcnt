@@ -110,7 +110,9 @@ bool set_param(T* obj, param::TYPE pt, const char* value,
         }
         iocatconv::destroy_iocat_data(ioc, data);
         const char* n = obj->get_username();
-        if (n[0] == ' ')
+        if (!n)
+            n = "<unamed>";
+        else if (n[0] == ' ')
             n = "[nameless]";
         setpar_err("%s refuses to set parameter %s with value %s.",
                                         (n ? n : ""), (par ? par : ""),

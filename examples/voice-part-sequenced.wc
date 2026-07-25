@@ -69,16 +69,16 @@ voice-part
     // only then is the module for the connection looked for outside of
     // the group.
 
-    input_editor
-    ie
+    editor
+    [
         editlist
-            connect enter in_note_on_trig    seq1 out_note_on_trig
-            connect enter in_note_slide_trig seq1 out_note_slide_trig
-            connect enter in_note_off_trig   seq1 out_note_off_trig
-            connect enter in_frequency       seq1 out_frequency
-            connect enter in_velocity        seq1 out_velocity
+            edit enter in_note_on_trig    seq1 out_note_on_trig
+            edit enter in_note_slide_trig seq1 out_note_slide_trig
+            edit enter in_note_off_trig   seq1 out_note_off_trig
+            edit enter in_frequency       seq1 out_frequency
+            edit enter in_velocity        seq1 out_velocity
         editlist
-    ie
+    ]
 
 voice-part
 

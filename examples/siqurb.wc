@@ -11,10 +11,9 @@ timer
 t1
     timings
         time seconds 0
-        time seconds 120.0
-        time seconds 120.0
+        time seconds 30.0
     timings
-    time_is_relative on
+    time_is_relative off
     recycle_mode off
 t1
 
@@ -217,9 +216,9 @@ fader
 f1
     in_bar      t1 out_count
     start_bar      0
-    end_bar        2
+    end_bar        1
     fade_in_time   5000.0
-    fade_out_time 15000.0
+    fade_out_time 5000.0
 f1
 
 

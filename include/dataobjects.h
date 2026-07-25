@@ -18,6 +18,8 @@
 #include "parameditor.h"
 #include "inputedit.h"
 #include "inputeditor.h"
+#include "edit.h"
+#include "editor.h"
 #include "riffeditor.h"
 #include "copier.h"
 #include "group.h"

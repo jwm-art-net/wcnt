@@ -1,8 +1,17 @@
-THIS THIS IS THE NEWS - May 2026 - THE NEWS IS THIS THIS
---------------------------------------------------------
+THIS THIS IS THE NEWS - May-July 2026 - THE NEWS IS THIS THIS
+-------------------------------------------------------------
   (Urrrrrgh, where am I? Wait... Wut!?!? It's 2026!?!?)
 
 New features for Wav Composer Not Toilet!
+
+New features summary:
+    * Autogrouping - group modules as they're created.
+
+    * Entry points - a quicker way to connect sequencer outputs to
+      to the inputs of multiple modules at once.
+
+    * Nameless data objects - data objects which are not referenced
+      by name no longer require naming.
 
 Autogrouping
 ------------
@@ -13,7 +22,7 @@ process, autogrouping groups the modules as they're created.
     * Simpler syntax than the group data object.
     * Less work to keep track of modules which need to be added to
       (or removed from) a group.
-    * Quicker and easier to introduce to or remove from a file
+    * Quicker and easier to introduce to or remove grouping from a file
     * Allows further modules to be added to existing groups.
 
 The concept of directives was introduced to make this happen, with three

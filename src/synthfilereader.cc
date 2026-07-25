@@ -289,16 +289,17 @@ bool synthfilereader::autogroup_stop(const char* com)
     }
 
     synthmod::list* sml = wcnt::jwm.get_modlist();
-
+    char* gn = 0;
     connector* c = cl->goto_first();
     while (c) {
         const char* outmod = c->get_output_module_name();
         D_CONNECT("checking pending connection using output module name: %s "
                   "(to input module %s)\n", outmod, c->get_input_module()->get_username());
-        if (strcmp(c->get_input_module()->get_group_name(), autogroup->get_username()) == 0) {
+        gn = c->get_input_module()->get_group_name();
+        if (strcmp(gn, autogroup->get_username()) == 0) {
             // due to autogroup_add, grouping can be staged, so *must* ensure
             // group names match!
-            if (!get_groupname(outmod)) {
+            if (!has_groupname(outmod)) {
                 char* gsmn = set_groupname(autogroup->get_username(), outmod);
                 synthmod::base* sm = sml->get_synthmod_by_name(gsmn);
                 if (sm) {
@@ -321,6 +322,7 @@ bool synthfilereader::autogroup_stop(const char* com)
                 delete [] gsmn;
             }
         }
+        delete [] gn;
         c = cl->goto_next();
     }
 
@@ -389,6 +391,14 @@ bool synthfilereader::read_and_create_dobj(const char* com)
                                         dbj->get_username());
             return false;
         }
+        if (!dbj->do_actions()) {
+            if (dbj->get_object_type() == dobj::DEF_WCFILE)
+                wc_err("%s", static_cast<synthfilereader*>(dbj)->get_wc_error_msg());
+            else
+                wc_err("%s", dobj::base::get_error_msg());
+            return false;
+        }
+        /*
         switch(dbj->get_object_type())
         {
             default:
@@ -422,6 +432,7 @@ bool synthfilereader::read_and_create_dobj(const char* com)
                 break;
             }
         }
+        */
 
         if (dbj->get_object_type() == dobj::DEF_WCFILE)
             cout << "    (back in " << wc_filename << ")" << endl;
@@ -489,14 +500,9 @@ synthmod::base* synthfilereader::read_synthmodule(const char* com)
 
     string modname;
     *synthfile >> modname;
-    if (strcmp(modname.c_str(), "off") == 0) {
-        wc_err("Cannot use reserved word off to name module %s.", com);
-        return 0;
-    }
-    if (strcmp(modname.c_str(), dobj::names::get(dobj::LST_EDITS)) == 0)
-    {
-        wc_err("Cannot use reserved word %s to name module %s.",
-                    dobj::names::get(dobj::LST_EDITS), com);
+    if (wcnt::name_is_reserved_word(modname.c_str())) {
+        wc_err("Cannot use reserved word %s to name %s module.",
+               modname.c_str(), com);
         return 0;
     }
     // prevent the user from defining a module using a grouped name
@@ -621,20 +627,16 @@ dobj::base* synthfilereader::read_dobj(const char* com)
         // nameless data object handling
         char* n = nameless_name();
         dobjname = n;
-        delete n;
+        delete [] n;
         nameless = true;
     }
 
-    if (strcmp(dobjname.c_str(), "off") == 0) {
-        wc_err("Cannot use reserved word off to name %s.", com);
+    if (wcnt::name_is_reserved_word(dobjname.c_str())) {
+        wc_err("Cannot use reserved word %s to name %s data object.",
+                            dobjname.c_str(), com);
         return 0;
     }
-    if (strcmp(dobjname.c_str(), dobj::names::get(dobj::LST_EDITS)) == 0)
-    {
-        wc_err("Cannot use reserved word %s to name data object %s.",
-                            dobj::names::get(dobj::LST_EDITS), com);
-        return 0;
-    }
+
     const char* const grpname = get_groupname(dobjname.c_str());
     if (grpname) {
         delete [] grpname;
@@ -974,6 +976,8 @@ synthfilereader::read_ui_modinput(synthmod::base* sm, input::TYPE inptype)
     }
 
     if (include_mod(sm->get_username())) {
+        // FIXME: error detection should be handled by connectorlist
+        // - would require connector list to have error message functionality
         connector* c = wcnt::get_connectlist()
                         ->add_connector(sm, inptype, outmod.c_str(), outtype);
         if (autogroup)
@@ -1023,6 +1027,7 @@ synthfilereader::read_ui_dobjparam(dobj::base* dob, param::TYPE partype,
     string* datastr = 0;
 
     if (partype == param::STR_LIST) {
+        D_BUG("*** stringlist parent: '%s'\n", parent);
         const char* dobjname = dobj::names::get(dob->get_object_type());
         datastr = read_string_list_param(dobjname, parent);
         if (!datastr)
@@ -1405,6 +1410,7 @@ const dobj::base* synthfilereader::add_dobj(dobj::base* dbj)
     }
     return retv;
 }
+
 
 void synthfilereader::register_ui()
 {

@@ -79,6 +79,14 @@ connector* connectorlist::add_connector(synthmod::base* sm, input::TYPE it,
     return c;
 }
 
+
+connector* add_connector(synthmod::base* sm,  input::TYPE,
+                         const char* out_mod, const char* output)
+{
+    // FIXME: finish this!
+}
+
+
 bool connectorlist::delete_connector(connector* c)
 {
     if (!c)

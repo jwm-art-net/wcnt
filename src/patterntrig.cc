@@ -6,6 +6,7 @@ patterntrig::patterntrig(const char* uname) :
  out_end_trig(OFF), out_index(-1), pattern(0), ptr(0)
 {
     register_output(output::OUT_TRIG);
+    register_output(output::OUT_NOT_TRIG);
     register_output(output::OUT_START_TRIG);
     register_output(output::OUT_END_TRIG);
     register_output(output::OUT_INDEX);
@@ -81,6 +82,7 @@ const void* patterntrig::get_out(output::TYPE ot) const
     switch(ot)
     {
         case output::OUT_TRIG:         return &out_trig;
+        case output::OUT_NOT_TRIG:     return &out_not_trig;
         case output::OUT_START_TRIG:   return &out_start_trig;
         case output::OUT_END_TRIG:     return &out_end_trig;
         case output::OUT_INDEX:        return &out_index;
@@ -141,6 +143,8 @@ void patterntrig::run()
             out_trig = ON;
             ++out_index;
         }
+        else
+            out_not_trig = ON;
         ptr++;
         if (*ptr == '\0') {
             out_end_trig = ON;
@@ -150,6 +154,8 @@ void patterntrig::run()
     else {
         if (out_trig == ON)
             out_trig = OFF;
+        else if (out_not_trig == ON)
+            out_not_trig = OFF;
         if (out_start_trig == ON)
             out_start_trig = OFF;
         if (out_end_trig == ON) {

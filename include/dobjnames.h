@@ -64,6 +64,7 @@ namespace dobj
     //---------------------------------------------
     SIN_EDIT_PARAM,
     SIN_EDIT_INPUT,
+    SIN_EDIT, // supercedes preceding two dobj types
     //---------------------------------------------
     // stand alone dobj's defined outside of
     // a module, and inserted by name, as
@@ -74,6 +75,7 @@ namespace dobj
     DEF_WCFILE,
     DEF_PARAMEDITOR,
     DEF_INPUTEDITOR,
+    DEF_EDITOR, // supercedes preceding two dobj types
     DEF_RIFFEDITOR,
     DEF_COPIER,
     DEF_GROUP,

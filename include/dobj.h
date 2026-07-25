@@ -49,6 +49,7 @@ namespace dobj
     virtual const void* get_param(param::TYPE) const;
     virtual const base* add_dobj(base*); // don't be fooled...
     virtual base*       duplicate_dobj(const char*);
+    virtual bool        do_actions() { return true; };
     bool is_editable() { return flags & DO_EDITABLE; }
 
     static const char* get_error_msg() { return err_msg; }

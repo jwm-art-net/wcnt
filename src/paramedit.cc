@@ -222,8 +222,8 @@ const void* paramedit::get_param(param::TYPE dt) const
 {
     switch(dt)
     {
-        case param::STR_UNNAMED:   return get_name();
-        case param::STR_LIST:      return get_parstr();
+        case param::STR_UNNAMED:   return name;
+        case param::STR_LIST:      return parstr;
         default: return 0;
     }
 }

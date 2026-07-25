@@ -138,23 +138,16 @@ copier c1 from osc-l to osc-r c1
 copier c2 from sine-l to sine-r c2
 
 
-input_editor
-ie_lr1
-    editlist
-        connect sine-r
-            in_phase_step     osc-r out_phase_step
-    editlist
-ie_lr1
-
-
-param_editor
-pe_lr1
+editor
+[
     editlist
         edit osc-r
             freq_mod1_size 2.0
             freq_mod2_size 2.0
+        edit sine-r
+            in_phase_step     osc-r out_phase_step
     editlist
-pe_lr1
+]
 
 
 multiplier shaped-l
@@ -233,33 +226,25 @@ copier gc5 from g1 to g6 gc5
 copier gc6 from g1 to g7 gc6
 copier gc7 from g1 to g8 gc7
 
-
-input_editor
-ie_lr2
+editor
+[
     editlist
-        connect g1.mml in_signal2 g2.shaped-l out_output
-        connect g1.mmr in_signal2 g2.shaped-r out_output
-        connect g2.mml in_signal2 g3.shaped-l out_output
-        connect g2.mmr in_signal2 g3.shaped-r out_output
-        connect g3.mml in_signal2 g4.shaped-l out_output
-        connect g3.mmr in_signal2 g4.shaped-r out_output
-        connect g4.mml in_signal2 g5.shaped-l out_output
-        connect g4.mmr in_signal2 g5.shaped-r out_output
-        connect g5.mml in_signal2 g6.shaped-l out_output
-        connect g5.mmr in_signal2 g6.shaped-r out_output
-        connect g6.mml in_signal2 g7.shaped-l out_output
-        connect g6.mmr in_signal2 g7.shaped-r out_output
-        connect g7.mml in_signal2 g8.shaped-l out_output
-        connect g7.mmr in_signal2 g8.shaped-r out_output
-        connect g8.mml in_signal2 g1.shaped-l out_output
-        connect g8.mmr in_signal2 g1.shaped-r out_output
-    editlist
-ie_lr2
-
-
-param_editor
-pe1
-    editlist
+        edit g1.mml in_signal2 g2.shaped-l out_output
+        edit g1.mmr in_signal2 g2.shaped-r out_output
+        edit g2.mml in_signal2 g3.shaped-l out_output
+        edit g2.mmr in_signal2 g3.shaped-r out_output
+        edit g3.mml in_signal2 g4.shaped-l out_output
+        edit g3.mmr in_signal2 g4.shaped-r out_output
+        edit g4.mml in_signal2 g5.shaped-l out_output
+        edit g4.mmr in_signal2 g5.shaped-r out_output
+        edit g5.mml in_signal2 g6.shaped-l out_output
+        edit g5.mmr in_signal2 g6.shaped-r out_output
+        edit g6.mml in_signal2 g7.shaped-l out_output
+        edit g6.mmr in_signal2 g7.shaped-r out_output
+        edit g7.mml in_signal2 g8.shaped-l out_output
+        edit g7.mmr in_signal2 g8.shaped-r out_output
+        edit g8.mml in_signal2 g1.shaped-l out_output
+        edit g8.mmr in_signal2 g1.shaped-r out_output
         edit g2.osc-l
             tuning_semitones 0
             octave_offset -1
@@ -297,7 +282,7 @@ pe1
             tuning_semitones 0
             octave_offset 0
     editlist
-pe1
+]
 
 
 combiner
@@ -368,7 +353,7 @@ wav1
 wcnt_exit
 wcnt_exit_module
     in_bar  time1   out_bar
-    exit_bar    64
+    exit_bar    8
 wcnt_exit_module
 
 

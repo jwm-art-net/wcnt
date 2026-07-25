@@ -55,7 +55,10 @@ namespace synthmod
     char* get_group_name() const {
             return ((flags & SM_UNGROUPABLE)
                         ? 0 : get_groupname(username));
-        }
+    }
+    bool has_group_name() const {
+        return has_groupname(username);
+    }
 
     void set_group_name(const char* const);
 

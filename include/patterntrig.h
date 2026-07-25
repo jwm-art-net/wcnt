@@ -28,6 +28,7 @@ public:
 private:
     STATUS const* in_trig;
     STATUS out_trig;
+    STATUS out_not_trig;
     STATUS out_start_trig;
     STATUS out_end_trig;
     wcint_t out_index;

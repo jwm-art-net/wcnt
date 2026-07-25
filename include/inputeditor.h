@@ -13,7 +13,6 @@ class inputeditor : public dobj::base, public linked_list<inputedit>
     /*
     // creates the connectors from the inputedits.
     */
-    bool create_connectors();
 
     /*
     // virtuals from dobj
@@ -24,8 +23,11 @@ class inputeditor : public dobj::base, public linked_list<inputedit>
 
     const dobj::base* add_dobj(dobj::base*);
 
+    bool do_actions() { return create_connectors(); }
+
  private:
-    void register_ui();
+     bool create_connectors();
+     void register_ui();
     ui::dobjitem_list* get_ui_items();
 };
 

@@ -1,3 +1,24 @@
+editor data object
+==================
+
+Preliminary version is done and working, but not fully tested.
+
+From the TODO:
+
+    * DEBUG the new editor and ui_item* workings. The example file
+      voice-per-sequenced.wc fails if the input_editor in the
+      voice-snare autogroup section is replaced with the editor
+
+The problem is ... something untoward is going on. There are 3 parts
+for synthesising kick, snare, and cowbell, all based on the same
+voice-perc.wch origins. But it's only voice-snare which appears to
+cause problems for the new editor. It's as clear as mud as to why.
+
+I failed to document in comments how the ui item matching code works.
+
+Basically, the error displayed to the user says it cannot match the
+string in_note_on_trig to any ui item in wcnt_note - which has exactly
+that input.
 
 
 Make a single 'editor' to replace both param_editor and input_editor
@@ -7,16 +28,57 @@ Why?
 ----
 
 Because the input_editor and param_editor seperate the editing of
-paramters and inputs of the same module into two different data objects
-at two different locations in the file.
+paramters and inputs of the same module into two different data object
+defintions at two different locations in the file.
 
 editing in_freq_mod1, and freq_mod1_size, is a typical use case that
-would be better served by a single 'editor', as the parameter is paired
-with the input.
+would be better served by a single 'editor', because here the parameter
+is paired with the input.
 
-The 'edit' data object would be the child of the 'editor'. The data
-object would determine if an edit was of a parameter or an input
+The 'edit' data object would be the child of the 'editor'. The edit data
+object determines if each changes it must make is a parameter or input.
 
+------
+
+** calling of the methods to do the parameter editing and connection
+   creation happens in the same place in synth_file_reader - directly
+   after *editor object creation:
+   381: bool synthfilereader::read_and_create_dobj(const char* com)
+   *** note: the case statements in that file will be handled by
+   generic virtual function bool dobj::base::do_actions();
+
+** new virtual 'action' method for data objects to handle the methods
+   generically - use for synth_file_reader also. - removing the case
+   and static_casts etc in synth_file_reader::read_and_create_dobj.
+
+** i hadn't thought about how a series of parameter changes for a module
+   in a param_editor uses the keyword 'edit' to initiate, and a series
+   of input changes for a module intiates with the keyword 'connect'.
+   i liked that it is clear what is happening, but, to preserve these,
+   it would a) be more work, b) be less in keeping with how the modules
+   are defined in the first place because c) it would create division
+   that the editor was supposed to solve.
+
+** the above point refers mainly to what the users sees, but in the
+   back end, it is also to be considered:
+    a) because intermixing of parameters and inputs is desirable, two
+       lists, one for input edits and one for parameter edits is not
+       possible.
+    b) because of that, one single list of edits must be used, where
+       each edit might need to handle both parameter and input changes.
+    c) determination of whether each change is either a parameter change
+       or input change can  be determined by looking up the item in the
+       specified module's ui items list.
+    **** I don't know how editing parameters/inputs of optional groups
+    **** different to the optional group used in the original definition
+    **** can be handled (FIXME).
+
+*** connectorlist and connector don't really do all the error handling
+    they should be doing, input/editor and synthfilereader duplicate
+    error handling code for inputs.
+
+
+-------------------------------------------------
 
 Allow nameless standalone data object definitions
 =================================================
@@ -63,6 +125,7 @@ of the current system time etc) instead of the user naming it, then
 the usual checks and creation process is followed. Only once the data
 object is created does the check for DO_ALLOW_NAMELESS happen.
 
+[[[[[[[[ DONE ]]]]]]]]
 
 
 

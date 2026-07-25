@@ -81,22 +81,18 @@ voice-kick
     // only then is the module for the connection looked for outside of
     // the group.
 
-    input_editor
-    ie1
+    editor
+    [
         editlist
-            connect enter in_note_on_trig       kick-pat out_trig
-            connect enter in_frequency          kick-note out_frequency
-            connect enter in_velocity           one out_output
-            connect o1 in_freq_mod1 lfowv out_output
+            edit enter
+                in_note_on_trig       kick-pat out_trig
+                in_frequency          kick-note out_frequency
+                in_velocity           one out_output
+            edit o1
+                in_freq_mod1    lfowv out_output
+                freq_mod1_size  2.0
         editlist
-    ie1
-
-    param_editor
-    pe1
-        editlist
-            edit o1 freq_mod1_size 2.0
-        editlist
-    pe1
+    ]
 
 voice-kick
 
@@ -109,26 +105,28 @@ sfr2
 autogroup_add
 voice-snare
 
-    // data objects (ie not modules) such as the input editor are not
-    // actually grouped, however, when they are situated inside an
-    // autogroup section, they use the group "namespace".  this means
-    // the output modules specified for inputs are firstly assumed to
-    // be modules in the group. if no such module exists with the group
-    // only then is the module for the connection looked for outside of
-    // the group.
-
     input_editor
-    ie2
+    [
         editlist
-            connect enter in_note_on_trig       snare-pat out_trig
-            connect enter in_frequency          snare-note out_frequency
-            connect enter in_velocity           one out_output
+            connect enter
+                in_note_on_trig       snare-pat out_trig
+                in_frequency          snare-note out_frequency
+                in_velocity           one out_output
         editlist
-    ie2
+    ]
+
+    // uncommenting this will cause wcnt to mysteriously fail
+    //editor
+    //[
+    //    editlist
+    //        edit enter
+    //            in_note_on_trig       snare-pat out_trig
+    //            in_frequency          snare-note out_frequency
+    //            in_velocity           one out_output
+    //    editlist
+    //]
 
 voice-snare
-
-
 
 synth_file_reader
 sfr3
@@ -137,14 +135,6 @@ sfr3
 
 autogroup_add
 voice-cow
-
-    // data objects (ie not modules) such as the input editor are not
-    // actually grouped, however, when they are situated inside an
-    // autogroup section, they use the group "namespace".  this means
-    // the output modules specified for inputs are firstly assumed to
-    // be modules in the group. if no such module exists with the group
-    // only then is the module for the connection looked for outside of
-    // the group.
 
     switcher
     cowfreq
@@ -156,14 +146,14 @@ voice-cow
         signals
     cowfreq
 
-    input_editor
-    ie3
+    editor
+    [
         editlist
-            connect enter in_note_on_trig       cow-pat out_trig
-            connect enter in_frequency          cowfreq out_output
-            connect enter in_velocity           one out_output
+            edit enter in_note_on_trig       cow-pat out_trig
+            edit enter in_frequency          cowfreq out_output
+            edit enter in_velocity           one out_output
         editlist
-    ie3
+    ]
 
 voice-cow
 

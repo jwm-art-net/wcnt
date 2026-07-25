@@ -25,8 +25,6 @@ char* get_groupname(const char* const name)
     return 0;
 }
 
-#include <iostream>
-
 char* set_groupname(const char* const groupname, const char* const name)
 {
     D_BUG("groupname %s name %s\n", groupname, name);
@@ -58,3 +56,7 @@ char* set_groupname(const char* const groupname, const char* const name)
     return newname;
 }
 
+bool has_groupname(const char* const name)
+{
+    return strchr(name, '.') != 0;
+}

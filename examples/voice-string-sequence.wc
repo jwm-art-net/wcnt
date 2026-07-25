@@ -273,7 +273,7 @@ wfo
 wcnt_exit
 exit
     in_bar      tm out_bar
-    exit_bar    44
+    exit_bar    1
 exit
 
 
