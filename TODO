@@ -9,20 +9,23 @@ TODO BEFORE RELEASE
       clock modules - it probably does not work as people expect!
 
 TODO NEW FEATURES FOR A FUTURE RELEASE (not next release)
+    * allow user to specify relative note positions in riff_data
+      by use of + symbol before position value.
 
-    * DEBUG the new editor and ui_item* workings. The example file
-      voice-per-sequenced.wc fails if the input_editor in the
-      voice-snare autogroup section is replaced with the editor
+    **DEBUG** the new EDITOR and UI_ITEM* workings. I seem to have fixed
+      the earlier problem where it would always refuse to set an
+      input from a multiple choice group within a specific instance of
+      a module. My confidence isn't high that it's actually fixed yet,
+      BECAUSE if you use -v on the commandline, on a file which
+      previously had this problem, it completely suppresses the
+      progress bar. A likely cause from internet search suggests a null
+      string has likely been sent to std::cout and set it's error bit,
+      which causes output suppression.
 
     * the whole header situation is a bit of a mess. I think the only
       place sample rate should be set within the file processed from
       the command line. Sample rate set in any included files will be
       verbosely ignored.
-
-    * data object new virtual "action" method - input/param editor have
-      type specific action methods causing synth_file_reader to make
-      special cases for them. other data objects misuse the validate()
-      method.
 
     * functionality to delete modules and rename modules
 

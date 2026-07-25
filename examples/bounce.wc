@@ -6,7 +6,7 @@ timer
 t
     timings
         time seconds 0
-        time seconds 180
+        time seconds 33
     timings
     time_is_relative off
 t
@@ -48,6 +48,8 @@ group1
         in_note_slide_trig off
         in_frequency cf out_frequency
         octave_offset -1
+        in_freq_mod1 off // input will be set once duplicates made
+        freq_mod1_size  2.5
     osc
 
     wave
@@ -96,67 +98,51 @@ group1
 group1
 
 
-copier [ from group1 to group2 count 11 ]
+// note: new parameter 'count' so the copier is no longer limited
+// to a single copy but can create up to 50 at a time.
 
-param_editor
+copier [ from group1 to group2 count 10 ]
+
+
+editor
 [
     editlist
-        edit group2.tik freq 1.11
-        edit group2.cf freq 220
-        edit group3.tik freq 1.22
-        edit group3.cf freq 330
-        edit group4.tik freq 1.33
-        edit group4.cf freq 440
-        edit group5.tik freq 1.44
-        edit group5.cf freq 550
-        edit group6.tik freq 1.55
-        edit group6.cf freq 660
-        edit group7.tik freq 1.66
-        edit group7.cf freq 770
-        edit group8.tik freq 1.77
-        edit group8.cf freq 880
-        edit group9.tik freq 1.88
-        edit group9.cf freq 990
-        edit group10.tik freq 1.99
-        edit group10.cf freq 1000
-        edit group11.tik freq 2.0
-        edit group11.cf freq 1110
+        edit group2.tik freq 1.11   edit group2.cf  freq 220
+        edit group3.tik freq 1.22   edit group3.cf  freq 330
+        edit group4.tik freq 1.33   edit group4.cf  freq 440
+        edit group5.tik freq 1.44   edit group5.cf  freq 550
+        edit group6.tik freq 1.55   edit group6.cf  freq 660
+        edit group7.tik freq 1.66   edit group7.cf  freq 770
+        edit group8.tik freq 1.77   edit group8.cf  freq 880
+        edit group9.tik freq 1.88   edit group9.cf  freq 990
+        edit group10.tik freq 1.99  edit group10.cf freq 1000
+        edit group11.tik freq 2.0   edit group11.cf freq 1110
+
+        edit group1.osc
+            in_freq_mod1    group2.m out_output
+        edit group2.osc
+            in_freq_mod1    group3.m out_output
+        edit group3.osc
+            in_freq_mod1    group4.m out_output
+        edit group4.osc
+            in_freq_mod1    group5.m out_output
+        edit group5.osc
+            in_freq_mod1    group6.m out_output
+        edit group6.osc
+            in_freq_mod1    group7.m out_output
+        edit group7.osc
+            in_freq_mod1    group8.m out_output
+        edit group8.osc
+            in_freq_mod1    group9.m out_output
+        edit group9.osc
+            in_freq_mod1    group10.m out_output
+        edit group10.osc
+            in_freq_mod1    group11.m out_output
+        edit group11.osc
+            in_freq_mod1    group1.m out_output
     editlist
 ]
 
-input_editor
-[
-    editlist
-        connect group1.osc in_freq_mod1 group2.m out_output
-        connect group2.osc in_freq_mod1 group3.m out_output
-        connect group3.osc in_freq_mod1 group4.m out_output
-        connect group4.osc in_freq_mod1 group5.m out_output
-        connect group5.osc in_freq_mod1 group6.m out_output
-        connect group6.osc in_freq_mod1 group7.m out_output
-        connect group7.osc in_freq_mod1 group8.m out_output
-        connect group8.osc in_freq_mod1 group9.m out_output
-        connect group9.osc in_freq_mod1 group10.m out_output
-        connect group10.osc in_freq_mod1 group11.m out_output
-        connect group11.osc in_freq_mod1 group1.m out_output
-    editlist
-]
-
-param_editor
-[
-    editlist
-        edit group1.osc freq_mod1_size 2.5
-        edit group2.osc freq_mod1_size 2.5
-        edit group3.osc freq_mod1_size 2.5
-        edit group4.osc freq_mod1_size 2.5
-        edit group5.osc freq_mod1_size 2.5
-        edit group6.osc freq_mod1_size 2.5
-        edit group7.osc freq_mod1_size 2.5
-        edit group8.osc freq_mod1_size 2.5
-        edit group9.osc freq_mod1_size 2.5
-        edit group10.osc freq_mod1_size 2.5
-        edit group11.osc freq_mod1_size 2.5
-    editlist
-]
 
 combiner
 cl

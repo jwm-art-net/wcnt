@@ -107,7 +107,7 @@ lt1
 lt1
 
 inspector
-i1
+[
     _in_float_       m1 out_output
     _in_float_trig_  c1 out_phase_trig
     _in_int_          t out_count
@@ -123,7 +123,7 @@ i1
     _sample_msg_      --------processed_samples:
     _state_msg_         (((((_adsr1_is:
     _string_msg_        ----------constant_note_n1_out_notename_is:
-i1
+]
 
 wcnt_exit
 x

@@ -3,7 +3,7 @@
 #include <iostream>
 
 inspect::inspect(const char* uname) :
- synthmod::base(synthmod::INSPECT, uname, SM_DEFAULT),
+ synthmod::base(synthmod::INSPECT, uname, SM_ALLOW_NAMELESS),
  in_df(0),  in_df_trig(0),
  in_si(0),  in_si_trig(0),
  in_ul(0),  in_ul_trig(0),

@@ -4,16 +4,18 @@
 
 wcnt_exit::wcnt_exit(const char* uname) :
 
- synthmod::base(synthmod::WCNTEXIT, uname, SM_EMPTY_RUN | SM_UNGROUPABLE
-                                                | SM_UNDUPLICABLE),
+ synthmod::base(synthmod::WCNTEXIT, uname,
+                SM_EMPTY_RUN | SM_UNGROUPABLE | SM_UNDUPLICABLE | SM_ALLOW_NAMELESS),
  in_bar(0), exit_bar(0)
 {
 }
 
 void wcnt_exit::register_ui()
 {
-    register_input(input::IN_BAR);
-    register_param(param::EXIT_BAR);
+    register_input(input::IN_TRIG)->set_flags(ui::UI_OPTION1);
+    register_input(input::IN_BAR)->set_flags(ui::UI_OPTION2);
+    register_param(param::EXIT_BAR)->set_flags(ui::UI_OPTION2);
+    register_input(input::IN_TRIG)->set_flags(ui::UI_OPTION2 | ui::UI_OPT_DUMMY);
 }
 
 ui::moditem_list* wcnt_exit::get_ui_items()
@@ -28,12 +30,22 @@ wcnt_exit::~wcnt_exit()
 
 const void* wcnt_exit::set_in(input::TYPE it, const void* o)
 {
-    return (it == input::IN_BAR ? (in_bar = (wcint_t*)o) : 0);
+    switch(it)
+    {
+        case input::IN_BAR: return in_bar = (wcint_t*)o;
+        case input::IN_TRIG:return in_trig = (STATUS*)o;
+        default:            return 0;
+    }
 }
 
 const void* wcnt_exit::get_in(input::TYPE it) const
 {
-    return (it == input::IN_BAR ? in_bar : 0);
+    switch(it)
+    {
+        case input::IN_BAR:  return &in_bar;
+        case input::IN_TRIG: return &in_trig;
+        default: return 0;
+    }
 }
 
 bool wcnt_exit::set_param(param::TYPE pt, const void* data)
@@ -61,19 +73,23 @@ errors::TYPE wcnt_exit::validate()
     if (!validate_param(param::EXIT_BAR, errors::RANGE_COUNT))
         return errors::RANGE_COUNT;
 
-    connector* con = wcnt::get_connectlist()
+    connector* in_bar_con = wcnt::get_connectlist()
                    ->get_connector_by_input(this, input::IN_BAR);
 
+    connector* in_trig_con = wcnt::get_connectlist()
+                   ->get_connector_by_input(this, input::IN_TRIG);
+
+
     #ifdef DEBUG
-    if (!con) {
-        sm_err("%s no connector found for input '%s'.",
+    if (!in_bar_con && !in_trig_con) {
+        sm_err("%s no connectors found!",
                 errors::stock::major, input::names::get(input::IN_BAR));
         invalidate();
         return errors::ERROR;
     }
     #endif
 
-    if (strcmp(con->get_output_module_name(), "off") == 0 && exit_bar != 0)
+    if (in_bar_con && strcmp(in_bar_con->get_output_module_name(), "off") == 0 && exit_bar != 0)
     {
         sm_err("Input %s is turned off, and parameter %s is not zero. "
                            "wcnt would never exit if allowed to run!",
@@ -82,6 +98,14 @@ errors::TYPE wcnt_exit::validate()
         invalidate();
         return errors::ERROR;
     }
+    else if (in_trig_con && strcmp(in_trig_con->get_output_module_name(), "off") == 0)
+    {
+        sm_err("Input %s is turned off wcnt would never exit if allowed to run!",
+                input::names::get(input::IN_BAR));
+        invalidate();
+        return errors::ERROR;
+    }
+
     return errors::NO_ERROR;
 }
 
@@ -89,4 +113,5 @@ void wcnt_exit::init()
 {
     wcnt::jwm.x_exit_bar = exit_bar;
     wcnt::jwm.x_in_bar = in_bar;
+    wcnt::jwm.x_in_trig = in_trig;
 }

@@ -9,7 +9,7 @@
 
 copier::copier() :
  dobj::base(dobj::DEF_COPIER),
- from_name(0), to_name(0), count(1),
+ from_name(0), to_name(0), suffix(0), count(1),
  from_mod(0), to_mod(0),
  from_dobj(0), to_dobj(0)
 {
@@ -21,6 +21,7 @@ void copier::register_ui()
     register_param(param::COPYFROM);
     register_param(param::COPYTO);
     register_param(param::COUNT)->set_flags(ui::UI_OPTIONAL);
+    register_param(param::SUFFIX)->set_flags(ui::UI_OPTIONAL);
 }
 
 ui::dobjitem_list* copier::get_ui_items()
@@ -140,15 +141,25 @@ errors::TYPE copier::validate()
     std::string copyname = to_name;
     D_BUG("count: %d\n", count);
     int ix = 0;
+    int lz = 0;
     if (count > 1) { // try to determine number at end of to_name.
-        int c, l = strlen(to_name);
+        int c = 0;
+        int l = strlen(to_name);
         ix = l;
         do {
+            // the check for potential leading zeros needs to be done before
+            // updating to the next character and potentially exiting loop.
+            if (c == '0')
+                lz++;
+            else
+                lz = 0;
             ix--;
             c = to_name[ix];
             D_BUG("c:'%c' ", c);
         } while (c >= '0' && c <= '9' && ix > 0);
         if (ix + 1 < l) {
+            if (lz) // leading zeros detected... change to total digits.
+                lz = strlen(to_name + ix + 1);
             start_no = std::stoi(to_name + ix + 1);
             D_BUG(" start_no: %d\n", start_no);
         }
@@ -156,7 +167,10 @@ errors::TYPE copier::validate()
     for (int i = 0; i < count; i++) {
         if (count > 1 && i > 0) {
             to_name[ix + 1] = '\0';
-            copyname = to_name + std::to_string(start_no + i);
+            std::string numstr = std::to_string(start_no + i);
+            // add leading zeros if required
+            numstr.insert(0, lz - std::min(std::string::size_type(lz), numstr.length()), '0');
+            copyname = to_name + numstr;
         }
         if (from_mod) {
             if (!(to_mod = from_mod->duplicate_module(copyname.c_str(),

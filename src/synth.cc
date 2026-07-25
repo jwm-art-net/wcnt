@@ -118,6 +118,7 @@ namespace wcnt
     }
     const wcint_t* bar = wcnt::jwm.exit_in_bar();
     wcint_t exit_bar = wcnt::jwm.exit_bar();
+    STATUS* exit_trig = wcnt::jwm.exit_in_trig();
     // unlink any constant modules from list as it's pointless
     // calling run() on them...
     if (wcnt::jwm.is_verbose())
@@ -132,8 +133,14 @@ namespace wcnt
     std::cout << "samplerate: " << wcnt::jwm.samplerate() << std::endl;
 
     if (wcnt::jwm.is_no_progress()) {
-        while (*bar < exit_bar && *force_abort == OFF)
+        while (*force_abort == OFF)
         {
+            if (exit_trig) {
+                if (*exit_trig == ON)
+                    break;
+            }
+            else if (*bar < exit_bar)
+                break;
             int count = 0;
             synthmod::base* sm = runlist[count];
             while(sm) {
@@ -154,8 +161,14 @@ namespace wcnt
         std::cout << "Running synth (one '" << bigcount
                   << "' per second done)" << std::endl;
 
-        while (*bar < exit_bar && *force_abort == OFF)
+        while (*force_abort == OFF)
         {
+            if (exit_trig) {
+                if (*exit_trig == ON)
+                    break;
+            }
+            else if (*bar < exit_bar)
+                break;
             int count = 0;
             synthmod::base* sm = runlist[count];
             while(sm) {

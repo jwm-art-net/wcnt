@@ -14,7 +14,15 @@ NEW FEATURES
       input_editor data objects by unifying their functionality into a
       single unit.
 
+    * nameless modules now, as well as data objects. only applies to
+      the wcnt_exit and inspector modules as these are the only modules
+      which lack outputs.
+
 CHANGES:
+   * wcnt_exit has a new trigger input, in_trig, which when triggered
+     will cause wcnt to exit. Currently it's either/or with the existing
+     method, can't use both simultaneously.
+
    * pattern_trig now has an out_not_trig for when the pattern means the
      input trigger doesn't output to the out_trig
 
@@ -49,6 +57,8 @@ CHANGES:
       with pulse width modulation.
 
 FIXES:
+    * copier now honours leading zeros when applying sequential
+      numbering to multiple copies
     * When a group was created in one stage, and then in a second stage
       more modules were added to it, connections to inputs from modules
       in the first stage, to outputs from modules in the second stage,

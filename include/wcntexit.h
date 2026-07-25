@@ -7,20 +7,20 @@
 wcnt_exit
 
 this module is purely in existance for jwmsynth::execute() to
-grab a out_bar from a single instance of the time_map synthmod 
+grab a out_bar from a single instance of the time_map synthmod
 class, and to know which bar to stop at.
 
-it does not serve any other purpose, which is why it does 
+it does not serve any other purpose, which is why it does
 absolutely nothing.
 
 because: some wierdo might create more than one time_map module
 in their wcnt file, that same wierdo must also specify which one
-to use.  
+to use.
 
-Discounted option: unless of course, jwmsynth searched through the 
-module list for time_map modules, and somehow worked out which one 
+Discounted option: unless of course, jwmsynth searched through the
+module list for time_map modules, and somehow worked out which one
 would cause the longest execution. then of course it may be running
-longer than necessary.  I'd rather leave the responsibility on the 
+longer than necessary.  I'd rather leave the responsibility on the
 user to decide.
 
 Talking shite as usual are n't you james, eh?  You did not do either
@@ -48,6 +48,7 @@ public:
 private:
     // inputs
     const wcint_t* in_bar;
+    STATUS* in_trig;
     // no outputs
     // params
     wcint_t exit_bar;

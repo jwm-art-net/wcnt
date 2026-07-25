@@ -203,7 +203,8 @@ namespace param
     { CONNECT,          "connect",              iocat::STRING,  "Name of module for connecting the outputs of with the input group which follows." ,0 },
     { OUTPUT,           "output",               iocat::STRING,  "name of specific output when default does not work.", 0 },
     { BALANCE,          "balance",              iocat::DOUBLE,  "Balance of left & right signals. -1 all left no right, 0 both left and right, +1, all right no left.", 0 },
-    { BPM_CHANGES_REL,  "bpm_changes_relative", iocat::STATE,   "whether bpm changes are relative (on) or absolute values (off)", 0 }
+    { BPM_CHANGES_REL,  "bpm_changes_relative", iocat::STATE,   "whether bpm changes are relative (on) or absolute values (off)", 0 },
+    { SUFFIX,           "suffix",               iocat::STRING,  "optional text suffix to add after numbering", 0}
 
  };
 }; // namespace param

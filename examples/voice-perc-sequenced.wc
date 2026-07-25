@@ -105,33 +105,22 @@ sfr2
 autogroup_add
 voice-snare
 
-    input_editor
+    editor
     [
         editlist
-            connect enter
+            edit enter
                 in_note_on_trig       snare-pat out_trig
                 in_frequency          snare-note out_frequency
                 in_velocity           one out_output
         editlist
     ]
 
-    // uncommenting this will cause wcnt to mysteriously fail
-    //editor
-    //[
-    //    editlist
-    //        edit enter
-    //            in_note_on_trig       snare-pat out_trig
-    //            in_frequency          snare-note out_frequency
-    //            in_velocity           one out_output
-    //    editlist
-    //]
-
 voice-snare
 
 synth_file_reader
-sfr3
+[
     filename voice-cow.wch
-sfr3
+]
 
 autogroup_add
 voice-cow

@@ -36,14 +36,15 @@ namespace synthmod
     enum SM_FLAGS
     {
         SM_DEFAULT,
-        SM_VALID =              0x01000000,
-        SM_EMPTY_RUN =          0x02000000,
-        SM_UNGROUPABLE =        0x04000000,
-        SM_UNDUPLICABLE =       0x08000000,
-        SM_HAS_OUT_OUTPUT =     0x10000000,
-        SM_HAS_STEREO_OUTPUT =  0x20000000,
-        SM_HAS_OUT_TRIG =       0x40000000,
-        SM_PASSTHROUGH =        0x80000000
+        SM_VALID =              0x00010000,
+        SM_EMPTY_RUN =          0x00020000,
+        SM_UNGROUPABLE =        0x00040000,
+        SM_UNDUPLICABLE =       0x00080000,
+        SM_HAS_OUT_OUTPUT =     0x00100000,
+        SM_HAS_STEREO_OUTPUT =  0x00200000,
+        SM_HAS_OUT_TRIG =       0x00400000,
+        SM_PASSTHROUGH =        0x00800000,
+        SM_ALLOW_NAMELESS =     0x01000000
     };
 
     base(TYPE, const char* const uname, int _flags_);

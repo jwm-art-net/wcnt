@@ -206,6 +206,7 @@ namespace param
     OUTPUT,
     BALANCE,
     BPM_CHANGES_REL,
+    SUFFIX,
     LAST_TYPE
  };
 

@@ -25,7 +25,7 @@ DEFS=-O2 -fomit-frame-pointer -DWITH_LADSPA
 # SANITY_CHECKS = Some sort of half assed check for program sanity.
 #                 - NOTE: SANITY_CHECKS DOES NOT COMPILE DUE TO INCMPATIBILTY
 
-DEFS=-ggdb -fno-inline -DWITH_LADSPA -DDEBUG_UIITEM #-DDEBUG
+DEFS=-ggdb -fno-inline -DWITH_LADSPA #-DDEBUG_UIITEM #-DDEBUG
 
 # nothing to be modified further:
 PROG=wcnt

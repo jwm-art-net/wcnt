@@ -181,13 +181,7 @@ grp1
 grp1
 
 
-copier c1 from grp1 to grp2 c1
-copier c2 from grp1 to grp3 c2
-copier c3 from grp1 to grp4 c3
-copier c4 from grp1 to grp5 c4
-copier c5 from grp1 to grp6 c5
-copier c6 from grp1 to grp7 c6
-copier c7 from grp1 to grp8 c7
+copier [ from grp1 to grp2 count 7 ]
 
 copier c0b from grp1 to grp1b c0b
 copier c1b from grp1 to grp2b c1b
@@ -390,7 +384,7 @@ amp1
 // write amplified signal to wav file
 
 wavfile_out
-wav1
+wav
     in_left     amp1 out_left
     in_right    amp1 out_right
     in_bar t1   out_count
@@ -399,15 +393,12 @@ wav1
     filename    squelchy.wav
     start_bar   0
     end_bar     1
-wav1
+wav
 
 // when to stop
 
-wcnt_exit
-wcnt_exit_module
-    in_bar      t1 out_count
-    exit_bar    1
-wcnt_exit_module
+wcnt_exit a in_trig wav out_write_end_trig a
+wcnt_exit b in_trig wav out_write_end_trig b
 
 wcnt-1.32/jwmsynth
 

@@ -64,16 +64,16 @@ voice-string
     // only then is the module for the connection looked for outside of
     // the group.
 
-    input_editor
-    ie1
+    editor
+    [
         editlist
-            connect enter in_note_on_trig    seq1 out_note_on_trig
-            connect enter in_note_slide_trig seq1 out_note_slide_trig
-            connect enter in_note_off_trig   seq1 out_note_off_trig
-            connect enter in_frequency       seq1 out_frequency
-            connect enter in_velocity        seq1 out_velocity
+            edit enter in_note_on_trig    seq1 out_note_on_trig
+            edit enter in_note_slide_trig seq1 out_note_slide_trig
+            edit enter in_note_off_trig   seq1 out_note_off_trig
+            edit enter in_frequency       seq1 out_frequency
+            edit enter in_velocity        seq1 out_velocity
         editlist
-    ie1
+    ]
 
     stereo_amp
     stout
@@ -92,13 +92,10 @@ voice-string
 
 voice-string
 
-copier c1 from voice-string to voice-string2 c1
-copier c2 from voice-string to voice-string3 c2
-copier c3 from voice-string to voice-string4 c3
-copier c4 from voice-string to voice-string5 c4
+copier [ from voice-string to voice-string2 count 4 ]
 
-param_editor
-pe1
+editor
+[
     editlist
         edit voice-string2.detune_multiplier value 0.98
         edit voice-string3.detune_multiplier value 0.99
@@ -115,7 +112,7 @@ pe1
         edit voice-string4.pan pan  0.5
         edit voice-string5.pan pan -0.5
     editlist
-pe1
+]
 
 mixer
 out1
@@ -173,21 +170,21 @@ seq2
 seq2
 
 
-copier cc1 from voice-string to voice2-string1 cc1
+copier [ from voice-string to voice2-string1 ]
 
 autogroup_add
 voice2-string1
 
-    input_editor
-    ie2
+    editor
+    [
         editlist
-            connect enter in_note_on_trig    seq2 out_note_on_trig
-            connect enter in_note_slide_trig seq2 out_note_slide_trig
-            connect enter in_note_off_trig   seq2 out_note_off_trig
-            connect enter in_frequency       seq2 out_frequency
-            connect enter in_velocity        seq2 out_velocity
+            edit enter in_note_on_trig    seq2 out_note_on_trig
+            edit enter in_note_slide_trig seq2 out_note_slide_trig
+            edit enter in_note_off_trig   seq2 out_note_off_trig
+            edit enter in_frequency       seq2 out_frequency
+            edit enter in_velocity        seq2 out_velocity
         editlist
-    ie2
+    ]
 
     adsr_scaler
     egsc2
@@ -199,13 +196,10 @@ voice2-string1
 
 voice2-string1
 
-copier cc2 from voice2-string1 to voice2-string2 cc2
-copier cc3 from voice2-string1 to voice2-string3 cc3
-copier cc4 from voice2-string1 to voice2-string4 cc4
-copier cc5 from voice2-string1 to voice2-string5 cc5
+copier [ from voice2-string1 to voice2-string2 count 4 ]
 
-param_editor
-pe2
+editor
+[
     editlist
         edit voice2-string2.detune_multiplier value 0.98
         edit voice2-string3.detune_multiplier value 0.99
@@ -222,7 +216,7 @@ pe2
         edit voice2-string4.pan pan  0.9
         edit voice2-string5.pan pan -0.9
     editlist
-pe2
+]
 
 mixer
 out2
@@ -273,7 +267,7 @@ wfo
 wcnt_exit
 exit
     in_bar      tm out_bar
-    exit_bar    1
+    exit_bar    44
 exit
 
 

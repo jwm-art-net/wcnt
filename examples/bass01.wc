@@ -184,46 +184,34 @@ sh1
     decay_time  25
 sh1
 
-input_editor
+editor
 [
     editlist
-        connect con2
-            in_signal           adsr1   out_output
+        edit con2
+            in_signal   adsr1   out_output
+            power_max   6.0
 
-        connect adsr2
+        edit adsr2
             in_note_on_trig     clock2  out_phase_trig
             in_note_off_trig    off
+            sustain_state       off
 
-        connect sine2
+        edit sine2
             in_phase_step       osc2    out_phase_step
 
-        connect sine3
+        edit sine3
             in_phase_step       clock3  out_phase_step
 
-        connect osc2
+        edit osc2
             in_freq_mod1        sh1     out_output
+            octave_offset   -1
+            freq_mod1_size  2.0
 
-    editlist
-]
-
-param_editor
-[
-    editlist
         edit clock2
             freq            1.75
 
         edit clock3
             freq            8.076
-
-        edit con2
-            power_max       6.0
-
-        edit adsr2
-            sustain_state   off
-
-        edit osc2
-            octave_offset   -1
-            freq_mod1_size  2.0
 
     editlist
 ]
@@ -293,10 +281,9 @@ wav1
 // setup how long to process:
 
 wcnt_exit
-wcnt_exit_module
-    in_bar  time1   out_bar
-    exit_bar    16
-wcnt_exit_module
+[
+    in_trig     wav1    out_write_end_trig
+]
 
 //------------------------------------------------------------------------
 // End Of File _jwm 2005.

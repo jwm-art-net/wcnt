@@ -10,9 +10,6 @@ wcnt-1.32/jwmsynth
 
 header header.wch
 
-; start of time.wch defintions:
-
-; constant one:
 constant one value 1.0 one
 
 //------------------------------------------------------------------------
@@ -21,7 +18,6 @@ constant one value 1.0 one
 // sequencer which will not work without it. that the time_map
 // can alter the time signature and tempo is just a bonus.
 
-; time1:
 time_map
 time1
     meter_map
@@ -32,8 +28,6 @@ time1
         tempo bpm 130 bar 0
     bpm_map
 time1
-
-; end of time.wch bye!
 
 //------------------------------------------------------------------------
 // End Of File _jwm 2005.

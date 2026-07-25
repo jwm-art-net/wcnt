@@ -29,27 +29,27 @@ lfo1
 
 copier [ from lfo1 to lfo2 count 2 ]
 
-param_editor
+editor
 [
     editlist
-        edit lfo1.c freq_mod1_size 2.0
-        edit lfo2.c freq 0.144
-        edit lfo2.w
-            recycle_mode on
-            on_trig_reset_phase off
-        edit lfo3.c freq 0.02385213
-        edit lfo3.w
-            recycle_mode on
-            on_trig_reset_phase off
-    editlist
-]
+        edit lfo1.c
+            in_freq_mod1 lfo2.w out_output
+            freq_mod1_size 2.0
 
-input_editor
-[
-    editlist
-        connect lfo1.c in_freq_mod1 lfo2.w out_output
-        connect lfo2.w in_phase_trig t1 out_trig
-        connect lfo3.w in_phase_trig t1 out_trig
+        edit lfo2.c
+            freq 0.144
+
+        edit lfo2.w
+            in_phase_trig t1 out_trig
+            on_trig_reset_phase off
+            recycle_mode on
+
+        edit lfo3.c freq 0.02385213
+
+        edit lfo3.w
+            in_phase_trig t1 out_trig
+            on_trig_reset_phase off
+            recycle_mode on
     editlist
 ]
 
@@ -61,7 +61,7 @@ f1
 
 copier [ from f1 to f2 count 4 ]
 
-param_editor
+editor
 [
     editlist
         edit f1.f freq 100.0
@@ -71,9 +71,6 @@ param_editor
         edit f5.f freq 300.0
     editlist
 ]
-
-
-
 
 clock
 swc

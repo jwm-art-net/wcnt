@@ -21,6 +21,45 @@ string in_note_on_trig to any ui item in wcnt_note - which has exactly
 that input.
 
 
+So it seems some in_note_on_trig inputs can be set in the editor,
+but others cannot. I had thought it might be related to order of
+where in the editor the change ocurred, but appears not to be.
+
+*********************************************
+*** Can in_note_on_trig be set in editor? ***
+*********************************************
+bass01.wc:
+adsr        - no (nor in_note_off_trig, nor in_velocity)
+osc_clock   - yes
+
+commonality - connect parameter ui option1 + inputs ui opt 2 dup
+difference - adsr has ui optional flag on in_note_off_trig and
+in_velocity - test in_velocity.
+
+okay, so it is use of the connect parameter that is tripping the editor
+up. why is it tripping the editor up? is it the mixing of inputs and
+parameters by the editor, where before they were handle in the two
+seperate input/param editors?
+
+I'm not sure. Maybe the logic in the ui_item_list is wrong, most likely.
+
+
+
+
+
+
+xxx: THIS IS WRONG, IT DOES USE THE UI_ITEM_LIST!
+xxx: the input editor works because it doesn't use the ui_item_list, it
+xxx: bypasses that mechanism completely, it simply checks that the name of
+xxx: the output is valid and leaves the rest to be handled when connections
+xxx: are set just after the all modules are finished being created.
+
+
+
+
+
+
+
 Make a single 'editor' to replace both param_editor and input_editor
 ====================================================================
 

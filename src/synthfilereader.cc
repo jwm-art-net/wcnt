@@ -40,6 +40,7 @@ synthfilereader::synthfilereader() :
     modnamelist = new  linked_list<modnamedobj>;
     dobjnamelist = new linked_list<dobjnamedobj>;
     wc_err_msg[0] = '\0';
+    set_flags(DO_ALLOW_NAMELESS);
 }
 
 synthfilereader::synthfilereader(WC_FILE_TYPE ft) :
@@ -56,6 +57,7 @@ synthfilereader::synthfilereader(WC_FILE_TYPE ft) :
     modnamelist = new  linked_list<modnamedobj>;
     dobjnamelist = new linked_list<dobjnamedobj>;
     wc_err_msg[0] = '\0';
+    set_flags(DO_ALLOW_NAMELESS);
 }
 
 
@@ -398,41 +400,6 @@ bool synthfilereader::read_and_create_dobj(const char* com)
                 wc_err("%s", dobj::base::get_error_msg());
             return false;
         }
-        /*
-        switch(dbj->get_object_type())
-        {
-            default:
-            // nothing done by default
-                break;
-            case dobj::DEF_WCFILE:
-            {
-                synthfilereader* wcf = static_cast<synthfilereader*>(dbj);
-                if (!(wcf->read_and_create())) { // ooooh
-                    wc_err("%s", wcf->get_wc_error_msg());
-                    return false;
-                }
-                break;
-            }
-            case dobj::DEF_PARAMEDITOR:
-            {
-                parameditor* pe = static_cast<parameditor*>(dbj);
-                if (!pe->do_param_edits()) {
-                    wc_err("%s", dobj::base::get_error_msg());
-                    return false;
-                }
-                break;
-            }
-            case dobj::DEF_INPUTEDITOR:
-            {
-                inputeditor* ie = static_cast<inputeditor*>(dbj);
-                if (!ie->create_connectors()) {
-                    wc_err("%s", dobj::base::get_error_msg());
-                    return false;
-                }
-                break;
-            }
-        }
-        */
 
         if (dbj->get_object_type() == dobj::DEF_WCFILE)
             cout << "    (back in " << wc_filename << ")" << endl;
@@ -499,7 +466,17 @@ synthmod::base* synthfilereader::read_synthmodule(const char* com)
     }
 
     string modname;
+    bool nameless = false;
     *synthfile >> modname;
+
+    if (strcmp(modname.c_str(), "[") == 0) {
+        // nameless module handling
+        char* n = nameless_name();
+        modname = n;
+        delete [] n;
+        nameless = true;
+    }
+
     if (wcnt::name_is_reserved_word(modname.c_str())) {
         wc_err("Cannot use reserved word %s to name %s module.",
                modname.c_str(), com);
@@ -554,6 +531,13 @@ synthmod::base* synthfilereader::read_synthmodule(const char* com)
     // use the non grouped name for module creation, because...
     synthmod::base* sm = synthmod::list::create_module(smt, nongroupname.c_str());
 
+    if (nameless && !sm->flag(synthmod::base::SM_ALLOW_NAMELESS)) {
+        wc_err("Module of type %s is not allowed to be nameless.",
+               modname.c_str(), synthmod::names::get(smt));
+        delete sm;
+        return 0;
+    }
+
     // read_ui_moditems cannot handle autogrouping...
     // ...because in the file itself the module has the non-grouped name
     if (!read_ui_moditems(sm)) {
@@ -564,10 +548,10 @@ synthmod::base* synthfilereader::read_synthmodule(const char* com)
 
     // and pretend auto grouping doesn't exist here also!
     com = read_command();
-    if (strcmp(com, nongroupname.c_str()) != 0) {
-        wc_err("In module %s expected definition termination %s, "
-               "got %s instead.",
-               sm->get_username(), nongroupname.c_str(), com);
+    if (strcmp(com, (nameless ? "]" : nongroupname.c_str())) != 0) {
+        wc_err("In module %s type %s expected definition termination %s, got %s instead.",
+               (nameless ? "[nameless]" : sm->get_username()),
+               synthmod::names::get(smt), (nameless ? "]" : nongroupname.c_str()), com);
         delete sm;
         return 0;
     }
@@ -619,9 +603,8 @@ dobj::base* synthfilereader::read_dobj(const char* com)
         return 0;
     }
     string dobjname;
-    *synthfile >> dobjname;
-
     bool nameless = false;
+    *synthfile >> dobjname;
 
     if (strcmp(dobjname.c_str(), "[") == 0) {
         // nameless data object handling

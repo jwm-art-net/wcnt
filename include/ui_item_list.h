@@ -81,7 +81,8 @@ namespace ui
     }
 
     void     match_begin(T t, const char* username) {
-        def_username = username;
+        // if this is nameless, then treat username appropriately:
+        def_username = (username[0] == ' ' ? "]" : username);
         match_begin_proper(t);
     }
 
@@ -338,6 +339,9 @@ namespace ui
     if (!item)
         return 0;
 
+    D_UIITEM("next_item(): \n");
+
+
     track.choice_ended = false;
     track.group_ended = false;
     choice.head = choice.opt0 = 0;
@@ -459,7 +463,8 @@ namespace ui
  {
     #ifdef DEBUG_UIITEM
     int n = 0;
-    D_UIITEM("------ match_begin()\n");
+    D_UIITEM("\n-------------------------------------------------------------------\n");
+    D_UIITEM("------ match_begin_proper()\n");
     #endif
 
     editing = false;
@@ -501,6 +506,12 @@ namespace ui
         return 0;
 
     D_UIITEM("match_item(%s)\n", str);
+
+    #ifdef DEBUG_UIITEM
+    D_UIITEM("\n-------------------------------------------------------------------\n");
+    D_UIITEM("match_item(str:'%s', 1st item: '%s')\n", str, item->get_name());
+    D_UIITEM("-------------------- choice.head llitem: %p\n", choice.head);
+    #endif
 
     base<T>* failchoice = 0;
 
@@ -641,7 +652,8 @@ restart:
     str = buf;
 
     #ifdef DEBUG_UIITEM
-    D_UIITEM("match_item_choice(str:'%s', item: '%s')\n", str, item->get_name());
+    D_UIITEM("\n-------------------------------------------------------------------\n");
+    D_UIITEM("match_item_CHOICE(str:'%s', 1st item: '%s')\n", str, item->get_name());
     D_UIITEM("-------------------- choice.head llitem: %p\n", choice.head);
     #endif
 
@@ -702,7 +714,9 @@ restart:
                                 choice.chosen0 = choice.opt0;
                                 choice.chosen0id = choice.opt0id;
                             }
-                            else if (id != choice.chosen0id) {
+                            else if (!editing && id != choice.chosen0id) {
+                            //else if (id != choice.chosen0id) {
+                                    // FIXME: check adding check for 'editing' does not break this
                                 D_UIITEM("validity failed\n");
                                 match_item_chosen_invalid_error();
                                 return error_item<T>::err();

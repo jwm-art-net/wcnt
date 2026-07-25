@@ -17,95 +17,79 @@ t1
     recycle_mode off
 t1
 
+autogroup_create g01
 
-osc_clock
-orb_clock
-    in_note_on_trig     t1      out_trig
-    in_note_slide_trig  off
-    in_frequency        note1    out_frequency
-    octave_offset       2
-orb_clock
-
-
-orbit
-orbit1
-    in_restart_trig  off
-    in_trig          orb_clock  out_phase_trig
-    orbit_type       threeply
-    a  4.219225
-    b -3.40632
-    c  -0.075850434
-    test_iterations  1000000
-orbit1
+    osc_clock
+    orb_clock
+        in_note_on_trig     t1      out_trig
+        in_note_slide_trig  off
+        in_frequency        note1    out_frequency
+        octave_offset       2
+    orb_clock
 
 
-osc_clock
-osc-l
-    in_note_on_trig     t1  out_trig
-    in_note_slide_trig  off
-    in_frequency        note1   out_frequency
-    in_freq_mod1        orbit1 out_x
-    in_freq_mod2        orbit1 out_y
-    freq_mod1_size      1.25
-    freq_mod2_size      1.125
-osc-l
+    orbit
+    orbit1
+        in_restart_trig  off
+        in_trig          orb_clock  out_phase_trig
+        orbit_type       threeply
+        a  4.219225
+        b -3.40632
+        c  -0.075850434
+        test_iterations  1000000
+    orbit1
 
 
-copier c1 from osc-l to osc-r c1
+    osc_clock
+    osc-l
+        in_note_on_trig     t1  out_trig
+        in_note_slide_trig  off
+        in_frequency        note1   out_frequency
+        in_freq_mod1        orbit1 out_x
+        in_freq_mod2        orbit1 out_y
+        freq_mod1_size      1.25
+        freq_mod2_size      1.125
+    osc-l
 
 
-param_editor
-pe_lr1
-    editlist
-        edit osc-r
-            freq_mod1_size 1.125
-            freq_mod2_size 1.25
-    editlist
-pe_lr1
+    copier [ from osc-l to osc-r ]
 
 
-wave
-sine-l
-    in_phase_step  osc-l out_phase_step
-    type sine
-sine-l
+    param_editor
+    pe_lr1
+        editlist
+            edit osc-r
+                freq_mod1_size 1.125
+                freq_mod2_size 1.25
+        editlist
+    pe_lr1
 
 
-copier c2 from sine-l to sine-r c2
+    wave
+    sine-l
+        in_phase_step  osc-l out_phase_step
+        type sine
+    sine-l
 
 
-input_editor
-ie_lr1
-    editlist
-        connect sine-r
-            in_phase_step   osc-r out_phase_step
-    editlist
-ie_lr1
+    copier [ from sine-l to sine-r ]
 
 
-group g01
-modules
-    synthmod name orb_clock
-    synthmod name orbit1
-    synthmod name osc-l
-    synthmod name osc-r
-    synthmod name sine-l
-    synthmod name sine-r
-modules
+    input_editor
+    ie_lr1
+        editlist
+            connect sine-r
+                in_phase_step   osc-r out_phase_step
+        editlist
+    ie_lr1
 g01
 
 
-copier gc01 from g01 to g02 gc01
-copier gc02 from g01 to g03 gc02
-copier gc03 from g01 to g04 gc03
-copier gc04 from g01 to g05 gc04
-copier gc05 from g01 to g06 gc05
-copier gc06 from g01 to g07 gc06
-copier gc07 from g01 to g08 gc07
+copier [ from g01 to g02 count 7 ]
 
 
-param_editor
-pe1
+editor
+[
     editlist
         edit g01.osc-l octave_offset -1
         edit g02.osc-l octave_offset -1
@@ -166,7 +150,7 @@ pe1
             b + 0.0000008
             c + 0.0000008
     editlist
-pe1
+]
 
 
 combiner
