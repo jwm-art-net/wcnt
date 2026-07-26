@@ -121,7 +121,6 @@ namespace wcnt
     const STATUS* exit_trig = wcnt::jwm.exit_in_trig();
     if (wcnt::jwm.get_modlist()->input_ptr_is_off(exit_trig)) {
         exit_trig = 0;
-        std::cout << "exit trig = 0;\n";
     }
     // unlink any constant modules from list as it's pointless
     // calling run() on them...

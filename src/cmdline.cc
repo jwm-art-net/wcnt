@@ -345,8 +345,6 @@ void cmdline::module_help()
     }
 
     synthmod::base* sm = synthmod::list::create_module(smt, "USERNAME");
-    msg = "\n";
-    msg += synthmod::names::get(smt);
     if (sm == 0) {
         msg += " module has not been fully\nincorporated into the ";
         msg += "wcnt user interface.  Oops! \n Send an email to ";
@@ -354,8 +352,13 @@ void cmdline::module_help()
         msg += " to complain.\n";
         return;
     }
+
+    msg = "\n";
+    msg += synthmod::names::get(smt);
     msg += "\n";
     msg += sm->get_username();
+    if (sm->flag(synthmod::base::SM_ALLOW_NAMELESS))
+        msg += " // or [ for nameless";
 
     const char* descr = synthmod::names::descr(smt);
     if (descr) {
@@ -430,12 +433,8 @@ void cmdline::module_help()
                 }
                 item->get_item_flags(flags, 8);
             }
-            else if ((item->get_option_id() & ui::UI_OPTION_MASK)
-                  && !item->is_ui_opt_duplicate()) {
-                // when not verbose, we only want to show the normal items
-                // like what happened before any of this multiple choice
-                // malarky. skip the items not to be shown by forcing the
-                // default in the switch below...
+            else if (item->get_option_no() > 1 && !item->is_ui_opt_duplicate()) {
+                // without verbose, show only the first option in a choice
                 itemtype = ui::UI_ERROR;
             }
 
@@ -546,6 +545,8 @@ void cmdline::module_help()
     delete outlist;
     msg += "\n";
     msg += sm->get_username();
+    if (sm->flag(synthmod::base::SM_ALLOW_NAMELESS))
+        msg += " // or ] for nameless";
     msg += "\n";
     delete sm;
     return;
@@ -732,6 +733,9 @@ void cmdline::dobj_help()
     msg += dobj::names::get(dt);
     msg += "\nUSERNAME";
 
+    if (dob->is_allow_nameless())
+        msg += " // or [ for nameless";
+
     const char* descr = dobj::names::descr(dt);
     if (descr) {
         msg += "\n// ";
@@ -745,6 +749,8 @@ void cmdline::dobj_help()
 
     if (!items) {
         msg += "\nUSERNAME";
+        if (dob->is_allow_nameless())
+            msg += " // or [ for nameless";
         return;
     }
 
@@ -830,6 +836,8 @@ void cmdline::dobj_help()
         item = items->next_item();
     }
     msg += "\nUSERNAME";
+    if (dob->is_allow_nameless())
+        msg += " // or ] for nameless";
 }
 
 

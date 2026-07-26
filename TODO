@@ -3,15 +3,8 @@ May 2026
 ---[note to self]-----
 *** regularly make clean and make clean_examples to avoid confusion ***
 
-TODO BEFORE RELEASE
-
-    * be explicit about the modulation type featured in the various
-      clock modules - it probably does not work as people expect!
-
 TODO NEW FEATURES FOR A FUTURE RELEASE (not next release)
-
-    * DEBUG why module help does not show any parameters for wcnt_exit
-      unless using -v.
+    * Add command line help for directives
 
     * investigate riff_data and note_data workings. ability to reset
       specific note position as new zero reference point for following
@@ -33,6 +26,9 @@ TODO NEW FEATURES FOR A FUTURE RELEASE (not next release)
     * adsr_scaler - needs to be a bit more versatile - allow scaling of
       output levels as well as time, apply scale to upper, lower, not
       just both shapes.
+
+    * be explicit about the modulation type featured in the various
+      clock modules - it probably does not work as people expect!
 
     * wave_phase cycle sync can be a problem, using on_trig_reset_phase
       can cause clicks especially for regular waveforms, but even
