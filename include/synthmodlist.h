@@ -60,6 +60,9 @@ namespace synthmod
         return result->get_data();
     }
 
+    // dirty shortcut to determine off status of an input
+    bool input_ptr_is_off(const void* input);
+
     /*
     // duplicate_group returns 0 on failure or list of
     // duplicated modules on sucess.

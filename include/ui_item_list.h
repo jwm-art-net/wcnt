@@ -434,24 +434,24 @@ namespace ui
     if (this->item_is_choice_option_head()) {
         if (this->item_is_choice_head()) {
             if (item->is_opt_optional())
-                tmp = "//--{ multi-choice (optional):";
+                tmp = "// -<{ multi-choice (optional):";
             else
-                tmp = "//--{ multi-choice:";
+                tmp = "// -<{ multi-choice:";
         }
         else {
             std::ostringstream s;
-            s << "//--{ or option " << item->get_option_no() << ":";
+            s << "// -<{ or option " << item->get_option_no() << ":";
             tmp = s.str();
         }
     }
     else if (this->item_is_group_head()) {
-        tmp = "//--{ group (optional):";
+        tmp = "// -<{ group (optional):";
     }
     else if (this->item_choice_ended()) {
-        tmp = "// multi-choice end }--";
+        tmp = "// multi-choice end }>-";
     }
     else if (this->item_group_ended()) {
-        tmp = "// group end }--";
+        tmp = "// group end }>-";
     }
 
     return tmp;

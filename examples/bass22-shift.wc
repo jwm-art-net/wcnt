@@ -271,7 +271,7 @@ wav
 wcnt_exit
 exit
     in_bar      time1 out_bar
-    exit_bar    4
+    exit_bar    1
 exit
 
 wcnt-1.32/jwmsynth

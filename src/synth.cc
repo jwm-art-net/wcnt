@@ -118,7 +118,11 @@ namespace wcnt
     }
     const wcint_t* bar = wcnt::jwm.exit_in_bar();
     wcint_t exit_bar = wcnt::jwm.exit_bar();
-    STATUS* exit_trig = wcnt::jwm.exit_in_trig();
+    const STATUS* exit_trig = wcnt::jwm.exit_in_trig();
+    if (wcnt::jwm.get_modlist()->input_ptr_is_off(exit_trig)) {
+        exit_trig = 0;
+        std::cout << "exit trig = 0;\n";
+    }
     // unlink any constant modules from list as it's pointless
     // calling run() on them...
     if (wcnt::jwm.is_verbose())
@@ -139,7 +143,7 @@ namespace wcnt
                 if (*exit_trig == ON)
                     break;
             }
-            else if (*bar < exit_bar)
+            else if (*bar == exit_bar)
                 break;
             int count = 0;
             synthmod::base* sm = runlist[count];
@@ -167,7 +171,7 @@ namespace wcnt
                 if (*exit_trig == ON)
                     break;
             }
-            else if (*bar < exit_bar)
+            else if (*bar == exit_bar)
                 break;
             int count = 0;
             synthmod::base* sm = runlist[count];

@@ -34,8 +34,8 @@ bool editor::do_actions()
     edit* e = goto_first();
     while(e) {
         if (wcnt::jwm.is_verbose()) {
-            std::cout << "\nsetting items for ";
-            std::cout << e->get_target_name();
+            std::cout << "setting items for ";
+            std::cout << e->get_target_name() << std::endl;
         }
         if (!e->do_actions()) {
             dobjerr("In %s %s, item set attempt failed: %s",

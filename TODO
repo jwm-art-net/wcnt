@@ -9,18 +9,14 @@ TODO BEFORE RELEASE
       clock modules - it probably does not work as people expect!
 
 TODO NEW FEATURES FOR A FUTURE RELEASE (not next release)
-    * allow user to specify relative note positions in riff_data
-      by use of + symbol before position value.
 
-    **DEBUG** the new EDITOR and UI_ITEM* workings. I seem to have fixed
-      the earlier problem where it would always refuse to set an
-      input from a multiple choice group within a specific instance of
-      a module. My confidence isn't high that it's actually fixed yet,
-      BECAUSE if you use -v on the commandline, on a file which
-      previously had this problem, it completely suppresses the
-      progress bar. A likely cause from internet search suggests a null
-      string has likely been sent to std::cout and set it's error bit,
-      which causes output suppression.
+    * DEBUG why module help does not show any parameters for wcnt_exit
+      unless using -v.
+
+    * investigate riff_data and note_data workings. ability to reset
+      specific note position as new zero reference point for following
+      notes (using 'zero' as a note name). also allow note positions
+      relative to position of preceding note (ie pos +32).
 
     * the whole header situation is a bit of a mess. I think the only
       place sample rate should be set within the file processed from
@@ -30,12 +26,9 @@ TODO NEW FEATURES FOR A FUTURE RELEASE (not next release)
     * functionality to delete modules and rename modules
 
     * does autogrouping need 'autogroup_create' and 'autogroup_add'
-      directives, not just the simpler 'autogroup'? - my thinking was
-      to avoid confusion, force use of 'add' when the group already
-      existed (for example in an included file) but might be missed.
-
-    * investigate if param_editor and input_editor could be replaced
-      with a single editor to handle both inputs and outputs
+      directives, and not just the simpler 'autogroup'? - thinking
+      was to avoid confusion, seperate directives ensures user knows
+      if exactly if they're adding or creating a group.
 
     * adsr_scaler - needs to be a bit more versatile - allow scaling of
       output levels as well as time, apply scale to upper, lower, not

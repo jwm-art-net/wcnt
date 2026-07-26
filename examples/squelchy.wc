@@ -397,8 +397,7 @@ wav
 
 // when to stop
 
-wcnt_exit a in_trig wav out_write_end_trig a
-wcnt_exit b in_trig wav out_write_end_trig b
+wcnt_exit x in_trig wav out_write_end_trig x
 
 wcnt-1.32/jwmsynth
 

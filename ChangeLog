@@ -21,7 +21,7 @@ NEW FEATURES
 CHANGES:
    * wcnt_exit has a new trigger input, in_trig, which when triggered
      will cause wcnt to exit. Currently it's either/or with the existing
-     method, can't use both simultaneously.
+     in_bar and exit_bar method, can't use both simultaneously.
 
    * pattern_trig now has an out_not_trig for when the pattern means the
      input trigger doesn't output to the out_trig

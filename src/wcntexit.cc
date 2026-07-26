@@ -6,16 +6,15 @@ wcnt_exit::wcnt_exit(const char* uname) :
 
  synthmod::base(synthmod::WCNTEXIT, uname,
                 SM_EMPTY_RUN | SM_UNGROUPABLE | SM_UNDUPLICABLE | SM_ALLOW_NAMELESS),
- in_bar(0), exit_bar(0)
+ in_bar(0), in_trig(0), exit_bar(0)
 {
 }
 
 void wcnt_exit::register_ui()
 {
-    register_input(input::IN_TRIG)->set_flags(ui::UI_OPTION1);
-    register_input(input::IN_BAR)->set_flags(ui::UI_OPTION2);
-    register_param(param::EXIT_BAR)->set_flags(ui::UI_OPTION2);
-    register_input(input::IN_TRIG)->set_flags(ui::UI_OPTION2 | ui::UI_OPT_DUMMY);
+    register_input(input::IN_BAR)->set_flags(ui::UI_OPTION1);
+    register_param(param::EXIT_BAR)->set_flags(ui::UI_OPTION1);
+    register_input(input::IN_TRIG)->set_flags(ui::UI_OPTION2);
 }
 
 ui::moditem_list* wcnt_exit::get_ui_items()
@@ -67,11 +66,14 @@ synthmod::base* wcnt_exit::duplicate_module(const char*, DUP_IO)
     sm_err("%s", "wcnt_exit module does not allow duplication.");
     return 0;
 }
-
+#include <iostream>
 errors::TYPE wcnt_exit::validate()
 {
     if (!validate_param(param::EXIT_BAR, errors::RANGE_COUNT))
         return errors::RANGE_COUNT;
+
+    // because we didn't use the UI_OPT_DUMNMY flag, these will return NULL
+    // for whichever option wasn't used.
 
     connector* in_bar_con = wcnt::get_connectlist()
                    ->get_connector_by_input(this, input::IN_BAR);
@@ -89,21 +91,28 @@ errors::TYPE wcnt_exit::validate()
     }
     #endif
 
-    if (in_bar_con && strcmp(in_bar_con->get_output_module_name(), "off") == 0 && exit_bar != 0)
-    {
-        sm_err("Input %s is turned off, and parameter %s is not zero. "
-                           "wcnt would never exit if allowed to run!",
-                                    input::names::get(input::IN_BAR),
-                                    param::names::get(param::EXIT_BAR));
-        invalidate();
-        return errors::ERROR;
+
+    if (in_bar_con) {
+        if  (strcmp(in_bar_con->get_output_module_name(), "off") == 0
+            && exit_bar != 0)
+        {
+            sm_err("Input %s is turned off, and parameter %s is not zero. "
+                            "wcnt would never exit if allowed to run!",
+                                        input::names::get(input::IN_BAR),
+                                        param::names::get(param::EXIT_BAR));
+            invalidate();
+            return errors::ERROR;
+        }
     }
-    else if (in_trig_con && strcmp(in_trig_con->get_output_module_name(), "off") == 0)
-    {
-        sm_err("Input %s is turned off wcnt would never exit if allowed to run!",
-                input::names::get(input::IN_BAR));
-        invalidate();
-        return errors::ERROR;
+    else if (in_trig_con) {
+        if  (strcmp(in_trig_con->get_output_module_name(), "off") == 0)
+        {
+            sm_err("Input %s is turned off, wcnt would never exit if allowed to run!",
+                    input::names::get(input::IN_TRIG),
+                    param::names::get(param::EXIT_BAR));
+            invalidate();
+            return errors::ERROR;
+        }
     }
 
     return errors::NO_ERROR;

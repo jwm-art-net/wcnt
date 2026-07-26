@@ -17,7 +17,7 @@ namespace synthmod
   linkedlist(MULTIREF_OFF, d), emptyrunlist(0), search(synthmod::ERR_TYPE),
   result(0), autogroup(0)
  {
-    // nonezero module is not user accessable.
+    // nonezero module is not end-user accessable.
     // it's outputs are used when ever a module's input is set to off.
     // only need one for the main list (ie the first synthmodlist created)
     if (!off) {
@@ -268,6 +268,21 @@ namespace synthmod
     tmp  = find_in_data(sneak_first(), name(modname));
     return tmp ? tmp->get_data() : 0;
  }
+
+
+ bool list::input_ptr_is_off(const void* input)
+ {
+     if (off->get_out(output::OUT_NONE_DOUBLE) == input) return true;
+     if (off->get_out(output::OUT_ONE_DOUBLE) == input) return true;
+     if (off->get_out(output::OUT_NONE_WCINT_T) == input) return true;
+     if (off->get_out(output::OUT_NONE_SAMP_T) == input) return true;
+     if (off->get_out(output::OUT_NONE_TRIG) == input) return true;
+     if (off->get_out(output::OUT_NONE_STATE) == input) return true;
+     if (off->get_out(output::OUT_NONE_STRING) == input) return true;
+     return false;
+ }
+
+
 
  list::linkedlist* list::duplicate_group(const char* from, const char* to)
  {

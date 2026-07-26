@@ -25,14 +25,16 @@ void adsr::register_ui()
 
     register_param(param::CONNECT)         ->set_flags(ui::UI_OPTION1);
     register_input(input::IN_NOTE_ON_TRIG) ->set_flags(ui::UI_OPT2_DUP);
-    register_input(input::IN_NOTE_OFF_TRIG)->set_flags(ui::UI_OPT2_DUP |
-                                                       ui::UI_OPTIONAL);
-    register_input(input::IN_VELOCITY)     ->set_flags(ui::UI_OPT2_DUP |
-                                                       ui::UI_OPTIONAL);
+    register_input(input::IN_NOTE_OFF_TRIG)->set_flags(ui::UI_OPT2_DUP | ui::UI_OPTIONAL);
+    register_input(input::IN_VELOCITY)     ->set_flags(ui::UI_OPT2_DUP | ui::UI_OPTIONAL)
+                ->add_descr("velocity drives modulation between the two adsr shapes");
+
     register_param(param::ZERO_RETRIGGER)  ->set_flags(ui::UI_OPTIONAL);
     register_param(param::START_LEVEL)     ->set_flags(ui::UI_OPTIONAL);
-    register_param(param::UP_THRESH)       ->set_flags(ui::UI_GROUP1);
-    register_param(param::LO_THRESH)       ->set_flags(ui::UI_GROUP1);
+    register_param(param::UP_THRESH)       ->set_flags(ui::UI_GROUP1)
+                ->add_descr("velocity levels above this generate upper shape");
+    register_param(param::LO_THRESH)       ->set_flags(ui::UI_GROUP1)
+                ->add_descr("velocity levels below this generates lower shape");
     register_param(param::MIN_TIME)        ->set_flags(ui::UI_OPTIONAL);
     register_param(param::SUSTAIN_STATUS);
     register_param(param::MAX_SUSTAIN_TIME)->set_flags(ui::UI_OPTIONAL);

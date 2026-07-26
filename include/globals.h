@@ -75,7 +75,7 @@ namespace wcnt
 
     wcint_t         exit_bar() const     { return x_exit_bar; }
     const wcint_t*  exit_in_bar() const  { return x_in_bar; }
-    STATUS*         exit_in_trig() const { return x_in_trig; }
+    const STATUS*   exit_in_trig() const { return x_in_trig; }
 
     const char* path() const    { return wc_path;   }
     const char* file() const    { return wc_file;   }
@@ -107,7 +107,7 @@ namespace wcnt
 
     wcint_t x_exit_bar;
     wcint_t const* x_in_bar;
-    STATUS* x_in_trig;
+    STATUS const* x_in_trig;
 
     bool verbose;
     bool dont_run;

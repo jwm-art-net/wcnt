@@ -191,11 +191,11 @@ namespace synthmod
  {                                                       \
     printf("%40s:%5d %-35s\n",                          \
                     __FILE__, __LINE__, __FUNCTION__);  \
-    cfmt(synthmod::base::err_msg, STRBUFLEN, fmt, __VA_ARGS__);   \
+    cfmt(synthmod::base::err_msg, STRBUFLEN, fmt, ##__VA_ARGS__);   \
  }
  #else
  #define sm_err(fmt, ... ) \
-    cfmt(synthmod::base::err_msg, STRBUFLEN, fmt, __VA_ARGS__)
+    cfmt(synthmod::base::err_msg, STRBUFLEN, fmt, ##__VA_ARGS__);
  #endif
 
 

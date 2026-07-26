@@ -115,7 +115,6 @@ bool edit::do_actions()
             valstr += " " + n;
         }
 
-        bool wasinput = false;
         std::string output;
         if (sm) {
             D_BUG("___module item___\n");
@@ -145,7 +144,6 @@ bool edit::do_actions()
                     ui::modinput* mi = static_cast<ui::modinput*>(item);
                     if (!mod_edit_input(sm, mi->get_input_type(), valstr.c_str(), out))
                         return false;
-                    wasinput = true;
                 }
                 break;
                 default:
@@ -157,14 +155,6 @@ bool edit::do_actions()
         else {
             if (!dobj_edit_param(dbj, itemname.c_str(), valstr.c_str()))
                 return false;
-        }
-        if (wcnt::jwm.is_verbose()) {
-            if (wasinput) {
-                std::cout << itemname << " " << valstr << " " << output << std::endl;
-            }
-            else {
-                std::cout << itemname << " " << valstr << std::endl;
-            }
         }
         strm >> itemname;
     }
@@ -179,6 +169,8 @@ bool edit::mod_edit_param(synthmod::base* mod, param::TYPE pt, const char* valst
         invalidate();
         return false;
     }
+    if (wcnt::jwm.is_verbose())
+        std::cout << "    " << param::names::get(pt) << " " << valstr << std::endl;
     return true;
 }
 
@@ -218,8 +210,10 @@ bool edit::mod_edit_input(synthmod::base* mod, input::TYPE it,
 
     if (wcnt::jwm.is_verbose()) {
         std::cout << "    " << input::names::get(it);
-        std::cout << " <-- " << outmod;
-        std::cout << " " << outname << std::endl;;
+        if (strcmp(outmod, "off") == 0)
+            std::cout << " <-- " << outmod << std::endl;
+        else
+            std::cout << " <-- " << outmod << " " << outname << std::endl;
     }
 
     return true;
@@ -267,6 +261,9 @@ bool edit::dobj_edit_param(dobj::base* dob, const char* parname, const char* val
         invalidate();
         return false;
     }
+
+    if (wcnt::jwm.is_verbose())
+        std::cout << "    " << parname << " " << valstr << std::endl;
 
     return true;
 }
