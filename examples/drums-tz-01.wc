@@ -104,7 +104,7 @@ clocks1
 
 // ------------------------------------------------------------
 // the next modules control the position in the drum loop
-// that will be played upon playback triggering 
+// that will be played upon playback triggering
 
 stepper
 stepper1
@@ -303,8 +303,8 @@ adsr2
 adsr2
 
 
-param_editor
-pe1
+editor
+[
     editlist
 //        edit bt2.pt1
 //            pattern 1000-0000-0000-0000-0000-0000-0000-0000
@@ -320,20 +320,14 @@ pe1
             quarter_value 512.0
 
         edit bt2.sampler1
+            in_start_pos_mod    stepper2    out_output
             loop_mode bi
             phase_step_amount 1.0
             xfade_samples 125
 
     editlist
-pe1
+]
 
-input_editor
-ie1
-    editlist
-        connect bt2.sampler1
-            in_start_pos_mod    stepper2    out_output
-    editlist
-ie1
 
 multiplier
 m1

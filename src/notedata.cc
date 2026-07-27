@@ -16,11 +16,12 @@ note_data::note_data() :
 
 void note_data::register_ui()
 {
-    register_param(param::NAME)
+    register_param(param::ZERO_POS)->set_flags(ui::UI_OPTION1);
+    register_param(param::NAME)->set_flags(ui::UI_OPT2_DUP)
             ->add_descr("Note name (ie C#0 for mid C sharp) or zero for setting zero position of subsequent notes (ie start of next bar).");
-    register_param(param::NOTE_POS);
-    register_param(param::NOTE_LEN);
-    register_param(param::NOTE_VEL);
+    register_param(param::NOTE_POS)->set_flags(ui::UI_OPT2_DUP);
+    register_param(param::NOTE_LEN)->set_flags(ui::UI_OPT2_DUP);
+    register_param(param::NOTE_VEL)->set_flags(ui::UI_OPT2_DUP);
 }
 
 ui::dobjitem_list* note_data::get_ui_items()
@@ -128,7 +129,7 @@ note_data::NOTE_TYPE note_data::get_note_type()
     NOTE_TYPE retv = NOTE_TYPE_ERR;
     if (check_notename(notename) == true)
         return (note_type = NOTE_TYPE_NORMAL);
-    else if (strcmp(notename, "zero") == 0)
+    else if (strcmp(notename, " zero") == 0)
         return (note_type = NOTE_TYPE_ZERO);
     else {
         retv = note_type = NOTE_TYPE_EDIT;
@@ -199,6 +200,10 @@ bool note_data::set_param(param::TYPE dt, const void* data)
     case param::NOTE_VEL:
         set_velocity(*(double*)data);
         return true;
+    case param::ZERO_POS:
+        set_position(*(double*)data);
+        set_name(" zero");
+        return true;
     default:
         return false;
     }
@@ -212,6 +217,7 @@ const void* note_data::get_param(param::TYPE dt) const
         case param::NOTE_POS:  return &position;
         case param::NOTE_LEN:  return &length;
         case param::NOTE_VEL:  return &velocity;
+        case param::ZERO_POS:  return &position;
         default: return 0;
     }
 }

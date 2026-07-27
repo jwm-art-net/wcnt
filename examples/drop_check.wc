@@ -33,7 +33,7 @@ timer
 t
     timings
         time seconds 0
-        time seconds 110
+        time seconds 20
     timings
     time_is_relative on
     recycle_mode off

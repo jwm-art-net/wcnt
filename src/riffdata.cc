@@ -53,9 +53,14 @@ note_data* riffdata::insert_and_position_note(note_data* newnote)
         default:
             return edit_notes(newnote);
     }
+std::cout << "yes seems we're doing it\nbefore:"<< zero_pos;
 
     // Handle NOTE_TYPE_ZERO
+
     zero_pos += newnote->get_position();
+
+    std::cout <<" after " << zero_pos << std::endl;
+
     return newnote;
 }
 

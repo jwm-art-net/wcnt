@@ -1,7 +1,7 @@
 wcnt-1.32/jwmsynth
 //------------------------------------------------------------------------
 //
-//  drums03.wc:  
+//  drums03.wc:
 //      uses drums02.wc and simply edits it's parameters to
 //      create a completely different drum pattern
 //
@@ -14,7 +14,7 @@ wc1
     filename       drums02.wc
 wc1
 
-param_editor
+editor
 par-pattern
     editlist
         edit drum_trig1 freq 14.0
@@ -38,7 +38,7 @@ par-pattern
     editlist
 par-pattern
 
-param_editor
+editor
 par-master
     editlist
         edit wav1

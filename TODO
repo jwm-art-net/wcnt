@@ -6,6 +6,8 @@ May 2026
 TODO NEW FEATURES FOR A FUTURE RELEASE (not next release)
     * Add command line help for directives
 
+    * the riff_editor note notation is horribly user unfriendly.
+
     * the whole header situation is a bit of a mess. I think the only
       place sample rate should be set within the file processed from
       the command line. Sample rate set in any included files will be

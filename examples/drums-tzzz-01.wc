@@ -25,8 +25,8 @@ tz-01-file
 // edit the modules created from reading drums-tz-01.wc so they do
 // something sounding very different
 
-param_editor
-pe1zzz
+editor
+[
     editlist
         edit bt1.clock1
             quarter_value   512
@@ -63,23 +63,15 @@ pe1zzz
             damping     0.3
             wet/dry     0.375
 
+        edit pan1
+            in_signal   m1  out_output // replaces connection to dyn-m1
+
         edit wav1
             filename drums-tzzz-01.wav
     editlist
-pe1zzz
+]
 
-// *****************************************************************
-// because there is no module named dyn-m1 in this version of
-// drums-tz-01.wc, we must replace any connections to it...
-// in this case, connect to the signal which dyn-m1 originally used.
 
-input_editor
-ie1zzz
-    editlist
-        connect pan1
-            in_signal   m1  out_output // replaces connection to dyn-m1
-    editlist
-ie1zzz
 
 // *****************************************************************
 // scale the adsr times a little.

@@ -207,6 +207,7 @@ namespace param
     BALANCE,
     BPM_CHANGES_REL,
     SUFFIX,
+    ZERO_POS,
     LAST_TYPE
  };
 

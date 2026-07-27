@@ -98,30 +98,8 @@ g1
     modules
 g1
 
-copier cp10 from g1 to g2 cp10
-copier cp11 from g1 to g3 cp11
-copier cp12 from g1 to g4 cp12
-copier cp13 from g1 to g5 cp13
+copier [ from g1 to g2 count 8 ]
 
-copier cp101 from g1 to g6 cp101
-copier cp112 from g1 to g7 cp112
-copier cp123 from g1 to g8 cp123
-copier cp134 from g1 to g9 cp134
-
-param_editor
-gpe1
-    editlist
-        edit g1.rclock freq 110
-        edit g2.rclock freq 220
-        edit g3.rclock freq 440
-        edit g4.rclock freq 880
-        edit g5.rclock freq 1660
-        edit g6.rclock freq 160
-        edit g7.rclock freq 300
-        edit g8.rclock freq 550
-        edit g9.rclock freq 920
-    editlist
-gpe1
 
 mixer
 mix1
@@ -139,17 +117,26 @@ mix1
     gain 0.5333
 mix1
 
-input_editor
-ie1rc
+editor
+gpe1
     editlist
-        connect dl in_signal1 mix1 out_left
-        connect dr in_signal1 mix1 out_right
-        connect wobble2
+        edit g1.rclock freq 110
+        edit g2.rclock freq 220
+        edit g3.rclock freq 440
+        edit g4.rclock freq 880
+        edit g5.rclock freq 1660
+        edit g6.rclock freq 160
+        edit g7.rclock freq 300
+        edit g8.rclock freq 550
+        edit g9.rclock freq 920
+        edit dl in_signal1 mix1 out_left
+        edit dr in_signal1 mix1 out_right
+        edit wobble2
             in_phase_step cf1 out_phase_step
-        connect osc1
+        edit osc1
             in_freq_mod1 shwob out_output
     editlist
-ie1rc
+gpe1
 
 adsr_scaler
 asc1
@@ -174,7 +161,7 @@ shwob
     decay_time  0
 shwob
 
-param_editor
+editor
 par-master
     editlist
         edit sampler1

@@ -37,7 +37,7 @@ g1
 
 copier [ from g1 to g2 count 2 ]
 
-param_editor
+editor
 [
     editlist
         edit g2.clock2
@@ -58,18 +58,12 @@ param_editor
         edit g3.osc1
             tuning_semitones  1
         edit wav1
-            filename        bass02.wav
-    editlist
-]
-
-input_editor
-[
-    editlist
-        connect wav1
+            filename    bass02.wav
             in_left     mix1    out_left
             in_right    mix1    out_right
     editlist
 ]
+
 
 
 mix_chan ch1 in_signal   g1.amp1 out_output     ch1

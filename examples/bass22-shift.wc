@@ -268,11 +268,7 @@ wav
 wav
 
 
-wcnt_exit
-exit
-    in_bar      time1 out_bar
-    exit_bar    1
-exit
+wcnt_exit [ in_trig wav out_write_end_trig ]
 
 wcnt-1.32/jwmsynth
 

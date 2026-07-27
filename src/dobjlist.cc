@@ -38,12 +38,6 @@ namespace dobj
     case dobj::SIN_DOBJNAME:
         dobjy = new dobjnamedobj;
         break;
-    case dobj::SIN_EDIT_PARAM:
-        dobjy = new paramedit;
-        break;
-    case dobj::SIN_EDIT_INPUT:
-        dobjy = new inputedit;
-        break;
     case dobj::SIN_EDIT:
         dobjy = new edit;
         break;
@@ -58,12 +52,6 @@ namespace dobj
         break;
     case dobj::DEF_WCFILE:
         dobjy = new synthfilereader;
-        break;
-    case dobj::DEF_PARAMEDITOR:
-        dobjy = new parameditor;
-        break;
-    case dobj::DEF_INPUTEDITOR:
-        dobjy = new inputeditor;
         break;
     case dobj::DEF_EDITOR:
         dobjy = new editor;
