@@ -16,7 +16,8 @@ typedef uint32_t    uwcint_t;
 
 #define SAMP_T_MAX ((samp_t)(((usamp_t)-1) >> 2))
 #define WCINT_T_MAX ((wcint_t)(((uwcint_t)-1) >> 2))
-
+static const samp_t  samp_t_max = SAMP_T_MAX;
+static const wcint_t wcint_t_max = WCINT_T_MAX;
 
 #define STRING_JIFFY(x) #x
 #define TOSTRING(x) STRING_JIFFY(x)

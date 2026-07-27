@@ -40,7 +40,8 @@ class note_data : public dobj::base
     enum NOTE_TYPE {
         NOTE_TYPE_ERR = -1,
         NOTE_TYPE_NORMAL = 0,
-        NOTE_TYPE_EDIT
+        NOTE_TYPE_EDIT,
+        NOTE_TYPE_ZERO
     };
     enum EDIT_NOTE_CHR {
         NOTE_CHR_SEL_OP = 0,

@@ -6,17 +6,15 @@ May 2026
 TODO NEW FEATURES FOR A FUTURE RELEASE (not next release)
     * Add command line help for directives
 
-    * investigate riff_data and note_data workings. ability to reset
-      specific note position as new zero reference point for following
-      notes (using 'zero' as a note name). also allow note positions
-      relative to position of preceding note (ie pos +32).
-
     * the whole header situation is a bit of a mess. I think the only
       place sample rate should be set within the file processed from
       the command line. Sample rate set in any included files will be
       verbosely ignored.
 
     * functionality to delete modules and rename modules
+
+    * group merging, merge one group into another group. rename the
+      merged modules incorporating their original group name.
 
     * does autogrouping need 'autogroup_create' and 'autogroup_add'
       directives, and not just the simpler 'autogroup'? - thinking
@@ -49,10 +47,6 @@ TODO NEW FEATURES FOR A FUTURE RELEASE (not next release)
       -- tried adding optional output name parameter to dobjmod but
       combiner etc store each dobjmod as a linked list of
       synthmod::base* so no current way of storing which output to use.
-
-    * rename data object (or directive?) for renaming stuff
-      specifically groups, all the modules in the group, and their
-      connections.
 
 ideas
 

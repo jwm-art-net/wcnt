@@ -1,0 +1,123 @@
+wcnt-1.32/jwmsynth
+
+samplerate 44100
+
+; example usage of the 'zero' note type which is typically used
+; for creating multi-bar riffs in which the zero position is set to
+; start of each bar.
+; however care needs to be taken regarding time signature for the exact
+; value for which to position zero at - and there is no requirement for
+; this to tally with bar position whatsoever.
+
+time_map
+time
+    meter_map
+        meter tsig 4/4 bar 0
+    meter_map
+    bpm_changes_relative off
+    bpm_map
+        tempo bpm 130 bar 0
+    bpm_map
+time
+
+riff
+riff1
+    quarter_value   64
+    notelist
+        note name c0    pos 0   len 100     vel 1.0
+        note name f-1   pos 128 len 20      vel 1.0
+        note name e-1   pos 160 len 8       vel 1.0
+        note name a0    pos 224 len 80      vel 1.0
+      note name zero  pos 256 len 0 vel 0
+        note name c#0   pos 0   len 100     vel 1.0
+        note name f-1   pos 128 len 20      vel 1.0
+        note name e-1   pos 160 len 8       vel 1.0
+        note name a0    pos 224 len 80      vel 1.0q
+      note name zero  pos 256 len 0 vel 0
+        note name d0    pos 0   len 100     vel 1.0
+        note name f-1   pos 128 len 20      vel 1.0
+        note name e-1   pos 160 len 8       vel 1.0
+        note name a0    pos 224 len 80      vel 1.0q
+      note name zero  pos 256 len 0 vel 0
+        note name d#0   pos 0   len 100     vel 1.0
+        note name f-1   pos 128 len 20      vel 1.0
+        note name e-1   pos 160 len 8       vel 1.0
+        note name a0    pos 224 len 80      vel 1.0q
+    notelist
+riff1
+
+
+sequencer
+seq
+    track
+        riff_node
+            riff riff1  bar 0   transpose 0
+            repeat 3 repeat_stripe 4
+    track
+    in_bar              time out_bar
+    in_bar_trig         time out_bar_trig
+    in_pos_step_size    time out_pos_step_size
+    in_beats_per_bar    time out_beats_per_bar
+    in_beat_value       time out_beat_value
+    start_bar 0
+    velocity_response_time 0
+seq
+
+osc_clock
+osc
+    connect seq
+    in_play_state       adsr out_play_state
+    portamento_time     50
+    response_time       10
+osc
+
+wave
+wv
+    in_phase_step osc out_phase_step
+    type saw
+wv
+
+
+adsr
+adsr
+        envelope
+        section name attack
+            time 10 level 1
+        section name decay
+            time 40 level 0.8
+        section name release
+            time 25 level 0.375
+        section name release
+            time 125 level 0.0
+        envelope
+        connect seq
+        sustain_state on
+adsr
+
+multiplier
+out
+    in_signal1 wv out_output
+    in_signal2 adsr out_output
+out
+
+wavfile_out
+wav
+    in_signal   out out_output
+    in_bar      time out_bar
+    snapshot_mode off
+    data_format pcm16
+    filename    note-zero.wav
+    start_bar   0
+    end_bar     8
+wav
+
+wcnt_exit
+exit
+    in_bar      time out_bar
+    exit_bar    8
+exit
+
+wcnt-1.32/jwmsynth
+
+
+

@@ -17,7 +17,7 @@ note_data::note_data() :
 void note_data::register_ui()
 {
     register_param(param::NAME)
-            ->add_descr("Note name, for example, C#0 for middle C sharp.");
+            ->add_descr("Note name (ie C#0 for mid C sharp) or zero for setting zero position of subsequent notes (ie start of next bar).");
     register_param(param::NOTE_POS);
     register_param(param::NOTE_LEN);
     register_param(param::NOTE_VEL);
@@ -128,6 +128,8 @@ note_data::NOTE_TYPE note_data::get_note_type()
     NOTE_TYPE retv = NOTE_TYPE_ERR;
     if (check_notename(notename) == true)
         return (note_type = NOTE_TYPE_NORMAL);
+    else if (strcmp(notename, "zero") == 0)
+        return (note_type = NOTE_TYPE_ZERO);
     else {
         retv = note_type = NOTE_TYPE_EDIT;
         if (get_note_sel_op() == NOTE_SEL_OP_ERR) {

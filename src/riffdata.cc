@@ -4,12 +4,13 @@
 #include "../include/conversions.h"
 
 #include "../include/listwork.h"
+#include "../include/types.h"
 
 #include <iostream>
 
 riffdata::riffdata() :
  dobj::base(dobj::DEF_RIFF),
- tpqn(0),
+ tpqn(0), zero_pos(0),
  editlist(0)
 {
     set_flags(DO_EDITABLE);
@@ -36,19 +37,26 @@ riffdata::~riffdata()
 note_data* riffdata::insert_and_position_note(note_data* newnote)
 {
     D_NOTEEDIT("riff: %s \n", (get_username() ? get_username() : "<unnamed>"));
-    D_NOTEEDIT("insert_and_position_note name:%s pos:%d len:%d vel:%d\n",
-               newnote->get_name(), newnote->get_position(),
+    D_NOTEEDIT("insert_and_position_note (zero_pos: %d) name:%s pos:%d len:%d vel:%d\n",
+               zero_pos, newnote->get_name(), newnote->get_position(),
                newnote->get_length(), newnote->get_velocity());
     if (!newnote)
         return 0;
-    // removed checking of notename, because it's done by note_data
-    // and having it here brings up wrong error message.
-    if (newnote->get_note_type() == note_data::NOTE_TYPE_NORMAL) {
-        return
-            ordered_insert(this, newnote,
-                &note_data::get_position)->get_data();
+
+    switch(newnote->get_note_type())
+    {
+        case note_data::NOTE_TYPE_NORMAL:
+            newnote->set_position(zero_pos + newnote->get_position());
+            return ordered_insert(this, newnote, &note_data::get_position)->get_data();
+        case note_data::NOTE_TYPE_ZERO:
+            break;
+        default:
+            return edit_notes(newnote);
     }
-    return edit_notes(newnote);
+
+    // Handle NOTE_TYPE_ZERO
+    zero_pos += newnote->get_position();
+    return newnote;
 }
 
 note_data* riffdata::edit_notes(note_data* editnote)

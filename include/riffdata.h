@@ -47,8 +47,8 @@ their requirements...constructor default is 12.
 ------------------
 *** ammendment ***
 ------------------
-added calc_riff_length(...) method to get the length of the riff. 
-the value returned is in terms of a note length with a quarter value 
+added calc_riff_length(...) method to get the length of the riff.
+the value returned is in terms of a note length with a quarter value
 as set for the riff, giving the length of the number of bars the riff
 occupies. ie it does not return how many bars the riff occupies, but
 the note length of those bars.
@@ -106,6 +106,7 @@ class riffdata : public dobj::base, public linked_list<note_data>
 
  private:
     wcint_t tpqn;
+    wcint_t zero_pos;
 
     linkedlist* editlist;
 

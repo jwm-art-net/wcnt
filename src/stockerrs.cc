@@ -24,9 +24,9 @@ namespace errors
     { RANGE_OCT,        "-24.0 ~ 8.0",      CAT_NUM_OUT_OF_RANGE,       0   ,0 },
     { RANGE_BPM,        "-500 ~ 500",       CAT_NUM_OUT_OF_RANGE,       0   ,0 },
     { RANGE_BEAT,       "2 ~ 32",           CAT_NUM_OUT_OF_RANGE,       0   ,0 },
-    { RANGE_COUNT,      "0 ~ " TOSTRING(WCINT_T_MAX), CAT_NUM_OUT_OF_RANGE, 0,0 },
-    { RANGE_COUNT1,     "1 ~ " TOSTRING(WCINT_T_MAX), CAT_NUM_OUT_OF_RANGE, 0,0 },
-    { RANGE_SAMPLE,     "0 ~ " TOSTRING(SAMP_T_MAX),  CAT_NUM_OUT_OF_RANGE, 0,0 },
+    { RANGE_COUNT,      "0 ~ " TOSTRING(wcint_t_max), CAT_NUM_OUT_OF_RANGE, 0,0 },
+    { RANGE_COUNT1,     "1 ~ " TOSTRING(wcint_t_max), CAT_NUM_OUT_OF_RANGE, 0,0 },
+    { RANGE_SAMPLE,     "0 ~ " TOSTRING(samp_t_max),  CAT_NUM_OUT_OF_RANGE, 0,0 },
     // CAT_NUM_OUT_OF_RANGE_OR_EQ: "should be within range..."
     { RANGE_0_1_IN,     "0.0 ~ 1.0",            CAT_NUM_OUT_OF_RANGE_OR_EQ, 0   ,0 },
     { RANGE_M1_1_IN,    "-1.0 ~ 1.0",           CAT_NUM_OUT_OF_RANGE_OR_EQ, 0   ,0 },
@@ -45,7 +45,7 @@ namespace errors
     { ISNOT,            " ",                    CAT_INVALID,    0   ,0 },
     { NOTENAME,         "note name",            CAT_INVALID,    0   ,0 },
     { INVALID_OBJECT,   "invalid object type",  CAT_INVALID,    0   ,0 },
-    { ERROR,            " ",                    CAT_OTHER,      0   ,0 },
+    { ERROR,            " ",                    CAT_OTHER,      0   ,0 }
  };
 
  const char* stock::prefix_msg[CAT_ERR_LAST] =

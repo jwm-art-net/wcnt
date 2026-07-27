@@ -18,6 +18,10 @@ NEW FEATURES
       the wcnt_exit and inspector modules as these are the only modules
       which lack outputs.
 
+    * zero note type for setting the position of the zero value for the
+      position of all subsequent notes (including zero note types).
+      a nice usability improvement.
+
 CHANGES:
    * wcnt_exit has a new trigger input, in_trig, which when triggered
      will cause wcnt to exit. Currently it's either/or with the existing
