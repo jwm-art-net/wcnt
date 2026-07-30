@@ -2,7 +2,7 @@ wcnt-1.32/jwmsynth
 
 // examples/sinewave.wc
 
-header header.wch
+synth_file_reader [ filename samplerate.wch ]
 
 constant one value 1.0 one
 
@@ -182,6 +182,7 @@ grp1
 
 
 copier [ from grp1 to grp2 count 7 ]
+//copier [ from grp1 to grp2 count 7 suffix b ]
 
 copier c0b from grp1 to grp1b c0b
 copier c1b from grp1 to grp2b c1b
@@ -192,8 +193,8 @@ copier c5b from grp1 to grp6b c5b
 copier c6b from grp1 to grp7b c6b
 copier c7b from grp1 to grp8b c7b
 
-param_editor
-pe1
+editor
+[
     editlist
         // ---------
         edit grp1.clock1    freq 37
@@ -330,7 +331,7 @@ pe1
         edit grp8.out       gain 0.175
 
     editlist
-pe1
+]
 
 combiner
 mix1

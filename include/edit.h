@@ -46,6 +46,9 @@ private:
     void register_ui();
     ui::dobjitem_list* get_ui_items();
 
+    bool do_mod_actions(synthmod::base*);
+    bool do_dobj_actions(dobj::base*);
+
     bool mod_edit_param(synthmod::base*, param::TYPE, const char* );
     bool mod_edit_input(synthmod::base*, input::TYPE, const char*, const char*);
     bool dobj_edit_param(dobj::base*, const char*, const char*);

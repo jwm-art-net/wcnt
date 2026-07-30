@@ -7,7 +7,7 @@ wcnt-1.32/jwmsynth
 
 // here it is used to modulate the frequency of a waveform.
 
-header header.wch
+synth_file_reader [ filename samplerate.wch ]
 
 // duration of sound
 
@@ -170,13 +170,10 @@ modules
 modules
 g1
 
-copier c1 from g1 to g2 c1
-copier c2 from g1 to g3 c2
-copier c3 from g1 to g4 c3
-copier c4 from g1 to g5 c4
+copier [ from g1 to g2 count 4 ]
 
-param_editor
-pe1
+editor
+e1
     editlist
         edit g1.nl freq 310
         edit g1.nr freq 300
@@ -220,7 +217,7 @@ pe1
             b                -1.013
             c                -3.0050
     editlist
-pe1
+e1
 
 adsr_scaler
 asc1
@@ -361,24 +358,3 @@ wcnt_exit wcnt_exit_module
 wcnt_exit_module
 
 wcnt-1.32/jwmsynth
-
-input_editor
-ie1
-    editlist
-        connect g1.orb_clock
-            in_freq_mod1   g2.orbit1 out_x
-            in_freq_mod2   g2.orbit1 out_y
-        connect g2.orb_clock
-            in_freq_mod1   g3.orbit1 out_x
-            in_freq_mod2   g3.orbit1 out_y
-        connect g3.orb_clock
-            in_freq_mod1   g4.orbit1 out_x
-            in_freq_mod2   g4.orbit1 out_y
-        connect g4.orb_clock
-            in_freq_mod1   g5.orbit1 out_x
-            in_freq_mod2   g5.orbit1 out_y
-        connect g5.orb_clock
-            in_freq_mod1   g1.orbit1 out_x
-            in_freq_mod2   g1.orbit1 out_y
-    editlist
-ie1

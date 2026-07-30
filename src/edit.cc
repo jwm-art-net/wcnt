@@ -75,28 +75,39 @@ bool edit::do_actions()
     synthmod::base* sm = wcnt::jwm.get_modlist()
                         ->autogroup_or_any_get_synthmod_by_name(targetname, 0);
     dobj::base* dbj =wcnt::get_dobjlist()->get_dobj_by_name(targetname);
+
+#ifdef DEBUG
     if (sm && dbj) { // very unlikely - should be caught before this stage
         dobjerr("A data object and module share the username %s. Cannot "
                     "edit parameters %s", targetname, editstr);
         invalidate();
         return false;
     }
-    if (!sm && !dbj) {
-        dobjerr("There are no data objects or modules named %s. Cannot "
-                    "edit parameters.", targetname);
-        invalidate();
-        return false;
-    }
+#endif
 
+    if (sm)
+        return do_mod_actions(sm);
+    if (dbj)
+        return do_dobj_actions(dbj);
+
+    dobjerr("There are no data objects or modules named %s. Cannot "
+                "edit parameters.", targetname);
+    invalidate();
+    return false;
+
+}
+
+
+bool edit::do_mod_actions(synthmod::base* sm)
+{
     std::stringstream strm;
     std::string itemname;
-    std::string valstr;
-
     ui::moditem_list* items = sm->get_ui_items();
     items->match_edit(sm);
     strm << editstr;
     strm >> itemname;
     while(!strm.eof()) {
+        std::string valstr;
         strm >> valstr;
         if (strm.eof()) {
             dobjerr("unexpected end of input for %s in module of type %s named %s\n",
@@ -116,51 +127,95 @@ bool edit::do_actions()
         }
 
         std::string output;
-        if (sm) {
-            D_BUG("___module item___\n");
-            const char* out = 0;
-            // determine if item is parameter or input
-            ui::moditem* item = items->match_item(itemname.c_str());
-            D_BUG("item name: '%s'\n", itemname);
+        D_BUG("___module item___\n");
+        const char* out = 0;
+        // determine if item is parameter or input
+        ui::moditem* item = items->match_item(itemname.c_str());
+        D_BUG("item name: '%s'\n", itemname);
 
-            switch(item->get_item_type()) {
-                case ui::UI_PARAM: {
-                    D_BUG("__param__\n");
-                    ui::modparam* mp = static_cast<ui::modparam*>(item);
-                    if (!mod_edit_param(sm, mp->get_param_type(), valstr.c_str()))
-                        return false;
-                }
-                break;
-                case ui::UI_INPUT: {
-                    if (strcmp(valstr.c_str(), "off") != 0) {
-                        strm >> output;
-                        if (strm.eof()) {
-                            dobjerr("output name missing for input %s in module of type %s named %s\n",
-                                    itemname, synthmod::names::get(sm->get_module_type()), targetname);
-                            return false;
-                        }
-                        out = output.c_str();
-                    }
-                    ui::modinput* mi = static_cast<ui::modinput*>(item);
-                    if (!mod_edit_input(sm, mi->get_input_type(), valstr.c_str(), out))
-                        return false;
-                }
-                break;
-                default:
-                    dobjerr("Error matching item %s in module of type %s named %s\n",
-                            itemname.c_str(), synthmod::names::get(sm->get_module_type()), targetname);
+        switch(item->get_item_type())
+        {
+            case ui::UI_PARAM: {
+                D_BUG("__param__\n");
+                ui::modparam* mp = static_cast<ui::modparam*>(item);
+                if (!mod_edit_param(sm, mp->get_param_type(), valstr.c_str()))
                     return false;
             }
-        }
-        else {
-            if (!dobj_edit_param(dbj, itemname.c_str(), valstr.c_str()))
+            break;
+            case ui::UI_INPUT: {
+                if (strcmp(valstr.c_str(), "off") != 0) {
+                    strm >> output;
+                    if (strm.eof()) {
+                        dobjerr("output name missing for input %s in module of type %s named %s\n",
+                                itemname, synthmod::names::get(sm->get_module_type()), targetname);
+                        return false;
+                    }
+                    out = output.c_str();
+                }
+                ui::modinput* mi = static_cast<ui::modinput*>(item);
+                if (!mod_edit_input(sm, mi->get_input_type(), valstr.c_str(), out))
+                    return false;
+            }
+            break;
+            default:
+                dobjerr("Error matching item %s in module of type %s named %s\n",
+                        itemname.c_str(), synthmod::names::get(sm->get_module_type()), targetname);
                 return false;
         }
+
         strm >> itemname;
     }
     return true;
 }
 
+bool edit::do_dobj_actions(dobj::base* dbj)
+{
+    std::stringstream strm;
+    std::string itemname;
+    ui::dobjitem_list* items = dbj->get_ui_items();
+    items->match_edit(dbj);
+    strm << editstr;
+    strm >> itemname;
+    while(!strm.eof()) {
+        std::string valstr;
+        strm >> valstr;
+        if (strm.eof()) {
+            dobjerr("unexpected end of input for %s in data object of type %s named %s\n",
+                    itemname.c_str(), dobj::names::get(dbj->get_object_type()), targetname);
+            return false;
+        }
+        D_BUG("item name '%s' valstr '%s'\n", itemname, valstr);
+        if (setpar::is_operator(valstr.c_str())) {
+            std::string n;
+            strm >> n;
+            if (strm.eof()) {
+                dobjerr("unexpected end of input for %s in data object of type %s named %s\n",
+                        itemname.c_str(), dobj::names::get(dbj->get_object_type()), targetname);
+                return false;
+            }
+            valstr += " " + n;
+        }
+
+        std::string output;
+        D_BUG("___dobj item___\n");
+        // determine if item is parameter or input
+        ui::dobjitem* item = items->match_item(itemname.c_str());
+        D_BUG("item name: '%s'\n", itemname);
+
+        if (item->get_item_type() == ui::UI_PARAM) {
+            if (!dobj_edit_param(dbj, itemname.c_str(), valstr.c_str()))
+                return false;
+        }
+        else {
+            dobjerr("Error matching item %s in module of type %s named %s\n",
+                    itemname.c_str(), dobj::names::get(dbj->get_object_type()), targetname);
+            return false;
+        }
+
+        strm >> itemname;
+    }
+    return true;
+}
 
 bool edit::mod_edit_param(synthmod::base* mod, param::TYPE pt, const char* valstr)
 {
@@ -223,38 +278,6 @@ bool edit::mod_edit_input(synthmod::base* mod, input::TYPE it,
 bool edit::dobj_edit_param(dobj::base* dob, const char* parname, const char* valstr)
 {
     param::TYPE partype = param::names::type(parname);
-
-    if (!dob->is_editable()) {
-        dobjerr("Data object %s type %s is not editable",
-                dob->get_username(), dobj::names::get(dob->get_object_type()));
-        return 0;
-    }
-
-    if (partype == param::ERR_TYPE) {
-        dobjerr("No such parameter as '%s'.", parname);
-        invalidate();
-        return false;
-    }
-
-    ui::dobjitem_list* items = dob->get_ui_items();
-    ui::dobjitem* item = (items != 0 ? items->goto_first() : 0);
-    ui::dobjparam* dp = 0;
-
-    while(item) {
-        if (item->get_item_type() == ui::UI_PARAM) {
-            dp = static_cast<ui::dobjparam*>(item);
-            if (*dp == partype)
-                break;
-        }
-        item = items->goto_next();
-    }
-
-    if (!dp) {
-        dobjerr("Data object %s does not have any parameter named %s.",
-                                        dob->get_username(), parname);
-        invalidate();
-        return false;
-    }
 
     if (!setpar::set_param(dob, partype, valstr, 0)) {
         dobjerr("%s", setpar::get_error_msg());

@@ -5,7 +5,7 @@ wcnt-1.32/jwmsynth
 //  first stage of testing is to figure out how to do this!
 //  second stage is to get the module to create the plugin.
 
-header header.wch
+synth_file_reader [ filename samplerate.wch ]
 
 synth_file_reader
 sfr

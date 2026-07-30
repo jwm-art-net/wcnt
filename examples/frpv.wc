@@ -1,6 +1,6 @@
 wcnt-1.32/jwmsynth
 
-header header.wch
+synth_file_reader [ filename samplerate.wch ]
 
 timer
 t

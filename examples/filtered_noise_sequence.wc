@@ -7,7 +7,7 @@ wcnt-1.32/jwmsynth
 //  third stage - done it, it is done, my friend.
 
 
-header header.wch
+synth_file_reader [ filename samplerate.wch ]
 
 
 synth_file_reader

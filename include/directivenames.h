@@ -11,7 +11,8 @@ namespace directive
         ERR_TYPE,
         AUTOGROUP_CREATE,
         AUTOGROUP_ADD,
-        AUTOGROUP_STOP,
+        // AUTOGROUP_STOP, unnecessary
+        SAMPLE_RATE,
         LAST_TYPE
     };
 
@@ -19,6 +20,7 @@ namespace directive
     {
       public:
         static void instantiate() { static names directivenames; }
+
 
       private:
         names() : getnames(LAST_TYPE, data) {}

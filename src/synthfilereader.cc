@@ -23,6 +23,7 @@ using namespace std; // just this once as it's used so much in here...
 #define wc_err(fmt, ... ) \
     cfmt(wc_err_msg, STRBUFLEN, fmt, __VA_ARGS__)
 
+bool synthfilereader::samplerate_set(false);
 
 synthfilereader::synthfilereader() :
  dobj::base(dobj::DEF_WCFILE),
@@ -110,38 +111,27 @@ bool synthfilereader::read_and_create()
             wc_err("File %s does not contain a valid header.",
                                                             wc_filename);
             return false;
-        case synthfilereader::FILE_OPEN:
-            break;
         case synthfilereader::FILE_READY:
-            wc_err("File %s inspires premature optimism.", wc_filename);
+            break;
+        default:
+            wc_err("file %s unknown/program error.", wc_filename);
             return false;
     }
-    samp_t srate;
 
     cout << (wc_file_type == WC_INCLUDE_FILE
                 ? "  Including "
                 : "Processing ") << wc_filename << endl;
 
-    if (!read_header(&srate)) {
-        return false;
-    }
-    if (wc_file_type == WC_MAIN_FILE)
-        wcnt::jwm.samplerate(srate);
-    else {
-        if (srate != wcnt::jwm.samplerate()) {
-            wc_err("Warning! Header data in file %s conflicts with header "
-                    "data already in use.", wc_filename);
-        }
-    }
     const char* com = read_command();
 
     // end processing on footer identical to file_id read as header.
     while (strcmp(com, synthheader->c_str()) != 0)
     {
         directive::TYPE dt;
-        if (*com == ';') // quickets easiest test first
+        // checking here starts with quickest test, and progresses in terms
+        // of how many items being tested against...
+        if (*com == ';')
             print_msg();
-        // check against directives first as few of them
         else if (autogroup && strcmp(autogroup->get_username(), com) == 0) {
             if (!autogroup_stop(com))
                 return false;
@@ -151,14 +141,12 @@ bool synthfilereader::read_and_create()
             if (!process_directive(dt))
                 return false;
         }
-        // next standalone data objects, fewer of them than modules
         else if (dobj::names::category(com) == dobj::CAT_DEF)
         {
             mod_lineage = false;
             if (!read_and_create_dobj(com))
                 return false;
         }
-        // anything else has to be a module type
         else {
             mod_lineage = true;
             if (!read_and_create_synthmod(com))
@@ -183,9 +171,11 @@ bool synthfilereader::process_directive(directive::TYPE dt)
             return autogroup_add(read_command());
         case directive::AUTOGROUP_CREATE:
             return autogroup_create(read_command());
-        case directive::AUTOGROUP_STOP:
-            return autogroup_stop(read_command());
-            break;
+        //case directive::AUTOGROUP_STOP:
+        //    return autogroup_stop(read_command());
+        //    break;
+        case directive::SAMPLE_RATE:
+            return read_samplerate(read_command());
         default:
             break;
     }
@@ -1179,8 +1169,7 @@ synthfilereader::read_ui_dobjdobj(dobj::base* dob, dobj::TYPE parent,
     return true;
 }
 
-synthfilereader::FILE_STATUS
-synthfilereader::open_file()
+synthfilereader::FILE_STATUS synthfilereader::open_file()
 {
     synthfile->open(wc_filename);
     if (!synthfile->is_open())
@@ -1188,53 +1177,39 @@ synthfilereader::open_file()
     else {
         *synthfile >> *synthheader;
         if (wcnt::header_is_compatible(synthheader->c_str()))
-            filestatus = FILE_OPEN;
+            filestatus = FILE_READY;
         else
             filestatus = INVALID_HEADER;
     }
     return filestatus;
 }
 
-bool synthfilereader::read_header(samp_t *samplerate)
+bool synthfilereader::read_samplerate(const char* com)
 {
-    if (filestatus != FILE_OPEN) {
-        wc_err("%s Attempted read of header without open file.",
-                                                errors::stock::major);
-        return 0;
+    if (samplerate_set) {
+        return true;
     }
-    if (!skip_remarks()) {
-        wc_err("%s", "Unexpected EOF.");
+
+    std::istringstream sr_str(com);
+    samp_t samplerate;
+
+    if (!(sr_str >> samplerate)) {
+        wc_err("%s", "Expected value for samplerate.");
         return false;
     }
-    if (*buff == "header") {
-        if (!eff_ing_header_bodge(samplerate))
-            return false;
+
+    if (!wcnt::jwm.samplerate(samplerate)) {
+        wc_err("Invalid samplerate %s. Valid values between %ld and %ld.", com,
+                                    wcnt::samplerate_min, wcnt::samplerate_max);
+        return false;
     }
-    else {
-        if (*buff == "samplerate") {
-            if (!(*synthfile >> *samplerate)) {
-                wc_err("%s", "Expected value for samplerate.");
-                return false;
-            }
-            if (*samplerate > 4000 && *samplerate < 200000) {
-                if (wcnt::jwm.is_verbose() && wc_file_type == WC_MAIN_FILE)
-                    cout << "samplerate set at " << *samplerate << endl;
-            }
-            else {
-                ostringstream conv;
-                conv << *samplerate;
-                wc_err("Invalid samplerate %s. Valid values between "
-                                    "4000 and 200000.", conv.str().c_str());
-                return false;
-            }
-        }
-        else {
-            wc_err("Expected 'header' or 'samplerate' got %s instead.",
-                                                            buff->c_str());
-            return false;
-        }
+
+    if (wcnt::jwm.is_verbose()) {
+        if (wcnt::jwm.samplerate() == samplerate)
+            cout << "Samplerate set at " << samplerate << endl;
+        else
+            cout << "Samplerate already set. Ignoring samplerate " << samplerate << endl;
     }
-    filestatus = FILE_READY;
     return true;
 }
 
@@ -1280,59 +1255,6 @@ bool synthfilereader::skip_remarks()
     if (synthfile->eof())
         return false;
     return true;          // i'm happy - honest
-}
-
-// (snip swearing,  wingeing, and excuse making, for what follows ;)
-
-bool synthfilereader::eff_ing_header_bodge(samp_t *samplerate)
-{
-    ifstream headerfile;
-    string hf_name;
-    *synthfile >> hf_name;
-    // stop reading from that (synthfile) for mo now we got header name.
-    const char* path = wcnt::jwm.path();
-    if (!(hf_name[0] == '/' || path == NULL)) {
-        string tmp = hf_name;
-        hf_name = path + tmp;
-    }
-    headerfile.open(hf_name.c_str());// and open header file and be really
-    // fussy about layout 'cos i'm not messing about with whitespace
-    // and remark processing here.  but first check it's opened oK
-    if (!headerfile.is_open()) {
-        wc_err("Requested header refused open %s.", hf_name.c_str());
-        return false;
-    }
-    if (wcnt::jwm.is_verbose())
-        cout << "Reading header info from file: " + hf_name << endl;
-    headerfile >> *buff;
-    if (*buff == "samplerate") {
-        if (!(headerfile >> *samplerate)) {
-            wc_err("In header file %s expected value for samplerate.",
-                                                    hf_name.c_str());
-            headerfile.close();
-            return false;
-        }
-        if (*samplerate > 4000 && *samplerate < 200000) {
-            if (wcnt::jwm.is_verbose() && wc_file_type == WC_MAIN_FILE)
-                cout << "samplerate set at " << *samplerate << endl;
-        } else {
-            ostringstream conv;
-            conv << *samplerate;
-            wc_err("In header %d Invalid samplerate %s valid values "
-                    "between 4000 and 200000.",  hf_name.c_str(),
-                                                conv.str().c_str());
-            headerfile.close();
-            return false;
-        }
-    } else {
-        wc_err("In header %s expected samplerate got %s instead.",
-                                    hf_name.c_str(), buff->c_str());
-        headerfile.close();
-        return false;
-    }
-    filestatus = FILE_READY;
-    headerfile.close();
-    return true;
 }
 
 errors::TYPE synthfilereader::validate()

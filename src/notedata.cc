@@ -18,7 +18,7 @@ void note_data::register_ui()
 {
     register_param(param::ZERO_POS)->set_flags(ui::UI_OPTION1);
     register_param(param::NAME)->set_flags(ui::UI_OPT2_DUP)
-            ->add_descr("Note name (ie C#0 for mid C sharp) or zero for setting zero position of subsequent notes (ie start of next bar).");
+            ->add_descr("Note name (ie C#0 for mid C sharp).");
     register_param(param::NOTE_POS)->set_flags(ui::UI_OPT2_DUP);
     register_param(param::NOTE_LEN)->set_flags(ui::UI_OPT2_DUP);
     register_param(param::NOTE_VEL)->set_flags(ui::UI_OPT2_DUP);

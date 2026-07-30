@@ -35,8 +35,7 @@ public:
     {
         NOT_FOUND = -1,
         INVALID_HEADER = 0,
-        FILE_OPEN = 1,
-        FILE_READY = 2
+        FILE_READY = 1
     };
     enum WC_FILE_TYPE
     {
@@ -62,6 +61,7 @@ public:
     const void* get_param(param::TYPE pt) const;
     const dobj::base* add_dobj(dobj::base*);
     bool do_actions() { return read_and_create(); }
+    bool is_samplerate_set() { return samplerate_set; }
 
 private:
 
@@ -89,10 +89,10 @@ private:
     bool mod_lineage;   // is data object part of a module?
 
     group* autogroup;
+    static bool samplerate_set;
 
 //--- private member methods ---//
     FILE_STATUS open_file();
-    bool        read_header(samp_t* samplerate);
     const char* read_command();
     void        print_msg();
     bool              process_directive(directive::TYPE dt);
@@ -115,13 +115,13 @@ private:
     bool read_ui_dobjparam(dobj::base*, param::TYPE, const char* parent);
     bool read_ui_dobjdobj(dobj::base*, dobj::TYPE, dobj::TYPE);
 
+    bool read_samplerate(const char*);
     bool autogroup_add(const char*);
     bool autogroup_create(const char*);
     bool autogroup_stop(const char*);
 
     std::string* read_string_list_param(const char* enda, const char* endb);
     // method for ......
-    bool eff_ing_header_bodge(samp_t *samplerate);
     void register_ui();
     ui::dobjitem_list* get_ui_items();
 };

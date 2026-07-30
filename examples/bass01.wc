@@ -5,14 +5,9 @@ wcnt-1.32/jwmsynth
 //
 //------------------------------------------------------------------------
 
-header header.wch
+samplerate 48000
 
-//------------------------------------------------------------------------
-
-synth_file_reader
-timefile
-    filename time.wch
-timefile
+synth_file_reader [ filename time.wch ]
 
 riff
 riff1
@@ -284,6 +279,7 @@ wcnt_exit
 [
     in_trig     wav1    out_write_end_trig
 ]
+
 
 //------------------------------------------------------------------------
 // End Of File _jwm 2005.

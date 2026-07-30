@@ -1,6 +1,5 @@
 wcnt-1.32/jwmsynth
 
-header header.wch
 
 riff
 1note_riff // ok so it's got more, so what.
@@ -25,7 +24,7 @@ riff1
     notelist
 riff1
 
-riff 
+riff
 riff2
     quarter_value 16
     notelist

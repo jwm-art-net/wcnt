@@ -1,16 +1,9 @@
 wcnt-1.32/jwmsynth
 
-header header.wch
+synth_file_reader [ filename samplerate.wch ]
+synth_file_reader [ filename time.wch ]
+synth_file_reader [ filename frell-seq.wch ]
 
-synth_file_reader
-timefile
-    filename time.wch
-timefile
-
-synth_file_reader
-seqfile
-    filename frell-seq.wch
-seqfile
 
 adsr
 adsr1

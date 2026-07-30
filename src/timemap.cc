@@ -122,17 +122,17 @@ errors::TYPE timemap::validate()
     while(currentbpm){
         bpm = (bpm_changes_rel) ? bpm + currentbpm->get_bpm()
                                 : currentbpm->get_bpm();
-        if (bpm < wcnt::min_bpm) {
+        if (bpm < wcnt::bpm_min) {
             sm_err("At bar %d BPM change takes tempo below minimum "
                                     "BPM of %d.", currentbpm->get_bar(),
-                                                    wcnt::min_bpm);
+                                                    wcnt::bpm_min);
             invalidate();
             return errors::ERROR;
         }
-        if (bpm > wcnt::max_bpm) {
+        if (bpm > wcnt::bpm_max) {
             sm_err("At bar %d BPM change takes tempo above maximum "
                                     "BPM of %d.", currentbpm->get_bar(),
-                                                    wcnt::max_bpm);
+                                                    wcnt::bpm_max);
             invalidate();
             return errors::ERROR;
         }

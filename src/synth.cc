@@ -133,6 +133,8 @@ namespace wcnt
     const STATUS* force_abort = synthmod::base::get_abort_status();
     synthmod::base** runlist = wcnt::jwm.get_modlist()->get_run_list();
 
+    if (wcnt::jwm.is_sr_default())
+        std::cout << "using default ";
     std::cout << "samplerate: " << wcnt::jwm.samplerate() << std::endl;
 
     if (wcnt::jwm.is_no_progress()) {

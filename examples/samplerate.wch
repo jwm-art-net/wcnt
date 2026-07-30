@@ -1,0 +1,9 @@
+wcnt-1.32/jwmsynth
+
+// a file specifying only a sample rate, in order for
+// a multitude of .wc files to use the same sample rate.
+
+samplerate 48000
+
+
+wcnt-1.32/jwmsynth

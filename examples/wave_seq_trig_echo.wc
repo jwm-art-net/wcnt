@@ -4,7 +4,7 @@ wcnt-1.32/jwmsynth
 // example of using the trig_echo and trig_counter modules.
 
 
-header header.wch
+synth_file_reader [ filename samplerate.wch ]
 
 constant one value 1.0 one
 

@@ -2,7 +2,7 @@ wcnt-1.32/jwmsynth
 
 samplerate 44100
 
-; example usage of the 'zero' note type which is typically used
+; example usage of the 'zero_pos' note type which is typically used
 ; for creating multi-bar riffs in which the zero position is set to
 ; start of each bar.
 ; however care needs to be taken regarding time signature for the exact
@@ -32,17 +32,17 @@ riff1
         note name c#0   pos 0   len 100     vel 1.0
         note name f-1   pos 128 len 20      vel 1.0
         note name e-1   pos 160 len 8       vel 1.0
-        note name a0    pos 224 len 80      vel 1.0q
+        note name a0    pos 224 len 80      vel 1.0
       note zero_pos 256 // ie 512
         note name d0    pos 0   len 100     vel 1.0
         note name f-1   pos 128 len 20      vel 1.0
         note name e-1   pos 160 len 8       vel 1.0
-        note name a0    pos 224 len 80      vel 1.0q
+        note name a0    pos 224 len 80      vel 1.0
       note zero_pos 256 // ie 768
         note name d#0   pos 0   len 100     vel 1.0
         note name f-1   pos 128 len 20      vel 1.0
         note name e-1   pos 160 len 8       vel 1.0
-        note name a0    pos 224 len 80      vel 1.0q
+        note name a0    pos 224 len 80      vel 1.0
     notelist
 riff1
 
@@ -52,7 +52,7 @@ seq
     track
         riff_node
             riff riff1  bar 0   transpose 0
-            repeat 3 repeat_stripe 4
+            repeat 1 repeat_stripe 4
     track
     in_bar              time out_bar
     in_bar_trig         time out_bar_trig
@@ -111,11 +111,7 @@ wav
     end_bar     8
 wav
 
-wcnt_exit
-exit
-    in_bar      time out_bar
-    exit_bar    8
-exit
+wcnt_exit [ in_trig wav out_write_end_trig ]
 
 wcnt-1.32/jwmsynth
 

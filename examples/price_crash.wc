@@ -12,7 +12,7 @@ wcnt-1.32/jwmsynth
 // http://www.jwm-art.net/o7.php?p=price_crash
 //
 
-header header.wch
+synth_file_reader [ filename samplerate.wch ]
 
 constant one value 1.0 one
 
@@ -42,7 +42,7 @@ t1
 timer t2
     timings
 
-    // this trigger is used to initiate the release stage of 
+    // this trigger is used to initiate the release stage of
     // of the 'master' envelope - so the sound fades out to silence
     // before processing ends and file writing ends.
 
@@ -168,21 +168,16 @@ group f1 modules synthmod name orb_clock synthmod name orbit modules f1
 copier fc1 from f1 to f2 fc1
 copier fc2 from f1 to f3 fc2
 
-input_editor
-fie1
-    editlist
-        connect f1.orb_clock
-            in_freq_mod1 f2.orbit out_x
-            in_freq_mod2 f2.orbit out_y
-        connect f2.orb_clock
-            in_freq_mod1 f1.orbit out_x
-            in_freq_mod2 f1.orbit out_y
-    editlist
-fie1
 
-param_editor
+editor
 fpe1
     editlist
+        edit f1.orb_clock
+            in_freq_mod1 f2.orbit out_x
+            in_freq_mod2 f2.orbit out_y
+        edit f2.orb_clock
+            in_freq_mod1 f1.orbit out_x
+            in_freq_mod2 f1.orbit out_y
         edit f2.orbit
             a -0.0003
             b 0.000000087342
@@ -362,19 +357,19 @@ tqa
     modules
 tqa
 
-copier cc1 from tqa to tqb cc1
-copier cc2 from tqa to tqc cc2
-copier cc3 from tqa to tqd cc3
-copier cc4 from tqa to tqe cc4
-copier cc5 from tqa to tqf cc5
-copier cc6 from tqa to tqg cc6
-copier cc7 from tqa to tqh cc7
-copier cc8 from tqa to tqi cc8
-copier cc9 from tqa to tqj cc9
-copier cc10 from tqa to tqk cc10
-copier cc11 from tqa to tql cc11
+copier [ from tqa to tqb ]
+copier [ from tqa to tqc ]
+copier [ from tqa to tqd ]
+copier [ from tqa to tqe ]
+copier [ from tqa to tqf ]
+copier [ from tqa to tqg ]
+copier [ from tqa to tqh ]
+copier [ from tqa to tqi ]
+copier [ from tqa to tqj ]
+copier [ from tqa to tqk ]
+copier [ from tqa to tql ]
 
-param_editor
+editor
 pupe1
     editlist
 
@@ -554,5 +549,5 @@ exit
     exit_bar    1
 exit
 
-wcnt-1.32/jwmsynth 
+wcnt-1.32/jwmsynth
 

@@ -5,12 +5,9 @@ wcnt-1.32/jwmsynth
 
 // ( so i told myself back in 2006... --jwm2007)
 
-header header.wch
+synth_file_reader [ filename samplerate.wch ]
+synth_file_reader [ filename time.wch ]
 
-synth_file_reader
-timefile
-    filename time.wch
-timefile
 
 riff
 riff1
@@ -267,15 +264,15 @@ pan1
     pan_mod_size  0.0
 pan1
 
-input_editor
-ressoff_ie1
+editor
+[
     editlist
-        connect osc2
+        edit osc2
             in_frequency    Xfreq1  out_output
-        connect osc3
+        edit osc3
             in_frequency    Xfreq2  out_output
     editlist
-ressoff_ie1
+]
 
 group
 g1
@@ -309,12 +306,10 @@ g1
     modules
 g1
 
-copier g1cp1 from g1 to g2 g1cp1
-copier g1cp2 from g1 to g3 g1cp2
-copier g1cp3 from g1 to g4 g1cp3
+copier [ from g1 to g2 count 3 ]
 
-param_editor
-ressoff_pe1
+editor
+[
     editlist
         edit g2.osc2
             tuning_semitones    0.0125
@@ -377,7 +372,7 @@ ressoff_pe1
             delay_time  15.0
 //
     editlist
-ressoff_pe1
+]
 
 balance
 g1g2_l

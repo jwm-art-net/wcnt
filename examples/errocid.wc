@@ -82,25 +82,18 @@ osc
 
 copier cp1 from osc to osc_lpf cp1
 
-input_editor
-ed1
-    editlist
-        connect osc_lpf
-            in_freq_mod1 lfo_wave out_output
-    editlist
-ed1
-
-param_editor
-pe1
+editor
+[
     editlist
         edit osc_lpf
             octave_offset   3
             tuning_semitones    6
             portamento_time     250
             response_time       250
+            in_freq_mod1    lfo_wave out_output
             freq_mod1_size      2.0
     editlist
-pe1
+]
 
 square_wave
 squ

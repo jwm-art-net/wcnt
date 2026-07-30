@@ -1,0 +1,94 @@
+
+//---------------------------
+
+    * Add command line help for directives
+        - priority: low-cba
+        - effort: medium - mainly assessment/decision of what/how
+
+    * the riff_editor note notation is horribly user unfriendly.
+         - priority: medium-low
+         - effort: medium
+         - how could note selection be improved?
+         - reproduce in a more verbose format and use a str_unamed
+         - additionally, note data contains comments regarding how
+           tangled it all is. i will add now, that it lacks clarity and
+           distinction about what should be done where.
+         - note_data is one of the earliest data objects, preceding the
+           concept of data objects.
+
+    * functionality to delete modules and rename modules
+        - delete - user must ensure connections are updated using editor.
+        - rename - same as grouping, connections dont need updating
+        - priority: medium-low
+        - effort: medium
+
+    * synth_file_reader
+        - the mod_action (include/exclude) and the module list, plus
+          the same pairing for data objects, is kinda ugly - and rarely
+          used in my experience.
+        - user cannot reference a group with either of these commands
+          to load (or ignore) a specific group.
+
+    * group merging, merge one group into another group. rename the
+      merged modules incorporating their original group name.
+        - priority: low-medium
+        - effort: medium... depends
+        - this again causes me to consider groups of groups
+        - effort: high
+
+    * adsr_scaler - needs to be a bit more versatile - allow scaling of
+      output levels as well as time, apply scale to upper, lower, not
+      just both shapes.
+        - priority: medium
+        - effort: medium-high... depends
+        - have the editor data object handle list items
+        - effort: high
+
+    * be explicit about the modulation type featured in the various
+      clock modules - it probably does not work as people expect!
+        - priority: medium
+        - effort: medium-high... depends
+        - updating all documentation takes a lot of time and effort!
+
+    * wave_phase cycle sync can be a problem, regular clicks evident
+      with phase modulation
+        - priority: low-medium
+        - effort: medium-high
+
+    * switcher/combiner/spreader/mixer - would be improved they were
+      versatile enough to handle modules which lack the standard outputs
+      these modules expect (ie out_output, and out_trig).
+        - priority: low-medium
+        - effort medium-high
+
+    * chain copy? duplicate a comma seperated list of modules
+      while preserving their connection relationships
+        - priority: low
+        - effort: medium...high
+        - this comes back to the groups of groups again, and was an idea
+          for how to achieve a similar result
+
+    * creation loops with iterative values, basic maths, for creating
+      copies of modules
+        - priority: low
+        - effort: very high
+
+/---------------- DONE --------------------
+    * improve header handling
+        - priority: active/ DONE
+        - effort: easy
+        - ensure sample rate is set once in initial file processed, and
+          ignore anything else (already happening).
+        - potentially do away with the 'header' directive-like
+          non-directive method for setting samplerate from another
+          file - use a synth_file_reader instead. 'samplerate'
+          itself could become a directive.
+        - nomenclature is confusing - header both to refers to the wcnt
+          file id, and, the command for reading only the samplerate from
+          a file (on which the very first line must be samplerate).
+        - implemented:
+            * removed ambiguously named 'header' directive-like
+              functionality for loading sample rate from another file.
+            * internally, 'samplerate' is handled as a directive now.
+            * removed the bodge-job code from synth_file_reader for
+              handling this stuff.

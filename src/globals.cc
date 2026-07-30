@@ -93,8 +93,7 @@ bool could_be_header(const char* header)
   modlist(0),
   wc_path(0),    wc_file(0),
   x_exit_bar(0), x_in_bar(0),
-  verbose(false), dont_run(false), no_title(false), no_progress(false),
-  sample_rate(wcnt::default_samplerate), mid_a_phase_step(0),
+  flags(SR_DEFAULT), sample_rate(wcnt::samplerate_default), mid_a_phase_step(0),
   #ifdef WITH_LADSPA
   ladspaloader(0)
   #endif
@@ -128,10 +127,16 @@ bool could_be_header(const char* header)
     #endif
  }
 
- void globals::samplerate(samp_t sr)
+ samp_t globals::samplerate(samp_t sr)
  {
-    sample_rate = sr;
-    mid_a_phase_step = freq_to_step(440);
+     if (sr < wcnt::samplerate_min || sr > wcnt::samplerate_max)
+         return 0;
+     if (flags & SR_DEFAULT) {
+        sample_rate = sr;
+        mid_a_phase_step = freq_to_step(440);
+        flags &= ~SR_DEFAULT;
+    }
+    return sample_rate;
  }
 
  globals jwm;

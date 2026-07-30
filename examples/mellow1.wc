@@ -4,16 +4,12 @@ wcnt-1.32/jwmsynth
 //
 //-------------------------------------
 //
-//  needs examples/header.wch
 //          and
 //  examples/time.wch
 
-header header.wch
+synth_file_reader [ filename samplerate.wch ]
 
-synth_file_reader
-timefile
-    filename time.wch
-timefile
+synth_file_reader [ filename time.wch ]
 
 
 riff
@@ -205,39 +201,51 @@ g1
     // edit inputs and params here, before group copying, so as
     // to not have to do so with each group copy.
 
-    input_editor
-    inputs1
+    editor
+    [
         editlist
-            connect panwave
+            edit panwave
                 in_phase_step panclk out_phase_step
         editlist
-    inputs1
+    ]
 
 g1
 
 
-copier grpcp1 from g1 to g2  grpcp1
-copier grpcp2 from g1 to g3  grpcp2
-copier grpcp3 from g1 to g4  grpcp3
-copier grpcp4 from g1 to g5  grpcp4
-copier grpcp5 from g1 to g6  grpcp5
-copier grpcp6 from g1 to g7  grpcp6
-copier grpcp7 from g1 to g8  grpcp7
-copier grpcp8 from g1 to g9  grpcp8
-copier grpcp9 from g1 to g10 grpcp9
+copier [ from g1 to g2 count 9 ]
 
-param_editor
-params1
+editor
+[
     editlist
-        edit g2.osc1  tuning_semitones -10.8
-        edit g3.osc1  tuning_semitones -10.6
-        edit g4.osc1  tuning_semitones -10.5
-        edit g5.osc1  tuning_semitones -9.6
-        edit g6.osc1  tuning_semitones -8.2
-        edit g7.osc1  tuning_semitones 2.75
-        edit g8.osc1  tuning_semitones 3.5
-        edit g9.osc1  tuning_semitones 4.5
-        edit g10.osc1 tuning_semitones 5.0
+        edit g1.osc1
+            in_freq_mod1  g10.mm1x  out_output
+        edit g2.osc1
+            in_freq_mod1  g1.mm1x  out_output
+            tuning_semitones -10.8
+        edit g3.osc1
+            in_freq_mod1  g2.mm1x  out_output
+            tuning_semitones -10.6
+        edit g4.osc1
+            in_freq_mod1  g3.mm1x  out_output
+            tuning_semitones -10.5
+        edit g5.osc1
+            in_freq_mod1  g4.mm1x  out_output
+            tuning_semitones -9.6
+        edit g6.osc1
+            in_freq_mod1  g5.mm1x  out_output
+            tuning_semitones -8.2
+        edit g7.osc1
+            in_freq_mod1  g6.mm1x  out_output
+            tuning_semitones 2.75
+        edit g8.osc1
+            in_freq_mod1  g7.mm1x  out_output
+            tuning_semitones 3.5
+        edit g9.osc1
+            in_freq_mod1  g8.mm1x  out_output
+            tuning_semitones 4.5
+        edit g10.osc1
+            in_freq_mod1  g9.mm1x  out_output
+            tuning_semitones 5.0
         edit g2.panclk freq 0.35
         edit g3.panclk freq 0.135
         edit g4.panclk freq 1.35
@@ -256,34 +264,19 @@ params1
         edit g8.echosl delay_time 502
         edit g9.echosr delay_time 832
         edit g10.echosl delay_time 323
+        edit g1.mm1  in_signal2 g2.isq  out_output
+        edit g2.mm1  in_signal2 g3.isq  out_output
+        edit g3.mm1  in_signal2 g4.isq  out_output
+        edit g4.mm1  in_signal2 g5.isq  out_output
+        edit g5.mm1  in_signal2 g6.isq  out_output
+        edit g6.mm1  in_signal2 g7.isq  out_output
+        edit g7.mm1  in_signal2 g8.isq  out_output
+        edit g8.mm1  in_signal2 g9.isq  out_output
+        edit g9.mm1  in_signal2 g10.isq out_output
+        edit g10.mm1 in_signal2 g1.isq  out_output
     editlist
-params1
+]
 
-input_editor
-inpsfb
-    editlist
-        connect g1.mm1  in_signal2 g2.isq  out_output
-        connect g2.mm1  in_signal2 g3.isq  out_output
-        connect g3.mm1  in_signal2 g4.isq  out_output
-        connect g4.mm1  in_signal2 g5.isq  out_output
-        connect g5.mm1  in_signal2 g6.isq  out_output
-        connect g6.mm1  in_signal2 g7.isq  out_output
-        connect g7.mm1  in_signal2 g8.isq  out_output
-        connect g8.mm1  in_signal2 g9.isq  out_output
-        connect g9.mm1  in_signal2 g10.isq out_output
-        connect g10.mm1 in_signal2 g1.isq  out_output
-        connect g1.osc1  in_freq_mod1  g10.mm1x  out_output
-        connect g2.osc1  in_freq_mod1  g1.mm1x  out_output
-        connect g3.osc1  in_freq_mod1  g2.mm1x  out_output
-        connect g4.osc1  in_freq_mod1  g3.mm1x  out_output
-        connect g5.osc1  in_freq_mod1  g4.mm1x  out_output
-        connect g6.osc1  in_freq_mod1  g5.mm1x  out_output
-        connect g7.osc1  in_freq_mod1  g6.mm1x  out_output
-        connect g8.osc1  in_freq_mod1  g7.mm1x  out_output
-        connect g9.osc1  in_freq_mod1  g8.mm1x out_output
-        connect g10.osc1 in_freq_mod1  g9.mm1x  out_output
-    editlist
-inpsfb
 
 mixer
 mix1

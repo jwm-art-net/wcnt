@@ -2,7 +2,7 @@ wcnt-1.32/jwmsynth
 
 // examples/lp_filter_test.wc
 
-header header.wch
+synth_file_reader [ filename samplerate.wch ]
 
 constant one value 1.0 one
 

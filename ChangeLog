@@ -1,5 +1,5 @@
 --------------------------------------------------------------
-date July 2026 - wcnt-1.32.2026
+Changes - July 2026 - wcnt-1.32.2026
 
 note: I still haven't made an actual release. Not sure I will. It's just
 fine on github. If I were to make a release, the bulk of the changes
@@ -14,15 +14,27 @@ NEW FEATURES
       input_editor data objects by unifying their functionality into a
       single unit.
 
-    * nameless modules now, as well as data objects. only applies to
-      the wcnt_exit and inspector modules as these are the only modules
-      which lack outputs.
+    * nameless modules are now allowed, as well as data objects.
+      however only the wcnt_exit and inspector modules can be nameless,
+      as these are the only modules which lack outputs.
 
-    * zero note type for setting the position of the zero value for the
-      position of all subsequent notes (including zero note types).
-      a nice usability improvement.
+    * zero_pos note type to cause the position of all subsequent notes
+      to be relevant to the position specified by it (including further
+      zero_pos note types). (it allows you specify note positions
+      relative to the start of the bar which contains them, for
+      instancea). a nice usability improvement.
 
 CHANGES:
+    * removed the 'header' directive-like functionality for loading the
+      sample rate from a file. just use a nameless synth_file_reader
+      instead, it's less finnicky than the bodge job that 'header' was.
+
+    * internally, samplerate has become a directive, and now uses the
+      same mechanisms for reading its value as everything else. it is
+      also no longer a forced requirement. if unset, it has a default
+      value. only the first instance of samplerate will do anything, any
+      further instances are ignored.
+
     * REMOVED input_editor and param_editor as no longer required.
 
    * wcnt_exit has a new trigger input, in_trig, which when triggered

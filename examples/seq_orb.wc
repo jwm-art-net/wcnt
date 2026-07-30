@@ -6,7 +6,8 @@ wcnt-1.32/jwmsynth
 //
 //------------------------------------------------------------------------
 
-header header.wch
+synth_file_reader [ filename samplerate.wch ]
+synth_file_reader [ filename time.wch ]
 
 //------------------------------------------------------------------------
 
@@ -16,10 +17,6 @@ orb_freq
 orb_freq
 
 
-synth_file_reader
-timefile
-    filename time.wch
-timefile
 
 riff
 riff1
@@ -155,8 +152,8 @@ g1
 
 copier c1 from g1 to g2 c1
 
-param_editor
-pe1
+editor
+[
     editlist
         edit g2.osc
             tuning_semitones 0.32
@@ -165,7 +162,7 @@ pe1
             b + 0.00002
             c + 0.00002
     editlist
-pe1
+]
 
 
 caps_plate

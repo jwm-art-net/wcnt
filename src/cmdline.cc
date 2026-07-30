@@ -222,10 +222,14 @@ bool cmdline::show_help()
 
 bool cmdline::set_jwm_globals()
 {
-    wcnt::jwm.verbose  = (data[V_IX].par1) ? true : false;
-    wcnt::jwm.dont_run = (data[DONT_RUN_IX].par1) ? true : false;
-    wcnt::jwm.no_title = (data[NO_TITLE_IX].par1) ? true : false;
-    wcnt::jwm.no_progress = (data[NO_PROGRESS_IX].par1) ? true : false;
+    if (data[V_IX].par1)
+        wcnt::jwm.set_verbose();
+    if (data[DONT_RUN_IX].par1)
+        wcnt::jwm.set_dont_run();
+    if (data[NO_TITLE_IX].par1)
+        wcnt::jwm.set_no_title();
+    if (data[NO_PROGRESS].par1)
+        wcnt::jwm.set_no_progress();
 
     if (wcnt::jwm.wc_path || wcnt::jwm.wc_file){
         msg = "\nGlobals (path) being set again... I won't do it.";
@@ -338,7 +342,7 @@ void cmdline::module_help()
     if (smt == synthmod::ERR_TYPE) {
         if (data[MH_IX].par1 != 0 && strcmp(opts[data[MH_IX].par1], "-v") == 0) {
             data[MH_IX].par1 = 0;
-            wcnt::jwm.set_verbose(true);
+            wcnt::jwm.set_verbose();
         }
         module_help_list_all();
         return;

@@ -206,7 +206,5 @@ namespace param
     { BPM_CHANGES_REL,  "bpm_changes_relative", iocat::STATE,   "whether bpm changes are relative (on) or absolute values (off)", 0 },
     { SUFFIX,           "suffix",               iocat::STRING,  "optional text suffix to add after numbering", 0},
     { ZERO_POS,         "zero_pos",             iocat::DOUBLE,  "amount to offset position of zero position", 0}
-
-
  };
 }; // namespace param

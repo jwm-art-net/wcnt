@@ -2,22 +2,18 @@ wcnt-1.32/jwmsynth
 
 samplerate 44100
 
+
+sfr
+[
+    filename header2.wc
+]
+
+
+
 wcnt_exit
-exit
-    exit_bar    999
+[
+    exit_bar    0
     in_bar      off
-exit
-
-param_editor
-pe
-    editlist
-        edit exit
-            exit_bar 0
-    editlist
-pe
-
+]
 
 wcnt-1.32/jwmsynth
-
-
-

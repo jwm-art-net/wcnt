@@ -1,6 +1,6 @@
 wcnt-1.32/jwmsynth
 
-header header.wch
+synth_file_reader [ filename samplerate.wch ]
 
 constant_note note1 name c0 note1
 
@@ -51,20 +51,6 @@ autogroup_create g01
         freq_mod2_size      1.125
     osc-l
 
-
-    copier [ from osc-l to osc-r ]
-
-
-    param_editor
-    pe_lr1
-        editlist
-            edit osc-r
-                freq_mod1_size 1.125
-                freq_mod2_size 1.25
-        editlist
-    pe_lr1
-
-
     wave
     sine-l
         in_phase_step  osc-l out_phase_step
@@ -73,15 +59,20 @@ autogroup_create g01
 
 
     copier [ from sine-l to sine-r ]
+    copier [ from osc-l to osc-r ]
 
 
-    input_editor
-    ie_lr1
+    editor
+    [
         editlist
-            connect sine-r
+            edit osc-r
+                freq_mod1_size 1.125
+                freq_mod2_size 1.25
+            edit sine-r
                 in_phase_step   osc-r out_phase_step
         editlist
-    ie_lr1
+    ]
+
 g01
 
 
@@ -229,11 +220,6 @@ wav1
 wav1
 
 
-wcnt_exit
-wcnt_exit_module
-    in_bar      f1   out_count
-    exit_bar    1
-wcnt_exit_module
-
+wcnt_exit [ in_trig wav1 out_write_end_trig ]
 
 wcnt-1.32/jwmsynth

@@ -12,7 +12,7 @@ wcnt-1.32/jwmsynth
 //       intended - as it does not edit those parameters which
 //       _were_ unchanged.
 
-header header.wch
+synth_file_reader [ filename samplerate.wch ]
 
 // **-----------............._________>>>
 // duration of sound
@@ -52,8 +52,8 @@ orbit-mods
 // **-----------............._________>>>
 // then edit the parameters of the modules...
 
-param_editor
-pe
+editor
+[
     editlist
 
         edit orb_clock1
@@ -69,6 +69,7 @@ pe
 
         edit clock_l
             octave_offset 0
+            in_freq_mod2 orbit2 out_y
             freq_mod1_size 1.25
 
         edit clock_r
@@ -91,17 +92,9 @@ pe
             filename orbit-jwm33.wav
 
     editlist
-pe
+]
 
-// **-----------............._________>>>
-// and an input edit...
 
-input_editor
-ie
-    editlist
-        connect clock_l in_freq_mod2 orbit2 out_y
-    editlist
-ie
 
 // **-----------............._________>>>
 // now read the data objects
@@ -113,7 +106,7 @@ ie
 synth_file_reader
 orbit-dobjs
     filename orbit.wc
-    
+
     mod_action  include_listed
         modules // no modules specified to include...
         modules // ... meaning don't read any of them.

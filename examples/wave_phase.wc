@@ -2,7 +2,7 @@ wcnt-1.32/jwmsynth
 
 // examples/sinewave.wc
 
-header header.wch
+synth_file_reader [ filename samplerate.wch ]
 
 timer
 t1

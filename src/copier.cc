@@ -66,8 +66,7 @@ bool copier::set_to_name(const char* name)
         to_name = new char[strlen(name) + 1];
         strcpy(to_name, name); // copy to to_name
     }
-    if (strcmp(name, dobj::names::get(
-            dobj::LST_EDITS)) == 0)
+    if (strcmp(name, dobj::names::get(dobj::LST_EDITS)) == 0)
         return false;
     if (wcnt::get_dobjlist()->get_dobj_by_name(name))
         return false;

@@ -1,5 +1,4 @@
 wcnt-1.32/jwmsynth
-header header.wch
 
 autogroup_create
 voice-part
@@ -120,14 +119,14 @@ voice-part
     copier c1 from osc1 to osc2 c1
 
 
-    param_editor
-    pe1
+    editor
+    [
         editlist
             edit osc2
                 octave_offset -1
                 tuning_semitones 5
         editlist
-    pe1
+    ]
 
     wave_phase
     wvph
