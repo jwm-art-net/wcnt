@@ -18,10 +18,14 @@ void note_data::register_ui()
 {
     register_param(param::ZERO_POS)->set_flags(ui::UI_OPTION1);
     register_param(param::NAME)->set_flags(ui::UI_OPT2_DUP)
-            ->add_descr("Note name (ie C#0 for mid C sharp).");
+                            ->add_descr("Note name (ie C#0 for mid C sharp).");
     register_param(param::NOTE_POS)->set_flags(ui::UI_OPT2_DUP);
     register_param(param::NOTE_LEN)->set_flags(ui::UI_OPT2_DUP);
     register_param(param::NOTE_VEL)->set_flags(ui::UI_OPT2_DUP);
+    register_param(param::FREQ)->set_flags(ui::UI_OPTION3 | ui::UI_OPT_DUPLICATE);
+    register_param(param::NOTE_POS)->set_flags(ui::UI_OPTION3 | ui::UI_OPT_DUPLICATE);
+    register_param(param::NOTE_LEN)->set_flags(ui::UI_OPTION3 | ui::UI_OPT_DUPLICATE);
+    register_param(param::NOTE_VEL)->set_flags(ui::UI_OPTION3 | ui::UI_OPT_DUPLICATE);
 }
 
 ui::dobjitem_list* note_data::get_ui_items()
@@ -42,6 +46,15 @@ note_data::note_data(const char *name, double pos, double len, double vel)
     #endif
 
 }
+
+note_data::note_data(const char* name, double freq, double pos, double len, double vel)
+ :
+ dobj::base(dobj::SIN_NOTE),
+ note_type(NOTE_TYPE_ERR), frequency(freq), position(pos), length(len), velocity(vel)
+{
+    set_name(name);
+}
+
 
 note_data::~note_data()
 {
@@ -72,6 +85,13 @@ note_data::NOTE_SEL_OP note_data::get_note_sel_op() const
         default:
             return NOTE_SEL_OP_ERR;
     };
+}
+
+double note_data::get_frequency() const
+{
+    if (note_type == NOTE_TYPE_FREQ)
+        return frequency;
+    return note_to_freq(notename);
 }
 
 note_data::NOTE_SEL note_data::get_note_sel() const
@@ -131,6 +151,8 @@ note_data::NOTE_TYPE note_data::get_note_type()
         return (note_type = NOTE_TYPE_NORMAL);
     else if (strcmp(notename, " zero") == 0)
         return (note_type = NOTE_TYPE_ZERO);
+    else if (strcmp(notename, " freq") == 0)
+        return (note_type = NOTE_TYPE_FREQ);
     else {
         retv = note_type = NOTE_TYPE_EDIT;
         if (get_note_sel_op() == NOTE_SEL_OP_ERR) {
@@ -156,11 +178,11 @@ note_data::NOTE_TYPE note_data::get_note_type()
 double note_data::get_note_number() const
 {
     const char* ptr = notename;
-    if (note_type == NOTE_TYPE_ERR)
+    if (note_type == NOTE_TYPE_ERR || note_type == NOTE_TYPE_FREQ)
         return 0;
     if (note_type==NOTE_TYPE_EDIT) ptr += NOTE_CHR_NAME;
     char oct = extract_octave(ptr);
-    double noteno = (60 + oct * 12 + (note_to_noteno(ptr) - 1));
+    double noteno = (60 + oct * 12 + (note_to_note_offset(ptr) - 1));
     return noteno;
 }
 
@@ -191,6 +213,10 @@ bool note_data::set_param(param::TYPE dt, const void* data)
     case param::NAME:
         set_name((const char*)data);
         return true;
+    case param::FREQ:
+        frequency = (*(double*)data);
+        set_name(" freq");
+        return true;
     case param::NOTE_POS:
         set_position(*(double*)data);
         return true;
@@ -214,6 +240,7 @@ const void* note_data::get_param(param::TYPE dt) const
     switch(dt)
     {
         case param::NAME:      return notename;
+        case param::FREQ:      return &frequency;
         case param::NOTE_POS:  return &position;
         case param::NOTE_LEN:  return &length;
         case param::NOTE_VEL:  return &velocity;
@@ -231,6 +258,9 @@ errors::TYPE note_data::validate()
         return errors::NOTENAME;
     } else if (note_type == NOTE_TYPE_EDIT)
         return errors::NO_ERROR;
+    else if (note_type == NOTE_TYPE_FREQ) {
+        // FIXME: error check freq here
+    }
 
     if (!validate_param(param::NOTE_POS, errors::RANGE_COUNT))
         return errors::RANGE_COUNT;

@@ -64,7 +64,7 @@ seq1
 wavfilein
 drumloop
     filename    samples/crappytvsamplev2.wav
-    root_note   c0
+    root_note   c4
 drumloop
 
 sampler
@@ -117,17 +117,17 @@ riff
 riff2
     quarter_value 1
     notelist
-        note name c0 pos 0 len 8 vel 0.0
-        note name c0 pos 8 len 7 vel 1.0
-        note name c0 pos 16 len 8 vel 1.0
-        note name c0 pos 24 len 7 vel 1.0
-        note name c0 pos 32 len 8 vel 1.0
-        note name c0 pos 40 len 7 vel 1.0
-        note name c0 pos 48 len 8 vel 1.0
-        note name b-1 pos 56 len 2 vel 1.0
-        note name a-1 pos 58 len 2 vel 1.0
-        note name g-1 pos 60 len 2 vel 1.0
-        note name f-1 pos 62 len 2 vel 1.0
+        note name c4 pos 0 len 8 vel 0.0
+        note name c4 pos 8 len 7 vel 1.0
+        note name c4 pos 16 len 8 vel 1.0
+        note name c4 pos 24 len 7 vel 1.0
+        note name c4 pos 32 len 8 vel 1.0
+        note name c4 pos 40 len 7 vel 1.0
+        note name c4 pos 48 len 8 vel 1.0
+        note name b3 pos 56 len 2 vel 1.0
+        note name a3 pos 58 len 2 vel 1.0
+        note name g3 pos 60 len 2 vel 1.0
+        note name f3 pos 62 len 2 vel 1.0
     notelist
 riff2
 
@@ -135,17 +135,17 @@ riff
 riff2b
     quarter_value 1
     notelist
-        note name c0 pos 0 len 8 vel 1.0
-        note name c0 pos 8 len 7 vel 1.0
-        note name c0 pos 16 len 8 vel 1.0
-        note name c0 pos 24 len 7 vel 1.0
-        note name c0 pos 32 len 8 vel 1.0
-        note name c0 pos 40 len 7 vel 1.0
-        note name c0 pos 48 len 8 vel 1.0
-        note name b-1 pos 56 len 2 vel 1.0
-        note name a-1 pos 58 len 2 vel 1.0
-        note name g-1 pos 60 len 2 vel 1.0
-        note name f-1 pos 62 len 0.5 vel 1.0
+        note name c4 pos 0 len 8 vel 1.0
+        note name c4 pos 8 len 7 vel 1.0
+        note name c4 pos 16 len 8 vel 1.0
+        note name c4 pos 24 len 7 vel 1.0
+        note name c4 pos 32 len 8 vel 1.0
+        note name c4 pos 40 len 7 vel 1.0
+        note name c4 pos 48 len 8 vel 1.0
+        note name b3 pos 56 len 2 vel 1.0
+        note name a3 pos 58 len 2 vel 1.0
+        note name g3 pos 60 len 2 vel 1.0
+        note name f3 pos 62 len 0.5 vel 1.0
     notelist
 riff2b
 

@@ -2,7 +2,7 @@ wcnt-1.32/jwmsynth
 
 synth_file_reader [ filename samplerate.wch ]
 
-constant_note note1 name c0 note1
+constant_note note1 name c4 note1
 
 constant one value 1.0 one
 

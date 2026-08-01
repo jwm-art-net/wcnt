@@ -61,8 +61,8 @@ constant   cow-note1    value 400     cow-note1
 constant   cow-note2    value 500     cow-note2
 constant   cow-note3    value 600     cow-note3
 
-constant_note   snare-note  name c1     snare-note
-constant_note   kick-note   name e-2    kick-note
+constant_note   snare-note  name c5     snare-note
+constant_note   kick-note   name e2    kick-note
 
 
 synth_file_reader

@@ -16,10 +16,10 @@ riff
 riff1
     quarter_value 4
     notelist
-        note name c0 pos 0  len 4.5 vel 1.0
-        note name d0 pos 6  len 3.5 vel 1.0
-        note name a0 pos 8  len 2.5 vel 1.0
-        note name g0 pos 12 len 3.5 vel 1.0
+        note name c4 pos 0  len 4.5 vel 1.0
+        note name d4 pos 6  len 3.5 vel 1.0
+        note name a4 pos 8  len 2.5 vel 1.0
+        note name g4 pos 12 len 3.5 vel 1.0
     notelist
 riff1
 

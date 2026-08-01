@@ -12,7 +12,7 @@ t
     recycle_mode off
 t
 
-constant_note n name c0 n
+constant_note n name c4 n
 
 osc_clock
 osc1

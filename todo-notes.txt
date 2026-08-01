@@ -1,6 +1,31 @@
 
 //---------------------------
 
+    * the standard non-verbose method for displaying help for optional
+      items in a module or data object is currently broken.
+      a method (such as introducing a new flag) is required such that
+      the module can specify which is the best for standard help.
+        - priority: low-medium
+        - effort: medium-high
+        - look at note_data specifically, the frequency option has it
+          such that the pos, len, vel parameters are duplicated in the
+          registration - this is because of the zero_pos option
+          requires pos, len, vel being brought into the multiple choice
+          group. i haven't actually tested this mechanism properly yet
+          but it appears to work for duplication so far.
+
+    * some data objects and modules have validation code within the
+      set methods, some (data objects specifically) have action code in
+      their validation method (rather than the newly introduced
+      do_action method).
+        - priority: low-medium
+        - effort: high
+
+    * copier - partial implementation of suffix parameter - validation
+      of 'to' is performed without consideration of suffix or numbering.
+        - priority: low-medium
+        - effort: medium-high
+
     * Add command line help for directives
         - priority: low-cba
         - effort: medium - mainly assessment/decision of what/how

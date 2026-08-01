@@ -133,7 +133,7 @@ stepper1
 wavfilein
 drloop
     filename    samples/drumloop01-2b.wav
-    root_note   c0
+    root_note   c4
 drloop
 
 clock

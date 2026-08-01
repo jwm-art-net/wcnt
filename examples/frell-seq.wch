@@ -5,10 +5,10 @@ riff
 1note_riff // ok so it's got more, so what.
     quarter_value 1
     notelist
-    note name c-2    pos 0   len 24 vel 1.0
-    note name e-1    pos 32   len 26 vel 1.0
-    note name g0    pos 64   len 28 vel 1.0
-    note name b1    pos 96   len 28 vel 1.0
+    note name c2    pos 0   len 24 vel 1.0
+    note name e3    pos 32   len 26 vel 1.0
+    note name g4    pos 64   len 28 vel 1.0
+    note name b5    pos 96   len 28 vel 1.0
     notelist
 1note_riff
 
@@ -16,11 +16,11 @@ riff
 riff1
     quarter_value 16
     notelist
-    note name c0    pos 0   len 7  vel 1.0
-    note name d0    pos 8   len 7  vel 1.0
-    note name c1    pos 16  len 7  vel 1.0
-    note name f0    pos 32  len 7  vel 1.0
-    note name f0    pos 48  len 7  vel 1.0
+    note name c4    pos 0   len 7  vel 1.0
+    note name d4    pos 8   len 7  vel 1.0
+    note name c5    pos 16  len 7  vel 1.0
+    note name f4    pos 32  len 7  vel 1.0
+    note name f4    pos 48  len 7  vel 1.0
     notelist
 riff1
 
@@ -28,11 +28,11 @@ riff
 riff2
     quarter_value 16
     notelist
-    note name c0    pos 0   len 63 vel 1.0
-    note name d0    pos 8   len 7  vel 1.0
-    note name c1    pos 16  len 7  vel 1.0
-    note name f0    pos 32  len 7  vel 1.0
-    note name f0    pos 48  len 7  vel 1.0
+    note name c4    pos 0   len 63 vel 1.0
+    note name d4    pos 8   len 7  vel 1.0
+    note name c5    pos 16  len 7  vel 1.0
+    note name f4    pos 32  len 7  vel 1.0
+    note name f4    pos 48  len 7  vel 1.0
     notelist
 riff2
 

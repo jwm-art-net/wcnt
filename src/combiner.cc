@@ -4,7 +4,7 @@
 
 combiner::combiner(const char* uname) :
  synthmod::base(synthmod::COMBINER, uname, SM_HAS_OUT_OUTPUT),
- linkedlist(MULTIREF_OFF, PRESERVE_DATA),
+ linkedlist(MULTIREF_ON, PRESERVE_DATA),
  out_output(0), meantotal(OFF), sigs(0), sigcount(0)
 {
     register_output(output::OUT_OUTPUT);
@@ -13,7 +13,7 @@ combiner::combiner(const char* uname) :
 void combiner::register_ui()
 {
     register_dobj(dobj::LST_SIGNALS, dobj::DOBJ_SYNTHMOD);
-    register_param(param::MEAN_TOTAL);
+    register_param(param::MEAN_TOTAL)->set_flags(ui::UI_OPTIONAL);
 }
 
 ui::moditem_list* combiner::get_ui_items()
@@ -65,11 +65,12 @@ synthmod::base* combiner::duplicate_module(const char* uname, DUP_IO dupio)
 
 errors::TYPE combiner::validate()
 {
+    /*
     if (!goto_first() || !goto_next()) {
         sm_err("%s", " signals to combine");
         invalidate();
         return errors::ATLEAST2;
-    }
+    }*/
     return errors::NO_ERROR;
 }
 

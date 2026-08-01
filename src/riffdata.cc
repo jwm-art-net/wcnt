@@ -46,6 +46,7 @@ note_data* riffdata::insert_and_position_note(note_data* newnote)
     switch(newnote->get_note_type())
     {
         case note_data::NOTE_TYPE_NORMAL:
+        case note_data::NOTE_TYPE_FREQ:
             newnote->set_position(zero_pos + newnote->get_position());
             return ordered_insert(this, newnote, &note_data::get_position)->get_data();
         case note_data::NOTE_TYPE_ZERO:
@@ -53,13 +54,10 @@ note_data* riffdata::insert_and_position_note(note_data* newnote)
         default:
             return edit_notes(newnote);
     }
-std::cout << "yes seems we're doing it\nbefore:"<< zero_pos;
 
     // Handle NOTE_TYPE_ZERO
 
     zero_pos += newnote->get_position();
-
-    std::cout <<" after " << zero_pos << std::endl;
 
     return newnote;
 }
@@ -308,9 +306,10 @@ dobj::base* riffdata::duplicate_dobj(const char* name)
                   note->get_name(), note->get_position(), note->get_length(),
                   note->get_velocity());
         note_data* dupnote = new note_data(note->get_name(),
-                                    note->get_position(),
-                                    note->get_length(),
-                                    note->get_velocity());
+                                           note->get_frequency(),
+                                           note->get_position(),
+                                           note->get_length(),
+                                           note->get_velocity());
         dupriff->insert_and_position_note(dupnote);
         note = goto_next();
     }

@@ -8,7 +8,7 @@ timer
 t1
     timings
         time seconds 0.0
-        time seconds 10.0
+        time seconds 30.0
     timings
     time_is_relative off
 t1

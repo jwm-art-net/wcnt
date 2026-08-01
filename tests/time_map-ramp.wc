@@ -1,0 +1,44 @@
+wcnt-1.32/jwmsynth
+
+samplerate 44100
+
+time_map
+time
+    meter_map
+        meter   tsig 4/4    bar 0
+    meter_map
+    bpm_changes_relative off
+    bpm_map
+        tempo   bpm 100  bar 0
+        tempo   bpm 30   bar 1
+        tempo   bpm 180  bar 1
+        tempo   bpm 280  bar 1
+        tempo   bpm 140  bar 2
+    bpm_map
+time
+
+
+lfo_clock
+c
+    in_phase_trig off
+    freq 8
+c
+
+
+inspector
+[
+    _in_float_trig_     c out_phase_trig
+    _in_float_          time out_bpm
+    _float_msg_         bpm:
+]
+
+wcnt_exit
+exit
+    in_bar      time out_bar
+    exit_bar    3
+exit
+
+wcnt-1.32/jwmsynth
+
+
+

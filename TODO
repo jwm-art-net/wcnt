@@ -5,6 +5,11 @@ July 2026
 
 TODO NEW FEATURES FOR A FUTURE RELEASE (not next release)
 
+    * the standard non-verbose method for displaying help for optional
+      items in a module or data object currently does not display the
+      most suitable items for standard help out of those available.
+      a specific flag for determining this could be introduced.
+
     * In data objects and modules:
         1) remove validation code from set_param methods
         2) remove action code from validate methods
@@ -17,6 +22,7 @@ TODO NEW FEATURES FOR A FUTURE RELEASE (not next release)
     * Add command line help for directives
 
     * the riff_editor note notation is horribly user unfriendly.
+      - doesn't handle notes with frequency specified.
 
     * functionality to delete modules and rename modules
 

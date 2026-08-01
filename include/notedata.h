@@ -40,6 +40,7 @@ class note_data : public dobj::base
     enum NOTE_TYPE {
         NOTE_TYPE_ERR = -1,
         NOTE_TYPE_NORMAL = 0,
+        NOTE_TYPE_FREQ,
         NOTE_TYPE_EDIT,
         NOTE_TYPE_ZERO
     };
@@ -83,6 +84,7 @@ class note_data : public dobj::base
     };
     note_data();
     note_data(const char* name, double pos, double len, double vel);
+    note_data(const char* name, double freq, double pos, double len, double vel);
     ~note_data();
     // set_name and get_name set and return the entire notename string
     void set_name(const char * n);
@@ -91,6 +93,7 @@ class note_data : public dobj::base
     void set_velocity(double v) { velocity = v; }
 
     const char* get_name() const{ return notename; }
+    double get_frequency() const;
     double get_length() const   { return length; }
     double get_position()const  { return position; }
     double get_velocity() const { return velocity; }
@@ -124,6 +127,7 @@ class note_data : public dobj::base
  private:
     NOTE_TYPE note_type;
     char notename[wcnt::note_array_size];
+    double frequency;
     double position;
     double length;
     double velocity;

@@ -296,10 +296,24 @@ note_data* sequencer::posconv_note(note_data* rn)
 {
     // create new note using its length to store note off position,
     // convert to time_map TPQN, and transpose.
-    const char* tr_notename =
-        transpose_notename(rn->get_name(), out_transpose);
+
+    const char* tr_notename = 0;
+    double tr_freq = 0;
+    switch (rn->get_note_type())
+    {
+        case note_data::NOTE_TYPE_NORMAL:
+            tr_notename = transpose_notename(rn->get_name(), out_transpose);
+            break;
+        case note_data::NOTE_TYPE_FREQ:
+            tr_freq = transpose_frequency(rn->get_frequency(), out_transpose);
+            tr_notename = strdup(" freq");
+            break;
+        default:
+            break;
+    }
     note_data* newnote = new note_data(
                         tr_notename,
+                        tr_freq,
                         rn->get_position() * posconv,
                         (rn->get_position() + rn->get_length()) * posconv,
                         rn->get_velocity());
@@ -329,10 +343,18 @@ void sequencer::output_note(note_data* note)
 {
     if (out_notename)
         delete [] out_notename;
-    char* name = new char[strlen(note->get_name()) + 1];
-    strcpy(name, note->get_name());
-    out_notename = name;
-    out_freq = note_to_freq(out_notename);
+
+    out_notename = strdup(note->get_name());
+    switch(note->get_note_type()) {
+        case note_data::NOTE_TYPE_NORMAL:
+            out_freq = note_to_freq(out_notename);
+            break;
+        case note_data::NOTE_TYPE_FREQ:
+            out_freq = note->get_frequency();
+            break;
+        default:
+            break;
+    }
     out_velocity = note->get_velocity();
     if (velrsp_max_samps > 0) {
         vel_stpsize = (double)(out_velocity - out_velocity_ramp)

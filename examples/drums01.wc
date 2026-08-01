@@ -49,7 +49,7 @@ t3
 wavfilein
 drumloop
     filename    samples/drumloop01-2b.wav
-    root_note   c0
+    root_note   c4
 drumloop
 
 sampler
@@ -94,7 +94,7 @@ riff
 riff1
     quarter_value 1
     notelist
-        note name c0 pos 0 len 64 vel 1.0
+        note name c4 pos 0 len 64 vel 1.0
     notelist
 riff1
 

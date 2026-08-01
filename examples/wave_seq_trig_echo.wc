@@ -145,18 +145,6 @@ wcnt_exit_module
     exit_bar    1
 wcnt_exit_module
 
-inspector
-i
-    _in_int_          tcount out_count
-    _in_int_trig_     clockt out_phase_trig
-    _int_msg_         tcount:_______out_count:
-
-    _in_state_              tcount out_play_state
-    _in_state_trig_         clockt out_phase_trig
-    _state_msg_             tcount:__out_play_state:
-i
-
-
 wcnt-1.32/jwmsynth
 
 

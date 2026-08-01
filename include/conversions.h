@@ -25,13 +25,15 @@ double note_to_freq(const char *note_name, char oct_offset, double semitones);
 
 // transpose one note name to another note name
 const char* transpose_notename(const char* note_name, char semitones);
+double transpose_frequency(double freq, char semitones);
 
 // helper functions used by note_to_???? functions
 // (check_notename no longer accepts e# and b#)
 bool check_notename(const char *n);
-// note name should be checked before calling these two
-// note that note_to_noteno does not consider octaves.
-char note_to_noteno(const char* note_name);
+// note name should be checked before calling these three:
+// note offset is note number within the octave (ie 1 ~ 12).
+char note_to_note_offset(const char* note_name);
+char note_to_midi_no(const char* note_name);
 char extract_octave(const char* note_name);
 
 // miscellaneous conversions

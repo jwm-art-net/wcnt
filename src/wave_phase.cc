@@ -20,7 +20,7 @@ wave_phase::wave_phase(const char* uname) :
 void wave_phase::register_ui()
 {
     register_param(param::WAVE_TYPE, wave_tables::fxstring);
-    register_input(input::IN_PHASE_TRIG);
+    register_input(input::IN_PHASE_TRIG)->add_descr("the wave_phase module MUST be triggered!");
     register_input(input::IN_PHASE_STEP);
     register_param(param::TRIG_RESET_PHASE);
     register_param(param::START_PHASE)   ->set_flags(ui::UI_OPTIONAL);
@@ -173,7 +173,7 @@ errors::TYPE wave_phase::validate()
 void wave_phase::run()
 {
     if (play_state == OFF || reset_phase == ON) {
-        if (zero_when_off == ON)
+        if (play_state == OFF && zero_when_off == ON)
             output = 0.0;
         if (*in_phase_trig == ON)
         {

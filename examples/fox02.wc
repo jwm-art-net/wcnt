@@ -45,15 +45,15 @@ riff
 riff1z
     quarter_value   64
     notelist
-        note name c0  pos 0    len 28  vel 1.0
-        note name d0  pos 32   len 12  vel 1.0
-        note name d0  pos 48   len 32  vel 1.0
-        note name c0  pos 84   len 21  vel 1.0
-        note name e0  pos 112  len 12  vel 1.0
-        note name c0  pos 128  len 42  vel 1.0
-        note name e0  pos 176  len 12  vel 1.0
-        note name c0  pos 192  len 12  vel 1.0
-        note name e0  pos 224  len 12  vel 1.0
+        note name c4  pos 0    len 28  vel 1.0
+        note name d4  pos 32   len 12  vel 1.0
+        note name d4  pos 48   len 32  vel 1.0
+        note name c4  pos 84   len 21  vel 1.0
+        note name e4  pos 112  len 12  vel 1.0
+        note name c4  pos 128  len 42  vel 1.0
+        note name e4  pos 176  len 12  vel 1.0
+        note name c4  pos 192  len 12  vel 1.0
+        note name e4  pos 224  len 12  vel 1.0
     notelist
 riff1z
 
@@ -61,22 +61,22 @@ riff
 riff1
     quarter_value   64
     notelist
-        note name c0  pos 0    len 11  vel 1.0
-        note name c0  pos 12   len 11  vel 1.0
-        note name d0  pos 32   len 11  vel 1.0
-        note name d0  pos 48   len 11  vel 1.0
-        note name c0  pos 64   len 11  vel 1.0
-        note name c0  pos 84   len 11  vel 1.0
-        note name e0  pos 96   len 11  vel 1.0
-        note name e0  pos 112  len 11  vel 1.0
-        note name c0  pos 128  len 11  vel 1.0
-        note name c0  pos 144  len 11  vel 1.0
-        note name d0  pos 160  len 11  vel 1.0
-        note name e0  pos 176  len 11  vel 1.0
-        note name c0  pos 192  len 11  vel 1.0
-        note name c0  pos 208  len 11  vel 1.0
-        note name e0  pos 224  len 11  vel 1.0
-        note name d0  pos 240  len 11  vel 1.0
+        note name c4  pos 0    len 11  vel 1.0
+        note name c4  pos 12   len 11  vel 1.0
+        note name d4  pos 32   len 11  vel 1.0
+        note name d4  pos 48   len 11  vel 1.0
+        note name c4  pos 64   len 11  vel 1.0
+        note name c4  pos 84   len 11  vel 1.0
+        note name e4  pos 96   len 11  vel 1.0
+        note name e4  pos 112  len 11  vel 1.0
+        note name c4  pos 128  len 11  vel 1.0
+        note name c4  pos 144  len 11  vel 1.0
+        note name d4  pos 160  len 11  vel 1.0
+        note name e4  pos 176  len 11  vel 1.0
+        note name c4  pos 192  len 11  vel 1.0
+        note name c4  pos 208  len 11  vel 1.0
+        note name e4  pos 224  len 11  vel 1.0
+        note name d4  pos 240  len 11  vel 1.0
     notelist
 riff1
 
@@ -107,13 +107,13 @@ seq1
 wavfilein
 drumloop1
     filename    samples/fox.wav
-    root_note   c0
+    root_note   c4
 drumloop1
 
 wavfilein
 drumloop2
     filename    samples/fox.wav
-    root_note   c0
+    root_note   c4
 drumloop2
 
 sampler

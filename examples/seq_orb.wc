@@ -13,7 +13,7 @@ synth_file_reader [ filename time.wch ]
 
 constant_note
 orb_freq
-    name c0
+    name c4
 orb_freq
 
 
@@ -22,17 +22,17 @@ riff
 riff1
     quarter_value   64
     notelist
-        note name c0   pos 0    len 60  vel 1.0
-        note name c1   pos 32   len 16  vel 1.0
-        note name f0   pos 64   len 60  vel 1.0
-        note name c1   pos 96   len 12  vel 1.0
-        note name e0   pos 112  len 8   vel 1.0
-        note name c0   pos 128  len 60  vel 1.0
-        note name c1   pos 160  len 52  vel 1.0
-        note name e0   pos 172  len 16  vel 1.0
-        note name c-1  pos 192  len 16  vel 1.0
-        note name e1   pos 208  len 12  vel 1.0
-        note name g1   pos 224  len 16  vel 1.0
+        note name c4   pos 0    len 60  vel 1.0
+        note name c5   pos 32   len 16  vel 1.0
+        note name f4   pos 64   len 60  vel 1.0
+        note name c5   pos 96   len 12  vel 1.0
+        note name e4   pos 112  len 8   vel 1.0
+        note name c4   pos 128  len 60  vel 1.0
+        note name c5   pos 160  len 52  vel 1.0
+        note name e4   pos 172  len 16  vel 1.0
+        note name c3   pos 192  len 16  vel 1.0
+        note name e5   pos 208  len 12  vel 1.0
+        note name g5   pos 224  len 16  vel 1.0
     notelist
 riff1
 

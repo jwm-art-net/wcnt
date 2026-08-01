@@ -56,6 +56,7 @@ private:
     STATUS out_bpm_change_trig;
     STATUS out_meter_change_trig;
     STATUS out_bpm_change_state;
+    STATUS out_start_trig;
     // params
     STATUS bpm_changes_rel;
     // list variables

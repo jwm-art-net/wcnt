@@ -114,7 +114,7 @@ bool edit::do_mod_actions(synthmod::base* sm)
                     itemname.c_str(), synthmod::names::get(sm->get_module_type()), targetname);
             return false;
         }
-        D_BUG("item name '%s' valstr '%s'\n", itemname, valstr);
+        D_BUG("item name '%s' valstr '%s'\n", itemname.c_str(), valstr.c_str());
         if (setpar::is_operator(valstr.c_str())) {
             std::string n;
             strm >> n;
@@ -131,7 +131,7 @@ bool edit::do_mod_actions(synthmod::base* sm)
         const char* out = 0;
         // determine if item is parameter or input
         ui::moditem* item = items->match_item(itemname.c_str());
-        D_BUG("item name: '%s'\n", itemname);
+        D_BUG("item name: '%s'\n", itemname.c_str());
 
         switch(item->get_item_type())
         {
@@ -184,7 +184,7 @@ bool edit::do_dobj_actions(dobj::base* dbj)
                     itemname.c_str(), dobj::names::get(dbj->get_object_type()), targetname);
             return false;
         }
-        D_BUG("item name '%s' valstr '%s'\n", itemname, valstr);
+        D_BUG("item name '%s' valstr '%s'\n", itemname.c_str(), valstr.c_str());
         if (setpar::is_operator(valstr.c_str())) {
             std::string n;
             strm >> n;
@@ -200,17 +200,17 @@ bool edit::do_dobj_actions(dobj::base* dbj)
         D_BUG("___dobj item___\n");
         // determine if item is parameter or input
         ui::dobjitem* item = items->match_item(itemname.c_str());
-        D_BUG("item name: '%s'\n", itemname);
 
-        if (item->get_item_type() == ui::UI_PARAM) {
-            if (!dobj_edit_param(dbj, itemname.c_str(), valstr.c_str()))
-                return false;
-        }
-        else {
+        if (!item) {
             dobjerr("Error matching item %s in module of type %s named %s\n",
                     itemname.c_str(), dobj::names::get(dbj->get_object_type()), targetname);
             return false;
         }
+
+        D_BUG("item name: '%s'\n", itemname.c_str());
+
+        if (item->get_item_type() == ui::UI_PARAM)
+            return dobj_edit_param(dbj, itemname.c_str(), valstr.c_str());
 
         strm >> itemname;
     }

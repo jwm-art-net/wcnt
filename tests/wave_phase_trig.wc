@@ -1,0 +1,72 @@
+wcnt-1.32/jwmsynth
+
+samplerate 44100
+
+
+timer
+t
+    timings
+        time seconds 0
+        time seconds 1
+    timings
+    time_is_relative off
+t
+
+
+time_map
+time1
+    meter_map
+        meter tsig 4/4 bar 0
+    meter_map
+
+    bpm_changes_relative off
+
+    bpm_map
+        tempo bpm 90 bar 0
+    bpm_map
+time1
+
+constant_note n2f name c-1 n2f
+
+
+wave_phase
+wp
+    in_phase_trig       time1 out_start_trig
+    in_phase_step       n2f out_phase_step
+    type                sine
+    on_trig_reset_phase off
+    recycle_mode        off
+    zero_when_off       on
+wp
+
+
+inspector
+[
+    _in_float_      off
+    _float_msg_     triggered!
+    _in_float_trig_ time1 out_start_trig
+]
+
+wavfile_out
+wav
+    in_signal   wp out_output
+    in_bar      t out_count
+    snapshot_mode off
+    data_format pcm16
+    filename    wave_phase_trig.wav
+    start_bar   0
+    end_bar     1
+wav
+
+
+wcnt_exit
+exit
+    in_bar      t out_count
+    exit_bar    1
+exit
+
+
+wcnt-1.32/jwmsynth
+
+
+

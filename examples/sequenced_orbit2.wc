@@ -29,17 +29,17 @@ riff
 riffl
     quarter_value   16
     notelist
-        note name c#0  pos 0  len 6  vel 1.0
-        note name a0  pos 8  len 3  vel 1.0
-        note name e0  pos 12 len 3  vel 1.0
-        note name c#0 pos 16 len 3  vel 1.0
-        note name f#1 pos 20 len 3  vel 1.0
-        note name a0  pos 24 len 3  vel 1.0
-        note name d0  pos 28 len 2  vel 1.0
-        note name f#0 pos 32 len 7  vel 1.0
-        note name f#1 pos 44 len 3  vel 1.0
-        note name d0  pos 48 len 3  vel 1.0
-        note name e1  pos 52 len 7  vel 1.0
+        note name c#4  pos 0  len 6  vel 1.0
+        note name a4  pos 8  len 3  vel 1.0
+        note name e4  pos 12 len 3  vel 1.0
+        note name c#4 pos 16 len 3  vel 1.0
+        note name f#5 pos 20 len 3  vel 1.0
+        note name a4  pos 24 len 3  vel 1.0
+        note name d4  pos 28 len 2  vel 1.0
+        note name f#4 pos 32 len 7  vel 1.0
+        note name f#5 pos 44 len 3  vel 1.0
+        note name d4  pos 48 len 3  vel 1.0
+        note name e5  pos 52 len 7  vel 1.0
     notelist
 riffl
 

@@ -14,7 +14,7 @@ void logictrigger::register_ui()
     register_input(input::IN_TRIG1);
     register_param(param::LOGICFUNC, "and|or|xor|xornot");
     register_input(input::IN_TRIG2);
-    register_param(param::PRECISION);
+    register_param(param::PRECISION)->set_flags(ui::UI_OPTIONAL);
 }
 
 ui::moditem_list* logictrigger::get_ui_items()

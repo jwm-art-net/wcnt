@@ -24,13 +24,15 @@ double note_to_step(
 
 double freq_to_step(double freq)
 {
-    if (freq == 0) return 0;
+    if (freq == 0)
+        return 0;
     return 360.0 / ((double)wcnt::jwm.samplerate() / freq);
 }
 
 double freq_to_step(double freq, char oct_offset)
 {
-    if (freq == 0) return 0;
+    if (freq == 0)
+        return 0;
     double fr = 1;
     if (oct_offset > 0)
         fr = 2 * oct_offset;
@@ -41,7 +43,8 @@ double freq_to_step(double freq, char oct_offset)
 
 double freq_to_step(double freq, char oct_offset, double semitones)
 {
-    if (freq == 0) return 0;
+    if (freq == 0)
+        return 0;
     double fr = 1;
     if (oct_offset > 0)
         fr = 2 * oct_offset;
@@ -53,29 +56,21 @@ double freq_to_step(double freq, char oct_offset, double semitones)
 
 double note_to_freq(const char* note_name)
 {
-    if (!check_notename(note_name)) return 0;
-    char note_no = note_to_noteno(note_name);
-    char oct = extract_octave(note_name);
-    return 440 * pow(2, oct + (double)(note_no - 10) / 12);
+    return note_to_freq(note_name, 0);
 }
 
 double note_to_freq(const char *note_name, char oct_offset)
 {
-    if (!check_notename(note_name)) return 0;
-    char note_no = note_to_noteno(note_name);
-    char oct = extract_octave(note_name);
-    return 440 * pow(2, (oct + oct_offset) + (double)(note_no - 10) / 12);
-
+    if (!check_notename(note_name))
+        return 0;
+    char note_offset = note_to_note_offset(note_name);
+    char oct_dif = extract_octave(note_name) - 4;
+    return 440 * pow(2, (oct_dif + oct_offset) + (double)(note_offset - 9) / 12);
 }
 
-double note_to_freq(
- const char* note_name, char oct_offset, double semitones)
+double note_to_freq(const char* note_name, char oct_offset, double semitones)
 {
-    if (!check_notename(note_name)) return 0;
-    char note_no = note_to_noteno(note_name);
-    char oct = extract_octave(note_name);
-    double freq =
-        440 * pow(2, (oct + oct_offset) + (double)(note_no - 10) / 12);
+    double freq = note_to_freq(note_name, oct_offset);
     return freq * pow(2, (semitones / 12));
 }
 
@@ -87,10 +82,12 @@ const char* transpose_notename(const char* note_name, char semitones)
         sub_oct = semitones / 12 - 1;
         semitones -= (sub_oct ) * 12;
     }
-    char note_no = note_to_noteno(note_name) + semitones - 1;
+    char note_no = note_to_note_offset(note_name) + semitones;
     char oct = extract_octave(note_name) + sub_oct + note_no / 12;
-    if (oct < -9) oct = -9;
-    else if (oct > 9) oct = 9;
+    if (oct < -1)
+        oct = -1;
+    else if (oct > 9)
+        oct = 9;
     int scalepos = (note_no % 12) * 2 + 1;
     const char* scale = " c c#d d#e f f#g g#a a#b";
     char* newname = new char[3];
@@ -105,6 +102,12 @@ const char* transpose_notename(const char* note_name, char semitones)
     delete [] newname;
     return newnotename;
 }
+
+double transpose_frequency(double freq, char semitones)
+{
+    return freq * pow(2.0, semitones / 12.0);
+}
+
 
 bool check_notename(const char *n)
 {
@@ -130,7 +133,8 @@ bool check_notename(const char *n)
     return true;
 }
 
-char note_to_noteno(const char* note_name)
+
+char note_to_note_offset(const char* note_name)
 {// does not check notename because it's done before this is called
     const char* scale = " c c#d d#e f f#g g#a a#b";
     char name[3];
@@ -140,8 +144,17 @@ char note_to_noteno(const char* note_name)
         name[2] = '\0';
     }
     else name[1] = '\0';
-    return (1 + strstr(scale, name) - scale) / 2.0f;
+
+    return (1 + strstr(scale, name) - scale) / 2.0f - 1;
 }
+
+char note_to_midi_no(const char* note_name)
+{
+    char offset = note_to_note_offset(note_name);
+    char octave = extract_octave(note_name);
+    return 12 * (octave + 1) + offset;
+}
+
 
 char extract_octave(const char* note_name)
 {// does not check notename because it's done before this is called

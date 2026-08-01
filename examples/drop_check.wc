@@ -68,8 +68,8 @@ swave2
     type sine
 swave2
 
-constant_note n1 name c-1 n1
-constant_note n2 name c#1 n2
+constant_note n1 name c3 n1
+constant_note n2 name c#5 n2
 
 wcnt_signal nws1 in_signal n1 out_frequency nws1
 wcnt_signal nws2 in_signal n2 out_frequency nws2
@@ -174,13 +174,13 @@ uwave2
 // param_editor to change the note names. this would take up a few more
 // lines, but it handles the naming of the modules much more sanely.
 
-constant_note nn1 name e0 nn1
-constant_note nn2 name f0 nn2
-constant_note nn3 name e-1 nn3
-constant_note nn3i name f-1 nn3i
-constant_note nn3ii name d-1 nn3ii
-constant_note nn3iii name b-1 nn3iii
-constant_note nn3iiii name g-1 nn3iiii
+constant_note nn1 name e4 nn1
+constant_note nn2 name f4 nn2
+constant_note nn3 name e3 nn3
+constant_note nn3i name f3 nn3i
+constant_note nn3ii name d3 nn3ii
+constant_note nn3iii name b3 nn3iii
+constant_note nn3iiii name g3 nn3iiii
 
 wcnt_signal nnws1 in_signal nn1 out_phase_step nnws1
 wcnt_signal nnws2 in_signal nn2 out_phase_step nnws2

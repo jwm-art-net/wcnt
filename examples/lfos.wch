@@ -1,0 +1,60 @@
+wcnt-1.32/jwmsynth
+
+
+autogroup_create
+vlfo1
+
+    wcnt_trigger note_on    in_trig off note_on
+
+    clock c freq 10.0 c
+
+    wave_phase
+    _w
+        type sine
+        in_phase_trig   note_on out_trig
+        on_trig_reset_phase on
+        recycle_mode on
+        in_phase_step c out_phase_step
+    _w
+
+    lfo_controller
+    w
+        in_trig         note_on out_trig
+        start_level 0
+        delay_time 5
+        ramp_time 10
+        end_level 1.0
+        in_waveform _w out_output
+        response_time 5
+    w
+vlfo1
+
+autogroup_create
+glfo1
+
+    wcnt_trigger note_on    in_trig off note_on
+
+    clock c freq 0.04 c
+
+    wave_phase
+    _w
+        type sine
+        in_phase_trig   note_on out_trig
+        on_trig_reset_phase off
+        recycle_mode on
+        in_phase_step c out_phase_step
+    _w
+
+    lfo_controller
+    w
+        in_trig         note_on out_trig
+        start_level 1.0
+        delay_time 25
+        ramp_time 30
+        end_level 1.0
+        in_waveform _w out_output
+        response_time 5
+    w
+glfo1
+
+wcnt-1.32/jwmsynth

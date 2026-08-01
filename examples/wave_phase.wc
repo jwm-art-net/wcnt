@@ -30,7 +30,7 @@ lfowave2
     type tri
 lfowave2
 
-constant_note note name a-2 note
+constant_note note name a2 note
 
 osc_clock
 clocka

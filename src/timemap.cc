@@ -9,7 +9,7 @@ timemap::timemap(const char* uname) :
  out_bar(0), out_bar_trig(OFF), out_pos_in_bar(0), out_pos_step_size(0),
  out_bpm(0.0), out_sample_total(0), out_sample_in_bar(0),
  out_beats_per_bar(0), out_beat_value(0), out_bpm_change_trig(OFF),
- out_meter_change_trig(OFF), out_bpm_change_state(OFF),
+ out_meter_change_trig(OFF), out_bpm_change_state(OFF), out_start_trig(OFF),
  bpm_changes_rel(OFF), bpm_map(0), meter_map(0),
  currentbpm(0), targetbpm(0), currentmeter(0),
  bpmsampletot(0), bpmchangesamp(0), bpmchange_pos(0), bpmrampsize(0),
@@ -18,6 +18,7 @@ timemap::timemap(const char* uname) :
 {
     register_output(output::OUT_BPM);
     register_output(output::OUT_BAR);
+    register_output(output::OUT_START_TRIG);
     register_output(output::OUT_BAR_TRIG);
     register_output(output::OUT_POS_IN_BAR);
     register_output(output::OUT_POS_STEP_SIZE);
@@ -79,7 +80,7 @@ const void* timemap::get_param(param::TYPE pt) const
 bpmchange* timemap::add_bpm_change(bpmchange * bch)
 {
     return (currentbpm =
-        ordered_insert_replace(bpm_map, bch, &bpmchange::get_bar)
+        ordered_insert(bpm_map, bch, &bpmchange::get_bar)
             ->get_data());
 }
 
@@ -154,10 +155,13 @@ void timemap::init()
     barlength = out_beats_per_bar * beatlength;
     pos_in_bar = barlength; // trig first bar - not favorite sollution
     out_bar = -1;           // ...it just gets worse!
+    out_start_trig = ON;
 }
 
 void timemap::run()
 {
+    if (out_start_trig == ON && out_sample_total > 0)
+        out_start_trig = OFF;
     if (pos_in_bar >= barlength) {
         out_bar++;
         pos_in_bar -= barlength;
@@ -166,7 +170,6 @@ void timemap::run()
     else if (out_bar_trig == ON) {
         out_bar_trig = OFF;
     }
-
     // do meter changes before bpm changes
     if (out_bar == meterchangebar) {
         if (currentmeter) {
@@ -188,8 +191,7 @@ void timemap::run()
 
     if (out_bar == bpmchangebar) {
         currentbpm = targetbpm;
-        out_bpm = (bpm_changes_rel) ? p_bpm + currentbpm->get_bpm()
-                                    : currentbpm->get_bpm();
+        out_bpm = (bpm_changes_rel ? p_bpm : 0) + currentbpm->get_bpm();
         p_bpm = out_bpm;
         targetbpm = bpm_map->goto_next();
         out_bpm_change_trig = ON;
@@ -202,9 +204,7 @@ void timemap::run()
             if (bpmchangebar == out_bar) {
                 //immediate change -- not ramped.
                 currentbpm = targetbpm;
-                out_bpm = (bpm_changes_rel) ? p_bpm + currentbpm->get_bpm()
-                                            : currentbpm->get_bpm();
-                out_bpm = currentbpm->get_bpm();
+                out_bpm = (bpm_changes_rel ? p_bpm : 0) + currentbpm->get_bpm();
                 p_bpm = out_bpm; // make it so.
                 targetbpm = bpm_map->goto_next();
                 out_bpm_change_state = ON;
@@ -217,8 +217,7 @@ void timemap::run()
                 bpmchangebar = targetbpm->get_bar();
                 bpmchange_notelen = (samp_t)
                     ((bpmchangebar - currentbpm->get_bar()) * barlength);
-                targbpm = (bpm_changes_rel) ? p_bpm + targetbpm->get_bpm()
-                                            : currentbpm->get_bpm();
+                targbpm = (bpm_changes_rel ? p_bpm : 0) + targetbpm->get_bpm();
                 // these will change during bpm ramp
                 bpmchange_pos = 0;
                 bpmsampletot = notelen_to_samples(bpmchange_notelen);
@@ -227,7 +226,7 @@ void timemap::run()
             }
         }
         out_pos_step_size = barlength / (wcnt::jwm.samplerate() *
-         (60.0 / out_bpm) * out_beats_per_bar);
+                                    (60.0 / out_bpm) * out_beats_per_bar);
     }
     else {
         if (out_bpm_change_trig == ON) {
@@ -312,6 +311,8 @@ const void* timemap::get_out(output::TYPE ot) const
         return &out_meter_change_trig;
     case output::OUT_BPM_CHANGE_STATE:
         return &out_bpm_change_state;
+    case output::OUT_START_TRIG:
+        return &out_start_trig;
     default:
         return 0;
     }

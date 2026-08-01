@@ -1,4 +1,44 @@
 --------------------------------------------------------------
+Changes - August 2026 - wcnt-1.32.2026
+
+CHANGES:
+    * BIG CHANGE! note names now use the standard octave numbering
+      system everyone comes to expect. It seemed logical to me that
+      middle C should reside on octave 0, I guess that's just not the
+      case for everyone else!
+
+    * notes in riffs now have the option to specify a frequency instead
+      of a note name.
+
+    * note_tran module was created for translating note names to a user
+      specified signal range. however it was designed to handle both
+      note_on and note_slide events and consequently all inputs,
+      outputs, and parameters were paird to reflect this.
+      i am now decided that was redundant. this simplifies usage:
+      names for inputs outputs and params are simplified, and now only
+      half the previous work is needed to use the module. code
+      maintenance is also improved simply due to cutting half of it out.
+      old functionality can be had by using two modules. otherwise a
+      logic_trigger might come in handy for triggering it.
+      added in_frequency input to handle notes which have a frequency
+      instead of a note name.
+
+    * time_map now has an out_start_trig trigger output, which triggers
+      once, on the very first sample of processing.
+
+FIXES:
+    * fixed regression on time_map (since introduction of new parameter
+      bpm_changes_relative) preventing bpm changes from ramping from
+      one value to the next.
+
+    * fixed inability of timemap to jump to a bpm rather than ramp up
+      or down to the new bpm. this was fixed by lifting the limitation
+      of only one bpm change per bar position.
+
+    * added description to in_phase_trig on the wave_phase module
+      clearly stating the module "MUST be triggered!".
+
+--------------------------------------------------------------
 Changes - July 2026 - wcnt-1.32.2026
 
 note: I still haven't made an actual release. Not sure I will. It's just

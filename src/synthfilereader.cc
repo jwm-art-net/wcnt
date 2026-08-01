@@ -789,7 +789,7 @@ bool synthfilereader::read_ui_moditems(synthmod::base* sm)
             break;
           case ui::UI_PARAM: {
             ui::modparam* mp = static_cast<ui::modparam*>(item);
-            #ifdef DEBUG
+            #ifdef BAHDEBUG
             mp->dump();
             #endif
             if (!read_ui_modparam(sm, mp->get_param_type()))
@@ -798,7 +798,7 @@ bool synthfilereader::read_ui_moditems(synthmod::base* sm)
           }
           case ui::UI_INPUT: {
             ui::modinput* mi = static_cast<ui::modinput*>(item);
-            #ifdef DEBUG
+            #ifdef BAHDEBUG
             mi->dump();
             #endif
             if (!read_ui_modinput(sm, mi->get_input_type()))

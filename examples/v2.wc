@@ -1,0 +1,251 @@
+wcnt-1.32/jwmsynth
+
+samplerate 48000
+
+time_map
+time1
+    meter_map
+        meter tsig 4/4 bar 0
+    meter_map
+
+    bpm_changes_relative off
+
+    bpm_map
+        tempo bpm 90 bar 0
+        tempo bpm 90 bar 8
+        tempo bpm 60 bar 32
+    bpm_map
+time1
+
+
+riff
+riff1
+    quarter_value   64
+    notelist
+        note  freq 100   pos 0     len 30   vel 1.0
+        note  freq 300   pos 28    len 50   vel 1.0
+        note  freq 150   pos 64    len 24   vel 1.0
+        note  freq 375   pos 125   len 90   vel 1.0
+        note  freq 150   pos 168   len 30   vel 1.0
+        note  freq 350   pos 199   len 50   vel 1.0
+        note  freq 200   pos 220   len 24   vel 1.0
+    notelist
+riff1
+
+copier [ from riff1 to riff2 ]
+
+riff_editor
+[
+    riff riff2
+    notelist
+        // select notes where len = 30, add -10 to len
+        note name =L+L pos 0 len 30 vel -10
+        // select notes where len > 45, add -35 to len
+        note name >L+L pos 0 len 45 vel -35
+        // select notes where pos is above 200, and add -300 to remove them
+        note name >P-P pos 200 len -300 vel 0
+        // select notes where name is above c-1, add 4 semitones
+        note name >N+Nc-1 pos 14 len 0 vel 0
+    notelist
+]
+
+sequencer
+seq1
+    track
+        riff_node
+            riff riff1
+            bar 0 repeat 31 repeat_stripe 1
+            transpose 0
+        riff_node
+            riff riff2
+            bar 3 repeat 7 repeat_stripe 4
+            transpose 0
+    track
+
+    connect time1
+
+    start_bar 0
+seq1
+
+
+logic_trigger
+ntrig
+    in_trig1 seq1 out_note_on_trig
+    function or
+    in_trig2 seq1 out_note_slide_trig
+ntrig
+
+note_tran
+nt
+    in_notename     seq1 out_notename
+    in_frequency    seq1 out_frequency
+    in_trig         ntrig out_trig
+    notename_low  c-1
+    notename_high c1
+    output_min 300
+    output_max 700
+nt
+
+adsr
+adsr1
+        envelope
+        section name attack
+            time 15     level 1.0
+        section name decay
+            time 35.0   level  0.8
+        section name release
+            time 25.0   level  0.3
+        section name release
+            time 75.0   level  0.0
+        envelope
+
+        connect seq1
+
+        zero_retrigger   off
+        min_time         10.0
+        sustain_state    on
+adsr1
+
+adsr
+adsr1b
+        envelope
+        section name attack
+            time 15     level 1.0
+        section name decay
+            time 35.0   level  0.8
+        section name release
+            time 5.0   level  0.53
+        section name release
+            time 225.0   level  0.0
+        envelope
+
+        in_note_on_trig nt out_trig
+
+        zero_retrigger   off
+        min_time         130.0
+        sustain_state    off
+adsr1b
+
+adsr
+adsr2
+        envelope
+        section name attack
+            time 5.0 level 1.0
+        section name decay
+            time 33.0 level 0.0
+        section name release
+            time 0 level 0
+        envelope
+
+        connect seq1
+
+        zero_retrigger   off
+        min_time         10.0
+        sustain_state    on
+adsr2
+
+autogroup_create
+v1
+    osc_clock
+    osc1
+        connect seq1
+        in_freq_mod1 adsr2 out_output
+        freq_mod1_size 1.5
+    osc1
+
+    osc_clock
+    osc2
+        in_note_on_trig nt out_trig
+        in_note_slide_trig off
+        in_frequency    nt out_output
+        in_freq_mod1 adsr2 out_output
+        freq_mod1_size 1.5
+    osc2
+
+    wave_phase
+    w
+        type sine
+        in_phase_trig time1 out_start_trig
+        on_trig_reset_phase off
+        recycle_mode on
+        in_phase_step   osc1 out_phase_step
+        in_phase_mod adsr2 out_output
+        phase_mod_size 1.5
+    w
+
+    mono_amp
+    amp1
+        in_signal   v1.w out_output
+        gain        0.8
+        in_amp_eg   adsr1 out_output
+        in_amp_mod  off
+        amp_mod_size   0.0
+        clip_level    1.0
+    amp1
+v1
+
+copier [ from v1 to v2 ]
+
+editor
+[
+    editlist
+        edit v2.w
+            in_phase_step v2.osc2 out_phase_step
+        edit v2.amp1
+            in_amp_eg adsr1b out_output
+    editlist
+]
+
+combiner
+c1
+    signals
+        synthmod name v1.amp1
+        synthmod name v2.amp1
+    signals
+
+c1
+
+echo
+el
+    in_signal c1 out_output
+    gain 0.685
+    delay_time 123
+    in_feedback er out_wet_output
+    feedback 0.3653
+    wet/dry 0.13
+el
+
+echo
+er
+    in_signal c1 out_output
+    gain 0.685
+    delay_time 443
+    in_feedback el out_wet_output
+    feedback 0.3653
+    wet/dry 0.13
+er
+
+
+wavfile_out
+wav1
+    filename    v2.wav
+    data_format float32
+    in_left     el out_output
+    in_right    er out_output
+    in_bar      time1   out_bar
+    start_bar   0
+    end_bar     32
+wav1
+
+// setup how long to process:
+
+wcnt_exit
+[
+    in_trig     wav1    out_write_end_trig
+]
+
+
+//------------------------------------------------------------------------
+// End Of File _jwm 2005.
+//------------------------------------------------------------------------
+wcnt-1.32/jwmsynth
