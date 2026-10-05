@@ -166,11 +166,11 @@ char extract_octave(const char* note_name)
 
 samp_t freq_to_samples(double f)
 {
-    return (samp_t)(wcnt::jwm.samplerate() / f);
+    return (samp_t) round(wcnt::jwm.samplerate() / f);
 }
 
 samp_t ms_to_samples(double t)
 {
-    return (samp_t)(wcnt::jwm.samplerate() * (t / 1000.0f));
+    return (samp_t) round(wcnt::jwm.samplerate() * (t / 1000.0f));
 }
 

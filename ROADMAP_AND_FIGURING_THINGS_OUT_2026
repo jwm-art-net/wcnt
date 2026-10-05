@@ -1,3 +1,82 @@
+
+SYNTH FILE READER
+=================
+
+problem:  synth_file_reader is nice and clean when it comes to reading
+the entire contents of another file, but is rather clunky when it comes
+to specifying limitations in what should be read or what should not.
+
+initial thoughts
+----------------
+
+1) parameter specifying what the list does seems uneccesary,  encode
+   the action of the list in the list name (for example exclude_modules,
+   include_data_objects).
+
+2a) the two lists so that modules and data objects can have opposing
+    actions (ie include listed modules only, exclude listed data
+    objects) is awkward when the same action is desired for both. is it
+    possible to have a list in which both modules and data objects can
+    be specified (together in a common list) whioch either includes them
+    or excludes them.
+
+2b) the design of the ui interface means it is limited to
+    handle only one level of multiple choice at a time.
+    choice to be made as to where the conflicts are to be
+    dealt with. the ui can handle one case, the validity
+    checking can handle the other.... more notes to be made
+    on this.
+
+2c) -----------------------------------------
+
+We interupt this broadcast to bring you....
+
+Okay, now I am thinking about using the string list params:
+    STR_UNNAMED,
+    STR_LIST,
+
+These are currently only used by the editor in the edit data object.
+They allow bypassing of the name-value pair. Internally they are
+treated as an 'unnamed' type and provide the means for edits to modules
+and data objects within the editor (itself a data object) to be
+specified as if within the original definition.
+
+editlist
+    edit <module-name>
+        <param-name> <value>
+        <input-name> <module-name> <output-name>
+    edit <dobj-name>
+        <param-name> <value>
+editlist
+
+In the above example, the edit represents a data object within which are
+two parameters, the 1st is STR_UNNAMED, the 2nd is STR_LIST.
+How would this work for the synth file reader?
+
+Here's what I don't think can be done:
+
+synth_file_reader
+[
+    filename test1.wc
+    exclude_list
+        <module-name>
+        <dobj-name>
+    exclude_list
+]
+
+I don't think we can have an unnamed data object, and all lists contain
+data objects. Only data objects and modules may have parameters, inputs
+and outputs. Heirarchy looks like this:
+
+    list -> dobj -> ui-item
+
+So what can be used for referencing the dobj which contains the unnamed
+parameter which specifies a module-or-data-object for
+inclusion-or-exclusion?
+
+
+
+
 editor data object
 ==================
 

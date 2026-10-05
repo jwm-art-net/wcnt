@@ -1,0 +1,252 @@
+wcnt-1.32/jwmsynth
+
+samplerate 48000
+
+synth_file_reader [ filename lfos.wch ]
+
+
+time_map
+time1
+    meter_map
+        meter tsig 4/4 bar 0
+    meter_map
+
+    bpm_changes_relative off
+
+    bpm_map
+        tempo bpm 135 bar 0
+    bpm_map
+time1
+
+sync_clock
+tick16
+    quarter_value 64
+    len 16
+    connect time1
+    snap_to 4
+tick16
+
+sync_clock
+tick8
+    quarter_value 64
+    len 192
+    connect time1
+    snap_to 4
+tick8
+
+
+wave
+w
+    type sine
+    in_phase_step tick8 out_phase_step
+w
+
+stepper
+freaq
+    step_shape
+        stepvx pos 0.0  ul 200.0    ll 400.0
+        stepvx pos 0.5  ul 100.0    ll 600.0
+        stepvx pos 1.0  ul 500.0    ll 100.0
+    step_shape
+    step_count  8
+    in_trig     tick16 out_phase_trig
+    recycle_mode on
+    in_modulation w out_output
+    lo_thresh -1.0
+    up_thresh 1.0
+freaq
+
+pattern_trig
+pt
+    in_trig tick16 out_phase_trig
+    pattern 101101001
+pt
+
+
+autogroup_add
+vlfo1
+    editor
+    [
+        editlist
+            edit note_on in_trig pt out_trig
+            edit c freq 6.0
+        editlist
+    ]
+vlfo1
+
+
+autogroup_create
+ott
+
+    wcnt_trigger note_on in_trig pt out_trig note_on
+
+    adsr
+    ampeg
+        envelope
+            section name attack
+                time 5.0 level 1.0
+            section name decay
+                time 73.0 level 0.68
+            section name release
+                time 350 level 0
+        envelope
+
+        in_note_on_trig     note_on out_trig
+
+        zero_retrigger   off
+        min_time         10.0
+        sustain_state    off
+    ampeg
+
+    adsr
+    pmeg
+        envelope
+            section name attack
+                time 2.5 level 1.0
+            section name decay
+                time 203.0 level 0.8
+            section name release
+                time 150 level 0.
+        envelope
+
+        in_note_on_trig     note_on out_trig
+
+        zero_retrigger   off
+        min_time         10.0
+        sustain_state    off
+    pmeg
+
+    osc_clock
+    o1
+        in_note_on_trig     note_on out_trig
+        in_note_slide_trig  off
+        in_frequency        freaq out_output
+        octave_offset -2
+    o1
+
+    osc_clock
+    o2
+        in_note_on_trig     note_on out_trig
+        in_note_slide_trig  off
+        in_frequency        freaq out_output
+        octave_offset 1
+    o2
+
+    wave_phase
+    ww
+        type tri
+        in_phase_trig       o1 out_phase_trig
+        on_trig_reset_phase on
+        recycle_mode        off
+        in_phase_step       o1 out_phase_step
+    ww
+
+    multiplier
+    pm
+        in_signal1 ww out_output
+        in_signal2 pmeg out_output
+    pm
+
+    wave_phase
+    w
+        type squ
+        in_phase_trig       o1 out_phase_trig
+        on_trig_reset_phase on
+        recycle_mode        on
+        in_phase_step       o1 out_phase_step
+        in_phase_mod    pm out_output
+        phase_mod_size 0.5
+        shape_type sine
+        in_shape_phase_step o2 out_phase_step
+        sync_shape on
+    w
+
+
+    lfo_clock
+    lpff
+        in_phase_trig off
+        freq 1000
+        in_freq_mod1        pmeg out_output
+        freq_mod1_size      1.2
+        in_freq_mod2        glfo1.w out_output
+        freq_mod2_size      2
+    lpff
+
+    glame_butterworth
+    lpf
+        filter_type           lowpass
+        in_signal             w out_output
+        in_cutoff_phase_step  lpff out_phase_step
+        resonance             0.82
+    lpf
+
+    mono_amp
+    amp1
+        in_signal       lpf out_output
+        gain            0.36
+        in_amp_eg       ampeg out_output
+        in_amp_mod      off
+        amp_mod_size    0.0
+        clip_level      1.0
+    amp1
+ott
+
+copier [ from ott to otu ]
+
+autogroup_add
+otu
+
+    editor
+    [
+        editlist
+            edit o1 octave_offset -2
+                    tuning_semitones 5
+
+            edit o2 octave_offset -2
+                    tuning_semitones 3
+
+            edit lpff in_freq_mod2 vlfo1.w out_output
+
+            edit w type sine
+            edit ww type squ
+            edit amp1 gain 0.7
+        editlist
+    ]
+otu
+
+combiner
+c
+    signals
+        synthmod name ott.amp1
+        synthmod name otu.amp1
+    signals
+    mean_total off
+c
+
+caps_plate
+fx1
+    in_signal  c out_output
+    bandwidth  0.8
+    tail       0.7
+    damping    0.5
+    wet/dry    0.23
+fx1
+
+
+wavfile_out
+wav1
+    filename    stepper.wav
+    data_format float32
+    in_left fx1 out_left
+    in_right fx1 out_right
+    in_bar      time1   out_bar
+    start_bar   0
+    end_bar     48
+wav1
+
+// setup how long to process:
+
+wcnt_exit [ in_trig wav1 out_write_end_trig ]
+
+
+wcnt-1.32/jwmsynth

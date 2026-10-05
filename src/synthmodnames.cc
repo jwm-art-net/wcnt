@@ -34,7 +34,7 @@ namespace synthmod
     { TIMEMAP,          "time_map",         0, "Manages the timeline, supports ramped tempo changes, and time signature changes.",0 },
     { CONTRASTER,       "contraster",       0, "Adds 'contrast' to a signal. Optional 'rude' mode provides an 'alternative' implementation" ,0 },
     { SERIALWAVFILEOUT, "serial_wavout",    0, "Writes data to a series of audio files. The current file is closed and a new file opened upon trigger.",0 },
-    { DELAY,            "delay",            0, "Takes a signal and delays it, with various amplitude modulation options." ,0 },
+    { DELAY,            "delay",            0, "Takes a signal and delays it." ,0 },
     { SIMPLEDELAY,      "simple_delay",     0, "Simple delay, delays a signal and nothing more." ,0 },
     { ECHO,             "echo",             0, "Takes a signal and delays it with feedback.",0 },
     { MONOAMP,          "mono_amp",         0, "A module used to shape, modulate, and adjust the levels of a signal." ,0 },

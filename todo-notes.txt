@@ -1,6 +1,17 @@
 
 //---------------------------
 
+    * synth_file_reader is nice and clean when it comes to reading the
+      entire contents of another file, but is rather clunky when it
+      comes to specifying limitations in what should be read, whether
+      that be by inclusion or exclusion.
+        - priority: medium
+        - effort: medium-high
+        - realized this may be more complex than i thought, so further
+          thinking and notes will be going in the ROADMAP_AND...2026
+          file.
+
+
     * the standard non-verbose method for displaying help for optional
       items in a module or data object is currently broken.
       a method (such as introducing a new flag) is required such that

@@ -5,7 +5,7 @@
 stepper::stepper(const char* uname) :
  synthmod::base(synthmod::STEPPER, uname, SM_HAS_OUT_OUTPUT),
  in_trig(0), in_restart_trig(0), in_modulation(0),
- step_count(0), up_thresh(0), lo_thresh(0), rtime(0), recycle(OFF),
+ step_count(0), up_thresh(1.0), lo_thresh(0), rtime(0), recycle(OFF),
  out_output(0),
  output(0), last_output(0), step_no(0), next_step_no(0), up_levels(0),
  lo_levels(0),
@@ -21,11 +21,11 @@ void stepper::register_ui()
     register_dobj(dobj::LST_STEPS, dobj::SIN_STEP);
     register_param(param::STEP_COUNT);
     register_input(input::IN_TRIG);
-    register_input(input::IN_RESTART_TRIG);
+    register_input(input::IN_RESTART_TRIG)->set_flags(ui::UI_OPTIONAL);
     register_input(input::IN_MODULATION)->set_flags(ui::UI_GROUP1);
     register_param(param::UP_THRESH)    ->set_flags(ui::UI_GROUP1);
     register_param(param::LO_THRESH)    ->set_flags(ui::UI_GROUP1);
-    register_param(param::RESPONSE_TIME);
+    register_param(param::RESPONSE_TIME)->set_flags(ui::UI_OPTIONAL);
     register_param(param::RECYCLE_MODE);
 }
 

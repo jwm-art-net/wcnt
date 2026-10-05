@@ -5,6 +5,24 @@ July 2026
 
 TODO NEW FEATURES FOR A FUTURE RELEASE (not next release)
 
+    * consider that delay, which has been simplified, is now very
+      similar to the simple_delay module. the only difference is that
+      delay has wet/dry parameter for convenience, where simple_delay
+      does not. i rarely use either tbh!
+
+    * how do we modulate one signal by another and control how much
+      modulation occurs? how does the balance module work? how does the
+      modifier module work? both are unclear. do they do what i want?
+      no idea without looking at code. very user unfriendly. the mono_
+      and stereo_ amp modules also achieve desired functionality, but
+      with added processes and names which suggest more specific and
+      limited usage scope.
+
+    * synth_file_reader is nice and clean when it comes to reading the
+      entire contents of another file, but is rather clunky when it
+      comes to specifying limitations in what should be read, whether
+      that by inclusion or exclusion.
+
     * the standard non-verbose method for displaying help for optional
       items in a module or data object currently does not display the
       most suitable items for standard help out of those available.

@@ -2,10 +2,18 @@
 Changes - August 2026 - wcnt-1.32.2026
 
 CHANGES:
+    * simplified the delay module. it was doing too much that wouldn't
+      be expected of it.
+
     * BIG CHANGE! note names now use the standard octave numbering
       system everyone comes to expect. It seemed logical to me that
       middle C should reside on octave 0, I guess that's just not the
       case for everyone else!
+      note: I based my code for translating a note name to a frequency
+      on code found in the book "Making Music on the Amstrad CPC 464 &
+      664" by Ian Waugh. In turn, his reasoning for using this unusual
+      octave numbering system where middle C is octave 0, is based on
+      the Amstrad CPC 464 User Guide.
 
     * notes in riffs now have the option to specify a frequency instead
       of a note name.

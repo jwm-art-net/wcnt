@@ -21,7 +21,7 @@ void sync_clock::register_ui()
 {
     register_param(param::QUARTER_VAL);
     register_param(param::NOTE_LEN);
-    register_param(param::SNAP_TO);
+    register_param(param::SNAP_TO)->set_flags(ui::UI_OPTIONAL);
     register_param(param::CONNECT)          ->set_flags(ui::UI_OPTION1);
     register_input(input::IN_BPM)           ->set_flags(ui::UI_OPT2_DUP);
     register_input(input::IN_BEATS_PER_BAR) ->set_flags(ui::UI_OPT2_DUP);

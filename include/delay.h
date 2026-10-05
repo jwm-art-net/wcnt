@@ -4,7 +4,7 @@
 #include "synthmod.h"
 #include "gain.h"
 
-class delay : public synthmod::base, public gain
+class delay : public synthmod::base
 {
 public:
     delay(const char*);
@@ -19,13 +19,14 @@ public:
     const void* get_param(param::TYPE) const;
 
 private:
+    // inputs
+    const double* in_signal;
     // outputs
     double out_output;
     // params
     double delay_time;
     double wetdry;
     // working
-    double output;
     double* filter;//array
     long filterarraymax;
     long fpos;
