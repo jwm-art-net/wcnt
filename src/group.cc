@@ -158,7 +158,7 @@ dobj::base* group::duplicate_dobj(const char* new_group_name)
             if (mod_groupname) {
                 if (strcmp(get_username(), mod_groupname) == 0) {
                     if (wcnt::jwm.is_verbose())
-                        std::cout << "\nReforming connection "
+                        std::cout << "Reforming connection "
                                   << con->get_output_module_name() << " to ";
                     const char* const new_mod_name =
                         set_groupname(new_group_name,

@@ -1,4 +1,13 @@
 --------------------------------------------------------------
+Changes - October 2026 - wcnt-1.32.2026
+
+CHANGES:
+    * when --verbose is used when wcnt is processing a .wc file:
+      - the type of data object and/or type of synth module being
+        created is now shown as well as the name of it.
+      - no more empty new lines between Reforming connection messages.
+
+--------------------------------------------------------------
 Changes - August 2026 - wcnt-1.32.2026
 
 CHANGES:

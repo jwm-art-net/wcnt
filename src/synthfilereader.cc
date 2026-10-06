@@ -513,7 +513,7 @@ synthmod::base* synthfilereader::read_synthmodule(const char* com)
 
     if (wcnt::jwm.is_verbose()) {
         cout << "================================" << endl;
-        cout << "Creating synth module " << modname << endl;
+        cout << "Creating " << com << " synth module " << modname << endl;
     }
 
     // use the non grouped name for module creation, because...
@@ -637,7 +637,7 @@ dobj::base* synthfilereader::read_dobj(const char* com)
         inc_current = false;
     if (wcnt::jwm.is_verbose()) {
         cout << "================================" << endl;
-        cout << "Creating data object " << dobjname << endl;
+        cout << "Creating " << com << " data object " << dobjname << endl;
     }
     dobj::base* dob = wcnt::get_dobjlist()->create_dobj(dobjtype);
     if (dob == 0) {

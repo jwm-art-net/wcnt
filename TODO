@@ -1,9 +1,24 @@
+October 2026
+
+FIX:
+    * There's a definite connection issue with an autogroup created in
+      a seperate file using a wcnt_note as an entry point for the file.
+      The bug was hidden by the fact that copies of the autogroup
+      function as intended, but the original part remains dysfunctional
+      - in tests near silence is output. use of the connect parameter
+      to auto-connect a module likely plays a part - complete silence
+      results.
+
 July 2026
 
 ---[note to self]-----
 *** regularly make clean and make clean_examples to avoid confusion ***
 
+
 TODO NEW FEATURES FOR A FUTURE RELEASE (not next release)
+
+    * add option pattern parameter to the switcher to allow switching
+      to specific modules represented by numbers 0-9 and letters a-z.
 
     * consider that delay, which has been simplified, is now very
       similar to the simple_delay module. the only difference is that
