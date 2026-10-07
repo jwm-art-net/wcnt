@@ -309,7 +309,11 @@ namespace synthmod
                         std::cout << "auto connect " << name << " --> item: " << item->get_name() << std::endl;
                     input::TYPE it = mi->get_input_type();
                     connectorlist* cl = wcnt::get_connectlist();
-                    connector* con = 0;
+                    // check for existing connection and delete if it exists
+                    // this is necessary to allow auto connection to work from
+                    // within the editor
+                    connector* con = cl->get_connector_by_input(this, it);
+                    cl->delete_connector(con);
                     if (off)
                         con = cl->add_connector_off(this, it);
                     else

@@ -69,8 +69,7 @@ connector::CSTATE connector::connect()
     if (!in_mod) {
         connerr("Connection error! Input module not set, nothing to "
                 "connect to. FYI input type is set as %s and out module "
-                "name is %s.", input::names::get(in_type),
-                                                        out_mod_uname);
+                "name is %s.", input::names::get(in_type), out_mod_uname);
         return FAIL;
     }
 

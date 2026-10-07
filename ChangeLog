@@ -7,6 +7,16 @@ CHANGES:
         created is now shown as well as the name of it.
       - no more empty new lines between Reforming connection messages.
 
+FIXES:
+    * when using the auto-connection feature via the connect parameter
+      from within an editor, the connections for passthrough modules
+      (such as wcnt_note typically used as an 'entry point' to an included file)
+      would fail to be as expected. this was due to a lack of checking for
+      previous connections and failing to delete them. now the previous
+      connections are deleted, and the edited connections created during
+      auto-connection for passthrough modules are postponed as necessary until
+      their connections in turn, exist.
+
 --------------------------------------------------------------
 Changes - August 2026 - wcnt-1.32.2026
 

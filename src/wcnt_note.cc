@@ -83,6 +83,6 @@ bool wcnt_note::set_param(param::TYPE pt, const void* data)
     {
         case param::CONNECT:
             return auto_connect_module((const char*)data);
-        default: return 0;
+        default: return false;
     }
 }

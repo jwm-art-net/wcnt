@@ -27,20 +27,6 @@ riff1
     notelist
 riff1
 
-riff
-riff_sc
-    quarter_value   64
-    notelist
-        note name c0   pos 0     len 8  vel 0.75
-        note name d0   pos 32    len 8  vel 0.4
-        note name e0   pos 64    len 8  vel 0.5
-        note name f0   pos 96    len 8  vel 0.6
-        note name g0   pos 128   len 8  vel 0.7
-        note name a0   pos 160   len 8  vel 0.8
-        note name b0   pos 192   len 8  vel 0.9
-        note name c1   pos 224   len 8  vel 1.0
-    notelist
-riff_sc
 
 copier [ from riff1 to riff1a ]
 copier [ from riff1 to riff1b ]

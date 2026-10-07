@@ -83,7 +83,10 @@ connector* connectorlist::add_connector(synthmod::base* sm, input::TYPE it,
 connector* add_connector(synthmod::base* sm,  input::TYPE,
                          const char* out_mod, const char* output)
 {
+    (void)sm; (void)out_mod; (void)output;
     // FIXME: finish this!
+    // FIXME: but why, what is it for!?
+    return 0;
 }
 
 
