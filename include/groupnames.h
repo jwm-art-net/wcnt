@@ -44,13 +44,18 @@ class groupnames
     groupnames(COMPONENT, const char*);
     ~groupnames();
 
+    // set or unset a specified component of module username
+    // pass NULL to unset.
     const char* set_name(COMPONENT, const char*);
+
     const char* set_username(const char*);
     bool        has_name(COMPONENT c) const { return components[c] != 0; }
     const char* get_name(COMPONENT c) const { return components[c]; }
-    const char* get_username() const        { return components[0];}
+    const char* get_username() const        { return components[0]; }
+    bool        excessive_username();
 
-    // make_username does not set the specified name component (note const)
+    // make_username makes changes to a username without storing them.
+    // the changed username is returned.
     char*       make_username(COMPONENT, const char*) const;
 
     // static member functions for use without groupnames instance

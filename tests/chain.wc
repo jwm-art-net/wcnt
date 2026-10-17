@@ -37,8 +37,6 @@ c1
 c1
 
 
-
-
 wcnt_exit [ in_bar t out_count exit_bar 1 ]
 
 wcnt-1.32/jwmsynth
