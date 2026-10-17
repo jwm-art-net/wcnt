@@ -7,6 +7,27 @@ CHANGES:
         created is now shown as well as the name of it.
       - no more empty new lines between Reforming connection messages.
 
+    * overhauled the naming mechanics used by modules and grouping. the
+      new system is intended to allow for other forms of grouping which
+      can occur simultaneously with the existing group system. i am
+      sticking with the decision to disallow nested grouping. quite an
+      effort to debug where i missed consequences to these changes
+
+    * begun basic infrastructure for the chain data object (and
+      directive), the first of the planned alternative forms of group
+      handling. chaining is intended for smaller groups of modules and
+      it will work in a subtly different way. modules added to the chain
+      have a similar name change, but are then also duplicated (along
+      with their connections) internally within the chain. then, when
+      the chain is duplicated using the copier, it is the internal
+      duplicate chain which is used as duplication source. why? i'm not
+      quite sure now! but that's the plan!
+      defintion of the chain, as well as duplicate copies being made of
+      it, will work within an autogroup. duplication of the chain is
+      planned so the data object itself will not be duplicated (unlike
+      the group data object), only the modules and connections within
+      it will be.
+
 FIXES:
     * when using the auto-connection feature via the connect parameter
       from within an editor, the connections for passthrough modules

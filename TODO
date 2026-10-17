@@ -8,6 +8,7 @@ FIX:
       - in tests near silence is output. use of the connect parameter
       to auto-connect a module likely plays a part - complete silence
       results.
+      [FIXED]
 
 July 2026
 
