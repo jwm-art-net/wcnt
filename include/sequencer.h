@@ -68,7 +68,7 @@ class sequencer : public synthmod::base, public linked_list<riff_node>
     STATUS out_riff_end_trig;
     STATUS out_start_trig;
     STATUS out_end_trig;
-    const char* out_notename;
+    char* out_notename;
     double out_freq;
     double out_velocity;
     double out_velocity_ramp;

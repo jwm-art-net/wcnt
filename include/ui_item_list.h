@@ -9,6 +9,7 @@
 
 #include <string>
 #include <sstream>
+#include <iostream>
 
 // currently ui_item.h contains all the information about how this works.
 // well, no, it doesn't contain any information about how it works which
@@ -42,7 +43,7 @@ namespace ui
  {
   public:
     item_list();
-    ~item_list() {};
+    ~item_list() { if (def_username) delete [] def_username; };
 
     typedef ll_item< base<T> > llitem;
     typedef linked_list< base<T> > linkedlist;
@@ -76,13 +77,19 @@ namespace ui
     // definition being read from a file. match_edit at the start
     // of editing via param_editor etc.
     void     match_begin(T t) {
+        if (def_username)
+            delete [] def_username;
         def_username = 0;
         match_begin_proper(t);
     }
 
     void     match_begin(T t, const char* username) {
         // if this is nameless, then treat username appropriately:
-        def_username = (username[0] == ' ' ? "]" : username);
+        const char* p = (username[0] == ' ' ? "]" : username);
+        if (def_username)
+            delete [] def_username;
+        def_username = new char[strlen(p) + 1];
+        strcpy(def_username, p);
         match_begin_proper(t);
     }
 
@@ -190,7 +197,7 @@ namespace ui
     }
 
     int listtype;
-    const char* def_username;
+    char* def_username;
     static char err_msg[STRBUFLEN];
  };
 
@@ -624,6 +631,7 @@ restart:
     ui_err("No item found matching '%s'.", str);
     return error_item<T>::err();
  }
+
 
 // match_item_choice, called by match_item, when choice0 is non-zero
 // choice0 is only non-zero once a string has been matched with a choice-item

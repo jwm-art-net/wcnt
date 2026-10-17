@@ -1,0 +1,44 @@
+wcnt-1.32/jwmsynth
+
+samplerate 44100
+
+constant one value 1.0 one
+
+timer
+t
+    timings
+        time seconds 0
+        time seconds 1
+    timings
+    time_is_relative off
+t
+
+autogroup_create
+g1
+    constant_freq
+    f
+        freq 777
+    f
+
+    wave
+    w
+        type sine
+        in_phase_step f out_phase_step
+    w
+g1
+
+
+chain
+c1
+    modules
+        synthmod name g1.f
+        synthmod name g1.w
+    modules
+c1
+
+
+
+
+wcnt_exit [ in_bar t out_count exit_bar 1 ]
+
+wcnt-1.32/jwmsynth

@@ -1,0 +1,15 @@
+wcnt-1.32/jwmsynth
+
+samplerate 44100
+
+// this file will fail to process because a synth_file_reader is not
+// allowed within an autogroup.
+
+autogroup_create
+g1
+    synth_file_reader [ filename simple.wc ]
+g1
+
+
+
+wcnt-1.32/jwmsynth

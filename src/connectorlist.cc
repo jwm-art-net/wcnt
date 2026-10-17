@@ -128,7 +128,7 @@ connectorlist::duplicate_connections_for_module(
         conlist = new linkedlist(MULTIREF_OFF, PRESERVE_DATA);
     llitem* i = find_in_data(sneak_first(), input_module(from_mod));
     while(i){
-        D_CONNECT("duplicating connector: %s %s %s", from_mod->get_username(),
+        D_CONNECT("duplicating connector: %s %s %s\n", from_mod->get_username(),
                   input::names::get(i->get_data()->get_input_type()),
                   (i->get_data()->is_group_pending()) ? "(G)" : "");
         conlist->add_at_tail(i->get_data()->duplicate(to_mod));
@@ -136,6 +136,42 @@ connectorlist::duplicate_connections_for_module(
     }
     return conlist;
 }
+
+
+// duplicates connections but into an alternative connectorlist.
+bool
+connectorlist::duplicate_connections_to_connectorlist(
+                        const synthmod::base* from_mod, synthmod::base* to_mod,
+                                                        connectorlist* conlist)
+{
+    if (from_mod->get_module_type() != to_mod->get_module_type())
+        return false;
+    llitem* i = find_in_data(sneak_first(), input_module(from_mod));
+    while(i){
+        D_CONNECT("duplicating connector: %s %s %s\n", from_mod->get_username(),
+                  input::names::get(i->get_data()->get_input_type()),
+                  (i->get_data()->is_group_pending()) ? "(G)" : "");
+        conlist->add_at_tail(i->get_data()->duplicate(to_mod));
+        i = find_in_data(i->get_next(), input_module(from_mod));
+    }
+    return true;
+}
+
+
+
+
+connector* add_connector(connector* rd);
+connector* add_connector_off(synthmod::base* sm, input::TYPE);
+connector* add_connector_self(synthmod::base* sm, input::TYPE,
+                              output::TYPE);
+connector* add_connector_as(synthmod::base* sm, input::TYPE,
+                            input::TYPE as);
+connector* add_connector(synthmod::base* sm,  input::TYPE,
+                         const char* out_mod, output::TYPE);
+connector* add_connector(synthmod::base* sm,  input::TYPE,
+                         const char* out_mod, const char* output);
+
+
 
 void
 connectorlist::reconnect_output_module_by_name(

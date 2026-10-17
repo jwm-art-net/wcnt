@@ -297,7 +297,7 @@ note_data* sequencer::posconv_note(note_data* rn)
     // create new note using its length to store note off position,
     // convert to time_map TPQN, and transpose.
 
-    const char* tr_notename = 0;
+    char* tr_notename = 0;
     double tr_freq = 0;
     switch (rn->get_note_type())
     {
@@ -306,7 +306,8 @@ note_data* sequencer::posconv_note(note_data* rn)
             break;
         case note_data::NOTE_TYPE_FREQ:
             tr_freq = transpose_frequency(rn->get_frequency(), out_transpose);
-            tr_notename = strdup(" freq");
+            out_notename = new char[6];
+            strcpy(out_notename, " freq");
             break;
         default:
             break;
@@ -344,7 +345,8 @@ void sequencer::output_note(note_data* note)
     if (out_notename)
         delete [] out_notename;
 
-    out_notename = strdup(note->get_name());
+    out_notename = new char[strlen(note->get_name()) + 1];
+    strcpy(out_notename, note->get_name());
     switch(note->get_note_type()) {
         case note_data::NOTE_TYPE_NORMAL:
             out_freq = note_to_freq(out_notename);

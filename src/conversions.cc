@@ -74,7 +74,7 @@ double note_to_freq(const char* note_name, char oct_offset, double semitones)
     return freq * pow(2, (semitones / 12));
 }
 
-const char* transpose_notename(const char* note_name, char semitones)
+char* transpose_notename(const char* note_name, char semitones)
 {
     if (!check_notename(note_name)) return 0;
     char sub_oct = 0;

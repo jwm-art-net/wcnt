@@ -47,17 +47,13 @@ wavfile_out
 w
     filename        simple.wav
     data_format     float32
-    in_left         m out_output
-    in_right        m out_output
+    in_signal       m out_output
     in_bar          f out_index
     start_bar       0
     end_bar         1
 w
 
-wcnt_exit
-x
-    in_bar      f out_index
-    exit_bar    1
-x
+wcnt_exit [ in_trig w out_write_end_trig ]
+
 
 wcnt-1.32/jwmsynth

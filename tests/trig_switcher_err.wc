@@ -1,0 +1,28 @@
+wcnt-1.32/jwmsynth
+
+samplerate 44100
+
+autogroup_create
+bt1
+    clock clock1    freq 3   clock1
+    clock clock1b   freq 5   clock1b
+
+    wcnt_trigger clk1  in_trig clock1  out_phase_trig clk1
+    wcnt_trigger clk1b in_trig clock1b out_phase_trig clk1b
+
+    trig_switcher
+    clocks1
+        triggers
+            synthmod name clk1
+            synthmod name clk1b
+        triggers
+        in_trig off
+    clocks1
+bt1
+
+copier [ from bt1 to bt2 ]
+
+wcnt_exit [ in_trig bt1.clk1 out_trig ]
+
+wcnt-1.32/jwmsynth
+

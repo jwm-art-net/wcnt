@@ -65,7 +65,6 @@ public:
 
 private:
 
-
     // params
     char* wc_filename;
     ACTION mod_action;

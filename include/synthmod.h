@@ -51,17 +51,13 @@ namespace synthmod
     virtual ~base();
 
     TYPE        get_module_type() const { return modtype; }
-    const char* get_username()  const   { return username; }
 
-    char* get_group_name() const {
-            return ((flags & SM_UNGROUPABLE)
-                        ? 0 : get_groupname(username));
-    }
-    bool has_group_name() const {
-        return has_groupname(username);
-    }
-
-    void set_group_name(const char* const);
+    bool        has_name(groupnames::COMPONENT c) const  { return username.has_name(c); }
+    const char* get_name(groupnames::COMPONENT c) const  { return username.get_name(c); }
+    const char* set_name(groupnames::COMPONENT, const char*);
+    const char* get_username() const { return username.get_username(); }
+    char*       make_username(groupnames::COMPONENT c, const char* s) const
+                                     { return username.make_username(c, s); }
 
     /* virtuals */
     virtual void run() = 0;
@@ -101,15 +97,12 @@ namespace synthmod
 
     bool operator()(TYPE & smt) const   { return modtype == smt; }
 
-    bool operator()(name & n) const     { return n(username); }
+    bool operator()(name & n) const     { return n(username.get_username()); }
 
-    bool operator()(groupname & n) const{
+    bool operator()(groupname & n) const {
         if (flags & SM_UNGROUPABLE)
             return false;
-        const char* grpname = get_groupname(username);
-        bool retv = n(grpname);
-        delete [] grpname;
-        return retv;
+        return n(username.get_name(groupnames::GROUP));
     }
 
     int       flag(SM_FLAGS _flags) const   { return _flags & flags; }
@@ -170,7 +163,7 @@ namespace synthmod
 
  private:
     TYPE            modtype;
-    char*           username;
+    groupnames      username;
     int             flags;
     static STATUS   abort_status;
 

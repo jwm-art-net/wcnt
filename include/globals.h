@@ -48,7 +48,8 @@ namespace wcnt
  const wcint_t sr_div_bi                  = 8;
  const wcint_t max_connection_postponement_level = 10;
  const wcint_t max_copies                 = 50;
-
+ const wcint_t max_name_len               = 256; // ie individual component of a user name
+ const wcint_t max_username_len           = 1024;// ie including all components and seperators
 
  const char* const ladspa_path_if_env_not_set =
     "/usr/local/lib/ladspa/:/usr/lib/ladspa/";

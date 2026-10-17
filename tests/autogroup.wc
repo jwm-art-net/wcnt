@@ -25,8 +25,18 @@ t
 
 constant_freq
 cf
-    freq 1000
+    freq 777
 cf
+
+constant_freq
+cf1
+    freq 1000
+cf1
+
+constant_freq
+cf2
+    freq 2000
+cf2
 
 
 autogroup_create
@@ -35,23 +45,41 @@ group1
     // uncommenting this 2nd autogroup should fail
     // autogroup_create group2
 
+    // within autogroups, connections are scoped to modules within the
+    // group first, without having to specify the group name.
+    // this scoping may cause modules within the group to hide modules
+    // outside of it, rendering them inaccessible during the
+    // autogrouping if there share the same name.
+
     // this constant freq should not result in name clash as it is
     // within the autogroup created group1
 
     constant_freq
     cf
-        freq 110
+        freq 111
     cf
 
-    // within the autogroup created group1, connections are scoped to
-    // modules within the group first, without having to specify the group
-    // name (and not those with the same module name outside of the group).
+    // due to scoping, this copier will copy the cf above not the
+    // cf outside the autogroup:
+    copier [ from cf to cf111 count 3 ]
+
+    // duplicate module from outside of autogroup into autogroup
+    copier [ from cf1 to cf2 ]
+
+    // duplicate module from within of autogroup
+    copier [ from cf2 to cf3 ]
+
+
     osc_clock
     osc
         in_note_on_trig t out_trig
         in_note_slide_trig off
         in_frequency cf out_frequency
     osc
+
+    // outside of the autogroup however, the editor will allow us to
+    // make the connection because there, modules are referenced by
+    // their full grouped name.
 
     wave
     w
@@ -94,26 +122,27 @@ group1
     m
 
     // synth_file_reader not allowed inside autogroup
-    // synth_file_reader sfr filename param_edit-basic.wc sfr
+    // synth_file_reader [ filename param_edit-basic.wc ]
 
 group1
 
 
+autogroup_create
+group2
+    // can't use the copier to copy a group within an auto group
+    // copier [ from group1 to groupee ]
+group2
+
 wavfile_out
 wav
-    in_left     group1.m out_output
+    in_signal   group1.m out_output
     in_bar t    out_count
-    snapshot_mode off
     data_format float32
     filename    autogroup.wav
     start_bar   0
     end_bar     1
 wav
 
-wcnt_exit
-x
-    in_bar      t out_count
-    exit_bar    1
-x
+wcnt_exit [ in_trig wav out_write_end_trig ]
 
 wcnt-1.32/jwmsynth

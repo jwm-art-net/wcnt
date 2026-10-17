@@ -30,10 +30,9 @@ duplicate_list_module(T* sm, D* _data,
     if (dupio == synthmod::base::AUTO_CONNECT)
         sm->duplicate_inputs_to(dup);
     sm->duplicate_params_to(dup);
-    const char* const module_type_name = synthmod::names::get(
-                                                  sm->get_module_type());
-    char* current_grp = get_groupname(sm->get_username());
-    char* new_grp = get_groupname(uname);
+    const char* const module_type_name = synthmod::names::get(sm->get_module_type());
+    const char* current_grp = sm->get_name(groupnames::GROUP);
+    char* new_grp = groupnames::str_get_name(groupnames::GROUP, uname); //get_groupname(uname);
     bool regroup = false;
     if (current_grp && new_grp)
         if (strcmp(current_grp, new_grp) != 0)
@@ -44,11 +43,12 @@ duplicate_list_module(T* sm, D* _data,
             << module_type_name << " module " << uname;
     D* data = sm->goto_first();
     while (data) {
-        char* data_grp = get_groupname(data->get_username());
+        const char* data_grp = data->get_name(groupnames::GROUP);
         D* data_to_add = data;
         if (data_grp && regroup == true) {
             if (strcmp(data_grp, current_grp) == 0) {
-                char* grpname = set_groupname(new_grp, data->get_username());
+                char* grpname = data->make_username(groupnames::GROUP, new_grp);
+                D_CONNECT("make username gives '%s'\n", grpname);
                 synthmod::base* grpdata =
                             modlist->get_synthmod_by_name(grpname);
                 if (grpdata)
@@ -61,14 +61,12 @@ duplicate_list_module(T* sm, D* _data,
                         "group definition.";
                 delete [] grpname;
             }
-            delete [] data_grp;
         }
         dup->add_at_tail(data_to_add);
         if (wcnt::jwm.is_verbose())
             std::cout << "\nadded " << data_to_add->get_username();
         data = sm->goto_next();
     }
-    delete [] current_grp;
     delete [] new_grp;
     if (wcnt::jwm.is_verbose())
         std::cout << "\n----------";

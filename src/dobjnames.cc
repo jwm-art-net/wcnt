@@ -44,6 +44,7 @@ namespace dobj
     { DEF_COPIER,       "copier",           CAT_DEF,    "Makes an exact duplicate of a module, group of modules, or data object, but with a different name." ,0},
     { DEF_GROUP,        "group",            CAT_DEF,    "Groups a series of modules together allowing the copier to be used more efficiently. Connections referencing modules in the pre-existing group are updated to use modules in new group. Autogrouping supersedes direct usage of the group data object, using the autogroup_create or autogroup_add directives followed by name of the group before creating modules. Once modules for the group are created, the group name again will stop autogrouping (or use autogroup_stop)." ,0},
     { DEF_ADSR_SCALER,  "adsr_scaler",      CAT_DEF,    "Allows editing of ADSR envelopes after their creation/duplication." ,0},
+    { DEF_CHAIN,        "chain",            CAT_DEF,    "Copies a set of modules into a chain, and prefixes the name of the chain to the modules. The modules and their connections can then be reproduced using the copier. Unlike grouping, the copy in the chain is independent of the original modules it is a copy of, so the copy remains unaffected if the original modules are edited. Alternatively use the chain_create directive for a more natural way to create a chain of modules.", 0},
     { DOBJ_SYNTHMOD,    "synthmod",         CAT_SYNTHMOD, "Module to process." ,0}
  };
 }; // namespace dobj

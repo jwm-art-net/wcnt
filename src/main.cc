@@ -24,6 +24,9 @@
 #include "../include/synthmodlist.h"
 #include "../include/sanity_checks.h"
 
+#include "../include/textstuff.h"
+#include "../include/groupnames.h"
+
 void title();
 void exitramblings();
 

@@ -38,8 +38,9 @@ group::~group()
 
 synthmod::base* group::group_module(synthmod::base* sm)
 {
-    const char* const grpname =
-        set_groupname(get_username(), sm->get_username());
+    //const char* const grpname =
+    //    set_groupname(get_username(), sm->get_username());
+    char* grpname = sm->make_username(groupnames::GROUP, get_username());
     if (wcnt::jwm.get_modlist()->get_synthmod_by_name(grpname))
     {
         dobjerr("Could not add %s to group %s. A module already exists "
@@ -76,7 +77,8 @@ synthmod::base* group::autogroup_module(synthmod::base* sm)
     if (sm->flag(synthmod::base::SM_UNGROUPABLE))
         return 0;
 
-    sm->set_group_name(get_username());
+    if (!sm->set_name(groupnames::GROUP, get_username()))
+        return 0;
     return sm;
 }
 
@@ -85,7 +87,7 @@ dobj::base* group::add_dobj(dobj::base* dbj)
 {
     if (dbj->get_object_type() == dobj::DOBJ_SYNTHMOD) {
         synthmod::base* sm = ((dobjmod*)dbj)->get_synthmod();
-        const char* const grpname = sm->get_group_name();
+        const char* const grpname = sm->get_name(groupnames::GROUP);
         if (grpname) {
             dobjerr("Cannot add module to group %s, it is already in "
                     "the group %s.", get_username(), grpname);
@@ -115,18 +117,15 @@ dobj::base* group::duplicate_dobj(const char* new_group_name)
     }
 
     synthmod::list::linkedlist* duplist =
-        wcnt::jwm.get_modlist()->
-            duplicate_group(get_username(), new_group_name);
+        wcnt::jwm.get_modlist()-> duplicate_group(get_username(), new_group_name);
 
-    if (!duplist)
-    {
-        dobjerr("Duplication of modules within group %s failed.",
-                                                get_username());
+    if (!duplist) {
+        dobjerr("Duplication of modules within group %s failed.", get_username());
         return 0;
     }
 
     if (wcnt::jwm.is_verbose()) {
-        std::cout << "Ok";
+        std::cout << "Ok" << std::endl;
     }
 
     group* dup = new group(DUPLICATE);
@@ -134,10 +133,8 @@ dobj::base* group::duplicate_dobj(const char* new_group_name)
 
     // now reconnect the duplicated modules.
     if (wcnt::jwm.is_verbose())
-        std::cout
-            << "\nDuplicating connections in group " << get_username()
-            <<" to " << new_group_name << "... " << std::endl;;
-
+        std::cout << "Duplicating connections in group " << get_username()
+                  << " to " << new_group_name << "... " << std::endl;;
 
     synthmod::list::linkedlist* grplist =
         new_list_of_by(wcnt::jwm.get_modlist(), groupname(get_username()));
@@ -145,25 +142,29 @@ dobj::base* group::duplicate_dobj(const char* new_group_name)
     synthmod::base* mod = grplist->goto_first();
     synthmod::base* to_mod = duplist->goto_first();
 
+    mod = grplist->goto_first();
+    to_mod = duplist->goto_first();
+
     while(mod) {
         D_CONNECT("Checking connections for module %s\n", mod->get_username());
-        connectorlist::linkedlist* conlist =
-           wcnt::get_connectlist() ->
-                duplicate_connections_for_module(mod, to_mod);
+        connectorlist::linkedlist* conlist = wcnt::get_connectlist() ->
+                                duplicate_connections_for_module(mod, to_mod);
         connector* con = conlist->goto_first();
         while(con) {
             D_CONNECT("-- output module name %s\n", con->get_output_module_name());
-            const char* const mod_groupname =
-                get_groupname(con->get_output_module_name());
+            char* mod_groupname = groupnames::str_get_name(groupnames::GROUP,
+                                                con->get_output_module_name());
             if (mod_groupname) {
                 if (strcmp(get_username(), mod_groupname) == 0) {
                     if (wcnt::jwm.is_verbose())
                         std::cout << "Reforming connection "
                                   << con->get_output_module_name() << " to ";
-                    const char* const new_mod_name =
-                        set_groupname(new_group_name,
-                            con->get_output_module_name());
-                    con->set_output_module_name(new_mod_name);
+                    char* new_mod_name = groupnames::str_make_username(
+                                                con->get_output_module_name(),
+                                                groupnames::GROUP,
+                                                new_group_name);
+
+                        con->set_output_module_name(new_mod_name);
                     if (wcnt::jwm.is_verbose()) {
                         std::cout << new_mod_name << " "
                             << output::names::get(con->get_output_type())
@@ -196,7 +197,7 @@ bool group::groupify(synthmod::base* sm)
         return false;
     char* from = new char [strlen(sm->get_username()) + 1];
     strcpy(from, sm->get_username());
-    sm->set_group_name(get_username());
+    sm->set_name(groupnames::GROUP, get_username());
     wcnt::get_connectlist()->reconnect_output_module_by_name(from,
                                                     sm->get_username());
     delete [] from;

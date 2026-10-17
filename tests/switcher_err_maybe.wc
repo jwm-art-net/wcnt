@@ -1,0 +1,26 @@
+wcnt-1.32/jwmsynth
+
+samplerate 44100
+
+clock c freq 3 c
+
+autogroup_create
+
+constant c1 value 10 c1
+constant c2 value 20 c2
+
+switcher
+sw1
+    signals
+        synthmod name c1
+        synthmod name c2
+    signals
+    in_trig off
+sw1
+
+copier [ from sw1 to sw2 ]
+
+wcnt_exit [ in_trig c out_phase_trig ]
+
+wcnt-1.32/jwmsynth
+

@@ -2,7 +2,7 @@
 
 patterntrig::patterntrig(const char* uname) :
  synthmod::base(synthmod::PATTERNTRIG, uname, SM_HAS_OUT_TRIG),
- in_trig(0), out_trig(OFF), out_start_trig(OFF),
+ in_trig(0), out_trig(OFF), out_not_trig(OFF), out_start_trig(OFF),
  out_end_trig(OFF), out_index(-1), pattern(0), ptr(0)
 {
     register_output(output::OUT_TRIG);

@@ -24,7 +24,7 @@ double note_to_freq(const char *note_name, char oct_offset);
 double note_to_freq(const char *note_name, char oct_offset, double semitones);
 
 // transpose one note name to another note name
-const char* transpose_notename(const char* note_name, char semitones);
+char* transpose_notename(const char* note_name, char semitones);
 double transpose_frequency(double freq, char semitones);
 
 // helper functions used by note_to_???? functions

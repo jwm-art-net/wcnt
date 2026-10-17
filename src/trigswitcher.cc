@@ -89,7 +89,7 @@ dobj::base* trigswitcher::add_dobj(dobj::base* dbj)
                                             sm->get_username());
             return 0;
         }
-       wcnt::get_dobjlist()->add_dobj(dbj);
+        wcnt::get_dobjlist()->add_dobj(dbj);
         return dbj;
     }
     sm_err("%s %s to %s", errors::stock::major, errors::stock::bad_add,

@@ -54,7 +54,7 @@ bool copier::set_from_name(const char* name)
         }
         return true;
     }
-    if ((from_mod = wcnt::jwm.get_modlist()->autogroup_or_not_get_synthmod_by_name(name, 0)))
+    if ((from_mod = wcnt::jwm.get_modlist()->autogroup_or_any_get_synthmod_by_name(name, 0)))
         return true;
     return false;
 }
@@ -88,8 +88,7 @@ bool copier::set_param(param::TYPE pt, const void* data)
         }
         return true;
     case param::COPYTO: {
-        const char* const grpname =
-            get_groupname((const char*)data);
+        const char* const grpname = groupnames::str_get_name(groupnames::GROUP, (const char*)data);
         if (grpname) {
             delete [] grpname;
             dobjerr("Cannot copy %s to %s because the name %s contains "

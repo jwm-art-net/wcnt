@@ -20,5 +20,6 @@
 #include "copier.h"
 #include "group.h"
 #include "adsr_scaler.h"
+#include "chain.h"
 
 #endif

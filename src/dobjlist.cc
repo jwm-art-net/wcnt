@@ -68,6 +68,9 @@ namespace dobj
     case dobj::DEF_ADSR_SCALER:
         dobjy = new adsr_scaler;
         break;
+    case dobj::DEF_CHAIN:
+        dobjy = new chain;
+        break;
     case dobj::DOBJ_SYNTHMOD:
         dobjy = new dobjmod;
         break;

@@ -37,6 +37,8 @@ public:
                                                     input::TYPE as);
     connector* add_connector(synthmod::base* sm,  input::TYPE,
                              const char* out_mod, output::TYPE);
+
+    // this doesn't appear to be used
     connector* add_connector(synthmod::base* sm,  input::TYPE,
                              const char* out_mod, const char* output);
     bool delete_connector(connector*);
@@ -44,16 +46,24 @@ public:
     /*
     // duplicate_connections
     //  duplicates and adds the connections
+    //  - sets group_pending if autogroup activated
     */
     bool duplicate_connections(const synthmod::base* from, synthmod::base* to);
 
     /*
     // duplicates_connections_for_module
     //  duplicates connections into a new list for further processing
+    //  - no autogroup handling - but primary usage is for group data object.
     */
     linkedlist*
     duplicate_connections_for_module(const synthmod::base* from,
                                            synthmod::base* to);
+
+    // duplicates connections but into an alternative connectorlist.
+    bool duplicate_connections_to_connectorlist(const synthmod::base* from,
+                                                      synthmod::base* to,
+                                                      connectorlist* dest);
+
 
     void reconnect_output_module_by_name(const char*from, const char*to);
 

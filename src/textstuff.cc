@@ -1,5 +1,6 @@
 #include "../include/textstuff.h"
 #include "../include/debug.h"
+#include "../include/globals.h"
 
 #include <functional>
 #include <algorithm>
@@ -217,3 +218,4 @@ char* nameless_name()
     D_BUG("nameless name: '%s'\n", buf);
     return buf;
 }
+

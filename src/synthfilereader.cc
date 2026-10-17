@@ -279,18 +279,25 @@ bool synthfilereader::autogroup_stop(const char* com)
     }
 
     synthmod::list* sml = wcnt::jwm.get_modlist();
-    char* gn = 0;
+    const char* gn = 0;
     connector* c = cl->goto_first();
     while (c) {
         const char* outmod = c->get_output_module_name();
         D_CONNECT("checking pending connection using output module name: %s "
                   "(to input module %s)\n", outmod, c->get_input_module()->get_username());
-        gn = c->get_input_module()->get_group_name();
+//        const char* mun = c->get_input_module()->get_username();
+//        std::cout << "connect input module: '" << mun << "'" << std::endl;
+        gn = c->get_input_module()->get_name(groupnames::GROUP);
+//        std::cout << "gn: '" << (gn ? gn : "0x0") << "'" << std::endl;
+//        const char* agn = autogroup->get_username();
+//        std::cout << "autogroup: '" << (agn ? agn : "0x0") << "'" << std::endl;
         if (strcmp(gn, autogroup->get_username()) == 0) {
             // due to autogroup_add, grouping can be staged, so *must* ensure
             // group names match!
-            if (!has_groupname(outmod)) {
-                char* gsmn = set_groupname(autogroup->get_username(), outmod);
+//            if (!has_groupname(outmod)) {
+            if (!groupnames::str_has_name(groupnames::GROUP, outmod)) {
+                char* gsmn = groupnames::str_make_username(outmod, groupnames::GROUP,
+                                                           autogroup->get_username());
                 synthmod::base* sm = sml->get_synthmod_by_name(gsmn);
                 if (sm) {
                     // precedence for outputs with matching module name is for
@@ -312,7 +319,6 @@ bool synthfilereader::autogroup_stop(const char* com)
                 delete [] gsmn;
             }
         }
-        delete [] gn;
         c = cl->goto_next();
     }
 
@@ -471,9 +477,9 @@ synthmod::base* synthfilereader::read_synthmodule(const char* com)
         return 0;
     }
     // prevent the user from defining a module using a grouped name
-    const char* const grpname = get_groupname(modname.c_str());
-    if (grpname) {
-        delete [] grpname;
+//    const char* const grpname = get_groupname(modname.c_str());
+//    if (grpname) {
+    if (groupnames::str_has_name(groupnames::GROUP, modname.c_str())) {
         wc_err("The %s module name %s uses the '.' character which is "
                 "reserved for grouped modules only (use the group data "
                 "object if you want to add the module to a group.)",
@@ -608,12 +614,11 @@ dobj::base* synthfilereader::read_dobj(const char* com)
         return 0;
     }
 
-    const char* const grpname = get_groupname(dobjname.c_str());
-    if (grpname) {
-        delete [] grpname;
-        wc_err("The data object %s name %s used the '.' character which is "
+    int c = groupnames::str_has_reserved_chr(dobjname.c_str());
+    if (c) {
+        wc_err("The data object %s name %s used the '%c' character which is "
                 "strictly reserved for use within groups.",
-                dobj::names::get(dobjtype), dobjname.c_str());
+                dobj::names::get(dobjtype), dobjname.c_str(), c);
         return 0;
     }
     if (include_dbj(dobjname.c_str())) {

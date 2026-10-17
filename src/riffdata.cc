@@ -255,23 +255,6 @@ double riffdata::calc_note_param(note_data::NOTE_OP op, double n1,
     }
 }
 
-#ifdef UNUSED
-double riffdata::calc_riff_length(char beats_per_bar, char beat_value)
-{
-    note_data* note = goto_last();
-    if (!note)
-        return 0;
-    double note_off_pos = note->get_position() + note->get_length();
-    wcint_t bars = 1;
-    double rifflen = 0;
-    while (rifflen < note_off_pos){
-        double beatlen = (tpqn * (4.0 / (double)beat_value));
-        rifflen = beats_per_bar * beatlen * bars;
-        bars++;
-    }
-    return rifflen;
-}
-#endif
 
 bool riffdata::set_param(param::TYPE dt, const void* data)
 {

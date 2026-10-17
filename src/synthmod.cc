@@ -19,11 +19,10 @@
 namespace synthmod
 {
  base::base(TYPE mt, const char* const uname, int _flags_)
-  : modtype(mt), username(0)
+  : modtype(mt)
  {
     flags = _flags_ | SM_VALID;
-    username = new char[strlen(uname) + 1];
-    strcpy(username, uname);
+    username.set_username(uname);
 
     #ifdef DATA_STATS
     STATS_INC
@@ -33,18 +32,19 @@ namespace synthmod
  base::~base()
  {
     wcnt::get_outputlist()->delete_module_outputs(this);
-    delete [] username;
     #ifdef DATA_STATS
     STATS_DEC
     #endif
  }
 
- void base::set_group_name(const char* const gname)
+
+ const char* base::set_name(groupnames::COMPONENT c, const char* str)
  {
-    const char* oldname = username;
-    username = set_groupname(gname, username);
-    delete [] oldname;
+    if (flags & SM_UNGROUPABLE)
+        return 0;
+    return username.set_name(c, str);
  }
+
 
  const void* base::get_out(output::TYPE) const
  {

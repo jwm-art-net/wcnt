@@ -1,3 +1,421 @@
+GROUPS
+======
+
+Say we use grouping to create a multi layered sound. Each group
+created represents one layer of the sound.
+
+Now say I want to use wcnt's very rudimentary polyphony implentation.
+
+For five voice polyphany, each layer within a five layer sound would
+need duplicating and connecting for each voice. This modest level of
+layering and polyphony would require 20 duplications. Then some careful
+setup work to limit how much re-connecting in the editor for each voice.
+
+Might it be preferable if grouping could be easily nested?
+
+<interlude>
+Along the way, earlier this year at least, I thought of:
+
+    * delete (directive) - delete a module, data object or entire group
+    * rename (data object) - rename a module, data object, or entire
+      group
+
+Both of these actions would then require connection updates - deletion
+of any connections referencing the deleted modules, and renaming of any
+connections referencing the old names of the renamed modules.
+
+Slightly grey areas, are combiner, mixer, switcher, etc, any of the
+modules into which a set of other modules are added, in fact (the
+modules aren't necessarily added in the sense of becoming a part of the
+module being added to, the added modules still work independently).
+
+As well as the group_control which works on the group name. However,
+these things should be dealable during validation once everything has
+been created.
+</interlude>
+
+What if instead of nested groups, a new seperate system, voices.
+in_signal voice1:group1.mod1 out_output
+
+
+
+------------------------------
+
+
+1) what is grouping actually?
+  * a system which allows a set of modules to be referenced by a single
+    name - their group name, this can be used by the copier, to
+    duplicate a set of modules again and again, preserving the chain
+    of connections so the new group is connected to the modules within
+    itself in exactly the same was as the source group.
+
+1) how is grouping handled?
+  * group data object, "moves an existing set of modules into a group",
+    updates connections to reference new group name
+
+  * autogrouping, surrounds a set of module definitions adding them into
+    a group in a single step alongside creation, acts as scoping,
+    modules in the group referenced in connections dont require the full
+    group name, allowing grouping to be easily added to or removed from
+    a series of modules without changing anything about their
+    definitions.
+
+  * grouping doesnt change anything about how the modules operate, it is
+    merely a UI operation, module names are prefixed by the group name
+    and a period character as seperator.
+
+  * only the group_control module changes how modules operate. it does
+    this by removing them from the global run list to its own private
+    run list. This allows the group_control to control when processing
+    of these modules happens, which is controlled by the group_control's
+    trigger inputs. the primary use case is to reduce of processing
+    overhead of inactive voices in a polyphonic system.
+
+2) what is wrong with nested groups?
+  * i'm just not sure how to implement it or how it would work, what
+    limits it would need.
+
+    in_signal voice1.group2.mod3 out_output
+
+----------------------
+GROUP MERGING
+
+Another avenue of exploration is the merging of two or more seperate
+groups into one. As some of these groups might be copies of the others,
+name clashes, if the pre-existing group names are removed, would
+certainly occur.
+
+So a transformation of the pre-existing group.module naming convention
+would be required, achieved with a simple character change, from period
+to underscore for example.
+
+group1.mod1
+group2.mod1
+
+-->
+
+merged.group1_mod1
+merged.group2_mod1
+
+
+This sidesteps the necessity of handling the complexity of nested
+grouping
+
+===========================
+ ***** VOICES MODULE *****
+===========================
+IDEA:
+ * specify one or more groups to be used as a set to make up a single
+   voice
+
+ * specify number of voices
+
+ * the module creates duplicates of all the groups, duplicating the set
+   for each subsequent voice
+
+ *
+
+
+------------------------------------------
+**** polyphony - other notes on notes ****
+
+A riff (riff_data) is already set up to handle multiple notes at the same
+position, so nothing extra required of it. the current (monophonic)
+sequencer handles this by triggering note on for the first note at
+the position, and then stepping through all remaining notes at that very
+same position triggering note slide. effectively, only the last note at
+the position is treated as the slide-to note and all those between the
+first inserted and last inserted are discarded. i'm happy with that, i
+don't remember intentionally doing it that way, but cool.
+
+
+----------------------------------------------------------
+chain_copy - revisiting this idea from earlier in the year
+
+class: data object
+purpose: duplicating a set of modules and the connections between them
+         without utilizing grouping, this would allow multiple
+         duplications of a set of objects to exist within the same
+         group.
+use case: typically, this would be for smaller sets of modules such as
+          a set of clock and wave form modules
+
+How would it work?
+
+Initially, the idea was to specify all the modules in the set, similar
+to how the original group data object works.
+However, it could also be created as a directive, giving the chain a
+name and encapsulating the set of modules within it.
+
+I now realize the chain wouldn't use a name based mechanism in the way
+grouping does*. The chain would be a data object and the modules would
+be held in a (private internal) module list.
+
+* see notes further below, the chain will still affect the naming of
+  modules, but it is only the chain data structure which can identify
+  modules within the chain. indentification of modules within a group
+  is entirely name based and the user is prevented from using the
+  group naming convention [for the creation of modules].
+
+The copier data object could be used at any subsequent point to
+duplicate that chain - and the pattern of connections between them.
+
+So the directive might not be chain_copy... because it's the copier
+that does the copying... or is it?
+
+chain_copy would differ from a group, because chain_copy - the directive
+will copy the modules as they are at the point of their definition, and,
+chain_copy the data object, would copy the modules as they are at the
+point of the chain_copy definition.
+
+unlike group which groups the modules, chain_copy literally will copy
+them, name that copy, but keep the copy private until use by the copier.
+
+the copier will produce a copy of the chain, but with a different name.
+the copier will request a 'from' name - the name of the chain, and a
+'to' name for the target copy.
+
+either:
+    * the second parameter, 'to', of the copier, becomes optional
+      when the first parameter 'from' references a chain - so adaption
+      of the existing copier happens and it's behaviour changes.
+
+    * the chain does rename the modules, keeping consistency of naming
+      behaviour with grouping, and usage consistency of the copier.
+
+if the latter, then,
+
+copy_chain
+lfo1
+    clock c freq 1.0 c
+    wave w  type saw    in_phase_step c out_phase_step  w
+lfo1
+
+the two modules are named lfo1_c, and lfo1_w,
+the copier is used thusly:
+
+copier [ from lfo1 to lfo2 ]
+
+producing lfo2_c and lfo2_w
+
+if lfo1_w or lfo1_c are edited before the copier is used, the copier
+still produces exact copies of the modules as they were during chaining.
+
+chain the directive would be similar to grouping, it will produce a data
+object, but unlike grouping, it's the chain data object in which a copy
+of the modules is stored.
+
+naming of the directive/data object?
+-------------------------
+
+chain, chain_copy, copy_chain?
+...
+group, autogroup_create, autogroup_add ( --> group_create, group_add ? )
+
+chain, autochain_create, autochain_add
+
+chain_copy, chain_copy_create, chain_copy_add
+
+* likely name: chain_copy
+* must be able to work within an autogroup
+* create chain_copy data object, then directive follows
+
+NOW CONSIDER:
+* the chain_copy duplicates modules into its own private list
+* the chain_copy renames the modules
+* the modules in the private list retain their original names
+
+NOW CONSIDER THAT:
+* the copier copies the chain_copy data object
+* the duplicate chain_copy has its own private list of modules
+* the duplicate copies its private list of modules into user space
+
+can the chain copy be set up so that the subsequent copies do not
+duplicate the same private list modules
+
+
+// - create a chain_copy data object called lfo1
+//   (via directive chain_copy_create)
+// - create modules c and w
+// - duplicate them to the private internal list of lfo1
+// - name the user space modules as lfo1_c and lfo1_w
+
+chain_copy_create
+lfo1
+    clock c freq 3.0 c
+    wave  w type sine in_phase_trig c out_phase_trig w
+lfo1
+
+// duplicate lfo1 chain 3 times
+// name duplicates lfo2, lfo3, lfo4
+//
+
+copier [ from lfo1 to lfo2 count 3 ]
+
+--
+i'm struggling to see a clear choice between attemtping to mitigate
+redundant duplication of modules using this proposed chain_copy and
+copier mechanism, and not mitigating against it.
+on the one hand, it seems kinda pointless to duplicate private
+duplicates.
+the private duplicates won't change - unless there is a chain_copy_add
+directive, or even a chain_copy_update directive such that the private
+duplicates can be updated after use of the editor.
+what if when the copier is called upon to duplicate the chain_copy,
+there isn't any duplication of the chain_copy data object, but only
+duplication of the modules within the chain_copy?
+--
+
+editor
+[
+    editlist
+        edit lfo2_c freq 2.5
+        eidt lfo2_w type saw
+        edit lfo3_c freq 2.1
+        eidt lfo3_w type tri
+        edit lfo4_c freq 1.7
+        eidt lfo4_w type squ
+    editlist
+]
+
+implementation
+==============
+
+FIXME: determine if using SM_UNGROUPABLE is adequate for preventing
+certain modules from being chained, or if the creation of something,
+for example, SM_UNCHAINABLE, is required.
+
+Add following global limits:
+ const wcint_t max_username_len           = 256;
+ const wcint_t max_generated_name_len     = 1024;
+
+----
+Do I need to rethink this? I might!
+... implementing...
+
+  | synthmod::base::duplicate_module creates a module, duplicates
+  | it's parameters and connections, but does not add the duplicate
+  | module to the module list.
+
+     ( originally as written above, chain_copy duplicates the modules )
+     ( and adds them to its own prviate internal list rather than the )
+     ( global user space module list, however, i began thinking that  )
+     ( was unnecessary, that it is perferctly okay to have a similar  )
+     ( situation as the group - modules in the group are the modules  )
+     ( that were grouped. modules in the chain are the modules that   )
+     ( were chained - such that duplicates of the chain duplicate     )
+     ( also any edits applied to the modules since the chain copy was )
+     ( made..... BUT.... if I do create delete functionality, then    )
+     ( the private internal list data structure will contain invalid  )
+     ( pointers - this will also be a problem for delete and the      )
+     ( various modules which contain a list of modules......          )
+
+-- and --
+
+\[ train of thought was lost, due to the [[[ DELETE ]]] tangent i ]/
+ \[ ventured down. what i was thinking felt all very clear at    ]/
+  \[ the time, however now i forget its format.                 ]/
+
+  | modules duplicated to chain_copy private internal list then
+  | wouldn't be in the global user space module list. however, the
+  | duplicated connections would be added to the global userspace
+  | connections list rather than a private internal connections list
+  | maintained by the chain.
+
+    | i think i would like for the connections to be duplicated to
+    | private internal management by the chain in order to be in
+    | keeping with the modules kept by it. this would also mean a
+    | policy of not updating connections from output modules which
+    | have undergone name changes as caused by grouping etc.
+
+okay that is clear, but, i'm not settled, or at least, not fully
+convinced on the name change policy. should a data object named
+chain_copy change the name of the objects it "copies", not really.
+
+so naming it simply as 'chain' and not chain_copy, might make more
+sense bringing it into alignment with group nomenclature (still tempted
+to do away with the auto prefix to group_create).
+
+chain will modify the modules names
+
+leaving the final problem in which resolution is sought. now i have
+spent time thinking through the other problems, the distinction is
+clearer for how the copier will function with regards to a chain:
+
+     i) the chain data object itself is copied (before duplicating the
+        new duplicate chains duplicate internal module list into the
+        global userspace module list)
+
+- or -
+
+    ii) the copier relinquishes the duplication process to the
+        chain itself to undertake. the chain data object is not
+        duplicated, only the internal private modules and their
+        connections.
+
+i feel for the case of i) that things get a touch too messy, with too
+much uneccesary redundant duplication of modules and data objects
+existing only to serve the concept.
+
+i now think that ii) is the better option. the downside is the extra
+work to be done on the connections list to enable duplicated connections
+to be added to an alternative target connections list.
+
+regarding directives, (auto)chain_create, chain_stop... chain_edit might
+be a possibility. i'm leaning toward deciding that chain_edit would
+cause updates to the module list of the chain data object itself...
+ - - - remember - - - data objects are not groupable they are not part
+of a group although they can be defined within group scoping - - -
+... this means the names of the modules within the chain should lose
+their group name... allowing chains to be created within scope of one
+group and duplicated into scope of another.
+
+would use of the chain data object need to prevent chaining modules from
+different group (or not) scopes? it certainly wouldn't be recommended if
+it allowed. but should it be allowed?
+
+and if the connection referenced a module in the group which wasn't
+in the chain - a direct connection to that module in that specific
+group even if the chain is copied to another group.
+
+
+
+
+
+[[[ DELETE ]]]
+The chain_copy concept has identified the delete problem and a possible
+sollution for how to deal with it.
+
+The problem is some modules work on a list of other modules. The list
+stores raw pointers to the modules. If a module is deleted - freed from
+memory, the list will contain a dangling pointer to invalid data without
+any way for it to discern that.
+
+Sollution 1) - synthmod flag (+ probably data object flag) earmarking
+a module for deletion. module flagged for deletion instead of being
+deleted, then moved from global user space list to private internal
+deletion list. modules which contain lists of other modules then check
+their data for modules flagged for deletion.
+
+Sollution 2) - currently the pointer to a module stored in a list module
+is obtained during definition (and the listed modules must already
+exist). this would be changed so the pointers to listed modules would
+be obtained during the validation phase, and return an error if not
+found. this would require conversion of the list modules from using
+dobjmod to modnamedobj (ie from pointer to a module to name of a
+module).
+
+Sollution 2 disregarding the extra work, is more appealing, but there
+are further questions regarding grouping. if a module is grouped after
+it's added to a list module, nothing currently needs to be done, however
+if it becomes the name initially stored until validation, then the
+stored name will no longer match and it becomes a potential match for
+the way in which input/output connections work - grouping updates the
+connections which name the previously ungrouped module.
+HOWEVER, that requires a new global list storing all modnamedobj used in
+all the list modules, and a scan of the list for module names to update.
+So more extra work.
+
 
 SYNTH FILE READER
 =================
