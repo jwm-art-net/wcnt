@@ -35,6 +35,9 @@
           copied, it only copies it's prviate internal lists of modules and
           connections
 
+        * chain is the lowest level in the group heirarchy. the same chain
+          can be copied into the same group multiple times or into multiple
+          other groups multiple times.
 */
 
 namespace synthmod { class base; }

@@ -36,6 +36,58 @@ c1
     modules
 c1
 
+copier [ from c1 to c2 ]
+
+autogroup_add
+g1
+    copier [ from c1 to c3 ]
+g1
+
+copier [ from g1 to g2 ]
+
+
+autogroup_create
+group1
+    clock
+    clock1
+        freq 5
+    clock1
+
+    wave
+    wave1
+        type sine
+        in_phase_step clock1 out_phase_step
+    wave1
+
+    clock
+    clock2
+        freq 0.5
+    clock2
+
+    lfo_controller
+    ctrl1
+        in_trig clock2 out_phase_trig
+        start_level 0.0
+        end_level 1.0
+        delay_time 0.5
+        ramp_time 0.5
+        in_waveform wave1 out_output
+        response_time 5
+    ctrl1
+
+    chain
+    lfo1
+        modules
+            synthmod name clock1
+            synthmod name wave1
+            synthmod name clock2
+            synthmod name ctrl1
+        modules
+    lfo1
+
+    copier [ from lfo1 to lfo2 count 3 ]
+group1
+
 
 wcnt_exit [ in_bar t out_count exit_bar 1 ]
 

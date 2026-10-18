@@ -297,8 +297,8 @@ namespace synthmod
         synthmod::base* frommod = i->get_data();
         char* togrp = groupnames::str_make_username(frommod->get_username(),
                                                     groupnames::GROUP, to);
-        synthmod::base* tomod
-            = frommod->duplicate_module(togrp, synthmod::base::NO_CONNECT);
+        synthmod::base* tomod = frommod->duplicate_module(togrp,
+                                                    synthmod::base::NO_CONNECT);
         delete [] togrp;
         if (!add_module(tomod)) {
             if (tomod)

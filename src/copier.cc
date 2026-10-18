@@ -189,7 +189,8 @@ errors::TYPE copier::validate()
         else if (from_dobj) {
             if (!(to_dobj = from_dobj->duplicate_dobj(copyname.c_str())))
                 return errors::ERROR;
-            wcnt::get_dobjlist()->add_dobj(to_dobj);
+            if (to_dobj != from_dobj)
+                wcnt::get_dobjlist()->add_dobj(to_dobj);
         }
     }
     return errors::NO_ERROR;

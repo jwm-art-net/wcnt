@@ -102,8 +102,8 @@ errors::TYPE trigcounter::validate()
     if (!validate_param(param::PRE_COUNT, errors::RANGE_COUNT))
         return errors::RANGE_COUNT;
 
-    if (!validate_param(param::COUNT, errors::RANGE_COUNT1))
-        return errors::RANGE_COUNT1;
+    if (!validate_param(param::COUNT, errors::RANGE_COUNT))
+        return errors::RANGE_COUNT;
     return errors::NO_ERROR;
 }
 
@@ -125,7 +125,8 @@ void trigcounter::run()
     if (*in_trig == ON) {
         if (out_pre_count > 0)
             out_pre_count--;
-        else if (out_count < count) {
+        else if (count < 1 || out_count < count)
+        {
             out_count++;
             out_trig = ON;
             out_play_state = ON;

@@ -54,6 +54,7 @@ public:
     // duplicates_connections_for_module
     //  duplicates connections into a new list for further processing
     //  - no autogroup handling - but primary usage is for group data object.
+    //  * connections are not deleted when the list is *
     */
     linkedlist*
     duplicate_connections_for_module(const synthmod::base* from,

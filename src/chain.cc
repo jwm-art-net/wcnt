@@ -5,6 +5,7 @@
 #include "../include/connectorlist.h"
 #include "../include/dobjlist.h"
 #include "../include/dobjmod.h"
+#include "../include/group.h"
 
 #include <iostream>
 
@@ -13,6 +14,7 @@ chain::chain() :
  dobj::base(dobj::DEF_CHAIN),
  modules(0), connections(0)
 {
+    set_flags(DO_ALLOW_IN_AUTOGROUP);
     modules = new synthmod::list(DELETE_DATA);
     connections = new connectorlist(DELETE_DATA);
 }
@@ -41,43 +43,25 @@ synthmod::base* chain::chain_module(synthmod::base* sm)
     // this function is called for every module listed
     // 1) duplicate module
     // 2) form chain name for module and rename module
-    std::cout << "\\--> chaining module... " << sm->get_username() << std::endl;
-
-
-    // FIXME: chained module name needs to be updated, currently there is no
-    // method for changing a synthmod name
-
-
     if (sm->flag(synthmod::base::SM_UNGROUPABLE)) {
         dobjerr("Module %s is forbidden from chain %s.", sm->get_username(), get_username());
         return 0;
     }
 
-    // name of module sans groupname
-    const char* name = sm->get_username();
-    const char* p = strchr(name, '.');
-    if (p)
-        name = ++p;
-
-    if (*p == '\0') {
-        dobjerr("Module %s has invalid name.", name);
-        invalidate();
-        return 0;
-    }
-
-    std::cout << "\\--> internal module name... " << name << std::endl;
-
-    const char* chname = sm->set_name(groupnames::CHAIN, get_username());
-
+    const char* name = sm->get_name(groupnames::MODULE);
+    char* chname = sm->make_username(groupnames::CHAIN, get_username());
     if (wcnt::jwm.get_modlist()->get_synthmod_by_name(chname))
     {
         dobjerr("Could not chain module %s as %s. A module already exists "
-        "named %s.", sm->get_username(), get_username(), chname);
+                "named %s.", sm->get_username(), get_username(), chname);
         invalidate();
+        delete [] chname;
         return 0;
     }
+    delete [] chname;
+    chname = 0;
 
-    synthmod::base* nsm = sm->duplicate_module(chname, synthmod::base::NO_CONNECT);
+    synthmod::base* nsm = sm->duplicate_module(name, synthmod::base::NO_CONNECT);
     if (!nsm) {
         dobjerr("Chain failed copying module %s.", name);
         invalidate();
@@ -86,7 +70,31 @@ synthmod::base* chain::chain_module(synthmod::base* sm)
 
     modules->add_module(nsm);
 
-    if (!wcnt::get_connectlist()->duplicate_connections_to_connectorlist(sm, nsm, connections)) {
+    char* from = new char [strlen(sm->get_username()) + 1];
+    strcpy(from, sm->get_username());
+    sm->set_name(groupnames::CHAIN, get_username());
+
+    if (wcnt::jwm.is_verbose()) {
+        std::cout << "chaining module " << from << " --> ";
+        std::cout << sm->get_username() << std::endl;
+    }
+
+    if (wcnt::jwm.get_modlist()->get_autogroup()) {
+        // connections during autogroup don't reflect the autogroup naming
+        // until the end of the autogroup when they're updated...
+        char* from_ng = groupnames::str_make_username(from, groupnames::GROUP, 0);
+        char* to_ng = sm->make_username(groupnames::GROUP, 0);
+        wcnt::get_connectlist()->reconnect_output_module_by_name(from_ng, to_ng);
+        delete [] from_ng;
+        delete [] to_ng;
+    }
+    else
+        wcnt::get_connectlist()->reconnect_output_module_by_name(from,
+                                                            sm->get_username());
+    delete [] from;
+    if (!wcnt::get_connectlist()->duplicate_connections_to_connectorlist(sm,
+                                                            nsm, connections))
+    {
         dobjerr("Could not chain module %s as %s. Connections failed.",
                 sm->get_username(), get_username());
         invalidate();
@@ -99,13 +107,25 @@ synthmod::base* chain::chain_module(synthmod::base* sm)
 
 synthmod::base* chain::auto_chain_module(synthmod::base* sm)
 {
-    // FIXME: determine if using SM_UNGROUPABLE is adequate or if a
-    // specialized SM_UNCHAINABLE is required
     if (sm->flag(synthmod::base::SM_UNGROUPABLE))
         return 0;
 
-//    sm->set_group_name(get_username());
+    if (!sm->set_name(groupnames::CHAIN, get_username()))
+        return 0;
     return sm;
+}
+
+
+bool chain::chainify(synthmod::base* sm)
+{
+    if (sm->flag(synthmod::base::SM_UNGROUPABLE))
+        return false;
+    char* from = new char [strlen(sm->get_username()) + 1];
+    strcpy(from, sm->get_username());
+    //sm->set_group_name(get_username());
+    wcnt::get_connectlist()->reconnect_output_module_by_name(from, sm->get_username());
+    delete [] from;
+    return true;
 }
 
 
@@ -122,113 +142,72 @@ dobj::base* chain::add_dobj(dobj::base* dbj)
         return dbj;
     }
 
-    dobjerr("%s %s to %s", errors::stock::major, errors::stock::bad_add,
-                                                    get_username());
+    dobjerr("%s %s to %s", errors::stock::major, errors::stock::bad_add, get_username());
     return 0;
 }
 
+
 dobj::base* chain::duplicate_dobj(const char* new_chain_name)
 {
-    // we don't duplicate the chain here, we only duplicate the modules and
-    // their connections the chain consists of, as chain is a bit like a copy
-    // and paste mechanism for modules
-/*
-    if (wcnt::jwm.is_verbose()) {
-        std::cout << "\nDuplicating modules in group " << get_username();
-        std::cout << " to " << new_group_name << "... ";
-    }
-
-    synthmod::list::linkedlist* duplist =
-        wcnt::jwm.get_modlist()->
-            duplicate_group(get_username(), new_group_name);
-
-    if (!duplist)
-    {
-        dobjerr("Duplication of modules within group %s failed.",
-                                                get_username());
-        return 0;
-    }
+    // the chain doesn't duplicate itself, it only duplicates the modules
+    // and their connections managed by it's own private data.
 
     if (wcnt::jwm.is_verbose()) {
-        std::cout << "Ok";
+        std::cout << "\nDuplicating modules in chain " << get_username();
+        std::cout << " to " << new_chain_name << "... " << std::endl;
     }
 
-    group* dup = new group(DUPLICATE);
-    dup->set_username(new_group_name);
+    group* ag = wcnt::jwm.get_modlist()->get_autogroup();
+    const char* agn = (ag ? ag->get_username() : 0);
 
-    // now reconnect the duplicated modules.
-    if (wcnt::jwm.is_verbose())
-        std::cout
-            << "\nDuplicating connections in group " << get_username()
-            <<" to " << new_group_name << "... " << std::endl;;
-
-
-    synthmod::list::linkedlist* grplist =
-        new_list_of_by(wcnt::jwm.get_modlist(), groupname(get_username()));
-
-    synthmod::base* mod = grplist->goto_first();
-    synthmod::base* to_mod = duplist->goto_first();
-
-    while(mod) {
-        D_CONNECT("Checking connections for module %s\n", mod->get_username());
+    synthmod::base* sm = modules->goto_first();
+    while(sm) {
+        char* cn = sm->make_username(groupnames::CHAIN, new_chain_name);
+        synthmod::base* sm2 = sm->duplicate_module(cn, synthmod::base::NO_CONNECT);
+        sm2->set_name(groupnames::GROUP, agn);
+        wcnt::jwm.get_modlist()->add_module(sm2);
+        if (wcnt::jwm.is_verbose()) {
+            std::cout << "Duplicating module " << sm->get_username()
+                << " --> " << sm2->get_username() << std::endl;
+        }
+        // reform connections for the new module...
         connectorlist::linkedlist* conlist =
-           wcnt::get_connectlist() ->
-                duplicate_connections_for_module(mod, to_mod);
+                        connections->duplicate_connections_for_module(sm, sm2);
         connector* con = conlist->goto_first();
+        if (con && wcnt::jwm.is_verbose())
+            std::cout << "Reforming connections..." << std::endl;
         while(con) {
-            D_CONNECT("-- output module name %s\n", con->get_output_module_name());
-            const char* const mod_groupname =
-                get_groupname(con->get_output_module_name());
-            if (mod_groupname) {
-                if (strcmp(get_username(), mod_groupname) == 0) {
-                    if (wcnt::jwm.is_verbose())
-                        std::cout << "Reforming connection "
-                                  << con->get_output_module_name() << " to ";
-                    const char* const new_mod_name =
-                        set_groupname(new_group_name,
-                            con->get_output_module_name());
-                    con->set_output_module_name(new_mod_name);
-                    if (wcnt::jwm.is_verbose()) {
-                        std::cout << new_mod_name << " "
-                            << output::names::get(con->get_output_type())
-                            << " --> "
-                            << con->get_input_module()->get_username()
-                            << " "
-                            << input::names::get(con->get_input_type()) << std::endl;;
-                    }
-                    delete [] new_mod_name;
+            char* cc = groupnames::str_get_name(groupnames::CHAIN,
+                                                con->get_output_module_name());
+            char* conoutmodname =
+                    groupnames::str_make_username(con->get_output_module_name(),
+                                                        groupnames::GROUP, agn);
+            if (cc && strcmp(cc, get_username()) == 0) {
+                char* smc = groupnames::str_make_username(conoutmodname,
+                                                          groupnames::CHAIN,
+                                                          new_chain_name);
+                con->set_output_module_name(smc);
+                if (wcnt::jwm.is_verbose()) {
+                    std::cout << smc << " "
+                    << output::names::get(con->get_output_type())
+                    << " --> "
+                    << con->get_input_module()->get_username()
+                    << " "
+                    << input::names::get(con->get_input_type()) << std::endl;
                 }
-                delete [] mod_groupname;
+                delete [] smc;
+                delete [] cc;
             }
-           wcnt::get_connectlist()->add_connector(con);
+            wcnt::get_connectlist()->add_connector(con);
             con = conlist->goto_next();
         }
+        delete [] cn;
         delete conlist;
-        mod = grplist->goto_next();
-        to_mod = duplist->goto_next();
+        sm = modules->goto_next();
     }
-    if (wcnt::jwm.is_verbose())
-        std::cout << std::endl;
-    delete duplist;
-    delete grplist;
-    return dup;
-    */
-return 0;
+    return this;
 }
 
-bool chain::chainify(synthmod::base* sm)
-{
-    // FIXME: still group code
-    if (sm->flag(synthmod::base::SM_UNGROUPABLE))
-        return false;
-    char* from = new char [strlen(sm->get_username()) + 1];
-    strcpy(from, sm->get_username());
-    //sm->set_group_name(get_username());
-    wcnt::get_connectlist()->reconnect_output_module_by_name(from,
-                                                    sm->get_username());
-    delete [] from;
-    return true;
-}
 
 errors::TYPE chain::validate()
 {

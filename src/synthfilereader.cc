@@ -476,13 +476,11 @@ synthmod::base* synthfilereader::read_synthmodule(const char* com)
                modname.c_str(), com);
         return 0;
     }
-    // prevent the user from defining a module using a grouped name
-//    const char* const grpname = get_groupname(modname.c_str());
-//    if (grpname) {
-    if (groupnames::str_has_name(groupnames::GROUP, modname.c_str())) {
-        wc_err("The %s module name %s uses the '.' character which is "
-                "reserved for grouped modules only (use the group data "
-                "object if you want to add the module to a group.)",
+
+    if (groupnames::str_has_reserved_chr(modname.c_str())) {
+        wc_err("The %s module name %s uses a reserved character which is "
+                "specific to grouped modules only. See command line help "
+                "for the group/chain data objects for further info.",
                 synthmod::names::get(smt), modname.c_str());
         return 0;
     }
@@ -497,18 +495,15 @@ synthmod::base* synthfilereader::read_synthmodule(const char* com)
     }
 
     if (include_mod(modname.c_str())) {
-        if (wcnt::jwm.get_modlist()->get_synthmod_by_name(modname.c_str()))
-        {
-            wc_err("A synth module already exists named %s.",
-                                                    modname.c_str());
+        if (wcnt::jwm.get_modlist()->get_synthmod_by_name(modname.c_str())) {
+            wc_err("A synth module already exists named %s.", modname.c_str());
             return 0;
         }
         dobj::base* dbj =
                 wcnt::get_dobjlist()->get_dobj_by_name(modname.c_str());
-        if (dbj){ // formality because of parameditor.cc workings.
+        if (dbj) { // formality because of parameditor.cc workings.
             wc_err("Cannot not name %s as %s, the name is already in use "
-                    "by a data object of type %s.", com,
-                                                    dbj->get_username(),
+                    "by a data object of type %s.", com, dbj->get_username(),
                     dobj::names::get(dbj->get_object_type()));
             return 0;
         }

@@ -160,24 +160,22 @@ dobj::base* group::duplicate_dobj(const char* new_group_name)
                         std::cout << "Reforming connection "
                                   << con->get_output_module_name() << " to ";
                     char* new_mod_name = groupnames::str_make_username(
-                                                con->get_output_module_name(),
-                                                groupnames::GROUP,
-                                                new_group_name);
-
-                        con->set_output_module_name(new_mod_name);
+                                            con->get_output_module_name(),
+                                            groupnames::GROUP, new_group_name);
+                    con->set_output_module_name(new_mod_name);
                     if (wcnt::jwm.is_verbose()) {
                         std::cout << new_mod_name << " "
                             << output::names::get(con->get_output_type())
                             << " --> "
                             << con->get_input_module()->get_username()
                             << " "
-                            << input::names::get(con->get_input_type()) << std::endl;;
+                            << input::names::get(con->get_input_type()) << std::endl;
                     }
                     delete [] new_mod_name;
                 }
                 delete [] mod_groupname;
             }
-           wcnt::get_connectlist()->add_connector(con);
+            wcnt::get_connectlist()->add_connector(con);
             con = conlist->goto_next();
         }
         delete conlist;

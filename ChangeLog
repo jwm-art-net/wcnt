@@ -1,6 +1,46 @@
 --------------------------------------------------------------
 Changes - October 2026 - wcnt-1.32.2026
 
+NEW
+    * first stage of chain data object implementation is done and
+      working, but minimally tested. the second stage will implement
+      the autochain_create directive. chain is the first of two planned
+      forms of group handling to be implemented alongside existing group
+      handling.
+
+      *** this is still in development and implementation
+      *** details are not settled
+
+      chaining is intended for smaller groups of modules and works
+      slightly differently. unlike grouping, the chain stores a snapshot
+      of the modules at the moment it chains them. when the copier is
+      used with a chain, it is only the snapshot of the modules which
+      is duplicated, never the chain data object itself so, despite
+      issuing:
+
+            copier [ from chain1 to chain2 ]
+            copier [ from chain2 to chain3 ]
+
+      chain2 does not exist, it cannot be copied!
+
+      the three forms of grouping will operate within a heirarchy, with
+      group in the middle, and chaining at the bottom. this means that
+      creating and duplicating a chain can be done inside, outside, and
+      across groups.
+
+      all three forms adapt the names of modules affected by them, each
+      uses its own seperator. group uses '.', chain uses '~'.
+
+      unfortunately i've realized there are problems with my approach
+      here. above, where i wrote creating and duplicating chains can be
+      done across groups, i was only thinking of duplication, ie, you
+      can make a chain in one group and then duplicate it into another.
+      what i hadn't realized about the current implementation, is that
+      chaining itself can be done across groups, as well as on modules
+      already chained.
+
+      further thinking about how this is handled is required.
+
 CHANGES:
     * when --verbose is used when wcnt is processing a .wc file:
       - the type of data object and/or type of synth module being
@@ -11,24 +51,11 @@ CHANGES:
       new system is intended to allow for other forms of grouping which
       can occur simultaneously with the existing group system. i am
       sticking with the decision to disallow nested grouping. quite an
-      effort to debug where i missed consequences to these changes
-
-    * begun basic infrastructure for the chain data object (and
-      directive), the first of the planned alternative forms of group
-      handling. chaining is intended for smaller groups of modules and
-      it will work in a subtly different way. modules added to the chain
-      have a similar name change, but are then also duplicated (along
-      with their connections) internally within the chain. then, when
-      the chain is duplicated using the copier, it is the internal
-      duplicate chain which is used as duplication source. why? i'm not
-      quite sure now! but that's the plan!
-      defintion of the chain, as well as duplicate copies being made of
-      it, will work within an autogroup. duplication of the chain is
-      planned so the data object itself will not be duplicated (unlike
-      the group data object), only the modules and connections within
-      it will be.
+      effort to debug where i missed consequences to these changes.
 
 FIXES:
+    * fix for trig_counter so it does what it says it should!
+
     * when using the auto-connection feature via the connect parameter
       from within an editor, the connections for passthrough modules
       (such as wcnt_note typically used as an 'entry point' to an included file)

@@ -1,0 +1,79 @@
+wcnt-1.32/jwmsynth
+
+samplerate 44100
+
+
+timer
+t
+    timings
+        time seconds 0
+        time seconds 1
+    timings
+    time_is_relative off
+t
+
+autogroup_create
+group1
+    clock
+    clock1
+        freq 5
+    clock1
+
+    wave
+    wave1
+        type sine
+        in_phase_step clock1 out_phase_step
+    wave1
+
+    clock
+    clock2
+        freq 0.5
+    clock2
+
+    lfo_controller
+    ctrl1
+        in_trig clock2 out_phase_trig
+        start_level 0.0
+        end_level 1.0
+        delay_time 0.5
+        ramp_time 0.5
+        in_waveform wave1 out_output
+        response_time 5
+    ctrl1
+
+    chain
+    lfo1
+        modules
+            synthmod name clock1
+            synthmod name wave1
+            synthmod name clock2
+            synthmod name ctrl1
+        modules
+    lfo1
+
+    copier [ from lfo1 to lfo2 ]
+group1
+
+copier [ from group1 to group2 ]
+
+chain
+ch1
+    // what should happen here?
+    modules
+        synthmod name group1.lfo1~clock1
+        synthmod name group2.lfo2~wave1
+        synthmod name group1.lfo2~clock2
+        synthmod name group2.lfo1~ctrl1
+    modules
+    // currently, the chain names above will all be altered to 'ch1'
+    // (from 'lfo1' and 'lfo2') - does this make sense?
+    // does it make sense to chain modules across groups?
+    // should chaining across groups pull them out of the groups?
+    //
+    // * should chaining across groups be allowed?
+    // * should chaining existing chains
+ch1
+
+wcnt_exit [ in_bar t out_count exit_bar 1 ]
+
+wcnt-1.32/jwmsynth

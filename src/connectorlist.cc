@@ -174,8 +174,7 @@ connector* add_connector(synthmod::base* sm,  input::TYPE,
 
 
 void
-connectorlist::reconnect_output_module_by_name(
-    const char* from, const char* to)
+connectorlist::reconnect_output_module_by_name(const char* from, const char* to)
 {
     const char* spc = spaces::get(40);
     std::string cmsg;
@@ -191,10 +190,10 @@ connectorlist::reconnect_output_module_by_name(
                 int i = cmsg.length();
                 if (i > 40) i = 40;
                 cmsg.append(spc, 40 - i);
-                std::cout << cmsg << "<-- ";
+                std::cout << cmsg << " <-- ";
                 std::cout << "from " << from << " to " << to << " ";
-                std::cout << output::names::get(
-                    connect->get_output_type());
+                std::cout << output::names::get(connect->get_output_type());
+                std::cout << std::endl;
             }
         }
         connect = goto_next();
