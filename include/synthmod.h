@@ -52,12 +52,13 @@ namespace synthmod
 
     TYPE        get_module_type() const { return modtype; }
 
-    bool        has_name(groupnames::COMPONENT c) const  { return username.has_name(c); }
-    const char* get_name(groupnames::COMPONENT c) const  { return username.get_name(c); }
+    bool        has_name(groupnames::COMPONENT c) const { return username.has_name(c); }
+    const char* get_name(groupnames::COMPONENT c) const { return username.get_name(c); }
     const char* set_name(groupnames::COMPONENT, const char*);
-    const char* get_username() const { return username.get_username(); }
+    const char* set_username(const char* u) { return username.set_username(u); };
+    const char* get_username() const        { return username.get_username(); }
     char*       make_username(groupnames::COMPONENT c, const char* s) const
-                                     { return username.make_username(c, s); }
+                                            { return username.make_username(c, s); }
 
     /* virtuals */
     virtual void run() = 0;

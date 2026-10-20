@@ -75,6 +75,8 @@ const char* groupnames::set_username(const char* str)
     const char* ps[] = { str, 0, 0, 0, 0 };
     for (int c = 1; c <= MODULE; c++) {
         ps[c] = strchr(str, seperators[c]);
+        delete [] components[c];
+        components[c] = 0;
         if (ps[c]) {
             int d;
             // don't go to zero, as no seperator...
@@ -116,6 +118,17 @@ char* groupnames::make_username(COMPONENT c, const char* str) const
     ptrs[c] = str;
 
     return str_make_username(ptrs[1], ptrs[2], ptrs[3], ptrs[4]);
+}
+
+char* groupnames::str_make_username(const char* str)
+{
+    if (!str)
+        return 0;
+    size_t l = strlen(str);
+    if (l > wcnt::max_name_len)
+        return 0;
+    char* r = new char[l + 1];
+    return strcpy(r, str);
 }
 
 

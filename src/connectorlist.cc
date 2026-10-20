@@ -107,12 +107,13 @@ bool connectorlist::duplicate_connections(const synthmod::base* from_mod,
 {
     if (from_mod->get_module_type() != to_mod->get_module_type())
         return false;
-    group* autogroup = wcnt::jwm.get_modlist()->get_autogroup();
     llitem* i = find_in_data(sneak_first(), input_module(from_mod));
     while(i){
         connector* c = add_connector(i->get_data()->duplicate(to_mod));
-        if (autogroup)
-            c->set_group_pending();
+        if (wcnt::jwm.get_modlist()->get_autogroup())
+            c->set_group_pending(connector::GROUP_PENDING);
+        if (wcnt::jwm.get_modlist()->get_autochain())
+            c->set_group_pending(connector::CHAIN_PENDING);
         i = find_in_data(i->get_next(), input_module(from_mod));
     }
     return true;
@@ -130,7 +131,8 @@ connectorlist::duplicate_connections_for_module(
     while(i){
         D_CONNECT("duplicating connector: %s %s %s\n", from_mod->get_username(),
                   input::names::get(i->get_data()->get_input_type()),
-                  (i->get_data()->is_group_pending()) ? "(G)" : "");
+                  (i->get_data()->is_group_pending(connector::GROUP_PENDING))
+                                                            ? "(G)" : "");
         conlist->add_at_tail(i->get_data()->duplicate(to_mod));
         i = find_in_data(i->get_next(), input_module(from_mod));
     }
@@ -150,7 +152,7 @@ connectorlist::duplicate_connections_to_connectorlist(
     while(i){
         D_CONNECT("duplicating connector: %s %s %s\n", from_mod->get_username(),
                   input::names::get(i->get_data()->get_input_type()),
-                  (i->get_data()->is_group_pending()) ? "(G)" : "");
+                  (i->get_data()->is_group_pending(connector::GROUP_PENDING)) ? "(G)" : "");
         conlist->add_at_tail(i->get_data()->duplicate(to_mod));
         i = find_in_data(i->get_next(), input_module(from_mod));
     }

@@ -5,9 +5,12 @@
 #include "../include/group.h"
 #include "../include/groupnames.h"
 #include "../include/stockerrs.h"
+#include "../include/chain.h"
+
 
 #include <iostream>
 
+typedef groupnames gnames;
 
 namespace synthmod
 {
@@ -16,7 +19,7 @@ namespace synthmod
 
  list::list(DESTRUCTION d) :
   linkedlist(MULTIREF_OFF, d), emptyrunlist(0), search(synthmod::ERR_TYPE),
-  result(0), autogroup(0)
+  result(0), autogroup(0), autochain(0)
  {
     // nonezero module is not end-user accessable.
     // it's outputs are used when ever a module's input is set to off.
@@ -160,8 +163,19 @@ namespace synthmod
          return false;
      }
 
-    autogroup = ag;
-    return true;
+     autogroup = ag;
+     return true;
+ }
+
+ bool list::set_autochain(chain* ac)
+ {
+     if (autochain) {
+         // should be prevented by SFR.
+         return false;
+     }
+
+     autochain = ac;
+     return true;
  }
 
 
@@ -176,8 +190,9 @@ namespace synthmod
 
  // if autogrouping, get synthmod by autogroup group modname,
  // if not found or not autogrouping, returns 0.
- synthmod::base* list::autogroup_only_get_synthmod_by_name(const char* const modname,
-                                                        char** grpmodname)
+ synthmod::base*
+ list::autogroup_only_get_synthmod_by_name(const char* const modname,
+                                                            char** grpmodname)
  {
     if (!modname || !autogroup)
          return 0;
@@ -185,7 +200,7 @@ namespace synthmod
     if (grpmodname)
          *grpmodname = 0;
     // does modname already have a group name?
-    char* existinggroupname = groupnames::str_get_name(groupnames::GROUP, modname);
+    char* existinggroupname = gnames::str_get_name(gnames::GROUP, modname);
     if (existinggroupname) {
         if (strcmp(existinggroupname, autogroup->get_username()) == 0)
             tmp  = find_in_data(sneak_first(), name(modname));
@@ -193,8 +208,8 @@ namespace synthmod
         return tmp ? tmp->get_data() : 0;
     }
     // no group, search for module name combined with autogroup group name:
-    char* gmn = groupnames::str_make_username(modname, groupnames::GROUP,
-                                              autogroup->get_username());
+    char* gmn = gnames::str_make_username(modname, gnames::GROUP,
+                                          autogroup->get_username());
     tmp = find_in_data(sneak_first(), name(gmn));
     if (tmp) { // found it
         if (grpmodname)
@@ -209,8 +224,9 @@ namespace synthmod
 
  // if autogrouping get synthmod by autogroup group modname,
  // if not autogrouping get synthmod by name. return 0 if not found.
- synthmod::base* list::autogroup_or_not_get_synthmod_by_name(const char* const modname,
-                                                                char** grpmodname)
+ synthmod::base*
+ list::autogroup_or_not_get_synthmod_by_name(const char* const modname,
+                                                            char** grpmodname)
  {
     if (!modname)
         return 0;
@@ -218,15 +234,15 @@ namespace synthmod
     if (grpmodname)
         *grpmodname = 0;
     if (autogroup) {
-        char* existinggroupname = groupnames::str_get_name(groupnames::GROUP, modname);
+        char* existinggroupname = gnames::str_get_name(gnames::GROUP, modname);
         if (existinggroupname) {
             if (strcmp(existinggroupname, autogroup->get_username()) == 0)
                 tmp  = find_in_data(sneak_first(), name(modname));
             delete [] existinggroupname;
         }
         else {
-            char* gmn = groupnames::str_make_username(modname, groupnames::GROUP,
-                                                      autogroup->get_username());
+            char* gmn = gnames::str_make_username(modname, gnames::GROUP,
+                                                  autogroup->get_username());
             tmp = find_in_data(sneak_first(), name(gmn));
             if (tmp) { // found it
                 if (grpmodname)
@@ -245,7 +261,8 @@ namespace synthmod
 
  // if autogrouping get synthmod by autogroup group modname,
  // if not found, regardless of autogrouping, get synthmod by name
- synthmod::base* list::autogroup_or_any_get_synthmod_by_name(const char* const modname,
+ synthmod::base*
+ list::autogroup_or_any_get_synthmod_by_name(const char* const modname,
                                                             char** grpmodname)
  {
     if (!modname)
@@ -254,10 +271,10 @@ namespace synthmod
     if (grpmodname)
         *grpmodname = 0;
     // does modname already have a group name?
-    char* existinggroupname = groupnames::str_get_name(groupnames::GROUP, modname);
+    char* existinggroupname = gnames::str_get_name(gnames::GROUP, modname);
     if (!existinggroupname && autogroup) {
         // no group, search for it combined with the autogroup group name:
-        char* gmn = groupnames::str_make_username(modname, groupnames::GROUP,
+        char* gmn = gnames::str_make_username(modname, gnames::GROUP,
                                                   autogroup->get_username());
         tmp = find_in_data(sneak_first(), name(gmn));
         if (tmp) { // found it
@@ -295,8 +312,8 @@ namespace synthmod
     llitem* i = find_in_data(sneak_first(), groupname(from));
     while(i) {
         synthmod::base* frommod = i->get_data();
-        char* togrp = groupnames::str_make_username(frommod->get_username(),
-                                                    groupnames::GROUP, to);
+        char* togrp = gnames::str_make_username(frommod->get_username(),
+                                                    gnames::GROUP, to);
         synthmod::base* tomod = frommod->duplicate_module(togrp,
                                                     synthmod::base::NO_CONNECT);
         delete [] togrp;

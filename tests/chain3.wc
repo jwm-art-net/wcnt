@@ -58,21 +58,24 @@ copier [ from group1 to group2 ]
 
 chain
 ch1
-    // what should happen here?
+    // this chain pulls all the modules out of their existing groups
+    // and chains... unless the copy_only parameter is set on - and
+    // ensure it is done
     modules
         synthmod name group1.lfo1~clock1
         synthmod name group2.lfo2~wave1
         synthmod name group1.lfo2~clock2
         synthmod name group2.lfo1~ctrl1
     modules
-    // currently, the chain names above will all be altered to 'ch1'
-    // (from 'lfo1' and 'lfo2') - does this make sense?
-    // does it make sense to chain modules across groups?
-    // should chaining across groups pull them out of the groups?
-    //
-    // * should chaining across groups be allowed?
-    // * should chaining existing chains
+    copy_only on
 ch1
+
+// the original chain data object stores a snapshot of the modules
+// at the point of its creation, copying that chain yeilds those
+// modules at any point
+
+copier [ from ch1 to eeeee ]
+
 
 wcnt_exit [ in_bar t out_count exit_bar 1 ]
 

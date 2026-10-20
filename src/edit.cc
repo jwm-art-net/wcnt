@@ -259,7 +259,9 @@ bool edit::mod_edit_input(synthmod::base* mod, input::TYPE it,
     conlist->delete_connector(con);
     con = new connector(mod, it, outmod, ot);
     if (wcnt::jwm.get_modlist()->get_autogroup())
-        con->set_group_pending();
+        con->set_group_pending(connector::GROUP_PENDING);
+    if (wcnt::jwm.get_modlist()->get_autochain())
+        con->set_group_pending(connector::CHAIN_PENDING);
     con->set_edited();
     conlist->add_connector(con);
 

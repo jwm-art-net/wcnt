@@ -202,6 +202,7 @@ namespace param
     BPM_CHANGES_REL,
     SUFFIX,
     ZERO_POS,
+    COPY_ONLY,
     LAST_TYPE
  };
 

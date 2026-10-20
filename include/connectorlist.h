@@ -68,9 +68,10 @@ public:
 
     void reconnect_output_module_by_name(const char*from, const char*to);
 
-    linkedlist*
-    get_group_pending_connections()
-        {   return new_list_of_by(this, connector::GROUP_PENDING);  }
+
+    // where cf == CHAIN_PENDING | GROUP_PENDING
+    linkedlist*  get_group_pending_connections(connector::CONFLAGS cf)
+                                    { return new_list_of_by(this, cf); }
 
     bool make_connections();
 

@@ -10,6 +10,7 @@
 
 class nonezero;
 class group;
+class chain;
 
 namespace synthmod
 {
@@ -31,6 +32,9 @@ namespace synthmod
     bool    set_autogroup(group*);
     group*  get_autogroup() { return autogroup; }
     void    clear_autogroup() { autogroup = 0; }
+    bool    set_autochain(chain*);
+    chain*  get_autochain() { return autochain; }
+    void    clear_autochain() { autochain = 0; }
 
     // get_synthmod_by_name
     // matches a module with identical name
@@ -110,6 +114,7 @@ namespace synthmod
     synthmod::TYPE      search;
     llitem*             result;
     group*              autogroup;
+    chain*              autochain;
     static nonezero*    off;
  };
 }; // namespace synthmod

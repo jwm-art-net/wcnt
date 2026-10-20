@@ -19,6 +19,7 @@
 
 using namespace std; // just this once as it's used so much in here...
 
+typedef groupnames gnames;
 
 #define wc_err(fmt, ... ) \
     cfmt(wc_err_msg, STRBUFLEN, fmt, __VA_ARGS__)
@@ -31,7 +32,8 @@ synthfilereader::synthfilereader() :
  modnamelist(0), dobjnamelist(0),
  wc_file_type(WC_INCLUDE_FILE),
  filestatus(NOT_FOUND), synthfile(0), buff(0), command(0),
- synthheader(0), inc_current(false), mod_lineage(false), autogroup(0)
+ synthheader(0), inc_current(false), mod_lineage(false),
+ autogroup(0), autochain(0)
 {
     synthfile = new ifstream;
     buff = new string;
@@ -48,7 +50,8 @@ synthfilereader::synthfilereader(WC_FILE_TYPE ft) :
  modnamelist(0), dobjnamelist(0),
  wc_file_type(ft),
  filestatus(NOT_FOUND), synthfile(0), buff(0), command(0),
- synthheader(0), inc_current(false), mod_lineage(false), autogroup(0)
+ synthheader(0), inc_current(false), mod_lineage(false),
+ autogroup(0), autochain(0)
 {
     synthfile = new ifstream;
     buff = new string;
@@ -136,6 +139,10 @@ bool synthfilereader::read_and_create()
             if (!autogroup_stop(com))
                 return false;
         }
+        else if (autochain && strcmp(autochain->get_username(), com) == 0) {
+            if (!autochain_stop(com))
+                return false;
+        }
         else if ((dt = directive::names::type(com)) > directive::ERR_TYPE)
         {
             if (!process_directive(dt))
@@ -171,15 +178,64 @@ bool synthfilereader::process_directive(directive::TYPE dt)
             return autogroup_add(read_command());
         case directive::AUTOGROUP_CREATE:
             return autogroup_create(read_command());
-        //case directive::AUTOGROUP_STOP:
-        //    return autogroup_stop(read_command());
-        //    break;
+        case directive::AUTOCHAIN_CREATE:
+            return autochain_create(read_command());
         case directive::SAMPLE_RATE:
             return read_samplerate(read_command());
         default:
             break;
     }
     return false;
+}
+
+
+bool synthfilereader::autogroup_create(const char* com)
+{
+    if (wcnt::jwm.is_verbose()) {
+        cout << "-------------------------" << endl;
+        cout << "autogroup_create " << com << endl;
+        cout << "-------------------------" << endl;
+    }
+
+    if (autogroup) {
+        wc_err("Cannot create new autogroup %s without stopping current"
+        " autogroup %s.", com, autogroup->get_username());
+        return false;
+    }
+    if (autochain) {
+        wc_err("Cannot use autogroup_create while within autochain %s.",
+               autochain->get_username());
+        return false;
+    }
+    // check new group name is not already in use as a data object
+    dobj::base* dbj = wcnt::get_dobjlist()->get_dobj_by_name(com);
+    if (dbj) {
+        wc_err("Cannot create autogroup, the name %s is already in use "
+        "by a %s data object.", com,
+        dobj::names::get(dbj->get_object_type()));
+        return false;
+    }
+    // check new group name is not already in use as a module
+    synthmod::base* sm = wcnt::jwm.get_modlist()->get_synthmod_by_name(com);
+    if (sm) {
+        wc_err("Cannot create autogroup, the name %s is already in use "
+        "by a %s module.", com,
+        synthmod::names::get(sm->get_module_type()));
+        return false;
+    }
+
+    autogroup = new group;
+    autogroup->set_username(com);
+
+    if (!wcnt::get_dobjlist()->add_dobj(autogroup)) {
+        wc_err("Could not add data object %s to list.",
+               autogroup->get_username());
+        return false;
+    }
+
+    wcnt::jwm.get_modlist()->set_autogroup(autogroup);
+
+    return true;
 }
 
 
@@ -194,6 +250,12 @@ bool synthfilereader::autogroup_add(const char* com)
     if (autogroup) {
         wc_err("Cannot use autogroup_add while within autogroup %s.",
                autogroup->get_username());
+        return false;
+    }
+    if (autochain) {
+        wc_err("Cannot use autogroup_add while within autochain %s.",
+               autochain->get_username());
+        return false;
     }
     // check there is a group already created with this name...
     dobj::base* dbj = wcnt::get_dobjlist()->get_dobj_by_name(com);
@@ -212,49 +274,6 @@ bool synthfilereader::autogroup_add(const char* com)
     return true;
 }
 
-bool synthfilereader::autogroup_create(const char* com)
-{
-    if (wcnt::jwm.is_verbose()) {
-        cout << "-------------------------" << endl;
-        cout << "autogroup_create " << com << endl;
-        cout << "-------------------------" << endl;
-    }
-
-    if (autogroup) {
-        wc_err("Cannot create new autogroup %s without stopping current"
-               " autogroup %s.", com, autogroup->get_username());
-        return false;
-    }
-    // check new group name is not already in use as a data object
-    dobj::base* dbj = wcnt::get_dobjlist()->get_dobj_by_name(com);
-    if (dbj) {
-        wc_err("Cannot create autogroup, the name %s is already in use "
-               "by a %s data object.", com,
-               dobj::names::get(dbj->get_object_type()));
-        return false;
-    }
-    // check new group name is not already in use as a module
-    synthmod::base* sm = wcnt::jwm.get_modlist()->get_synthmod_by_name(com);
-    if (sm) {
-        wc_err("Cannot create autogroup, the name %s is already in use "
-               "by a %s module.", com,
-               synthmod::names::get(sm->get_module_type()));
-        return false;
-    }
-
-    autogroup = new group;
-    autogroup->set_username(com);
-
-    if (!wcnt::get_dobjlist()->add_dobj(autogroup)) {
-        wc_err("Could not add data object %s to list.",
-               autogroup->get_username());
-        return false;
-    }
-
-    wcnt::jwm.get_modlist()->set_autogroup(autogroup);
-
-    return true;
-}
 
 bool synthfilereader::autogroup_stop(const char* com)
 {
@@ -271,8 +290,8 @@ bool synthfilereader::autogroup_stop(const char* com)
     }
     // update group_pending connections
     connectorlist::linkedlist*
-            cl = wcnt::get_connectlist()->get_group_pending_connections();
-
+            cl = wcnt::get_connectlist()->
+                    get_group_pending_connections(connector::GROUP_PENDING);
     if (!cl) {
         wc_err("List failure for group %s pending connections.", com);
         return 0;
@@ -280,23 +299,21 @@ bool synthfilereader::autogroup_stop(const char* com)
 
     synthmod::list* sml = wcnt::jwm.get_modlist();
     const char* gn = 0;
+    const char* agn = autogroup->get_username();
     connector* c = cl->goto_first();
     while (c) {
         const char* outmod = c->get_output_module_name();
         D_CONNECT("checking pending connection using output module name: %s "
-                  "(to input module %s)\n", outmod, c->get_input_module()->get_username());
-//        const char* mun = c->get_input_module()->get_username();
-//        std::cout << "connect input module: '" << mun << "'" << std::endl;
-        gn = c->get_input_module()->get_name(groupnames::GROUP);
-//        std::cout << "gn: '" << (gn ? gn : "0x0") << "'" << std::endl;
-//        const char* agn = autogroup->get_username();
-//        std::cout << "autogroup: '" << (agn ? agn : "0x0") << "'" << std::endl;
-        if (strcmp(gn, autogroup->get_username()) == 0) {
+                  "(to input module %s)\n", outmod,
+                  c->get_input_module()->get_username());
+        gn = c->get_input_module()->get_name(gnames::GROUP);
+        std::cout << "gn: '" << (gn ? gn : "0x0") << "'" << std::endl;
+        std::cout << "autogroup: '" << (agn ? agn : "0x0") << "'" << std::endl;
+        if (strcmp(gn, agn) == 0) {
             // due to autogroup_add, grouping can be staged, so *must* ensure
             // group names match!
-//            if (!has_groupname(outmod)) {
-            if (!groupnames::str_has_name(groupnames::GROUP, outmod)) {
-                char* gsmn = groupnames::str_make_username(outmod, groupnames::GROUP,
+            if (!gnames::str_has_name(gnames::GROUP, outmod)) {
+                char* gsmn = gnames::str_make_username(outmod, gnames::GROUP,
                                                            autogroup->get_username());
                 synthmod::base* sm = sml->get_synthmod_by_name(gsmn);
                 if (sm) {
@@ -308,13 +325,13 @@ bool synthfilereader::autogroup_stop(const char* com)
                         cout << "updating pending autogroup connection for output "
                                 "module " << outmod << " to " << gsmn << endl;
                     c->set_output_module_name(gsmn);
-                    c->clear_group_pending();
+                    c->clear_group_pending(connector::GROUP_PENDING);
                 }
                 else if ((sm = sml->get_synthmod_by_name(outmod))) {
                     // module isn't within the current autogroup,
                     // BUT, has been found outside of it, so clear group pending.
                     D_CONNECT("Clearing group pending on connection with non-group output module %s\n", outmod);
-                    c->clear_group_pending();
+                    c->clear_group_pending(connector::GROUP_PENDING);
                 }
                 delete [] gsmn;
             }
@@ -328,6 +345,130 @@ bool synthfilereader::autogroup_stop(const char* com)
     // but autogroup is finished for now so set the ptr null.
     autogroup = 0;
     wcnt::jwm.get_modlist()->clear_autogroup();
+
+    return true;
+}
+
+
+bool synthfilereader::autochain_create(const char* com)
+{
+    if (wcnt::jwm.is_verbose()) {
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        cout << "autochain_create " << com << endl;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    }
+
+    if (autochain) {
+        wc_err("Will not create new autochain %s without stopping current"
+        " autochain %s.", com, autochain->get_username());
+        return false;
+    }
+    // check name is not already in use as a data object
+    dobj::base* dbj = wcnt::get_dobjlist()->get_dobj_by_name(com);
+    if (dbj) {
+        wc_err("Cannot create autochain, the name %s is already in use "
+        "by a %s data object.", com, dobj::names::get(dbj->get_object_type()));
+        return false;
+    }
+    // check name is not already in use as a module
+    synthmod::base* sm = wcnt::jwm.get_modlist()->get_synthmod_by_name(com);
+    if (sm) {
+        wc_err("Cannot create autochain, the name %s is already in use "
+        "by a %s module.", com, synthmod::names::get(sm->get_module_type()));
+        return false;
+    }
+
+    autochain = new chain;
+    autochain->set_username(com);
+
+    if (!wcnt::get_dobjlist()->add_dobj(autochain)) {
+        wc_err("Could not add data object %s to list.",
+               autochain->get_username());
+        return false;
+    }
+
+    wcnt::jwm.get_modlist()->set_autochain(autochain);
+
+    return true;
+}
+
+bool synthfilereader::autochain_stop(const char* com)
+{
+    if (wcnt::jwm.is_verbose()) {
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        cout << "autochain_stop " << com << endl;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    }
+
+    if (strcmp(com, autochain->get_username()) != 0) {
+        wc_err("Autochain_stop directive %s mismatches active autochain %s.",
+               com, autochain->get_username());
+        return 0;
+    }
+    // update group_pending connections
+    connectorlist::linkedlist*
+    conlist = wcnt::get_connectlist()->
+                get_group_pending_connections(connector::CHAIN_PENDING);
+
+    if (!conlist) {
+        wc_err("List failure for group %s pending connections.", com);
+        return 0;
+    }
+
+    synthmod::list* sml = wcnt::jwm.get_modlist();
+    synthmod::list* csml = autochain->get_modlist();
+
+    const char* chname = 0;
+    const char* acn = autochain->get_username();
+    connector* con = conlist->goto_first();
+    while (con) {
+        const char* outmod = con->get_output_module_name();
+        D_CONNECT("checking pending connection using output module name: %s "
+                  "(to input module %s)\n", outmod,
+                  con->get_input_module()->get_username());
+        chname = con->get_input_module()->get_name(gnames::CHAIN);
+        std::cout << "chname: '" << (chname ? chname : "0x0") << "'" << std::endl;
+        std::cout << "autochain: '" << (acn ? acn : "0x0") << "'" << std::endl;
+        if (strcmp(chname, acn) == 0) {
+            std::cout << "checking outmod " << outmod  << " has chain" << std::endl;
+            if (!gnames::str_has_name(gnames::CHAIN, outmod)) {
+                // if autogroup?
+                char* gsmn = gnames::str_make_username(outmod, gnames::CHAIN,
+                                                                        acn);
+                if (autogroup) {
+                    char* tmp = gsmn;
+                    gsmn = gnames::str_make_username(gsmn, gnames::GROUP,
+                                                     autogroup->get_username());
+                    delete [] tmp;
+                }
+
+                std::cout << "nope... looking for ... "<<gsmn <<std::endl;
+                synthmod::base* sm = sml->get_synthmod_by_name(gsmn);
+                if (sm) {
+                    if (wcnt::jwm.is_verbose())
+                        cout << "updating pending autochain connection for"
+                                "output module " << outmod << " to "
+                                                           << gsmn << endl;
+                    con->set_output_module_name(gsmn);
+                    con->clear_group_pending(connector::CHAIN_PENDING);
+                }
+                else if ((sm = sml->get_synthmod_by_name(outmod))) {
+                    D_CONNECT("Clearing group pending on connection with "
+                              "non-group output module %s\n", outmod);
+                    con->clear_group_pending(connector::CHAIN_PENDING);
+                }
+                delete [] gsmn;
+            }
+        }
+        con = conlist->goto_next();
+    }
+
+    delete conlist;
+
+    // group data object destruction will be handled by dobjlist,
+    // but autogroup is finished for now so set the ptr null.
+    autochain = 0;
+    wcnt::jwm.get_modlist()->clear_autochain();
 
     return true;
 }
@@ -463,12 +604,25 @@ synthmod::base* synthfilereader::read_synthmodule(const char* com)
     bool nameless = false;
     *synthfile >> modname;
 
+    // for error handling convenience
+    dobj::base* agc = (static_cast<dobj::base*>(autogroup) ?
+                       static_cast<dobj::base*>(autogroup) :
+                       static_cast<dobj::base*>(autochain) ?
+                       static_cast<dobj::base*>(autochain) : 0);
+
     if (strcmp(modname.c_str(), "[") == 0) {
-        // nameless module handling
+        // nameless module handling - note: no check here for this
+        // because module needs to exist to determine if its allowed
         char* n = nameless_name();
         modname = n;
         delete [] n;
         nameless = true;
+        if (agc) {
+            wc_err("Nameless modules are not allowed in any form of group."
+                   "module type %s found in %s.", synthmod::names::get(smt),
+                   agc->get_username());
+            return 0;
+        }
     }
 
     if (wcnt::name_is_reserved_word(modname.c_str())) {
@@ -477,9 +631,9 @@ synthmod::base* synthfilereader::read_synthmodule(const char* com)
         return 0;
     }
 
-    if (groupnames::str_has_reserved_chr(modname.c_str())) {
-        wc_err("The %s module name %s uses a reserved character which is "
-                "specific to grouped modules only. See command line help "
+    if (gnames::str_has_reserved_chr(modname.c_str())) {
+        wc_err("The %s module name %s uses a reserved character ':.~' which"
+                "are specific to grouped modules only. See command line help "
                 "for the group/chain data objects for further info.",
                 synthmod::names::get(smt), modname.c_str());
         return 0;
@@ -487,24 +641,34 @@ synthmod::base* synthfilereader::read_synthmodule(const char* com)
 
     // we need to check that the grouped module name is not in use, but not
     // set the module to have that grouped name until later...
-    string nongroupname = modname;
+    string nongname = modname;
+    char* name = gnames::str_make_username(modname.c_str());
 
     if (autogroup) {
-        modname = "." + modname;
-        modname = autogroup->get_username() + modname;
+        char* t = name;
+        name = gnames::str_make_username(name, gnames::GROUP,
+                                         autogroup->get_username());
+        delete [] t;
+    }
+    if (autochain) {
+        char* t = name;
+        name = gnames::str_make_username(name, gnames::CHAIN,
+                                         autochain->get_username());
+        delete [] t;
     }
 
-    if (include_mod(modname.c_str())) {
-        if (wcnt::jwm.get_modlist()->get_synthmod_by_name(modname.c_str())) {
-            wc_err("A synth module already exists named %s.", modname.c_str());
+    if (include_mod(name)) {
+        if (wcnt::jwm.get_modlist()->get_synthmod_by_name(name)) {
+            wc_err("A synth module already exists named %s.", name);
+            delete [] name;
             return 0;
         }
-        dobj::base* dbj =
-                wcnt::get_dobjlist()->get_dobj_by_name(modname.c_str());
+        dobj::base* dbj = wcnt::get_dobjlist()->get_dobj_by_name(name);
         if (dbj) { // formality because of parameditor.cc workings.
             wc_err("Cannot not name %s as %s, the name is already in use "
                     "by a data object of type %s.", com, dbj->get_username(),
                     dobj::names::get(dbj->get_object_type()));
+            delete [] name;
             return 0;
         }
         inc_current = true;
@@ -514,11 +678,11 @@ synthmod::base* synthfilereader::read_synthmodule(const char* com)
 
     if (wcnt::jwm.is_verbose()) {
         cout << "================================" << endl;
-        cout << "Creating " << com << " synth module " << modname << endl;
+        cout << "Creating " << com << " synth module " << name << endl;
     }
 
     // use the non grouped name for module creation, because...
-    synthmod::base* sm = synthmod::list::create_module(smt, nongroupname.c_str());
+    synthmod::base* sm = synthmod::list::create_module(smt, nongname.c_str());
 
     if (nameless && !sm->flag(synthmod::base::SM_ALLOW_NAMELESS)) {
         wc_err("Module of type %s is not allowed to be nameless.",
@@ -537,19 +701,19 @@ synthmod::base* synthfilereader::read_synthmodule(const char* com)
 
     // and pretend auto grouping doesn't exist here also!
     com = read_command();
-    if (strcmp(com, (nameless ? "]" : nongroupname.c_str())) != 0) {
-        wc_err("In module %s type %s expected definition termination %s, got %s instead.",
-               (nameless ? "[nameless]" : sm->get_username()),
-               synthmod::names::get(smt), (nameless ? "]" : nongroupname.c_str()), com);
+    if (strcmp(com, (nameless ? "]" : nongname.c_str())) != 0) {
+        wc_err("In module %s type %s expected definition termination %s, "
+            "got %s instead.", (nameless ? "[nameless]" : sm->get_username()),
+            synthmod::names::get(smt), (nameless ? "]" : nongname.c_str()), com);
         delete sm;
         return 0;
     }
 
     // uhuh, so we must create a module to determine if it's groupable or not
-    if (autogroup && sm->flag(synthmod::base::SM_UNGROUPABLE)) {
-        wc_err("The %s module %s within the autogroup section %s is not "
-        "a groupable module.", synthmod::names::get(smt), com,
-               autogroup->get_username());
+    if (agc && sm->flag(synthmod::base::SM_UNGROUPABLE)) {
+        wc_err("The %s module %s within auto/group|chain section %s, is not "
+               "a groupable module.", synthmod::names::get(smt), com,
+               agc->get_username());
         delete sm;
         return 0;
     }
@@ -564,6 +728,16 @@ synthmod::base* synthfilereader::read_synthmodule(const char* com)
             return 0;
         }
     }
+
+    if (autochain) {
+        synthmod::base* ret = autochain->autochain_module(sm);
+        if (!ret) {
+            wc_err("Undefined error autochaining module %s",
+                   sm->get_username());
+            return 0;
+        }
+    }
+
     return sm;
 }
 
@@ -609,7 +783,7 @@ dobj::base* synthfilereader::read_dobj(const char* com)
         return 0;
     }
 
-    int c = groupnames::str_has_reserved_chr(dobjname.c_str());
+    int c = gnames::str_has_reserved_chr(dobjname.c_str());
     if (c) {
         wc_err("The data object %s name %s used the '%c' character which is "
                 "strictly reserved for use within groups.",
@@ -952,11 +1126,13 @@ synthfilereader::read_ui_modinput(synthmod::base* sm, input::TYPE inptype)
         connector* c = wcnt::get_connectlist()
                         ->add_connector(sm, inptype, outmod.c_str(), outtype);
         if (autogroup)
-            c->set_group_pending();
+            c->set_group_pending(connector::GROUP_PENDING);
+        if (autochain)
+            c->set_group_pending(connector::CHAIN_PENDING);
         if (wcnt::jwm.is_verbose()) {
             cout << "added connector " << inpname << "\t"
                  << outmod << "\t" << outname;
-            if (c->is_group_pending())
+            if (autogroup)
                 cout << "\t(G)";
             cout << endl;
 
@@ -1189,7 +1365,6 @@ bool synthfilereader::read_samplerate(const char* com)
     if (samplerate_set) {
         return true;
     }
-
     std::istringstream sr_str(com);
     samp_t samplerate;
 

@@ -2,44 +2,51 @@
 Changes - October 2026 - wcnt-1.32.2026
 
 NEW
-    * first stage of chain data object implementation is done and
-      working, but minimally tested. the second stage will implement
-      the autochain_create directive. chain is the first of two planned
-      forms of group handling to be implemented alongside existing group
-      handling.
-
-      *** this is still in development and implementation
-      *** details are not settled
+    * chain data object implementation along with autochain_create, is
+      largley complete now. it's working, but minimally tested.
+      chain is the first of two planned forms of group handling to be
+      implemented alongside existing group handling.
 
       chaining is intended for smaller groups of modules and works
       slightly differently. unlike grouping, the chain stores a snapshot
       of the modules at the moment it chains them. when the copier is
       used with a chain, it is only the snapshot of the modules which
-      is duplicated, never the chain data object itself so, despite
-      issuing:
+      is duplicated, never the chain data object itself.
+      so despite the following:
 
             copier [ from chain1 to chain2 ]
             copier [ from chain2 to chain3 ]
 
-      chain2 does not exist, it cannot be copied!
+      the second line fails, as chain2 does not exist, it cannot be
+      copied!
 
       the three forms of grouping will operate within a heirarchy, with
-      group in the middle, and chaining at the bottom. this means that
-      creating and duplicating a chain can be done inside, outside, and
-      across groups.
+      group in the middle, and chaining at the bottom.
 
       all three forms adapt the names of modules affected by them, each
       uses its own seperator. group uses '.', chain uses '~'.
 
-      unfortunately i've realized there are problems with my approach
-      here. above, where i wrote creating and duplicating chains can be
-      done across groups, i was only thinking of duplication, ie, you
-      can make a chain in one group and then duplicate it into another.
-      what i hadn't realized about the current implementation, is that
-      chaining itself can be done across groups, as well as on modules
-      already chained.
+      chaining might be at the bottom of the heirarchy, but it's very
+      powerful. creating and duplicating a chain can be done inside,
+      outside, and even across other groups and chains. conceptually,
+      just think about how chains can be used for pulling things!
 
-      further thinking about how this is handled is required.
+      if requested to, the chain data object can pull modules
+      out of groups and other chains. it keeps their connections intact,
+      but relationship changes when the groups/chains are duplicated.
+
+      however this behaviour can be tamed by the copy_only parameter
+      in the chain data object, preventing the chain from renaming any
+      of the modules, as it only copies them internally.
+
+      which brings me to the last piece of the chain implementation yet
+      to be worked on: how copy_only will work during autochaining.
+
+      when implementated, copy_only for autochaining will prevent the
+      modules from being created in the regular way inside the global
+      user space. instead, they will exist internally within the chain
+      as a "copy only" remaining inactive until the copier is used to
+      duplicate them into global user space.
 
 CHANGES:
     * when --verbose is used when wcnt is processing a .wc file:
@@ -58,12 +65,12 @@ FIXES:
 
     * when using the auto-connection feature via the connect parameter
       from within an editor, the connections for passthrough modules
-      (such as wcnt_note typically used as an 'entry point' to an included file)
-      would fail to be as expected. this was due to a lack of checking for
-      previous connections and failing to delete them. now the previous
-      connections are deleted, and the edited connections created during
-      auto-connection for passthrough modules are postponed as necessary until
-      their connections in turn, exist.
+      (such as wcnt_note typically used as an 'entry point' to an
+      included file) would fail to be as expected. this was due to a
+      lack of checking for previous connections and failing to delete
+      them. now the previous connections are deleted, and the edited
+      connections created during auto-connection for passthrough modules
+      are postponed as necessary until their connections in turn, exist.
 
 --------------------------------------------------------------
 Changes - August 2026 - wcnt-1.32.2026

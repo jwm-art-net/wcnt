@@ -1,3 +1,20 @@
+CURRENTLY
+
+(chain/autochain largely done - scantily tested so far though.
+autochain_copy_only - this would be a nice feature - it wouldn't create
+the modules in the global space, only internal private, effectively user
+would be making a template, the internal connectorlist would manage the
+connections as opposed to...
+... this requres some thinking about how to handle the directive. the
+quick version - autochain_copy_only (on/off) - just implement it
+independently and ensure that autochaining is occurring when it's used.
+... or create mechanisms for parameter to directives or something...
+... the independent version would mean it could be turned on/off
+multiple times during autochain. some modules would only exist internally
+to the chain, some would exist globally. weird. why? why not? yes? no?
+
+
+
 GROUPS
 ======
 
@@ -378,9 +395,85 @@ and if the connection referenced a module in the group which wasn't
 in the chain - a direct connection to that module in that specific
 group even if the chain is copied to another group.
 
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+chain grouping - pt2
+
+implementation has brought up a whole unforeseen problematic area of
+the workings.
+
+existing implementation:
+
+    name:   chain
+
+    action: 1) adds chain name as chain name component to all existing
+               modules affected by chaining.
+            2) duplicates modules and connections selected for chaining
+               into private module and connections lists removing any
+               existing group or chain components from duplicates.
+
+    copier: ** does not copy the chain data object **
+    action: 1) duplicates the private modules into global user space
+            2) adds the chain name component to them
+            3) if autogroup is active, updates the modules group name
+               component with the autogroup name
+            4) duplicates connections but
+               *** if autogrouping is active, the group component for
+               *** the output module specified in the connection must
+               *** be removed to allow for how autogrouping processes
+               *** the connections at the end of autogrouping.
+
+in typical use this is fine. works predictably (i guess if you know it
+works differently to group).
+
+however there are no restrictions in place to stop atypical usage.
+
+ideas:
+    parameters to control chain data object
+    directives to control autochain usage
+
+    parameter/directive to allow modules from mixed groups and existing
+    chains to be mixed together in a new chain
+    parameter/directive to prevent renaming of existing modules
+    parameter/directive to drop existing group and chain
+
+
+chain - chaining - chains can be used to pull heavy things
+
+*** when chaining modules from across more than one group, then
+
+    * if autogrouping is active, then the modules are removed from
+      their existing group and pulled into the autogroup group
+
+    * if autogrouping is inactive, the modules lose their group
+
+    * if modules are part of an existing chain they're assigned
+      to the new chain
+
+    * private internal list of modules remains intact
+
+    * copy_only on/off parameter when set on, causes only
+      the internal copy to be created, no modules are changed.
+
+    * the passing of the ui component used by synthfilereader to pass
+      modules to the chain data object which it is to chain, is now
+      decoupled from the chaining process. this decoupling allows for
+      the copy_only parameter to now be specified after the the modules
+      and still be honoured.
 
 
 
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------
+----------------------------------------------------------------------
 
 [[[ DELETE ]]]
 The chain_copy concept has identified the delete problem and a possible

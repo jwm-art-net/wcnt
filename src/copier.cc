@@ -5,6 +5,7 @@
 #include "../include/groupnames.h"
 #include "../include/globals.h"
 #include "../include/group.h"
+#include "../include/chain.h"
 
 
 copier::copier() :
@@ -48,8 +49,8 @@ bool copier::set_from_name(const char* name)
             && from_dobj->get_object_type() == dobj::DEF_GROUP)
         {
             // FIXME: this error message needs to not be ignored!
-            dobjerr("Copying a group (%s) within an autogroup section is not allowed",
-                    name);
+            dobjerr("Copying a group (%s) within an autogroup section "
+                    "is not allowed", name);
             return false;
         }
         return true;
@@ -131,6 +132,7 @@ const void* copier::get_param(param::TYPE pt) const
 errors::TYPE copier::validate()
 {
     group* autogroup = wcnt::jwm.get_modlist()->get_autogroup();
+    chain* autochain = wcnt::jwm.get_modlist()->get_autochain();
     if (count < 1 || count > wcnt::max_copies) {
         dobjerr("count outside range of 1 ~ %d copies.", wcnt::max_copies);
         return errors::ERROR;
@@ -179,6 +181,8 @@ errors::TYPE copier::validate()
             }
             if (autogroup)
                 autogroup->autogroup_module(to_mod);
+            if (autochain)
+                autochain->autochain_module(to_mod);
             if (!wcnt::jwm.get_modlist()->add_module(to_mod)) {
                 dobjerr("Could not add module %s copied from %s to module "
                 "run list. Bad.",

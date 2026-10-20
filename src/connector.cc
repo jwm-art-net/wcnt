@@ -87,7 +87,7 @@ connector::CSTATE connector::connect()
             return POSTPONE;
         }
 
-        connerr("In%s module %s cannot connect input %s. Module %s does not "
+        connerr("In %s module %s cannot connect input %s. Module %s does not "
                 "have any %s output.", (is_edited() ? " edited connection" : ""),
                 in_mod->get_username(),
                 input::names::get(in_type), out_mod_uname,
@@ -102,6 +102,25 @@ connector::CSTATE connector::connect()
     }
     return SUCCESS;
 }
+
+bool connector::set_group_pending_if()
+{
+    bool r = false;
+    if (wcnt::jwm.get_modlist()->get_autochain()) {
+        set_group_pending(CHAIN_PENDING);
+        r = true;
+    }
+    if (wcnt::jwm.get_modlist()->get_autogroup()) {
+        set_group_pending(GROUP_PENDING);
+        r = true;
+    }
+//    if (wcnt::jwm.get_modlist()->get_autovoice()) {
+//        set_group_pending(VOICE_PENDING);
+//        r = true;
+//    }
+    return r;
+}
+
 
 char connector::err_msg[STRBUFLEN];
 

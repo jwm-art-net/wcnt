@@ -319,7 +319,9 @@ namespace synthmod
                     else
                         con = cl->add_connector(this, it, name, input::names::misc(it));
                     if (wcnt::jwm.get_modlist()->get_autogroup())
-                        con->set_group_pending();
+                        con->set_group_pending(connector::GROUP_PENDING);
+                    if (wcnt::jwm.get_modlist()->get_autochain())
+                        con->set_group_pending(connector::CHAIN_PENDING);
                     connections_made = true;
                 }
                 llitem = llitem->get_next();

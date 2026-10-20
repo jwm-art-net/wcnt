@@ -11,7 +11,7 @@ namespace directive
         ERR_TYPE,
         AUTOGROUP_CREATE,
         AUTOGROUP_ADD,
-        // AUTOGROUP_STOP, unnecessary
+        AUTOCHAIN_CREATE,
         SAMPLE_RATE,
         LAST_TYPE
     };

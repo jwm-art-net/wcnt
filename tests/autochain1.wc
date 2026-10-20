@@ -1,0 +1,43 @@
+wcnt-1.32/jwmsynth
+
+samplerate 44100
+
+
+clock x freq 1000 x
+
+
+autogroup_create
+tectonic
+
+    autochain_create
+    melody
+
+        constant_freq f freq 777 f
+        wave
+        w
+            type sine
+            in_phase_step f out_phase_step
+        w
+
+    melody
+
+    copier [ from melody to melody1 count 7 ]
+
+    editor
+    [
+        editlist
+            edit melody1~f freq 780
+            edit melody2~f freq 783
+            edit melody3~f freq 786
+            edit melody4~f freq 789
+            edit melody5~f freq 792
+            edit melody6~f freq 795
+            edit melody7~f freq 798
+        editlist
+    ]
+tectonic
+
+
+wcnt_exit [ in_trig x out_phase_trig ]
+
+wcnt-1.32/jwmsynth

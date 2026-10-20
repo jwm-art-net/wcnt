@@ -2,59 +2,34 @@ wcnt-1.32/jwmsynth
 
 samplerate 44100
 
-
-timer
-t
-    timings
-        time seconds 0
-        time seconds 1
-    timings
-    time_is_relative off
-t
-
 autogroup_create
-group1
-    clock
-    clock1
-        freq 5
-    clock1
-
-    wave
-    wave1
-        type sine
-        in_phase_step clock1 out_phase_step
-    wave1
-
-    clock
-    clock2
-        freq 0.5
-    clock2
-
-    lfo_controller
-    ctrl1
-        in_trig clock2 out_phase_trig
-        start_level 0.0
-        end_level 1.0
-        delay_time 0.5
-        ramp_time 0.5
-        in_waveform wave1 out_output
-        response_time 5
-    ctrl1
-
+g1
+    clock c freq 300 c
+    wave w type sine in_phase_step c out_phase_step w
     chain
-    lfo1
+    ccc
         modules
-            synthmod name clock1
-            synthmod name wave1
-            synthmod name clock2
-            synthmod name ctrl1
+            synthmod name c
         modules
-    lfo1
+    ccc
+g1
 
-    copier [ from lfo1 to lfo2 count 3 ]
-group1
+chain
+ddd
+    modules
+        synthmod name g1.ccc~c
+    modules
+ddd
 
+trig_counter
+tc
+    in_trig ddd~c out_phase_trig
+    count 300
+    pre_count 0
+    wrap off
+    in_reset_trig off
+tc
 
-wcnt_exit [ in_bar t out_count exit_bar 1 ]
+wcnt_exit [ in_trig tc out_not_trig ]
 
 wcnt-1.32/jwmsynth

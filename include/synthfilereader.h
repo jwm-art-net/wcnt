@@ -7,6 +7,7 @@
 #include "dobj.h"
 #include "dobjnamedobj.h"
 #include "dobjnames.h"
+#include "chain.h"
 #include "group.h"
 #include "inputnames.h"
 #include "linkedlist.h"
@@ -62,6 +63,7 @@ public:
     const dobj::base* add_dobj(dobj::base*);
     bool do_actions() { return read_and_create(); }
     bool is_samplerate_set() { return samplerate_set; }
+    synthmod::list* get_autochain_modlist();
 
 private:
 
@@ -88,6 +90,7 @@ private:
     bool mod_lineage;   // is data object part of a module?
 
     group* autogroup;
+    chain* autochain;
     static bool samplerate_set;
 
 //--- private member methods ---//
@@ -115,9 +118,11 @@ private:
     bool read_ui_dobjdobj(dobj::base*, dobj::TYPE, dobj::TYPE);
 
     bool read_samplerate(const char*);
-    bool autogroup_add(const char*);
     bool autogroup_create(const char*);
+    bool autogroup_add(const char*);
     bool autogroup_stop(const char*);
+    bool autochain_create(const char*);
+    bool autochain_stop(const char*);
 
     std::string* read_string_list_param(const char* enda, const char* endb);
     // method for ......

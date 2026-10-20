@@ -59,6 +59,7 @@ class groupnames
     char*       make_username(COMPONENT, const char*) const;
 
     // static member functions for use without groupnames instance
+    static char* str_make_username(const char* str); // just a copy!
     static char* str_make_username(const char* str, COMPONENT c,
                                    const char* compstr);
     static char* str_make_username(const char* voice, const char* group,
