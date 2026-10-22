@@ -7,7 +7,7 @@
 switcher::switcher(const char* uname) :
  synthmod::base(synthmod::SWITCHER, uname, SM_HAS_OUT_OUTPUT),
  linkedlist(MULTIREF_ON, PRESERVE_DATA),
- in_trig(0), xfadetime(25), out_output(0), xfade_samp(0),
+ in_trig(0), xfadetime(0), out_output(0), xfade_samp(0),
  xfade_max_samps(0), xfade_stpsz(0), xfade_size(0),
  sigs(0), sig_ix(0), sig(0), prevsig(0), zero(0)
 {

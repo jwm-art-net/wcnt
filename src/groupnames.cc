@@ -208,7 +208,7 @@ char* groupnames::str_make_username(const char* vs, const char* gs, const char* 
     return u;
 }
 
-char* groupnames::str_get_name(COMPONENT comp, const char* str)
+char* groupnames::str_get_name(const char* str, COMPONENT comp)
 {
     if (!str)
         return 0;
@@ -234,7 +234,7 @@ char* groupnames::str_get_name(COMPONENT comp, const char* str)
     return 0;
 }
 
-bool  groupnames::str_has_name(COMPONENT c, const char* str)
+bool  groupnames::str_has_name(const char* str, COMPONENT c)
 {
     if (str)
         return strchr(str, seperators[c]) != 0;

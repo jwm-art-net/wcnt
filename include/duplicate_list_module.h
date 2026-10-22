@@ -32,7 +32,7 @@ duplicate_list_module(T* sm, D* _data,
     sm->duplicate_params_to(dup);
     const char* const module_type_name = synthmod::names::get(sm->get_module_type());
     const char* current_grp = sm->get_name(groupnames::GROUP);
-    char* new_grp = groupnames::str_get_name(groupnames::GROUP, uname); //get_groupname(uname);
+    char* new_grp = groupnames::str_get_name(uname, groupnames::GROUP); //get_groupname(uname);
     bool regroup = false;
     if (current_grp && new_grp)
         if (strcmp(current_grp, new_grp) != 0)

@@ -1,17 +1,56 @@
-CURRENTLY
 
 (chain/autochain largely done - scantily tested so far though.
-autochain_copy_only - this would be a nice feature - it wouldn't create
-the modules in the global space, only internal private, effectively user
-would be making a template, the internal connectorlist would manage the
+
+*** autochain_copy_only ***
+
+ - this would be a nice feature - it wouldn't create the modules in
+ the global space, only internal private, effectively user would be
+ making a template, the internal connectorlist would manage the
 connections as opposed to...
+
 ... this requres some thinking about how to handle the directive. the
 quick version - autochain_copy_only (on/off) - just implement it
 independently and ensure that autochaining is occurring when it's used.
+
 ... or create mechanisms for parameter to directives or something...
 ... the independent version would mean it could be turned on/off
-multiple times during autochain. some modules would only exist internally
-to the chain, some would exist globally. weird. why? why not? yes? no?
+multiple times during autochain. some modules would only exist
+internally to the chain, some would exist globally. weird. why?
+why not? yes? no?
+
+- - - - - - ....
+
+CHAIN. Chains pull things| more on pulling...
+~~~~~~~~~~~~~~~~~~~~~~~~~| further developments...
+
+A chain might pull everything out of a group into itself - basically
+pulling modules down through the group heirarchy group to chain,
+chain to just a name - a merging of the module and chain names, which
+is all, in a way, that any of this is, anyway.
+
+
+possibilities:
+    * group_to_chain - converts a group to a chain ?
+    * ungroup + unchain - either of which can be used within
+      an autogroup or autochain?
+        - if ungroup used within autochain it acts as a
+          conversion from group to chain
+        - used outside autochain - simply ungroups the modules
+        - used within an autogroup - moves modules from one
+          group to another
+
+for clarity:
+    * autochain_create - chains modules as they're created
+
+    * chain (dobj) - chains existing modules
+        - specifically: "modules synthmod name mod1
+                                 synthmod name mod2 modules"
+        - so how can a chain chain something other than a list of
+          modules?
+            - a group (to convert to chain)
+            - a chain (to convert to unchained)
+
+
 
 
 

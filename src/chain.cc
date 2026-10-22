@@ -67,10 +67,8 @@ const void* chain::get_param(param::TYPE pt) const
 
 synthmod::base* chain::chain_module(synthmod::base* sm)
 {
-    // this is used when the chain data object is defined
-    // this function is called for every module listed
-    // 1) duplicate module
-    // 2) form chain name for module and rename module
+    D_CONNECT("chain_module called with name %s\n", sm->get_username());
+
     if (sm->flag(synthmod::base::SM_UNGROUPABLE)) {
         dobjerr("Module %s is forbidden from chain %s.", sm->get_username(),
                                                          get_username());
@@ -83,10 +81,11 @@ synthmod::base* chain::chain_module(synthmod::base* sm)
     if (copy_only == OFF) {
         chname = sm->make_username(gnames::CHAIN, get_username());
 
+        D_CONNECT("calling get_synthmod_by_name with %s\n", chname);
+
         if (!wcnt::jwm.get_modlist()->get_autogroup()) {
             char* tmp = chname;
             chname = gnames::str_make_username(tmp, gnames::GROUP, 0);
-            std::cout << chname << std::endl;
             delete [] tmp;
         }
 
@@ -98,6 +97,8 @@ synthmod::base* chain::chain_module(synthmod::base* sm)
             return 0;
         }
     }
+    else
+        chname = gnames::str_make_username(sm->get_username());
 
     synthmod::base* nsm = sm->duplicate_module(name, synthmod::base::NO_CONNECT);
     if (!nsm) {
@@ -109,9 +110,8 @@ synthmod::base* chain::chain_module(synthmod::base* sm)
     modules->add_module(nsm);
 
     if (copy_only == OFF) {
-        char* from = new char [strlen(sm->get_username()) + 1];
-        strcpy(from, sm->get_username());
-        // safe to set module username now
+        char* from = gnames::str_make_username(sm->get_username());
+        // safe to rename original module now
         sm->set_username(chname);
 
         if (wcnt::jwm.is_verbose()) {
@@ -119,9 +119,9 @@ synthmod::base* chain::chain_module(synthmod::base* sm)
             std::cout << sm->get_username() << std::endl;
         }
 
-        delete [] chname;
-        chname = 0;
+        D_CONNECT("reconnecting ouput module by name...\n");
 
+        // reconnect using new name for original module
         if (wcnt::jwm.get_modlist()->get_autogroup()) {
             // connections during autogroup don't reflect the autogroup naming
             // until the end of the autogroup when they're updated...
@@ -134,18 +134,38 @@ synthmod::base* chain::chain_module(synthmod::base* sm)
         }
         else
             wcnt::get_connectlist()->
-                    reconnect_output_module_by_name(from, sm->get_username());
+                    reconnect_output_module_by_name(from, chname);
         delete [] from;
     }
 
-    if (!wcnt::get_connectlist()->
-            duplicate_connections_to_connectorlist(sm, nsm, connections))
-    {
-        dobjerr("Could not chain module %s as %s. Connections failed.",
-                sm->get_username(), get_username());
-        invalidate();
-        return 0;
+    D_CONNECT("duplicating connections (from %s to %s) "
+    "to internal list...\n",
+    sm->get_username(), nsm->get_username());
+
+    connectorlist* conlist = wcnt::get_connectlist();
+    connector* con = conlist->goto_first();
+
+    while(con) {
+        con->dump_info("comparing connector: ");
+        if (strcmp(con->get_input_module()->get_username(), chname) == 0) {
+            con->dump_info("duplicating connector: ");
+            connector* nc = con->duplicate(nsm);
+            const char* omn = nc->get_output_module_name();
+            char* ocn = gnames::str_get_name(omn, gnames::CHAIN);
+            if (ocn && strcmp(get_username(), ocn) == 0) {
+                // output module chain matches, remove
+                char* tmp = gnames::str_make_username(omn, gnames::CHAIN, 0);
+                nc->set_output_module_name(tmp);
+                delete [] tmp;
+            }
+            delete [] ocn;
+            nc->dump_info();
+            connections->add_at_tail(nc);
+        }
+        con = conlist->goto_next();
     }
+
+    delete [] chname;
 
     return sm;
 }
@@ -153,6 +173,7 @@ synthmod::base* chain::chain_module(synthmod::base* sm)
 
 synthmod::base* chain::autochain_module(synthmod::base* sm)
 {
+    D_CONNECT("autochain module %s\n", sm->get_username());
     if (sm->flag(synthmod::base::SM_UNGROUPABLE))
         return 0;
 
@@ -163,23 +184,11 @@ synthmod::base* chain::autochain_module(synthmod::base* sm)
 }
 
 
-bool chain::chainify(synthmod::base* sm)
-{/*
-    if (sm->flag(synthmod::base::SM_UNGROUPABLE))
-        return false;
-    char* from = new char [strlen(sm->get_username()) + 1];
-    strcpy(from, sm->get_username());
-    //sm->set_group_name(get_username());
-    wcnt::get_connectlist()->reconnect_output_module_by_name(from, sm->get_username());
-    delete [] from;
-    */
-    return true;
-}
-
-
 dobj::base* chain::add_dobj(dobj::base* dbj)
 {
     if (dbj->get_object_type() == dobj::DOBJ_SYNTHMOD) {
+        synthmod::base* sm = ((dobjmod*)dbj)->get_synthmod();
+        D_CONNECT("add dobj (module) %s\n", sm->get_username());
         if (!tmpdbjlist && (!(tmpdbjlist = new dobj::list)))
             return 0;
         return tmpdbjlist->add_dobj(dbj);
@@ -240,13 +249,25 @@ dobj::base* chain::duplicate_dobj(const char* new_chain_name)
         if (con && wcnt::jwm.is_verbose())
             std::cout << "Reforming connections..." << std::endl;
         while(con) {
-            // don't forget module name in connectors internal to chain data object
-            // was stripped of group/chain components...
-            char* chn = gnames::str_make_username(con->get_output_module_name(),
-                                                gnames::CHAIN, new_chain_name);
-            // this might be inside an autogroup...
-            char* omn = gnames::str_make_username(chn, gnames::GROUP, agn);
-            delete [] chn;
+            if (gnames::str_has_name(con->get_output_module_name(), gnames::CHAIN)) {
+                D_CONNECT("connector output module has chained name\n");
+            }
+            D_CONNECT("-- output module name: %s\n", con->get_output_module_name());
+            char* omn = gnames::str_make_username(con->get_output_module_name());
+            if (modules->get_synthmod_by_name(omn)) {
+                // output module is part of the chain, name it so
+                char* tmp = omn;
+                omn = gnames::str_make_username(omn, gnames::CHAIN,
+                                                     new_chain_name);
+                delete [] tmp;
+                if (agn) {
+                    // and we're in an autogroup
+                    tmp = omn;
+                    omn = gnames::str_make_username(omn, gnames::GROUP, agn);
+                    delete [] tmp;
+                }
+            }
+            D_CONNECT("-- setting output module name: %s\n", omn);
             con->set_output_module_name(omn);
             if (wcnt::jwm.is_verbose()) {
                 std::cout << omn << " "

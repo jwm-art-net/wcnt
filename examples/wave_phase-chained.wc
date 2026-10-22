@@ -1,0 +1,223 @@
+wcnt-1.32/jwmsynth
+
+samplerate 44100
+
+
+timer
+t
+    timings
+        time seconds 0
+        time seconds 40
+    timings
+    time_is_relative off
+t
+
+constant_note n2f name e2 n2f
+
+wcnt_note
+note_on
+    in_note_on_trig     t out_trig
+    in_note_slide_trig  off
+    in_note_off_trig    off
+    in_frequency        n2f out_frequency
+    in_velocity         off
+note_on
+
+
+
+autogroup_create
+g1
+
+    autochain_create lfo1
+        constant_freq f freq 0.031 f
+        wave w type tri in_phase_step f out_phase_step w
+    lfo1
+
+    copier [ from lfo1 to lfo2 ]
+
+    editor
+    [
+        editlist
+            edit lfo2~f 3.7
+            edit lfo2~w type saw
+        editlist
+    ]
+
+    adsr
+    env1
+        envelope
+            section name attack     time 300 level 1.0
+            section name decay      time 300 level 0.7
+            section name release    time 300 level 0.35
+            section name release    time 1300 level 0.0
+        envelope
+
+        connect note_on
+        sustain_state    off
+        zero_retrigger   off
+    env1
+
+    adsr
+    env2
+        envelope
+            section name attack     time 150 level 1.0
+            section name decay      time 150 level 0.8
+            section name release    time 500 level 0.35
+            section name release    time 1500 level 0.0
+        envelope
+
+        connect note_on
+        sustain_state    on
+        zero_retrigger   off
+    env2
+
+    autochain_create
+    osc1
+
+        osc_clock
+        c1
+            connect note_on
+        c1
+
+        square_wave
+        sq1
+            connect c1
+            pulse_width    0.5
+            in_pwm         lfo1~w out_output
+            pwm_size       0.85
+            recycle_mode   off
+        sq1
+
+        osc_clock
+        c2
+            connect note_on
+            octave_offset       1
+            tuning_semitones    3
+        c2
+
+        osc_clock
+        c3
+            connect note_on
+            octave_offset       2
+            tuning_semitones   -5
+        c3
+
+        logic_trigger
+        lt
+            in_trig1 c1 out_phase_trig
+            in_trig2 sq1 out_pulse_off_trig
+            function or
+        lt
+
+        wave_phase
+        wp1
+            in_phase_trig       c1  out_phase_trig
+            in_phase_step       c2  out_phase_step
+            type                sine
+            on_trig_reset_phase off
+            recycle_mode        on
+            zero_when_off       on
+        wp1
+
+        wave_phase
+        wp2
+            in_phase_trig       sq1 out_pulse_off_trig
+            in_phase_step       c3  out_phase_step
+            type                squ
+            on_trig_reset_phase on
+            recycle_mode        on
+            zero_when_off       on
+            phase_cycles    2
+        wp2
+
+        switcher
+        wvl
+            in_trig lt out_trig
+            signals
+                synthmod name wp2
+                synthmod name wp1
+            signals
+            xfade_time 0.1
+        wvl
+
+        switcher
+        wvr
+            in_trig lt out_trig
+            signals
+                synthmod name wp1
+                synthmod name wp2
+            signals
+            xfade_time 0.1
+        wvr
+    osc1
+
+    copier [ from osc1 to osc2 ]
+
+    editor
+    [
+        editlist
+            edit osc2~c2 tuning_semitones 3.1
+        editlist
+    ]
+
+    autochain_create
+    lpf-l
+        osc_clock
+        cf
+            connect note_on
+            octave_offset 2
+            in_freq_mod1    env1 out_output
+            freq_mod1_size  4
+        cf
+
+        glame_butterworth
+        out
+            filter_type lowpass
+            in_signal wvl out_output
+            in_cutoff_phase_step cf out_phase_step
+            resonance 0.815
+        out
+    lpf-l
+
+    copier [ from lpf-l to lpf-r ]
+
+    editor
+    [
+        editlist
+            edit lpf-r~out in_signal wvr out_output
+        editlist
+    ]
+
+    stereo_amp
+    amp
+        in_left lpf-l~out out_output
+        in_right lpf-r~out out_output
+        in_amp_eg env2 out_output
+        gain 0.75
+    amp
+g1
+
+
+wavfile_out
+wav
+    in_left g1.amp out_left
+    in_right g1.amp out_right
+    in_bar      t out_count
+    snapshot_mode off
+    data_format float32
+    filename    wave_phase-chained.wav
+    start_bar   0
+    end_bar     1
+wav
+
+wcnt_exit
+exit
+    in_bar      t out_count
+    exit_bar    1
+exit
+
+
+wcnt-1.32/jwmsynth
+
+
+

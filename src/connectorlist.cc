@@ -140,27 +140,6 @@ connectorlist::duplicate_connections_for_module(
 }
 
 
-// duplicates connections but into an alternative connectorlist.
-bool
-connectorlist::duplicate_connections_to_connectorlist(
-                        const synthmod::base* from_mod, synthmod::base* to_mod,
-                                                        connectorlist* conlist)
-{
-    if (from_mod->get_module_type() != to_mod->get_module_type())
-        return false;
-    llitem* i = find_in_data(sneak_first(), input_module(from_mod));
-    while(i){
-        D_CONNECT("duplicating connector: %s %s %s\n", from_mod->get_username(),
-                  input::names::get(i->get_data()->get_input_type()),
-                  (i->get_data()->is_group_pending(connector::GROUP_PENDING)) ? "(G)" : "");
-        conlist->add_at_tail(i->get_data()->duplicate(to_mod));
-        i = find_in_data(i->get_next(), input_module(from_mod));
-    }
-    return true;
-}
-
-
-
 
 connector* add_connector(connector* rd);
 connector* add_connector_off(synthmod::base* sm, input::TYPE);
@@ -181,7 +160,9 @@ connectorlist::reconnect_output_module_by_name(const char* from, const char* to)
     const char* spc = spaces::get(40);
     std::string cmsg;
     connector* connect = goto_first();
+    D_CONNECT("from %s ... to %s\n", from, to);
     while(connect) {
+        connect->dump_info();
         if (strcmp(connect->get_output_module_name(), from) == 0) {
             connect->set_output_module_name(to);
             if (wcnt::jwm.is_verbose()) {

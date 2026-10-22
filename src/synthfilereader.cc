@@ -312,7 +312,7 @@ bool synthfilereader::autogroup_stop(const char* com)
         if (strcmp(gn, agn) == 0) {
             // due to autogroup_add, grouping can be staged, so *must* ensure
             // group names match!
-            if (!gnames::str_has_name(gnames::GROUP, outmod)) {
+            if (!gnames::str_has_name(outmod, gnames::GROUP)) {
                 char* gsmn = gnames::str_make_username(outmod, gnames::GROUP,
                                                            autogroup->get_username());
                 synthmod::base* sm = sml->get_synthmod_by_name(gsmn);
@@ -411,27 +411,24 @@ bool synthfilereader::autochain_stop(const char* com)
                 get_group_pending_connections(connector::CHAIN_PENDING);
 
     if (!conlist) {
-        wc_err("List failure for group %s pending connections.", com);
+        wc_err("List failure for chain %s pending connections.", com);
         return 0;
     }
 
     synthmod::list* sml = wcnt::jwm.get_modlist();
-    synthmod::list* csml = autochain->get_modlist();
 
     const char* chname = 0;
     const char* acn = autochain->get_username();
     connector* con = conlist->goto_first();
+
     while (con) {
         const char* outmod = con->get_output_module_name();
         D_CONNECT("checking pending connection using output module name: %s "
                   "(to input module %s)\n", outmod,
                   con->get_input_module()->get_username());
         chname = con->get_input_module()->get_name(gnames::CHAIN);
-        std::cout << "chname: '" << (chname ? chname : "0x0") << "'" << std::endl;
-        std::cout << "autochain: '" << (acn ? acn : "0x0") << "'" << std::endl;
         if (strcmp(chname, acn) == 0) {
-            std::cout << "checking outmod " << outmod  << " has chain" << std::endl;
-            if (!gnames::str_has_name(gnames::CHAIN, outmod)) {
+            if (!gnames::str_has_name(outmod, gnames::CHAIN)) {
                 // if autogroup?
                 char* gsmn = gnames::str_make_username(outmod, gnames::CHAIN,
                                                                         acn);
@@ -441,8 +438,6 @@ bool synthfilereader::autochain_stop(const char* com)
                                                      autogroup->get_username());
                     delete [] tmp;
                 }
-
-                std::cout << "nope... looking for ... "<<gsmn <<std::endl;
                 synthmod::base* sm = sml->get_synthmod_by_name(gsmn);
                 if (sm) {
                     if (wcnt::jwm.is_verbose())
@@ -450,11 +445,12 @@ bool synthfilereader::autochain_stop(const char* com)
                                 "output module " << outmod << " to "
                                                            << gsmn << endl;
                     con->set_output_module_name(gsmn);
+                    D_CONNECT("clearing chain pending...\n");
                     con->clear_group_pending(connector::CHAIN_PENDING);
                 }
                 else if ((sm = sml->get_synthmod_by_name(outmod))) {
-                    D_CONNECT("Clearing group pending on connection with "
-                              "non-group output module %s\n", outmod);
+                    D_CONNECT("Clearing chain pending on connection with "
+                              "non-chain output module %s\n", outmod);
                     con->clear_group_pending(connector::CHAIN_PENDING);
                 }
                 delete [] gsmn;
@@ -680,6 +676,9 @@ synthmod::base* synthfilereader::read_synthmodule(const char* com)
         cout << "================================" << endl;
         cout << "Creating " << com << " synth module " << name << endl;
     }
+
+    delete [] name;
+    name = 0;
 
     // use the non grouped name for module creation, because...
     synthmod::base* sm = synthmod::list::create_module(smt, nongname.c_str());

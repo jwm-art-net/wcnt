@@ -152,8 +152,8 @@ dobj::base* group::duplicate_dobj(const char* new_group_name)
         connector* con = conlist->goto_first();
         while(con) {
             D_CONNECT("-- output module name %s\n", con->get_output_module_name());
-            char* mod_groupname = groupnames::str_get_name(groupnames::GROUP,
-                                                con->get_output_module_name());
+            char* mod_groupname = groupnames::str_get_name(
+                            con->get_output_module_name(), groupnames::GROUP);
             if (mod_groupname) {
                 if (strcmp(get_username(), mod_groupname) == 0) {
                     if (wcnt::jwm.is_verbose())

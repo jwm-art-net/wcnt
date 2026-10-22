@@ -85,8 +85,6 @@ class chain : public dobj::base
     synthmod::list*   modules;
     connectorlist*  connections;
 
-    bool chainify(synthmod::base*);
-
     void register_ui();
     ui::dobjitem_list* get_ui_items();
     dobj::list* tmpdbjlist;

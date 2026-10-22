@@ -89,7 +89,7 @@ bool copier::set_param(param::TYPE pt, const void* data)
         }
         return true;
     case param::COPYTO: {
-        const char* const grpname = groupnames::str_get_name(groupnames::GROUP, (const char*)data);
+        const char* const grpname = groupnames::str_get_name((const char*)data, groupnames::GROUP);
         if (grpname) {
             delete [] grpname;
             dobjerr("Cannot copy %s to %s because the name %s contains "
@@ -193,6 +193,8 @@ errors::TYPE copier::validate()
         else if (from_dobj) {
             if (!(to_dobj = from_dobj->duplicate_dobj(copyname.c_str())))
                 return errors::ERROR;
+            // some data objects don't return a duplicate because they only
+            // duplicate their data - but still need to return something..
             if (to_dobj != from_dobj)
                 wcnt::get_dobjlist()->add_dobj(to_dobj);
         }

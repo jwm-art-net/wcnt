@@ -1,0 +1,81 @@
+wcnt-1.32/jwmsynth
+
+samplerate 44100
+
+; group.wc
+; group basics using the group method
+
+;
+; firstly group existing modules using the group data object
+; secondly, use the autogroup_create directive to wrap around the
+; modules to group.
+; file should not result in errors
+
+clock x freq 1 x
+
+constant_freq f freq 777 f
+
+constant one value 1.0 one
+
+wave w
+    type sine
+    in_phase_step f out_phase_step
+w
+
+mono_amp a
+    in_signal w out_output
+    gain 0.75
+    in_amp_eg one out_output
+a
+
+;
+; group using data object...
+;
+
+group g1
+    modules
+        synthmod name f
+        synthmod name w
+        synthmod name a
+    modules
+g1
+
+;
+; group using directive...
+;
+
+autogroup_create ag2
+    constant_freq xf
+        freq 555
+    xf
+
+    wave xw
+        type sine
+        in_phase_step xf out_phase_step
+    xw
+
+    mono_amp xa
+        in_signal xw out_output
+        gain 0.75
+        in_amp_eg one out_output
+    xa
+ag2
+
+;
+; copy first group
+;
+copier [ from g1 to g3 ]
+
+;
+; copy second group
+;
+copier [ from ag2 to ag4 ]
+
+
+
+
+wcnt_exit [ in_trig x out_phase_trig ]
+;
+;
+;
+wcnt-1.32/jwmsynth

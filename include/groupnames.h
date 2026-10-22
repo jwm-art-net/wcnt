@@ -64,8 +64,8 @@ class groupnames
                                    const char* compstr);
     static char* str_make_username(const char* voice, const char* group,
                                    const char* chain, const char* module);
-    static char* str_get_name(COMPONENT c, const char*);
-    static bool  str_has_name(COMPONENT c, const char*);
+    static char* str_get_name(const char*, COMPONENT c);
+    static bool  str_has_name(const char*, COMPONENT c);
     static int   str_has_reserved_chr(const char*);
 
 private:

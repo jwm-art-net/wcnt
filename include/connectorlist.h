@@ -60,14 +60,7 @@ public:
     duplicate_connections_for_module(const synthmod::base* from,
                                            synthmod::base* to);
 
-    // duplicates connections but into an alternative connectorlist.
-    bool duplicate_connections_to_connectorlist(const synthmod::base* from,
-                                                      synthmod::base* to,
-                                                      connectorlist* dest);
-
-
     void reconnect_output_module_by_name(const char*from, const char*to);
-
 
     // where cf == CHAIN_PENDING | GROUP_PENDING
     linkedlist*  get_group_pending_connections(connector::CONFLAGS cf)

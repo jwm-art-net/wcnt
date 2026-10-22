@@ -2,93 +2,78 @@ wcnt-1.32/jwmsynth
 
 samplerate 44100
 
+; chain.wc
+; chains two modules
+; firstly by using the chain data object
+; secondly by using the autochain_create directive
+;
+; note: this file is intended to be run with -v option so the messages
+; display by it become headers amongst the verbose output.
+
+clock x freq 1 x
 constant one value 1.0 one
 
-timer
-t
-    timings
-        time seconds 0
-        time seconds 1
-    timings
-    time_is_relative off
-t
+constant_freq f freq 777 f
 
-autogroup_create
-g1
-    constant_freq
-    f
-        freq 777
-    f
+wave w
+    type sine
+    in_phase_step f out_phase_step
+w
 
-    wave
-    w
-        type sine
-        in_phase_step f out_phase_step
-    w
-g1
+mono_amp a
+    in_signal w out_output
+    gain 0.75
+    in_amp_eg one out_output
+a
 
+;
+; chain using data object...
+;
 
-chain
-c1
+chain c1
     modules
-        synthmod name g1.f
-        synthmod name g1.w
+        synthmod name f
+        synthmod name w
+        synthmod name a
     modules
 c1
 
-copier [ from c1 to c2 ]
+;
+; chain using directive...
+;
 
-autogroup_add
-g1
-    copier [ from c1 to c3 ]
-g1
+autochain_create ac2
+    constant_freq xf
+        freq 555
+    xf
 
-copier [ from g1 to g2 ]
-
-
-autogroup_create
-group1
-    clock
-    clock1
-        freq 5
-    clock1
-
-    wave
-    wave1
+    wave xw
         type sine
-        in_phase_step clock1 out_phase_step
-    wave1
+        in_phase_step xf out_phase_step
+    xw
 
-    clock
-    clock2
-        freq 0.5
-    clock2
+    mono_amp xa
+        in_signal xw out_output
+        gain 0.75
+        in_amp_eg one out_output
+    xa
+ac2
 
-    lfo_controller
-    ctrl1
-        in_trig clock2 out_phase_trig
-        start_level 0.0
-        end_level 1.0
-        delay_time 0.5
-        ramp_time 0.5
-        in_waveform wave1 out_output
-        response_time 5
-    ctrl1
+;
+; copy first chain
+;
+copier [ from c1 to c3 ]
 
-    chain
-    lfo1
-        modules
-            synthmod name clock1
-            synthmod name wave1
-            synthmod name clock2
-            synthmod name ctrl1
-        modules
-    lfo1
-
-    copier [ from lfo1 to lfo2 count 3 ]
-group1
+;
+; copy second chain
+;
+copier [ from ac2 to ac4 ]
 
 
-wcnt_exit [ in_bar t out_count exit_bar 1 ]
 
+
+wcnt_exit [ in_trig x out_phase_trig ]
+;
+;
+;
 wcnt-1.32/jwmsynth

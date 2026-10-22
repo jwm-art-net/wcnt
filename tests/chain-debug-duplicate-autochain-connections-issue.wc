@@ -1,0 +1,72 @@
+wcnt-1.32/jwmsynth
+
+samplerate 44100
+
+; chain-debug-duplicate-autochain-connections-issue.wc
+; file to reproduce a problematic bug during chain WIP
+
+
+clock x freq 1 x
+constant one value 1.0 one
+
+constant_freq f freq 777 f
+
+wave w
+    type sine
+    in_phase_step f out_phase_step
+w
+
+mono_amp a
+    in_signal w out_output
+    gain 0.75
+    in_amp_eg one out_output
+a
+
+;
+; chain using data object...
+;
+
+chain c1
+    modules
+        synthmod name f
+        synthmod name w
+        synthmod name a
+    modules
+c1
+
+;
+; chain using directive...
+;
+
+autochain_create ac
+    constant_freq xf
+        freq 555
+    xf
+
+    wave xw
+        type sine
+        in_phase_step xf out_phase_step
+    xw
+
+    mono_amp xa
+        in_signal xw out_output
+        gain 0.75
+        in_amp_eg one out_output
+    xa
+ac
+
+
+;
+; copy second chain
+;
+copier [ from ac to acd ]
+;
+;
+;
+
+
+
+
+wcnt_exit [ in_trig x out_phase_trig ]
+
+wcnt-1.32/jwmsynth

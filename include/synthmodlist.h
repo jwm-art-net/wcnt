@@ -42,8 +42,8 @@ namespace synthmod
 
     // if autogrouping, get synthmod by autogroup groupp modname,
     // if not found or not autogrouping, returns 0.
-    synthmod::base* autogroup_only_get_synthmod_by_name(const char* const modname,
-                                                            char** grpmodname);
+    //synthmod::base* autogroup_only_get_synthmod_by_name(const char* const modname,
+    //                                                        char** grpmodname);
     // if autogrouping get synthmod by autogroup group modname,
     // if not autogrouping get synthmod by name. return 0 if not found.
     synthmod::base* autogroup_or_not_get_synthmod_by_name(const char* const modname,

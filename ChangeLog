@@ -2,51 +2,29 @@
 Changes - October 2026 - wcnt-1.32.2026
 
 NEW
-    * chain data object implementation along with autochain_create, is
-      largley complete now. it's working, but minimally tested.
-      chain is the first of two planned forms of group handling to be
-      implemented alongside existing group handling.
+    * chain data object implementation along with autochain_create, is,
+      largley complete now. chain is the first of two planned forms of
+      group handling to be implemented alongside existing group
+      handling.
 
       chaining is intended for smaller groups of modules and works
       slightly differently. unlike grouping, the chain stores a snapshot
       of the modules at the moment it chains them. when the copier is
-      used with a chain, it is only the snapshot of the modules which
-      is duplicated, never the chain data object itself.
-      so despite the following:
+      used on a chain, it reproduces the snapshot of the modules it
+      copied, into user space.
 
-            copier [ from chain1 to chain2 ]
-            copier [ from chain2 to chain3 ]
-
-      the second line fails, as chain2 does not exist, it cannot be
-      copied!
-
-      the three forms of grouping will operate within a heirarchy, with
-      group in the middle, and chaining at the bottom.
-
-      all three forms adapt the names of modules affected by them, each
-      uses its own seperator. group uses '.', chain uses '~'.
-
-      chaining might be at the bottom of the heirarchy, but it's very
+      chaining might be at the bottom of the heirarchy, but it is
       powerful. creating and duplicating a chain can be done inside,
-      outside, and even across other groups and chains. conceptually,
-      just think about how chains can be used for pulling things!
+      outside, and even across other groups and chains. just as in
+      real life, the chain can be used for pulling things!
 
-      if requested to, the chain data object can pull modules
+      if requested to do so, the chain data object will pull modules
       out of groups and other chains. it keeps their connections intact,
       but relationship changes when the groups/chains are duplicated.
 
       however this behaviour can be tamed by the copy_only parameter
       in the chain data object, preventing the chain from renaming any
       of the modules, as it only copies them internally.
-
-      which brings me to the last piece of the chain implementation yet
-      to be worked on: how copy_only will work during autochaining.
-
-      when implementated, copy_only for autochaining will prevent the
-      modules from being created in the regular way inside the global
-      user space. instead, they will exist internally within the chain
-      as a "copy only" remaining inactive until the copier is used to
-      duplicate them into global user space.
 
 CHANGES:
     * when --verbose is used when wcnt is processing a .wc file:
@@ -61,6 +39,9 @@ CHANGES:
       effort to debug where i missed consequences to these changes.
 
 FIXES:
+    * removed an arbitrary default cross fade time (xfade_time) of
+      25ms from the switcher module.
+
     * fix for trig_counter so it does what it says it should!
 
     * when using the auto-connection feature via the connect parameter

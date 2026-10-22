@@ -58,21 +58,24 @@ copier [ from group1 to group2 ]
 
 chain
 ch1
-    // this chain pulls all the modules out of their existing groups
-    // and chains... unless the copy_only parameter is set on - and
-    // ensure it is done
+    copy_only on
+
+    // copy_only on - prevents the chain from pulling modules out of
+    // their existing groups or chains, it prevents any name change
+    // of existing modules whatsoever, and, just as it's name
+    // suggests - it only copies the modules, it doesn't even
+    // reproduce them in userspace, no ch1~* modules exist
+    // (and actually nor can they exist because the 'ch1' name is now
+    // taken).
+
     modules
         synthmod name group1.lfo1~clock1
         synthmod name group2.lfo2~wave1
         synthmod name group1.lfo2~clock2
         synthmod name group2.lfo1~ctrl1
     modules
-    copy_only on
 ch1
 
-// the original chain data object stores a snapshot of the modules
-// at the point of its creation, copying that chain yeilds those
-// modules at any point
 
 copier [ from ch1 to eeeee ]
 
@@ -80,3 +83,15 @@ copier [ from ch1 to eeeee ]
 wcnt_exit [ in_bar t out_count exit_bar 1 ]
 
 wcnt-1.32/jwmsynth
+
+
+
+
+
+
+
+// the original chain data object stores a snapshot of the modules
+// at the point of its creation, copying that chain yeilds those
+// modules at any point
+
+copier [ from ch1 to eeeee ]

@@ -122,6 +122,14 @@ bool connector::set_group_pending_if()
 }
 
 
+void connector::dump_info(const char* msg)
+{
+    D_CONNECT("%s %s %s   <--   %s %s\n", (msg ? msg : "X "),
+              in_mod->get_username(), input::names::get(in_type),
+              out_mod_uname, output::names::get(out_type));
+}
+
+
 char connector::err_msg[STRBUFLEN];
 
 #ifdef DATA_STATS

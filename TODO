@@ -1,14 +1,10 @@
 October 2026
 
-FIX:
-    * There's a definite connection issue with an autogroup created in
-      a seperate file using a wcnt_note as an entry point for the file.
-      The bug was hidden by the fact that copies of the autogroup
-      function as intended, but the original part remains dysfunctional
-      - in tests near silence is output. use of the connect parameter
-      to auto-connect a module likely plays a part - complete silence
-      results.
-      [FIXED]
+    * add copy_only parameter handling for directive based chaining
+      (autochain_create) or autochain_copy_only directive which can
+      only be used within autochain section
+
+
 
 July 2026
 

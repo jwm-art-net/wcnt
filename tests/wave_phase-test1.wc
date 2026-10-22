@@ -1,0 +1,130 @@
+wcnt-1.32/jwmsynth
+
+samplerate 44100
+
+
+timer
+t
+    timings
+        time seconds 0
+        time seconds 10
+    timings
+    time_is_relative off
+t
+
+constant_note n2f name e2 n2f
+
+wcnt_note
+note_on
+    in_note_on_trig     t out_trig
+    in_note_slide_trig  off
+    in_note_off_trig    off
+    in_frequency        n2f out_frequency
+    in_velocity         off
+note_on
+
+
+osc_clock
+c1
+    connect note_on
+c1
+
+constant_freq lfof freq 0.15 lfof
+wave lfow type tri in_phase_step lfof out_phase_step lfow
+
+
+square_wave
+sq1
+    connect c1
+    pulse_width    0.5
+    in_pwm         lfow out_output
+    pwm_size       0.75
+    recycle_mode   off
+sq1
+
+
+osc_clock
+c2
+    connect note_on
+    octave_offset       1
+    tuning_semitones 3
+c2
+
+osc_clock
+c3
+    connect note_on
+    octave_offset       2
+    tuning_semitones -5
+c3
+
+logic_trigger
+lt
+    in_trig1 c1 out_phase_trig
+    in_trig2 sq1 out_pulse_off_trig
+    function or
+lt
+
+
+wave_phase
+wp1
+    in_phase_trig       c1  out_phase_trig
+    in_phase_step       c2  out_phase_step
+    type                sine
+    on_trig_reset_phase off
+    recycle_mode        on
+    zero_when_off       on
+wp1
+
+wave_phase
+wp2
+    in_phase_trig       sq1 out_pulse_off_trig
+    in_phase_step       c3  out_phase_step
+    type                squ
+    on_trig_reset_phase on
+    recycle_mode        on
+    zero_when_off       on
+    phase_cycles    2
+wp2
+
+switcher
+wvl
+    in_trig lt out_trig
+    signals
+        synthmod name wp2
+        synthmod name wp1
+    signals
+wvl
+
+switcher
+wvr
+    in_trig lt out_trig
+    signals
+        synthmod name wp1
+        synthmod name wp2
+    signals
+    xfade_time 0.1
+wvr
+
+wavfile_out
+wav
+    in_left   wvl out_output
+    in_right  wvr out_output
+    in_bar      t out_count
+    snapshot_mode off
+    data_format float32
+    filename    wave_phase-test1.wav
+    start_bar   0
+    end_bar     1
+wav
+
+wcnt_exit
+exit
+    in_bar      t out_count
+    exit_bar    1
+exit
+
+
+wcnt-1.32/jwmsynth
+
+
+

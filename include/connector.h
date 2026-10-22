@@ -66,14 +66,16 @@ class connector
     bool operator()(name & outname) { return (outname(out_mod_uname)); }
 
 
+    // group pending is set on connectors during autogrouping. in order to
+    // allow ease of use for user, the group name of an autogroup doesn't
+    // need to be specified for connections within the autogroup section.
+    // determination of a connection referencing a module in the autogroup
+    // or not, is pending until the end of autogrouping.
     bool set_group_pending_if(); // appropriate to do so!
     bool is_group_pending(CONFLAGS cf) { return flags & (cf & 0x0f); }
     void set_group_pending(CONFLAGS cf) { flags |= (cf & 0x0f); }
     void clear_group_pending(CONFLAGS cf) { flags &=~ (cf & 0x0f); }
 
-//    bool is_group_pending() { return flags & GROUP_PENDING; }
-//    void set_group_pending() { flags |= GROUP_PENDING; }
-//    void clear_group_pending() { flags &=~ GROUP_PENDING; }
     bool is_edited() { return flags & EDITED; }
     void set_edited() { flags |= EDITED; }
     int operator()(CONFLAGS & _flags) const { return _flags & flags; }
@@ -81,6 +83,9 @@ class connector
     #ifdef DATA_STATS
     STATS_FUNCS
     #endif
+
+    void dump_info() { dump_info(0); }
+    void dump_info(const char* msg); // or null for no message
 
  private:
 
