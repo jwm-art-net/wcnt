@@ -60,6 +60,8 @@ namespace synthmod
     char*       make_username(groupnames::COMPONENT c, const char* s) const
                                             { return username.make_username(c, s); }
 
+    const char* flatten_chain_to_module_name();
+
     /* virtuals */
     virtual void run() = 0;
     virtual void init(){};

@@ -1,0 +1,33 @@
+wcnt-1.32/jwmsynth
+
+samplerate 44100
+
+; chain4.wc
+; demonstrating basic usage of autochain_copy_only  directive within
+; an autochain_create section.
+
+autochain_create
+L
+    // autochain_copy_only directive is a single line directive
+    // which can only be used within an autochain_create section.
+    // it prevents the modules in the chain from existing in regular
+    // userspace. this allows autochain_create to be used like a
+    // template for a chain of modules.
+
+    autochain_copy_only on
+
+    clock c freq 500 c
+    wave w type sine in_phase_step c out_phase_step w
+L
+
+// due to autochain_copy_only on, above...
+
+copier [ from L to R ]
+
+// only the c and w modules in the R chain exist
+// (as R~c and R~w respecitively).
+
+clock x freq 1 x
+wcnt_exit [ in_trig x out_phase_trig ]
+
+wcnt-1.32/jwmsynth

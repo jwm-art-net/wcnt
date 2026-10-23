@@ -1,3 +1,69 @@
+THIS IS NEWS - October 2026
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+I've beenn working on a big new feature set this month, the chain data
+object plus autochain_create directive - it's another form of grouping,
+in fact the first of two planned forms of grouping working alongside
+the existing autogroup/group.
+
+The primary motivator for this is wcnt's lack of nested grouping. I
+decided implemting another two levels of grouping would be easier
+than recursive grouping, plus a definite improvement on just a single
+level.
+
+Chaining is to be considered at the bottom of the heirarchy of what
+will become 3 different forms of grouping.
+
+It's taken a very different direction to the standard group, and in
+doing so it's opened up capabilities I didn't envisage when I originally
+came up with the idea.
+
+Firstly its primary difference is that it holds a copy of the chained
+modules and their connections, within itself. These are distinct from
+those modules in regular user space. They're inaccessible for use by
+input/output connections.
+
+Similarly to group, the chain modifies the usernames of the modules in
+regular user space, with its own distinct seperator/signifier (~ tilde
+symbol).
+
+However, unlike group, when a chain is duplicated, it isn't the
+modules in regular user space which are copied, it is the chain's
+internal copy. It works a bit like copy and paste.
+
+This is where my choice of the term chain almost proves prescient. The
+chain works at another level of nesting to grouping, so I wanted it to
+be able to form a chain within an autogroup, then reproduce that chain
+outside of the autogroup. That meant the modules internal to the chain
+had to work independently of the group, by losing their group info (with
+exceptions). The logical step was to apply that to the chain the modules
+were themselves a part of, losing too the chain info component of their
+username.
+
+Consequentally I found the chain could *pull* modules out of groups and
+other chains. Initially that seemed problematic, but I decided to allow
+it, especially if that behaviour could be turned off; if the chain could
+be set to copy_only.
+
+Using the chain data object with copy_only set means the user space
+modules that the chain duplicates internally, aren't touched at all by
+username changes. They remain as they are. The chain does a 'copy only'.
+
+It didn't initially make sense to me to add this as a directive to
+change the behaviour of the autochain_create directive - because the
+directive can't pull modules from outside of itself... but wait, it
+does make sense if you interpret 'copy only' as meaning 'don't create'.
+
+It's a basic form of template for module groups.
+
+Lastly, with all this new capability for grouping I wondered what might
+happen if a copier copied a chain inside an autochain. I settled on
+an idea which chaining had taken precedent over - flattening a group.
+This means a copy of a chain can be made inside an autochain. The
+chain name is merged with the module name to make room for the autochain
+name to replace it as its chain name component.
+
+It's a rudimentary form of nested grouping.
+
 THIS THIS IS THE NEWS - May-July 2026 - THE NEWS IS THIS THIS
 -------------------------------------------------------------
   (Urrrrrgh, where am I? Wait... Wut!?!? It's 2026!?!?)

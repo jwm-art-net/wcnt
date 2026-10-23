@@ -79,6 +79,7 @@ class chain : public dobj::base
     bool do_actions();
 
     synthmod::list* get_modlist() const { return modules; }
+    bool is_copy_only() { return copy_only == ON; }
 
  private:
     STATUS copy_only;

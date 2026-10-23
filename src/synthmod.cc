@@ -45,6 +45,10 @@ namespace synthmod
     return username.set_name(c, str);
  }
 
+ const char* base::flatten_chain_to_module_name()
+ {
+     return username.flatten_chain_to_module_name();
+ }
 
  const void* base::get_out(output::TYPE) const
  {

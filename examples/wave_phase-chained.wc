@@ -3,30 +3,119 @@ wcnt-1.32/jwmsynth
 samplerate 44100
 
 
-timer
-t
-    timings
-        time seconds 0
-        time seconds 40
-    timings
-    time_is_relative off
-t
+time_map
+time1
+    meter_map
+        meter tsig 4/4 bar 0
+    meter_map
+    bpm_changes_relative off
+    bpm_map
+        tempo bpm 76 bar 0
+    bpm_map
+time1
 
-constant_note n2f name e2 n2f
 
-wcnt_note
-note_on
-    in_note_on_trig     t out_trig
-    in_note_slide_trig  off
-    in_note_off_trig    off
-    in_frequency        n2f out_frequency
-    in_velocity         off
-note_on
+riff
+riff1
+    quarter_value   64
+    notelist
+        note name c2    pos 0     len 60  vel 1.0
+        note name d#2   pos 78    len 66  vel 1.0
+        note name f2    pos 154   len 40  vel 1.0
+        note name c#2   pos 216   len 42  vel 1.0
+    notelist
+riff1
+
+riff
+riff1b
+    quarter_value   64
+    notelist
+        note name c2    pos 0     len 60  vel 1.0
+        note name e2   pos 78    len 66  vel 1.0
+        note name g#2    pos 154   len 40  vel 1.0
+        note name e2   pos 216   len 42  vel 1.0
+    notelist
+riff1b
+
+riff
+riff2
+    quarter_value   64
+    notelist
+        note name d#2   pos 0    len 56  vel 1.0
+        note name c2    pos 68    len 60  vel 1.0
+        note name f2    pos 124   len 90  vel 1.0
+        note name c#2   pos 230   len 12  vel 1.0
+    notelist
+riff2
+
+riff
+riff2b
+    quarter_value   64
+    notelist
+        note name e2   pos 0    len 56  vel 1.0
+        note name d#2    pos 68    len 60  vel 1.0
+        note name g#2    pos 124   len 90  vel 1.0
+        note name d2   pos 230   len 12  vel 1.0
+    notelist
+riff2b
+
+sequencer
+seq
+    track
+        riff_node
+            riff riff1
+            bar 0 repeat 15 repeat_stripe 8
+        riff_node
+            riff riff1
+            bar 1 repeat 15 repeat_stripe 8
+        riff_node
+            riff riff1
+            bar 2 repeat 15 repeat_stripe 8
+        riff_node
+            riff riff1b
+            bar 3 repeat 15 repeat_stripe 8
+        riff_node
+            riff riff2
+            bar 4 repeat 15 repeat_stripe 8
+        riff_node
+            riff riff2
+            bar 5 repeat 15 repeat_stripe 8
+        riff_node
+            riff riff2
+            bar 6 repeat 15 repeat_stripe 8
+        riff_node
+            riff riff2b
+            bar 7 repeat 15 repeat_stripe 8
+    track
+
+    connect time1
+
+    start_bar               0
+    velocity_response_time  0
+seq
 
 
 
 autogroup_create
 g1
+
+    constant detune  value -5.0   detune
+
+    adder
+    detuned
+        in_signal1  detune  out_output
+        in_signal2  seq     out_frequency
+    detuned
+
+    wcnt_note
+    note_on
+        in_note_on_trig     seq out_note_on_trig
+        in_note_slide_trig  seq out_note_slide_trig
+        in_note_off_trig    seq out_note_off_trig
+        in_frequency        detuned out_output
+        in_velocity         seq out_frequency
+    note_on
+
 
     autochain_create lfo1
         constant_freq f freq 0.031 f
@@ -38,7 +127,7 @@ g1
     editor
     [
         editlist
-            edit lfo2~f 3.7
+            edit lfo2~f freq 3.7
             edit lfo2~w type saw
         editlist
     ]
@@ -49,7 +138,7 @@ g1
             section name attack     time 300 level 1.0
             section name decay      time 300 level 0.7
             section name release    time 300 level 0.35
-            section name release    time 1300 level 0.0
+            section name release    time 400 level 0.0
         envelope
 
         connect note_on
@@ -62,8 +151,8 @@ g1
         envelope
             section name attack     time 150 level 1.0
             section name decay      time 150 level 0.8
-            section name release    time 500 level 0.35
-            section name release    time 1500 level 0.0
+            section name release    time 425 level 0.35
+            section name release    time 500 level 0.0
         envelope
 
         connect note_on
@@ -173,7 +262,7 @@ g1
         glame_butterworth
         out
             filter_type lowpass
-            in_signal wvl out_output
+            in_signal osc1~wvl out_output
             in_cutoff_phase_step cf out_phase_step
             resonance 0.815
         out
@@ -184,7 +273,7 @@ g1
     editor
     [
         editlist
-            edit lpf-r~out in_signal wvr out_output
+            edit lpf-r~out in_signal osc1~wvr out_output
         editlist
     ]
 
@@ -197,24 +286,89 @@ g1
     amp
 g1
 
+copier [ from g1 to g2 count 3 ]
+
+editor
+[
+    editlist
+        edit g1.detune value -15
+        edit g2.detune value  5
+        edit g3.detune value  150
+        edit g4.detune value  250
+
+        edit g1.amp gain 0.75
+        edit g2.amp gain 0.75
+        edit g3.amp gain 0.05
+        edit g4.amp gain 0.05
+
+        edit g1.lfo1~f freq 0.331
+        edit g1.lfo2~f freq 3.7
+
+        edit g1.lfo1~f freq 2.331
+        edit g1.lfo2~f freq 0.045
+
+        edit g1.lfo1~f freq 0.131
+        edit g1.lfo2~f freq 1.23
+
+        edit g1.lfo1~f freq 0.641
+        edit g1.lfo2~f freq 2.7
+
+    editlist
+]
+
+
+adsr_scaler
+[
+    adsr_name g3.env2
+    attack_scale  0.4
+    decay_scale   0.4
+    release_scale 0.4
+]
+
+adsr_scaler
+[
+    adsr_name g4.env2
+    attack_scale  0.4
+    decay_scale   0.4
+    release_scale 0.4
+]
+
+
+mixer
+mix1
+    mix
+        synthmod  name g1.amp
+        synthmod  name g2.amp
+        synthmod  name g3.amp
+        synthmod  name g4.amp
+    mix
+    gain 0.26
+mix1
+
+caps_plate
+revb
+    in_left    mix1 out_left
+    in_right   mix1 out_right
+    bandwidth  0.9999
+    tail       0.9999
+    damping    0.03
+    wet/dry    0.42
+revb
 
 wavfile_out
 wav
-    in_left g1.amp out_left
-    in_right g1.amp out_right
-    in_bar      t out_count
+    in_left     revb out_left
+    in_right    revb out_right
+    in_bar      time1 out_bar
     snapshot_mode off
     data_format float32
     filename    wave_phase-chained.wav
     start_bar   0
-    end_bar     1
+    end_bar     16
 wav
 
-wcnt_exit
-exit
-    in_bar      t out_count
-    exit_bar    1
-exit
+
+wcnt_exit [ in_trig wav out_write_end_trig ]
 
 
 wcnt-1.32/jwmsynth

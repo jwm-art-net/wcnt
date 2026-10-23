@@ -18,6 +18,26 @@ multiple times during autochain. some modules would only exist
 internally to the chain, some would exist globally. weird. why?
 why not? yes? no?
 
+.... so what happens when using a copier to copy a chain within an
+.... autochain?
+.... currently: the copier naming overrides the autochain for example:
+
+        autochain_create
+        ch
+            copier [ from L to LC ]
+            copier [ from L to RC ]
+        ch
+
+.... results in the modules within L being copied to two new chains
+.... named LC and RC, and nothing in the chain ch.
+.... instead, does it make sense that the LC and RC chain names become
+.... prefixes for the module component of a module username such as
+.... ch~LC_clock1, ch~RC_clock1
+
+ie copying an existing chain into an autochain flattens the existing
+chain into the module name
+
+
 - - - - - - ....
 
 CHAIN. Chains pull things| more on pulling...

@@ -123,6 +123,7 @@ private:
     bool autogroup_stop(const char*);
     bool autochain_create(const char*);
     bool autochain_stop(const char*);
+    bool autochain_copy_only(const char*);
 
     std::string* read_string_list_param(const char* enda, const char* endb);
     // method for ......

@@ -5,6 +5,7 @@
 #include "../include/dobjlist.h"
 #include "../include/fxsparamlist.h"
 #include "../include/globals.h"
+#include "../include/iocatconvert.h"
 #include "../include/listwork.h"
 #include "../include/modoutputlist.h"
 #include "../include/setparam.h"
@@ -180,9 +181,13 @@ bool synthfilereader::process_directive(directive::TYPE dt)
             return autogroup_create(read_command());
         case directive::AUTOCHAIN_CREATE:
             return autochain_create(read_command());
+        case directive::AUTOCHAIN_COPY_ONLY:
+            return autochain_copy_only(read_command());
         case directive::SAMPLE_RATE:
             return read_samplerate(read_command());
         default:
+            wc_err("Unhandled directive type: %s.",
+                    directive::names::get(dt));
             break;
     }
     return false;
@@ -307,8 +312,8 @@ bool synthfilereader::autogroup_stop(const char* com)
                   "(to input module %s)\n", outmod,
                   c->get_input_module()->get_username());
         gn = c->get_input_module()->get_name(gnames::GROUP);
-        std::cout << "gn: '" << (gn ? gn : "0x0") << "'" << std::endl;
-        std::cout << "autogroup: '" << (agn ? agn : "0x0") << "'" << std::endl;
+        D_CONNECT("gn: '%s' autogroup: '%s'\n", (gn ? gn : "0x0"),
+                                                (agn ? agn : "0x0"));
         if (strcmp(gn, agn) == 0) {
             // due to autogroup_add, grouping can be staged, so *must* ensure
             // group names match!
@@ -427,7 +432,7 @@ bool synthfilereader::autochain_stop(const char* com)
                   "(to input module %s)\n", outmod,
                   con->get_input_module()->get_username());
         chname = con->get_input_module()->get_name(gnames::CHAIN);
-        if (strcmp(chname, acn) == 0) {
+        if (chname && strcmp(chname, acn) == 0) {
             if (!gnames::str_has_name(outmod, gnames::CHAIN)) {
                 // if autogroup?
                 char* gsmn = gnames::str_make_username(outmod, gnames::CHAIN,
@@ -470,6 +475,29 @@ bool synthfilereader::autochain_stop(const char* com)
 }
 
 
+bool synthfilereader::autochain_copy_only(const char* com)
+{
+    if (autochain) {
+        ostringstream conv;
+        STATUS* r = (STATUS*)iocatconv::cstr_to_iocat(iocat::STATE, com, &conv);
+        if (!autochain->set_param(param::COPY_ONLY, r)) {
+            wc_err("Directive %s failed to set %s %s to %s.",
+                   directive::names::get(directive::AUTOCHAIN_COPY_ONLY),
+                   autochain->get_username(),
+                   param::names::get(param::COPY_ONLY),
+                   com);
+        }
+        iocatconv::destroy_iocat_data(iocat::STATE, r);
+        return true;
+    }
+
+    wc_err("Directive %s can only be used within an %s section.",
+           directive::names::get(directive::AUTOCHAIN_COPY_ONLY),
+           directive::names::get(directive::AUTOCHAIN_CREATE));
+
+    return false;
+}
+
 void synthfilereader::print_msg()
 {
     string ln;
@@ -497,10 +525,15 @@ bool synthfilereader::read_and_create_synthmod(const char* com)
                 return 0;
             }
         }
-        if (!wcnt::jwm.get_modlist()->add_module(mod)) {
-            wc_err("Failed to add module %s to list.", mod->get_username());
-            delete mod;
-            return false;
+        if (!autochain || !autochain->is_copy_only()) {
+            // if copy_only is set on in the active autochain, then the module
+            // should not be added to the global userspace. the chain
+            // managed removal of the global connections
+            if (!wcnt::jwm.get_modlist()->add_module(mod)) {
+                wc_err("Failed to add module %s to list.", mod->get_username());
+                delete mod;
+                return false;
+            }
         }
     }
     else {

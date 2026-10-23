@@ -12,6 +12,7 @@ namespace directive
         AUTOGROUP_CREATE,
         AUTOGROUP_ADD,
         AUTOCHAIN_CREATE,
+        AUTOCHAIN_COPY_ONLY,
         SAMPLE_RATE,
         LAST_TYPE
     };

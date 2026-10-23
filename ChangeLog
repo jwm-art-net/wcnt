@@ -7,24 +7,13 @@ NEW
       group handling to be implemented alongside existing group
       handling.
 
-      chaining is intended for smaller groups of modules and works
-      slightly differently. unlike grouping, the chain stores a snapshot
-      of the modules at the moment it chains them. when the copier is
-      used on a chain, it reproduces the snapshot of the modules it
-      copied, into user space.
+      chaining was originally intended for smaller groups of modules.
+      the way it works is a departure from the way the regular group
+      works. it addresses some of the short comings only a single level
+      of grouping provides.
 
-      chaining might be at the bottom of the heirarchy, but it is
-      powerful. creating and duplicating a chain can be done inside,
-      outside, and even across other groups and chains. just as in
-      real life, the chain can be used for pulling things!
-
-      if requested to do so, the chain data object will pull modules
-      out of groups and other chains. it keeps their connections intact,
-      but relationship changes when the groups/chains are duplicated.
-
-      however this behaviour can be tamed by the copy_only parameter
-      in the chain data object, preventing the chain from renaming any
-      of the modules, as it only copies them internally.
+      see the NEWS file for details, and there are some example files I
+      used for testing in the tests/ folder.
 
 CHANGES:
     * when --verbose is used when wcnt is processing a .wc file:
@@ -32,11 +21,6 @@ CHANGES:
         created is now shown as well as the name of it.
       - no more empty new lines between Reforming connection messages.
 
-    * overhauled the naming mechanics used by modules and grouping. the
-      new system is intended to allow for other forms of grouping which
-      can occur simultaneously with the existing group system. i am
-      sticking with the decision to disallow nested grouping. quite an
-      effort to debug where i missed consequences to these changes.
 
 FIXES:
     * removed an arbitrary default cross fade time (xfade_time) of

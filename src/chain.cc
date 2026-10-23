@@ -78,6 +78,9 @@ synthmod::base* chain::chain_module(synthmod::base* sm)
     const char* name = sm->get_name(gnames::MODULE);
     char* chname = 0;
 
+    // prove me wrong, but won't (ac == this) == true
+    chain* ac = wcnt::jwm.get_modlist()->get_autochain();
+
     if (copy_only == OFF) {
         chname = sm->make_username(gnames::CHAIN, get_username());
 
@@ -100,11 +103,19 @@ synthmod::base* chain::chain_module(synthmod::base* sm)
     else
         chname = gnames::str_make_username(sm->get_username());
 
-    synthmod::base* nsm = sm->duplicate_module(name, synthmod::base::NO_CONNECT);
-    if (!nsm) {
-        dobjerr("Chain failed copying module %s.", name);
-        invalidate();
-        return 0;
+    synthmod::base* nsm;
+
+    if (ac && ac->is_copy_only()) {
+        // autochain_copy_only - don't duplicate it, just add it
+        nsm = sm;
+    }
+    else {
+        nsm = sm->duplicate_module(name, synthmod::base::NO_CONNECT);
+        if (!nsm) {
+            dobjerr("Chain failed copying module %s.", name);
+            invalidate();
+            return 0;
+        }
     }
 
     modules->add_module(nsm);
@@ -152,6 +163,7 @@ synthmod::base* chain::chain_module(synthmod::base* sm)
             connector* nc = con->duplicate(nsm);
             const char* omn = nc->get_output_module_name();
             char* ocn = gnames::str_get_name(omn, gnames::CHAIN);
+
             if (ocn && strcmp(get_username(), ocn) == 0) {
                 // output module chain matches, remove
                 char* tmp = gnames::str_make_username(omn, gnames::CHAIN, 0);
@@ -162,7 +174,13 @@ synthmod::base* chain::chain_module(synthmod::base* sm)
             nc->dump_info();
             connections->add_at_tail(nc);
         }
-        con = conlist->goto_next();
+        if (ac && ac->is_copy_only()) {
+            connector* tmp = con;
+            con = conlist->goto_next();
+            conlist->delete_connector(tmp);
+        }
+        else
+            con = conlist->goto_next();
     }
 
     delete [] chname;
@@ -177,8 +195,10 @@ synthmod::base* chain::autochain_module(synthmod::base* sm)
     if (sm->flag(synthmod::base::SM_UNGROUPABLE))
         return 0;
 
-    if (!sm->set_name(gnames::CHAIN, get_username()))
-        return 0;
+    if (copy_only == OFF) {
+        if (!sm->set_name(gnames::CHAIN, get_username()))
+            return 0;
+    }
 
     return chain_module(sm);
 }
@@ -187,8 +207,10 @@ synthmod::base* chain::autochain_module(synthmod::base* sm)
 dobj::base* chain::add_dobj(dobj::base* dbj)
 {
     if (dbj->get_object_type() == dobj::DOBJ_SYNTHMOD) {
+        #ifdef DEBUG_CONNECT
         synthmod::base* sm = ((dobjmod*)dbj)->get_synthmod();
         D_CONNECT("add dobj (module) %s\n", sm->get_username());
+        #endif
         if (!tmpdbjlist && (!(tmpdbjlist = new dobj::list)))
             return 0;
         return tmpdbjlist->add_dobj(dbj);
@@ -231,13 +253,28 @@ dobj::base* chain::duplicate_dobj(const char* new_chain_name)
 
     group* ag = wcnt::jwm.get_modlist()->get_autogroup();
     const char* agn = (ag ? ag->get_username() : 0);
+    chain* ac = wcnt::jwm.get_modlist()->get_autochain();
 
     synthmod::base* sm = modules->goto_first();
     while(sm) {
+        D_CONNECT("maybe duplicating chain module %s\n", sm->get_username());
         char* cn = sm->make_username(gnames::CHAIN, new_chain_name);
+        if (ac && ac != this) {
+            // autochain active, and this chain is being duplicated inside it.
+            cn = gnames::str_flatten_chain_to_module_name(cn);
+            D_CONNECT("chain name %s flattened to module name %s.\n",
+                                                            new_chain_name, cn);
+        }
         synthmod::base* sm2 = sm->duplicate_module(cn, synthmod::base::NO_CONNECT);
-        sm2->set_name(gnames::GROUP, agn);
-        wcnt::jwm.get_modlist()->add_module(sm2);
+
+        if (ac && ac != this && ac->is_copy_only()) {
+            D_CONNECT("not adding %s to global userspace\n", sm2->get_username());
+            // need to sort connections before chaining it in the autogroup
+        }
+        else {
+            wcnt::jwm.get_modlist()->add_module(sm2);
+            sm2->set_name(gnames::GROUP, agn);
+        }
         if (wcnt::jwm.is_verbose()) {
             std::cout << "Duplicating module " << sm->get_username()
                 << " --> " << sm2->get_username() << std::endl;
@@ -249,6 +286,7 @@ dobj::base* chain::duplicate_dobj(const char* new_chain_name)
         if (con && wcnt::jwm.is_verbose())
             std::cout << "Reforming connections..." << std::endl;
         while(con) {
+            con->dump_info("updating connector: ");
             if (gnames::str_has_name(con->get_output_module_name(), gnames::CHAIN)) {
                 D_CONNECT("connector output module has chained name\n");
             }
@@ -260,6 +298,14 @@ dobj::base* chain::duplicate_dobj(const char* new_chain_name)
                 omn = gnames::str_make_username(omn, gnames::CHAIN,
                                                      new_chain_name);
                 delete [] tmp;
+                if (ac && ac != this) { // autochain active, and this cahin is
+                                        // being duplicatedwithin it
+                    omn = gnames::str_flatten_chain_to_module_name(omn);
+                    char* tmp = omn;
+                    omn = gnames::str_make_username(omn, gnames::CHAIN,
+                                                         ac->get_username());
+                    delete [] tmp;
+                }
                 if (agn) {
                     // and we're in an autogroup
                     tmp = omn;
@@ -279,11 +325,15 @@ dobj::base* chain::duplicate_dobj(const char* new_chain_name)
             }
             delete [] omn;
 
+            // add connector to global user space in all circumstances
+            // even ac && ac != this && ac->is_copy_only
             wcnt::get_connectlist()->add_connector(con);
             con = conlist->goto_next();
         }
         delete [] cn;
         delete conlist;
+        if (ac && ac != this)
+            ac->chain_module(sm2);
         sm = modules->goto_next();
     }
     return this;

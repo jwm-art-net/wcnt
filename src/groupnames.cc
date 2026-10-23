@@ -100,6 +100,21 @@ const char* groupnames::set_username(const char* str)
     return components[0];
 }
 
+const char* groupnames::flatten_chain_to_module_name()
+{
+    char* p = strchr(components[0], seperators[groupnames::CHAIN]);
+    if (!p)
+        return components[0];
+    *p = '_';
+    delete [] components[groupnames::CHAIN];
+    components[groupnames::CHAIN] = 0;
+    p++;
+    delete [] components[groupnames::MODULE];
+    components[groupnames::MODULE] = new char[strlen(p) + 1];
+    strcpy(components[groupnames::MODULE], p);
+    return components[0];
+}
+
 
 bool groupnames::excessive_username()
 {
@@ -207,6 +222,18 @@ char* groupnames::str_make_username(const char* vs, const char* gs, const char* 
 
     return u;
 }
+
+
+char* groupnames::str_flatten_chain_to_module_name(char* str)
+{
+    if (!str)
+        return 0;
+    char* p = strchr(str, seperators[groupnames::CHAIN]);
+    if (p)
+        *p = '_';
+    return str;
+}
+
 
 char* groupnames::str_get_name(const char* str, COMPONENT comp)
 {

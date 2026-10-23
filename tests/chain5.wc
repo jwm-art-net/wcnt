@@ -1,0 +1,101 @@
+wcnt-1.32/jwmsynth
+
+samplerate 44100
+
+; chain5.wc
+; demonstrating basic usage duplicating a chain within an autochain
+; section. doing so flattens the existing chain name into the module
+; name
+
+autochain_create
+_C
+    // set the _C autochain to be sole holder of the modules
+    // about to be created, they won't exist outside of it.
+    autochain_copy_only on
+    clock c freq 5000 c
+    wave w type sine in_phase_step c out_phase_step w
+_C
+
+autochain_create
+CH
+    // again, any modules created here won't exist outside
+    autochain_copy_only on
+
+    // now copy the first chain into this chain, but because
+    // wcnt does not nest chains, it the nested chain name is
+    // flattened in with the module name
+    copier [ from _C to L ]
+    copier [ from _C to R ]
+
+    stereo_amp
+    amp
+        in_left  L_w out_output
+        in_right R_w out_output
+        gain 0.3
+    amp
+
+    editor [ editlist edit L_w type saw editlist ]
+
+CH
+
+// up to this point, no modules exist in userspace, only as copies
+// internal to the _C and CH chains.
+
+copier [ from CH to CH1 count 4 ]
+
+editor
+[
+    editlist
+        edit CH1~L_c freq 100
+        edit CH1~R_c freq 150
+        edit CH2~L_c freq 300
+        edit CH2~R_c freq 350
+        edit CH3~L_c freq 700
+        edit CH3~R_c freq 750
+        edit CH4~L_c freq 1500
+        edit CH4~R_c freq 1550
+
+        edit CH1~amp gain 0.5
+        edit CH2~amp gain 0.25
+        edit CH3~amp gain 0.1
+        edit CH4~amp gain 0.05
+    editlist
+]
+
+mixer
+mix1
+    mix
+        synthmod name CH1~amp
+        synthmod name CH2~amp
+        synthmod name CH3~amp
+        synthmod name CH4~amp
+    mix
+    gain 0.8
+mix1
+
+
+timer
+t
+    timings
+        time seconds 0
+        time seconds 30
+    timings
+    time_is_relative off
+t
+
+wavfile_out
+wav
+    in_left     mix1 out_left
+    in_right    mix1 out_right
+    in_bar      t out_count
+    snapshot_mode off
+    data_format float32
+    filename    chain5.wav
+    start_bar   0
+    end_bar     1
+wav
+
+
+wcnt_exit [ in_trig wav out_write_end_trig ]
+
+wcnt-1.32/jwmsynth

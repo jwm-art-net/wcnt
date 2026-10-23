@@ -1,10 +1,15 @@
 October 2026
 
-    * add copy_only parameter handling for directive based chaining
-      (autochain_create) or autochain_copy_only directive which can
-      only be used within autochain section
+    * [DONE] add copy_only parameter handling for directive based
+      chaining (autochain_create) or autochain_copy_only directive which
+      can only be used within autochain section
 
+    * new module: freq_tune provides octave_offset tuning_semitones,
+      and freq_shift, maybe a multiplier
 
+    * updated editor to be chain aware with respect to autochain and
+      copy_only - it will need to obtain the autochain's modlist
+      instead of global, same for connections.
 
 July 2026
 
